@@ -16,20 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_DataAccessor_h
-#define yap_DataAccessor_h
+#ifndef yap_Amp_h
+#define yap_Amp_h
 
-#include "Amp.h"
-#include "DataPoint.h"
+#include <complex>
 
 namespace yap {
 
-class DataAccessor {
-public:
-  DataAccessor();
-  ~DataAccessor();
-
-  yap::Amp amplitude(yap::DataPoint& d) = 0;
+/// A complex amplitude
+typedef std::complex<double> Amp;
 
 };
 

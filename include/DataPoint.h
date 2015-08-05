@@ -16,20 +16,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_DataAccessor_h
-#define yap_DataAccessor_h
-
-#include "Amp.h"
-#include "DataPoint.h"
+#ifndef yap_DataPoint_h
+#define yap_DataPoint_h
 
 namespace yap {
 
-class DataAccessor {
+class DataPoint {
 public:
-  DataAccessor();
-  ~DataAccessor();
+  DataPoint();
+  ~DataPoint();
 
-  yap::Amp amplitude(yap::DataPoint& d) = 0;
 
 };
 
