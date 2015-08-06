@@ -33,6 +33,12 @@ bool DecayChannel::consistent() const
         return false;
     }
 
+    // check if BlattWeisskopf points back to this DecayChannel
+    if (this != BlattWeisskopf_.decayChannel()) {
+        LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
+        return false;
+    }
+
 
     return true;
 }

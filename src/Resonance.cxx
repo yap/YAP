@@ -16,8 +16,13 @@ bool Resonance::consistent() const
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
-    for (DecayChannel* c : Channels_) {
-        consistent &= c->consistent();
+    for (DecayChannel c : Channels_) {
+        consistent &= c.consistent();
+
+        if (this != c.resonance()) {
+            LOG(ERROR) << "Resonance::consistent() - DecayChannels does not point back to this Resonance.";
+            return false;
+        }
     }
 
     // check if all channels lead to same final state particles
@@ -39,10 +44,10 @@ bool Resonance::consistent() const
     }
 
     // check angular momentum laws
-    for (DecayChannel* c : Channels_) {
-        unsigned char l = c->l();
-        unsigned char L_A = c->daughterA()->quantumNumbers().J();
-        unsigned char L_B = c->daughterB()->quantumNumbers().J();
+    for (DecayChannel c : Channels_) {
+        unsigned char l = c.l();
+        unsigned char L_A = c.daughterA()->quantumNumbers().J();
+        unsigned char L_B = c.daughterB()->quantumNumbers().J();
 
         if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
             LOG(ERROR) << "Resonance::consistent() - spins don't match.";
@@ -50,7 +55,7 @@ bool Resonance::consistent() const
         }
 
         // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-        if (c->spinAmplitude().initialQuantumNumbers() != this->quantumNumbers()) {
+        if (c.spinAmplitude().initialQuantumNumbers() != this->quantumNumbers()) {
             LOG(ERROR) << "Resonance::consistent() - quantum numbers of resonance and channel's SpinAmplitude don't match.";
             return false;
         }
@@ -64,7 +69,7 @@ bool Resonance::consistent() const
 const std::vector<const FinalStateParticle*> Resonance::finalStateParticles(unsigned int channel) const
 {
     std::vector<const FinalStateParticle*> fsps;
-    const Daughters& daughters = Channels_.at(channel)->daughters();
+    const Daughters& daughters = Channels_.at(channel).daughters();
 
     for (const Particle* d : daughters) {
         if (dynamic_cast<const FinalStateParticle*>(d))
