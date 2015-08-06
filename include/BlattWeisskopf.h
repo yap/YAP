@@ -23,6 +23,8 @@
 
 namespace yap {
 
+class DecayChannel;
+
 class BlattWeisskopf : public DataAccessor
 {
 public:
@@ -32,6 +34,10 @@ public:
     virtual Amp amplitude(DataPoint& d);
     virtual bool consistent() const;
 
+    DecayChannel* decayChannel() const {return DecayChannel_;}
+
+private:
+    DecayChannel* DecayChannel_; /// DecayChannel this BlattWeisskopf belongs to
 };
 
 }

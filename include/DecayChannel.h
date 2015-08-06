@@ -28,6 +28,7 @@
 
 namespace yap {
 
+class Resonance;
 typedef std::array<Particle*, 2> Daughters;
 
 class DecayChannel : public DataAccessor
@@ -47,6 +48,7 @@ public:
     unsigned char l() const {return L_;}
     const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
     Amp freeAmplitude() const {return FreeAmplitude_;}
+    Resonance* resonance() const {return Resonance_;}
 
     void setFreeAmplitude(const Amp& amp) {FreeAmplitude_ = amp;}
 
@@ -56,6 +58,7 @@ private:
     BlattWeisskopf BlattWeisskopf_;
     SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
     Amp FreeAmplitude_;
+    Resonance* Resonance_; /// Resonance this DecayChannel belongs to
 };
 
 }

@@ -42,7 +42,7 @@ public:
 
 private:
     MassShape MassShape_;
-    std::vector<DecayChannel*> Channels_; /// DecayChannel can be shared between several Resonances
+    std::vector<yap::DecayChannel> Channels_;
     double RadialSize_;
 };
 
