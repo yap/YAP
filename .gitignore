@@ -1,2 +1,4 @@
 build/
-html/
+docs/html
+docs/latex
+
