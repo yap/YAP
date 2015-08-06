@@ -1,4 +1,4 @@
-#include "MassShape.cxx"
+#include "MassShape.h"
 
 #include "Constants.h"
 
@@ -25,7 +25,7 @@ MassShape::MassShape(MassShape&& other) :
 }
 
 //-------------------------
-MassShape::MassShape(const MassShape& rhs)
+MassShape& MassShape::operator=(const MassShape& rhs)
 {
     MassShape temp(rhs);
     std::swap(*this, temp);
@@ -42,6 +42,12 @@ MassShape& MassShape::operator=(MassShape&& rhs)
 
 //-------------------------
 Amp MassShape::amplitude(DataPoint& d)
+{
+    return Complex_0;
+}
+
+//-------------------------
+Amp MassShape::amplitude(double s)
 {
     return Complex_0;
 }

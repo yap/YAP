@@ -79,10 +79,16 @@ public:
     /// \name Amplitude related
     /// @{
 
-    /// Calculate MassShape amplitude
-    /// \return amplitude evaluated at DataPoint
+    /// \todo
+    /// Calculate MassShape amplitude from DataPoint
+    /// \return amplitude evaluated on DataPoint
     /// \param d DataPoint to evaluate on
     virtual Amp amplitude(DataPoint& d);
+
+    /// Calculate MassShape ampltude from squared mass
+    /// \return amplitude evaluated at squared mass
+    /// \param s squared mass to evaluate at
+    virtual Amp amplitude(double s);
 
     /// @}
 
