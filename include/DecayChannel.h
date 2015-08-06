@@ -36,7 +36,7 @@ public:
   ~DecayChannel() {;}
 
   virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const;
+  virtual bool consistent() const;
 
   const Daughters& daughters() const {return Daughters_;}
   const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}

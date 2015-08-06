@@ -34,7 +34,7 @@ public:
   ~Resonance();
 
   virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const;
+  virtual bool consistent() const;
 
   const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
   unsigned int nChannels() const {return Channels_.size();}

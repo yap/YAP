@@ -32,7 +32,7 @@ public:
   ~SpinAmplitude();
 
   virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const {return true;}
+  virtual bool consistent() const {return true;}
 
   const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
   const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}

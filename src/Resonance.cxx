@@ -4,19 +4,19 @@
 namespace yap {
 
 //-------------------------
-bool Resonance::checkConsistency() const {
+bool Resonance::consistent() const {
   bool consistent = true;
-  consistent &= MassShape_.checkConsistency();
+  consistent &= MassShape_.consistent();
 
   if (Channels_.empty()) {
-    LOG(ERROR) << "Resonance::checkConsistency() - no channels specified.";
+    LOG(ERROR) << "Resonance::consistent() - no channels specified.";
     return false;
   }
 
   const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
   for (DecayChannel* c : Channels_) {
-    consistent &= c->checkConsistency();
+    consistent &= c->consistent();
   }
 
   // check if all channels lead to same final state particles
@@ -24,13 +24,13 @@ bool Resonance::checkConsistency() const {
     for (unsigned int i=1; i<nChannels(); ++i) {
       const std::vector<const FinalStateParticle*> fsps = this->finalStateParticles(0);
       if (fsps0.size() != fsps.size()) {
-        LOG(ERROR) << "Resonance::checkConsistency() - number of final state particles of different channels do not match.";
+        LOG(ERROR) << "Resonance::consistent() - number of final state particles of different channels do not match.";
         return false;
       }
       for (unsigned int j=0; j<fsps0.size(); ++j) {
         // compare adresses to check if final state particles are really the same objects
         if (fsps0[j] != fsps[j]) {
-          LOG(ERROR) << "Resonance::checkConsistency() - final state particles of different channels are not the same (objects).";
+          LOG(ERROR) << "Resonance::consistent() - final state particles of different channels are not the same (objects).";
           return false;
         }
       }
@@ -44,13 +44,13 @@ bool Resonance::checkConsistency() const {
     unsigned char L_B = c->daughterB()->quantumNumbers().J();
 
     if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
-      LOG(ERROR) << "Resonance::checkConsistency() - spins don't match.";
+      LOG(ERROR) << "Resonance::consistent() - spins don't match.";
       return false;
     }
 
     // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
     if (c->spinAmplitude().initialQuantumNumbers() != this->quantumNumbers()) {
-      LOG(ERROR) << "Resonance::checkConsistency() - quantum numbers of resonance and channel's SpinAmplitude don't match.";
+      LOG(ERROR) << "Resonance::consistent() - quantum numbers of resonance and channel's SpinAmplitude don't match.";
       return false;
     }
 

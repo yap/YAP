@@ -36,7 +36,7 @@ public:
   ~Particle();
 
   virtual Amp amplitude(DataPoint& d) = 0;
-  virtual bool checkConsistency() const = 0;
+  virtual bool consistent() const;
 
   const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
 
