@@ -11,23 +11,23 @@ bool Resonance::consistent() const
 
     if (RadialSize_ <= 0.) {
         LOG(ERROR) << "Resonance::consistent() - Radial size not positive.";
-        return false;
+        consistent = false;
     }
 
     if (Channels_.empty()) {
         LOG(ERROR) << "Resonance::consistent() - no channels specified.";
-        return false;
+        return false; // furhter checks require at least one channel
     }
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
     for (DecayChannel c : Channels_) {
-        consistent &= c.consistent();
-
         if (this != c.resonance()) {
             LOG(ERROR) << "Resonance::consistent() - DecayChannels does not point back to this Resonance.";
-            return false;
+            return false; // channel consistency check requires correct pointer
         }
+
+        consistent &= c.consistent();
     }
 
     // check if all channels lead to same final state particles
@@ -36,13 +36,13 @@ bool Resonance::consistent() const
             const std::vector<const FinalStateParticle*> fsps = this->finalStateParticles(0);
             if (fsps0.size() != fsps.size()) {
                 LOG(ERROR) << "Resonance::consistent() - number of final state particles of different channels do not match.";
-                return false;
+                consistent = false;
             }
             for (unsigned int j = 0; j < fsps0.size(); ++j) {
                 // compare adresses to check if final state particles are really the same objects
                 if (fsps0[j] != fsps[j]) {
                     LOG(ERROR) << "Resonance::consistent() - final state particles of different channels are not the same (objects).";
-                    return false;
+                    consistent = false;
                 }
             }
         }

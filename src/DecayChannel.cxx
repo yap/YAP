@@ -33,18 +33,18 @@ bool DecayChannel::consistent() const
     // check if QuantumNumbers of SpinAmplitude objects match with Particles
     if (this->spinAmplitude().finalQuantumNumbersA() != this->daughterA()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughterA and SpinResonance don't match.";
-        return false;
+        consistent = false;
     }
 
     if (this->spinAmplitude().finalQuantumNumbersB() != this->daughterB()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughterB and SpinResonance don't match.";
-        return false;
+        consistent =  false;
     }
 
     // check if BlattWeisskopf points back to this DecayChannel
     if (this != BlattWeisskopf_.decayChannel()) {
         LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
-        return false;
+        consistent =  false;
     }
 
 
@@ -55,19 +55,19 @@ bool DecayChannel::consistent() const
 
     if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
         LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated.";
-        return false;
+        consistent =  false;
     }
 
     // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
     if (this->spinAmplitude().initialQuantumNumbers() != this->resonance()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of SpinAmplitude  and this channel's resonance don't match.";
-        return false;
+        consistent =  false;
     }
 
     // check masses
     if (this->daughterA()->mass() + this->daughterB()->mass() > this->resonance()->mass()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
-        return false;
+        consistent =  false;
     }
 
     return consistent;
