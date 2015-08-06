@@ -74,8 +74,9 @@ const std::vector<const FinalStateParticle*> Resonance::finalStateParticles(unsi
                 dynamic_cast<const Resonance*>(d)->finalStateParticles();
             fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
         }
-
-        return fsps;
     }
+
+    return fsps;
+}
 
 }

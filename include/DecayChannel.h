@@ -46,6 +46,9 @@ public:
 
     unsigned char l() const {return L_;}
     const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
+    Amp freeAmplitude() const {return FreeAmplitude_;}
+
+    void setFreeAmplitude(const Amp& amp) {FreeAmplitude_ = amp;}
 
 private:
     Daughters Daughters_;

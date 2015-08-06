@@ -8,6 +8,7 @@ set(YAP_SOURCES
   DataAccessor.cxx
   DataPoint.cxx
   DecayChannel.cxx
+  Particle.cxx
   Resonance.cxx
 )
 
