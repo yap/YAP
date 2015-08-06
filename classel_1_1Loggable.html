@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: el::Loggable Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,52 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><a class="el" href="namespaceel.html">el</a>::<a class="el" href="classel_1_1Loggable.html">Loggable</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::Loggable Class Reference</h1><!-- doxytag: class="el::Loggable" -->
+<p>Base of Easylogging++ friendly class.  
+<a href="#_details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for el::Loggable:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classel_1_1Loggable.gif" usemap="#el::Loggable_map" alt=""/>
+  <map id="el::Loggable_map" name="el::Loggable_map">
+<area href="classel_1_1base_1_1LogFormat.html" alt="el::base::LogFormat" shape="rect" coords="0,56,178,80"/>
+<area href="classel_1_1base_1_1PerformanceTracker.html" alt="el::base::PerformanceTracker" shape="rect" coords="188,56,366,80"/>
+<area href="classel_1_1Configuration.html" alt="el::Configuration" shape="rect" coords="376,56,554,80"/>
+<area href="classel_1_1Logger.html" alt="el::Logger" shape="rect" coords="564,56,742,80"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classel_1_1Loggable-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8a2e0ebc11e4bd00ef49fc67db3d59e"></a><!-- doxytag: member="el::Loggable::log" ref="ad8a2e0ebc11e4bd00ef49fc67db3d59e" args="(el::base::type::ostream_t &amp;) const =0" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>log</b> (el::base::type::ostream_t &amp;) const =0</td></tr>
+<tr><td colspan="2"><h2>Friends</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00722a386f498be3ebece2e266fb0f05"></a><!-- doxytag: member="el::Loggable::operator&lt;&lt;" ref="a00722a386f498be3ebece2e266fb0f05" args="(el::base::type::ostream_t &amp;os, const Loggable &amp;loggable)" -->
+el::base::type::ostream_t &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (el::base::type::ostream_t &amp;os, const <a class="el" href="classel_1_1Loggable.html">Loggable</a> &amp;loggable)</td></tr>
+</table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Base of Easylogging++ friendly class. </p>
+<p>After inheriting this class publicly, implement pure-virtual function `void log(std::ostream&amp;) const` </p>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a></li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

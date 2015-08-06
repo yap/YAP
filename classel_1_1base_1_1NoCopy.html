@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: el::base::NoCopy Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,52 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><a class="el" href="namespaceel.html">el</a>::<a class="el" href="namespaceel_1_1base.html">base</a>::<a class="el" href="classel_1_1base_1_1NoCopy.html">NoCopy</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::base::NoCopy Class Reference</h1><!-- doxytag: class="el::base::NoCopy" -->
+<p>Internal helper class that prevent copy constructor for class.  
+<a href="#_details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for el::base::NoCopy:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classel_1_1base_1_1NoCopy.gif" usemap="#el::base::NoCopy_map" alt=""/>
+  <map id="el::base::NoCopy_map" name="el::base::NoCopy_map">
+<area href="classel_1_1base_1_1debug_1_1CrashHandler.html" alt="el::base::debug::CrashHandler" shape="rect" coords="322,56,634,80"/>
+<area href="classel_1_1base_1_1debug_1_1StackTrace.html" alt="el::base::debug::StackTrace" shape="rect" coords="322,112,634,136"/>
+<area href="classel_1_1base_1_1LogDispatcher.html" alt="el::base::LogDispatcher" shape="rect" coords="322,168,634,192"/>
+<area href="classel_1_1base_1_1NullWriter.html" alt="el::base::NullWriter" shape="rect" coords="322,224,634,248"/>
+<area href="classel_1_1base_1_1Storage.html" alt="el::base::Storage" shape="rect" coords="322,280,634,304"/>
+<area href="classel_1_1base_1_1threading_1_1internal_1_1NoMutex.html" alt="el::base::threading::internal::NoMutex" shape="rect" coords="322,336,634,360"/>
+<area href="classel_1_1base_1_1threading_1_1internal_1_1NoScopedLock.html" alt="el::base::threading::internal::NoScopedLock&lt; Mutex &gt;" shape="rect" coords="322,392,634,416"/>
+<area href="classel_1_1base_1_1VRegistry.html" alt="el::base::VRegistry" shape="rect" coords="322,448,634,472"/>
+<area href="classel_1_1base_1_1Writer.html" alt="el::base::Writer" shape="rect" coords="322,504,634,528"/>
+<area href="classel_1_1LogBuilder.html" alt="el::LogBuilder" shape="rect" coords="322,560,634,584"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classel_1_1base_1_1NoCopy-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+</table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Internal helper class that prevent copy constructor for class. </p>
+<p>When using this class simply inherit it privately </p>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a></li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

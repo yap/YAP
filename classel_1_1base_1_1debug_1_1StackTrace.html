@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: el::base::debug::StackTrace Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><a class="el" href="namespaceel.html">el</a>::<a class="el" href="namespaceel_1_1base.html">base</a>::<a class="el" href="namespaceel_1_1base_1_1debug.html">debug</a>::<a class="el" href="classel_1_1base_1_1debug_1_1StackTrace.html">StackTrace</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::base::debug::StackTrace Class Reference</h1><!-- doxytag: class="el::base::debug::StackTrace" --><!-- doxytag: inherits="el::base::NoCopy" --><div class="dynheader">
+Inheritance diagram for el::base::debug::StackTrace:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classel_1_1base_1_1debug_1_1StackTrace.gif" usemap="#el::base::debug::StackTrace_map" alt=""/>
+  <map id="el::base::debug::StackTrace_map" name="el::base::debug::StackTrace_map">
+<area href="classel_1_1base_1_1NoCopy.html" alt="el::base::NoCopy" shape="rect" coords="0,0,166,24"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classel_1_1base_1_1debug_1_1StackTrace-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Classes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">class &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classel_1_1base_1_1debug_1_1StackTrace_1_1StackTraceEntry.html">StackTraceEntry</a></td></tr>
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b6a4f154b59d597b73fe8a515df3240"></a><!-- doxytag: member="el::base::debug::StackTrace::getLatestStack" ref="a8b6a4f154b59d597b73fe8a515df3240" args="(void)" -->
+std::vector&lt; <a class="el" href="classel_1_1base_1_1debug_1_1StackTrace_1_1StackTraceEntry.html">StackTraceEntry</a> &gt; &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>getLatestStack</b> (void)</td></tr>
+<tr><td colspan="2"><h2>Static Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e3db7fdc258a7d653f00fc5aade55c2"></a><!-- doxytag: member="el::base::debug::StackTrace::kMaxStack" ref="a6e3db7fdc258a7d653f00fc5aade55c2" args="" -->
+static const std::size_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>kMaxStack</b> = 64</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8a89fe5c4f779d3e685a5e61f1136e2"></a><!-- doxytag: member="el::base::debug::StackTrace::kStackStart" ref="ab8a89fe5c4f779d3e685a5e61f1136e2" args="" -->
+static const std::size_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>kStackStart</b> = 2</td></tr>
+<tr><td colspan="2"><h2>Friends</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3b8e978df331fbe725e2a39d031355cc"></a><!-- doxytag: member="el::base::debug::StackTrace::operator&lt;&lt;" ref="a3b8e978df331fbe725e2a39d031355cc" args="(std::ostream &amp;os, const StackTrace &amp;st)" -->
+std::ostream &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="classel_1_1base_1_1debug_1_1StackTrace.html">StackTrace</a> &amp;st)</td></tr>
+</table>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a></li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: el::LogBuilder Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,44 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><a class="el" href="namespaceel.html">el</a>::<a class="el" href="classel_1_1LogBuilder.html">LogBuilder</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::LogBuilder Class Reference</h1><!-- doxytag: class="el::LogBuilder" --><!-- doxytag: inherits="el::base::NoCopy" --><div class="dynheader">
+Inheritance diagram for el::LogBuilder:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classel_1_1LogBuilder.gif" usemap="#el::LogBuilder_map" alt=""/>
+  <map id="el::LogBuilder_map" name="el::LogBuilder_map">
+<area href="classel_1_1base_1_1NoCopy.html" alt="el::base::NoCopy" shape="rect" coords="0,0,162,24"/>
+<area href="classel_1_1base_1_1DefaultLogBuilder.html" alt="el::base::DefaultLogBuilder" shape="rect" coords="0,112,162,136"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classel_1_1LogBuilder-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a633b373a3bb9d3e17bdd664aeba4dbc8"></a><!-- doxytag: member="el::LogBuilder::build" ref="a633b373a3bb9d3e17bdd664aeba4dbc8" args="(const LogMessage *logMessage, bool appendNewLine) const =0" -->
+virtual base::type::string_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>build</b> (const <a class="el" href="classel_1_1LogMessage.html">LogMessage</a> *logMessage, bool appendNewLine) const =0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a229244f323f25bdbd7725f8bbf983a17"></a><!-- doxytag: member="el::LogBuilder::convertToColoredOutput" ref="a229244f323f25bdbd7725f8bbf983a17" args="(base::type::string_t *logLine, Level level)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>convertToColoredOutput</b> (base::type::string_t *logLine, <a class="el" href="namespaceel.html#a3513d7831fffa41b056f7eeb547e9783">Level</a> level)</td></tr>
+<tr><td colspan="2"><h2>Friends</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42b1de96d584ae4fecbfc2b9aff95052"></a><!-- doxytag: member="el::LogBuilder::el::base::DefaultLogDispatchCallback" ref="a42b1de96d584ae4fecbfc2b9aff95052" args="" -->
+class&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classel_1_1LogBuilder.html#a42b1de96d584ae4fecbfc2b9aff95052">el::base::DefaultLogDispatchCallback</a></td></tr>
+</table>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a></li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::base::utils::OS Member List</h1>This is the complete list of members for <a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a>, including all inherited members.<table>
+  <tr class="memlist"><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html#aae4fdf83828228fc440f8a875c5942b0">currentHost</a>(void)</td><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a></td><td><code> [inline, static]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html#ac7839ecd50e379dbdfcfce130906386e">currentUser</a>(void)</td><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a></td><td><code> [inline, static]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html#a91304c76c872459eaa9fdb3466367cd3">getBashOutput</a>(const char *command)</td><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a></td><td><code> [inline, static]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html#a91540f3d8c87bd121e55fc39270eac3c">getEnvironmentVariable</a>(const char *variableName, const char *defaultVal, const char *alternativeBashCommand=nullptr)</td><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a></td><td><code> [inline, static]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html#a2c941329a14ce0ea920f57779857864c">termSupportsColor</a>(void)</td><td><a class="el" href="classel_1_1base_1_1utils_1_1OS.html">el::base::utils::OS</a></td><td><code> [inline, static]</code></td></tr>
+</table></div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

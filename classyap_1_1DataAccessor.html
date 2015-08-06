@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: yap::DataAccessor Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><b>yap</b>::<a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>yap::DataAccessor Class Reference</h1><!-- doxytag: class="yap::DataAccessor" --><div class="dynheader">
+Inheritance diagram for yap::DataAccessor:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classyap_1_1DataAccessor.gif" usemap="#yap::DataAccessor_map" alt=""/>
+  <map id="yap::DataAccessor_map" name="yap::DataAccessor_map">
+<area href="classyap_1_1BlattWeisskopf.html" alt="yap::BlattWeisskopf" shape="rect" coords="0,56,138,80"/>
+<area href="classyap_1_1DecayChannel.html" alt="yap::DecayChannel" shape="rect" coords="148,56,286,80"/>
+<area href="classyap_1_1MassShape.html" alt="yap::MassShape" shape="rect" coords="296,56,434,80"/>
+<area href="classyap_1_1Particle.html" alt="yap::Particle" shape="rect" coords="518,56,656,80"/>
+<area href="classyap_1_1SpinAmplitude.html" alt="yap::SpinAmplitude" shape="rect" coords="666,56,804,80"/>
+<area href="classyap_1_1BreitWigner.html" alt="yap::BreitWigner" shape="rect" coords="296,112,434,136"/>
+<area href="classyap_1_1FinalStateParticle.html" alt="yap::FinalStateParticle" shape="rect" coords="444,112,582,136"/>
+<area href="classyap_1_1Resonance.html" alt="yap::Resonance" shape="rect" coords="592,112,730,136"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classyap_1_1DataAccessor-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7043fdf98fae0fbee1a839eba80bb91d"></a><!-- doxytag: member="yap::DataAccessor::amplitude" ref="a7043fdf98fae0fbee1a839eba80bb91d" args="(DataPoint &amp;d)=0" -->
+virtual Amp&nbsp;</td><td class="memItemRight" valign="bottom"><b>amplitude</b> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d)=0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a44e3a88ac282596a2084450c543d8679"></a><!-- doxytag: member="yap::DataAccessor::consistent" ref="a44e3a88ac282596a2084450c543d8679" args="() const =0" -->
+virtual bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>consistent</b> () const =0</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf9aac74a79310274faa4246e36b66b0"></a><!-- doxytag: member="yap::DataAccessor::index" ref="abf9aac74a79310274faa4246e36b66b0" args="() const " -->
+unsigned int&nbsp;</td><td class="memItemRight" valign="bottom"><b>index</b> () const </td></tr>
+<tr><td colspan="2"><h2>Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4b2ff25be528b243ed3fa7291d77c5b6"></a><!-- doxytag: member="yap::DataAccessor::Recalculate_" ref="a4b2ff25be528b243ed3fa7291d77c5b6" args="" -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>Recalculate_</b></td></tr>
+</table>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>include/<a class="el" href="DataAccessor_8h_source.html">DataAccessor.h</a></li>
+<li>src/DataAccessor.cxx</li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

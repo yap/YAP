@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: el::Callback&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><a class="el" href="namespaceel.html">el</a>::<a class="el" href="classel_1_1Callback.html">Callback</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>el::Callback&lt; T &gt; Class Template Reference</h1><!-- doxytag: class="el::Callback" --><!-- doxytag: inherits="el::base::threading::ThreadSafe" --><div class="dynheader">
+Inheritance diagram for el::Callback&lt; T &gt;:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classel_1_1Callback.gif" usemap="#el::Callback&lt; T &gt;_map" alt=""/>
+  <map id="el::Callback&lt; T &gt;_map" name="el::Callback&lt; T &gt;_map">
+<area href="classel_1_1base_1_1threading_1_1ThreadSafe.html" alt="el::base::threading::ThreadSafe" shape="rect" coords="0,0,186,24"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classel_1_1Callback-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e3089fd19a11965e7b98bd423116bbd"></a><!-- doxytag: member="el::Callback::enabled" ref="a1e3089fd19a11965e7b98bd423116bbd" args="(void) const " -->
+bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>enabled</b> (void) const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05e68cb0b5ea4423913fa2ec4ea306b4"></a><!-- doxytag: member="el::Callback::setEnabled" ref="a05e68cb0b5ea4423913fa2ec4ea306b4" args="(bool enabled)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setEnabled</b> (bool enabled)</td></tr>
+<tr><td colspan="2"><h2>Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8997c7971d65062c374ef24e653061be"></a><!-- doxytag: member="el::Callback::handle" ref="a8997c7971d65062c374ef24e653061be" args="(const T *handlePtr)=0" -->
+virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>handle</b> (const T *handlePtr)=0</td></tr>
+</table>
+<h3>template&lt;typename T&gt;<br/>
+ class el::Callback&lt; T &gt;</h3>
+
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>include/<a class="el" href="easylogging_09_09_8h_source.html">easylogging++.h</a></li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"

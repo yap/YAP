@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>YAP: Main Page</title>
+<title>YAP: yap::Resonance Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>
@@ -17,10 +17,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="navigation" id="top">
   <div class="tabs">
     <ul>
-      <li class="current"><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="namespaces.html"><span>Namespaces</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -37,9 +37,50 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div class="tabs">
+    <ul>
+      <li><a href="annotated.html"><span>Class&nbsp;List</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&nbsp;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&nbsp;Members</span></a></li>
+    </ul>
+  </div>
+  <div class="navpath"><b>yap</b>::<a class="el" href="classyap_1_1Resonance.html">Resonance</a>
+  </div>
 </div>
 <div class="contents">
-<h1>YAP Documentation</h1></div>
+<h1>yap::Resonance Class Reference<br/>
+<small>
+[<a class="el" href="group__Particle.html">Particle</a>]</small>
+</h1><!-- doxytag: class="yap::Resonance" --><!-- doxytag: inherits="yap::Particle" --><div class="dynheader">
+Inheritance diagram for yap::Resonance:</div>
+<div class="dynsection">
+ <div class="center">
+  <img src="classyap_1_1Resonance.gif" usemap="#yap::Resonance_map" alt=""/>
+  <map id="yap::Resonance_map" name="yap::Resonance_map">
+<area href="classyap_1_1Particle.html" alt="yap::Particle" shape="rect" coords="0,56,119,80"/>
+<area href="classyap_1_1DataAccessor.html" alt="yap::DataAccessor" shape="rect" coords="0,0,119,24"/>
+</map>
+ </div>
+</div>
+
+<p><a href="classyap_1_1Resonance-members.html">List of all members.</a></p>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr><td colspan="2"><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae7bef47e1cd3c54d871cce5a23ea0dcf"></a><!-- doxytag: member="yap::Resonance::amplitude" ref="ae7bef47e1cd3c54d871cce5a23ea0dcf" args="(DataPoint &amp;d)" -->
+virtual Amp&nbsp;</td><td class="memItemRight" valign="bottom"><b>amplitude</b> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac08dabbcad8f919984942b410af32496"></a><!-- doxytag: member="yap::Resonance::consistent" ref="ac08dabbcad8f919984942b410af32496" args="() const " -->
+virtual bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>consistent</b> () const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af4bf92bd5f6ffa24f02f06a1031fe69d"></a><!-- doxytag: member="yap::Resonance::finalStateParticles" ref="af4bf92bd5f6ffa24f02f06a1031fe69d" args="(unsigned int channel=0) const " -->
+const std::vector&lt; const <br class="typebreak"/>
+<a class="el" href="classyap_1_1FinalStateParticle.html">FinalStateParticle</a> * &gt;&nbsp;</td><td class="memItemRight" valign="bottom"><b>finalStateParticles</b> (unsigned int channel=0) const </td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a237f0f40563c031b4d160ea1302ccf02"></a><!-- doxytag: member="yap::Resonance::nChannels" ref="a237f0f40563c031b4d160ea1302ccf02" args="() const " -->
+unsigned int&nbsp;</td><td class="memItemRight" valign="bottom"><b>nChannels</b> () const </td></tr>
+</table>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>include/<a class="el" href="Resonance_8h_source.html">Resonance.h</a></li>
+<li>src/Resonance.cxx</li>
+</ul>
+</div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
