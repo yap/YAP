@@ -25,10 +25,13 @@
 
 namespace yap {
 
-    /// \class MassShape
-    /// \brief Base class for all mass shapes
-    /// \author Johannes Rauch, Daniel Greenwald
-    /// \defgroup MassShapes Mass Shapes
+/// \class MassShape
+/// \brief Base class for all mass shapes
+/// \author Johannes Rauch, Daniel Greenwald
+/// \defgroup MassShapes Mass Shapes
+///
+/// All classes inheriting from MassShape should place continuous
+/// fit variables in MassShape::Parameters_
 
 class MassShape : public DataAccessor
 {
@@ -40,8 +43,38 @@ public:
     /// Default constructor
     MassShape();
 
+    /// Copy constructor
+    MassShape(const MassShape& other);
+
+    /// Move constructor
+    MassShape(MassShape&& other);
+
     /// Destructor
     virtual ~MassShape();
+
+    /// @}
+
+    /// \name Operators
+    /// @{
+
+    /// Copy assignment operator
+    MassShape& operator=(const MassShape& rhs);
+
+    /// Move assignment operator
+    MassShape& operator=(MassShape&& rhs);
+
+    /// @}
+
+    /// \name Parameter access
+    /// @{
+
+    /// Get parameter set
+    std::vector<double>& parameters()
+    { return Parameters_; }
+
+    /// Get (const) parameter set
+    const std::vector<double>& parameters() const
+    { return Parameters_; }
 
     /// @}
 
@@ -62,6 +95,11 @@ public:
     virtual bool checkConsistency() const;
 
     /// @}
+
+protected:
+
+    /// Parameters
+    std::vector<double> Parameters_;
 
 };
 
