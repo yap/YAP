@@ -30,28 +30,32 @@ namespace yap {
 
 typedef std::array<Particle*, 2> Daughters;
 
-class DecayChannel : public DataAccessor {
+class DecayChannel : public DataAccessor
+{
 public:
-  DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
-  ~DecayChannel() {;}
+    DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
+    ~DecayChannel() {;}
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool consistent() const;
 
-  const Daughters& daughters() const {return Daughters_;}
-  const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}
-  const Particle* daughterA() const {return Daughters_[0];}
-  const Particle* daughterB() const {return Daughters_[1];}
+    const Daughters& daughters() const {return Daughters_;}
+    const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}
+    const Particle* daughterA() const {return Daughters_[0];}
+    const Particle* daughterB() const {return Daughters_[1];}
 
-  unsigned char l() const {return L_;}
-  const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
+    unsigned char l() const {return L_;}
+    const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
+    Amp freeAmplitude() const {return FreeAmplitude_;}
+
+    void setFreeAmplitude(const Amp& amp) {FreeAmplitude_ = amp;}
 
 private:
-  Daughters Daughters_;
-  unsigned char L_; /// relative angular momentum between daughters
-  BlattWeisskopf BlattWeisskopf_;
-  SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
-  Amp FreeAmplitude_;
+    Daughters Daughters_;
+    unsigned char L_; /// relative angular momentum between daughters
+    BlattWeisskopf BlattWeisskopf_;
+    SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
+    Amp FreeAmplitude_;
 };
 
 }

@@ -21,10 +21,11 @@
 
 namespace yap {
 
-class DataPoint {
+class DataPoint
+{
 public:
-  DataPoint();
-  ~DataPoint();
+    DataPoint();
+    ~DataPoint();
 
 
 };

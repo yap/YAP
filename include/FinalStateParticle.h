@@ -25,16 +25,17 @@ namespace yap {
 
 /// \ingroup Particle
 
-class FinalStateParticle : public Particle {
+class FinalStateParticle : public Particle
+{
 public:
-  FinalStateParticle();
-  ~FinalStateParticle();
+    FinalStateParticle();
+    ~FinalStateParticle();
 
-  virtual Amp amplitude(DataPoint& d) {return Amp(1.);}
-  //virtual bool consistent() const {return true;}
+    virtual Amp amplitude(DataPoint& d) {return Amp(1.);}
+    //virtual bool consistent() const {return true;}
 
 private:
-  int PDGNumber_; /// PDG code of the particle
+    int PDGNumber_; /// PDG code of the particle
 };
 
 }

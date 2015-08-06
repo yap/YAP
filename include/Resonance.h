@@ -28,21 +28,22 @@ namespace yap {
 
 /// \ingroup Particle
 
-class Resonance : public Particle {
+class Resonance : public Particle
+{
 public:
-  Resonance();
-  ~Resonance();
+    Resonance();
+    ~Resonance();
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool consistent() const;
 
-  const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
-  unsigned int nChannels() const {return Channels_.size();}
+    const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
+    unsigned int nChannels() const {return Channels_.size();}
 
 private:
-  MassShape MassShape_;
-  std::vector<DecayChannel*> Channels_; /// DecayChannel can be shared between several Resonances
-  double RadialSize_;
+    MassShape MassShape_;
+    std::vector<DecayChannel*> Channels_; /// DecayChannel can be shared between several Resonances
+    double RadialSize_;
 };
 
 }

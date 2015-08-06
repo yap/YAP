@@ -25,22 +25,23 @@
 
 namespace yap {
 
-class SpinAmplitude : public DataAccessor {
+class SpinAmplitude : public DataAccessor
+{
 public:
-  SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-  : InitialQuantumNumbers_(initial), FinalQuantumNumbers_({final1, final2}) {;}
-  ~SpinAmplitude();
+    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
+        : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {final1, final2}) {;}
+    ~SpinAmplitude();
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool consistent() const {return true;}
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool consistent() const {return true;}
 
-  const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
-  const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}
-  const QuantumNumbers& finalQuantumNumbersB() const {return FinalQuantumNumbers_[1];}
+    const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
+    const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}
+    const QuantumNumbers& finalQuantumNumbersB() const {return FinalQuantumNumbers_[1];}
 
 private:
-  QuantumNumbers InitialQuantumNumbers_;
-  std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
+    QuantumNumbers InitialQuantumNumbers_;
+    std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
 };
 

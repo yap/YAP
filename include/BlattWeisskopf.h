@@ -23,13 +23,14 @@
 
 namespace yap {
 
-class BlattWeisskopf : public DataAccessor {
+class BlattWeisskopf : public DataAccessor
+{
 public:
-  BlattWeisskopf();
-  ~BlattWeisskopf();
+    BlattWeisskopf();
+    ~BlattWeisskopf();
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool consistent() const;
 
 };
 

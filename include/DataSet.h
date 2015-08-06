@@ -23,13 +23,14 @@
 
 namespace yap {
 
-class DataSet {
+class DataSet
+{
 public:
-  DataSet();
-  ~DataSet();
+    DataSet();
+    ~DataSet();
 
 private:
-  std::vector<DataPoint> DataPoints_;
+    std::vector<DataPoint> DataPoints_;
 };
 
 }
