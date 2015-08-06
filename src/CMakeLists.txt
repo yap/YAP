@@ -4,7 +4,11 @@ set(INCLUDE_DIRECTORIES
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
+  BlattWeisskopf.cxx
+  DataAccessor.cxx
   DataPoint.cxx
+  DecayChannel.cxx
+  Resonance.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}")# "${ROOT_LIBS}")

@@ -24,16 +24,25 @@
 #include "BlattWeisskopf.h"
 #include "Particle.h"
 #include "SpinAmplitude.h"
+#include <tuple>
 
 namespace yap {
 
+typedef std::tuple<Particle&, Particle&> Daughters;
+
 class DecayChannel : public DataAccessor {
 public:
-  DecayChannel();
-  ~DecayChannel();
+  DecayChannel(Particle& daughterA, Particle& daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
+  ~DecayChannel() {;}
+
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
+
+  const Daughters& getDaughters() const {return daughters_;}
+  const Particle& getDaughter(unsigned int i);
 
 private:
-  std::array<Particle, 2> daughters_;
+  Daughters daughters_;
   unsigned int L_; /// relative angular momentum between daughters
   BlattWeisskopf blattWeisskopf_;
   SpinAmplitude& spinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels

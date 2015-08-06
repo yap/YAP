@@ -19,7 +19,10 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
-#include "Particle.h"
+#include "DecayChannel.h"
+#include "FinalStateParticle.h"
+#include "MassShape.h"
+#include <vector>
 
 namespace yap {
 
@@ -29,6 +32,11 @@ class Resonance : public Particle {
 public:
   Resonance();
   ~Resonance();
+
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
+
+  const std::vector<FinalStateParticle&> getFinalStateParticles(unsigned int channel = 0) const;
 
 private:
   MassShape massShape_;

@@ -35,6 +35,9 @@ public:
   Particle();
   ~Particle();
 
+  virtual Amp amplitude(DataPoint& d) = 0;
+  virtual bool checkConsistency() const = 0;
+
 protected:
   QuantumNumbers quantumNumbers_;
   double mass_;

@@ -28,6 +28,9 @@ public:
   MassShape();
   ~MassShape();
 
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
+
 
 };
 

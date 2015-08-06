@@ -29,8 +29,8 @@ public:
   DataAccessor();
   virtual ~DataAccessor() {}
 
-  Amp amplitude(DataPoint& d) = 0;
-  bool checkConsistency() = 0;
+  virtual Amp amplitude(DataPoint& d) = 0;
+  virtual bool checkConsistency() const = 0;
 
   unsigned int index() const {return index_;}
 

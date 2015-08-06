@@ -21,13 +21,18 @@
 
 #include "DataAccessor.h"
 #include "QuantumNumbers.h"
+#include <array>
 
 namespace yap {
 
 class SpinAmplitude : public DataAccessor {
 public:
-  SpinAmplitude();
+  SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
+  : initialQuantumNumbers_(initial), finalQuantumNumbers_({final1, final2}) {;}
   ~SpinAmplitude();
+
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
 
 private:
   QuantumNumbers initialQuantumNumbers_;

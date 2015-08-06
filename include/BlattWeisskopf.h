@@ -28,6 +28,8 @@ public:
   BlattWeisskopf();
   ~BlattWeisskopf();
 
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
 
 };
 

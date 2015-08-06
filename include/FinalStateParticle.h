@@ -30,6 +30,9 @@ public:
   FinalStateParticle();
   ~FinalStateParticle();
 
+  virtual Amp amplitude(DataPoint& d);
+  virtual bool checkConsistency() const;
+
 private:
   int pdgNumber_; /// PDG code of the particle
 };
