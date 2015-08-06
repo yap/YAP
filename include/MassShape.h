@@ -37,6 +37,7 @@ class MassShape : public DataAccessor
 {
 public:
 
+    <<< <<< < HEAD
     /// \name Constructors & destructor
     /// @{
 

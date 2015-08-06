@@ -9,7 +9,7 @@ Amp BlattWeisskopf::amplitude(DataPoint& d)
 }
 
 //-------------------------
-bool BlattWeisskopf::checkConsistency() const
+bool BlattWeisskopf::consistent() const
 {
     return true;
 }

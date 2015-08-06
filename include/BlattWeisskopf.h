@@ -30,7 +30,7 @@ public:
     ~BlattWeisskopf();
 
     virtual Amp amplitude(DataPoint& d);
-    virtual bool checkConsistency() const;
+    virtual bool consistent() const;
 
 };
 

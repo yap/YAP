@@ -29,15 +29,19 @@ class SpinAmplitude : public DataAccessor
 {
 public:
     SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-        : initialQuantumNumbers_(initial), finalQuantumNumbers_( {final1, final2}) {;}
+        : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {final1, final2}) {;}
     ~SpinAmplitude();
 
     virtual Amp amplitude(DataPoint& d);
-    virtual bool checkConsistency() const;
+    virtual bool consistent() const {return true;}
+
+    const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
+    const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}
+    const QuantumNumbers& finalQuantumNumbersB() const {return FinalQuantumNumbers_[1];}
 
 private:
-    QuantumNumbers initialQuantumNumbers_;
-    std::array<QuantumNumbers, 2> finalQuantumNumbers_;
+    QuantumNumbers InitialQuantumNumbers_;
+    std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
 };
 

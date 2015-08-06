@@ -37,12 +37,14 @@ public:
     ~Particle();
 
     virtual Amp amplitude(DataPoint& d) = 0;
-    virtual bool checkConsistency() const = 0;
+    virtual bool consistent() const;
+
+    const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
 
 protected:
-    QuantumNumbers quantumNumbers_;
-    double mass_;
-    std::string name_;
+    QuantumNumbers QuantumNumbers_;
+    double Mass_;
+    std::string Name_;
 };
 
 }

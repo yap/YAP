@@ -30,7 +30,7 @@ public:
     ~DataSet();
 
 private:
-    std::vector<DataPoint> dataPoints_;
+    std::vector<DataPoint> DataPoints_;
 };
 
 }

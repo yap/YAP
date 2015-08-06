@@ -28,26 +28,31 @@
 
 namespace yap {
 
-typedef std::tuple<Particle&, Particle&> Daughters;
+typedef std::array<Particle*, 2> Daughters;
 
 class DecayChannel : public DataAccessor
 {
 public:
-    DecayChannel(Particle& daughterA, Particle& daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
+    DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
     ~DecayChannel() {;}
 
     virtual Amp amplitude(DataPoint& d);
-    virtual bool checkConsistency() const;
+    virtual bool consistent() const;
 
-    const Daughters& getDaughters() const {return daughters_;}
-    const Particle& getDaughter(unsigned int i);
+    const Daughters& daughters() const {return Daughters_;}
+    const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}
+    const Particle* daughterA() const {return Daughters_[0];}
+    const Particle* daughterB() const {return Daughters_[1];}
+
+    unsigned char l() const {return L_;}
+    const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
 
 private:
-    Daughters daughters_;
-    unsigned int L_; /// relative angular momentum between daughters
-    BlattWeisskopf blattWeisskopf_;
-    SpinAmplitude& spinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
-    Amp freeAmplitude_;
+    Daughters Daughters_;
+    unsigned char L_; /// relative angular momentum between daughters
+    BlattWeisskopf BlattWeisskopf_;
+    SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
+    Amp FreeAmplitude_;
 };
 
 }

@@ -35,14 +35,15 @@ public:
     ~Resonance();
 
     virtual Amp amplitude(DataPoint& d);
-    virtual bool checkConsistency() const;
+    virtual bool consistent() const;
 
-    const std::vector<FinalStateParticle&> getFinalStateParticles(unsigned int channel = 0) const;
+    const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
+    unsigned int nChannels() const {return Channels_.size();}
 
 private:
-    MassShape massShape_;
-    std::vector<DecayChannel&> channels_; /// DecayChannel can be shared between several Resonances
-    double radialSize_;
+    MassShape MassShape_;
+    std::vector<DecayChannel*> Channels_; /// DecayChannel can be shared between several Resonances
+    double RadialSize_;
 };
 
 }
