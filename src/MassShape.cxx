@@ -1,5 +1,9 @@
 #include "MassShape.cxx"
 
+#include "Constants.h"
+
+namespace yap {
+
 //-------------------------
 MassShape::MassShape() :
     DataAccessor()
@@ -21,7 +25,7 @@ MassShape::MassShape(MassShape&& other) :
 }
 
 //-------------------------
-MassShape& MassShape::operator=(const MassShape& rhs)
+MassShape::MassShape(const MassShape& rhs)
 {
     MassShape temp(rhs);
     std::swap(*this, temp);
@@ -34,4 +38,12 @@ MassShape& MassShape::operator=(MassShape&& rhs)
     DataAccessor::operator=(std::move(rhs));
     Parameters_ = std::move(rhs.Parameters_);
     return *this;
+}
+
+//-------------------------
+Amp MassShape::amplitude(DataPoint& d)
+{
+    return Complex_0;
+}
+
 }

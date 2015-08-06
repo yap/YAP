@@ -21,6 +21,7 @@
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
+#include "Amp.h"
 #include "DataAccessor.h"
 
 #include <vector>
@@ -39,7 +40,7 @@ class MassShape : public DataAccessor
 {
 public:
 
-    /// \name Constructors & destructor
+    /// \name Constructors, destructor, & operators
     /// @{
 
     /// Default constructor
@@ -53,11 +54,6 @@ public:
 
     /// Destructor
     virtual ~MassShape();
-
-    /// @}
-
-    /// \name Operators
-    /// @{
 
     /// Copy assignment operator
     MassShape& operator=(const MassShape& rhs);
@@ -94,7 +90,8 @@ public:
     /// @{
 
     /// Check consistency of object
-    virtual bool consistent() const;
+    virtual bool consistent() const
+    { return false; }
 
     /// @}
 
