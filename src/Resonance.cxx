@@ -9,6 +9,11 @@ bool Resonance::consistent() const
     bool consistent = true;
     consistent &= MassShape_.consistent();
 
+    if (RadialSize_ <= 0.) {
+        LOG(ERROR) << "Resonance::consistent() - Radial size not positive.";
+        return false;
+    }
+
     if (Channels_.empty()) {
         LOG(ERROR) << "Resonance::consistent() - no channels specified.";
         return false;
@@ -43,24 +48,6 @@ bool Resonance::consistent() const
         }
     }
 
-    // check angular momentum laws
-    for (DecayChannel c : Channels_) {
-        unsigned char l = c.l();
-        unsigned char L_A = c.daughterA()->quantumNumbers().J();
-        unsigned char L_B = c.daughterB()->quantumNumbers().J();
-
-        if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
-            LOG(ERROR) << "Resonance::consistent() - spins don't match.";
-            return false;
-        }
-
-        // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-        if (c.spinAmplitude().initialQuantumNumbers() != this->quantumNumbers()) {
-            LOG(ERROR) << "Resonance::consistent() - quantum numbers of resonance and channel's SpinAmplitude don't match.";
-            return false;
-        }
-
-    }
 
     return consistent;
 }
