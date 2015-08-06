@@ -1,0 +1,14 @@
+indent-switches
+# no .orig backup files
+suffix=none
+
+style=kr
+
+align-pointer=type
+align-reference=type
+indent=spaces=4
+keep-one-line-blocks
+pad-header
+pad-oper
+indent-switches
+attach-namespaces
