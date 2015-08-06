@@ -44,7 +44,7 @@ public:
 
 protected:
     QuantumNumbers QuantumNumbers_;
-    double Mass_;
+    double Mass_; /// mass in GeV
     std::string Name_;
 };
 

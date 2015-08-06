@@ -28,11 +28,12 @@ namespace yap {
 class QuantumNumbers
 {
 public:
-    QuantumNumbers(unsigned char J, char P, char C, char I, char G) :
-        J_(J), P_(P), C_(C), I_(I), G_(G) {;}
+    QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G) :
+        twoJ_(twoJ), P_(P), C_(C), I_(I), G_(G) {;}
     ~QuantumNumbers();
 
-    unsigned char J() const {return J_;}
+    unsigned char twoJ() const {return twoJ_;}
+    double J() const {return twoJ_ * 0.5;}
     char P() const {return P_;}
     char C() const {return C_;}
     char I() const {return I_;}
@@ -45,7 +46,7 @@ public:
     {return !(lhs == rhs);}
 
 private:
-    unsigned char J_; /// Spin
+    unsigned char twoJ_; /// Spin * 2
     char P_; /// Parity
     char C_; /// C-parity
     char I_; /// Isospin-parity
