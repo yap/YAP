@@ -27,8 +27,15 @@ namespace yap {
 
 class QuantumNumbers {
 public:
-  QuantumNumbers();
+  QuantumNumbers(unsigned char J, char P, char C, char I, char G) :
+    J_(J), P_(P), C_(C), I_(I), G_(G) {;}
   ~QuantumNumbers();
+
+  unsigned char J() const {return J_;}
+  char P() const {return P_;}
+  char C() const {return C_;}
+  char I() const {return I_;}
+  char G() const {return G_;}
 
   //! Checks equality of QuantumNumbers
   friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);

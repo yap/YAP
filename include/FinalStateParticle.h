@@ -30,8 +30,8 @@ public:
   FinalStateParticle();
   ~FinalStateParticle();
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const;
+  virtual Amp amplitude(DataPoint& d) {return Amp(1.);}
+  virtual bool checkConsistency() const {return true;}
 
 private:
   int PDGNumber_; /// PDG code of the particle

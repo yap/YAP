@@ -19,6 +19,19 @@ Amp DecayChannel::amplitude(DataPoint& d) {
 
 //-------------------------
 bool DecayChannel::checkConsistency() const {
+
+  // check if QuantumNumbers of SpinAmplitude objects match with Particles
+  if (this->spinAmplitude().finalQuantumNumbersA() != this->daughterA()->quantumNumbers()) {
+    LOG(ERROR) << "DecayChannel::checkConsistency() - quantum numbers of daughterA and SpinResonance don't match.";
+    return false;
+  }
+
+  if (this->spinAmplitude().finalQuantumNumbersB() != this->daughterB()->quantumNumbers()) {
+    LOG(ERROR) << "DecayChannel::checkConsistency() - quantum numbers of daughterB and SpinResonance don't match.";
+    return false;
+  }
+
+
   return true;
 }
 

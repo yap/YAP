@@ -38,12 +38,17 @@ public:
   virtual Amp amplitude(DataPoint& d);
   virtual bool checkConsistency() const;
 
-  const Daughters& getDaughters() const {return Daughters_;}
-  const Particle* getDaughter(unsigned int i) {return Daughters_.at(i);}
+  const Daughters& daughters() const {return Daughters_;}
+  const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}
+  const Particle* daughterA() const {return Daughters_[0];}
+  const Particle* daughterB() const {return Daughters_[1];}
+
+  unsigned char l() const {return L_;}
+  const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
 
 private:
   Daughters Daughters_;
-  unsigned int L_; /// relative angular momentum between daughters
+  unsigned char L_; /// relative angular momentum between daughters
   BlattWeisskopf BlattWeisskopf_;
   SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
   Amp FreeAmplitude_;

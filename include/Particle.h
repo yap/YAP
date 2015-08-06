@@ -38,6 +38,8 @@ public:
   virtual Amp amplitude(DataPoint& d) = 0;
   virtual bool checkConsistency() const = 0;
 
+  const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
+
 protected:
   QuantumNumbers QuantumNumbers_;
   double Mass_;

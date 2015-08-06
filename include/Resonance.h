@@ -36,7 +36,8 @@ public:
   virtual Amp amplitude(DataPoint& d);
   virtual bool checkConsistency() const;
 
-  const std::vector<const FinalStateParticle*> getFinalStateParticles(unsigned int channel = 0) const;
+  const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
+  unsigned int nChannels() const {return Channels_.size();}
 
 private:
   MassShape MassShape_;
