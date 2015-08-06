@@ -23,6 +23,8 @@
 
 #include "DataAccessor.h"
 
+#include <vector>
+
 namespace yap {
 
 /// \class MassShape
