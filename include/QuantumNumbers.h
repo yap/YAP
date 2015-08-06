@@ -25,23 +25,24 @@ namespace yap {
 /// \brief Quantum numbers of a Particle
 /// \author Johannes Rauch
 
-class QuantumNumbers {
+class QuantumNumbers
+{
 public:
-  QuantumNumbers();
-  ~QuantumNumbers();
+    QuantumNumbers();
+    ~QuantumNumbers();
 
-  //! Checks equality of QuantumNumbers
-  friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
-  //! returns NOT ==
-  friend bool operator!= (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
-    {return !(lhs==rhs);}
+    //! Checks equality of QuantumNumbers
+    friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
+    //! returns NOT ==
+    friend bool operator!= (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+    {return !(lhs == rhs);}
 
 private:
-  unsigned char J_; /// Spin
-  char P_; /// Parity
-  char C_; /// C-parity
-  char I_; /// Isospin-parity
-  char G_; /// G-parity
+    unsigned char J_; /// Spin
+    char P_; /// Parity
+    char C_; /// C-parity
+    char I_; /// Isospin-parity
+    char G_; /// G-parity
 };
 
 }

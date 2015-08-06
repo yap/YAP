@@ -24,21 +24,22 @@
 
 namespace yap {
 
-class DataAccessor {
+class DataAccessor
+{
 public:
-  DataAccessor();
-  virtual ~DataAccessor() {}
+    DataAccessor();
+    virtual ~DataAccessor() {}
 
-  virtual Amp amplitude(DataPoint& d) = 0;
-  virtual bool checkConsistency() const = 0;
+    virtual Amp amplitude(DataPoint& d) = 0;
+    virtual bool checkConsistency() const = 0;
 
-  unsigned int index() const {return index_;}
+    unsigned int index() const {return index_;}
 
 protected:
-  bool recalculate_; ///
+    bool recalculate_; ///
 
 private:
-  unsigned int index_; /// storage index used in DataPoint. Must be unique.
+    unsigned int index_; /// storage index used in DataPoint. Must be unique.
 };
 
 }

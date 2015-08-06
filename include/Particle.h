@@ -30,18 +30,19 @@ namespace yap {
 
 /// \defgroup Particle Particle
 
-class Particle : public DataAccessor {
+class Particle : public DataAccessor
+{
 public:
-  Particle();
-  ~Particle();
+    Particle();
+    ~Particle();
 
-  virtual Amp amplitude(DataPoint& d) = 0;
-  virtual bool checkConsistency() const = 0;
+    virtual Amp amplitude(DataPoint& d) = 0;
+    virtual bool checkConsistency() const = 0;
 
 protected:
-  QuantumNumbers quantumNumbers_;
-  double mass_;
-  std::string name_;
+    QuantumNumbers quantumNumbers_;
+    double mass_;
+    std::string name_;
 };
 
 }

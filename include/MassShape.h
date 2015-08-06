@@ -23,13 +23,14 @@
 
 namespace yap {
 
-class MassShape : public DataAccessor {
+class MassShape : public DataAccessor
+{
 public:
-  MassShape();
-  ~MassShape();
+    MassShape();
+    ~MassShape();
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const;
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool checkConsistency() const;
 
 
 };

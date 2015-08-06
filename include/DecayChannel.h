@@ -30,23 +30,24 @@ namespace yap {
 
 typedef std::tuple<Particle&, Particle&> Daughters;
 
-class DecayChannel : public DataAccessor {
+class DecayChannel : public DataAccessor
+{
 public:
-  DecayChannel(Particle& daughterA, Particle& daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
-  ~DecayChannel() {;}
+    DecayChannel(Particle& daughterA, Particle& daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
+    ~DecayChannel() {;}
 
-  virtual Amp amplitude(DataPoint& d);
-  virtual bool checkConsistency() const;
+    virtual Amp amplitude(DataPoint& d);
+    virtual bool checkConsistency() const;
 
-  const Daughters& getDaughters() const {return daughters_;}
-  const Particle& getDaughter(unsigned int i);
+    const Daughters& getDaughters() const {return daughters_;}
+    const Particle& getDaughter(unsigned int i);
 
 private:
-  Daughters daughters_;
-  unsigned int L_; /// relative angular momentum between daughters
-  BlattWeisskopf blattWeisskopf_;
-  SpinAmplitude& spinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
-  Amp freeAmplitude_;
+    Daughters daughters_;
+    unsigned int L_; /// relative angular momentum between daughters
+    BlattWeisskopf blattWeisskopf_;
+    SpinAmplitude& spinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
+    Amp freeAmplitude_;
 };
 
 }
