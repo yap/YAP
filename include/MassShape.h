@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
@@ -23,15 +25,43 @@
 
 namespace yap {
 
+    /// \class MassShape
+    /// \brief Base class for all mass shapes
+    /// \author Johannes Rauch, Daniel Greenwald
+    /// \defgroup MassShapes Mass Shapes
+
 class MassShape : public DataAccessor
 {
 public:
-    MassShape();
-    ~MassShape();
 
+    /// \name Constructors & destructor
+    /// @{
+
+    /// Default constructor
+    MassShape();
+
+    /// Destructor
+    virtual ~MassShape();
+
+    /// @}
+
+    /// \name Amplitude related
+    /// @{
+
+    /// Calculate MassShape amplitude
+    /// \return amplitude evaluated at DataPoint
+    /// \param d DataPoint to evaluate on
     virtual Amp amplitude(DataPoint& d);
+
+    /// @}
+
+    /// \name Bookkeeping related
+    /// @{
+
+    /// Check consistency of object
     virtual bool checkConsistency() const;
 
+    /// @}
 
 };
 
