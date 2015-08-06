@@ -39,9 +39,9 @@ public:
   virtual bool checkConsistency() const = 0;
 
 protected:
-  QuantumNumbers quantumNumbers_;
-  double mass_;
-  std::string name_;
+  QuantumNumbers QuantumNumbers_;
+  double Mass_;
+  std::string Name_;
 };
 
 }

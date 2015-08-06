@@ -4,12 +4,13 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor() :
-    recalculate_(true),
-    index_(0)
+    Recalculate_(true),
+    Index_(0)
 {
   // assign a running index to this DataAccessor
+  // TODO: come up with something smarter
   static unsigned int index(0);
-  index_ = index++;
+  Index_ = index++;
 }
 
 }

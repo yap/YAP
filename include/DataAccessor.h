@@ -32,13 +32,13 @@ public:
   virtual Amp amplitude(DataPoint& d) = 0;
   virtual bool checkConsistency() const = 0;
 
-  unsigned int index() const {return index_;}
+  unsigned int index() const {return Index_;}
 
 protected:
-  bool recalculate_; ///
+  bool Recalculate_; ///
 
 private:
-  unsigned int index_; /// storage index used in DataPoint. Must be unique.
+  unsigned int Index_; /// storage index used in DataPoint. Must be unique.
 };
 
 }

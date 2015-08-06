@@ -28,15 +28,15 @@ namespace yap {
 class SpinAmplitude : public DataAccessor {
 public:
   SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-  : initialQuantumNumbers_(initial), finalQuantumNumbers_({final1, final2}) {;}
+  : InitialQuantumNumbers_(initial), FinalQuantumNumbers_({final1, final2}) {;}
   ~SpinAmplitude();
 
   virtual Amp amplitude(DataPoint& d);
   virtual bool checkConsistency() const;
 
 private:
-  QuantumNumbers initialQuantumNumbers_;
-  std::array<QuantumNumbers, 2> finalQuantumNumbers_;
+  QuantumNumbers InitialQuantumNumbers_;
+  std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
 };
 

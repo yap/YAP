@@ -1,14 +1,15 @@
 #include "DecayChannel.h"
+#include "logging.h"
 
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(Particle& daughterA, Particle& daughterB, unsigned int L, SpinAmplitude& spinAmplitude)
-:   L_(L), spinAmplitude_(spinAmplitude),
-    freeAmplitude_(0)
+DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude)
+:   Daughters_({daughterA, daughterB}),
+    L_(L), SpinAmplitude_(spinAmplitude),
+    FreeAmplitude_(0)
 {
-  std::get<0>(daughters_) = daughterA;
-  std::get<1>(daughters_) = daughterB;
+  ;
 }
 
 //-------------------------
@@ -19,19 +20,6 @@ Amp DecayChannel::amplitude(DataPoint& d) {
 //-------------------------
 bool DecayChannel::checkConsistency() const {
   return true;
-}
-
-//-------------------------
-const Particle& getDaughter(unsigned int i) {
-  switch (i) {
-  case 0:
-    return std::get<0>(daughters_);
-  case 1:
-    return std::get<1>(daughters_);
-  default:
-
-  }
-
 }
 
 }

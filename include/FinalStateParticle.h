@@ -34,7 +34,7 @@ public:
   virtual bool checkConsistency() const;
 
 private:
-  int pdgNumber_; /// PDG code of the particle
+  int PDGNumber_; /// PDG code of the particle
 };
 
 }
