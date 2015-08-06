@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
@@ -24,11 +26,33 @@
 
 namespace yap {
 
+/// \name DataAccessor
+/// \brief Base class for all objects accessing DataPoint's
+/// \author Johannes Rauch, Daniel Greenwald
+
 class DataAccessor
 {
 public:
+
+    /// \name Constructors, destructor, & operators
+    /// @{
+
+    /// Default constructor
     DataAccessor();
+
+    /// Copy constructor
+    DataAccessor(const DataAccessor& other);
+
+    /// Move constructor
+    DataAccessor(DataAccessor&& other);
+
+    /// Destructor
     virtual ~DataAccessor() {}
+
+    /// Move assignment operator
+    DataAccessor& operator=(DataAccessor&& rhs);
+
+    /// @}
 
     virtual Amp amplitude(DataPoint& d) = 0;
     virtual bool consistent() const = 0;
