@@ -40,6 +40,7 @@ public:
     virtual bool consistent() const;
 
     const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
+    double mass() const {return Mass_;}
 
 protected:
     QuantumNumbers QuantumNumbers_;
