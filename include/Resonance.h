@@ -23,12 +23,17 @@
 
 namespace yap {
 
+/// \ingroup Particle
+
 class Resonance : public Particle {
 public:
   Resonance();
   ~Resonance();
 
-
+private:
+  MassShape massShape_;
+  std::vector<DecayChannel&> channels_; /// DecayChannel can be shared between several Resonances
+  double radialSize_;
 };
 
 }

@@ -20,6 +20,7 @@
 #define yap_SpinAmplitude_h
 
 #include "DataAccessor.h"
+#include "QuantumNumbers.h"
 
 namespace yap {
 
@@ -28,6 +29,9 @@ public:
   SpinAmplitude();
   ~SpinAmplitude();
 
+private:
+  QuantumNumbers initialQuantumNumbers_;
+  std::array<QuantumNumbers, 2> finalQuantumNumbers_;
 
 };
 

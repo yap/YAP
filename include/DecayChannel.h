@@ -21,6 +21,10 @@
 
 #include "DataAccessor.h"
 
+#include "BlattWeisskopf.h"
+#include "Particle.h"
+#include "SpinAmplitude.h"
+
 namespace yap {
 
 class DecayChannel : public DataAccessor {
@@ -28,7 +32,12 @@ public:
   DecayChannel();
   ~DecayChannel();
 
-
+private:
+  std::array<Particle, 2> daughters_;
+  unsigned int L_; /// relative angular momentum between daughters
+  BlattWeisskopf blattWeisskopf_;
+  SpinAmplitude& spinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
+  Amp freeAmplitude_;
 };
 
 }

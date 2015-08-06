@@ -27,10 +27,18 @@ namespace yap {
 class DataAccessor {
 public:
   DataAccessor();
-  ~DataAccessor();
+  virtual ~DataAccessor() {}
 
-  yap::Amp amplitude(yap::DataPoint& d) = 0;
+  Amp amplitude(DataPoint& d) = 0;
+  bool checkConsistency() = 0;
 
+  unsigned int index() const {return index_;}
+
+protected:
+  bool recalculate_; ///
+
+private:
+  unsigned int index_; /// storage index used in DataPoint. Must be unique.
 };
 
 }

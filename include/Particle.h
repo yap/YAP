@@ -20,15 +20,25 @@
 #define yap_Particle_h
 
 #include "DataAccessor.h"
+#include "QuantumNumbers.h"
 
 namespace yap {
+
+/// \class Particle
+/// \brief Particle base class
+/// \author Johannes Rauch
+
+/// \defgroup Particle Particle
 
 class Particle : public DataAccessor {
 public:
   Particle();
   ~Particle();
 
-
+protected:
+  QuantumNumbers quantumNumbers_;
+  double mass_;
+  std::string name_;
 };
 
 }

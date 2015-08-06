@@ -23,12 +23,15 @@
 
 namespace yap {
 
+/// \ingroup Particle
+
 class FinalStateParticle : public Particle {
 public:
   FinalStateParticle();
   ~FinalStateParticle();
 
-
+private:
+  int pdgNumber_; /// PDG code of the particle
 };
 
 }
