@@ -6,14 +6,14 @@ MassShape::MassShape()
 }
 
 //-------------------------
-MassShape::MassShape(const MassShape& other)
-    : Parameters_(other.Parameters_)
+MassShape::MassShape(const MassShape& other) :
+    Parameters_(other.Parameters_)
 {
 }
 
 //-------------------------
-MassShape::MassShape(MassShape&& other)
-    : Parameters_(std::move(other.Parameters_))
+MassShape::MassShape(MassShape&& other) :
+    Parameters_(std::move(other.Parameters_))
 {
 }
 

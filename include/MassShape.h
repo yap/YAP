@@ -92,7 +92,7 @@ public:
     /// @{
 
     /// Check consistency of object
-    virtual bool checkConsistency() const;
+    virtual bool consistent() const;
 
     /// @}
 
