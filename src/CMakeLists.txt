@@ -5,9 +5,11 @@ include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
   BlattWeisskopf.cxx
+  BreitWigner.cxx
   DataAccessor.cxx
   DataPoint.cxx
   DecayChannel.cxx
+  MassShape.cxx
   Particle.cxx
   Resonance.cxx
 )
