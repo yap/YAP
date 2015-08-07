@@ -49,7 +49,7 @@ private:
     unsigned char twoJ_; /// Spin * 2
     char P_; /// Parity
     char C_; /// C-parity
-    char I_; /// Isospin-parity
+    char I_; /// Isospin
     char G_; /// G-parity
 };
 

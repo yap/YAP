@@ -7,6 +7,8 @@ namespace yap {
 bool Resonance::consistent() const
 {
     bool consistent = true;
+
+    consistent &= Particle::consistent();
     consistent &= MassShape_.consistent();
 
     if (RadialSize_ <= 0.) {

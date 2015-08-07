@@ -39,5 +39,5 @@ set( CMAKE_CXX_COMPILER g++)
 message(${CMAKE_CXX_COMPILER})
 
 add_subdirectory(src)
-#add_subdirectory(programs)
+add_subdirectory(programs)
 

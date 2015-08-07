@@ -11,8 +11,9 @@ set(YAP_SOURCES
   DecayChannel.cxx
   MassShape.cxx
   Particle.cxx
+  ParticleFactory.cxx
   Resonance.cxx
 )
 
-make_static_library(YAP "${YAP_SOURCES}")# "${ROOT_LIBS}")
+make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")
 #make_shared_library(YAP "${YAP_SOURCES}")# "${ROOT_LIBS}")

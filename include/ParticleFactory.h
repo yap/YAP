@@ -16,29 +16,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_FinalStateParticle_h
-#define yap_FinalStateParticle_h
+#ifndef yap_ParticleFactory_h
+#define yap_ParticleFactory_h
 
-#include "Particle.h"
+#include "Resonance.h"
+#include "QuantumNumbers.h"
+
+#include <TDatabasePDG.h>
 
 namespace yap {
 
-/// \ingroup Particle
-
-class FinalStateParticle : public Particle
+class ParticleFactory
 {
 public:
-    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg) :
-      Particle(q, mass, name), PDGCode_(pdg) {;}
-    ~FinalStateParticle() {;}
+    ParticleFactory() {;}
+    ~ParticleFactory() {;}
 
-    virtual Amp amplitude(DataPoint& d) {return Amp(1.);}
-    //virtual bool consistent() const {return true;}
+    Particle* createFinalStateParticle(int PDG);
+    Particle* createResonance(int PDG);
 
-    int pdgCode() const {return PDGCode_;}
+    QuantumNumbers createQuantumNumbers(int PDG);
 
 private:
-    int PDGCode_; /// PDG code of the particle
+
 };
 
 }

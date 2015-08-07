@@ -33,8 +33,10 @@ namespace yap {
 class Particle : public DataAccessor
 {
 public:
-    Particle();
-    ~Particle();
+    Particle(const QuantumNumbers& q, double mass, std::string name) :
+      QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
+
+    ~Particle() {;}
 
     virtual Amp amplitude(DataPoint& d) = 0;
     virtual bool consistent() const;
