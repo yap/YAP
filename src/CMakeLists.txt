@@ -11,6 +11,7 @@ set(YAP_SOURCES
   DecayChannel.cxx
   MassShape.cxx
   Particle.cxx
+  ParticleCombination.cxx
   ParticleFactory.cxx
   Resonance.cxx
 )
