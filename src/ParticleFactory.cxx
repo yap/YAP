@@ -1,6 +1,7 @@
 #include "ParticleFactory.h"
-
 #include "FinalStateParticle.h"
+
+#include <TDatabasePDG.h>
 #include "logging.h"
 
 namespace yap {

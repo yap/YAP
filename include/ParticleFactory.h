@@ -22,8 +22,6 @@
 #include "Resonance.h"
 #include "QuantumNumbers.h"
 
-#include <TDatabasePDG.h>
-
 namespace yap {
 
 class ParticleFactory

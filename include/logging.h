@@ -3,6 +3,7 @@
 
 #include "easylogging++.h"
 
-INITIALIZE_EASYLOGGINGPP
+/// you have to put the following line in your program
+// INITIALIZE_EASYLOGGINGPP
 
 #endif
