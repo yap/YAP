@@ -43,14 +43,9 @@ public:
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
 
-    /// Move constructor
-    DataAccessor(DataAccessor&& other);
-
-    /// Destructor
-    virtual ~DataAccessor() {}
-
-    /// Move assignment operator
-    DataAccessor& operator=(DataAccessor&& rhs);
+    // Defaulted move constructor
+    // Defaulted destructor
+    // Defaulted move assignment operator
 
     /// @}
 
@@ -63,7 +58,9 @@ protected:
     bool Recalculate_; ///
 
 private:
-    unsigned int Index_; /// storage index used in DataPoint. Must be unique.
+    unsigned Index_; /// storage index used in DataPoint. Must be unique.
+
+    static unsigned GlobalIndex;
 };
 
 }
