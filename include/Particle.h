@@ -34,7 +34,7 @@ class Particle : public DataAccessor
 {
 public:
     Particle(const QuantumNumbers& q, double mass, std::string name) :
-      QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
+        QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
 
     ~Particle() {;}
 

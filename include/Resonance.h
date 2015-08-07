@@ -31,14 +31,17 @@ namespace yap {
 class Resonance : public Particle
 {
 public:
-    Resonance();
-    ~Resonance();
+    Resonance(const QuantumNumbers& q, double mass, std::string name, const MassShape& massShape, double radialSize) :
+        Particle(q, mass, name), MassShape_(massShape), RadialSize_(radialSize) {;}
+    ~Resonance() {;}
 
     virtual Amp amplitude(DataPoint& d);
     virtual bool consistent() const;
 
     const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
     unsigned int nChannels() const {return Channels_.size();}
+
+    void addChannel(const DecayChannel& c) {Channels_.push_back(c);}
 
 private:
     MassShape MassShape_;

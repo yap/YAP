@@ -29,7 +29,7 @@ class FinalStateParticle : public Particle
 {
 public:
     FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg) :
-      Particle(q, mass, name), PDGCode_(pdg) {;}
+        Particle(q, mass, name), PDGCode_(pdg) {;}
     ~FinalStateParticle() {;}
 
     virtual Amp amplitude(DataPoint& d) {return Amp(1.);}
