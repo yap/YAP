@@ -43,7 +43,7 @@ public:
     FinalStateParticle* createFinalStateParticle(int PDG);
 
     /// Create a FinalStateParticle from a PDG code and a MassShape
-    Resonance* createResonance(int PDG, double radialSize, const MassShape& massShape);
+    Resonance* createResonance(int PDG, double radialSize, MassShape* massShape);
 
     /// Create a FinalStateParticle from a PDG code. Use BreitWigner as MassShape
     Resonance* createResonanceBreitWigner(int PDG, double radialSize);

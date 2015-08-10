@@ -30,7 +30,7 @@
 namespace yap {
 
 /// \class MassShape
-/// \brief Base class for all mass shapes
+/// \brief Abstract base class for all mass shapes
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
 ///
@@ -45,7 +45,8 @@ public:
     /// @{
 
     /// Default constructor
-    MassShape();
+    /// \param nParameters Length of Parameters_ vector
+    MassShape(unsigned nParameters = 0);
 
     /// @}
 
@@ -69,12 +70,12 @@ public:
     /// Calculate MassShape amplitude from DataPoint
     /// \return amplitude evaluated on DataPoint
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d) override = 0;
 
     /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp amplitude(double s);
+    virtual Amp amplitude(double s) = 0;
 
     /// @}
 
@@ -82,8 +83,7 @@ public:
     /// @{
 
     /// Check consistency of object
-    virtual bool consistent() const override
-    { return false; }
+    virtual bool consistent() const override = 0;
 
     /// @}
 

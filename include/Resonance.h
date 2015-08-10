@@ -23,6 +23,8 @@
 #include "DataAccessor.h"
 #include "MassShape.h"
 
+#include <memory>
+
 namespace yap {
 
 class FinalStateParticle;
@@ -36,16 +38,16 @@ class Resonance : public DecayingParticle, public DataAccessor
 {
 public:
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape);
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;
 
     /// Return MassShape
-    const MassShape& massShape() const {return MassShape_;}
+    const MassShape* massShape() const {return MassShape_.get();}
 
 private:
-    MassShape MassShape_;
+    std::unique_ptr<MassShape> MassShape_;
 
 };
 

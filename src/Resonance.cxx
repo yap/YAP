@@ -5,7 +5,7 @@
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape) :
+Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape) :
     DecayingParticle(q, mass, name, radialSize),
     MassShape_(massShape)
 {}
@@ -23,7 +23,7 @@ bool Resonance::consistent() const
     bool consistent = true;
 
     consistent &= DecayingParticle::consistent();
-    consistent &= MassShape_.consistent();
+    consistent &= massShape()->consistent();
 
     return consistent;
 }
