@@ -13,15 +13,15 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers
 //-------------------------
 Amp SpinAmplitude::amplitude(DataPoint& d)
 {
-  // \todo implement
-  return Complex_0;
+    // \todo implement
+    return Complex_0;
 }
 
 //-------------------------
 bool SpinAmplitude::consistent() const
 {
-  // \todo implement
-  return true;
+    // \todo implement
+    return true;
 }
 
 }
