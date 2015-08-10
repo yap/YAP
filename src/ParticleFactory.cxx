@@ -40,8 +40,8 @@ Resonance* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSiz
 //-------------------------
 void ParticleFactory::createChannel(DecayingParticle* parent, Particle* daughterA, Particle* daughterB, unsigned L)
 {
-  yap::SpinAmplitude* amplitude = new yap::SpinAmplitude(parent->quantumNumbers(), daughterA->quantumNumbers(), daughterB->quantumNumbers());
-  parent->addChannel(new yap::DecayChannel(daughterA, daughterB, L, *amplitude));
+    yap::SpinAmplitude* amplitude = new yap::SpinAmplitude(parent->quantumNumbers(), daughterA->quantumNumbers(), daughterB->quantumNumbers());
+    parent->addChannel(new yap::DecayChannel(daughterA, daughterB, L, *amplitude));
 }
 
 //-------------------------

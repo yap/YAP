@@ -76,7 +76,7 @@ bool DecayChannel::consistent() const
 //-------------------------
 void DecayChannel::setParent(DecayingParticle* parent)
 {
-  Parent_ = parent;
+    Parent_ = parent;
 }
 
 }

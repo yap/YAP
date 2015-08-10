@@ -38,7 +38,7 @@ bool DecayingParticle::consistent() const
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
-    for (unsigned i=0; i<nChannels(); ++i) {
+    for (unsigned i = 0; i < nChannels(); ++i) {
         const DecayChannel* c = this->getChannel(i);
         if (this != c->parent()) {
             LOG(ERROR) << "DecayingParticle::consistent() - DecayChannels does not point back to this DecayingParticle.";
@@ -94,8 +94,8 @@ const std::vector<const FinalStateParticle*> DecayingParticle::finalStateParticl
 //-------------------------
 void DecayingParticle::addChannel(DecayChannel* c)
 {
-  Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
-  Channels_.back()->setParent(this);
+    Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
+    Channels_.back()->setParent(this);
 }
 
 }
