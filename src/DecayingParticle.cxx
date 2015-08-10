@@ -38,13 +38,14 @@ bool DecayingParticle::consistent() const
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
-    for (const DecayChannel c : Channels_) {
-        if (this != c.parent()) {
+    for (unsigned i=0; i<nChannels(); ++i) {
+        const DecayChannel* c = this->getChannel(i);
+        if (this != c->parent()) {
             LOG(ERROR) << "DecayingParticle::consistent() - DecayChannels does not point back to this DecayingParticle.";
             return false; // channel consistency check requires correct pointer
         }
 
-        consistent &= c.consistent();
+        consistent &= c->consistent();
     }
 
     // check if all channels lead to same final state particles
@@ -73,7 +74,7 @@ bool DecayingParticle::consistent() const
 const std::vector<const FinalStateParticle*> DecayingParticle::finalStateParticles(unsigned int channel) const
 {
     std::vector<const FinalStateParticle*> fsps;
-    const Daughters& daughters = Channels_.at(channel).daughters();
+    const Daughters& daughters = this->getChannel(channel)->daughters();
 
     for (const Particle* d : daughters) {
         if (dynamic_cast<const FinalStateParticle*>(d))
@@ -88,6 +89,13 @@ const std::vector<const FinalStateParticle*> DecayingParticle::finalStateParticl
     }
 
     return fsps;
+}
+
+//-------------------------
+void DecayingParticle::addChannel(DecayChannel* c)
+{
+  Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
+  Channels_.back()->setParent(this);
 }
 
 }

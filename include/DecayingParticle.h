@@ -24,6 +24,7 @@
 #include "DecayChannel.h"
 #include "Particle.h"
 
+#include <memory>
 #include <vector>
 
 namespace yap {
@@ -53,8 +54,9 @@ public:
     /// \param channel Channel to return final state particles for
     const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
 
-    void addChannel(const DecayChannel& c)
-    { Channels_.push_back(c); }
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param c DecayingParticle takes ownership of c
+    void addChannel(DecayChannel* c);
 
     /// \name Getters
     /// @{
@@ -62,6 +64,10 @@ public:
     /// \return Number of decay channels for this object
     unsigned int nChannels() const
     { return Channels_.size(); }
+
+    /// Return Channel i
+    const DecayChannel* getChannel(unsigned i) const
+    { return Channels_.at(i).get(); }
 
     /// \return Radial size [GeV^-1]
     double radialSize() const
@@ -79,7 +85,7 @@ public:
     /// @}
 
 private:
-    std::vector<yap::DecayChannel> Channels_; ///< vector of decay channel objects
+    std::vector< std::unique_ptr<yap::DecayChannel> > Channels_; ///< vector of decay channel objects
     double RadialSize_;                       ///< Radial size parameter [GeV^-1]
 };
 

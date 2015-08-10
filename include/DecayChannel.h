@@ -78,8 +78,17 @@ public:
 
     /// @}
 
+    /// \name Setters
+    /// @{
+
     /// Set the free (complex) amplitude
-    void setFreeAmplitude(const Amp& amp) {FreeAmplitude_ = amp;}
+    void setFreeAmplitude(const Amp& amp)
+    { FreeAmplitude_ = amp; }
+
+    /// Set parent
+    void setParent(DecayingParticle* parent);
+
+    /// @}
 
 private:
     Daughters Daughters_; /// 2 daughters of the decay

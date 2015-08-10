@@ -17,10 +17,10 @@ int main( int argc, char** argv)
   yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211);
 
   double radialSize = 1.;
-  unsigned L = 1;
+  unsigned L = 0;
   yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
   yap::SpinAmplitude* rhoAmplitude = new yap::SpinAmplitude(rho->quantumNumbers(), piPlus->quantumNumbers(), piMinus->quantumNumbers());
-  rho->addChannel(yap::DecayChannel(piPlus, piMinus, L, *rhoAmplitude));
+  rho->addChannel(new yap::DecayChannel(piPlus, piMinus, L, *rhoAmplitude));
 
   assert(rho->consistent());
 }
