@@ -44,21 +44,6 @@ public:
     /// Default constructor
     BreitWigner(double mass = -1, double width = -1);
 
-    /// Copy constructor
-    BreitWigner(const BreitWigner& other);
-
-    /// Move constructor
-    BreitWigner(BreitWigner&& other);
-
-    /// destructor
-    virtual ~BreitWigner();
-
-    /// Copy assignment operator
-    BreitWigner& operator=(const BreitWigner& rhs);
-
-    /// Move assignment operator
-    BreitWigner& operator=(BreitWigner&& rhs);
-
     /// @}
 
     /// \name Getters

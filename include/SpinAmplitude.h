@@ -29,8 +29,7 @@ class SpinAmplitude : public AmplitudeComponent, DataAccessor
 {
 public:
     SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-        : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {final1, final2}) {;}
-    ~SpinAmplitude();
+        : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {{final1, final2}}) {;}
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override {return true;}

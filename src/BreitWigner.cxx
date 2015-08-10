@@ -13,37 +13,6 @@ BreitWigner::BreitWigner(double mass, double width) :
 }
 
 //-------------------------
-BreitWigner::BreitWigner(const BreitWigner& other) :
-    MassShape(other)
-{
-}
-
-//-------------------------
-BreitWigner::BreitWigner(BreitWigner&& other) :
-    MassShape(other)
-{
-}
-
-//-------------------------
-BreitWigner::~BreitWigner()
-{
-}
-
-//-------------------------
-BreitWigner& BreitWigner::operator=(const BreitWigner& rhs)
-{
-    MassShape::operator=(rhs);
-    return *this;
-}
-
-//-------------------------
-BreitWigner& BreitWigner::operator=(BreitWigner&& rhs)
-{
-    MassShape::operator=(rhs);
-    return *this;
-}
-
-//-------------------------
 Amp BreitWigner::amplitude(DataPoint& d)
 {
     return Complex_0;
