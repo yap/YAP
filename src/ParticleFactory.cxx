@@ -27,7 +27,7 @@ Particle* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize
 {
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
     return new Resonance(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()),
-        radialSize, BreitWigner(p->Mass(), p->Width()));
+                         radialSize, BreitWigner(p->Mass(), p->Width()));
 }
 
 //-------------------------

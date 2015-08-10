@@ -30,7 +30,7 @@ class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
     BlattWeisskopf(DecayChannel* decayChannel) :
-      AmplitudeComponent(), DecayChannel_(decayChannel) {;}
+        AmplitudeComponent(), DecayChannel_(decayChannel) {;}
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;
