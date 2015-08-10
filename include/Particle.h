@@ -36,7 +36,7 @@ public:
     Particle(const QuantumNumbers& q, double mass, std::string name) :
         QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
 
-    //virtual Amp amplitude(DataPoint& d) override = 0;
+    virtual Amp amplitude(DataPoint& d) override = 0;
     virtual bool consistent() const override;
 
     const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}

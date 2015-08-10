@@ -1,18 +1,18 @@
-#include "Resonance.h"
+#include "DecayingParticle.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
 
 namespace yap {
 
 //-------------------------
-Amp amplitude(DataPoint& d)
+Amp DecayingParticle::amplitude(DataPoint& d)
 {
-    // TODO implement
+    // \todo implement
     return Amp(1);
 }
 
 //-------------------------
-bool Resonance::consistent() const
+bool DecayingParticle::consistent() const
 {
     bool consistent = true;
 
@@ -62,7 +62,7 @@ bool Resonance::consistent() const
 }
 
 //-------------------------
-const std::vector<const FinalStateParticle*> Resonance::finalStateParticles(unsigned int channel) const
+const std::vector<const FinalStateParticle*> DecayingParticle::finalStateParticles(unsigned int channel) const
 {
     std::vector<const FinalStateParticle*> fsps;
     const Daughters& daughters = Channels_.at(channel).daughters();

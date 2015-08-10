@@ -13,7 +13,7 @@ DataAccessor::DataAccessor() :
     /// \todo Come up with something smarter
     Index_ = GlobalIndex++;
 }
-/*
+
 //-------------------------
 DataAccessor::DataAccessor(const DataAccessor& other) :
     Recalculate_(other.Recalculate_),
@@ -22,5 +22,5 @@ DataAccessor::DataAccessor(const DataAccessor& other) :
     // uses new index
     Index_ = GlobalIndex++;
 }
-*/
+
 }

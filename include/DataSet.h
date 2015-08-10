@@ -27,7 +27,6 @@ class DataSet
 {
 public:
     DataSet();
-    ~DataSet();
 
 private:
     std::vector<DataPoint> DataPoints_;

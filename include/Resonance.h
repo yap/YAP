@@ -21,9 +21,7 @@
 
 #include "DecayingParticle.h"
 #include "DataAccessor.h"
-#include "DecayChannel.h"
 #include "MassShape.h"
-#include <vector>
 
 namespace yap {
 

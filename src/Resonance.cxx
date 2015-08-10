@@ -5,10 +5,10 @@
 namespace yap {
 
 //-------------------------
-Amp amplitude(DataPoint& d)
+Amp Resonance::amplitude(DataPoint& d)
 {
-    // TODO implement
-    return Amp(1);
+    // \todo implement
+    return Amp(0.);
 }
 
 //-------------------------

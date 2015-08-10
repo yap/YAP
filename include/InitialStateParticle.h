@@ -31,7 +31,7 @@ public:
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
         DecayingParticle(q, mass, name, radialSize) {;}
 
-    virtual Amp amplitude(DataPoint& d) override;
+    //virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override {return DecayingParticle::consistent();}
 
 private:
