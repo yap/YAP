@@ -14,7 +14,7 @@ git diff --cached --name-status --diff-filter=ACMR |
 	    # RETURN of the parent hasn't changed properly.
 	    while read STATUS FILE; do
             # regex matching
-	        if [[ "$FILE" =~ \.(C|cxx|h)$ ]]; then
+	        if [[ "$FILE" =~ \.(cxx|h)$ ]]; then
 		        formatted=`$ASTYLE $OPTIONS $FILE | sed -n '/^Unchanged/p'`
 		        if [ -z "$formatted" ]; then
 			        echo "[commit rejected] $FILE does not respect the agreed coding standards." >&2
@@ -25,7 +25,7 @@ git diff --cached --name-status --diff-filter=ACMR |
 
 	    if [ $RETURN -eq 1 ]; then
 		    echo "">&2
-		    echo "Make sure to run 'make format' and review the changes *before* committing."  >&2
+		    echo "Make sure to run `./tools/force_style.sh` and review the changes *before* committing."  >&2
 	    fi
 	    exit $RETURN
     }
