@@ -41,7 +41,7 @@ public:
     // DataPoint(const std::vector<double>& S);
 
 protected:
-    
+
     // /// Actual data values
     // /// first index is for the DataAccessor
     // /// second index is for the symmeterization state (as known by the DataAccessor)

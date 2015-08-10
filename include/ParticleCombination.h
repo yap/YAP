@@ -25,18 +25,18 @@
 
 namespace yap {
 
-    /// \class ParticleCombination
-    /// \brief Stores combinations of ParticleIndex types
-    /// \author Johannes Rauch, Daniel Greenwald
+/// \class ParticleCombination
+/// \brief Stores combinations of ParticleIndex types
+/// \author Johannes Rauch, Daniel Greenwald
 
-    class ParticleCombination : public std::vector<ParticleIndex>
-    {
-        /// Checks consistency of combination
-        /// by checking for absence of duplicate entries
-        bool consistent() const;
+class ParticleCombination : public std::vector<ParticleIndex>
+{
+    /// Checks consistency of combination
+    /// by checking for absence of duplicate entries
+    bool consistent() const;
 
-        friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
-    };
+    friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
+};
 
 }
 

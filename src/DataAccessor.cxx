@@ -2,7 +2,7 @@
 
 namespace yap {
 
-    unsigned DataAccessor::GlobalIndex = 0;
+unsigned DataAccessor::GlobalIndex = 0;
 
 //-------------------------
 DataAccessor::DataAccessor() :

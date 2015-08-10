@@ -24,8 +24,8 @@
 
 namespace yap {
 
-    /// \typedef Type for identifying individual particles of the final state
-    typedef unsigned char ParticleIndex;
+/// \typedef Type for identifying individual particles of the final state
+typedef unsigned char ParticleIndex;
 
 }
 
