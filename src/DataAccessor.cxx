@@ -12,7 +12,7 @@ DataAccessor::DataAccessor() :
     static unsigned int index(0);
     Index_ = index++;
 }
-
+/*
 //-------------------------
 DataAccessor::DataAccessor(const DataAccessor& other) :
     Recalculate_(other.Recalculate_),
@@ -38,5 +38,5 @@ DataAccessor& DataAccessor::operator=(DataAccessor&& rhs)
     Index_ = std::move(rhs.Index_);
     return *this;
 }
-
+*/
 }

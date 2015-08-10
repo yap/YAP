@@ -1,5 +1,5 @@
 #include "ParticleFactory.h"
-#include "Resonance.h"
+//#include "Resonance.h"
 
 #include <iostream>
 
@@ -16,5 +16,6 @@ int main( int argc, char** argv)
   yap::Particle* piMinus1 = factory.createFinalStateParticle(-211);
   yap::Particle* piMinus2 = factory.createFinalStateParticle(-211);
 
-
+  double radialSize = 1;
+  //yap::Particle* rho12 = factory.createResonanceBreitWigner(113, radialSize);
 }

@@ -9,7 +9,7 @@ MassShape::MassShape() :
     DataAccessor()
 {
 }
-
+/*
 //-------------------------
 MassShape::MassShape(const MassShape& other) :
     DataAccessor(other),
@@ -39,7 +39,7 @@ MassShape& MassShape::operator=(MassShape&& rhs)
     Parameters_ = std::move(rhs.Parameters_);
     return *this;
 }
-
+*/
 //-------------------------
 Amp MassShape::amplitude(DataPoint& d)
 {

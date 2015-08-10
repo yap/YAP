@@ -19,10 +19,12 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
-#include "Resonance.h"
+#include "MassShape.h"
 #include "QuantumNumbers.h"
 
 namespace yap {
+
+class Particle;
 
 class ParticleFactory
 {
@@ -31,7 +33,8 @@ public:
     ~ParticleFactory() {;}
 
     Particle* createFinalStateParticle(int PDG);
-    Particle* createResonance(int PDG);
+    Particle* createResonance(int PDG, const MassShape& massShape, double radialSize);
+    Particle* createResonanceBreitWigner(int PDG, double radialSize);
 
     QuantumNumbers createQuantumNumbers(int PDG);
 

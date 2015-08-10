@@ -35,8 +35,11 @@ if (CMAKE_COMPILER_IS_GNUCC)
     message(STATUS ${GCC_MINOR})
 endif()
 #set( CMAKE_CXX_COMPILER /nfs/mnemosyne/sys/slc6/contrib/gcc/4.9.0/bin/c++)
+#set( CMAKE_CXX_COMPILER clang)
 set( CMAKE_CXX_COMPILER g++)
 message(${CMAKE_CXX_COMPILER})
+
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Werror=overloaded-virtual" )
 
 add_subdirectory(src)
 add_subdirectory(programs)

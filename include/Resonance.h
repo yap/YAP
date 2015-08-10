@@ -19,12 +19,14 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
+#include "Particle.h"
 #include "DecayChannel.h"
-#include "FinalStateParticle.h"
 #include "MassShape.h"
 #include <vector>
 
 namespace yap {
+
+class FinalStateParticle;
 
 /// \ingroup Particle
 
@@ -33,7 +35,7 @@ class Resonance : public Particle
 public:
     Resonance(const QuantumNumbers& q, double mass, std::string name, const MassShape& massShape, double radialSize) :
         Particle(q, mass, name), MassShape_(massShape), RadialSize_(radialSize) {;}
-    ~Resonance() {;}
+    //virtual ~Resonance() {;}
 
     virtual Amp amplitude(DataPoint& d);
     virtual bool consistent() const;

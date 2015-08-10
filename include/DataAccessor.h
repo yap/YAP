@@ -40,18 +40,18 @@ public:
     /// Default constructor
     DataAccessor();
 
-    /// Copy constructor
+/*    /// Copy constructor
     DataAccessor(const DataAccessor& other);
 
     /// Move constructor
     DataAccessor(DataAccessor&& other);
 
     /// Destructor
-    virtual ~DataAccessor() {}
+    virtual ~DataAccessor() {;}
 
     /// Move assignment operator
     DataAccessor& operator=(DataAccessor&& rhs);
-
+*/
     /// @}
 
     virtual Amp amplitude(DataPoint& d) = 0;

@@ -36,7 +36,7 @@ public:
     Particle(const QuantumNumbers& q, double mass, std::string name) :
         QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
 
-    ~Particle() {;}
+    //virtual ~Particle() {;}
 
     virtual Amp amplitude(DataPoint& d) = 0;
     virtual bool consistent() const;
@@ -44,7 +44,7 @@ public:
     const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
     double mass() const {return Mass_;}
 
-protected:
+private:
     QuantumNumbers QuantumNumbers_;
     double Mass_; /// mass in GeV
     std::string Name_;

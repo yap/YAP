@@ -1,5 +1,7 @@
 #include "ParticleFactory.h"
+#include "BreitWigner.h"
 #include "FinalStateParticle.h"
+#include "Resonance.h"
 
 #include <TDatabasePDG.h>
 #include "logging.h"
@@ -10,13 +12,22 @@ namespace yap {
 Particle* ParticleFactory::createFinalStateParticle(int PDG)
 {
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new FinalStateParticle(createQuantumNumbers(PDG), p->Mass(), p->GetName(), PDG);
+    return new FinalStateParticle(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()), PDG);
 }
 
 //-------------------------
-Particle* ParticleFactory::createResonance(int PDG)
+Particle* ParticleFactory::createResonance(int PDG, const MassShape& massShape, double radialSize)
 {
+    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
+    return new Resonance(createQuantumNumbers(PDG), p->Mass(), p->GetName(), massShape, radialSize);
+}
 
+//-------------------------
+Particle* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
+{
+    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
+    return new Resonance(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()),
+                         BreitWigner(p->Mass(), p->Width()), radialSize);
 }
 
 //-------------------------
