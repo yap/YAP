@@ -16,17 +16,40 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
 namespace yap {
 
+/// \class DataPoint
+/// \brief Class for holding data and cached values per data point for fast calculation
+/// \author Johannes Rauch, Daniel Greenwald
+
 class DataPoint
 {
 public:
-    DataPoint();
-    ~DataPoint();
 
+    /// Default constructor
+    DataPoint();
+
+    // /// 4-momenta constructor
+    // DataPoint(const std::vector<TLorentzVector>& P);
+
+    // /// Invariant mass constructor
+    // DataPoint(const std::vector<double>& S);
+
+protected:
+    
+    // /// Actual data values
+    // /// first index is for the DataAccessor
+    // /// second index is for the symmeterization state (as known by the DataAccessor)
+    // /// third index is internal to the DataAccessor
+    // std::vector<std::vector<std::vector<double> > > Data_;
+
+    // std::vector<TLorentzVector> FourMomentum_;
+    // std::vector<double> SquaredMass_;
 
 };
 

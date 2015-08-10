@@ -40,18 +40,13 @@ public:
     /// Default constructor
     DataAccessor();
 
-/*    /// Copy constructor
+    /// Copy constructor
     DataAccessor(const DataAccessor& other);
 
-    /// Move constructor
-    DataAccessor(DataAccessor&& other);
+    // Defaulted move constructor
+    // Defaulted destructor
+    // Defaulted move assignment operator
 
-    /// Destructor
-    virtual ~DataAccessor() {;}
-
-    /// Move assignment operator
-    DataAccessor& operator=(DataAccessor&& rhs);
-*/
     /// @}
 
     virtual Amp amplitude(DataPoint& d) = 0;
@@ -63,7 +58,9 @@ protected:
     bool Recalculate_; ///
 
 private:
-    unsigned int Index_; /// storage index used in DataPoint. Must be unique.
+    unsigned Index_; /// storage index used in DataPoint. Must be unique.
+
+    static unsigned GlobalIndex;
 };
 
 }
