@@ -23,6 +23,10 @@
 
 namespace yap {
 
+/// \class DataSet
+/// \brief Class holding a set of DataPoint objects.
+/// \author Johannes Rauch, Daniel Greenwald
+
 class DataSet
 {
 public:

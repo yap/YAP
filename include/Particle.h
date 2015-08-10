@@ -25,8 +25,8 @@
 namespace yap {
 
 /// \class Particle
-/// \brief Particle base class
-/// \author Johannes Rauch
+/// \brief Abstract Particle base class.
+/// \author Johannes Rauch, Daniel Greenwald
 
 /// \defgroup Particle Particle
 

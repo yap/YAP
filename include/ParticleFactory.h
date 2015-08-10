@@ -26,13 +26,23 @@ namespace yap {
 
 class Particle;
 
+/// \class Particle
+/// \brief Factory class for easy creation of Particle objects from PDG codes.
+/// \author Johannes Rauch, Daniel Greenwald
+
 class ParticleFactory
 {
 public:
+    /// Constructor
     ParticleFactory() {;}
 
+    /// Create a FinalStateParticle from a PDG code
     Particle* createFinalStateParticle(int PDG);
+
+    /// Create a FinalStateParticle from a PDG code and a MassShape
     Particle* createResonance(int PDG, double radialSize, const MassShape& massShape);
+
+    /// Create a FinalStateParticle from a PDG code. Use BreitWigner as MassShape
     Particle* createResonanceBreitWigner(int PDG, double radialSize);
 
     QuantumNumbers createQuantumNumbers(int PDG);

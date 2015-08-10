@@ -23,11 +23,15 @@
 
 namespace yap {
 
+/// \class InitialStateParticle
+/// \brief Class implementing an initial state particle.
+/// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
 class InitialStateParticle : public DecayingParticle
 {
 public:
+    /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
         DecayingParticle(q, mass, name, radialSize) {;}
 

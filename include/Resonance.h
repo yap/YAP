@@ -27,6 +27,9 @@ namespace yap {
 
 class FinalStateParticle;
 
+/// \class Resonance
+/// \brief Class for a particle that will decay and has a mass shape
+/// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
 class Resonance : public DecayingParticle, public DataAccessor

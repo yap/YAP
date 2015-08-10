@@ -26,6 +26,10 @@ namespace yap {
 
 class DecayChannel;
 
+/// \class BlattWeisskopf
+/// \brief Class implementing BlattWeisskopf barrier factors
+/// \author Johannes Rauch, Daniel Greenwald
+
 class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
