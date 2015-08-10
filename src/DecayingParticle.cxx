@@ -1,8 +1,16 @@
 #include "DecayingParticle.h"
+
 #include "FinalStateParticle.h"
 #include "logging.h"
+#include "QuantumNumbers.h"
 
 namespace yap {
+
+//-------------------------
+    DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+        Particle(q, mass, name),
+        RadialSize_(radialSize)
+    {}
 
 //-------------------------
 Amp DecayingParticle::amplitude(DataPoint& d)
@@ -30,7 +38,7 @@ bool DecayingParticle::consistent() const
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
-    for (DecayChannel c : Channels_) {
+    for (const DecayChannel c : Channels_) {
         if (this != c.resonance()) {
             LOG(ERROR) << "Resonance::consistent() - DecayChannels does not point back to this Resonance.";
             return false; // channel consistency check requires correct pointer

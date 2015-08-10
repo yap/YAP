@@ -16,11 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
-#include "Particle.h"
 #include "DecayChannel.h"
+#include "Particle.h"
 
 #include <vector>
 
@@ -28,25 +30,57 @@ namespace yap {
 
 class FinalStateParticle;
 
+/// \class DecayingParticle
+/// \brief Class for a particle that will decay
+/// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
 class DecayingParticle : public Particle
 {
 public:
-    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-        Particle(q, mass, name), RadialSize_(radialSize) {;}
 
+    /// Constructor
+    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+
+    /// \return Ampltiude for particle
+    /// \param d DataPoint to evaluate on
     virtual Amp amplitude(DataPoint& d) override;
+
+    /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// \return vector of pointers to final state particles of channel (recursively checked)
+    /// \param channel Channel to return final state particles for
     const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
-    unsigned int nChannels() const {return Channels_.size();}
 
-    void addChannel(const DecayChannel& c) {Channels_.push_back(c);}
+    void addChannel(const DecayChannel& c)
+        { Channels_.push_back(c); }
+
+    /// \name Getters
+    /// @{
+
+    /// \return Number of decay channels for this object
+    unsigned int nChannels() const
+        { return Channels_.size(); }
+
+    /// \return Radial size [GeV^-1]
+    double radialSize() const
+        { return RadialSize_; }
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+
+    /// Set radial size [GeV^-1]
+    void setRadialSize(double r)
+        { RadialSize_ = r; }
+
+    /// @}
 
 private:
-    std::vector<yap::DecayChannel> Channels_;
-    double RadialSize_;
+    std::vector<yap::DecayChannel> Channels_; ///< vector of decay channel objects
+    double RadialSize_;                       ///< Radial size parameter [GeV^-1]
 };
 
 }

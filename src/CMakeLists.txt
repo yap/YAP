@@ -9,6 +9,7 @@ set(YAP_SOURCES
   DataAccessor.cxx
   DataPoint.cxx
   DecayChannel.cxx
+  DecayingParticle.cxx
   MassShape.cxx
   Particle.cxx
   ParticleCombination.cxx
