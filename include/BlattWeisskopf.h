@@ -29,12 +29,13 @@ class DecayChannel;
 class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
-    BlattWeisskopf(DecayChannel* decayChannel) :
-        AmplitudeComponent(), DecayChannel_(decayChannel) {;}
+    /// Constructor
+    BlattWeisskopf(DecayChannel* decayChannel);
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;
 
+    /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
 private:

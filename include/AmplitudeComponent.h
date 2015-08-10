@@ -27,7 +27,7 @@
 namespace yap {
 
 /// \name AmplitudeComponent
-/// \brief Base class for all objects accessing DataPoint's
+/// \brief Abstract base class for all objects implementing a (complex) amplitude
 /// \author Johannes Rauch, Daniel Greenwald
 
 class AmplitudeComponent
@@ -38,7 +38,8 @@ public:
     /// @{
 
     /// Default constructor
-    AmplitudeComponent() {;}
+    AmplitudeComponent()
+    {}
 
     // Defaulted copy constructor
     // Defaulted move constructor
@@ -47,7 +48,10 @@ public:
 
     /// @}
 
+    /// Calculate complex amplitude
     virtual Amp amplitude(DataPoint& d) = 0;
+
+    /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
 };

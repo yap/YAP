@@ -33,8 +33,8 @@ namespace yap {
 class Particle : public AmplitudeComponent
 {
 public:
-    Particle(const QuantumNumbers& q, double mass, std::string name) :
-        QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
+    /// Constructor
+    Particle(const QuantumNumbers& q, double mass, std::string name);
 
     virtual Amp amplitude(DataPoint& d) override = 0;
     virtual bool consistent() const override;

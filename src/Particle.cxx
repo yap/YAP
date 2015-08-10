@@ -4,6 +4,13 @@
 namespace yap {
 
 //-------------------------
+Particle::Particle(const QuantumNumbers& q, double mass, std::string name) :
+    QuantumNumbers_(q),
+    Mass_(mass),
+    Name_(name)
+{}
+
+//-------------------------
 bool Particle::consistent() const
 {
 
