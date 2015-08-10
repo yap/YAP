@@ -49,9 +49,6 @@ public:
 
     /// @}
 
-    virtual Amp amplitude(DataPoint& d) = 0;
-    virtual bool consistent() const = 0;
-
     unsigned int index() const {return Index_;}
 
 protected:

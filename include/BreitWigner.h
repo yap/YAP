@@ -112,7 +112,7 @@ public:
     /// Calculate MassShape amplitude from DataPoint
     /// \return amplitude evaluated on DataPoint
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d);
+    virtual Amp amplitude(DataPoint& d) override;
 
     /// Calculate MassShape ampltude from squared mass;
     /// A = 1 / [Mass^2 - s - i * Mass * Width]
@@ -125,7 +125,7 @@ public:
     /// \name Bookkeeping related
     /// @{
 
-    virtual bool consistent() const;
+    virtual bool consistent() const override;
 
     /// @}
 

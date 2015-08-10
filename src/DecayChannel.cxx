@@ -7,8 +7,10 @@ namespace yap {
 //-------------------------
 DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude)
     :   Daughters_( {daughterA, daughterB}),
-L_(L), SpinAmplitude_(spinAmplitude),
-FreeAmplitude_(0)
+        L_(L),
+        BlattWeisskopf_(this),
+        SpinAmplitude_(spinAmplitude),
+        FreeAmplitude_(0)
 {
     ;
 }

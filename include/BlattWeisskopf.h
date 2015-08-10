@@ -19,20 +19,21 @@
 #ifndef yap_BlattWeisskopf_h
 #define yap_BlattWeisskopf_h
 
+#include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 
 namespace yap {
 
 class DecayChannel;
 
-class BlattWeisskopf : public DataAccessor
+class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
-    BlattWeisskopf();
-    ~BlattWeisskopf();
+    BlattWeisskopf(DecayChannel* decayChannel) :
+      AmplitudeComponent(), DecayChannel_(decayChannel) {;}
 
-    virtual Amp amplitude(DataPoint& d);
-    virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d) override;
+    virtual bool consistent() const override;
 
     DecayChannel* decayChannel() const {return DecayChannel_;}
 

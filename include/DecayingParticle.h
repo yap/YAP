@@ -16,36 +16,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_Particle_h
-#define yap_Particle_h
+#ifndef yap_DecayingParticle_h
+#define yap_DecayingParticle_h
 
-#include "AmplitudeComponent.h"
-#include "QuantumNumbers.h"
+#include "Particle.h"
+#include "DecayChannel.h"
+
+#include <vector>
 
 namespace yap {
 
-/// \class Particle
-/// \brief Particle base class
-/// \author Johannes Rauch
+class FinalStateParticle;
 
-/// \defgroup Particle Particle
+/// \ingroup Particle
 
-class Particle : public AmplitudeComponent
+class DecayingParticle : public Particle
 {
 public:
-    Particle(const QuantumNumbers& q, double mass, std::string name) :
-        QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
+    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+        Particle(q, mass, name), RadialSize_(radialSize) {;}
 
-    //virtual Amp amplitude(DataPoint& d) override = 0;
+    virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;
 
-    const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
-    double mass() const {return Mass_;}
+    const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
+    unsigned int nChannels() const {return Channels_.size();}
+
+    void addChannel(const DecayChannel& c) {Channels_.push_back(c);}
 
 private:
-    QuantumNumbers QuantumNumbers_;
-    double Mass_; /// mass in GeV
-    std::string Name_;
+    std::vector<yap::DecayChannel> Channels_;
+    double RadialSize_;
 };
 
 }

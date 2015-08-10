@@ -31,14 +31,14 @@ namespace yap {
 class Resonance;
 typedef std::array<Particle*, 2> Daughters;
 
-class DecayChannel : public DataAccessor
+class DecayChannel : public AmplitudeComponent, DataAccessor
 {
 public:
     DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
     ~DecayChannel() {;}
 
-    virtual Amp amplitude(DataPoint& d);
-    virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d) override;
+    virtual bool consistent() const override;
 
     const Daughters& daughters() const {return Daughters_;}
     const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}

@@ -16,10 +16,10 @@ Particle* ParticleFactory::createFinalStateParticle(int PDG)
 }
 
 //-------------------------
-Particle* ParticleFactory::createResonance(int PDG, const MassShape& massShape, double radialSize)
+Particle* ParticleFactory::createResonance(int PDG, double radialSize, const MassShape& massShape)
 {
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new Resonance(createQuantumNumbers(PDG), p->Mass(), p->GetName(), massShape, radialSize);
+    return new Resonance(createQuantumNumbers(PDG), p->Mass(), p->GetName(), radialSize, massShape);
 }
 
 //-------------------------
@@ -27,7 +27,7 @@ Particle* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize
 {
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
     return new Resonance(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()),
-                         BreitWigner(p->Mass(), p->Width()), radialSize);
+        radialSize, BreitWigner(p->Mass(), p->Width()));
 }
 
 //-------------------------

@@ -25,15 +25,15 @@
 
 namespace yap {
 
-class SpinAmplitude : public DataAccessor
+class SpinAmplitude : public AmplitudeComponent, DataAccessor
 {
 public:
     SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
         : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {final1, final2}) {;}
     ~SpinAmplitude();
 
-    virtual Amp amplitude(DataPoint& d);
-    virtual bool consistent() const {return true;}
+    virtual Amp amplitude(DataPoint& d) override;
+    virtual bool consistent() const override {return true;}
 
     const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
     const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}

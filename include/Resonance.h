@@ -19,7 +19,8 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
-#include "Particle.h"
+#include "DecayingParticle.h"
+#include "DataAccessor.h"
 #include "DecayChannel.h"
 #include "MassShape.h"
 #include <vector>
@@ -30,25 +31,20 @@ class FinalStateParticle;
 
 /// \ingroup Particle
 
-class Resonance : public Particle
+class Resonance : public DecayingParticle, public DataAccessor
 {
 public:
-    Resonance(const QuantumNumbers& q, double mass, std::string name, const MassShape& massShape, double radialSize) :
-        Particle(q, mass, name), MassShape_(massShape), RadialSize_(radialSize) {;}
-    //virtual ~Resonance() {;}
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape) :
+      DecayingParticle(q, mass, name, radialSize), MassShape_(massShape) {;}
 
-    virtual Amp amplitude(DataPoint& d);
-    virtual bool consistent() const;
+    virtual Amp amplitude(DataPoint& d) override;
+    virtual bool consistent() const override;
 
-    const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
-    unsigned int nChannels() const {return Channels_.size();}
-
-    void addChannel(const DecayChannel& c) {Channels_.push_back(c);}
+    const MassShape& massShape() const {return MassShape_;}
 
 private:
     MassShape MassShape_;
-    std::vector<yap::DecayChannel> Channels_;
-    double RadialSize_;
+
 };
 
 }

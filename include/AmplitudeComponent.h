@@ -16,36 +16,40 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_Particle_h
-#define yap_Particle_h
+/// \file
 
-#include "AmplitudeComponent.h"
-#include "QuantumNumbers.h"
+#ifndef yap_AmplitudeComponent_h
+#define yap_AmplitudeComponent_h
+
+#include "Amp.h"
+#include "DataPoint.h"
 
 namespace yap {
 
-/// \class Particle
-/// \brief Particle base class
-/// \author Johannes Rauch
+/// \name AmplitudeComponent
+/// \brief Base class for all objects accessing DataPoint's
+/// \author Johannes Rauch, Daniel Greenwald
 
-/// \defgroup Particle Particle
-
-class Particle : public AmplitudeComponent
+class AmplitudeComponent
 {
 public:
-    Particle(const QuantumNumbers& q, double mass, std::string name) :
-        QuantumNumbers_(q), Mass_(mass), Name_(name) {;}
 
-    //virtual Amp amplitude(DataPoint& d) override = 0;
-    virtual bool consistent() const override;
+    /// \name Constructors, destructor, & operators
+    /// @{
 
-    const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
-    double mass() const {return Mass_;}
+    /// Default constructor
+    AmplitudeComponent() {;}
 
-private:
-    QuantumNumbers QuantumNumbers_;
-    double Mass_; /// mass in GeV
-    std::string Name_;
+    // Defaulted copy constructor
+    // Defaulted move constructor
+    // Defaulted destructor
+    // Defaulted move assignment operator
+
+    /// @}
+
+    virtual Amp amplitude(DataPoint& d) = 0;
+    virtual bool consistent() const = 0;
+
 };
 
 }

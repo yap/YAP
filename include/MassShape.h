@@ -22,6 +22,7 @@
 #define yap_MassShape_h
 
 #include "Amp.h"
+#include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 
 #include <vector>
@@ -36,7 +37,7 @@ namespace yap {
 /// All classes inheriting from MassShape should place continuous
 /// fit variables in MassShape::Parameters_
 
-class MassShape : public DataAccessor
+class MassShape : public AmplitudeComponent, public DataAccessor
 {
 public:
 
@@ -83,7 +84,7 @@ public:
     /// Calculate MassShape amplitude from DataPoint
     /// \return amplitude evaluated on DataPoint
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d);
+    virtual Amp amplitude(DataPoint& d) override;
 
     /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass
@@ -96,7 +97,7 @@ public:
     /// @{
 
     /// Check consistency of object
-    virtual bool consistent() const
+    virtual bool consistent() const override
     { return false; }
 
     /// @}

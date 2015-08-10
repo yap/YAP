@@ -33,7 +33,7 @@ public:
     ~ParticleFactory() {;}
 
     Particle* createFinalStateParticle(int PDG);
-    Particle* createResonance(int PDG, const MassShape& massShape, double radialSize);
+    Particle* createResonance(int PDG, double radialSize, const MassShape& massShape);
     Particle* createResonanceBreitWigner(int PDG, double radialSize);
 
     QuantumNumbers createQuantumNumbers(int PDG);
