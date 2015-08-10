@@ -28,21 +28,38 @@ namespace yap {
 class QuantumNumbers
 {
 public:
-    QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G) :
-        twoJ_(twoJ), P_(P), C_(C), I_(I), G_(G) {;}
+    /// Constructor
+    QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G);
 
+    /// \name Getters
+    /// @{
+
+    /// return spin * 2
     unsigned char twoJ() const {return twoJ_;}
+
+    /// return spin
     double J() const {return twoJ_ * 0.5;}
+
+    /// return parity
     char P() const {return P_;}
+
+    /// return C-parity
     char C() const {return C_;}
+
+    /// return isospin
     char I() const {return I_;}
+
+    /// return G-parity
     char G() const {return G_;}
 
-    //! Checks equality of QuantumNumbers
+    /// @}
+
+    //! Check equality of QuantumNumbers
     friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
+
     //! returns NOT ==
     friend bool operator!= (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
-    {return !(lhs == rhs);}
+    { return !(lhs == rhs); }
 
 private:
     unsigned char twoJ_; /// Spin * 2

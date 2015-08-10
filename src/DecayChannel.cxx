@@ -5,15 +5,13 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude)
-    :   Daughters_( {daughterA, daughterB}),
-L_(L),
-BlattWeisskopf_(this),
-SpinAmplitude_(spinAmplitude),
-FreeAmplitude_(0)
-{
-    ;
-}
+DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude) :
+    Daughters_( {daughterA, daughterB}),
+            L_(L),
+            BlattWeisskopf_(this),
+            SpinAmplitude_(spinAmplitude),
+            FreeAmplitude_(0)
+{}
 
 //-------------------------
 Amp DecayChannel::amplitude(DataPoint& d)
@@ -61,13 +59,13 @@ bool DecayChannel::consistent() const
     }
 
     // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-    if (this->spinAmplitude().initialQuantumNumbers() != this->resonance()->quantumNumbers()) {
+    if (this->spinAmplitude().initialQuantumNumbers() != this->parent()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of SpinAmplitude  and this channel's resonance don't match.";
         consistent =  false;
     }
 
     // check masses
-    if (this->daughterA()->mass() + this->daughterB()->mass() > this->resonance()->mass()) {
+    if (this->daughterA()->mass() + this->daughterB()->mass() > this->parent()->mass()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
         consistent =  false;
     }
