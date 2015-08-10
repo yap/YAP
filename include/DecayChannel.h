@@ -28,7 +28,7 @@
 
 namespace yap {
 
-    class DecayingParticle;
+class DecayingParticle;
 typedef std::array<Particle*, 2> Daughters;
 
 class DecayChannel : public AmplitudeComponent, DataAccessor
@@ -48,11 +48,11 @@ public:
     const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
     Amp freeAmplitude() const {return FreeAmplitude_;}
 
-    DecayingParticle* parent() 
-        { return Parent_; }
+    DecayingParticle* parent()
+    { return Parent_; }
 
     const DecayingParticle* parent() const
-        { return Parent_; }
+    { return Parent_; }
 
     void setFreeAmplitude(const Amp& amp) {FreeAmplitude_ = amp;}
 

@@ -7,10 +7,10 @@
 namespace yap {
 
 //-------------------------
-    DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-        Particle(q, mass, name),
-        RadialSize_(radialSize)
-    {}
+DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+    Particle(q, mass, name),
+    RadialSize_(radialSize)
+{}
 
 //-------------------------
 Amp DecayingParticle::amplitude(DataPoint& d)

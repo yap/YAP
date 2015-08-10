@@ -54,18 +54,18 @@ public:
     const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
 
     void addChannel(const DecayChannel& c)
-        { Channels_.push_back(c); }
+    { Channels_.push_back(c); }
 
     /// \name Getters
     /// @{
 
     /// \return Number of decay channels for this object
     unsigned int nChannels() const
-        { return Channels_.size(); }
+    { return Channels_.size(); }
 
     /// \return Radial size [GeV^-1]
     double radialSize() const
-        { return RadialSize_; }
+    { return RadialSize_; }
 
     /// @}
 
@@ -74,7 +74,7 @@ public:
 
     /// Set radial size [GeV^-1]
     void setRadialSize(double r)
-        { RadialSize_ = r; }
+    { RadialSize_ = r; }
 
     /// @}
 
