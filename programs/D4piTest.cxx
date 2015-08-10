@@ -19,8 +19,9 @@ int main( int argc, char** argv)
   double radialSize = 1.;
   unsigned L = 0;
   yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
-  yap::SpinAmplitude* rhoAmplitude = new yap::SpinAmplitude(rho->quantumNumbers(), piPlus->quantumNumbers(), piMinus->quantumNumbers());
-  rho->addChannel(new yap::DecayChannel(piPlus, piMinus, L, *rhoAmplitude));
+  factory.createChannel(rho, piPlus, piMinus, L);
+
+
 
   assert(rho->consistent());
 }

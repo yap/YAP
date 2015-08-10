@@ -16,6 +16,13 @@ FinalStateParticle* ParticleFactory::createFinalStateParticle(int PDG)
 }
 
 //-------------------------
+InitialStateParticle* ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
+{
+    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
+    return new InitialStateParticle(createQuantumNumbers(PDG), p->Mass(), p->GetName(), radialSize);
+}
+
+//-------------------------
 Resonance* ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
 {
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
@@ -28,6 +35,13 @@ Resonance* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSiz
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
     return new Resonance(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()),
                          radialSize, new BreitWigner(p->Mass(), p->Width()));
+}
+
+//-------------------------
+void ParticleFactory::createChannel(DecayingParticle* parent, Particle* daughterA, Particle* daughterB, unsigned L)
+{
+  yap::SpinAmplitude* amplitude = new yap::SpinAmplitude(parent->quantumNumbers(), daughterA->quantumNumbers(), daughterB->quantumNumbers());
+  parent->addChannel(new yap::DecayChannel(daughterA, daughterB, L, *amplitude));
 }
 
 //-------------------------

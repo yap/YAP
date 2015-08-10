@@ -42,11 +42,20 @@ public:
     /// Create a FinalStateParticle from a PDG code
     FinalStateParticle* createFinalStateParticle(int PDG);
 
+    /// Create an InitialStateParticle from a PDG code and a MassShape
+    InitialStateParticle* createInitialStateParticle(int PDG, double radialSize);
+
     /// Create a FinalStateParticle from a PDG code and a MassShape
     Resonance* createResonance(int PDG, double radialSize, MassShape* massShape);
 
     /// Create a FinalStateParticle from a PDG code. Use BreitWigner as MassShape
     Resonance* createResonanceBreitWigner(int PDG, double radialSize);
+
+    /// Create a FinalStateParticle from a PDG code. Use RelativisticBreitWigner as MassShape
+    Resonance* createResonanceRelativisticBreitWigner(int PDG, double radialSize);
+
+    /// Create and add DecaChannel to parent
+    void createChannel(DecayingParticle* parent, Particle* daughterA, Particle* daughterB, unsigned L);
 
     QuantumNumbers createQuantumNumbers(int PDG);
 
