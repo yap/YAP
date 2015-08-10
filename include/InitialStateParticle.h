@@ -19,7 +19,7 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
-#include "Particle.h"
+#include "DecayingParticle.h"
 
 namespace yap {
 

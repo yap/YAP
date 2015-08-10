@@ -1,6 +1,8 @@
 #include "ParticleFactory.h"
+//#include "SpinAmplitude.h"
 //#include "Resonance.h"
 
+#include <assert.h>
 #include <iostream>
 
 #include "logging.h"
@@ -11,11 +13,14 @@ int main( int argc, char** argv)
   yap::ParticleFactory factory;
 
   // final state particles
-  yap::Particle* piPlus1 = factory.createFinalStateParticle(211);
-  yap::Particle* piPlus2 = factory.createFinalStateParticle(211);
-  yap::Particle* piMinus1 = factory.createFinalStateParticle(-211);
-  yap::Particle* piMinus2 = factory.createFinalStateParticle(-211);
+  yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211);
+  yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211);
 
-  double radialSize = 1;
-  //yap::Particle* rho12 = factory.createResonanceBreitWigner(113, radialSize);
+  double radialSize = 1.;
+  unsigned L = 1;
+  yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
+  yap::SpinAmplitude* rhoAmplitude = new yap::SpinAmplitude(rho->quantumNumbers(), piPlus->quantumNumbers(), piMinus->quantumNumbers());
+  rho->addChannel(yap::DecayChannel(piPlus, piMinus, L, *rhoAmplitude));
+
+  assert(rho->consistent());
 }

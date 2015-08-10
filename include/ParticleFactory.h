@@ -19,8 +19,11 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
 #include "MassShape.h"
 #include "QuantumNumbers.h"
+#include "Resonance.h"
 
 namespace yap {
 
@@ -37,13 +40,13 @@ public:
     ParticleFactory() {;}
 
     /// Create a FinalStateParticle from a PDG code
-    Particle* createFinalStateParticle(int PDG);
+    FinalStateParticle* createFinalStateParticle(int PDG);
 
     /// Create a FinalStateParticle from a PDG code and a MassShape
-    Particle* createResonance(int PDG, double radialSize, const MassShape& massShape);
+    Resonance* createResonance(int PDG, double radialSize, const MassShape& massShape);
 
     /// Create a FinalStateParticle from a PDG code. Use BreitWigner as MassShape
-    Particle* createResonanceBreitWigner(int PDG, double radialSize);
+    Resonance* createResonanceBreitWigner(int PDG, double radialSize);
 
     QuantumNumbers createQuantumNumbers(int PDG);
 

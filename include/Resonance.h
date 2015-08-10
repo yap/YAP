@@ -35,12 +35,13 @@ class FinalStateParticle;
 class Resonance : public DecayingParticle, public DataAccessor
 {
 public:
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape) :
-        DecayingParticle(q, mass, name, radialSize), MassShape_(massShape) {;}
+    /// Constructor
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape);
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;
 
+    /// Return MassShape
     const MassShape& massShape() const {return MassShape_;}
 
 private:

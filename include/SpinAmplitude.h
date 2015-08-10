@@ -19,24 +19,40 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
+#include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 #include "QuantumNumbers.h"
+
 #include <array>
 
 namespace yap {
 
-class SpinAmplitude : public AmplitudeComponent, DataAccessor
+/// \class InitialStateParticle
+/// \brief Class implementing a spin amplitude.
+/// \author Johannes Rauch, Daniel Greenwald
+
+class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 {
 public:
-    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-        : InitialQuantumNumbers_(initial), FinalQuantumNumbers_( {{final1, final2}}) {;}
+    /// Constructor
+    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
 
     virtual Amp amplitude(DataPoint& d) override;
-    virtual bool consistent() const override {return true;}
+    virtual bool consistent() const override;
 
+    /// \name Getters
+    /// @{
+
+    /// Get initial QuantumNumbers
     const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
+
+    /// Get final QuantumNumbers of 1st daughter
     const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}
+
+    /// Get initial QuantumNumbers of 2nd daughter
     const QuantumNumbers& finalQuantumNumbersB() const {return FinalQuantumNumbers_[1];}
+
+    /// @}
 
 private:
     QuantumNumbers InitialQuantumNumbers_;

@@ -5,6 +5,12 @@
 namespace yap {
 
 //-------------------------
+Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, const MassShape& massShape) :
+    DecayingParticle(q, mass, name, radialSize),
+    MassShape_(massShape)
+{}
+
+//-------------------------
 Amp Resonance::amplitude(DataPoint& d)
 {
     // \todo implement

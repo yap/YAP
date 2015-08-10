@@ -17,6 +17,7 @@ set(YAP_SOURCES
   ParticleFactory.cxx
   QuantumNumbers.cxx
   Resonance.cxx
+  SpinAmplitude.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")
