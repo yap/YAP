@@ -30,7 +30,6 @@ class ParticleFactory
 {
 public:
     ParticleFactory() {;}
-    ~ParticleFactory() {;}
 
     Particle* createFinalStateParticle(int PDG);
     Particle* createResonance(int PDG, double radialSize, const MassShape& massShape);

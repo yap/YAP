@@ -35,7 +35,6 @@ class DecayChannel : public AmplitudeComponent, DataAccessor
 {
 public:
     DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
-    ~DecayChannel() {;}
 
     virtual Amp amplitude(DataPoint& d) override;
     virtual bool consistent() const override;

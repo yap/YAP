@@ -30,7 +30,6 @@ class QuantumNumbers
 public:
     QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G) :
         twoJ_(twoJ), P_(P), C_(C), I_(I), G_(G) {;}
-    ~QuantumNumbers() {;}
 
     unsigned char twoJ() const {return twoJ_;}
     double J() const {return twoJ_ * 0.5;}
