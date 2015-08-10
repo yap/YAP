@@ -46,22 +46,22 @@ public:
 
     /// Default constructor
     MassShape();
-/*
-    /// Copy constructor
-    MassShape(const MassShape& other);
+    /*
+        /// Copy constructor
+        MassShape(const MassShape& other);
 
-    /// Move constructor
-    MassShape(MassShape&& other);
+        /// Move constructor
+        MassShape(MassShape&& other);
 
-    /// Destructor
-    virtual ~MassShape() {;}
+        /// Destructor
+        virtual ~MassShape() {;}
 
-    /// Copy assignment operator
-    MassShape& operator=(const MassShape& rhs);
+        /// Copy assignment operator
+        MassShape& operator=(const MassShape& rhs);
 
-    /// Move assignment operator
-    MassShape& operator=(MassShape&& rhs);
-*/
+        /// Move assignment operator
+        MassShape& operator=(MassShape&& rhs);
+    */
     /// @}
 
     /// \name Parameter access
