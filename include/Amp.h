@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_Amp_h
 #define yap_Amp_h
 
