@@ -16,9 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_Particle_h
 #define yap_Particle_h
 
+#include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "QuantumNumbers.h"
 
@@ -27,25 +30,51 @@ namespace yap {
 /// \class Particle
 /// \brief Abstract Particle base class.
 /// \author Johannes Rauch, Daniel Greenwald
-
 /// \defgroup Particle Particle
 
 class Particle : public AmplitudeComponent
 {
 public:
+
     /// Constructor
     Particle(const QuantumNumbers& q, double mass, std::string name);
 
+    /// \return Amplitude for particle (and subsequent possible decay)
     virtual Amp amplitude(DataPoint& d) override = 0;
+
+    /// Check consitency of object
     virtual bool consistent() const override;
 
-    const QuantumNumbers& quantumNumbers() const {return QuantumNumbers_;}
-    double mass() const {return Mass_;}
+    /// Access QuantumNumbers object
+    const QuantumNumbers& quantumNumbers() const
+    { return QuantumNumbers_; }
+
+    /// \name Getters
+    /// @{
+
+    /// Get mass [GeV]
+    double mass() const
+    { return Mass_; }
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+
+    /// Set mass [GeV]
+    void setMass(double m)
+    { Mass_ = m; }
+
+    /// @}
 
 private:
-    QuantumNumbers QuantumNumbers_;
-    double Mass_; /// mass in GeV
-    std::string Name_;
+
+    QuantumNumbers QuantumNumbers_; ///< Quantum numbers of particle
+
+    double Mass_;               ///< Mass [GeV]
+
+    std::string Name_;          ///< Name of particle
+
 };
 
 }

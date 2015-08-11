@@ -50,17 +50,9 @@ public:
     /// Get Daughters
     const Daughters& daughters() const {return Daughters_;}
 
-    /// Get daughter 0 or 1
-    const Particle* daughter(unsigned int i) const {return Daughters_.at(i);}
-
-    /// Get first daughter
-    const Particle* daughterA() const {return Daughters_[0];}
-
-    /// Get second daughter
-    const Particle* daughterB() const {return Daughters_[1];}
-
     /// Get relative angular momentum between daughters
-    unsigned char l() const {return L_;}
+    unsigned char decayAngularMomentum() const
+    { return L_; }
 
     /// Get SpinAmplitude
     const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}

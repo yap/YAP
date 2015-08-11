@@ -16,28 +16,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_FinalStateParticle_h
 #define yap_FinalStateParticle_h
 
+#include "Amp.h"
+#include "Constants.h"
 #include "Particle.h"
 
 namespace yap {
 
+/// \class FinalStateParticle
+/// \brief Class representing a final-state particle
+/// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
 class FinalStateParticle : public Particle
 {
 public:
-    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg) :
-        Particle(q, mass, name), PDGCode_(pdg) {;}
 
-    virtual Amp amplitude(DataPoint& d) override {return Amp(1.);}
-    //virtual bool consistent() const override {return Particle::consistent();}
+    /// Constructor
+    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg)
+        : Particle(q, mass, name), PDGCode_(pdg)
+    {}
 
-    int pdgCode() const {return PDGCode_;}
+    /// \return 1 + 0i
+    virtual Amp amplitude(DataPoint& d) override
+    { return Complex_1; }
+
+    //virtual bool consistent() const override
+    // { return Particle::consistent(); }
+
+    /// \return PDG code indicating particle type
+    int pdgCode() const
+    { return PDGCode_; }
 
 private:
     int PDGCode_; /// PDG code of the particle
+
 };
 
 }

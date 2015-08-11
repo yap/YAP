@@ -14,11 +14,14 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+
+/// \file
 
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
+#include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 #include "QuantumNumbers.h"
@@ -34,23 +37,27 @@ namespace yap {
 class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 {
 public:
+
     /// Constructor
     SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
 
+    /// \return Complex spin amplitude evaluated at data point
+    /// \param d DataPoint to evaluate on
     virtual Amp amplitude(DataPoint& d) override;
+
+    /// Check consistency of object
     virtual bool consistent() const override;
 
     /// \name Getters
     /// @{
 
     /// Get initial QuantumNumbers
-    const QuantumNumbers& initialQuantumNumbers() const {return InitialQuantumNumbers_;}
+    const QuantumNumbers& initialQuantumNumbers() const
+    { return InitialQuantumNumbers_; }
 
-    /// Get final QuantumNumbers of 1st daughter
-    const QuantumNumbers& finalQuantumNumbersA() const {return FinalQuantumNumbers_[0];}
-
-    /// Get initial QuantumNumbers of 2nd daughter
-    const QuantumNumbers& finalQuantumNumbersB() const {return FinalQuantumNumbers_[1];}
+    /// Get QuantumNumbers of daughters const
+    const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
+    { return FinalQuantumNumbers_; }
 
     /// @}
 
