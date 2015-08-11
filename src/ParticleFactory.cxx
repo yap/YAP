@@ -52,7 +52,7 @@ QuantumNumbers ParticleFactory::createQuantumNumbers(int PDG)
     unsigned char twoJ = std::round(p->Spin() * 2.);
 
     // C-parity
-    char C = 0;
+    char C(0);
     if (p->Charge() != 0) { // only defined for neutral states
         if (p == p->AntiParticle())
             C = 1;
@@ -63,7 +63,9 @@ QuantumNumbers ParticleFactory::createQuantumNumbers(int PDG)
     // TODO: G-Parity
     char G = 0;
 
-    return QuantumNumbers(twoJ, p->Parity(), C, p->Isospin(), G);
+    std::cout << QuantumNumbers(twoJ, char(p->Parity()), C, char(p->Isospin()), G);
+
+    return QuantumNumbers(twoJ, char(p->Parity()), C, char(p->Isospin()), G);
 }
 
 }

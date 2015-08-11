@@ -50,11 +50,30 @@ bool DecayChannel::consistent() const
 
     // check angular momentum conservation laws
     unsigned char l = this->l();
-    unsigned char L_A = this->daughterA()->quantumNumbers().J();
-    unsigned char L_B = this->daughterB()->quantumNumbers().J();
+    unsigned char s_P = this->parent()->quantumNumbers().J();
+    unsigned char s_A = this->daughterA()->quantumNumbers().J();
+    unsigned char s_B = this->daughterB()->quantumNumbers().J();
 
-    if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
-        LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated.";
+    std::cout << this->parent()->quantumNumbers();
+    std::cout << "J(parent) = " << s_P << "; J(daughterA) = " << s_A << "; J(daughterB) = " << s_B << "; l = " << l << "\n";
+
+    // check if
+    // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
+    bool ok = false;
+    for (int l_AB = abs(s_A - s_B); l_AB <= abs(s_A + s_B); ++l_AB) {
+      for (int rhs = abs(l - l_AB); rhs <= abs(l + l_AB); ++rhs) {
+        if (s_P == rhs) {
+          ok = true;
+          break;
+        }
+        if (ok)
+          break;
+      }
+    }
+
+    if (!ok) {
+        LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated. " <<
+            "J(parent) = " << s_P << "; J(daughterA) = " << s_A << "; J(daughterB) = " << s_B << "; l = " << l;
         consistent =  false;
     }
 

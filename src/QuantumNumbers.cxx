@@ -21,4 +21,10 @@ bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
             && lhs.G_ == rhs.G_);
 }
 
+//-------------------------
+std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj) {
+       os << "J: " << obj.J() << " P: " << obj.P() << " C: " << obj.C() << "\n";
+       return os;
+}
+
 }

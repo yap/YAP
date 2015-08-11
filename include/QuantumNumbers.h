@@ -19,6 +19,8 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
+#include <ostream>
+
 namespace yap {
 
 /// \class QuantumNumbers
@@ -68,6 +70,9 @@ private:
     char I_; /// Isospin
     char G_; /// G-parity
 };
+
+/// Overload << operator
+std::ostream& operator<< (std::ostream&, const QuantumNumbers&);
 
 }
 

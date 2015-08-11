@@ -17,9 +17,13 @@ int main( int argc, char** argv)
   yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211);
 
   double radialSize = 1.;
-  unsigned L = 0;
   yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
-  factory.createChannel(rho, piPlus, piMinus, L);
+  factory.createChannel(rho, piPlus, piMinus, 1);
+
+  yap::InitialStateParticle* D = factory.createInitialStateParticle(421, radialSize);
+  factory.createChannel(D, rho, rho, 0);
+  factory.createChannel(D, rho, rho, 1);
+  factory.createChannel(D, rho, rho, 2);
 
 
 
