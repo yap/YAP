@@ -26,19 +26,19 @@
 namespace yap {
 
 /// complex zero
-static const Amp Complex_0 = Amp(0, 0);
+extern const Amp Complex_0;
 
 /// complex one
-static const Amp Complex_1 = Amp(1, 0);
+extern const Amp Complex_1;
 
 /// complex i
-static const Amp Complex_i = Amp(0, 1);
+extern const Amp Complex_i;
 
 /// pi (11 digits)
-static const double PI = 3.14159226535;
+extern const double PI;
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
-static const double DEGTORAD = PI / 180.;
+extern const double DEGTORAD;
 
 }
 

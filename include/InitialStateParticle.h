@@ -21,6 +21,8 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
+#include "Amp.h"
+#include "DataAccessor.h"
 #include "DecayingParticle.h"
 
 namespace yap {
@@ -30,24 +32,27 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle
+class InitialStateParticle : public DecayingParticle, public DataAccessor
 {
 public:
 
     /// Constructor
-    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-        DecayingParticle(q, mass, name, radialSize)
-    {}
+    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     //virtual Amp amplitude(DataPoint& d) override;
 
     /// Check consistency of object
-    virtual bool consistent() const override
-    { return DecayingParticle::consistent(); }
+    virtual bool consistent() const override;
 
 private:
 
+    // vector of final state particles
+    std::vector<FinalStateParticle*> FinalStateParticles;
+
 };
+
+// global
+extern InitialStateParticle* InitialState;
 
 }
 

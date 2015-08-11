@@ -6,10 +6,12 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(YAP_SOURCES
   BlattWeisskopf.cxx
   BreitWigner.cxx
+  Constants.cxx
   DataAccessor.cxx
   DataPoint.cxx
   DecayChannel.cxx
   DecayingParticle.cxx
+  InitialStateParticle.cxx
   MassShape.cxx
   ParticleCombination.cxx
   Particle.cxx

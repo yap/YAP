@@ -31,8 +31,20 @@ class QuantumNumbers
 {
 public:
 
+    /// \name Constructors
+    /// @{
+
     /// Constructor
-    QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G);
+    QuantumNumbers(unsigned char twoJ = 0, char P = 0, char C = 0, unsigned char twoI = 0, char G = 0, char Q = 0);
+
+    /// IJPQ constructor
+    QuantumNumbers(unsigned char twoI, unsigned char twoJ, char P, char Q)
+        : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
+
+    /// @}
+
+    /// check consistency
+    bool consistent() const;
 
     /// \name Getters
     /// @{
@@ -53,13 +65,21 @@ public:
     char C() const
     { return C_; }
 
-    /// \return isospin
-    char I() const
-    { return I_; }
+    /// \return Isospin * 2
+    unsigned char twoI() const
+    { return TwoI_; }
+
+    /// \return Isospin
+    double I() const
+    { return TwoI_ * 0.5; }
 
     /// \return G-parity
     char G() const
     { return G_; }
+
+    /// \return Electric charge
+    char Q() const
+    { return Q_; }
 
     /// @}
 
@@ -83,11 +103,14 @@ private:
     /// C-parity
     char C_;
 
-    /// Isospin
-    char I_;
+    /// Isospin * 2
+    unsigned char TwoI_;
 
     /// G-parity
     char G_;
+
+    /// Electric charge
+    char Q_;
 
 };
 

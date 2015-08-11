@@ -1,4 +1,5 @@
 #include "Particle.h"
+
 #include "logging.h"
 
 namespace yap {
