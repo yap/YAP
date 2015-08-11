@@ -51,6 +51,14 @@ bool DecayChannel::consistent() const
         consistent =  false;
     }
 
+    // check charge conservation
+    if (this->parent()->quantumNumbers().Q() != this->daughters()[0]->quantumNumbers().Q() + this->daughters()[1]->quantumNumbers().Q()) {
+        LOG(ERROR) << "DecayChannel::consistent() - charge conservation violated. " <<
+                   "Q(parent) = " << (int)this->parent()->quantumNumbers().Q() <<
+                   "; Q(daughterA) = " << (int)this->daughters()[0]->quantumNumbers().Q() <<
+                   "; Q(daughterB) = " << (int)this->daughters()[1]->quantumNumbers().Q();
+        consistent =  false;
+    }
 
     // check angular momentum conservation laws
     int twoL = 2 * this->decayAngularMomentum();
