@@ -2,8 +2,6 @@
 
 #include "BreitWigner.h"
 
-#include <TDatabasePDG.h>
-
 #include "logging.h"
 
 namespace yap {
@@ -11,30 +9,30 @@ namespace yap {
 //-------------------------
 FinalStateParticle* ParticleFactory::createFinalStateParticle(int PDG)
 {
-    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new FinalStateParticle(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()), PDG);
+    const PdlParticleProperties& p = particleProperties(PDG);
+    return new FinalStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG);
 }
 
 //-------------------------
 InitialStateParticle* ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
-    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new InitialStateParticle(createQuantumNumbers(PDG), p->Mass(), p->GetName(), radialSize);
+    const PdlParticleProperties& p = particleProperties(PDG);
+    return new InitialStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
 }
 
 //-------------------------
 Resonance* ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
 {
-    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new Resonance(createQuantumNumbers(PDG), p->Mass(), p->GetName(), radialSize, massShape);
+    const PdlParticleProperties& p = particleProperties(PDG);
+    return new Resonance(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, massShape);
 }
 
 //-------------------------
 Resonance* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
-    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
-    return new Resonance(createQuantumNumbers(PDG), p->Mass(), std::string(p->GetName()),
-                         radialSize, new BreitWigner(p->Mass(), p->Width()));
+    const PdlParticleProperties& p = particleProperties(PDG);
+    return new Resonance(createQuantumNumbers(PDG), p.Mass_, p.Name_,
+                         radialSize, new BreitWigner(p.Mass_, p.Width_) );
 }
 
 //-------------------------
@@ -47,29 +45,123 @@ void ParticleFactory::createChannel(DecayingParticle* parent, Particle* daughter
 //-------------------------
 QuantumNumbers ParticleFactory::createQuantumNumbers(int PDG)
 {
-    TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
+    const PdlParticleProperties& p = particleProperties(PDG);
 
-    unsigned char twoJ = std::round(p->Spin() * 2.);
-    signed char P(p->Parity());
+    unsigned char twoJ = p.TwoJ_;
+    char Q = std::round(1. / 3. * p.ThreeCharge_);
 
-    // C-parity
-    signed char C(0);
-    if (p->Charge() == 0) { // only defined for neutral states
-        if (p == p->AntiParticle())
-            C = 1;
-        else
-            C = -1;
+    // \todo
+    unsigned char twoI = 0;
+    unsigned char P = 0;
+
+    return QuantumNumbers(twoI, twoJ, P, Q);
+}
+
+//-------------------------
+const PdlParticleProperties& ParticleFactory::particleProperties(int PDG) const
+{
+    if (particleProperties_.count(PDG) == 0) {
+        LOG(ERROR) << "No PdlParticleProperties for PDG " << PDG;
+    }
+    return particleProperties_.at(PDG);
+}
+
+//-------------------------
+void ParticleFactory::readPDT(const std::string fname)
+{
+
+    /**
+     * This function was taken from EvtGen and modified
+     *
+     * // Copyright Information: See EvtGen/COPYRIGHT
+     * //      Copyright (C) 1998      Caltech, UCSB
+     *
+     */
+
+    ifstream indec;
+
+    indec.open(fname.c_str());
+
+    char cmnd[100];
+    char xxxx[100];
+
+    char pname[100];
+    int  stdhepid;
+    double mass;
+    double pwidth;
+    double pmaxwidth;
+    int    chg3;
+    int    spin2;
+    double ctau;
+    int    lundkc;
+    //EvtId i;
+
+    if (!indec) {
+        LOG(ERROR) << "Could not open:" << fname.c_str() << "EvtPDL";
+        return;
     }
 
-    signed char I = p->Isospin();
+    do {
 
-    // TODO: G-Parity
-    signed char G = 0;
+        char ch, ch1;
 
-    //std::cout << "p->Spin() " << p->Spin() << " twoJ " << (int)twoJ << " C " << (int)C << "\n";
-    //std::cout << QuantumNumbers(twoJ, P, C, I, G);
+        do {
 
-    return QuantumNumbers(twoJ, P, C, I, G);
+            indec.get(ch);
+            if (ch == '\n') indec.get(ch);
+            if (ch != '*') {
+                indec.putback(ch);
+            } else {
+                while (indec.get(ch1), ch1 != '\n');
+            }
+        } while (ch == '*');
+
+        indec >> cmnd;
+
+        if (strcmp(cmnd, "end")) {
+
+            if (!strcmp(cmnd, "add")) {
+
+                indec >> xxxx;
+                indec >> xxxx;
+                indec >> pname;
+                indec >> stdhepid;
+                indec >> mass;
+                indec >> pwidth;
+                indec >> pmaxwidth;
+                indec >> chg3;
+                indec >> spin2;
+                indec >> ctau;
+                indec >> lundkc;
+
+
+                PdlParticleProperties tmp;
+
+                tmp.PDGCode_ = stdhepid;
+                tmp.Name_ = std::string(pname);
+                tmp.Mass_ = mass;
+                tmp.Width_ = pwidth;
+                tmp.ThreeCharge_ = chg3;
+                tmp.TwoJ_ = spin2;
+
+                particleProperties_[stdhepid] = tmp;
+
+            }
+
+            // if find a set read information and discard it
+
+            if (!strcmp(cmnd, "set")) {
+
+                indec >> xxxx;
+                indec >> xxxx;
+                indec >> xxxx;
+                indec >> xxxx;
+            }
+
+        }
+
+    } while (strcmp(cmnd, "end"));
+
 }
 
 }

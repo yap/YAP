@@ -27,13 +27,27 @@
 #include "QuantumNumbers.h"
 #include "Resonance.h"
 
+#include <map>
+
 namespace yap {
 
 class Particle;
 
-/// \class Particle
+/// \struct PdlParticleProperties
+/// \brief Data container for storing information gathered from pdl files.
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Particle
+struct PdlParticleProperties {
+    int PDGCode_;
+    std::string Name_;
+    double Mass_;
+    double Width_;
+    int ThreeCharge_;
+    int TwoJ_;
+};
+
+/// \class ParticleFactory
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
-/// WARNING: TDatabasePDG up to now does NOT read or fill spins. Spins are always 0.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
@@ -42,8 +56,9 @@ class ParticleFactory
 public:
 
     /// Constructor
-    ParticleFactory()
-    {}
+    /// \param pdlFile Path to a pdl file like used by EvtGen
+    ParticleFactory(const std::string pdlFile)
+    { readPDT(pdlFile); }
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
@@ -87,8 +102,16 @@ public:
     /// \return Quantum numbers corresponding to particle
     QuantumNumbers createQuantumNumbers(int PDG);
 
-private:
+    /// get PdlParticleProperties from particleProperties_ with safety checks
+    const PdlParticleProperties& particleProperties(int PDG) const;
 
+
+private:
+    /// read pdl file and fill particleProperties_
+    void readPDT(const std::string fname);
+
+    /// maps PDGCodes to PdlParticleProperties.
+    std::map<int, PdlParticleProperties> particleProperties_;
 };
 
 }

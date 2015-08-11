@@ -10,7 +10,7 @@ INITIALIZE_EASYLOGGINGPP
 
 int main( int argc, char** argv)
 {
-  yap::ParticleFactory factory;
+  yap::ParticleFactory factory("evt.pdl");
 
   // final state particles
   yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211);
@@ -20,9 +20,11 @@ int main( int argc, char** argv)
   double radialSize = 1.;
   yap::InitialStateParticle* D = factory.createInitialStateParticle(421, radialSize);
 
+  // a_1 channels
+  yap::Resonance* sigma = factory.createResonanceBreitWigner(9000221, radialSize);
+
   // rho rho
   yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
-  rho->quantumNumbers().setJ(1);
   factory.createChannel(rho, piPlus, piMinus, 1);
 
   factory.createChannel(D, rho, rho, 0);
@@ -31,7 +33,6 @@ int main( int argc, char** argv)
 
   // omega omega
   yap::Resonance* omega = factory.createResonanceBreitWigner(223, radialSize);
-  omega->quantumNumbers().setJ(1);
   factory.createChannel(omega, piPlus, piMinus, 1);
 
   factory.createChannel(D, omega, omega, 0);
@@ -49,4 +50,5 @@ int main( int argc, char** argv)
 
   //std::cout << "rho " << rho->quantumNumbers();
   assert(D->consistent());
+  std::cout << "alright! \n";
 }
