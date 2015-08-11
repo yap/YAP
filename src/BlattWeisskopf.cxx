@@ -18,6 +18,7 @@ Amp BlattWeisskopf::amplitude(DataPoint& d)
 //-------------------------
 bool BlattWeisskopf::consistent() const
 {
+    /// \todo implement
     return true;
 }
 

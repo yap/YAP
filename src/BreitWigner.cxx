@@ -1,6 +1,7 @@
 #include "BreitWigner.h"
 
 #include "Constants.h"
+#include "logging.h"
 
 namespace yap {
 
@@ -27,7 +28,17 @@ Amp BreitWigner::amplitude(double s)
 //-------------------------
 bool BreitWigner::consistent() const
 {
-    return (mass() > 0 && width() > 0);
+    bool consistent = true;
+    if (mass() <= 0) {
+        LOG(ERROR) << "BreitWigner::consistent() - mass <= 0";
+        consistent = false;
+    }
+    if (width() <= 0) {
+        LOG(ERROR) << "BreitWigner::consistent() - width <= 0";
+        consistent = false;
+    }
+
+    return consistent;
 }
 
 }

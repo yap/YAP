@@ -27,13 +27,16 @@ bool DecayChannel::consistent() const
     // check daughters
     for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)
         consistent &= (*d)->consistent();
+    if (! consistent) {
+        LOG(ERROR) << "DecayChannel::consistent() - daughter inconsistent";
+    }
 
     consistent &= BlattWeisskopf_.consistent();
     consistent &= SpinAmplitude_.consistent();
 
     // check size of spin amplitude quantum numbers and size of daughters
     if (SpinAmplitude_.finalQuantumNumbers().size() != Daughters_.size()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum mbumbers object and daughters object size mismatch";
+        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers object and daughters object size mismatch";
         consistent = false;
     }
 
@@ -101,6 +104,9 @@ bool DecayChannel::consistent() const
         consistent =  false;
     }
 
+    if (! consistent) {
+        LOG(ERROR) << "Channel is not consistent:  " << this->parent()->name() << " - > " << this->daughters()[0]->name() << " + " << this->daughters()[1]->name() << "\n";
+    }
     return consistent;
 }
 

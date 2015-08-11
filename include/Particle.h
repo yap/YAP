@@ -59,6 +59,10 @@ public:
     double mass() const
     { return Mass_; }
 
+    /// Get name
+    std::string name() const
+    { return Name_; }
+
     /// @}
 
     /// \name Setters

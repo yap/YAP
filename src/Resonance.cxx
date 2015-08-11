@@ -25,6 +25,10 @@ bool Resonance::consistent() const
     consistent &= DecayingParticle::consistent();
     consistent &= massShape()->consistent();
 
+    if (! consistent) {
+        LOG(ERROR) << "Resonance is not consistent:  " << this->name() << "\n";
+    }
+
     return consistent;
 }
 
