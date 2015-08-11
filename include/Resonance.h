@@ -14,7 +14,9 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+
+/// \file
 
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
@@ -31,22 +33,28 @@ class FinalStateParticle;
 
 /// \class Resonance
 /// \brief Class for a particle that will decay and has a mass shape
-/// \authors Johannes Rauch, Daniel Greenwald
+/// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
 class Resonance : public DecayingParticle, public DataAccessor
 {
 public:
+
     /// Constructor
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
 
+    /// \return amplitude for resonance evaluated at DataPoint
     virtual Amp amplitude(DataPoint& d) override;
+
+    /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// Return MassShape
+    /// access MassShape
     const MassShape* massShape() const {return MassShape_.get();}
 
 private:
+
+    /// MassShape object
     std::unique_ptr<MassShape> MassShape_;
 
 };

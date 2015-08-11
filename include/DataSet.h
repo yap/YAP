@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
@@ -30,9 +32,13 @@ namespace yap {
 class DataSet
 {
 public:
+
+    /// Constructor
     DataSet();
 
 private:
+
+    /// Vector of data points
     std::vector<DataPoint> DataPoints_;
 };
 

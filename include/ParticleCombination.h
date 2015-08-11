@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
@@ -35,6 +37,7 @@ class ParticleCombination : public std::vector<ParticleIndex>
     /// by checking for absence of duplicate entries
     bool consistent() const;
 
+    /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
 };
 

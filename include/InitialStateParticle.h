@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
@@ -31,12 +33,17 @@ namespace yap {
 class InitialStateParticle : public DecayingParticle
 {
 public:
+
     /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-        DecayingParticle(q, mass, name, radialSize) {;}
+        DecayingParticle(q, mass, name, radialSize)
+    {}
 
     //virtual Amp amplitude(DataPoint& d) override;
-    virtual bool consistent() const override {return DecayingParticle::consistent();}
+
+    /// Check consistency of object
+    virtual bool consistent() const override
+    { return DecayingParticle::consistent(); }
 
 private:
 

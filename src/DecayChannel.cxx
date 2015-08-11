@@ -24,21 +24,25 @@ bool DecayChannel::consistent() const
 {
     bool consistent = true;
 
-    consistent &= this->daughterA()->consistent();
-    consistent &= this->daughterB()->consistent();
+    // check daughters
+    for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)
+        consistent &= (*d)->consistent();
+
     consistent &= BlattWeisskopf_.consistent();
     consistent &= SpinAmplitude_.consistent();
 
-
-    // check if QuantumNumbers of SpinAmplitude objects match with Particles
-    if (this->spinAmplitude().finalQuantumNumbersA() != this->daughterA()->quantumNumbers()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughterA and SpinResonance don't match.";
+    // check size of spin amplitude quantum numbers and size of daughters
+    if (SpinAmplitude_.finalQuantumNumbers().size() != Daughters_.size()) {
+        LOG(ERROR) << "DecayChannel::consistent() - quantum mbumbers object and daughters object size mismatch";
         consistent = false;
     }
 
-    if (this->spinAmplitude().finalQuantumNumbersB() != this->daughterB()->quantumNumbers()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughterB and SpinResonance don't match.";
-        consistent =  false;
+    // check if QuantumNumbers of SpinAmplitude objects match with Particles
+    for (unsigned i = 0; i < Daughters_.size(); ++i) {
+        if (SpinAmplitude_.finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
+            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of " << i << " and SpinResonance don't match.";
+            consistent = false;
+        }
     }
 
     // check if BlattWeisskopf points back to this DecayChannel
@@ -78,24 +82,21 @@ bool DecayChannel::consistent() const
     }
 
     // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-    if (this->spinAmplitude().initialQuantumNumbers() != this->parent()->quantumNumbers()) {
+    if (spinAmplitude().initialQuantumNumbers() != parent()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of SpinAmplitude  and this channel's resonance don't match.";
         consistent =  false;
     }
 
     // check masses
-    if (this->daughterA()->mass() + this->daughterB()->mass() > this->parent()->mass()) {
+    double finalMass = 0;
+    for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)
+        finalMass += (*d)->mass();
+    if (finalMass > parent()->mass()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
         consistent =  false;
     }
 
     return consistent;
-}
-
-//-------------------------
-void DecayChannel::setParent(DecayingParticle* parent)
-{
-    Parent_ = parent;
 }
 
 }
