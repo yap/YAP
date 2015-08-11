@@ -53,12 +53,28 @@ bool DecayChannel::consistent() const
 
 
     // check angular momentum conservation laws
-    unsigned char l = decayAngularMomentum();
-    unsigned char L_A = Daughters_[0]->quantumNumbers().J();
-    unsigned char L_B = Daughters_[1]->quantumNumbers().J();
+    int twoL = 2 * this->decayAngularMomentum();
+    int twoJ_P = this->parent()->quantumNumbers().twoJ();
+    int twoJ_A = this->daughters()[0]->quantumNumbers().twoJ();
+    int twoJ_B = this->daughters()[1]->quantumNumbers().twoJ();
 
-    if (l < abs(L_A - L_B) || l > abs(L_A + L_B)) {
-        LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated.";
+    // check if
+    // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
+    bool ok = false;
+    for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
+        for (int rhs = abs(twoL - twoL_AB); rhs <= abs(twoL + twoL_AB); rhs += 2) {
+            if (twoJ_P == rhs) {
+                ok = true;
+                break;
+            }
+            if (ok)
+                break;
+        }
+    }
+
+    if (!ok) {
+        LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated. " <<
+                   "J(parent) = " << .5 * twoJ_P << "; J(daughterA) = " << .5 * twoJ_A << "; J(daughterB) = " << .5 * twoJ_B << "; l = " << .5 * twoL;
         consistent =  false;
     }
 

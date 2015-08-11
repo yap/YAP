@@ -21,6 +21,9 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
+#include <cmath>
+#include <ostream>
+
 namespace yap {
 
 /// \class QuantumNumbers
@@ -58,11 +61,11 @@ public:
     { return TwoJ_ * 0.5; }
 
     /// \return parity
-    char P() const
+    signed char P() const
     { return P_; }
 
     /// \return C-parity
-    char C() const
+    signed char C() const
     { return C_; }
 
     /// \return Isospin * 2
@@ -74,7 +77,7 @@ public:
     { return TwoI_ * 0.5; }
 
     /// \return G-parity
-    char G() const
+    signed char G() const
     { return G_; }
 
     /// \return Electric charge
@@ -83,7 +86,18 @@ public:
 
     /// @}
 
-    /// \todo Setters?
+    /// \name Setters
+    /// @{
+
+    /// Set Spin
+    void setJ(double J)
+    { TwoJ_ = std::round(2.*J); }
+
+    /// Set 2 * Spin
+    void setTwoJ(unsigned char J)
+    { TwoJ_ = J; }
+
+    /// @}
 
     /// equality operator
     friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
@@ -98,21 +112,24 @@ private:
     unsigned char TwoJ_;
 
     /// Parity
-    char P_;
+    signed char P_;
 
     /// C-parity
-    char C_;
+    signed char C_;
 
     /// Isospin * 2
     unsigned char TwoI_;
 
     /// G-parity
-    char G_;
+    signed char G_;
 
     /// Electric charge
     char Q_;
 
 };
+
+/// Overload << operator
+std::ostream& operator<< (std::ostream&, const QuantumNumbers&);
 
 }
 
