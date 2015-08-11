@@ -85,8 +85,12 @@ public:
     /// @}
 
 private:
-    std::vector< std::unique_ptr<yap::DecayChannel> > Channels_; ///< vector of decay channel objects
-    double RadialSize_;                       ///< Radial size parameter [GeV^-1]
+
+    /// vector of decay channel objects
+    std::vector< std::unique_ptr<yap::DecayChannel> > Channels_;
+
+    /// Radial size parameter [GeV^-1]
+    double RadialSize_;
 };
 
 }

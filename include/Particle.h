@@ -69,11 +69,14 @@ public:
 
 private:
 
-    QuantumNumbers QuantumNumbers_; ///< Quantum numbers of particle
+    /// Quantum numbers of particle
+    QuantumNumbers QuantumNumbers_;
 
-    double Mass_;               ///< Mass [GeV]
+    /// Mass [GeV]
+    double Mass_;
 
-    std::string Name_;          ///< Name of particle
+    /// Name of particle
+    std::string Name_;
 
 };
 

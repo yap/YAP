@@ -49,14 +49,21 @@ public:
 
     /// @}
 
-    unsigned int index() const {return Index_;}
+    /// \return index inside DataPoint structure that this DataAccessor accesses
+    unsigned int index() const
+    { return Index_; }
 
 protected:
-    bool Recalculate_; ///
+
+    /// Flag to mark whether recalculation needs to take place
+    bool Recalculate_;
 
 private:
-    unsigned Index_; /// storage index used in DataPoint. Must be unique.
 
+    /// storage index used in DataPoint. Must be unique.
+    unsigned Index_;
+
+    /// static counter for setting indices
     static unsigned GlobalIndex;
 };
 

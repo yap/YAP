@@ -37,7 +37,9 @@ public:
     DataSet();
 
 private:
-    std::vector<DataPoint> DataPoints_; ///< Vector of data points
+
+    /// Vector of data points
+    std::vector<DataPoint> DataPoints_;
 };
 
 }

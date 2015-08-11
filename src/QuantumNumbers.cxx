@@ -4,7 +4,7 @@ namespace yap {
 
 //-------------------------
 QuantumNumbers::QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G) :
-    twoJ_(twoJ),
+    TwoJ_(twoJ),
     P_(P),
     C_(C),
     I_(I),
@@ -14,7 +14,7 @@ QuantumNumbers::QuantumNumbers(unsigned char twoJ, char P, char C, char I, char 
 //-------------------------
 bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 {
-    return (lhs.twoJ_ == rhs.twoJ_
+    return (lhs.TwoJ_ == rhs.TwoJ_
             && lhs.P_ == rhs.P_
             && lhs.C_ == rhs.C_
             && lhs.I_ == rhs.I_

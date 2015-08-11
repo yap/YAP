@@ -53,7 +53,9 @@ public:
     { return PDGCode_; }
 
 private:
-    int PDGCode_; /// PDG code of the particle
+
+    /// PDG code of the particle
+    int PDGCode_;
 
 };
 

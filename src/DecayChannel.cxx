@@ -80,10 +80,4 @@ bool DecayChannel::consistent() const
     return consistent;
 }
 
-//-------------------------
-void DecayChannel::setParent(DecayingParticle* parent)
-{
-    Parent_ = parent;
-}
-
 }

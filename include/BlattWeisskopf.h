@@ -16,9 +16,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_BlattWeisskopf_h
 #define yap_BlattWeisskopf_h
 
+#include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 
@@ -33,17 +36,24 @@ class DecayChannel;
 class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
+
     /// Constructor
     BlattWeisskopf(DecayChannel* decayChannel);
 
+    /// Blatt-Weisskopf amplitude at DataPoint
     virtual Amp amplitude(DataPoint& d) override;
+
+    /// check consistency of object
     virtual bool consistent() const override;
 
     /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
 private:
-    DecayChannel* DecayChannel_; /// DecayChannel this BlattWeisskopf belongs to
+
+    /// DecayChannel this BlattWeisskopf belongs to
+    DecayChannel* DecayChannel_;
+
 };
 
 }

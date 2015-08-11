@@ -41,7 +41,10 @@ public:
     /// Constructor
     DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
 
+    /// \return Amplitude for decay channel
     virtual Amp amplitude(DataPoint& d) override;
+
+    /// check consistency of object
     virtual bool consistent() const override;
 
     /// \name Getters
@@ -78,17 +81,31 @@ public:
     { FreeAmplitude_ = amp; }
 
     /// Set parent
-    void setParent(DecayingParticle* parent);
+    void setParent(DecayingParticle* parent)
+    { Parent_ = parent; }
 
     /// @}
 
 private:
-    Daughters Daughters_; /// 2 daughters of the decay
-    unsigned char L_; /// relative angular momentum between daughters
+
+    /// 2 daughters of the decay
+    Daughters Daughters_;
+
+    /// relative angular momentum between daughters
+    unsigned char L_;
+
+    /// Blatt-Weisskopf calculator
     BlattWeisskopf BlattWeisskopf_;
-    const SpinAmplitude& SpinAmplitude_; /// SpinAmplitude can be shared between several DecayChannels
+
+    /// SpinAmplitude can be shared between several DecayChannels
+    const SpinAmplitude& SpinAmplitude_;
+
+    /// free ("fit") amplitude to multiply all others by
     Amp FreeAmplitude_;
-    DecayingParticle* Parent_; /// DecayingParticle this DecayChannel belongs to
+
+    /// DecayingParticle this DecayChannel belongs to
+    DecayingParticle* Parent_;
+
 };
 
 }

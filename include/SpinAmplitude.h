@@ -62,7 +62,11 @@ public:
     /// @}
 
 private:
+
+    /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;
+
+    /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
 };
