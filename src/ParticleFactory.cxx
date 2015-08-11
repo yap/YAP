@@ -50,22 +50,26 @@ QuantumNumbers ParticleFactory::createQuantumNumbers(int PDG)
     TParticlePDG* p = TDatabasePDG::Instance()->GetParticle(PDG);
 
     unsigned char twoJ = std::round(p->Spin() * 2.);
+    signed char P(p->Parity());
 
     // C-parity
-    char C(0);
-    if (p->Charge() != 0) { // only defined for neutral states
+    signed char C(0);
+    if (p->Charge() == 0) { // only defined for neutral states
         if (p == p->AntiParticle())
             C = 1;
         else
             C = -1;
     }
 
+    signed char I = p->Isospin();
+
     // TODO: G-Parity
-    char G = 0;
+    signed char G = 0;
 
-    std::cout << QuantumNumbers(twoJ, char(p->Parity()), C, char(p->Isospin()), G);
+    //std::cout << "p->Spin() " << p->Spin() << " twoJ " << (int)twoJ << " C " << (int)C << "\n";
+    //std::cout << QuantumNumbers(twoJ, P, C, I, G);
 
-    return QuantumNumbers(twoJ, char(p->Parity()), C, char(p->Isospin()), G);
+    return QuantumNumbers(twoJ, P, C, I, G);
 }
 
 }

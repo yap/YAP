@@ -3,7 +3,7 @@
 namespace yap {
 
 //-------------------------
-QuantumNumbers::QuantumNumbers(unsigned char twoJ, char P, char C, char I, char G) :
+QuantumNumbers::QuantumNumbers(unsigned char twoJ, signed char P, signed char C, signed char I, signed char G) :
     TwoJ_(twoJ),
     P_(P),
     C_(C),
@@ -23,8 +23,13 @@ bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 
 //-------------------------
 std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj) {
-       os << "J: " << obj.J() << " P: " << obj.P() << " C: " << obj.C() << "\n";
-       return os;
+  if (obj.C() != 0)
+    os << "JPC = " << (int)obj.J() << (obj.P()>0?"+":"-") << (obj.C()>0?"+":"-");
+  else
+    os << "JP = " << (int)obj.J() << (obj.P()>0?"+":"-");
+
+  os << "\n";
+  return os;
 }
 
 }

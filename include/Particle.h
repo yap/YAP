@@ -49,6 +49,9 @@ public:
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
+    QuantumNumbers& quantumNumbers()
+    { return QuantumNumbers_; }
+
     /// \name Getters
     /// @{
 

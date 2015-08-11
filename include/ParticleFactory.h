@@ -33,6 +33,7 @@ class Particle;
 
 /// \class Particle
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
+/// WARNING: TDatabasePDG up to now does NOT read or fill spins. Spins are always 0.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
