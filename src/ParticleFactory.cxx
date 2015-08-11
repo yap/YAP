@@ -1,8 +1,10 @@
 #include "ParticleFactory.h"
 
 #include "BreitWigner.h"
-
 #include "logging.h"
+
+#include <fstream>
+#include <iostream>
 
 namespace yap {
 
@@ -78,7 +80,7 @@ void ParticleFactory::readPDT(const std::string fname)
      *
      */
 
-    ifstream indec;
+    std::ifstream indec;
 
     indec.open(fname.c_str());
 
