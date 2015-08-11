@@ -22,14 +22,15 @@ bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 }
 
 //-------------------------
-std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj) {
-  if (obj.C() != 0)
-    os << "JPC = " << (int)obj.J() << (obj.P()>0?"+":"-") << (obj.C()>0?"+":"-");
-  else
-    os << "JP = " << (int)obj.J() << (obj.P()>0?"+":"-");
+std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj)
+{
+    if (obj.C() != 0)
+        os << "JPC = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-") << (obj.C() > 0 ? "+" : "-");
+    else
+        os << "JP = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-");
 
-  os << "\n";
-  return os;
+    os << "\n";
+    return os;
 }
 
 }

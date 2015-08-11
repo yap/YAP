@@ -44,6 +44,9 @@ int main( int argc, char** argv)
   factory.createChannel(D, rho, omega, 2);
 
 
+
+
+
   //std::cout << "rho " << rho->quantumNumbers();
-  assert(rho->consistent());
+  assert(D->consistent());
 }
