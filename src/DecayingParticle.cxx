@@ -4,6 +4,8 @@
 #include "logging.h"
 #include "QuantumNumbers.h"
 
+#include <iomanip>
+
 namespace yap {
 
 //-------------------------
@@ -39,7 +41,7 @@ bool DecayingParticle::consistent() const
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
 
     for (unsigned i = 0; i < nChannels(); ++i) {
-        const DecayChannel* c = this->getChannel(i);
+        const DecayChannel* c = this->channel(i);
         if (this != c->parent()) {
             LOG(ERROR) << "DecayingParticle::consistent() - DecayChannels does not point back to this DecayingParticle.";
             return false; // channel consistency check requires correct pointer
@@ -74,7 +76,7 @@ bool DecayingParticle::consistent() const
 const std::vector<const FinalStateParticle*> DecayingParticle::finalStateParticles(unsigned int channel) const
 {
     std::vector<const FinalStateParticle*> fsps;
-    const Daughters& daughters = this->getChannel(channel)->daughters();
+    const Daughters& daughters = this->channel(channel)->daughters();
 
     for (const Particle* d : daughters) {
         if (dynamic_cast<const FinalStateParticle*>(d))
@@ -97,5 +99,50 @@ void DecayingParticle::addChannel(DecayChannel* c)
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
     Channels_.back()->setParent(this);
 }
+
+//-------------------------
+void DecayingParticle::printDecayChainLevel(int level) const
+{
+    // get maximum length of particle names
+    static unsigned padding = 0;
+    if (padding == 0 || level == -1) {
+        for (unsigned int i = 0; i < nChannels(); ++i) {
+            padding = std::max(padding, (unsigned)this->name().length());
+            padding = std::max(padding, (unsigned)channel(i)->daughters()[0]->name().length());
+            padding = std::max(padding, (unsigned)channel(i)->daughters()[1]->name().length());
+
+            if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[0])) {
+                static_cast<DecayingParticle*>(channel(i)->daughters()[0])->printDecayChainLevel(-1);
+            }
+            if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[1])) {
+                static_cast<DecayingParticle*>(channel(i)->daughters()[1])->printDecayChainLevel(-1);
+            }
+
+            if (level == -1)
+                return;
+        }
+    }
+
+    for (unsigned int i = 0; i < nChannels(); ++i) {
+        if (i > 0)
+            std::cout << "\n" << std::setw(level * (padding * 3 + 13)) << "";
+        std::cout << std::left << std::setw(padding) << this->name() << " -> "
+                  << std::setw(padding) << channel(i)->daughters()[0]->name()
+                  << " " << std::setw(padding) << channel(i)->daughters()[1]->name()
+                  << "(l=" << (int)channel(i)->decayAngularMomentum() << ")";
+        if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[0])) {
+            std::cout << ",  ";
+            static_cast<DecayingParticle*>(channel(i)->daughters()[0])->printDecayChainLevel(level + 1);
+        }
+        if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[1])) {
+            std::cout << ",  ";
+            static_cast<DecayingParticle*>(channel(i)->daughters()[1])->printDecayChainLevel(level + 1);
+        }
+    }
+
+    if (level == 0)
+        std::cout << "\n";
+}
+
 
 }

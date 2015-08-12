@@ -50,15 +50,20 @@ int main( int argc, char** argv)
   yap::Resonance* a_1 = factory.createResonanceBreitWigner(20213, radialSize);
   factory.createChannel(a_1, sigma, piPlus, 1);
 
-  factory.createChannel(a_1, rho, piPlus, 0);
-  factory.createChannel(a_1, rho, piPlus, 2);
+  factory.createChannel(a_1, rho, piPlus, 0); // S-wave
+  factory.createChannel(a_1, rho, piPlus, 1); // not in Focus model
+  factory.createChannel(a_1, rho, piPlus, 2); // D-wave
 
   factory.createChannel(D, a_1, piMinus, 1);
 
 
-
+  // R pi pi channels
+  //yap::Resonance* f_0_980 = factory.createResonanceBreitWigner(9000221, radialSize);
+  //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
   //std::cout << "rho " << rho->quantumNumbers();
   assert(D->consistent());
+  D->printDecayChain();
+
   std::cout << "alright! \n";
 }

@@ -66,7 +66,7 @@ public:
     { return Channels_.size(); }
 
     /// Return Channel i
-    const DecayChannel* getChannel(unsigned i) const
+    const DecayChannel* channel(unsigned i) const
     { return Channels_.at(i).get(); }
 
     /// \return Radial size [GeV^-1]
@@ -84,7 +84,13 @@ public:
 
     /// @}
 
+    /// Print complete decay chain
+    void printDecayChain() const
+    { printDecayChainLevel(0); }
+
 private:
+
+    void printDecayChainLevel(int level) const;
 
     /// vector of decay channel objects
     std::vector< std::unique_ptr<yap::DecayChannel> > Channels_;
