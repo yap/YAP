@@ -69,6 +69,10 @@ public:
     const DecayChannel* channel(unsigned i) const
     { return Channels_.at(i).get(); }
 
+    /// Return Channel i
+    DecayChannel* channel(unsigned i)
+    { return Channels_.at(i).get(); }
+
     /// \return Radial size [GeV^-1]
     double radialSize() const
     { return RadialSize_; }
@@ -83,6 +87,10 @@ public:
     { RadialSize_ = r; }
 
     /// @}
+
+    /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
+    /// Check if this is the case, and share SpinAmplitudes
+    void optimizeSpinAmplitudeSharing();
 
     /// Print complete decay chain
     void printDecayChain() const

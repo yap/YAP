@@ -5,7 +5,8 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude) :
+DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L,
+                           std::shared_ptr<SpinAmplitude> spinAmplitude) :
     Daughters_( {daughterA, daughterB}),
             L_(L),
             BlattWeisskopf_(this),
@@ -32,17 +33,22 @@ bool DecayChannel::consistent() const
     }
 
     consistent &= BlattWeisskopf_.consistent();
-    consistent &= SpinAmplitude_.consistent();
+    consistent &= spinAmplitude()->consistent();
 
     // check size of spin amplitude quantum numbers and size of daughters
-    if (SpinAmplitude_.finalQuantumNumbers().size() != Daughters_.size()) {
+    if (spinAmplitude()->finalQuantumNumbers().size() != Daughters_.size()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers object and daughters object size mismatch";
         consistent = false;
     }
 
     // check if QuantumNumbers of SpinAmplitude objects match with Particles
+    if (spinAmplitude()->initialQuantumNumbers() != parent()->quantumNumbers()) {
+        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of parent and SpinResonance don't match.";
+        consistent = false;
+    }
+
     for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        if (SpinAmplitude_.finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
+        if (spinAmplitude()->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
             LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of " << i << " and SpinResonance don't match.";
             consistent = false;
         }
@@ -90,7 +96,7 @@ bool DecayChannel::consistent() const
     }
 
     // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-    if (spinAmplitude().initialQuantumNumbers() != parent()->quantumNumbers()) {
+    if (spinAmplitude()->initialQuantumNumbers() != parent()->quantumNumbers()) {
         LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of SpinAmplitude  and this channel's resonance don't match.";
         consistent =  false;
     }

@@ -35,7 +35,7 @@ bool DecayingParticle::consistent() const
 
     if (Channels_.empty()) {
         LOG(ERROR) << "DecayingParticle::consistent() - no channels specified.";
-        return false; // furhter checks require at least one channel
+        return false; // further checks require at least one channel
     }
 
     const std::vector<const FinalStateParticle*> fsps0 = this->finalStateParticles(0);
@@ -98,6 +98,43 @@ void DecayingParticle::addChannel(DecayChannel* c)
 {
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
     Channels_.back()->setParent(this);
+}
+
+//-------------------------
+void DecayingParticle::optimizeSpinAmplitudeSharing()
+{
+    for (unsigned int i = 0; i < nChannels(); ++i) {
+        // recursive call for daughters
+        if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[0])) {
+            static_cast<DecayingParticle*>(channel(i)->daughters()[0])->optimizeSpinAmplitudeSharing();
+        }
+        if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[1])) {
+            static_cast<DecayingParticle*>(channel(i)->daughters()[1])->optimizeSpinAmplitudeSharing();
+        }
+
+        for (unsigned int j = i + 1; j < nChannels(); ++j) {
+            // compare pointer adresses
+            if ( channel(i)->spinAmplitude() == channel(j)->spinAmplitude() )
+                continue; // same objects already
+
+            // compare SpinAmplitude objects
+            if  ( *(channel(i)->spinAmplitude()) == *(channel(j)->spinAmplitude()) ) {
+                LOG(INFO) << "Share amplitudes of  "
+                          << this->name() << " -> "
+                          << channel(i)->daughters()[0]->name()
+                          << " " << channel(i)->daughters()[1]->name()
+                          << " (l=" << (int)channel(i)->decayAngularMomentum() << ")"
+                          << "  and  " << this->name() << " -> "
+                          << channel(j)->daughters()[0]->name()
+                          << " " << channel(j)->daughters()[1]->name()
+                          << " (l=" << (int)channel(j)->decayAngularMomentum() << ")";
+
+                channel(j)->sharedSpinAmplitude().reset();
+                channel(j)->sharedSpinAmplitude() = channel(i)->sharedSpinAmplitude() ;
+            }
+
+        }
+    }
 }
 
 //-------------------------

@@ -61,8 +61,17 @@ int main( int argc, char** argv)
   //yap::Resonance* f_0_980 = factory.createResonanceBreitWigner(9000221, radialSize);
   //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
-  //std::cout << "rho " << rho->quantumNumbers();
+
+
+  /*std::cout << piPlus->quantumNumbers();
+  std::cout << rho->quantumNumbers();
+  std::cout << omega->quantumNumbers();*/
+
   assert(D->consistent());
+  D->optimizeSpinAmplitudeSharing();
+  assert(D->consistent());
+
+  //std::cout << "rho " << rho->quantumNumbers();
   D->printDecayChain();
 
   std::cout << "alright! \n";

@@ -24,4 +24,12 @@ bool SpinAmplitude::consistent() const
     return true;
 }
 
+//-------------------------
+bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
+{
+    return (lhs.InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_
+            && lhs.FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]
+            && lhs.FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]);
+}
+
 }

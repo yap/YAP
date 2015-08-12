@@ -61,6 +61,9 @@ public:
 
     /// @}
 
+    /// Compare QuantumNumbers
+    friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs);
+
 private:
 
     /// Initial-state quantum numbers

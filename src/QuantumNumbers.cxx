@@ -38,6 +38,7 @@ bool QuantumNumbers::consistent() const
 //-------------------------
 bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 {
+    //std::cout << lhs << " == " << rhs << "?\n";
     return (lhs.TwoJ_ == rhs.TwoJ_
             && lhs.P_ == rhs.P_
             && lhs.C_ == rhs.C_
@@ -54,7 +55,7 @@ std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj)
     else
         os << "JP = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-");
 
-    os << "\n";
+    //os << "\n";
     return os;
 }
 

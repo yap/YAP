@@ -24,7 +24,8 @@
 #include "BlattWeisskopf.h"
 #include "Particle.h"
 #include "SpinAmplitude.h"
-#include <tuple>
+
+#include <memory>
 
 namespace yap {
 
@@ -39,7 +40,7 @@ class DecayChannel : public AmplitudeComponent, DataAccessor
 {
 public:
     /// Constructor
-    DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, SpinAmplitude& spinAmplitude);
+    DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// \return Amplitude for decay channel
     virtual Amp amplitude(DataPoint& d) override;
@@ -57,8 +58,13 @@ public:
     unsigned char decayAngularMomentum() const
     { return L_; }
 
-    /// Get SpinAmplitude
-    const SpinAmplitude& spinAmplitude() const {return SpinAmplitude_;}
+    /// Get SpinAmplitude pointer
+    const SpinAmplitude* spinAmplitude() const
+    { return SpinAmplitude_.get(); }
+
+    /// Get shared SpinAmplitude object
+    std::shared_ptr<SpinAmplitude>& sharedSpinAmplitude()
+    { return SpinAmplitude_; }
 
     /// Get free amplitude
     Amp freeAmplitude() const {return FreeAmplitude_;}
@@ -98,7 +104,7 @@ private:
     BlattWeisskopf BlattWeisskopf_;
 
     /// SpinAmplitude can be shared between several DecayChannels
-    const SpinAmplitude& SpinAmplitude_;
+    std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
     /// free ("fit") amplitude to multiply all others by
     Amp FreeAmplitude_;
