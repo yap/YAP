@@ -39,7 +39,7 @@ class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 public:
 
     /// Constructor
-    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
+    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char l);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
@@ -59,6 +59,10 @@ public:
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
 
+    /// Get relative angular momentum between daughters
+    unsigned char decayAngularMomentum() const
+    { return L_; }
+
     /// @}
 
     /// Compare QuantumNumbers
@@ -71,6 +75,9 @@ private:
 
     /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
+
+    /// relative angular momentum between daughters
+    unsigned char L_;
 
 };
 

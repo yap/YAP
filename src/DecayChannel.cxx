@@ -5,10 +5,9 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L,
+DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB,
                            std::shared_ptr<SpinAmplitude> spinAmplitude) :
     Daughters_( {daughterA, daughterB}),
-            L_(L),
             BlattWeisskopf_(this),
             SpinAmplitude_(spinAmplitude),
             FreeAmplitude_(0)
@@ -57,41 +56,6 @@ bool DecayChannel::consistent() const
     // check if BlattWeisskopf points back to this DecayChannel
     if (this != BlattWeisskopf_.decayChannel()) {
         LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
-        consistent =  false;
-    }
-
-    // check charge conservation
-    if (this->parent()->quantumNumbers().Q() != this->daughters()[0]->quantumNumbers().Q() + this->daughters()[1]->quantumNumbers().Q()) {
-        LOG(ERROR) << "DecayChannel::consistent() - charge conservation violated. " <<
-                   "Q(parent) = " << (int)this->parent()->quantumNumbers().Q() <<
-                   "; Q(daughterA) = " << (int)this->daughters()[0]->quantumNumbers().Q() <<
-                   "; Q(daughterB) = " << (int)this->daughters()[1]->quantumNumbers().Q();
-        consistent =  false;
-    }
-
-    // check angular momentum conservation laws
-    int twoL = 2 * this->decayAngularMomentum();
-    int twoJ_P = this->parent()->quantumNumbers().twoJ();
-    int twoJ_A = this->daughters()[0]->quantumNumbers().twoJ();
-    int twoJ_B = this->daughters()[1]->quantumNumbers().twoJ();
-
-    // check if
-    // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
-    bool ok = false;
-    for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
-        for (int rhs = abs(twoL - twoL_AB); rhs <= abs(twoL + twoL_AB); rhs += 2) {
-            if (twoJ_P == rhs) {
-                ok = true;
-                break;
-            }
-            if (ok)
-                break;
-        }
-    }
-
-    if (!ok) {
-        LOG(ERROR) << "DecayChannel::consistent() - angular momentum conservation violated. " <<
-                   "J(parent) = " << .5 * twoJ_P << "; J(daughterA) = " << .5 * twoJ_A << "; J(daughterB) = " << .5 * twoJ_B << "; l = " << .5 * twoL;
         consistent =  false;
     }
 

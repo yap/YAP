@@ -123,11 +123,11 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
                           << this->name() << " -> "
                           << channel(i)->daughters()[0]->name()
                           << " " << channel(i)->daughters()[1]->name()
-                          << " (l=" << (int)channel(i)->decayAngularMomentum() << ")"
+                          << " (l=" << (int)channel(i)->spinAmplitude()->decayAngularMomentum() << ")"
                           << "  and  " << this->name() << " -> "
                           << channel(j)->daughters()[0]->name()
                           << " " << channel(j)->daughters()[1]->name()
-                          << " (l=" << (int)channel(j)->decayAngularMomentum() << ")";
+                          << " (l=" << (int)channel(j)->spinAmplitude()->decayAngularMomentum() << ")";
 
                 channel(j)->sharedSpinAmplitude().reset();
                 channel(j)->sharedSpinAmplitude() = channel(i)->sharedSpinAmplitude() ;
@@ -166,7 +166,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
         std::cout << std::left << std::setw(padding) << this->name() << " -> "
                   << std::setw(padding) << channel(i)->daughters()[0]->name()
                   << " " << std::setw(padding) << channel(i)->daughters()[1]->name()
-                  << "(l=" << (int)channel(i)->decayAngularMomentum() << ")";
+                  << "(l=" << (int)channel(i)->spinAmplitude()->decayAngularMomentum() << ")";
         if (dynamic_cast<DecayingParticle*>(channel(i)->daughters()[0])) {
             std::cout << ",  ";
             static_cast<DecayingParticle*>(channel(i)->daughters()[0])->printDecayChainLevel(level + 1);

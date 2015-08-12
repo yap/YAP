@@ -40,7 +40,7 @@ class DecayChannel : public AmplitudeComponent, DataAccessor
 {
 public:
     /// Constructor
-    DecayChannel(Particle* daughterA, Particle* daughterB, unsigned int L, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(Particle* daughterA, Particle* daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// \return Amplitude for decay channel
     virtual Amp amplitude(DataPoint& d) override;
@@ -53,10 +53,6 @@ public:
 
     /// Get Daughters
     const Daughters& daughters() const {return Daughters_;}
-
-    /// Get relative angular momentum between daughters
-    unsigned char decayAngularMomentum() const
-    { return L_; }
 
     /// Get SpinAmplitude pointer
     const SpinAmplitude* spinAmplitude() const
@@ -96,9 +92,6 @@ private:
 
     /// 2 daughters of the decay
     Daughters Daughters_;
-
-    /// relative angular momentum between daughters
-    unsigned char L_;
 
     /// Blatt-Weisskopf calculator
     BlattWeisskopf BlattWeisskopf_;
