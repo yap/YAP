@@ -8,7 +8,6 @@ set(YAP_SOURCES
   BreitWigner.cxx
   Constants.cxx
   DataAccessor.cxx
-  DataPoint.cxx
   DecayChannel.cxx
   DecayingParticle.cxx
   InitialStateParticle.cxx
