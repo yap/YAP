@@ -28,6 +28,7 @@ namespace yap {
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
 /// \author Johannes Rauch, Daniel Greenwald
+/// \defgroup Data Data-related classes
 
 class DataPoint
 {
@@ -35,15 +36,11 @@ public:
 
     /// \name Constructors
     /// @{
-    
-    /// Default constructor
-    DataPoint()
-        {}
 
     /// 4-momenta constructor
     DataPoint(const std::vector<TLorentzVector>& P) :
         FourMomenta_(P)
-        {}
+    {}
 
     // /// Invariant mass constructor
     // DataPoint(const std::vector<double>& S);
@@ -54,12 +51,12 @@ public:
     /// @{
 
     /// Access to vector of 4-momenta
-    std::vector<TLorentzVector>& FourMomenta()
-        { return FourMomenta_; }
+    std::vector<TLorentzVector>& fourMomenta()
+    { return FourMomenta_; }
 
     /// Const access to vector of 4-momenta
-    const std::vector<TLorentzVector>& FourMomenta() const
-        { return FourMomenta_; }
+    const std::vector<TLorentzVector>& fourMomenta() const
+    { return FourMomenta_; }
 
     /// @}
 
@@ -67,7 +64,7 @@ protected:
 
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
-    
+
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
