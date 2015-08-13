@@ -5,7 +5,7 @@
 #include "logging.h"
 
 namespace yap {
-    
+
 //-------------------------
 bool DataSet::addDataPoint(DataPoint&& d)
 {
