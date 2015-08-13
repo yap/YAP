@@ -30,7 +30,7 @@ namespace yap {
 /// \class Particle
 /// \brief Abstract Particle base class.
 /// \author Johannes Rauch, Daniel Greenwald
-/// \defgroup Particle Particle
+/// \defgroup Particle Particle-related classes
 
 class Particle : public AmplitudeComponent
 {
