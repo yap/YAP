@@ -1,27 +1,18 @@
-#include "ParticleFactory.h"
-
-#include <assert.h>
-#include <iostream>
-
 #include "logging.h"
 INITIALIZE_EASYLOGGINGPP
 
+#include "DataSet.h"
+#include "DataPoint.h"
+
+#include <TLorentzVector.h>
+
 int main( int argc, char** argv)
 {
-  yap::ParticleFactory factory;
 
-  // final state particles
-  yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211);
-  yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211);
+    std::vector<TLorentzVector> P;
+    P.push_back(TLorentzVector(0,1,2,3));
+    P.push_back(TLorentzVector(1,2,3,0));
+    P.push_back(TLorentzVector(2,3,0,1));
+    P.push_back(TLorentzVector(3,0,1,2));
 
-  yap::InitialState = InitialStateParticle(QuantumNumbers(0, -1, -1, 1, 0)
-
-  double radialSize = 1.;
-  unsigned L = 0;
-  yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
-  factory.createChannel(rho, piPlus, piMinus, L);
-
-
-
-  assert(rho->consistent());
 }

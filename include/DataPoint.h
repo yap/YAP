@@ -23,6 +23,8 @@
 
 #include <TLorentzVector.h>
 
+#include <vector>
+
 namespace yap {
 
 /// \class DataPoint
