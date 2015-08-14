@@ -51,9 +51,6 @@ private:
 
 };
 
-// global
-extern InitialStateParticle* InitialState;
-
 }
 
 #endif

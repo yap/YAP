@@ -21,20 +21,33 @@
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
-#include "DataPoint.h"
+#include <vector>
 
 namespace yap {
+
+class DataPoint;
 
 /// \class DataSet
 /// \brief Class holding a set of DataPoint objects.
 /// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
 
 class DataSet
 {
 public:
 
-    /// Constructor
-    DataSet();
+    /// Add data point via move
+    /// \param d DataPoint to move into DataSet
+    /// \return Success of action
+    bool addDataPoint(DataPoint&& d);
+
+    /// Add data point via copy
+    /// \param d DataPoint to copy into DataSet
+    /// \return Success of action
+    bool addDataPoint(const DataPoint& d);
+
+    /// Check if data point is consisent with data set
+    bool consisent(const DataPoint& d) const;
 
 private:
 

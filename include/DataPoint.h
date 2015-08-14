@@ -21,35 +21,57 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
+#include <TLorentzVector.h>
+
+#include <vector>
+
 namespace yap {
 
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
 /// \author Johannes Rauch, Daniel Greenwald
+/// \defgroup Data Data-related classes
 
 class DataPoint
 {
 public:
 
-    /// Default constructor
-    DataPoint();
+    /// \name Constructors
+    /// @{
 
-    // /// 4-momenta constructor
-    // DataPoint(const std::vector<TLorentzVector>& P);
+    /// 4-momenta constructor
+    DataPoint(const std::vector<TLorentzVector>& P) :
+        FourMomenta_(P)
+    {}
 
     // /// Invariant mass constructor
     // DataPoint(const std::vector<double>& S);
 
+    /// @}
+
+    /// \name Data access
+    /// @{
+
+    /// Access to vector of 4-momenta
+    std::vector<TLorentzVector>& fourMomenta()
+    { return FourMomenta_; }
+
+    /// Const access to vector of 4-momenta
+    const std::vector<TLorentzVector>& fourMomenta() const
+    { return FourMomenta_; }
+
+    /// @}
+
 protected:
 
-    // /// Actual data values
-    // /// first index is for the DataAccessor
-    // /// second index is for the symmeterization state (as known by the DataAccessor)
-    // /// third index is internal to the DataAccessor
-    // std::vector<std::vector<std::vector<double> > > Data_;
+    /// Vector of 4-momenta of particles in event
+    std::vector<TLorentzVector> FourMomenta_;
 
-    // std::vector<TLorentzVector> FourMomentum_;
-    // std::vector<double> SquaredMass_;
+    /// Data storage for all DataAccessors
+    /// first index is for the DataAccessor
+    /// second index is for the symmeterization state (as known by the DataAccessor)
+    /// third index is internal to the DataAccessor
+    std::vector<std::vector<std::vector<double> > > Data_;
 
 };
 
