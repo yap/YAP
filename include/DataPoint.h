@@ -40,9 +40,7 @@ public:
     /// @{
 
     /// 4-momenta constructor
-    DataPoint(const std::vector<TLorentzVector>& P) :
-        FourMomenta_(P)
-    {}
+    DataPoint(const std::vector<TLorentzVector>& P);
 
     // /// Invariant mass constructor
     // DataPoint(const std::vector<double>& S);
