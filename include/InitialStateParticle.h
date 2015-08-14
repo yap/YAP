@@ -44,6 +44,12 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// Check consistency of data point with this initial state and its final state particles
+    /// \param d DataPoint to check
+    /// \todo Flesh out
+    virtual bool consisent(const DataPoint& d) const
+    { return true; }
+
 private:
 
     // vector of final state particles
