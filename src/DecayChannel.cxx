@@ -75,7 +75,7 @@ bool DecayChannel::consistent() const
     }
 
     if (! consistent) {
-        LOG(ERROR) << "Channel is not consistent:  " << this->parent()->name() << " - > " << this->daughters()[0]->name() << " + " << this->daughters()[1]->name() << "\n";
+        LOG(ERROR) << "Channel is not consistent:  " << this->parent()->name() << " -> " << this->daughters()[0]->name() << " " << this->daughters()[1]->name() << "\n";
     }
     return consistent;
 }

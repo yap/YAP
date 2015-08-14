@@ -63,15 +63,10 @@ int main( int argc, char** argv)
 
 
 
-  /*std::cout << piPlus->quantumNumbers();
-  std::cout << rho->quantumNumbers();
-  std::cout << omega->quantumNumbers();*/
-
   assert(D->consistent());
   D->optimizeSpinAmplitudeSharing();
   assert(D->consistent());
 
-  //std::cout << "rho " << rho->quantumNumbers();
   D->printDecayChain();
 
   std::cout << "alright! \n";
