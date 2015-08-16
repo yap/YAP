@@ -59,7 +59,7 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
     if (A.Daughters_.size() != B.Daughters_.size())
         return false;
     for (unsigned i = 0; i < A.Daughters_.size(); ++i)
-        if (A.Daughters_[i] != B.Daughters_[i])
+        if (*(A.Daughters_[i]) != *(B.Daughters_[i]))
             return false;
 
     // a match!

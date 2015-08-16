@@ -66,6 +66,10 @@ public:
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
 
+    /// inequality operator
+    friend bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
+    { return !(A == B); }
+
 protected:
     std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
     std::vector<ParticleIndex> Indices_;
