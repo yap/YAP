@@ -23,6 +23,9 @@
 
 #include "Amp.h"
 #include "DataPoint.h"
+#include "ParticleCombination.h"
+
+#include <map>
 
 namespace yap {
 
@@ -49,14 +52,26 @@ public:
 
     /// @}
 
+    /// \name Access to indices
+    /// @{
+
     /// \return index inside DataPoint structure that this DataAccessor accesses
-    unsigned int index() const
+    unsigned index() const
     { return Index_; }
+
+    /// \return index inside row of DataPoint for the requested symmetrization
+    unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
+    { return SymmetrizationIndices_.at(c); }
+
+    /// @}
 
 protected:
 
     /// Flag to mark whether recalculation needs to take place
     bool Recalculate_;
+
+    /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
+    std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;
 
 private:
 

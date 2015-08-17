@@ -23,6 +23,7 @@
 
 #include "ParticleIndex.h"
 
+#include <memory>
 #include <vector>
 
 namespace yap {
@@ -31,14 +32,47 @@ namespace yap {
 /// \brief Stores combinations of ParticleIndex types
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ParticleCombination : public std::vector<ParticleIndex>
+class ParticleCombination
 {
+public:
+
+    ParticleCombination() = default;
+
+    /// Final-state-particle constructor
+    ParticleCombination(ParticleIndex index);
+
+    /// \name Getters
+    /// @{
+
+    /// Get vector of indices
+    const std::vector<ParticleIndex>& indices() const
+    { return Indices_; }
+
+    /// Get vector of daughters as weak_ptr's
+    std::vector<std::weak_ptr<ParticleCombination> > daughters() const
+    { return std::vector<std::weak_ptr<ParticleCombination> >(Daughters_.begin(), Daughters_.end()); }
+
+    /// @}
+
+    /// Add daughter ParticleCombination
+    /// \param daughter Shared pointer to ParticleCombination object representing a daughter
+    /// \return Success of action
+    bool addDaughter(std::shared_ptr<ParticleCombination> daughter);
+
     /// Checks consistency of combination
     /// by checking for absence of duplicate entries
     bool consistent() const;
 
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
+
+    /// inequality operator
+    friend bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
+    { return !(A == B); }
+
+protected:
+    std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
+    std::vector<ParticleIndex> Indices_;
 };
 
 }
