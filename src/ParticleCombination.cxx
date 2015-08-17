@@ -7,9 +7,21 @@
 namespace yap {
 
 //-------------------------
+ParticleCombination::ParticleCombination()
+{
+}
+
+//-------------------------
 ParticleCombination::ParticleCombination(ParticleIndex index) :
     Indices_(1, index)
 {
+}
+
+//-------------------------
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c)
+{
+    for (std::shared_ptr<ParticleCombination> d : c)
+        addDaughter(d);
 }
 
 //-------------------------
@@ -20,6 +32,8 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
         return false;
     }
 
+    /// \todo Check that new daughter does not share content with other daughters.
+
     Daughters_.push_back(daughter);
     Indices_.insert(Indices_.end(), daughter->indices().begin(), daughter->indices().end());
     return true;
@@ -28,14 +42,36 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 //-------------------------
 bool ParticleCombination::consistent() const
 {
+    // should have no daughters or 2 or more daughters:
+    if (Daughters_.size() == 1) {
+        LOG(ERROR) << "ParticleCombination::consistent() - has only one daughter.";
+        return false;
+    }
+
+    // if empty, return inconsistent
+    if (Indices_.empty()) {
+        LOG(ERROR) << "ParticleCombination::consistent() - has no indices.";
+        return false;
+    }
+
+    // if Daugthers_ empty, should have one and only index
+    if (Daughters_.empty()) {
+        if (Indices_.size() != 1) {
+            LOG(ERROR) << "ParticleCombination::consistent() - contains wrong number of indices for final-state particle (" << Indices_.size() << " != 1)";
+            return false;
+        } else
+            // don't need to check indices below
+            return true;
+    }
+
+    // Check indices & and then daughters
     bool result = true;
 
-    // create unique_copy of Indices_
-    std::vector<ParticleIndex> U;
-    std::unique_copy(Indices_.begin(), Indices_.end(), U.begin());
+    // create unique_copy of Indices_ (as set)
+    std::set<ParticleIndex> U(Indices_.begin(), Indices_.end());
     // check unique_copy-object's size == this object's size
     if (U.size() != Indices_.size()) {
-        LOG(ERROR) << "ParticleCombination::consistent - index vector contains duplicate entries.";
+        LOG(ERROR) << "ParticleCombination::consistent - index vector contains duplicate entries (" << U.size() << " != " << Indices_.size() << ").";
         result = false;
     }
 
@@ -64,6 +100,33 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 
     // a match!
     return true;
+}
+
+/////////////////////////
+// Static shtuff:
+
+std::set<std::shared_ptr<ParticleCombination> > ParticleCombination::ParticleCombinationSet_;
+
+//-------------------------
+std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<ParticleCombination> pc)
+{
+    for (std::shared_ptr<ParticleCombination> d : ParticleCombinationSet_)
+        if ((*pc) == (*d))
+            return d;
+    ParticleCombinationSet_.insert(pc);
+    return pc;
+}
+
+//-------------------------
+std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleIndex i)
+{
+    return uniqueSharedPtr(std::make_shared<ParticleCombination>(i));
+}
+
+//-------------------------
+std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<std::shared_ptr<ParticleCombination> > c)
+{
+    return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
 }
 
 }
