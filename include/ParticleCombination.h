@@ -24,6 +24,7 @@
 #include "ParticleIndex.h"
 
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
@@ -36,10 +37,14 @@ class ParticleCombination
 {
 public:
 
-    ParticleCombination() = default;
+    /// \todo Private constructor to force use of static creation functions?
+    ParticleCombination();
 
     /// Final-state-particle constructor
     ParticleCombination(ParticleIndex index);
+
+    /// Resonance particle constructor
+    ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c);
 
     /// \name Getters
     /// @{
@@ -73,7 +78,39 @@ public:
 protected:
     std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
     std::vector<ParticleIndex> Indices_;
+
+
+/// \name Static methods for creating/retrieving ParticleCombination's
+/// @{
+
+// Following code is for managing unique shared pointers for particle
+// combinations across all of YAP
+
+public:
+
+    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
+    /// \param i ParticleIndex for FSP
+    static std::shared_ptr<ParticleCombination> uniqueSharedPtr(std::shared_ptr<ParticleCombination> pc);
+
+    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
+    /// \param i ParticleIndex for FSP
+    static std::shared_ptr<ParticleCombination> uniqueSharedPtr(ParticleIndex i);
+
+    /// return existing shared_ptr for ParticleCombination, if exists; otherwise creates and returns
+    /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
+    static std::shared_ptr<ParticleCombination> uniqueSharedPtr(std::vector<std::shared_ptr<ParticleCombination> > c);
+
+    static const std::set<std::shared_ptr<ParticleCombination> >& particleCombinationSet()
+    { return ParticleCombinationSet_; }
+
+private:
+
+    /// Static set of all particle combinations created throughout code
+    static std::set<std::shared_ptr<ParticleCombination> > ParticleCombinationSet_;
+
+/// @}
 };
+
 
 }
 
