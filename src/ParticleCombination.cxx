@@ -32,10 +32,14 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
         return false;
     }
 
-    /// \todo Check that new daughter does not share content with other daughters.
+    /// \todo Check that new daughter does not share content with other daughters?
 
+    // add daughter to vector
     Daughters_.push_back(daughter);
+
+    // copy daughter's indices into Indices_
     Indices_.insert(Indices_.end(), daughter->indices().begin(), daughter->indices().end());
+
     return true;
 }
 
@@ -76,8 +80,8 @@ bool ParticleCombination::consistent() const
     }
 
     // check daughers
-    for (unsigned i = 0; i < Daughters_.size(); ++i)
-        result &= Daughters_[i]->consistent();
+    for (std::shared_ptr<ParticleCombination> d : Daughters_)
+        result &= d->consistent();
 
     return result;
 }
