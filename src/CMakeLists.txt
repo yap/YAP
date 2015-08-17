@@ -8,6 +8,7 @@ set(YAP_SOURCES
   BreitWigner.cxx
   Constants.cxx
   DataAccessor.cxx
+  DataPoint.cxx
   DataSet.cxx
   DecayChannel.cxx
   DecayingParticle.cxx
@@ -15,7 +16,6 @@ set(YAP_SOURCES
   MassShape.cxx
   ParticleCombination.cxx
   Particle.cxx
-  ParticleCombination.cxx
   ParticleFactory.cxx
   QuantumNumbers.cxx
   Resonance.cxx

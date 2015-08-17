@@ -62,17 +62,13 @@ int main( int argc, char** argv)
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
 
-
-    /*std::cout << piPlus->quantumNumbers();
-    std::cout << rho->quantumNumbers();
-    std::cout << omega->quantumNumbers();*/
-
+    // consistency and optimizations
     assert(D->consistent());
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());
 
-    //std::cout << "rho " << rho->quantumNumbers();
     D->printDecayChain();
+
 
     std::cout << "alright! \n";
 }

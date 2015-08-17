@@ -1,9 +1,6 @@
 #include "logging.h"
 INITIALIZE_EASYLOGGINGPP
 
-// #include "DataSet.h"
-// #include "DataPoint.h"
-
 #include "ParticleCombination.h"
 #include "ParticleIndex.h"
 
@@ -12,7 +9,6 @@ INITIALIZE_EASYLOGGINGPP
 #include <set>
 #include <vector>
 
-// #include <TLorentzVector.h>
 
 int main( int argc, char** argv)
 {
