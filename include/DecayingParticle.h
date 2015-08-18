@@ -51,13 +51,20 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// \return vector of pointers to final state particles of channel (recursively checked)
-    /// \param channel Channel to return final state particles for
-    const std::vector<const FinalStateParticle*> finalStateParticles(unsigned int channel = 0) const;
-
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
     virtual void addChannel(DecayChannel* c);
+
+    /// Add a two-body DecayChannel
+    /// \param A daughter particle
+    /// \param B daughter particle
+    /// \param L relative angular momentum between A and B
+    virtual void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned L);
+
+    /// Return final state particles of a channel (vector should be identical for all channels)
+    /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
+    /// \param i index of DecayChannel to return FinalStateParticles of.
+    std::vector< std::shared_ptr<FinalStateParticle> > finalStateParticles(unsigned i = 0) const;
 
     /// \name Getters
     /// @{

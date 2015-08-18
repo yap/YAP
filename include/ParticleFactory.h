@@ -21,17 +21,21 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
-#include "FinalStateParticle.h"
-#include "InitialStateParticle.h"
-#include "MassShape.h"
+#include "ParticleIndex.h"
 #include "QuantumNumbers.h"
-#include "Resonance.h"
 
 #include <map>
+#include <memory>
+#include <vector>
 
 namespace yap {
 
+class DecayingParticle;
+class FinalStateParticle;
+class InitialStateParticle;
+class MassShape;
 class Particle;
+class Resonance;
 
 /// \struct PdlParticleProperties
 /// \brief Data container for storing information gathered from pdl files.
@@ -63,39 +67,32 @@ public:
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \return pointer to new FinalStateParticle object
-    FinalStateParticle* createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
+    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
     /// \return pointer to new InitialStateParticle object
-    InitialStateParticle* createInitialStateParticle(int PDG, double radialSize);
+    std::shared_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
-    Resonance* createResonance(int PDG, double radialSize, MassShape* massShape);
+    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, MassShape* massShape);
 
     /// Create a Resonance from a PDG code. Use BreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    Resonance* createResonanceBreitWigner(int PDG, double radialSize);
+    std::shared_ptr<Resonance> createResonanceBreitWigner(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code. Use RelativisticBreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    Resonance* createResonanceRelativisticBreitWigner(int PDG, double radialSize);
-
-    /// Create and add DecayChannel to parent
-    /// \param parent Particle to add decay channel to
-    /// \param daughterA first daughter particle to add to decay channel
-    /// \param daughterB second daughter particle to add to decay channel
-    /// \param L relative angular momentum between daughters in decay channel
-    void createChannel(DecayingParticle* parent, Particle* daughterA, Particle* daughterB, unsigned L);
+    std::shared_ptr<Resonance> createResonanceRelativisticBreitWigner(int PDG, double radialSize);
 
     /// Create quantum number object from PDG code
     /// \param PDG PDG code to look up

@@ -89,12 +89,12 @@ bool ParticleCombination::consistent() const
 //-------------------------
 bool ParticleCombination::shareIndices(std::shared_ptr<ParticleCombination> B)
 {
-  for (ParticleIndex a : Indices_)
-    for (ParticleIndex b : B->indices())
-      if (a == b)
-        return true;
+    for (ParticleIndex a : Indices_)
+        for (ParticleIndex b : B->indices())
+            if (a == b)
+                return true;
 
-  return false;
+    return false;
 }
 
 //-------------------------

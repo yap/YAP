@@ -1,7 +1,12 @@
 #include "ParticleFactory.h"
 
 #include "BreitWigner.h"
+#include "DecayingParticle.h"
+#include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
+#include "Resonance.h"
+#include "SpinAmplitude.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,40 +14,31 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle* ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
+std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return new FinalStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG, indices);
+    return std::make_shared<FinalStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG, indices);
 }
 
 //-------------------------
-InitialStateParticle* ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
+std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return new InitialStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
+    return std::make_shared<InitialStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
 }
 
 //-------------------------
-Resonance* ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
+std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return new Resonance(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, massShape);
+    return std::make_shared<Resonance>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, massShape);
 }
 
 //-------------------------
-Resonance* ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
+std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return new Resonance(createQuantumNumbers(PDG), p.Mass_, p.Name_,
-                         radialSize, new BreitWigner(p.Mass_, p.Width_) );
-}
-
-//-------------------------
-void ParticleFactory::createChannel(DecayingParticle* parent, Particle* daughterA, Particle* daughterB, unsigned L)
-{
-    std::shared_ptr<yap::SpinAmplitude> sa =
-        std::make_shared<yap::SpinAmplitude>(parent->quantumNumbers(), daughterA->quantumNumbers(), daughterB->quantumNumbers(), L);
-    parent->addChannel(new yap::DecayChannel(daughterA, daughterB, sa));
+    return std::make_shared<Resonance>( createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, new BreitWigner(p.Mass_, p.Width_) );
 }
 
 //-------------------------

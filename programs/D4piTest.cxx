@@ -1,6 +1,9 @@
+#include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
+#include "Particle.h"
 #include "ParticleFactory.h"
+#include "Resonance.h"
 //#include "SpinAmplitude.h"
-//#include "Resonance.h"
 
 #include <assert.h>
 #include <iostream>
@@ -10,51 +13,50 @@ INITIALIZE_EASYLOGGINGPP
 
 int main( int argc, char** argv)
 {
-    yap::ParticleFactory factory("evt.pdl");
+    yap::ParticleFactory factory("../evt.pdl");
 
     // final state particles
-    yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211, {0, 2});
-    yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211, {1, 3});
+    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
+    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
     // initial state particle
     double radialSize = 1.;
-    yap::InitialStateParticle* D = factory.createInitialStateParticle(421, radialSize);
-
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
 
     // rho rho
-    yap::Resonance* rho = factory.createResonanceBreitWigner(113, radialSize);
-    factory.createChannel(rho, piPlus, piMinus, 1);
+    std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
+    rho->addChannel(piPlus, piMinus, 1);
 
-    factory.createChannel(D, rho, rho, 0);
-    factory.createChannel(D, rho, rho, 1);
-    factory.createChannel(D, rho, rho, 2);
+    D->addChannel(rho, rho, 0);
+    D->addChannel(rho, rho, 1);
+    D->addChannel(rho, rho, 2);
 
     // omega omega
-    yap::Resonance* omega = factory.createResonanceBreitWigner(223, radialSize);
-    factory.createChannel(omega, piPlus, piMinus, 1);
+    std::shared_ptr<yap::Resonance> omega = factory.createResonanceBreitWigner(223, radialSize);
+    omega->addChannel(piPlus, piMinus, 1);
 
-    factory.createChannel(D, omega, omega, 0);
-    factory.createChannel(D, omega, omega, 1);
-    factory.createChannel(D, omega, omega, 2);
+    D->addChannel(omega, omega, 0);
+    D->addChannel(omega, omega, 1);
+    D->addChannel(omega, omega, 2);
 
     // rho omega
-    factory.createChannel(D, rho, omega, 0);
-    factory.createChannel(D, rho, omega, 1);
-    factory.createChannel(D, rho, omega, 2);
+    D->addChannel(rho, omega, 0);
+    D->addChannel(rho, omega, 1);
+    D->addChannel(rho, omega, 2);
 
 
     // a_1 channels
-    yap::Resonance* sigma = factory.createResonanceBreitWigner(9000221, radialSize);
-    factory.createChannel(sigma, piPlus, piMinus, 0);
+    std::shared_ptr<yap::Resonance> sigma = factory.createResonanceBreitWigner(9000221, radialSize);
+    sigma->addChannel(piPlus, piMinus, 0);
 
-    yap::Resonance* a_1 = factory.createResonanceBreitWigner(20213, radialSize);
-    factory.createChannel(a_1, sigma, piPlus, 1);
+    std::shared_ptr<yap::Resonance> a_1 = factory.createResonanceBreitWigner(20213, radialSize);
+    a_1->addChannel(sigma, piPlus, 1);
 
-    factory.createChannel(a_1, rho, piPlus, 0); // S-wave
-    factory.createChannel(a_1, rho, piPlus, 1); // not in Focus model
-    factory.createChannel(a_1, rho, piPlus, 2); // D-wave
+    a_1->addChannel(rho, piPlus, 0); // S-wave
+    a_1->addChannel(rho, piPlus, 1); // not in Focus model
+    a_1->addChannel(rho, piPlus, 2); // D-wave
 
-    factory.createChannel(D, a_1, piMinus, 1);
+    D->addChannel(a_1, piMinus, 1);
 
 
     // R pi pi channels

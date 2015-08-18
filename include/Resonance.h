@@ -52,6 +52,8 @@ public:
     /// access MassShape
     const MassShape* massShape() const {return MassShape_.get();}
 
+    using DecayingParticle::addChannel;
+
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
     void addChannel(DecayChannel* c) override;

@@ -28,36 +28,36 @@ DataAccessor::DataAccessor(const DataAccessor& other) :
 //-------------------------
 std::vector<std::shared_ptr<ParticleCombination> > DataAccessor::particleCombinations() const
 {
-  std::vector<std::shared_ptr<ParticleCombination> > retVal;
-  for (auto& kv : SymmetrizationIndices_)
-    retVal.push_back(kv.first);
+    std::vector<std::shared_ptr<ParticleCombination> > retVal;
+    for (auto& kv : SymmetrizationIndices_)
+        retVal.push_back(kv.first);
 
-  return retVal;
+    return retVal;
 }
 
 //-------------------------
 bool DataAccessor::consistent() const
 {
-  if (SymmetrizationIndices_.empty()) {
-    LOG(ERROR) << "DataAccessor::consistent() - SymmetrizationIndices_ is empty.";
-    return false;
-  }
+    if (SymmetrizationIndices_.empty()) {
+        LOG(ERROR) << "DataAccessor::consistent() - SymmetrizationIndices_ is empty.";
+        return false;
+    }
 
-  bool result = true;
-  for (auto& kv : SymmetrizationIndices_) {
-    result &= kv.first->consistent();
-  }
-  return result;
+    bool result = true;
+    for (auto& kv : SymmetrizationIndices_) {
+        result &= kv.first->consistent();
+    }
+    return result;
 }
 
 //-------------------------
 void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
-  if (SymmetrizationIndices_.find(c) == SymmetrizationIndices_.end()) {
-    // simple running index
-    unsigned index = SymmetrizationIndices_.size();
-    SymmetrizationIndices_[c] = index;
-  }
+    if (SymmetrizationIndices_.find(c) == SymmetrizationIndices_.end()) {
+        // simple running index
+        unsigned index = SymmetrizationIndices_.size();
+        SymmetrizationIndices_[c] = index;
+    }
 }
 
 }

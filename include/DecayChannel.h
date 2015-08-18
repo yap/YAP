@@ -19,18 +19,20 @@
 #ifndef yap_DecayChannel_h
 #define yap_DecayChannel_h
 
+#include "AmplitudeComponent.h"
+#include "BlattWeisskopf.h"
 #include "DataAccessor.h"
 
-#include "BlattWeisskopf.h"
-#include "Particle.h"
-#include "SpinAmplitude.h"
-
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace yap {
 
 class DecayingParticle;
-typedef std::array<Particle*, 2> Daughters;
+class FinalStateParticle;
+class Particle;
+class SpinAmplitude;
 
 /// \class InitialStateParticle
 /// \brief Class implementing a decay channel.
@@ -39,8 +41,11 @@ typedef std::array<Particle*, 2> Daughters;
 class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
-    /// Constructor
-    DecayChannel(Particle* daughterA, Particle* daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    /// N-particle Constructor [at the moment only valid for 2 particles]
+    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
+
+    /// 2-particle Constructor
+    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// \return Amplitude for decay channel
     virtual Amp amplitude(DataPoint& d) override;
@@ -48,22 +53,30 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
+    /// cast into string
+    operator std::string() const;
+
+    /// \return vector of shared_ptr's to final-state particles of channel (recursively checked)
+    std::vector<std::shared_ptr<FinalStateParticle> > finalStateParticles() const;
+
     /// \name Getters
     /// @{
 
     /// Get Daughters
-    const Daughters& daughters() const {return Daughters_;}
+    const std::vector<std::shared_ptr<Particle> >& daughters() const
+    { return Daughters_; }
 
-    /// Get SpinAmplitude pointer
+    /// Get SpinAmplitude object
+    std::shared_ptr<SpinAmplitude>& spinAmplitude()
+    { return SpinAmplitude_; }
+
+    /// Get SpinAmplitude object (const)
     const SpinAmplitude* spinAmplitude() const
     { return SpinAmplitude_.get(); }
 
-    /// Get shared SpinAmplitude object
-    std::shared_ptr<SpinAmplitude>& sharedSpinAmplitude()
-    { return SpinAmplitude_; }
-
     /// Get free amplitude
-    Amp freeAmplitude() const {return FreeAmplitude_;}
+    Amp freeAmplitude() const
+    { return FreeAmplitude_; }
 
     /// Get parent particle
     DecayingParticle* parent()
@@ -88,10 +101,10 @@ public:
 
     /// @}
 
-private:
+protected:
 
     /// 2 daughters of the decay
-    Daughters Daughters_;
+    std::vector<std::shared_ptr<Particle> > Daughters_;
 
     /// Blatt-Weisskopf calculator
     BlattWeisskopf BlattWeisskopf_;

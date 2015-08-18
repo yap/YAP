@@ -2,47 +2,59 @@
 
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
-#include "Resonance.h"
 #include "logging.h"
+#include "Particle.h"
+#include "Resonance.h"
+#include "SpinAmplitude.h"
 
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB,
-                           std::shared_ptr<SpinAmplitude> spinAmplitude) :
-    Daughters_( {daughterA, daughterB}),
-            BlattWeisskopf_(this),
-            SpinAmplitude_(spinAmplitude),
-            FreeAmplitude_(0)
+DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude) :
+    DecayChannel( {daughterA, daughterB}, spinAmplitude)
 {
-  // set symmetrization indices
-  std::vector<std::shared_ptr<ParticleCombination> > PCsA;
-  if (dynamic_cast<DataAccessor*>(Daughters_[0]))
-    PCsA = dynamic_cast<DataAccessor*>(Daughters_[0])->particleCombinations();
-  else if (dynamic_cast<FinalStateParticle*>(Daughters_[0]))
-    PCsA = dynamic_cast<FinalStateParticle*>(Daughters_[0])->particleCombinations();
-  else
-    LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughterA";
+}
 
-  std::vector<std::shared_ptr<ParticleCombination> > PCsB;
-  if (dynamic_cast<DataAccessor*>(Daughters_[1]))
-    PCsB = dynamic_cast<DataAccessor*>(Daughters_[1])->particleCombinations();
-  else if (dynamic_cast<FinalStateParticle*>(Daughters_[1]))
-    PCsB = dynamic_cast<FinalStateParticle*>(Daughters_[1])->particleCombinations();
-  else
-    LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughterB";
-
-  for (std::shared_ptr<ParticleCombination> PCA : PCsA)
-    for (std::shared_ptr<ParticleCombination> PCB : PCsB) {
-      if (! PCA->shareIndices(PCB)) {
-        std::shared_ptr<yap::ParticleCombination> a_b = yap::ParticleCombination::uniqueSharedPtr({PCA, PCB});
-        // \todo what if daughterA == daughterB
-
-        this->addSymmetrizationIndex(a_b);
-        BlattWeisskopf_.addSymmetrizationIndex(a_b);
-        SpinAmplitude_->addSymmetrizationIndex(a_b);
-      }
+//-------------------------
+DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
+    Daughters_(daughters),
+    BlattWeisskopf_(this),
+    SpinAmplitude_(spinAmplitude),
+    FreeAmplitude_(0)
+{
+    // set symmetrization indices
+    std::vector<std::vector<std::shared_ptr<ParticleCombination> > > PCs;
+    for (std::shared_ptr<Particle> d : Daughters_) {
+        if (std::dynamic_pointer_cast<DataAccessor>(d))
+            PCs.push_back(std::dynamic_pointer_cast<DataAccessor>(d)->particleCombinations());
+        else if (std::dynamic_pointer_cast<FinalStateParticle>(d))
+            PCs.push_back(std::static_pointer_cast<FinalStateParticle>(d)->particleCombinations());
+        else
+            LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughter " << d->name();
     }
+
+    if (PCs.size() < 2) {
+        LOG(ERROR) << "DecayChannel::DecayChannel - too few daughters provided.";
+        return;
+    }
+
+    if (PCs.size() != 2) {
+        LOG(ERROR) << "DecayChannel::DecayChannel - currently only accepting two-body decays.";
+        return;
+    }
+
+    /// \todo how to for three?
+    // hard-coded for two
+    for (std::shared_ptr<ParticleCombination> PCA : PCs[0])
+        for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
+            if (!PCA->shareIndices(PCB)) {
+                std::shared_ptr<yap::ParticleCombination> a_b = yap::ParticleCombination::uniqueSharedPtr({PCA, PCB});
+                // \todo what if daughterA == daughterB
+
+                addSymmetrizationIndex(a_b);
+                BlattWeisskopf_.addSymmetrizationIndex(a_b);
+                SpinAmplitude_->addSymmetrizationIndex(a_b);
+            }
 }
 
 //-------------------------
@@ -54,64 +66,118 @@ Amp DecayChannel::amplitude(DataPoint& d)
 //-------------------------
 bool DecayChannel::consistent() const
 {
-    bool consistent = true;
+    bool result = true;
 
-    consistent &= DataAccessor::consistent();
+    result &= DataAccessor::consistent();
+
+    // check number of daughters greater than 1
+    if (Daughters_.size() < 2) {
+        LOG(ERROR) << "DecayChannel::consistent() - invalid number of daughters (" << Daughters_.size() << " < 2).";
+        result = false;
+    }
+
+    // currently only allowing exactly two daughters
+    /// \todo allow more than two daugters?
+    if (Daughters_.size() != 2) {
+        LOG(ERROR) << "DecayChannel::consistent() - invalid number of daughters (" << Daughters_.size() << " != 2).";
+        result = false;
+    }
 
     // check daughters
-    for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)
-        consistent &= (*d)->consistent();
-    if (! consistent) {
-        LOG(ERROR) << "DecayChannel::consistent() - daughter inconsistent";
+    for (std::shared_ptr<Particle> d : Daughters_)  {
+        if (!d) {
+            LOG(ERROR) << "DecayChannel::consistent() - null pointer in daughters vector.";
+            result = false;
+        } else
+            result &= d->consistent();
     }
+    if (!result)
+        LOG(ERROR) << "DecayChannel::consistent() - daughter(s) inconsistent";
 
-    consistent &= BlattWeisskopf_.consistent();
-    consistent &= spinAmplitude()->consistent();
-
-    // check size of spin amplitude quantum numbers and size of daughters
-    if (spinAmplitude()->finalQuantumNumbers().size() != Daughters_.size()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers object and daughters object size mismatch";
-        consistent = false;
-    }
-
-    // check if QuantumNumbers of SpinAmplitude objects match with Particles
-    if (spinAmplitude()->initialQuantumNumbers() != parent()->quantumNumbers()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of parent and SpinResonance don't match.";
-        consistent = false;
-    }
-
-    for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        if (spinAmplitude()->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
-            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of " << i << " and SpinResonance don't match.";
-            consistent = false;
-        }
-    }
-
+    // Check Blatt-Weisskopf object
+    result &= BlattWeisskopf_.consistent();
     // check if BlattWeisskopf points back to this DecayChannel
     if (this != BlattWeisskopf_.decayChannel()) {
         LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
-        consistent =  false;
+        result =  false;
     }
 
-    // check if INITIAL QuantumNumbers of SpinAmplitude objects match with this Resonance's QuantumNumbers
-    if (spinAmplitude()->initialQuantumNumbers() != parent()->quantumNumbers()) {
-        LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of SpinAmplitude  and this channel's resonance don't match.";
-        consistent =  false;
+
+    // Check SpinAmplitude object
+    if (!SpinAmplitude_) {
+        LOG(ERROR) << "DecayChannel::consistent() - no SpinAmplitude object set.";
+        result = false;
+    } else {
+        result &= SpinAmplitude_->consistent();
+
+        // check size of spin amplitude quantum numbers and size of daughters
+        if (SpinAmplitude_->finalQuantumNumbers().size() != Daughters_.size()) {
+            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers object and daughters object size mismatch";
+            result = false;
+        }
+
+        // check if QuantumNumbers of SpinAmplitude objects match with Particles
+        if (SpinAmplitude_->initialQuantumNumbers() != parent()->quantumNumbers()) {
+            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of parent and SpinResonance don't match.";
+            result = false;
+        }
+
+        for (unsigned i = 0; i < Daughters_.size(); ++i) {
+            if (SpinAmplitude_->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
+                LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of " << i << " and SpinAmplitude don't match.";
+                result = false;
+            }
+        }
     }
 
     // check masses
     double finalMass = 0;
-    for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)
-        finalMass += (*d)->mass();
+    for (std::shared_ptr<Particle> d : Daughters_)
+        finalMass += (!d) ? 0 : d->mass();
     if (finalMass > parent()->mass()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
-        consistent =  false;
+        result =  false;
     }
 
-    if (! consistent) {
-        LOG(ERROR) << "Channel is not consistent:  " << this->parent()->name() << " -> " << this->daughters()[0]->name() << " " << this->daughters()[1]->name() << "\n";
+    if (!result)
+        LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
+
+    return result;
+}
+
+//-------------------------
+DecayChannel::operator std::string() const
+{
+    std::string result = parent()->name() + " ->";
+    if (Daughters_.empty())
+        result += " (nothing)";
+    for (std::shared_ptr<Particle> d : Daughters_)
+        result += " " + d->name();
+    if (SpinAmplitude_)
+        result += " (l = " + std::to_string(static_cast<unsigned>(SpinAmplitude_->decayAngularMomentum())) + ")";
+    return result;
+}
+
+//-------------------------
+std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStateParticles() const
+{
+    std::vector<std::shared_ptr<FinalStateParticle> > fsps;
+
+    for (std::shared_ptr<Particle> d : Daughters_) {
+
+        if (std::dynamic_pointer_cast<FinalStateParticle>(d)) {
+            fsps.push_back(std::static_pointer_cast<FinalStateParticle>(d));
+
+        } else if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
+            std::vector<std::shared_ptr<FinalStateParticle> > ddaughters = std::static_pointer_cast<DecayingParticle>(d)->finalStateParticles();
+            fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
+
+        } else {
+            LOG(ERROR) << "DecayingParticle::finalStateParticles() - Daughter is neither a FinalStateParticle nor a DecayingParticle. DecayChannel is inconsistent.";
+        }
     }
-    return consistent;
+
+    return fsps;
 }
 
 }
