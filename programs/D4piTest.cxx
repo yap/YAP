@@ -13,6 +13,7 @@ INITIALIZE_EASYLOGGINGPP
 
 int main( int argc, char** argv)
 {
+    /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory("../evt.pdl");
 
     // final state particles
