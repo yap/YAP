@@ -36,7 +36,7 @@ typedef std::array<Particle*, 2> Daughters;
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DecayChannel : public AmplitudeComponent, DataAccessor
+class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
     /// Constructor

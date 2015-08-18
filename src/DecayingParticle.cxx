@@ -11,6 +11,7 @@ namespace yap {
 //-------------------------
 DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     Particle(q, mass, name),
+    DataAccessor(),
     RadialSize_(radialSize)
 {}
 
@@ -26,6 +27,7 @@ bool DecayingParticle::consistent() const
 {
     bool consistent = true;
 
+    consistent &= DataAccessor::consistent();
     consistent &= Particle::consistent();
 
     if (RadialSize_ <= 0.) {
@@ -98,6 +100,22 @@ void DecayingParticle::addChannel(DecayChannel* c)
 {
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
     Channels_.back()->setParent(this);
+
+    // \todo remove
+    std::cout << name() << " ";
+    if (c->particleCombinations().empty()) {
+      LOG(ERROR) << "c->particleCombinations().empty()";
+    }
+
+    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
+      this->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+
+      // \todo remove
+      for (ParticleIndex i : pc->indices())
+        std::cout << (int)i +1 ;
+      std::cout << " ";
+    }
+    std::cout << "\n";
 }
 
 //-------------------------

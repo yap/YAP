@@ -87,6 +87,17 @@ bool ParticleCombination::consistent() const
 }
 
 //-------------------------
+bool ParticleCombination::shareIndices(std::shared_ptr<ParticleCombination> B)
+{
+  for (ParticleIndex a : Indices_)
+    for (ParticleIndex b : B->indices())
+      if (a == b)
+        return true;
+
+  return false;
+}
+
+//-------------------------
 bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 {
     // Check indices
@@ -107,7 +118,7 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 }
 
 /////////////////////////
-// Static shtuff:
+// Static stuff:
 
 std::set<std::shared_ptr<ParticleCombination> > ParticleCombination::ParticleCombinationSet_;
 

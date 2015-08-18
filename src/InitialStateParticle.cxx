@@ -4,19 +4,14 @@ namespace yap {
 
 //-------------------------
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-    DecayingParticle(q, mass, name, radialSize),
-    DataAccessor()
+    DecayingParticle(q, mass, name, radialSize)
 {
 }
 
 //-------------------------
 bool InitialStateParticle::consistent() const
 {
-    bool result = true;
-
-    result &= DecayingParticle::consistent();
-
-    return result;
+    return DecayingParticle::consistent();
 }
 
 }

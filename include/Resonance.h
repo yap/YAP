@@ -36,7 +36,7 @@ class FinalStateParticle;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class Resonance : public DecayingParticle, public DataAccessor
+class Resonance : public DecayingParticle
 {
 public:
 
@@ -51,6 +51,10 @@ public:
 
     /// access MassShape
     const MassShape* massShape() const {return MassShape_.get();}
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param c DecayingParticle takes ownership of c
+    void addChannel(DecayChannel* c) override;
 
 private:
 

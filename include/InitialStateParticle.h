@@ -21,8 +21,6 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
-#include "Amp.h"
-#include "DataAccessor.h"
 #include "DecayingParticle.h"
 
 namespace yap {
@@ -32,7 +30,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle, public DataAccessor
+class InitialStateParticle : public DecayingParticle
 {
 public:
 

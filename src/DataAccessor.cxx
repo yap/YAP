@@ -1,5 +1,7 @@
 #include "DataAccessor.h"
 
+#include "logging.h"
+
 namespace yap {
 
 unsigned DataAccessor::GlobalIndex = 0;
@@ -21,6 +23,31 @@ DataAccessor::DataAccessor(const DataAccessor& other) :
 {
     // uses new index
     Index_ = GlobalIndex++;
+}
+
+//-------------------------
+std::vector<std::shared_ptr<ParticleCombination> > DataAccessor::particleCombinations() const
+{
+  std::vector<std::shared_ptr<ParticleCombination> > retVal;
+  for (auto& kv : SymmetrizationIndices_)
+    retVal.push_back(kv.first);
+
+  return retVal;
+}
+
+//-------------------------
+bool DataAccessor::consistent() const
+{
+  if (SymmetrizationIndices_.empty()) {
+    LOG(ERROR) << "DataAccessor::consistent() - SymmetrizationIndices_ is empty.";
+    return false;
+  }
+
+  bool result = true;
+  for (auto& kv : SymmetrizationIndices_) {
+    result &= kv.first->consistent();
+  }
+  return result;
 }
 
 //-------------------------

@@ -68,6 +68,9 @@ public:
     /// by checking for absence of duplicate entries
     bool consistent() const;
 
+    /// check if this and B share one or more ParticleIndex's
+    bool shareIndices(std::shared_ptr<ParticleCombination> B);
+
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
 

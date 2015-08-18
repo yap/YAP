@@ -53,6 +53,10 @@ public:
     int pdgCode() const
     { return PDGCode_; }
 
+    /// \return list of all ParticleCombinations
+    std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const
+    { return SymmetrizationIndices_; }
+
 private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_

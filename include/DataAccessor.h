@@ -63,12 +63,17 @@ public:
     unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
     { return SymmetrizationIndices_.at(c); }
 
+    /// \return list of all ParticleCombinations
+    std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const;
+
     /// @}
 
-protected:
+    bool consistent() const;
 
     /// add symmetrizationIndex to SymmetrizationIndices_
     void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+
+protected:
 
     /// Flag to mark whether recalculation needs to take place
     bool Recalculate_;

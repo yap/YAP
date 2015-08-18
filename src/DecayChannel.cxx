@@ -1,4 +1,7 @@
 #include "DecayChannel.h"
+
+#include "DecayingParticle.h"
+#include "FinalStateParticle.h"
 #include "Resonance.h"
 #include "logging.h"
 
@@ -11,7 +14,36 @@ DecayChannel::DecayChannel(Particle* daughterA, Particle* daughterB,
             BlattWeisskopf_(this),
             SpinAmplitude_(spinAmplitude),
             FreeAmplitude_(0)
-{}
+{
+  // set symmetrization indices
+  std::vector<std::shared_ptr<ParticleCombination> > PCsA;
+  if (dynamic_cast<DataAccessor*>(Daughters_[0]))
+    PCsA = dynamic_cast<DataAccessor*>(Daughters_[0])->particleCombinations();
+  else if (dynamic_cast<FinalStateParticle*>(Daughters_[0]))
+    PCsA = dynamic_cast<FinalStateParticle*>(Daughters_[0])->particleCombinations();
+  else
+    LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughterA";
+
+  std::vector<std::shared_ptr<ParticleCombination> > PCsB;
+  if (dynamic_cast<DataAccessor*>(Daughters_[1]))
+    PCsB = dynamic_cast<DataAccessor*>(Daughters_[1])->particleCombinations();
+  else if (dynamic_cast<FinalStateParticle*>(Daughters_[1]))
+    PCsB = dynamic_cast<FinalStateParticle*>(Daughters_[1])->particleCombinations();
+  else
+    LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughterB";
+
+  for (std::shared_ptr<ParticleCombination> PCA : PCsA)
+    for (std::shared_ptr<ParticleCombination> PCB : PCsB) {
+      if (! PCA->shareIndices(PCB)) {
+        std::shared_ptr<yap::ParticleCombination> a_b = yap::ParticleCombination::uniqueSharedPtr({PCA, PCB});
+        // \todo what if daughterA == daughterB
+
+        this->addSymmetrizationIndex(a_b);
+        BlattWeisskopf_.addSymmetrizationIndex(a_b);
+        SpinAmplitude_->addSymmetrizationIndex(a_b);
+      }
+    }
+}
 
 //-------------------------
 Amp DecayChannel::amplitude(DataPoint& d)
@@ -23,6 +55,8 @@ Amp DecayChannel::amplitude(DataPoint& d)
 bool DecayChannel::consistent() const
 {
     bool consistent = true;
+
+    consistent &= DataAccessor::consistent();
 
     // check daughters
     for (Daughters::const_iterator d = Daughters_.begin(); d != Daughters_.end(); ++d)

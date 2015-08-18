@@ -22,6 +22,7 @@
 #define yap_DecayingParticle_h
 
 #include "DecayChannel.h"
+#include "DecayingParticle.h"
 #include "Particle.h"
 
 #include <memory>
@@ -36,7 +37,7 @@ class FinalStateParticle;
 /// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class DecayingParticle : public Particle
+class DecayingParticle : public Particle, public DataAccessor
 {
 public:
 
@@ -56,7 +57,7 @@ public:
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
-    void addChannel(DecayChannel* c);
+    virtual void addChannel(DecayChannel* c);
 
     /// \name Getters
     /// @{
