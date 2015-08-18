@@ -49,7 +49,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
         for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
             if (!PCA->shareIndices(PCB)) {
                 std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
-                
+
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
                     ParticleCombination b_a = ParticleCombination({PCB, PCA});
