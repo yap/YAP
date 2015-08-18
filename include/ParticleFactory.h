@@ -63,7 +63,7 @@ public:
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \return pointer to new FinalStateParticle object
-    FinalStateParticle* createFinalStateParticle(int PDG);
+    FinalStateParticle* createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create

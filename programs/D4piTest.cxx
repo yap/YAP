@@ -13,8 +13,8 @@ int main( int argc, char** argv)
     yap::ParticleFactory factory("evt.pdl");
 
     // final state particles
-    yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211);
-    yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211);
+    yap::FinalStateParticle* piPlus = factory.createFinalStateParticle(211, {0, 1});
+    yap::FinalStateParticle* piMinus = factory.createFinalStateParticle(-211, {1, 2});
 
     // initial state particle
     double radialSize = 1.;

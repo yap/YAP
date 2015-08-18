@@ -9,10 +9,10 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle* ParticleFactory::createFinalStateParticle(int PDG)
+FinalStateParticle* ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return new FinalStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG);
+    return new FinalStateParticle(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG, indices);
 }
 
 //-------------------------

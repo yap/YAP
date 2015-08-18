@@ -24,6 +24,9 @@
 #include "Amp.h"
 #include "Constants.h"
 #include "Particle.h"
+#include "ParticleCombination.h"
+
+#include <memory>
 
 namespace yap {
 
@@ -37,16 +40,14 @@ class FinalStateParticle : public Particle
 public:
 
     /// Constructor
-    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg)
-        : Particle(q, mass, name), PDGCode_(pdg)
-    {}
+    /// \param indices index or indices (if there are identical final state particles) that this particle has in the DataPoint
+    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices);
 
     /// \return 1 + 0i
     virtual Amp amplitude(DataPoint& d) override
     { return Complex_1; }
 
-    //virtual bool consistent() const override
-    // { return Particle::consistent(); }
+    virtual bool consistent() const override;
 
     /// \return PDG code indicating particle type
     int pdgCode() const
@@ -54,8 +55,13 @@ public:
 
 private:
 
+    /// add symmetrizationIndex to SymmetrizationIndices_
+    void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+
     /// PDG code of the particle
     int PDGCode_;
+
+    std::vector<std::shared_ptr<ParticleCombination> > SymmetrizationIndices_;
 
 };
 

@@ -23,5 +23,15 @@ DataAccessor::DataAccessor(const DataAccessor& other) :
     Index_ = GlobalIndex++;
 }
 
+//-------------------------
+void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+{
+  if (SymmetrizationIndices_.find(c) == SymmetrizationIndices_.end()) {
+    // simple running index
+    unsigned index = SymmetrizationIndices_.size();
+    SymmetrizationIndices_[c] = index;
+  }
+}
+
 }
 

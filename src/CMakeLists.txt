@@ -12,6 +12,7 @@ set(YAP_SOURCES
   DataSet.cxx
   DecayChannel.cxx
   DecayingParticle.cxx
+  FinalStateParticle.cxx
   InitialStateParticle.cxx
   MassShape.cxx
   ParticleCombination.cxx

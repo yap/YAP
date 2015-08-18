@@ -67,6 +67,9 @@ public:
 
 protected:
 
+    /// add symmetrizationIndex to SymmetrizationIndices_
+    void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+
     /// Flag to mark whether recalculation needs to take place
     bool Recalculate_;
 
