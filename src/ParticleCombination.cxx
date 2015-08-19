@@ -94,19 +94,19 @@ ParticleCombination::operator std::string() const
         result += std::to_string(static_cast<unsigned>(i));
     result += ")";
 
-    if (!Daughters_.empty()) {
-        result += " -> ";
+    if (Daughters_.empty() || (Daughters_.size() == 2 and Indices_.size() == 2))
+        return result;
 
-        for (auto& d : Daughters_) {
-            if (!d->daughters().empty())
-                result += "[";
+    result += " -> ";
 
+    for (auto& d : Daughters_) {
+        if (d->daughters().empty() || (d->daughters().size() == 2 and d->indices().size() == 2))
             result += std::string(*d);
+        else
+            result += "[" + std::string(*d) + "]";
 
-            if (!d->daughters().empty())
-                result += "]";
-        }
     }
+
 
     return result;
 }
