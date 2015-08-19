@@ -70,8 +70,18 @@ public:
 
     bool consistent() const;
 
+    /// \name Symmetrization functions
+    /// @{
+
     /// add symmetrizationIndex to SymmetrizationIndices_
     void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+
+    /// checks equality of symmetrizations, particular to the
+    /// DataAccessor object. Can be overloaded to reduce redundant calculations
+    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B)
+    { return A == B; }
+
+    /// @}
 
 protected:
 

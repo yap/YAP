@@ -44,20 +44,38 @@ bool DataAccessor::consistent() const
     }
 
     bool result = true;
-    for (auto& kv : SymmetrizationIndices_) {
+    for (auto& kv : SymmetrizationIndices_)
         result &= kv.first->consistent();
-    }
+
     return result;
 }
 
 //-------------------------
 void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
-    if (SymmetrizationIndices_.find(c) == SymmetrizationIndices_.end()) {
-        // simple running index
-        unsigned index = SymmetrizationIndices_.size();
-        SymmetrizationIndices_[c] = index;
+    if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
+        // c is already in map
+        return;
+
+    // if map empty, add
+    if (SymmetrizationIndices_.empty()) {
+        SymmetrizationIndices_[c] = 0;
+        return;
     }
+
+    // else check to see if new member equates to existing member
+    // and search for highest index otherwise
+    unsigned index = 0;
+    for (auto& kv : SymmetrizationIndices_) {
+        if (areEqual(kv.first, c)) {
+            // equating member found; set index; return
+            SymmetrizationIndices_[c] = kv.second;
+            return;
+        }
+        index = std::max(index, kv.second);
+    }
+
+    SymmetrizationIndices_[c] = (index + 1);
 }
 
 }
