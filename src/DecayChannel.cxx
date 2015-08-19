@@ -47,7 +47,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     // hard-coded for two
     for (std::shared_ptr<ParticleCombination> PCA : PCs[0])
         for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
-            if (!PCA->shareIndices(PCB)) {
+            if (!PCA->sharesIndices(PCB)) {
                 std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
 
                 bool can_has_symmetrization = true;
@@ -164,7 +164,7 @@ DecayChannel::operator std::string() const
     for (std::shared_ptr<Particle> d : Daughters_)
         result += " " + d->name();
     if (SpinAmplitude_)
-        result += " (l = " + std::to_string(static_cast<unsigned>(SpinAmplitude_->decayAngularMomentum())) + ")";
+        result += " (l=" + std::to_string(static_cast<unsigned>(SpinAmplitude_->decayAngularMomentum())) + ")";
     return result;
 }
 

@@ -87,7 +87,32 @@ bool ParticleCombination::consistent() const
 }
 
 //-------------------------
-bool ParticleCombination::shareIndices(std::shared_ptr<ParticleCombination> B)
+ParticleCombination::operator std::string() const
+{
+    std::string result = "(";
+    for (ParticleIndex i : Indices_)
+        result += std::to_string(static_cast<unsigned>(i));
+    result += ")";
+
+    if (!Daughters_.empty()) {
+        result += " -> ";
+
+        for (auto& d : Daughters_) {
+            if (!d->daughters().empty())
+                result += "[";
+
+            result += std::string(*d);
+
+            if (!d->daughters().empty())
+                result += "]";
+        }
+    }
+
+    return result;
+}
+
+//-------------------------
+bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
 {
     for (ParticleIndex a : Indices_)
         for (ParticleIndex b : B->indices())

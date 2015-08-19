@@ -1,6 +1,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
+#include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
 //#include "SpinAmplitude.h"
@@ -14,7 +15,7 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
     /// \todo Figure out clever way to find PDL file
-    yap::ParticleFactory factory("../evt.pdl");
+    yap::ParticleFactory factory("evt.pdl");
 
     // final state particles
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
@@ -72,6 +73,10 @@ int main( int argc, char** argv)
     assert(D->consistent());
 
     D->printDecayChain();
+
+    std::cout << "\nD symmetrizations: \n";
+    for (std::shared_ptr<yap::ParticleCombination>& pc : D->particleCombinations())
+        std::cout << std::string(*pc) << "\n";
 
 
     std::cout << "alright! \n";

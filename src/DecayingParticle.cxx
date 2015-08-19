@@ -70,21 +70,11 @@ void DecayingParticle::addChannel(DecayChannel* c)
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
     Channels_.back()->setParent(this);
 
-    // \todo remove
-    std::cout << name() << " ";
-    if (c->particleCombinations().empty()) {
+    if (c->particleCombinations().empty())
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
-    }
 
-    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
+    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations())
         this->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-
-        // \todo remove
-        for (ParticleIndex i : pc->indices())
-            std::cout << (int)i + 1 ;
-        std::cout << " ";
-    }
-    std::cout << "\n";
 }
 
 //-------------------------
@@ -120,7 +110,8 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
 
             // compare SpinAmplitude objects
             if  ( *(channel(i)->spinAmplitude()) == *(channel(j)->spinAmplitude()) ) {
-                LOG(INFO) << "Share amplitudes of  " << static_cast<std::string>(*channel(i)) << static_cast<std::string>(*channel(j));
+                LOG(INFO) << "Share amplitudes of  " << static_cast<std::string>(*channel(i))
+                          << " and " << static_cast<std::string>(*channel(j));
                 channel(j)->spinAmplitude() = channel(i)->spinAmplitude();
             }
 
