@@ -1,3 +1,4 @@
+#include "ClebschGordan.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
@@ -80,4 +81,9 @@ int main( int argc, char** argv)
 
 
     std::cout << "alright! \n";
+
+
+
+    // clebsch gordan test
+    std::cout << yap::clebschGordan(1 * 2, 0 * 2, 1, 1, 1, 1);
 }

@@ -6,6 +6,7 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(YAP_SOURCES
   BlattWeisskopf.cxx
   BreitWigner.cxx
+  ClebschGordan.cxx
   Constants.cxx
   DataAccessor.cxx
   DataPoint.cxx
