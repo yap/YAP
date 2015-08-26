@@ -110,8 +110,7 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
 
             // compare SpinAmplitude objects
             if  ( *(channel(i)->spinAmplitude()) == *(channel(j)->spinAmplitude()) ) {
-                LOG(INFO) << "Share amplitudes of  " << static_cast<std::string>(*channel(i))
-                          << " and " << static_cast<std::string>(*channel(j));
+                LOG(INFO) << "Sharing spin amplitudes between " << static_cast<std::string>(*channel(i)) << " and " << static_cast<std::string>(*channel(j));
                 channel(j)->spinAmplitude() = channel(i)->spinAmplitude();
             }
 
