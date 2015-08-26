@@ -12,8 +12,8 @@ CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, co
     : SpinAmplitude(initial, final1, final2),
       TwoL_(twoL)
 {
-  /// \todo put this somewhere else
-  calculateClebschGordanCoefficients();
+    /// \todo put this somewhere else
+    calculateClebschGordanCoefficients();
 }
 
 //-------------------------
@@ -81,26 +81,26 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
             // calculate Clebsch-Gordan coefficient for L-S coupling
             const double lsClebsch = clebschGordan(TwoL_, 0, S, lambda, J, lambda);
             if (lsClebsch == 0.)
-              continue;
+                continue;
 
             // calculate Clebsch-Gordan coefficient for S-S coupling
             const double ssClebsch = clebschGordan(s1, lambda1, s2, -lambda2, S, lambda);
             if (ssClebsch == 0.)
-              continue;
+                continue;
 
             LOG(DEBUG) << "Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
-                << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
-                << " = " << ssClebsch*lsClebsch << "\n";
+                       << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
+                       << " = " << ssClebsch* lsClebsch << "\n";
 
-            ClebschGordanCoefficients_[{lambda1, lambda2}] = ssClebsch*lsClebsch;
+            ClebschGordanCoefficients_[ {lambda1, lambda2}] = ssClebsch * lsClebsch;
         }
     }
 
     /// \todo put this into a print function
     std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> (" << FinalQuantumNumbers_[0] << ") + (" << FinalQuantumNumbers_[1] << "):\n";
     for (auto& kv : ClebschGordanCoefficients_) {
-      std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
-          << "): \t" << kv.second << "\n";
+        std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
+                  << "): \t" << kv.second << "\n";
     }
 
 
