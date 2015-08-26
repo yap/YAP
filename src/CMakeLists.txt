@@ -6,6 +6,7 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(YAP_SOURCES
   BlattWeisskopf.cxx
   BreitWigner.cxx
+  CanonicalSpinAmplitude.cxx
   Constants.cxx
   DataAccessor.cxx
   DataPoint.cxx
@@ -21,6 +22,7 @@ set(YAP_SOURCES
   QuantumNumbers.cxx
   Resonance.cxx
   SpinAmplitude.cxx
+  SpinUtilities.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")

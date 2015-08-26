@@ -30,23 +30,27 @@
 
 namespace yap {
 
-/// \class InitialStateParticle
-/// \brief Class implementing a spin amplitude.
+/// \class SpinAmplitude
+/// \brief Abstract base class implementing a spin amplitude.
 /// \author Johannes Rauch, Daniel Greenwald
+/// \defgroup SpinAmplitude Spin Amplitudes
 
 class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 {
 public:
 
     /// Constructor
-    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char l);
+    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d) override = 0;
 
     /// Check consistency of object
     virtual bool consistent() const override;
+
+    /// cast into string
+    virtual operator std::string() const = 0;
 
     /// \name Getters
     /// @{
@@ -59,25 +63,22 @@ public:
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
 
-    /// Get relative angular momentum between daughters
-    unsigned char decayAngularMomentum() const
-    { return L_; }
-
     /// @}
 
-    /// Compare QuantumNumbers
-    friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs);
+    /// Compare SpinAmplitude objects
+    friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
+    { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
 
-private:
+protected:
+
+    /// Check if SpinAmplitudes are equal
+    virtual bool equals(const SpinAmplitude& rhs) const;
 
     /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;
 
     /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
-
-    /// relative angular momentum between daughters
-    unsigned char L_;
 
 };
 

@@ -3,7 +3,7 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
-#include "SpinAmplitude.h"
+#include "CanonicalSpinAmplitude.h"
 
 #include <iomanip>
 #include <memory>
@@ -70,27 +70,17 @@ void DecayingParticle::addChannel(DecayChannel* c)
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
     Channels_.back()->setParent(this);
 
-    // \todo remove
-    std::cout << name() << " ";
-    if (c->particleCombinations().empty()) {
+    if (c->particleCombinations().empty())
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
-    }
 
-    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
+    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations())
         this->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-
-        // \todo remove
-        for (ParticleIndex i : pc->indices())
-            std::cout << (int)i + 1 ;
-        std::cout << " ";
-    }
-    std::cout << "\n";
 }
 
 //-------------------------
-void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned L)
+void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned twoL)
 {
-    addChannel(new DecayChannel(A, B, std::make_shared<SpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), L)));
+    addChannel(new DecayChannel(A, B, std::make_shared<CanonicalSpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
 }
 
 //-------------------------
@@ -153,7 +143,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
         std::cout << std::left << std::setw(padding) << this->name() << " ->";
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
             std::cout << " " << std::setw(padding) << d->name();
-        std::cout << "(l=" << static_cast<unsigned>(channel(i)->spinAmplitude()->decayAngularMomentum()) << ")";
+        std::cout << std::string(*(channel(i)->spinAmplitude()));
 
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
             if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
