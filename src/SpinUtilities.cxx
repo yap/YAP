@@ -1,4 +1,5 @@
-#include "ClebschGordan.h"
+#include "SpinUtilities.h"
+#include "MathUtilities.h"
 
 #include "logging.h"
 

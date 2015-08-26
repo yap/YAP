@@ -164,7 +164,7 @@ DecayChannel::operator std::string() const
     for (std::shared_ptr<Particle> d : Daughters_)
         result += " " + d->name();
     if (SpinAmplitude_)
-        result += " (l=" + std::to_string(static_cast<unsigned>(SpinAmplitude_->decayAngularMomentum())) + ")";
+        result += " " + std::string(*SpinAmplitude_);
     return result;
 }
 

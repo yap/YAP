@@ -55,7 +55,7 @@ public:
     /// \param c DecayingParticle takes ownership of c
     virtual void addChannel(DecayChannel* c);
 
-    /// Add a two-body DecayChannel
+    /// Add a two-body DecayChannel with CanonicalSpinAmplitude
     /// \param A daughter particle
     /// \param B daughter particle
     /// \param L relative angular momentum between A and B

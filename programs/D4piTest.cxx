@@ -1,4 +1,3 @@
-#include "ClebschGordan.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
@@ -6,6 +5,7 @@
 #include "ParticleFactory.h"
 #include "Resonance.h"
 //#include "SpinAmplitude.h"
+#include "SpinUtilities.h"
 
 #include <assert.h>
 #include <iostream>

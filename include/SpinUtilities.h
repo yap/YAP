@@ -16,8 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_ClebschGordan_h
-#define yap_ClebschGordan_h
+#ifndef yap_SpinUtilities_h
+#define yap_SpinUtilities_h
 
 #include <cmath>
 #include <math.h>
@@ -31,28 +31,11 @@ namespace yap {
 /// returns Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M)
 double clebschGordan(int two_j1, int two_m1, int two_j2, int two_m2, int two_J, int two_M);
 
-
 /// checks that spin and its projection quantum number are consistent
 bool spinAndProjAreCompatible(const int spin, const int spinProj);
 
 /// returns, whether j1 and j2 can couple to J
 bool spinStatesCanCouple(const int two_j1, const int two_j2, const int two_J);
-
-/// return n!
-inline double factorial(int n)
-{ return std::tgamma(n + 1.); }
-
-/// returns whether val is an odd number
-inline bool isOdd(int val)
-{ return val & 0x1; }
-
-/// returns whether val is an even number
-inline bool isEven(int val)
-{ return not isOdd(val); }
-
-/// optimized function for (-1)^n
-inline int powMinusOne(const int exponent)
-{ return isOdd(exponent) ? -1 : +1; }
 
 }
 
