@@ -35,7 +35,7 @@ class CanonicalSpinAmplitude : public SpinAmplitude
 public:
 
     /// Constructor
-    CanonicalSpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char l);
+    CanonicalSpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
@@ -50,20 +50,28 @@ public:
     /// \name Getters
     /// @{
 
+    /// Get relative angular momentum between daughters * 2
+    unsigned char twoL() const
+    { return TwoL_; }
+
     /// Get relative angular momentum between daughters
-    unsigned char decayAngularMomentum() const
-    { return L_; }
+    double L() const
+    { return 0.5 * TwoL_; }
 
     /// @}
 
 
 private:
 
+    void calculateClebschGordanCoefficients();
+
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;
 
-    /// relative angular momentum between daughters
-    unsigned char L_;
+    /// relative angular momentum between daughters * 2
+    unsigned char TwoL_;
+
+
 
 };
 

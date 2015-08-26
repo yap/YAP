@@ -1,7 +1,10 @@
 #include "SpinUtilities.h"
-#include "MathUtilities.h"
 
 #include "logging.h"
+#include "MathUtilities.h"
+
+#include <cmath>
+#include <math.h>
 
 namespace yap {
 
@@ -95,5 +98,14 @@ bool spinStatesCanCouple(const int two_j1,
 
     return true;
 }
+
+//-------------------------
+std::string spinToString(const int twoJ)
+{
+    if (isEven(twoJ))
+        return std::to_string(twoJ / 2);
+    return std::to_string(twoJ) + "/2";
+}
+
 
 }

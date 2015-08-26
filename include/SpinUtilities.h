@@ -19,8 +19,7 @@
 #ifndef yap_SpinUtilities_h
 #define yap_SpinUtilities_h
 
-#include <cmath>
-#include <math.h>
+#include <string>
 
 namespace yap {
 
@@ -36,6 +35,9 @@ bool spinAndProjAreCompatible(const int spin, const int spinProj);
 
 /// returns, whether j1 and j2 can couple to J
 bool spinStatesCanCouple(const int two_j1, const int two_j2, const int two_J);
+
+/// convert 2*J to string (e.g. 1/2, 1, 3/2, etc.)
+std::string spinToString(const int twoJ);
 
 }
 
