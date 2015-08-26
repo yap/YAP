@@ -71,7 +71,8 @@ private:
     /// relative angular momentum between daughters * 2
     unsigned char TwoL_;
 
-
+    /// Clebsch-Gordan coefficients for λ_1, λ_2
+    std::map<std::array<int, 2>, double> ClebschGordanCoefficients_;
 
 };
 

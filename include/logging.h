@@ -3,6 +3,8 @@
 
 #include "easylogging++.h"
 
+namespace yap {
+
 /**
  * \file logging.h
  * \brief Logging system using easylogging++
@@ -26,5 +28,15 @@
  * https://github.com/easylogging/easyloggingpp/blob/master/README.md
  */
 
+/// disable logging for lvl
+/// \param lvl (Global, Trace, Debug, Fatal, Error, Warning, Verbose, Info)
+inline void disableLogs(el::Level lvl) {
+  el::Configurations defaultConf;
+  defaultConf.setToDefault();
+  defaultConf.set(lvl, el::ConfigurationType::Enabled, "0");
+  el::Loggers::reconfigureLogger("default", defaultConf);
+}
+
+}
 
 #endif

@@ -15,25 +15,25 @@ double clebschGordan(int two_j1, int two_m1, int two_j2, int two_m2, int two_J, 
     if (   not spinAndProjAreCompatible(two_j1, two_m1)
             or not spinAndProjAreCompatible(two_j2, two_m2)
             or not spinAndProjAreCompatible(two_J,  two_M )) {
-        LOG(WARNING) << "spins and spin projections are inconsistent: "
-                     << "(two_j1 = " << 0.5 * (two_j1) << ", two_m1 = " << 0.5 * (two_m1) << ", "
-                     << "two_j2 = "  << 0.5 * (two_j2) << ", two_m2 = " << 0.5 * (two_m2) << ", "
-                     << "two_J = "   << 0.5 * (two_J)  << ", two_M = "  << 0.5 * (two_M)  << ")" << std::endl;
+        LOG(DEBUG) << "spins and spin projections are inconsistent: "
+                     << "(j1 = " << spinToString(two_j1) << ", m1 = " << spinToString(two_m1) << ", "
+                     << "j2 = "  << spinToString(two_j2) << ", m2 = " << spinToString(two_m2) << ", "
+                     << "J = "   << spinToString(two_J)  << ", M = "  << spinToString(two_M)  << ")" << std::endl;
         return 0;
     }
     if (not spinStatesCanCouple(two_j1, two_j2, two_J)) {
-        LOG(WARNING) << "spins two_j1 = " << 0.5 * (two_j1) << " and two_j2 = " << 0.5 * (two_j2)
-                     << " cannot couple to two_J = "  << 0.5 * (two_J) << std::endl;
+        LOG(DEBUG) << "spins j1 = " << spinToString(two_j1) << " and j2 = " << spinToString(two_j2)
+                     << " cannot couple to J = "  << spinToString(two_J) << std::endl;
         return 0;
     }
     if (two_m1 + two_m2 != two_M) {
-        LOG(WARNING) << "spin projections two_m1 = " << 0.5 * (two_m1) << " and two_m2 = " << 0.5 * (two_m2)
-                     << " cannot couple to two_M = " << 0.5 * (two_M) << std::endl;
+        LOG(DEBUG) << "spin projections m1 = " << spinToString(two_m1) << " and m2 = " << spinToString(two_m2)
+                     << " cannot couple to M = " << spinToString(two_M) << std::endl;
         return 0;
     }
 
     double clebschVal = 0;
-    // calculate function value and put intermediate values into cache
+    // calculate function value
     int nu = 0;
     while (    ((two_j1 - two_j2 - two_M) / 2 + nu < 0)
                or ((two_j1 - two_m1)     / 2 + nu < 0))
