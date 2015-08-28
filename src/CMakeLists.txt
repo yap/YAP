@@ -23,6 +23,7 @@ set(YAP_SOURCES
   Resonance.cxx
   SpinAmplitude.cxx
   SpinUtilities.cxx
+  WignerD.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")
