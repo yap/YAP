@@ -10,6 +10,13 @@
 
 namespace yap {
 
+dFunctionCached dFunctionCached::_instance;
+bool dFunctionCached::_useCache = true;
+
+dFunctionCached::cacheEntryType*
+dFunctionCached::_cache[_maxJ][_maxJ + 1][_maxJ + 1];
+
+
 //-------------------------
 double dFunctionCached::operator ()(const int two_j,
                                     const int two_m,

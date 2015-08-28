@@ -54,7 +54,6 @@ class dFunctionCached
 public:
 
     struct cacheEntryType {
-
         cacheEntryType()
             : constTerm(0)
         { }
@@ -63,7 +62,6 @@ public:
         std::vector<int> kmn1;
         std::vector<int> jmnk;
         std::vector<double> factor;
-
     };
 
     typedef std::vector<std::vector<std::vector<cacheEntryType> > > cacheType;
@@ -73,10 +71,7 @@ public:
     static dFunctionCached& instance() { return _instance; }
 
     ///< returns d^j_{two_m two_n}(theta)
-    double operator ()(const int two_j,
-                       const int two_m,
-                       const int two_n,
-                       const double theta);
+    double operator ()(const int two_j, const int two_m, const int two_n, const double theta);
 
     ///< returns caching flag
     static bool useCache()
@@ -106,43 +101,17 @@ private:
 };
 
 
-dFunctionCached dFunctionCached::_instance;
-bool dFunctionCached::_useCache = true;
-
-dFunctionCached::cacheEntryType*
-dFunctionCached::_cache[_maxJ][_maxJ + 1][_maxJ + 1];
-
-
 ///< Wigner d-function d^j_{two_m two_n}(theta)
-double dFunction(const int two_j,
-                 const int two_m,
-                 const int two_n,
-                 const double theta);
-
+double dFunction(const int two_j, const int two_m, const int two_n, const double theta);
 
 ///< spherical harmonics Y_l^{two_m}(theta, phi)
-Amp sphericalHarmonic
-(const int two_l,
- const int two_m,
- const double theta,
- const double phi);
+Amp sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
 
 ///< Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunction(const int two_j,
-              const int two_m,
-              const int two_n,
-              const double alpha,
-              const double beta,
-              const double gamma);
-
+Amp DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
 
 ///< complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunctionConj(const int two_j,
-                  const int two_m,
-                  const int two_n,
-                  const double alpha,
-                  const double beta,
-                  const double gamma);
+Amp DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
 
 
 }
