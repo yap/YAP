@@ -22,11 +22,8 @@
 #define yap_WignerD_h
 
 #include "Amp.h"
-#include "logging.h"
-#include "MathUtilities.h"
 
-#include <cmath>
-#include <math.h>
+#include <vector>
 
 namespace yap {
 
@@ -43,8 +40,6 @@ namespace yap {
 // gamma) and D-function in reflectivity basis
 //
 // based on PWA2000 function d_jmn_b() in pputil.cc
-//
-// !NOTE! spin j and projections m and n are in units of hbar/2
 //
 //
 // Author List:
@@ -77,10 +72,10 @@ public:
     ///< get singleton instance
     static dFunctionCached& instance() { return _instance; }
 
-    ///< returns d^j_{m n}(theta)
-    double operator ()(const int j,
-                       const int m,
-                       const int n,
+    ///< returns d^j_{two_m two_n}(theta)
+    double operator ()(const int two_j,
+                       const int two_m,
+                       const int two_n,
                        const double theta);
 
     ///< returns caching flag
@@ -107,7 +102,7 @@ private:
     static bool _useCache; ///< if set to true, cache is used
 
     static const unsigned int _maxJ = 41; ///< maximum allowed angular momentum * 2 + 1
-    static cacheEntryType* _cache[_maxJ][_maxJ + 1][_maxJ + 1]; ///< cache for intermediate terms [j][m][n]
+    static cacheEntryType* _cache[_maxJ][_maxJ + 1][_maxJ + 1]; ///< cache for intermediate terms [two_j][two_m][two_n]
 };
 
 
@@ -118,33 +113,33 @@ dFunctionCached::cacheEntryType*
 dFunctionCached::_cache[_maxJ][_maxJ + 1][_maxJ + 1];
 
 
-///< Wigner d-function d^j_{m n}(theta)
-double dFunction(const int j,
-                 const int m,
-                 const int n,
+///< Wigner d-function d^j_{two_m two_n}(theta)
+double dFunction(const int two_j,
+                 const int two_m,
+                 const int two_n,
                  const double theta);
 
 
-///< spherical harmonics Y_l^{m}(theta, phi)
+///< spherical harmonics Y_l^{two_m}(theta, phi)
 Amp sphericalHarmonic
-(const int l,
- const int m,
+(const int two_l,
+ const int two_m,
  const double theta,
  const double phi);
 
-///< Wigner D-function D^j_{m n}(alpha, beta, gamma)
-Amp DFunction(const int j,
-              const int m,
-              const int n,
+///< Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+Amp DFunction(const int two_j,
+              const int two_m,
+              const int two_n,
               const double alpha,
               const double beta,
               const double gamma);
 
 
-///< complex conjugate of Wigner D-function D^j_{m n}(alpha, beta, gamma)
-Amp DFunctionConj(const int j,
-                  const int m,
-                  const int n,
+///< complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+Amp DFunctionConj(const int two_j,
+                  const int two_m,
+                  const int two_n,
                   const double alpha,
                   const double beta,
                   const double gamma);
