@@ -93,5 +93,5 @@ int main( int argc, char** argv)
     // clebsch gordan test
     //std::cout << yap::clebschGordan(1 * 2, 0 * 2, 1, 1, 1, 1);
 
-    //std::cout << yap::DFunction(0, 0, 0, 0, 0, 0);
+    std::cout << yap::DFunction(0, 0, 0, 0, 0, 0);
 }

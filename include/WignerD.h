@@ -27,27 +27,23 @@
 
 namespace yap {
 
-/// \class WignerD
-/// \brief Wigner d and D functions
+///< Wigner d-function d^j_{two_m two_n}(theta)
+double dFunction(const int two_j, const int two_m, const int two_n, const double theta);
+
+///< spherical harmonics Y_l^{two_m}(theta, phi)
+Amp sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
+
+///< Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+Amp DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
+
+///< complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+Amp DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
+
+
+/// \class dFunctionCached
+/// \brief cached Wigner d and D functions
 /// \author Daniel Greenwald, Johannes Rauch
 /// This class has been copied from rootpwa and modified
-//-------------------------------------------------------------------------
-//
-// Description:
-// optimized Wigner d-function d^j_{m n}(theta) with caching
-// used as basis for optimized spherical harmonics Y_l^m(theta, phi)
-// as well as for optimized D-function D^j_{m n}(alpha, beta,
-// gamma) and D-function in reflectivity basis
-//
-// based on PWA2000 function d_jmn_b() in pputil.cc
-//
-//
-// Author List:
-// Boris Grube TUM (original author)
-//
-//
-//-------------------------------------------------------------------------
-
 class dFunctionCached
 {
 
@@ -85,7 +81,6 @@ public:
     static unsigned int cacheSize();
 
 
-
 private:
 
     dFunctionCached () { }
@@ -99,19 +94,6 @@ private:
     static const unsigned int _maxJ = 41; ///< maximum allowed angular momentum * 2 + 1
     static cacheEntryType* _cache[_maxJ][_maxJ + 1][_maxJ + 1]; ///< cache for intermediate terms [two_j][two_m][two_n]
 };
-
-
-///< Wigner d-function d^j_{two_m two_n}(theta)
-double dFunction(const int two_j, const int two_m, const int two_n, const double theta);
-
-///< spherical harmonics Y_l^{two_m}(theta, phi)
-Amp sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
-
-///< Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
-
-///< complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
 
 
 }
