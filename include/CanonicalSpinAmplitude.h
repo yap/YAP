@@ -58,7 +58,13 @@ public:
     double L() const
     { return 0.5 * TwoL_; }
 
+    const std::map<std::array<int, 2>, double>& clebschGordanCoefficients()
+    { return ClebschGordanCoefficients_; }
+
     /// @}
+
+    /// Print Clebsch-Gordan coefficients
+    void printClebschGordanCoefficients() const;
 
 
 private:

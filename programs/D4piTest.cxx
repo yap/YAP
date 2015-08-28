@@ -35,21 +35,21 @@ int main( int argc, char** argv)
     std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
     rho->addChannel(piPlus, piMinus, 2 * 1);
 
-    D->addChannel(rho, rho, 2 * 0);
-    D->addChannel(rho, rho, 2 * 1);
+    //D->addChannel(rho, rho, 2 * 0); // Clebsch-Gordan coeffs = 0
+    //D->addChannel(rho, rho, 2 * 1); // Clebsch-Gordan coeffs = 0
     D->addChannel(rho, rho, 2 * 2);
 
     // omega omega
     std::shared_ptr<yap::Resonance> omega = factory.createResonanceBreitWigner(223, radialSize);
     omega->addChannel(piPlus, piMinus, 2 * 1);
 
-    D->addChannel(omega, omega, 2 * 0);
-    D->addChannel(omega, omega, 2 * 1);
+    //D->addChannel(omega, omega, 2 * 0); // Clebsch-Gordan coeffs = 0
+    //D->addChannel(omega, omega, 2 * 1); // Clebsch-Gordan coeffs = 0
     D->addChannel(omega, omega, 2 * 2);
 
     // rho omega
-    D->addChannel(rho, omega, 2 * 0);
-    D->addChannel(rho, omega, 2 * 1);
+    //D->addChannel(rho, omega, 2 * 0); // Clebsch-Gordan coeffs = 0
+    //D->addChannel(rho, omega, 2 * 1); // Clebsch-Gordan coeffs = 0
     D->addChannel(rho, omega, 2 * 2);
 
 

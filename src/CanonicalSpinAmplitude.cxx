@@ -12,7 +12,7 @@ CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, co
     : SpinAmplitude(initial, final1, final2),
       TwoL_(twoL)
 {
-    /// \todo put this somewhere else
+    /// \todo put this somewhere else?
     calculateClebschGordanCoefficients();
 }
 
@@ -50,6 +50,11 @@ bool CanonicalSpinAmplitude::consistent() const
     if (!ok) {
         LOG(ERROR) << "CanonicalSpinAmplitude::consistent() - angular momentum conservation violated. " <<
                    "J(parent) = " << spinToString(twoJ_P) << "; J(daughter1) = " << spinToString(twoJ_A) << "; J(daughter2) = " << spinToString(twoJ_B) << "; l = " << spinToString(TwoL_);
+        consistent =  false;
+    }
+
+    if (ClebschGordanCoefficients_.empty()) {
+        LOG(ERROR) << "CanonicalSpinAmplitude::consistent() - ClebschGordanCoefficients_ are empty. They are probably all 0 and you can remove this channel.";
         consistent =  false;
     }
 
@@ -96,14 +101,18 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
         }
     }
 
-    /// \todo put this into a print function
-    std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> (" << FinalQuantumNumbers_[0] << ") + (" << FinalQuantumNumbers_[1] << "):\n";
+}
+
+//-------------------------
+void CanonicalSpinAmplitude::printClebschGordanCoefficients() const
+{
+    std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> ("
+              << FinalQuantumNumbers_[0] << ") + ("
+              << FinalQuantumNumbers_[1] << "), " << std::string(*this) << "\n";
     for (auto& kv : ClebschGordanCoefficients_) {
         std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
                   << "): \t" << kv.second << "\n";
     }
-
-
 }
 
 //-------------------------
