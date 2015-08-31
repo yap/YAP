@@ -123,6 +123,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
 {
     // get maximum length of particle names
     static size_t padding = 0;
+    static size_t paddingSpinAmp = 0;
     if (padding == 0 || level == -1) {
         padding = std::max(padding, name().length());
         for (auto& c : Channels_) {
@@ -130,6 +131,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
                 padding = std::max(padding, d->name().length());
                 if (std::dynamic_pointer_cast<DecayingParticle>(d))
                     std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(-1);
+                paddingSpinAmp = std::max(paddingSpinAmp, std::string(*c->spinAmplitude()).length());
             }
         }
         if (level == -1)
@@ -138,12 +140,13 @@ void DecayingParticle::printDecayChainLevel(int level) const
 
     for (unsigned int i = 0; i < nChannels(); ++i) {
         if (i > 0)
-            std::cout << "\n" << std::setw(level * (padding * 3 + 13)) << "";
+            std::cout << "\n" << std::setw(level * (padding * 3 + 7 + paddingSpinAmp)) << "";
 
         std::cout << std::left << std::setw(padding) << this->name() << " ->";
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
             std::cout << " " << std::setw(padding) << d->name();
-        std::cout << std::string(*(channel(i)->spinAmplitude()));
+        std::cout << std::left << std::setw(paddingSpinAmp)
+                  << std::string(*(channel(i)->spinAmplitude()));
 
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
             if (std::dynamic_pointer_cast<DecayingParticle>(d)) {

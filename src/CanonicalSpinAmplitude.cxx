@@ -19,7 +19,22 @@ CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, co
 //-------------------------
 Amp CanonicalSpinAmplitude::amplitude(DataPoint& d)
 {
+    /*if (Recalculate_) {
+        std::vector<std::vector<double> >& data = d.data(index());
+
+        // loop over symmetrization indices
+        for (auto& kv : SymmetrizationIndices_) {
+            std::vector<double>& dataVector = data.at(kv.second);
+
+
+        }
+
+        Recalculate_ = false;
+    }*/
+
+
     // \todo implement
+
     return Complex_0;
 }
 
@@ -64,7 +79,21 @@ bool CanonicalSpinAmplitude::consistent() const
 //-------------------------
 CanonicalSpinAmplitude::operator std::string() const
 {
-    return "(l=" + spinToString(TwoL_) + ")";
+    std::string result = "(l=" + spinToString(TwoL_);
+
+    if (not ClebschGordanCoefficients_.empty()) {
+        result += "; λ=";
+        auto& last = *(--ClebschGordanCoefficients_.end());
+        for (auto& kv : ClebschGordanCoefficients_) {
+            result += spinToString(kv.first[0]) + "," + spinToString(kv.first[1]);
+            if (&kv != &last)
+                result += "; ";
+        }
+    }
+
+    result += ")";
+
+    return result;
 }
 
 //-------------------------

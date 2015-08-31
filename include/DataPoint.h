@@ -58,6 +58,10 @@ public:
     const std::vector<TLorentzVector>& fourMomenta() const
     { return FourMomenta_; }
 
+    /// Access to Data
+    std::vector<std::vector<double> >& data(unsigned index)
+    { return Data_.at(index); }
+
     /// @}
 
 protected:
