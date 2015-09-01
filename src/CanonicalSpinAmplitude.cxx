@@ -1,6 +1,7 @@
 #include "CanonicalSpinAmplitude.h"
 
 #include "Constants.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
@@ -142,6 +143,33 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
         }
     }
 
+}
+
+//-------------------------
+void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState)
+{
+
+    if (initialState->quantumNumbers().twoJ() != 0)
+        LOG(ERROR) << "Helicity angles are at the moment only implemented for initial particles with spin 0.";
+
+
+    // final state 4-momenta
+    const std::vector<TLorentzVector>& finalStatesLab = d.fourMomenta();
+
+    // construct 4-vector of initial state
+    TLorentzVector initialStateLab;
+    for (const TLorentzVector& lv : finalStatesLab)
+        initialStateLab += lv;
+
+    // initial helicity frame. \todo Not sure if correct
+    const TLorentzRotation trans = hfTransform(initialStateLab); // ??
+    std::vector<TLorentzVector> finalStatesHf = finalStatesLab;
+    for (TLorentzVector& lv : finalStatesHf)
+        lv.Transform(trans);
+
+    for (std::shared_ptr<ParticleCombination>& pc : initialState->particleCombinations()) {
+        transformDaughters(pc, finalStatesHf);
+    }
 }
 
 //-------------------------

@@ -1,4 +1,6 @@
 #include "Resonance.h"
+
+#include "DecayChannel.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
 

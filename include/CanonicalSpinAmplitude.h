@@ -27,6 +27,8 @@
 
 namespace yap {
 
+class InitialStateParticle;
+
 /// \class CanonicalSpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
@@ -68,16 +70,22 @@ public:
     /// Print Clebsch-Gordan coefficients
     void printClebschGordanCoefficients() const;
 
-    /// Caclulate Lorentz-transformation for helicity frame
-    static TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
-
-    /// Transform daughters to helicity frame and calculate helicity angles
-    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    /// Calculate helicity angles for all possible symmetrization indices
+    static void calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState);
 
 
 private:
 
+    /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
+    /// and store them in ClebschGordanCoefficients_
     void calculateClebschGordanCoefficients();
+
+    /// Caclulate Lorentz-transformation for helicity frame
+    static TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
+
+    /// Transform daughters to helicity frame and calculate helicity angles
+    /// Calls this funciton recursively
+    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
 
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;

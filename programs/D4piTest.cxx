@@ -1,3 +1,4 @@
+#include "CanonicalSpinAmplitude.h"
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
@@ -5,7 +6,6 @@
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
-//#include "SpinAmplitude.h"
 #include "SpinUtilities.h"
 #include "WignerD.h"
 
@@ -106,5 +106,5 @@ int main( int argc, char** argv)
         momenta.push_back(*event.GetDecay(i));
 
     yap::DataPoint d(momenta);
-    D->calculateHelicityAngles(d);
+    yap::CanonicalSpinAmplitude::calculateHelicityAngles(d, D);
 }

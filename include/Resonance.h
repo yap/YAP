@@ -29,6 +29,7 @@
 
 namespace yap {
 
+class DecayChannel;
 class FinalStateParticle;
 
 /// \class Resonance

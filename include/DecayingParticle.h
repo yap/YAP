@@ -21,8 +21,8 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
+#include "DataAccessor.h"
 #include "DecayChannel.h"
-#include "DecayingParticle.h"
 #include "Particle.h"
 
 #include <memory>

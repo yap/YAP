@@ -48,8 +48,6 @@ public:
     virtual bool consisent(const DataPoint& d) const
     { return true; }
 
-    /// Calculate helicity angles for all possible symmetrization indices
-    void calculateHelicityAngles(DataPoint& d) const;
 
 private:
 
