@@ -23,6 +23,8 @@
 
 #include "SpinAmplitude.h"
 
+#include <TLorentzRotation.h>
+
 namespace yap {
 
 /// \class CanonicalSpinAmplitude
@@ -65,6 +67,9 @@ public:
 
     /// Print Clebsch-Gordan coefficients
     void printClebschGordanCoefficients() const;
+
+    /// Caclulate Lorentz-transformation for helicity frame
+    static TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
 
 
 private:

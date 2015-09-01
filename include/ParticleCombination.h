@@ -54,8 +54,12 @@ public:
     { return Indices_; }
 
     /// Get vector of daughters as weak_ptr's
-    std::vector<std::weak_ptr<ParticleCombination> > daughters() const
-    { return std::vector<std::weak_ptr<ParticleCombination> >(Daughters_.begin(), Daughters_.end()); }
+    //std::vector<std::weak_ptr<ParticleCombination> > daughters() const
+    //{ return std::vector<std::weak_ptr<ParticleCombination> >(Daughters_.begin(), Daughters_.end()); }
+
+    /// Get vector of daughters
+    const std::vector<std::shared_ptr<ParticleCombination> >& daughters() const
+    { return Daughters_;}
 
     /// @}
 

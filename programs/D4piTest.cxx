@@ -1,3 +1,4 @@
+#include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
@@ -7,6 +8,9 @@
 //#include "SpinAmplitude.h"
 #include "SpinUtilities.h"
 #include "WignerD.h"
+
+#include "TGenPhaseSpace.h"
+#include "TLorentzVector.h"
 
 #include <assert.h>
 #include <iostream>
@@ -18,7 +22,7 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    yap::disableLogs(el::Level::Debug);
+    //yap::disableLogs(el::Level::Debug);
 
 
     /// \todo Figure out clever way to find PDL file
@@ -89,9 +93,18 @@ int main( int argc, char** argv)
     std::cout << "alright! \n";
 
 
+    // test helicity angles
+    TLorentzVector P(0.0, 0.0, 0.0, D->mass());
+    Double_t masses[4] = { piPlus->mass(), piMinus->mass(), piPlus->mass(), piMinus->mass() };
 
-    // clebsch gordan test
-    //std::cout << yap::clebschGordan(1 * 2, 0 * 2, 1, 1, 1, 1);
+    TGenPhaseSpace event;
+    event.SetDecay(P, 4, masses);
+    event.Generate();
 
-    std::cout << yap::DFunction(0, 0, 0, 0, 0, 0);
+    std::vector<TLorentzVector> momenta;
+    for (unsigned i = 0; i<4; ++i)
+      momenta.push_back(*event.GetDecay(i));
+
+    yap::DataPoint d(momenta);
+    D->calculateHelicityAngles(d);
 }

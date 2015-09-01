@@ -97,6 +97,18 @@ CanonicalSpinAmplitude::operator std::string() const
 }
 
 //-------------------------
+void CanonicalSpinAmplitude::printClebschGordanCoefficients() const
+{
+    std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> ("
+              << FinalQuantumNumbers_[0] << ") + ("
+              << FinalQuantumNumbers_[1] << "), " << std::string(*this) << "\n";
+    for (auto& kv : ClebschGordanCoefficients_) {
+        std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
+                  << "): \t" << kv.second << "\n";
+    }
+}
+
+//-------------------------
 void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
 {
     /// code is copied in parts from rootpwa
@@ -133,15 +145,26 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::printClebschGordanCoefficients() const
+TLorentzRotation CanonicalSpinAmplitude::hfTransform(const TLorentzVector& daughterLv)
 {
-    std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> ("
-              << FinalQuantumNumbers_[0] << ") + ("
-              << FinalQuantumNumbers_[1] << "), " << std::string(*this) << "\n";
-    for (auto& kv : ClebschGordanCoefficients_) {
-        std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
-                  << "): \t" << kv.second << "\n";
-    }
+  // code copied from rootpwa
+  TLorentzVector daughter = daughterLv;
+  const TVector3 zAxisParent(0, 0, 1);  // take z-axis as defined in parent frame
+  const TVector3 yHfAxis = zAxisParent.Cross(daughter.Vect());  // y-axis of helicity frame
+  // rotate so that yHfAxis becomes parallel to y-axis and zHfAxis ends up in (x, z)-plane
+  TRotation rot1;
+  rot1.RotateZ(0.5*PI - yHfAxis.Phi());
+  rot1.RotateX(yHfAxis.Theta() - 0.5*PI);
+  daughter *= rot1;
+  // rotate about yHfAxis so that daughter momentum is along z-axis
+  TRotation rot2;
+  rot2.RotateY(-signum(daughter.X()) * daughter.Theta());
+  daughter *= rot2;
+  // boost to daughter RF
+  rot1.Transform(rot2);
+  TLorentzRotation hfTransform(rot1);
+  hfTransform.Boost(-daughter.BoostVector());
+  return hfTransform;
 }
 
 //-------------------------
