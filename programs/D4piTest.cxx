@@ -102,8 +102,8 @@ int main( int argc, char** argv)
     event.Generate();
 
     std::vector<TLorentzVector> momenta;
-    for (unsigned i = 0; i<4; ++i)
-      momenta.push_back(*event.GetDecay(i));
+    for (unsigned i = 0; i < 4; ++i)
+        momenta.push_back(*event.GetDecay(i));
 
     yap::DataPoint d(momenta);
     D->calculateHelicityAngles(d);

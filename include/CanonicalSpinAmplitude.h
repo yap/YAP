@@ -71,6 +71,9 @@ public:
     /// Caclulate Lorentz-transformation for helicity frame
     static TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
 
+    /// Transform daughters to helicity frame and calculate helicity angles
+    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+
 
 private:
 
