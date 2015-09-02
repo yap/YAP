@@ -1,9 +1,9 @@
 #include "DecayingParticle.h"
 
+#include "CanonicalSpinAmplitude.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
-#include "CanonicalSpinAmplitude.h"
 
 #include <iomanip>
 #include <memory>
@@ -94,26 +94,28 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
 //-------------------------
 void DecayingParticle::optimizeSpinAmplitudeSharing()
 {
+    static std::set<std::shared_ptr<SpinAmplitude> > ampSet;
+    static SharedSpinAmplitudeComparator comp;
 
     for (unsigned i = 0; i < nChannels(); ++i) {
+
+        std::shared_ptr<SpinAmplitude> amp = channel(i)->spinAmplitude();
+
+        bool found(false);
+        for (auto sa : ampSet) {
+            if (comp(sa, amp)) {
+                LOG(INFO) << "Sharing spin amplitude " << std::string(*amp) << " and " << std::string(*sa);
+                channel(i)->spinAmplitude() = sa;
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            ampSet.insert(amp);
 
         for (std::shared_ptr<Particle> d : channel(i)->daughters()) {
             if (std::dynamic_pointer_cast<DecayingParticle>(d))
                 std::static_pointer_cast<DecayingParticle>(d)->optimizeSpinAmplitudeSharing();
-        }
-
-        for (unsigned j = i + 1; j < nChannels(); ++j) {
-
-            // compare pointer adresses
-            if ( channel(i)->spinAmplitude() == channel(j)->spinAmplitude() )
-                continue; // same objects already
-
-            // compare SpinAmplitude objects
-            if  ( *(channel(i)->spinAmplitude()) == *(channel(j)->spinAmplitude()) ) {
-                LOG(INFO) << "Sharing spin amplitudes between " << static_cast<std::string>(*channel(i)) << " and " << static_cast<std::string>(*channel(j));
-                channel(j)->spinAmplitude() = channel(i)->spinAmplitude();
-            }
-
         }
     }
 }
@@ -157,6 +159,58 @@ void DecayingParticle::printDecayChainLevel(int level) const
 
     if (level == 0)
         std::cout << "\n";
+}
+
+//-------------------------
+void DecayingParticle::printSpinAmplitudes(int level)
+{
+  static std::set<std::shared_ptr<SpinAmplitude> > ampSet;
+
+  // get maximum length of particle names
+  static size_t padding = 0;
+  static size_t paddingSpinAmp = 0;
+  if (padding == 0 || level == -1) {
+      ampSet.clear();
+      padding = std::max(padding, name().length());
+      for (auto& c : Channels_) {
+          for (std::shared_ptr<Particle> d : c->daughters()) {
+              padding = std::max(padding, d->name().length());
+              if (std::dynamic_pointer_cast<DecayingParticle>(d))
+                  std::static_pointer_cast<DecayingParticle>(d)->printSpinAmplitudes(-1);
+              paddingSpinAmp = std::max(paddingSpinAmp, std::string(*c->spinAmplitude()).length());
+          }
+      }
+      if (level == -1)
+          return;
+  }
+
+  for (unsigned int i = 0; i < nChannels(); ++i) {
+      if (i > 0)
+          std::cout << "\n" << std::setw(level * (padding * 3 + 7 + paddingSpinAmp)) << "";
+
+      std::cout << std::left << std::setw(padding) << this->name() << " ->";
+      for (std::shared_ptr<Particle> d : channel(i)->daughters())
+          std::cout << " " << std::setw(padding) << d->name();
+
+      std::shared_ptr<SpinAmplitude> amp = channel(i)->spinAmplitude();
+      if (ampSet.find(amp) == ampSet.end()) {
+        ampSet.insert(amp);
+        std::cout << std::left << std::setw(paddingSpinAmp) << std::string(*amp);
+      }
+      else {
+        std::cout << std::left << std::setw(paddingSpinAmp) << "sharedSpinAmp";
+      }
+
+
+      for (std::shared_ptr<Particle> d : channel(i)->daughters())
+          if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
+              std::cout << ",  ";
+              std::static_pointer_cast<DecayingParticle>(d)->printSpinAmplitudes(level + 1);
+          }
+  }
+
+  if (level == 0)
+      std::cout << "\n";
 }
 
 

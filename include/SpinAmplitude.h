@@ -24,6 +24,7 @@
 #include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
+#include "logging.h"
 #include "QuantumNumbers.h"
 
 #include <array>
@@ -81,6 +82,15 @@ protected:
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
 };
+
+struct SharedSpinAmplitudeComparator
+{
+/// Compare SpinAmplitude shared_ptr's
+bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
+{ return lhs.get() == rhs.get() || *lhs == *rhs; }
+
+};
+
 
 }
 

@@ -104,6 +104,9 @@ public:
     void printDecayChain() const
     { printDecayChainLevel(0); }
 
+    /// Print SpinAmplitudes invo;ved in decay chain
+    void printSpinAmplitudes(int level = 0);
+
 private:
 
     void printDecayChainLevel(int level) const;

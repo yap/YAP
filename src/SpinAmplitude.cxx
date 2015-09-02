@@ -30,9 +30,27 @@ bool SpinAmplitude::consistent() const
 //-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
-    return (InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_
-            && FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]
-            && FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]);
+    /*LOG(DEBUG) << "compare " << std::string(*this) << " and " << std::string(rhs);
+
+    std::cout << "SymmetrizationIndices_ == rhs.SymmetrizationIndices_: " << (SymmetrizationIndices_ == rhs.SymmetrizationIndices_) << "\n";
+    std::cout << "InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_: " << (InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_) << "\n";
+    std::cout << "FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]: " << (FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]) << "\n";
+    std::cout << "FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]: " << (FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]) << "\n";
+
+    if (!(SymmetrizationIndices_ == rhs.SymmetrizationIndices_)) {
+      for (auto& kv : SymmetrizationIndices_) {
+        std::cout << std::string(*kv.first) << "=>" << kv.second << "\n";
+      }
+      std::cout << "--\n";
+      for (auto& kv : rhs.SymmetrizationIndices_) {
+        std::cout << std::string(*kv.first) << "=>" << kv.second << "\n";
+      }
+    }*/
+
+    return (SymmetrizationIndices_ == rhs.SymmetrizationIndices_
+            and InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_
+            and FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]
+            and FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]);
 }
 
 }

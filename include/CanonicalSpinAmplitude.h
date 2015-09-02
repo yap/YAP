@@ -28,6 +28,7 @@
 namespace yap {
 
 class InitialStateParticle;
+class DecayingParticle;
 
 /// \class CanonicalSpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
@@ -85,7 +86,9 @@ private:
 
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
-    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf, std::shared_ptr<InitialStateParticle> part);
+
+    //std::set<std::shared_ptr<SpinAmplitude> > findSpinAmplitudes()
 
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;

@@ -84,6 +84,8 @@ int main( int argc, char** argv)
     assert(D->consistent());
 
     D->printDecayChain();
+    std::cout << "\n";
+    D->printSpinAmplitudes();
 
     std::cout << "\nD symmetrizations: \n";
     for (std::shared_ptr<yap::ParticleCombination>& pc : D->particleCombinations())

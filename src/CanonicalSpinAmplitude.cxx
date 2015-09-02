@@ -1,6 +1,7 @@
 #include "CanonicalSpinAmplitude.h"
 
 #include "Constants.h"
+#include "DecayingParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "MathUtilities.h"
@@ -150,7 +151,7 @@ void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_p
 {
 
     if (initialState->quantumNumbers().twoJ() != 0)
-        LOG(ERROR) << "Helicity angles are at the moment only implemented for initial particles with spin 0.";
+        LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
 
 
     // final state 4-momenta
@@ -162,13 +163,16 @@ void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_p
         initialStateLab += lv;
 
     // initial helicity frame. \todo Not sure if correct
-    const TLorentzRotation trans = hfTransform(initialStateLab); // ??
+    //const TLorentzRotation trans = hfTransform(initialStateLab); // ??
+    // boost into RF of initialState
+    TLorentzRotation boost;
+    boost.Boost(-initialStateLab.BoostVector());
     std::vector<TLorentzVector> finalStatesHf = finalStatesLab;
     for (TLorentzVector& lv : finalStatesHf)
-        lv.Transform(trans);
+        lv.Transform(boost);
 
     for (std::shared_ptr<ParticleCombination>& pc : initialState->particleCombinations()) {
-        transformDaughters(pc, finalStatesHf);
+        transformDaughters(pc, finalStatesHf, initialState);
     }
 }
 
@@ -196,13 +200,29 @@ TLorentzRotation CanonicalSpinAmplitude::hfTransform(const TLorentzVector& daugh
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf)
+void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombination> pc,
+    std::vector<TLorentzVector> finalStatesHf,
+    std::shared_ptr<InitialStateParticle> part)
 {
     // loop over daughters
     for (const std::shared_ptr<ParticleCombination>& daugh : pc->daughters()) {
 
         if (daugh->daughters().empty())
             continue;
+
+        // testing ...
+        std::cout << std::string(*daugh) << "\n";
+        // find matching decay channels
+        for (unsigned i = 0; i < part->nChannels(); ++i) {
+          std::shared_ptr<yap::SpinAmplitude> sa = part->channel(i)->spinAmplitude();
+          for (std::shared_ptr<ParticleCombination> pcSa : sa->particleCombinations()) {
+            if (pcSa == daugh) {
+              std::cout << " matches " << sa << std::string(*sa) << ", " << std::string(*pcSa) << "; ";
+            }
+          }
+        }
+        std::cout << "\n";
+
 
         // construct 4-vector of daughter
         TLorentzVector daughter;
@@ -218,18 +238,21 @@ void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombinat
         for (ParticleIndex i : daugh->indices())
             finalStatesHf.at(i).Transform(transDaugh);
 
-        transformDaughters(daugh, finalStatesHf);
+        transformDaughters(daugh, finalStatesHf, part);
     }
 }
 
 //-------------------------
 bool CanonicalSpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
+    //LOG(DEBUG) << "compare " << std::string(*this) << " and " << std::string(rhs);
+
     const CanonicalSpinAmplitude* cSA = dynamic_cast<const CanonicalSpinAmplitude*>(&rhs);
     if (!cSA) return false;
 
-    return (SpinAmplitude::equals(rhs)
-            && TwoL_ == cSA->TwoL_);
+    return (TwoL_ == cSA->TwoL_
+            and ClebschGordanCoefficients_ == cSA->ClebschGordanCoefficients_
+            and SpinAmplitude::equals(rhs) );
 }
 
 }
