@@ -78,7 +78,7 @@ public:
 
     /// checks equality of symmetrizations, particular to the
     /// DataAccessor object. Can be overloaded to reduce redundant calculations
-    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B)
+    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
     { return A == B; }
 
     /// @}
