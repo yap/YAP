@@ -83,11 +83,10 @@ protected:
 
 };
 
-struct SharedSpinAmplitudeComparator
-{
+struct SharedSpinAmplitudeComparator {
 /// Compare SpinAmplitude shared_ptr's
-bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
-{ return lhs.get() == rhs.get() || *lhs == *rhs; }
+    bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
+    { return lhs.get() == rhs.get() || *lhs == *rhs; }
 
 };
 

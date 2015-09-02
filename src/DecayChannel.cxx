@@ -129,16 +129,16 @@ bool DecayChannel::consistent() const
         // check if QuantumNumbers of SpinAmplitude objects match with Particles
         if (SpinAmplitude_->initialQuantumNumbers() != parent()->quantumNumbers()) {
             LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of parent "
-                << parent()->quantumNumbers() << " and SpinAmplitude "
-                << SpinAmplitude_->initialQuantumNumbers() << " don't match.";
+                       << parent()->quantumNumbers() << " and SpinAmplitude "
+                       << SpinAmplitude_->initialQuantumNumbers() << " don't match.";
             result = false;
         }
 
         for (unsigned i = 0; i < Daughters_.size(); ++i) {
             if (SpinAmplitude_->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
                 LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughter " << i << " "
-                    << Daughters_[i]->quantumNumbers() << " and SpinAmplitude "
-                    << SpinAmplitude_->finalQuantumNumbers()[i] << " don't match.";
+                           << Daughters_[i]->quantumNumbers() << " and SpinAmplitude "
+                           << SpinAmplitude_->finalQuantumNumbers()[i] << " don't match.";
                 result = false;
             }
         }

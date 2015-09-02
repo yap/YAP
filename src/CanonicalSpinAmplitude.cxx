@@ -201,8 +201,8 @@ TLorentzRotation CanonicalSpinAmplitude::hfTransform(const TLorentzVector& daugh
 
 //-------------------------
 void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombination> pc,
-    std::vector<TLorentzVector> finalStatesHf,
-    std::shared_ptr<InitialStateParticle> part)
+        std::vector<TLorentzVector> finalStatesHf,
+        std::shared_ptr<InitialStateParticle> part)
 {
     // loop over daughters
     for (const std::shared_ptr<ParticleCombination>& daugh : pc->daughters()) {
@@ -214,12 +214,12 @@ void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombinat
         std::cout << std::string(*daugh) << "\n";
         // find matching decay channels
         for (unsigned i = 0; i < part->nChannels(); ++i) {
-          std::shared_ptr<yap::SpinAmplitude> sa = part->channel(i)->spinAmplitude();
-          for (std::shared_ptr<ParticleCombination> pcSa : sa->particleCombinations()) {
-            if (pcSa == daugh) {
-              std::cout << " matches " << sa << std::string(*sa) << ", " << std::string(*pcSa) << "; ";
+            std::shared_ptr<yap::SpinAmplitude> sa = part->channel(i)->spinAmplitude();
+            for (std::shared_ptr<ParticleCombination> pcSa : sa->particleCombinations()) {
+                if (pcSa == daugh) {
+                    std::cout << " matches " << sa << std::string(*sa) << ", " << std::string(*pcSa) << "; ";
+                }
             }
-          }
         }
         std::cout << "\n";
 
