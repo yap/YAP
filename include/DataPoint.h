@@ -69,16 +69,17 @@ protected:
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
 
+    /// Helicity angles phi and theta
+    /// first index is for the symmeterization state (as known by the InitialStateParticle)
+    /// second index is for [phi, theta]
+    std::vector<std::vector<double> > HelicityAngles_;
+
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor
     std::vector<std::vector<std::vector<double> > > Data_;
 
-    /// Helicity angles phi and theta
-    /// first index is for the symmeterization state (as known by the InitialStateParticle)
-    /// second index is for [phi, theta]
-    std::vector<std::vector<double> > HelicityAngles_;
 
 };
 
