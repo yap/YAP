@@ -11,7 +11,8 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std
       PDGCode_(pdg)
 {
     for (ParticleIndex i : indices) {
-        this->addSymmetrizationIndex(yap::ParticleCombination::uniqueSharedPtr(i));
+        //addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));
+        addSymmetrizationIndex(ParticleCombination(i));
     }
 }
 

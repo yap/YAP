@@ -61,6 +61,10 @@ public:
     const std::vector<std::shared_ptr<ParticleCombination> >& daughters() const
     { return Daughters_;}
 
+    /// get parent
+    const ParticleCombination* parent() const
+    { return Parent_; }
+
     /// @}
 
     /// Add daughter ParticleCombination
@@ -86,6 +90,7 @@ public:
     { return !(A == B); }
 
 protected:
+    ParticleCombination* Parent_;
     std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
     std::vector<ParticleIndex> Indices_;
 

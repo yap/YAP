@@ -3,24 +3,28 @@
 #include "logging.h"
 
 #include <algorithm>
+#include <assert.h>
 
 namespace yap {
 
 //-------------------------
-ParticleCombination::ParticleCombination()
+ParticleCombination::ParticleCombination() :
+    Parent_(nullptr)
 {
 }
 
 //-------------------------
 ParticleCombination::ParticleCombination(ParticleIndex index) :
+    Parent_(nullptr),
     Indices_(1, index)
 {
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c)
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c) :
+    Parent_(nullptr)
 {
-    for (std::shared_ptr<ParticleCombination> d : c)
+    for (std::shared_ptr<ParticleCombination>& d : c)
         addDaughter(d);
 }
 
@@ -33,6 +37,30 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
     }
 
     /// \todo Check that new daughter does not share content with other daughters?
+
+
+
+    if (daughter->Parent_ == nullptr) {
+      // daughter has no parent yet. Set this as parent and add
+      daughter->Parent_ = this;
+    }
+    else if (daughter->Parent_ == this) {
+      // fine
+    }
+    else {
+      LOG(ERROR) << "this should not happen!";
+      /*
+      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
+      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
+      copy->Parent_ = this;
+      std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
+      // need to swap so that parent of argument daughter is now set
+
+      // \todo does not work since it would have to operate on the original shared_ptr object
+      daughter.swap(uniqueCopy);*/
+    }
+
+    assert(daughter->Parent_ == this);
 
     // add daughter to vector
     Daughters_.push_back(daughter);
@@ -79,9 +107,14 @@ bool ParticleCombination::consistent() const
         result = false;
     }
 
-    // check daughers
-    for (std::shared_ptr<ParticleCombination> d : Daughters_)
+    // check daughters
+    for (std::shared_ptr<ParticleCombination> d : Daughters_) {
+        if (d->parent() != this) {
+          LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
+          result = false;
+        }
         result &= d->consistent();
+    }
 
     return result;
 }
@@ -130,6 +163,10 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
         return false;
     if (!std::equal(A.Indices_.begin(), A.Indices_.end(), B.Indices_.begin()))
         return false;
+
+    // check parents
+    if (A.parent() != B.parent())
+      return false;
 
     // Check daughters
     if (A.Daughters_.size() != B.Daughters_.size())
