@@ -74,8 +74,8 @@ void DecayingParticle::addChannel(DecayChannel* c)
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
 
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
-        //addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-        addSymmetrizationIndex(ParticleCombination(pc));
+        addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+        //addSymmetrizationIndex(pc);
     }
 }
 

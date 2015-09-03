@@ -92,6 +92,8 @@ int main( int argc, char** argv)
         std::cout << std::string(*pc) << "\n";
 
 
+    yap::ParticleCombination::printParticleCombinationSet();
+
     std::cout << "alright! \n";
 
 

@@ -40,27 +40,25 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 
 
 
-    if (daughter->Parent_ == nullptr) {
-      // daughter has no parent yet. Set this as parent and add
-      daughter->Parent_ = this;
-    }
-    else if (daughter->Parent_ == this) {
-      // fine
-    }
-    else {
-      LOG(ERROR) << "this should not happen!";
-      /*
-      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
-      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
-      copy->Parent_ = this;
-      std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-      // need to swap so that parent of argument daughter is now set
+    /*if (daughter->Parent_ == nullptr) {
+        // daughter has no parent yet. Set this as parent and add
+        daughter->Parent_ = this;
+    } else if (daughter->Parent_ == this) {
+        // fine
+    } else {
+        LOG(ERROR) << "this should not happen!";
 
-      // \todo does not work since it would have to operate on the original shared_ptr object
-      daughter.swap(uniqueCopy);*/
+        // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
+        std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
+        copy->Parent_ = this;
+        std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
+        // need to swap so that parent of argument daughter is now set
+
+        // \todo does not work since it would have to operate on the original shared_ptr object
+        daughter.swap(uniqueCopy);
     }
 
-    assert(daughter->Parent_ == this);
+    assert(daughter->Parent_ == this);*/
 
     // add daughter to vector
     Daughters_.push_back(daughter);
@@ -108,13 +106,13 @@ bool ParticleCombination::consistent() const
     }
 
     // check daughters
-    for (std::shared_ptr<ParticleCombination> d : Daughters_) {
+    /*for (std::shared_ptr<ParticleCombination> d : Daughters_) {
         if (d->parent() != this) {
-          LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
-          result = false;
+            LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
+            result = false;
         }
         result &= d->consistent();
-    }
+    }*/
 
     return result;
 }
@@ -166,7 +164,7 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 
     // check parents
     if (A.parent() != B.parent())
-      return false;
+        return false;
 
     // Check daughters
     if (A.Daughters_.size() != B.Daughters_.size())
@@ -204,6 +202,16 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(Partic
 std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<std::shared_ptr<ParticleCombination> > c)
 {
     return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
+}
+
+//-------------------------
+void ParticleCombination::printParticleCombinationSet()
+{
+  std::cout << "ParticleCombination set:\n";
+  for (auto pc : ParticleCombinationSet_) {
+    std::cout << "  " << std::string(*pc) << "\n";
+  }
+  std::cout << std::endl;
 }
 
 }

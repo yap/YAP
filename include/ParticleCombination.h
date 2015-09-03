@@ -118,6 +118,8 @@ public:
     static const std::set<std::shared_ptr<ParticleCombination> >& particleCombinationSet()
     { return ParticleCombinationSet_; }
 
+    static void printParticleCombinationSet();
+
 private:
 
     /// Static set of all particle combinations created throughout code

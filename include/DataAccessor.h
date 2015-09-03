@@ -74,7 +74,7 @@ public:
     /// @{
 
     /// add symmetrizationIndex to SymmetrizationIndices_
-    void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
 
     /// checks equality of symmetrizations, particular to the
     /// DataAccessor object. Can be overloaded to reduce redundant calculations

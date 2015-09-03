@@ -40,8 +40,8 @@ void Resonance::addChannel(DecayChannel* c)
     DecayingParticle::addChannel(c);
 
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
-        //MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-        MassShape_->addSymmetrizationIndex(ParticleCombination(pc));
+        MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+        //MassShape_->addSymmetrizationIndex({pc});
     }
 }
 

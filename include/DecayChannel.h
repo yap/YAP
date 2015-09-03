@@ -103,7 +103,7 @@ public:
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to BlattWeisskopf_ and SpinAmplitude_
-    void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
 
 protected:
 

@@ -48,8 +48,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     for (std::shared_ptr<ParticleCombination> PCA : PCs[0])
         for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
             if (!PCA->sharesIndices(PCB)) {
-                //std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
-                std::shared_ptr<ParticleCombination> a_b = ParticleCombination({PCA, PCB});
+                std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
+                //std::shared_ptr<ParticleCombination> a_b = std::make_shared<ParticleCombination>(ParticleCombination({PCA, PCB}));
 
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
@@ -196,9 +196,9 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 //-------------------------
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
-  DataAccessor::addSymmetrizationIndex(c)
-  BlattWeisskopf_.addSymmetrizationIndex(c);
-  SpinAmplitude_->addSymmetrizationIndex(c);
+    DataAccessor::addSymmetrizationIndex(c);
+    BlattWeisskopf_.addSymmetrizationIndex(c);
+    SpinAmplitude_->addSymmetrizationIndex(c);
 }
 
 
