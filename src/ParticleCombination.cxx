@@ -207,11 +207,11 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::v
 //-------------------------
 void ParticleCombination::printParticleCombinationSet()
 {
-  std::cout << "ParticleCombination set:\n";
-  for (auto pc : ParticleCombinationSet_) {
-    std::cout << "  " << std::string(*pc) << "\n";
-  }
-  std::cout << std::endl;
+    std::cout << "ParticleCombination set:\n";
+    for (auto pc : ParticleCombinationSet_) {
+        std::cout << "  " << std::string(*pc) << "\n";
+    }
+    std::cout << std::endl;
 }
 
 }
