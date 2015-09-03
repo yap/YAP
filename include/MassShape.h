@@ -24,7 +24,9 @@
 #include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
+#include "ParticleCombination.h"
 
+#include <memory>
 #include <vector>
 
 namespace yap {
@@ -84,6 +86,10 @@ public:
 
     /// Check consistency of object
     virtual bool consistent() const override = 0;
+
+    /// Overloading DataAccessor::areEqual to equate symmetrizations
+    /// with equal particle content
+    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
 
     /// @}
 
