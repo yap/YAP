@@ -59,8 +59,16 @@ public:
     { return FourMomenta_; }
 
     /// Access to Data
-    std::vector<std::vector<double> >& data(unsigned index)
-    { return Data_.at(index); }
+    std::vector<std::vector<std::vector<double> > >& data()
+    { return Data_; }
+
+    /// Access to Data (const)
+    const std::vector<std::vector<std::vector<double> > >& data() const
+    { return Data_; }
+
+    /// operator []
+    std::vector<std::vector<double> >& operator[](unsigned index)
+    { return Data_[index]; }
 
     /// @}
 
