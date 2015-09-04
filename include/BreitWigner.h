@@ -34,10 +34,15 @@ class ParticleCombination;
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
+/// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
 /// Variables stored in #MassShapes::Parameters_:\n
 ///     MassShapes::#Parameters_[0] := nominal mass; set by setMass(double), returned by mass()\n
 ///     MassShapes::#Parameters_[1] := nominal width; set by setWidth(double), returned by width()\n\n
-/// Amplitude is 1 / (mass^2 - s - i*mass*width)\n
+/// Values stored into DataPoint:
+///     [0] := real(A(s))
+///     [1] := imag(A(s))
+
+
 
 class BreitWigner : public MassShape
 {
@@ -58,28 +63,13 @@ public:
     double mass() const
     { return Parameters_[0]; }
 
-    /// \return mass-squared-dependent mass
-    /// \param s squared mass to evaluate at
-    double mass(double s) const
-    { return mass(); }
-
     /// \return nominal squared masss
-    double squaredmass() const
+    double squaredMass() const
     { return mass() * mass(); }
-
-    /// \return mass-squared-dependent squared mass
-    /// \param s squared mass to evaluate at
-    double squaredmass(double s) const
-    { return squaredmass(); }
 
     /// \return nominal width
     double width() const
     { return Parameters_[1]; }
-
-    /// \return mass-squared-dependent width
-    /// \param s squared mass to evaluate at
-    double width(double s) const
-    { return width(); }
 
     /// @}
 
