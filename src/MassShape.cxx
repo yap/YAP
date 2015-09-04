@@ -8,13 +8,6 @@
 namespace yap {
 
 //-------------------------
-MassShape::MassShape(unsigned nParameters) :
-    DataAccessor(),
-    Parameters_(nParameters, 0)
-{
-}
-
-//-------------------------
 bool MassShape::areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
     // check size of indices vectors

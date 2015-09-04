@@ -24,6 +24,7 @@
 #include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
+#include "ParameterSet.h"
 #include "ParticleCombination.h"
 
 #include <memory>
@@ -35,35 +36,10 @@ namespace yap {
 /// \brief Abstract base class for all mass shapes
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
-///
-/// All classes inheriting from MassShape should place continuous
-/// fit variables in MassShape::Parameters_
 
-class MassShape : public AmplitudeComponent, public DataAccessor
+class MassShape : public AmplitudeComponent, public DataAccessor, public ParameterSet
 {
 public:
-
-    /// \name Constructors, destructor, & operators
-    /// @{
-
-    /// Default constructor
-    /// \param nParameters Length of Parameters_ vector
-    MassShape(unsigned nParameters = 0);
-
-    /// @}
-
-    /// \name Parameter access
-    /// @{
-
-    /// Get parameter set
-    std::vector<double>& parameters()
-    { return Parameters_; }
-
-    /// Get (const) parameter set
-    const std::vector<double>& parameters() const
-    { return Parameters_; }
-
-    /// @}
 
     /// \name Amplitude related
     /// @{
@@ -85,18 +61,14 @@ public:
     /// @{
 
     /// Check consistency of object
-    virtual bool consistent() const override = 0;
+    virtual bool consistent() const override
+    { return DataAccessor::consistent() and ParameterSet::consistent(); }
 
     /// Overloading DataAccessor::areEqual to equate symmetrizations
     /// with equal particle content
     virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
 
     /// @}
-
-protected:
-
-    /// Parameters
-    std::vector<double> Parameters_;
 
 };
 

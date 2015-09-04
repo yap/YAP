@@ -7,10 +7,9 @@ namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
-    MassShape(2)
+    MassShape()
 {
-    setMass(mass);
-    setWidth(width);
+    ParameterSet::operator=({mass, width});
 }
 
 //-------------------------
