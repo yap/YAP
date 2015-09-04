@@ -68,7 +68,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-Amp DecayChannel::amplitude(DataPoint& d)
+Amp DecayChannel::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     return Amp(1);
 }

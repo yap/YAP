@@ -18,7 +18,7 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 {}
 
 //-------------------------
-Amp DecayingParticle::amplitude(DataPoint& d)
+Amp DecayingParticle::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
     return Amp(1);

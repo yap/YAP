@@ -24,11 +24,13 @@
 #include "Amp.h"
 #include "Constants.h"
 #include "Particle.h"
-#include "ParticleCombination.h"
+#include "ParticleIndex.h"
 
 #include <memory>
 
 namespace yap {
+
+class ParticleCombination;
 
 /// \class FinalStateParticle
 /// \brief Class representing a final-state particle
@@ -44,7 +46,7 @@ public:
     FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices);
 
     /// \return 1 + 0i
-    virtual Amp amplitude(DataPoint& d) override
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
     { return Complex_1; }
 
     virtual bool consistent() const override;

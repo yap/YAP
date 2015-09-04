@@ -31,6 +31,7 @@
 namespace yap {
 
 class FinalStateParticle;
+class ParticleCombination;
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay
@@ -46,7 +47,7 @@ public:
 
     /// \return Ampltiude for particle
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

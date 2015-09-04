@@ -13,7 +13,7 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-Amp Resonance::amplitude(DataPoint& d)
+Amp Resonance::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
     return Amp(0.);

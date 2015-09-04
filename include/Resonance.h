@@ -31,6 +31,7 @@ namespace yap {
 
 class DecayChannel;
 class FinalStateParticle;
+class ParticleCombination;
 
 /// \class Resonance
 /// \brief Class for a particle that will decay and has a mass shape
@@ -45,7 +46,7 @@ public:
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
 
     /// \return amplitude for resonance evaluated at DataPoint
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

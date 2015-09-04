@@ -25,12 +25,13 @@
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 #include "ParameterSet.h"
-#include "ParticleCombination.h"
 
 #include <memory>
 #include <vector>
 
 namespace yap {
+
+class ParticleCombination;
 
 /// \class MassShape
 /// \brief Abstract base class for all mass shapes
@@ -44,11 +45,7 @@ public:
     /// \name Amplitude related
     /// @{
 
-    /// \todo
-    /// Calculate MassShape amplitude from DataPoint
-    /// \return amplitude evaluated on DataPoint
-    /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override = 0;
+    using AmplitudeComponent::amplitude;
 
     /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass

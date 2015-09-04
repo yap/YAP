@@ -24,9 +24,11 @@
 #include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
+#include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 
 #include <array>
+#include <memory>
 
 namespace yap {
 
@@ -44,7 +46,7 @@ public:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override = 0;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
 
     /// Check consistency of object
     virtual bool consistent() const override;

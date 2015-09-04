@@ -9,7 +9,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 {}
 
 //-------------------------
-Amp BlattWeisskopf::amplitude(DataPoint& d)
+Amp BlattWeisskopf::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     /// \todo implement
     return Amp(1);

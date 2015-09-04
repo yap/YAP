@@ -1,18 +1,17 @@
 #include "FinalStateParticle.h"
 
 #include "logging.h"
+#include "ParticleCombination.h"
 
 namespace yap {
-
 
 //-------------------------
 FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices)
     : Particle(q, mass, name),
       PDGCode_(pdg)
 {
-    for (ParticleIndex i : indices) {
-        this->addSymmetrizationIndex(yap::ParticleCombination::uniqueSharedPtr(i));
-    }
+    for (ParticleIndex i : indices)
+        this->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));
 }
 
 //-------------------------

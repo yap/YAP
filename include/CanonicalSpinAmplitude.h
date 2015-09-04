@@ -28,6 +28,7 @@
 namespace yap {
 
 class InitialStateParticle;
+class ParticleCombination;
 
 /// \class CanonicalSpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
@@ -43,7 +44,7 @@ public:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

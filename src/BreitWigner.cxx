@@ -13,7 +13,7 @@ BreitWigner::BreitWigner(double mass, double width) :
 }
 
 //-------------------------
-Amp BreitWigner::amplitude(DataPoint& d)
+Amp BreitWigner::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     return Complex_0;
 }

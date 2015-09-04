@@ -24,7 +24,11 @@
 #include "Amp.h"
 #include "DataPoint.h"
 
+#include <memory>
+
 namespace yap {
+
+class ParticleCombination;
 
 /// \name AmplitudeComponent
 /// \brief Abstract base class for all objects implementing a (complex) amplitude
@@ -49,7 +53,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual Amp amplitude(DataPoint& d) = 0;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) = 0;
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
