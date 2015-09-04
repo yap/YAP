@@ -22,6 +22,7 @@
 #define yap_DataAccessor_h
 
 #include "Amp.h"
+#include "CalculationStatus.h"
 #include "DataPoint.h"
 #include "ParticleCombination.h"
 
@@ -37,9 +38,6 @@ namespace yap {
 class DataAccessor
 {
 public:
-
-    /// \enum CalculationStatus
-    enum CalculationStatus : bool { kCalculated = true, kUncalculated = false };
 
     /// \name Constructors, destructor, & operators
     /// @{
