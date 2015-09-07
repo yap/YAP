@@ -1,5 +1,6 @@
 #include "DataAccessor.h"
 
+#include "DataPoint.h"
 #include "logging.h"
 
 namespace yap {
@@ -7,7 +8,8 @@ namespace yap {
 unsigned DataAccessor::GlobalIndex = 0;
 
 //-------------------------
-DataAccessor::DataAccessor() :
+DataAccessor::DataAccessor(ParticleCombination::Equiv equiv) :
+    Equiv_(equiv),
     Index_(0)
 {
     // assign a running index to this DataAccessor
@@ -17,6 +19,7 @@ DataAccessor::DataAccessor() :
 
 //-------------------------
 DataAccessor::DataAccessor(const DataAccessor& other) :
+    Equiv_(other.Equiv_),
     CalculationStatuses_(other.CalculationStatuses_),
     SymmetrizationIndices_(other.SymmetrizationIndices_),
     Index_(0)
@@ -71,7 +74,7 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
-        if (areEqual(kv.first, c)) {
+        if (Equiv_(kv.first, c)) {
             // equating member found; set index; return
             SymmetrizationIndices_[c] = kv.second;
             return;

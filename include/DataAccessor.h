@@ -23,13 +23,14 @@
 
 #include "Amp.h"
 #include "CalculationStatus.h"
-#include "DataPoint.h"
 #include "ParticleCombination.h"
 
 #include <map>
 #include <vector>
 
 namespace yap {
+
+class DataPoint;
 
 /// \name DataAccessor
 /// \brief Base class for all objects accessing DataPoint's
@@ -42,8 +43,9 @@ public:
     /// \name Constructors, destructor, & operators
     /// @{
 
-    /// Default constructor
-    DataAccessor();
+    /// Constructor
+    /// \param equiv ParticleCombination equivalence struct for determining index assignments
+    DataAccessor(ParticleCombination::Equiv equiv = ParticleCombination::equivBySharedPointer);
 
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
@@ -87,14 +89,13 @@ public:
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
 
-    /// checks equality of symmetrizations, particular to the
-    /// DataAccessor object. Can be overloaded to reduce redundant calculations
-    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
-    { return A == B; }
 
     /// @}
 
 protected:
+
+    /// Object to check equality of symmetrizations for determining storage indices
+    ParticleCombination::Equiv Equiv_;
 
     /// vector of calculation statuses for each index in the data (as needed by #SymmetrizationIndices_
     std::vector<CalculationStatus> CalculationStatuses_;
