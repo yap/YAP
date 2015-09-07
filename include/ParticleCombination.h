@@ -134,6 +134,55 @@ private:
     static std::set<std::shared_ptr<ParticleCombination> > ParticleCombinationSet_;
 
 /// @}
+
+/// \name Comparison structs
+/// @{
+
+public:
+
+    /// \struct Equiv
+    /// \brief base class for equivalence (with functor), compares shared_ptr's only
+    struct Equiv {
+        virtual bool operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+        { return A == B; }
+    };
+
+    /// \struct EquivByOrderedContent
+    /// \brief Checks objects referenced by shared pointers, check indices only
+    struct EquivByOrderedContent : Equiv {
+        virtual bool operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
+    };
+
+    /// \struct EquivDown
+    /// \brief Checks objects referenced by shared pointers,
+    /// check self and all daughters (down the decay tree) for equality
+    struct EquivDown : EquivByOrderedContent {
+        virtual bool operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
+    };
+
+    /// \struct EquivUpAndDown
+    /// \brief Check objects referenced by shared pointers,
+    /// check self, all daughters (down-), and parent (up the decay tree) for equality
+    struct EquivUpAndDown : EquivDown {
+        virtual bool operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
+    };
+
+    /// \struct EquivByOrderlessContent
+    /// \brief Check objects referenced bt shared pointers,
+    /// check indices only, disregarding order
+    struct EquivByOrderlessContent : Equiv {
+        virtual bool operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
+    };
+
+    /// \name Static Comparison objects
+    static Equiv equivBySharedPointer;
+    static EquivDown equivDown;
+    static EquivUpAndDown equivUpAndDown;
+    static EquivByOrderedContent equivByOrderedContent;
+    static EquivByOrderlessContent equivByOrderlessContent;
+
+/// @}
+
 };
 
 

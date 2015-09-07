@@ -191,27 +191,7 @@ void ParticleCombination::addParent(ParticleCombination* parent)
 //-------------------------
 bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 {
-    // Check indices
-    if (A.Indices_.size() != B.Indices_.size())
-        return false;
-    if (!std::equal(A.Indices_.begin(), A.Indices_.end(), B.Indices_.begin()))
-        return false;
-
-    // check parents
-    if (A.Parents_.size() != B.Parents_.size())
-        return false;
-    if (!std::equal(A.Parents_.begin(), A.Parents_.end(), B.Parents_.begin()))
-        return false;
-
-    // Check daughters
-    if (A.Daughters_.size() != B.Daughters_.size())
-        return false;
-    for (unsigned i = 0; i < A.Daughters_.size(); ++i)
-        if (*(A.Daughters_[i]) != *(B.Daughters_[i]))
-            return false;
-
-    // a match!
-    return true;
+    return ParticleCombination::equivUpAndDown(std::make_shared<ParticleCombination>(A), std::make_shared<ParticleCombination>(B));
 }
 
 /////////////////////////
@@ -249,6 +229,77 @@ void ParticleCombination::printParticleCombinationSet()
         std::cout << "  " << std::string(*pc) << "\n";
     }
     std::cout << std::endl;
+}
+
+//-------------------------
+// Comparison shtuff:
+
+ParticleCombination::Equiv ParticleCombination::equivBySharedPointer;
+ParticleCombination::EquivDown ParticleCombination::equivDown;
+ParticleCombination::EquivUpAndDown ParticleCombination::equivUpAndDown;
+ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
+ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
+
+//-------------------------
+bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    // Check indices
+    if (A->indices().size() != B->indices().size())
+        return false;
+    if (!std::equal(A->indices().begin(), A->indices().end(), B->indices().begin()))
+        return false;
+
+    // a match!
+    return true;
+}
+
+//-------------------------
+bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    if (!ParticleCombination::equivByOrderedContent(A, B))
+        return false;
+
+    // Check daughters
+    if (A->daughters().size() != B->daughters().size())
+        return false;
+    for (unsigned i = 0; i < A->daughters().size(); ++i)
+        if (operator()(A->daughters()[i], B->daughters()[i]))
+            return false;
+
+    // a match!
+    return true;
+}
+
+//-------------------------
+bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    if (!ParticleCombination::equivDown(A, B))
+        return false;
+
+    /// \todo Can really only have one parent
+    // check parents
+    if (A->parents().size() != B->parents().size())
+        return false;
+    if (!std::equal(A->parents().begin(), A->parents().end(), B->parents().begin()))
+        return false;
+
+    // a match!
+    return true;
+}
+
+//-------------------------
+bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    // check size of indices vectors
+    if (A->indices().size() != B->indices().size())
+        return false;
+
+    // check contents of indices vectors
+    // (creating a set will sort entries for easy comparison,
+    // since order doesn't matter)
+    std::set<ParticleIndex> a(A->indices().begin(), A->indices().end());
+    std::set<ParticleIndex> b(B->indices().begin(), B->indices().end());
+    return std::equal(a.begin(), a.end(), b.begin());
 }
 
 }
