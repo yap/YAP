@@ -14,6 +14,7 @@ set(YAP_SOURCES
   DecayChannel.cxx
   DecayingParticle.cxx
   FinalStateParticle.cxx
+  FourMomenta.cxx
   InitialStateParticle.cxx
   MassShape.cxx
   ParticleCombination.cxx

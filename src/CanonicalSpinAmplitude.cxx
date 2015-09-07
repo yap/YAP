@@ -4,6 +4,7 @@
 #include "DecayingParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "Kinematics.h"
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
 
@@ -149,31 +150,28 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
 //-------------------------
 void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState)
 {
+/// \todo Use kinematics::fourMomenta
+    /*
+        if (initialState->quantumNumbers().twoJ() != 0)
+            LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
 
-    if (initialState->quantumNumbers().twoJ() != 0)
-        LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
 
+        // final state 4-momenta
+        const std::vector<TLorentzVector>& finalStatesLab = d.fourMomenta();
 
-    // final state 4-momenta
-    const std::vector<TLorentzVector>& finalStatesLab = d.fourMomenta();
+        // initial helicity frame. \todo Not sure if correct
+        //const TLorentzRotation trans = hfTransform(initialStateLab); // ??
+        // boost into RF of initialState
+        TLorentzRotation boost;
+        boost.Boost(-kinematics::fourMomenta.initialStateMomentum(d).BoostVector());
+        std::vector<TLorentzVector> finalStatesHf = finalStatesLab;
+        for (TLorentzVector& lv : finalStatesHf)
+            lv.Transform(boost);
 
-    // construct 4-vector of initial state
-    TLorentzVector initialStateLab;
-    for (const TLorentzVector& lv : finalStatesLab)
-        initialStateLab += lv;
-
-    // initial helicity frame. \todo Not sure if correct
-    //const TLorentzRotation trans = hfTransform(initialStateLab); // ??
-    // boost into RF of initialState
-    TLorentzRotation boost;
-    boost.Boost(-initialStateLab.BoostVector());
-    std::vector<TLorentzVector> finalStatesHf = finalStatesLab;
-    for (TLorentzVector& lv : finalStatesHf)
-        lv.Transform(boost);
-
-    for (std::shared_ptr<ParticleCombination>& pc : initialState->particleCombinations()) {
-        transformDaughters(pc, finalStatesHf, initialState);
-    }
+        for (std::shared_ptr<ParticleCombination>& pc : initialState->particleCombinations()) {
+            transformDaughters(pc, finalStatesHf, initialState);
+        }
+    */
 }
 
 //-------------------------

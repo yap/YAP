@@ -1,6 +1,7 @@
 #include "DataSet.h"
 
 #include "DataPoint.h"
+#include "FourMomenta.h"
 #include "logging.h"
 
 namespace yap {
@@ -8,7 +9,8 @@ namespace yap {
 //-------------------------
 bool DataSet::addDataPoint(DataPoint&& d)
 {
-    if (!consisent(d))
+    fourMomenta.calculate(d);
+    if (!consistent(d))
         return false;
     DataPoints_.push_back(d);
     return true;
@@ -21,12 +23,12 @@ bool DataSet::addDataPoint(const DataPoint& d)
 }
 
 //-------------------------
-bool DataSet::consisent(const DataPoint& d) const
+bool DataSet::consistent(const DataPoint& d) const
 {
     bool result = true;
 
-    if (!DataPoints_.empty() && d.fourMomenta().size() != DataPoints_[0].fourMomenta().size()) {
-        LOG(ERROR) << "DataSet::consistent(DataPoint) - DataPoint has wrong number of four momenta (" << d.fourMomenta().size() << " != " << DataPoints_[0].fourMomenta().size() << ")";
+    if (!DataPoints_.empty() && d.FourMomenta_.size() != DataPoints_[0].FourMomenta_.size()) {
+        LOG(ERROR) << "DataSet::consistent(DataPoint) - DataPoint has wrong number of four momenta (" << d.FourMomenta_.size() << " != " << DataPoints_[0].FourMomenta_.size() << ")";
         result = false;
     }
 

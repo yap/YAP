@@ -47,7 +47,7 @@ public:
     bool addDataPoint(const DataPoint& d);
 
     /// Check if data point is consisent with data set
-    bool consisent(const DataPoint& d) const;
+    bool consistent(const DataPoint& d) const;
 
 private:
 

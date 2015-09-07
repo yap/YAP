@@ -22,6 +22,8 @@
 #define yap_DataPoint_h
 
 #include <DataAccessor.h>
+#include <DataSet.h>
+#include <FourMomenta.h>
 
 #include <TLorentzVector.h>
 
@@ -53,19 +55,16 @@ public:
 
     /// @}
 
-    /// \name Data access friends
+    /// \name Data accessor friends
     /// @{
 
-    /// Access to vector of 4-momenta
-    std::vector<TLorentzVector>& fourMomenta()
-    { return FourMomenta_; }
-
-    /// Const access to vector of 4-momenta
-    const std::vector<TLorentzVector>& fourMomenta() const
-    { return FourMomenta_; }
+    friend void FourMomenta::calculate(DataPoint&);
+    friend const TLorentzVector& FourMomenta::p(const DataPoint&, unsigned) const;
 
     friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
     friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
+
+    friend bool DataSet::consistent(const DataPoint&) const;
 
     /// @}
 
@@ -80,6 +79,7 @@ protected:
     std::vector<std::vector<double> > HelicityAngles_;
 
     /// Data storage for all DataAccessors
+
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor

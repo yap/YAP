@@ -67,6 +67,14 @@ public:
 
     /// @}
 
+    /// \name Get info on type
+    /// @{
+
+    bool isFinalStateParticle() const
+    { return Daughters_.empty() and Indices_.size() == 1; }
+
+    /// @}
+
     /// Add daughter ParticleCombination
     /// \param daughter Shared pointer to ParticleCombination object representing a daughter
     /// \return Success of action

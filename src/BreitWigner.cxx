@@ -1,7 +1,10 @@
 #include "BreitWigner.h"
 
 #include "Constants.h"
+#include "FourMomenta.h"
+#include "Kinematics.h"
 #include "logging.h"
+#include "ParticleCombination.h"
 
 namespace yap {
 
@@ -15,23 +18,33 @@ BreitWigner::BreitWigner(double mass, double width) :
 //-------------------------
 Amp BreitWigner::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
+    // find symmetrization index
     unsigned sym_index = SymmetrizationIndices_[pc];
 
-    std::vector<double> data = d[index()][sym_index];
-
+    // check whether data-dependent calculation needs to be made
     if (CalculationStatuses_[sym_index] == kUncalculated) {
-        if (CalcStatus_ == kUncalculated)
+
+        // check whether data-independent calculation needs to be made
+        if (CalcStatus_ == kUncalculated) {
             M2iMG_ = Amp(mass() * mass(), -mass() * width());
-        /// \todo Create InvariantMassSquared manager inheriting from DataAccessor
-        /// for storing m^2 for all relevant particle combinations
-        Amp a = Complex_1;
-        // Amp a = 1. / (M2iMG_ - Amp(d.invariantMassSquared(pc), 0));
-        data[0] = real(a);
-        data[1] = imag(a);
+            CalcStatus_ = kCalculated;
+        }
+
+        // calculate amplitude
+        Amp a = 1. / (M2iMG_ - Amp(fourMomenta.m2(d, pc), 0));
+
+        // store into data point
+        data(d, sym_index) = {real(a), imag(a)};
+
+        // set calculation status
+        CalculationStatuses_[sym_index] = kCalculated;
+
         return a;
     }
 
-    return Amp(data[0], data[1]);
+    // else return from cached data
+    const std::vector<double>& D = data(d, sym_index);
+    return Amp(D[0], D[1]);
 }
 
 //-------------------------

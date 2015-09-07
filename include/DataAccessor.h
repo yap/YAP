@@ -40,6 +40,8 @@ class DataAccessor
 {
 public:
 
+    /// \todo Make a function to reserve space in the DataPoint?
+
     /// \name Constructors, destructor, & operators
     /// @{
 
