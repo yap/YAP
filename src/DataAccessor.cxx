@@ -48,9 +48,9 @@ bool DataAccessor::consistent() const
     // find number of indices:
     unsigned n_indices = std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
     // check that CalculationStatuses_ has right number of entries
-    if (CalculationStatuses_.size() != n_indices+1) {
+    if (CalculationStatuses_.size() != n_indices + 1) {
         LOG(ERROR) << "DataAccessor::consistent() - CalculationStatuses_ has wrong number of entries ("
-                   << CalculationStatuses_.size() << " != " << n_indices+1 << ")";
+                   << CalculationStatuses_.size() << " != " << n_indices + 1 << ")";
         result = false;
     }
 

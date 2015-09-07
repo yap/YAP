@@ -8,21 +8,18 @@
 namespace yap {
 
 //-------------------------
-ParticleCombination::ParticleCombination() :
-    Parent_(nullptr)
+ParticleCombination::ParticleCombination()
 {
 }
 
 //-------------------------
 ParticleCombination::ParticleCombination(ParticleIndex index) :
-    Parent_(nullptr),
     Indices_(1, index)
 {
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c) :
-    Parent_(nullptr)
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c)
 {
     for (std::shared_ptr<ParticleCombination>& d : c)
         addDaughter(d);
@@ -107,7 +104,7 @@ bool ParticleCombination::consistent() const
 
     // check daughters
     for (std::shared_ptr<ParticleCombination> d : Daughters_) {
-        if (d->parent() and  d->parent() != this) {
+        if (not d->parents().empty() and  std::find(d->parents().begin(), d->parents().end(), this) == d->parents().end()) {
             LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
             result = false;
         }
@@ -157,7 +154,7 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
 void ParticleCombination::setParents()
 {
     for (auto& daughter : Daughters_) {
-        if (daughter->Parent_ == nullptr) {
+        /*if (daughter->Parent_ == nullptr) {
             // daughter has no parent yet. Set this as parent and add
             daughter->Parent_ = this;
         } else if (daughter->Parent_ == this) {
@@ -167,13 +164,27 @@ void ParticleCombination::setParents()
             std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
             copy->Parent_ = this;
             std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-            // need to swap so that parent of argument daughter is now set
-
-            // \todo does not work since it would have to operate on the original shared_ptr object
+            // need to swap so that parent of daughter is now set
             daughter.swap(uniqueCopy);
         }
 
-        assert(daughter->Parent_ == this);
+        assert(daughter->Parent_ == this);*/
+
+        daughter->addParent(this);
+    }
+}
+
+//-------------------------
+void ParticleCombination::addParent(ParticleCombination* parent)
+{
+    unsigned n = std::count(Parents_.begin(), Parents_.end(), parent);
+    if (n == 0) {
+        Parents_.push_back(parent);
+        return;
+    }
+
+    if (n > 1) {
+        LOG(ERROR) << "duplicate parent.";
     }
 }
 
@@ -187,7 +198,9 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
         return false;
 
     // check parents
-    if (A.parent() != B.parent())
+    if (A.Parents_.size() != B.Parents_.size())
+        return false;
+    if (!std::equal(A.Parents_.begin(), A.Parents_.end(), B.Parents_.begin()))
         return false;
 
     // Check daughters
