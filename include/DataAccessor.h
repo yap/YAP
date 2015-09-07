@@ -89,6 +89,16 @@ public:
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
 
+    /// @}
+
+    /// \name Data access
+    /// @{
+
+    /// Access a data point's data (by friendship)
+    std::vector<double>& data(DataPoint& d, unsigned i) const;
+
+    /// Access a data point's data (by friendship) (const)
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const;
 
     /// @}
 

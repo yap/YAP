@@ -21,11 +21,17 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
+#include <DataAccessor.h>
+
 #include <TLorentzVector.h>
 
+#include <memory>
 #include <vector>
 
 namespace yap {
+
+class DataAccessor;
+class ParticleCombination;
 
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
@@ -47,7 +53,7 @@ public:
 
     /// @}
 
-    /// \name Data access
+    /// \name Data access friends
     /// @{
 
     /// Access to vector of 4-momenta
@@ -58,17 +64,8 @@ public:
     const std::vector<TLorentzVector>& fourMomenta() const
     { return FourMomenta_; }
 
-    /// Access to Data
-    std::vector<std::vector<std::vector<double> > >& data()
-    { return Data_; }
-
-    /// Access to Data (const)
-    const std::vector<std::vector<std::vector<double> > >& data() const
-    { return Data_; }
-
-    /// operator []
-    std::vector<std::vector<double> >& operator[](unsigned index)
-    { return Data_[index]; }
+    friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
+    friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
 
     /// @}
 

@@ -87,5 +87,17 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 
 }
 
+//-------------------------
+std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
+{
+    return d.Data_[index()][i];
+}
+
+//-------------------------
+const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
+{
+    return d.Data_[index()][i];
+}
+
 }
 
