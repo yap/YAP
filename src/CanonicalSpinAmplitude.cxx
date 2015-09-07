@@ -19,7 +19,7 @@ CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, co
 }
 
 //-------------------------
-Amp CanonicalSpinAmplitude::amplitude(DataPoint& d)
+Amp CanonicalSpinAmplitude::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     /*if (Recalculate_) {
         std::vector<std::vector<double> >& data = d.data(index());

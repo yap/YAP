@@ -25,9 +25,12 @@
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 
+#include <memory>
+
 namespace yap {
 
 class DecayChannel;
+class ParticleCombination;
 
 /// \class BlattWeisskopf
 /// \brief Class implementing BlattWeisskopf barrier factors
@@ -41,7 +44,7 @@ public:
     BlattWeisskopf(DecayChannel* decayChannel);
 
     /// Blatt-Weisskopf amplitude at DataPoint
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// check consistency of object
     virtual bool consistent() const override;

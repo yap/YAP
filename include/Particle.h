@@ -27,6 +27,8 @@
 
 namespace yap {
 
+class ParticleCombination;
+
 /// \class Particle
 /// \brief Abstract Particle base class.
 /// \author Johannes Rauch, Daniel Greenwald
@@ -40,7 +42,7 @@ public:
     Particle(const QuantumNumbers& q, double mass, std::string name);
 
     /// \return Amplitude for particle (and subsequent possible decay)
-    virtual Amp amplitude(DataPoint& d) override = 0;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
 
     /// Check consitency of object
     virtual bool consistent() const override;

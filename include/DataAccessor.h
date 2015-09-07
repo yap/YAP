@@ -22,10 +22,12 @@
 #define yap_DataAccessor_h
 
 #include "Amp.h"
+#include "CalculationStatus.h"
 #include "DataPoint.h"
 #include "ParticleCombination.h"
 
 #include <map>
+#include <vector>
 
 namespace yap {
 
@@ -66,8 +68,17 @@ public:
     /// \return list of all ParticleCombinations
     std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const;
 
+    /// \return calculation statuses
+    std::vector<CalculationStatus>& CalculationStatuses()
+    { return CalculationStatuses_; }
+
+    /// \return calculation statuses (const)
+    const std::vector<CalculationStatus>& CalculationStatuses() const
+    { return CalculationStatuses_; }
+
     /// @}
 
+    /// Check consistency of object
     bool consistent() const;
 
     /// \name Symmetrization functions
@@ -85,8 +96,8 @@ public:
 
 protected:
 
-    /// Flag to mark whether recalculation needs to take place
-    bool Recalculate_;
+    /// vector of calculation statuses for each index in the data (as needed by #SymmetrizationIndices_
+    std::vector<CalculationStatus> CalculationStatuses_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;

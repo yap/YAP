@@ -82,6 +82,10 @@ public:
     /// check if this and B share one or more ParticleIndex's
     bool sharesIndices(std::shared_ptr<ParticleCombination> B);
 
+
+    /// meh
+    void setParents();
+
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
 

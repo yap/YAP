@@ -32,6 +32,7 @@ namespace yap {
 class DecayingParticle;
 class FinalStateParticle;
 class Particle;
+class ParticleCombination;
 class SpinAmplitude;
 
 /// \class InitialStateParticle
@@ -48,7 +49,7 @@ public:
     DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// \return Amplitude for decay channel
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// check consistency of object
     virtual bool consistent() const override;

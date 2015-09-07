@@ -21,18 +21,28 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
+#include "Amp.h"
+#include "CalculationStatus.h"
 #include "MassShape.h"
 
 namespace yap {
+
+class ParticleCombination;
 
 /// \class BreitWigner
 /// \brief Class for Breit-Wigner resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
+/// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
 /// Variables stored in #MassShapes::Parameters_:\n
 ///     MassShapes::#Parameters_[0] := nominal mass; set by setMass(double), returned by mass()\n
-///     MassShapes::#Parameters_[1] := nominal width; set by setWidth(double), returned by width()\n
+///     MassShapes::#Parameters_[1] := nominal width; set by setWidth(double), returned by width()\n\n
+/// Values stored into DataPoint:
+///     [0] := real(A(s))
+///     [1] := imag(A(s))
+
+
 
 class BreitWigner : public MassShape
 {
@@ -53,28 +63,13 @@ public:
     double mass() const
     { return Parameters_[0]; }
 
-    /// \return mass-squared-dependent mass
-    /// \param s squared mass to evaluate at
-    double mass(double s) const
-    { return mass(); }
-
     /// \return nominal squared masss
-    double squaredmass() const
+    double squaredMass() const
     { return mass() * mass(); }
-
-    /// \return mass-squared-dependent squared mass
-    /// \param s squared mass to evaluate at
-    double squaredmass(double s) const
-    { return squaredmass(); }
 
     /// \return nominal width
     double width() const
     { return Parameters_[1]; }
-
-    /// \return mass-squared-dependent width
-    /// \param s squared mass to evaluate at
-    double width(double s) const
-    { return width(); }
 
     /// @}
 
@@ -97,7 +92,7 @@ public:
     /// Calculate MassShape amplitude from DataPoint
     /// \return amplitude evaluated on DataPoint
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d) override;
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// Calculate MassShape ampltude from squared mass;
     /// A = 1 / [Mass^2 - s - i * Mass * Width]
@@ -113,6 +108,11 @@ public:
     virtual bool consistent() const override;
 
     /// @}
+
+protected:
+    CalculationStatus CalcStatus_;
+
+    Amp M2iMG_;                  // mass * mass - i * mass * width
 
 };
 

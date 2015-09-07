@@ -94,6 +94,10 @@ int main( int argc, char** argv)
 
     yap::ParticleCombination::printParticleCombinationSet();
 
+    // blub
+    D->setSymmetrizationIndexParents();
+    yap::ParticleCombination::printParticleCombinationSet();
+
     std::cout << "alright! \n";
 
 

@@ -48,6 +48,7 @@ public:
     virtual bool consisent(const DataPoint& d) const
     { return true; }
 
+    void setSymmetrizationIndexParents();
 
 private:
 

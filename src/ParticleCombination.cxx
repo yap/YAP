@@ -106,13 +106,13 @@ bool ParticleCombination::consistent() const
     }
 
     // check daughters
-    /*for (std::shared_ptr<ParticleCombination> d : Daughters_) {
-        if (d->parent() != this) {
+    for (std::shared_ptr<ParticleCombination> d : Daughters_) {
+        if (d->parent() and  d->parent() != this) {
             LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
             result = false;
         }
         result &= d->consistent();
-    }*/
+    }
 
     return result;
 }
@@ -151,6 +151,30 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
                 return true;
 
     return false;
+}
+
+//-------------------------
+void ParticleCombination::setParents()
+{
+    for (auto& daughter : Daughters_) {
+        if (daughter->Parent_ == nullptr) {
+            // daughter has no parent yet. Set this as parent and add
+            daughter->Parent_ = this;
+        } else if (daughter->Parent_ == this) {
+            // fine
+        } else {
+            // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
+            std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
+            copy->Parent_ = this;
+            std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
+            // need to swap so that parent of argument daughter is now set
+
+            // \todo does not work since it would have to operate on the original shared_ptr object
+            daughter.swap(uniqueCopy);
+        }
+
+        assert(daughter->Parent_ == this);
+    }
 }
 
 //-------------------------

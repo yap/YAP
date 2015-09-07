@@ -19,4 +19,13 @@ bool InitialStateParticle::consistent() const
     return DecayingParticle::consistent();
 }
 
+//-------------------------
+void InitialStateParticle::setSymmetrizationIndexParents()
+{
+    for (std::shared_ptr<yap::ParticleCombination>& pc : particleCombinations()) {
+        pc->setParents();
+    }
+}
+
+
 }

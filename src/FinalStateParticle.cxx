@@ -1,9 +1,9 @@
 #include "FinalStateParticle.h"
 
 #include "logging.h"
+#include "ParticleCombination.h"
 
 namespace yap {
-
 
 //-------------------------
 FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices)
