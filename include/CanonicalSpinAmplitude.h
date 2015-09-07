@@ -28,7 +28,7 @@
 namespace yap {
 
 class InitialStateParticle;
-class ParticlesCombination;
+class ParticleCombination;
 
 /// \class CanonicalSpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
