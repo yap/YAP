@@ -42,6 +42,9 @@ class MassShape : public AmplitudeComponent, public DataAccessor, public Paramet
 {
 public:
 
+    /// Constructor
+    MassShape();
+
     /// \name Amplitude related
     /// @{
 
@@ -60,10 +63,6 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override
     { return DataAccessor::consistent() and ParameterSet::consistent(); }
-
-    /// Overloading DataAccessor::areEqual to equate symmetrizations
-    /// with equal particle content
-    virtual bool areEqual(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const override;
 
     /// @}
 
