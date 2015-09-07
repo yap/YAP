@@ -37,7 +37,11 @@ class ParameterSet
 public:
 
     /// \enum ParameterStatus
-    enum ParameterStatus : bool { kFree = true, kFixed = false };
+    enum ParameterStatus {
+        kChanged   = -1,        ///< Parameter is free and has been changed
+        kFixed     = 0,         ///< Parameter is fixed
+        kUnchanged = +1,        ///< Parameter is free but has not been changed
+    };
 
     /// \name Constructors and operators
     /// @{
