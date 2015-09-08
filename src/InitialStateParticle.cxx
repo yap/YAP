@@ -1,6 +1,5 @@
 #include "InitialStateParticle.h"
 
-#include "CanonicalSpinAmplitude.h"
 #include "logging.h"
 
 #include <TLorentzRotation.h>

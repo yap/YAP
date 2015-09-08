@@ -6,7 +6,6 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(YAP_SOURCES
   BlattWeisskopf.cxx
   BreitWigner.cxx
-  CanonicalSpinAmplitude.cxx
   Constants.cxx
   DataAccessor.cxx
   DataPoint.cxx
@@ -15,6 +14,7 @@ set(YAP_SOURCES
   DecayingParticle.cxx
   FinalStateParticle.cxx
   FourMomenta.cxx
+  HelicitySpinAmplitude.cxx
   InitialStateParticle.cxx
   MassShape.cxx
   ParticleCombination.cxx

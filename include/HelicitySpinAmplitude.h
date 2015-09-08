@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_CanonicalSpinAmplitude_h
-#define yap_CanonicalSpinAmplitude_h
+#ifndef yap_HelicitySpinAmplitude_h
+#define yap_HelicitySpinAmplitude_h
 
 #include "SpinAmplitude.h"
 
@@ -30,17 +30,17 @@ namespace yap {
 class InitialStateParticle;
 class ParticleCombination;
 
-/// \class CanonicalSpinAmplitude
+/// \class HelicitySpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
 
-class CanonicalSpinAmplitude : public SpinAmplitude
+class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
     /// Constructor
-    CanonicalSpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
+    HelicitySpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on

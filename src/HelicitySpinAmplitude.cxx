@@ -1,4 +1,4 @@
-#include "CanonicalSpinAmplitude.h"
+#include "HelicitySpinAmplitude.h"
 
 #include "Constants.h"
 #include "DecayingParticle.h"
@@ -10,7 +10,7 @@
 namespace yap {
 
 //-------------------------
-CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL)
+HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL)
     : SpinAmplitude(initial, final1, final2),
       TwoL_(twoL)
 {
@@ -19,7 +19,7 @@ CanonicalSpinAmplitude::CanonicalSpinAmplitude(const QuantumNumbers& initial, co
 }
 
 //-------------------------
-Amp CanonicalSpinAmplitude::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp HelicitySpinAmplitude::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     /*if (Recalculate_) {
         std::vector<std::vector<double> >& data = d.data(index());
@@ -41,7 +41,7 @@ Amp CanonicalSpinAmplitude::amplitude(DataPoint& d, std::shared_ptr<ParticleComb
 }
 
 //-------------------------
-bool CanonicalSpinAmplitude::consistent() const
+bool HelicitySpinAmplitude::consistent() const
 {
     bool consistent = SpinAmplitude::consistent();
 
@@ -65,13 +65,13 @@ bool CanonicalSpinAmplitude::consistent() const
     }
 
     if (!ok) {
-        LOG(ERROR) << "CanonicalSpinAmplitude::consistent() - angular momentum conservation violated. " <<
+        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - angular momentum conservation violated. " <<
                    "J(parent) = " << spinToString(twoJ_P) << "; J(daughter1) = " << spinToString(twoJ_A) << "; J(daughter2) = " << spinToString(twoJ_B) << "; l = " << spinToString(TwoL_);
         consistent =  false;
     }
 
     if (ClebschGordanCoefficients_.empty()) {
-        LOG(ERROR) << "CanonicalSpinAmplitude::consistent() - ClebschGordanCoefficients_ are empty. They are probably all 0 and you can remove this channel.";
+        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficients_ are empty. They are probably all 0 and you can remove this channel.";
         consistent =  false;
     }
 
@@ -79,7 +79,7 @@ bool CanonicalSpinAmplitude::consistent() const
 }
 
 //-------------------------
-CanonicalSpinAmplitude::operator std::string() const
+HelicitySpinAmplitude::operator std::string() const
 {
     std::string result = "(l=" + spinToString(TwoL_);
 
@@ -99,7 +99,7 @@ CanonicalSpinAmplitude::operator std::string() const
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::printClebschGordanCoefficients() const
+void HelicitySpinAmplitude::printClebschGordanCoefficients() const
 {
     std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> ("
               << FinalQuantumNumbers_[0] << ") + ("
@@ -111,7 +111,7 @@ void CanonicalSpinAmplitude::printClebschGordanCoefficients() const
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
+void HelicitySpinAmplitude::calculateClebschGordanCoefficients()
 {
     /// code is copied in parts from rootpwa
 
@@ -147,7 +147,7 @@ void CanonicalSpinAmplitude::calculateClebschGordanCoefficients()
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState)
+void HelicitySpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState)
 {
 /// \todo Use kinematics::fourMomenta
     /*
@@ -174,7 +174,7 @@ void CanonicalSpinAmplitude::calculateHelicityAngles(DataPoint& d, std::shared_p
 }
 
 //-------------------------
-TLorentzRotation CanonicalSpinAmplitude::hfTransform(const TLorentzVector& daughterLv)
+TLorentzRotation HelicitySpinAmplitude::hfTransform(const TLorentzVector& daughterLv)
 {
     // code copied from rootpwa
     TLorentzVector daughter = daughterLv;
@@ -197,7 +197,7 @@ TLorentzRotation CanonicalSpinAmplitude::hfTransform(const TLorentzVector& daugh
 }
 
 //-------------------------
-void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombination> pc,
+void HelicitySpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombination> pc,
         std::vector<TLorentzVector> finalStatesHf,
         std::shared_ptr<InitialStateParticle> part)
 {
@@ -231,7 +231,7 @@ void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombinat
         LOG(DEBUG) << std::string(*daugh) << " helicity angles (phi, theta) = (" << phi << ", " << theta << ")\n";
 
         // next helicity frame
-        const TLorentzRotation transDaugh = CanonicalSpinAmplitude::hfTransform(daughter);
+        const TLorentzRotation transDaugh = HelicitySpinAmplitude::hfTransform(daughter);
         for (ParticleIndex i : daugh->indices())
             finalStatesHf.at(i).Transform(transDaugh);
 
@@ -240,11 +240,11 @@ void CanonicalSpinAmplitude::transformDaughters(std::shared_ptr<ParticleCombinat
 }
 
 //-------------------------
-bool CanonicalSpinAmplitude::equals(const SpinAmplitude& rhs) const
+bool HelicitySpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
     //LOG(DEBUG) << "compare " << std::string(*this) << " and " << std::string(rhs);
 
-    const CanonicalSpinAmplitude* cSA = dynamic_cast<const CanonicalSpinAmplitude*>(&rhs);
+    const HelicitySpinAmplitude* cSA = dynamic_cast<const HelicitySpinAmplitude*>(&rhs);
     if (!cSA) return false;
 
     return (TwoL_ == cSA->TwoL_

@@ -1,6 +1,6 @@
 #include "DecayingParticle.h"
 
-#include "CanonicalSpinAmplitude.h"
+#include "HelicitySpinAmplitude.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
@@ -82,7 +82,7 @@ void DecayingParticle::addChannel(DecayChannel* c)
 //-------------------------
 void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned twoL)
 {
-    addChannel(new DecayChannel(A, B, std::make_shared<CanonicalSpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
+    addChannel(new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
 }
 
 //-------------------------
