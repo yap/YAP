@@ -62,8 +62,8 @@ public:
     { return Daughters_;}
 
     /// get parent
-    const std::vector<ParticleCombination*>& parents() const
-    { return Parents_; }
+    const ParticleCombination* parent() const
+    { return Parent_; }
 
     /// @}
 
@@ -95,7 +95,7 @@ public:
     void setParents();
 
     /// add a particle combination as parent
-    void addParent(ParticleCombination* parent);
+    void setParent(ParticleCombination* parent);
 
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
@@ -105,8 +105,8 @@ public:
     { return !(A == B); }
 
 protected:
-    /// Parents of the particle combination. Can be more than one e.g. for (12) from (1234) and (123)
-    std::vector<ParticleCombination*> Parents_;
+    /// Parent of the particle combination.
+    ParticleCombination* Parent_;
     std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
     std::vector<ParticleIndex> Indices_;
 

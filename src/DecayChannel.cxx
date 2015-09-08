@@ -63,6 +63,46 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
                         }
                 }
                 if (can_has_symmetrization) {
+
+                    /*bool newPC(false);
+                    ParticleCombination* dummy = new ParticleCombination;
+                    // set parents of daughter PCs
+                    if (PCA->parent() == nullptr) {
+                      // daughter has no parent yet. Set this as parent and add
+                      PCA->setParent(a_b.get());
+                    } else if (PCA->parent() == a_b.get()) {
+                      // fine
+                    } else {
+                      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
+                      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*PCA));
+                      PCA.swap(copy);
+                      PCA->setParent(dummy);
+                      if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[0]))
+                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[0])->addSymmetrizationIndex(PCA);
+                      newPC = true;
+                    }
+
+                    if (PCB->parent() == nullptr) {
+                      // daughter has no parent yet. Set this as parent and add
+                      PCB->setParent(a_b.get());
+                    } else if (PCB->parent() == a_b.get()) {
+                      // fine
+                    } else {
+                      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
+                      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*PCB));
+                      PCB.swap(copy);
+                      PCB->setParent(dummy);
+                      if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[1]))
+                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[1])->addSymmetrizationIndex(PCB);
+                      newPC = true;
+                    }
+
+                    if (newPC) {
+                      a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
+                      PCA->setParent(a_b.get());
+                      PCB->setParent(a_b.get());
+                    }*/
+
                     addSymmetrizationIndex(a_b);
                 }
             }

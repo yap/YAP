@@ -8,18 +8,21 @@
 namespace yap {
 
 //-------------------------
-ParticleCombination::ParticleCombination()
+ParticleCombination::ParticleCombination() :
+    Parent_(nullptr)
 {
 }
 
 //-------------------------
 ParticleCombination::ParticleCombination(ParticleIndex index) :
+    Parent_(nullptr),
     Indices_(1, index)
 {
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c)
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c) :
+    Parent_(nullptr)
 {
     for (std::shared_ptr<ParticleCombination>& d : c)
         addDaughter(d);
@@ -104,7 +107,7 @@ bool ParticleCombination::consistent() const
 
     // check daughters
     for (std::shared_ptr<ParticleCombination> d : Daughters_) {
-        if (not d->parents().empty() and  std::find(d->parents().begin(), d->parents().end(), this) == d->parents().end()) {
+        if (d->parent() and  d->parent() != this) {
             LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
             result = false;
         }
@@ -154,7 +157,7 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
 void ParticleCombination::setParents()
 {
     for (auto& daughter : Daughters_) {
-        /*if (daughter->Parent_ == nullptr) {
+        if (daughter->Parent_ == nullptr) {
             // daughter has no parent yet. Set this as parent and add
             daughter->Parent_ = this;
         } else if (daughter->Parent_ == this) {
@@ -168,16 +171,16 @@ void ParticleCombination::setParents()
             daughter.swap(uniqueCopy);
         }
 
-        assert(daughter->Parent_ == this);*/
+        assert(daughter->Parent_ == this);
 
-        daughter->addParent(this);
+        daughter->setParent(this);
     }
 }
 
 //-------------------------
-void ParticleCombination::addParent(ParticleCombination* parent)
+void ParticleCombination::setParent(ParticleCombination* parent)
 {
-    unsigned n = std::count(Parents_.begin(), Parents_.end(), parent);
+    /*unsigned n = std::count(Parents_.begin(), Parents_.end(), parent);
     if (n == 0) {
         Parents_.push_back(parent);
         return;
@@ -185,7 +188,12 @@ void ParticleCombination::addParent(ParticleCombination* parent)
 
     if (n > 1) {
         LOG(ERROR) << "duplicate parent.";
-    }
+    }*/
+
+    if (Parent_)
+        LOG(ERROR) << "particle combination already has a parent.";
+
+    Parent_ = parent;
 }
 
 //-------------------------
@@ -203,8 +211,9 @@ std::set<std::shared_ptr<ParticleCombination> > ParticleCombination::ParticleCom
 std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<ParticleCombination> pc)
 {
     for (std::shared_ptr<ParticleCombination> d : ParticleCombinationSet_)
-        if ((*pc) == (*d))
+        if (ParticleCombination::equivDown(pc, d))
             return d;
+
     ParticleCombinationSet_.insert(pc);
     return pc;
 }
@@ -243,6 +252,10 @@ ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderle
 //-------------------------
 bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
     // Check indices
     if (A->indices().size() != B->indices().size())
         return false;
@@ -256,14 +269,19 @@ bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<Part
 //-------------------------
 bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
     if (!ParticleCombination::equivByOrderedContent(A, B))
         return false;
 
     // Check daughters
-    if (A->daughters().size() != B->daughters().size())
+    if (A->daughters().size() != B->daughters().size()) {
         return false;
+    }
     for (unsigned i = 0; i < A->daughters().size(); ++i)
-        if (operator()(A->daughters()[i], B->daughters()[i]))
+        if (!operator()(A->daughters()[i], B->daughters()[i]))
             return false;
 
     // a match!
@@ -273,14 +291,15 @@ bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombinat
 //-------------------------
 bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
     if (!ParticleCombination::equivDown(A, B))
         return false;
 
-    /// \todo Can really only have one parent
-    // check parents
-    if (A->parents().size() != B->parents().size())
-        return false;
-    if (!std::equal(A->parents().begin(), A->parents().end(), B->parents().begin()))
+    // check parent
+    if (A->parent() != B->parent())
         return false;
 
     // a match!
@@ -290,6 +309,10 @@ bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<ParticleCom
 //-------------------------
 bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
     // check size of indices vectors
     if (A->indices().size() != B->indices().size())
         return false;

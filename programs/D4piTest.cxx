@@ -22,7 +22,7 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    //yap::disableLogs(el::Level::Debug);
+    yap::disableLogs(el::Level::Debug);
 
 
     /// \todo Figure out clever way to find PDL file
@@ -80,7 +80,7 @@ int main( int argc, char** argv)
     // consistency and optimizations
     assert(rho->consistent());
     assert(D->consistent());
-    D->setSymmetrizationIndexParents();
+    //D->setSymmetrizationIndexParents();
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());
 
@@ -93,7 +93,6 @@ int main( int argc, char** argv)
         std::cout << std::string(*pc) << "\n";
 
 
-    yap::ParticleCombination::printParticleCombinationSet();
 
     // blub
     yap::ParticleCombination::printParticleCombinationSet();
