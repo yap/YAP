@@ -2,7 +2,6 @@
 
 #include "Constants.h"
 #include "FourMomenta.h"
-#include "Kinematics.h"
 #include "logging.h"
 #include "ParticleCombination.h"
 

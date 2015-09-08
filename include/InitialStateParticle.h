@@ -48,9 +48,7 @@ public:
     virtual bool consisent(const DataPoint& d) const
     { return true; }
 
-    /// Set parents of symmetrization indices
-    /// Experimental.
-    /// Does at the moment NOT add new particle combinations to the DataAccessor objects.
+    /// Set parents of symmetrization indices (recursively)
     void setSymmetrizationIndexParents();
 
 private:

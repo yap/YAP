@@ -4,7 +4,6 @@
 #include "DecayingParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
-#include "Kinematics.h"
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
 

@@ -80,6 +80,7 @@ int main( int argc, char** argv)
     // consistency and optimizations
     assert(rho->consistent());
     assert(D->consistent());
+    D->setSymmetrizationIndexParents();
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());
 
@@ -95,7 +96,6 @@ int main( int argc, char** argv)
     yap::ParticleCombination::printParticleCombinationSet();
 
     // blub
-    D->setSymmetrizationIndexParents();
     yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "alright! \n";
