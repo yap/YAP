@@ -80,7 +80,9 @@ int main( int argc, char** argv)
     // consistency and optimizations
     assert(rho->consistent());
     assert(D->consistent());
-    //D->setSymmetrizationIndexParents();
+
+    D->setSymmetrizationIndexParents();
+
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());
 

@@ -17,7 +17,7 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 }
 
 //-------------------------
-void HelicityAngles::calculateHelicityAngles(DataPoint& d)
+void HelicityAngles::calculate(DataPoint& d)
 {
 /// \todo Use kinematics::fourMomenta
 

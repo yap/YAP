@@ -40,7 +40,7 @@ public:
     HelicityAngles(InitialStateParticle* isp);
 
     /// Calculate helicity angles for all possible symmetrization indices
-    void calculateHelicityAngles(DataPoint& d);
+    void calculate(DataPoint& d);
 
 private:
 

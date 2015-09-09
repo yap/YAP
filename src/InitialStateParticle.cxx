@@ -32,6 +32,7 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 bool InitialStateParticle::addDataPoint(DataPoint&& d)
 {
     FourMomenta_.calculate(d);
+    HelicityAngles_.calculate(d);
     if (!DataSet_.consistent(d))
         return false;
     return DataSet_.addDataPoint(d);;
