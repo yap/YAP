@@ -61,8 +61,7 @@ public:
 
     /// Constructor
     /// \param pdlFile Path to a pdl file like used by EvtGen
-    ParticleFactory(const std::string pdlFile)
-    { readPDT(pdlFile); }
+    ParticleFactory(const std::string pdlFile);
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
@@ -107,8 +106,13 @@ private:
     /// read pdl file and fill particleProperties_
     void readPDT(const std::string fname);
 
+    /// get InitialStateParticle_
+    InitialStateParticle* initialStateParticle();
+
     /// maps PDGCodes to PdlParticleProperties.
     std::map<int, PdlParticleProperties> particleProperties_;
+
+    InitialStateParticle* InitialStateParticle_;
 };
 
 }

@@ -23,8 +23,6 @@
 
 #include "SpinAmplitude.h"
 
-#include <TLorentzRotation.h>
-
 namespace yap {
 
 class InitialStateParticle;
@@ -40,7 +38,7 @@ class HelicitySpinAmplitude : public SpinAmplitude
 public:
 
     /// Constructor
-    HelicitySpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
+    HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
@@ -71,24 +69,11 @@ public:
     /// Print Clebsch-Gordan coefficients
     void printClebschGordanCoefficients() const;
 
-    /// Calculate helicity angles for all possible symmetrization indices
-    static void calculateHelicityAngles(DataPoint& d, std::shared_ptr<InitialStateParticle> initialState);
-
-
 private:
 
     /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
     /// and store them in ClebschGordanCoefficients_
     void calculateClebschGordanCoefficients();
-
-    /// Caclulate Lorentz-transformation for helicity frame
-    static TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
-
-    /// Transform daughters to helicity frame and calculate helicity angles
-    /// Calls this funciton recursively
-    static void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf, std::shared_ptr<InitialStateParticle> part);
-
-    //std::set<std::shared_ptr<SpinAmplitude> > findSpinAmplitudes()
 
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;

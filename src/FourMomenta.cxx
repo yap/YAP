@@ -6,11 +6,9 @@
 
 namespace yap {
 
-FourMomenta fourMomenta;
-
 //-------------------------
-FourMomenta::FourMomenta() :
-    DataAccessor(ParticleCombination::equivByOrderlessContent),
+FourMomenta::FourMomenta(InitialStateParticle* isp) :
+    DataAccessor(isp, ParticleCombination::equivByOrderlessContent),
     InitialStateIndex_(-1)
 {
 }

@@ -41,7 +41,7 @@ class FourMomenta : public DataAccessor
 public:
 
     /// Constructor
-    FourMomenta();
+    FourMomenta(InitialStateParticle* isp);
 
     /// Find ISP in set and store index location
     /// \return symmetrization index for ISP (negative if not found)
@@ -87,8 +87,6 @@ protected:
     int InitialStateIndex_;
 
 };
-
-extern FourMomenta fourMomenta;
 
 }
 #endif

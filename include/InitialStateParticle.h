@@ -21,7 +21,10 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
+#include "DataSet.h"
 #include "DecayingParticle.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
 
 namespace yap {
 
@@ -51,10 +54,46 @@ public:
     /// Set parents of symmetrization indices (recursively)
     void setSymmetrizationIndexParents();
 
+    /// \name Getters
+    /// @{
+
+    FourMomenta& fourMomenta()
+    { return FourMomenta_; }
+
+    const FourMomenta& fourMomenta() const
+    { return FourMomenta_; }
+
+    HelicityAngles& helicityAngles()
+    { return HelicityAngles_; }
+
+    const HelicityAngles& helicityAngles() const
+    { return HelicityAngles_; }
+
+    /// @}
+
+    /// Add data point via move
+    /// \param d DataPoint to move into DataSet
+    /// \return Success of action
+    bool addDataPoint(DataPoint&& d);
+
+    /// Add data point via copy
+    /// \param d DataPoint to copy into DataSet
+    /// \return Success of action
+    bool addDataPoint(const DataPoint& d);
+
 private:
 
-    // vector of final state particles
+    /// vector of final state particles
     std::vector<FinalStateParticle*> FinalStateParticles;
+
+    /// four momenta
+    FourMomenta FourMomenta_;
+
+    /// helicity angles
+    HelicityAngles HelicityAngles_;
+
+    /// Data set
+    DataSet DataSet_;
 
 };
 

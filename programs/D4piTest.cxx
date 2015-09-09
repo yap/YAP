@@ -22,19 +22,19 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    yap::disableLogs(el::Level::Debug);
+    //yap::disableLogs(el::Level::Debug);
 
 
     /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory("evt.pdl");
 
-    // final state particles
-    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
-    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211, {1, 3});
-
     // initial state particle
     double radialSize = 1.;
     std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
+
+    // final state particles
+    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
+    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
     // rho rho
     std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
@@ -97,8 +97,6 @@ int main( int argc, char** argv)
     // blub
     yap::ParticleCombination::printParticleCombinationSet();
 
-    std::cout << "alright! \n";
-
 
     // test helicity angles
     TLorentzVector P(0.0, 0.0, 0.0, D->mass());
@@ -112,6 +110,11 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 4; ++i)
         momenta.push_back(*event.GetDecay(i));
 
-    yap::DataPoint d(momenta);
-    yap::HelicitySpinAmplitude::calculateHelicityAngles(d, D);
+    D->addDataPoint(yap::DataPoint(momenta));
+    //yap::fourMomenta.calculate(d);
+    //yap::HelicitySpinAmplitude::calculateHelicityAngles(d, D);
+
+
+
+    std::cout << "alright! \n";
 }

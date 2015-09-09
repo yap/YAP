@@ -18,7 +18,7 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
     AmplitudeComponent(),
-    DataAccessor(),
+    DataAccessor(spinAmplitude->initialStateParticle()),
     Daughters_(daughters),
     BlattWeisskopf_(this),
     SpinAmplitude_(spinAmplitude),

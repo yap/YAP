@@ -14,57 +14,42 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 /// \file
 
-#ifndef yap_MassShape_h
-#define yap_MassShape_h
+#ifndef yap_HelicityAngles_h
+#define yap_HelicityAngles_h
 
-#include "Amp.h"
-#include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "ParameterSet.h"
 
-#include <memory>
-#include <vector>
+#include <TLorentzVector.h>
 
 namespace yap {
 
-class ParticleCombination;
-
-/// \class MassShape
-/// \brief Abstract base class for all mass shapes
+/// \class HelicityAngles
+/// \brief Calculates, stores and gives access to helicity angles
 /// \author Johannes Rauch, Daniel Greenwald
-/// \defgroup MassShapes Mass Shapes
+/// \ingroup SpinAmplitude
 
-class MassShape : public AmplitudeComponent, public DataAccessor, public ParameterSet
+class HelicityAngles : public DataAccessor
 {
 public:
 
     /// Constructor
-    MassShape(InitialStateParticle* isp);
+    HelicityAngles(InitialStateParticle* isp);
 
-    /// \name Amplitude related
-    /// @{
+    /// Calculate helicity angles for all possible symmetrization indices
+    void calculateHelicityAngles(DataPoint& d);
 
-    using AmplitudeComponent::amplitude;
+private:
 
-    /// Calculate MassShape ampltude from squared mass
-    /// \return amplitude evaluated at squared mass
-    /// \param s squared mass to evaluate at
-    virtual Amp amplitude(double s) = 0;
+    /// Caclulate Lorentz-transformation for helicity frame
+    TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
 
-    /// @}
-
-    /// \name Bookkeeping related
-    /// @{
-
-    /// Check consistency of object
-    virtual bool consistent() const override
-    { return DataAccessor::consistent() and ParameterSet::consistent(); }
-
-    /// @}
+    /// Transform daughters to helicity frame and calculate helicity angles
+    /// Calls this funciton recursively
+    void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
 
 };
 

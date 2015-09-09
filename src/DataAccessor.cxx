@@ -8,10 +8,14 @@ namespace yap {
 unsigned DataAccessor::GlobalIndex = 0;
 
 //-------------------------
-DataAccessor::DataAccessor(ParticleCombination::Equiv equiv) :
+DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv equiv) :
+    InitialStateParticle_(isp),
     Equiv_(equiv),
     Index_(0)
 {
+    if (isp == nullptr)
+        LOG(ERROR) << "DataAccessor: no InitialStateParticle provided!";
+
     // assign a running index to this DataAccessor
     /// \todo Come up with something smarter
     Index_ = GlobalIndex++;

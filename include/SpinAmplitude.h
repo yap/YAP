@@ -43,7 +43,7 @@ class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 public:
 
     /// Constructor
-    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
+    SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on

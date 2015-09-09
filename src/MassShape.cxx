@@ -5,9 +5,9 @@
 namespace yap {
 
 //-------------------------
-MassShape::MassShape() :
+MassShape::MassShape(InitialStateParticle* isp) :
     AmplitudeComponent(),
-    DataAccessor(ParticleCombination::equivByOrderlessContent),
+    DataAccessor(isp, ParticleCombination::equivByOrderlessContent),
     ParameterSet()
 {
 }

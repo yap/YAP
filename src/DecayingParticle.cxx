@@ -11,9 +11,9 @@
 namespace yap {
 
 //-------------------------
-DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+DecayingParticle::DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     Particle(q, mass, name),
-    DataAccessor(),
+    DataAccessor(isp),
     RadialSize_(radialSize)
 {}
 
@@ -82,7 +82,8 @@ void DecayingParticle::addChannel(DecayChannel* c)
 //-------------------------
 void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned twoL)
 {
-    addChannel(new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
+    addChannel(new DecayChannel(A, B,
+                                std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
 }
 
 //-------------------------

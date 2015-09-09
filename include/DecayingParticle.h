@@ -43,7 +43,7 @@ class DecayingParticle : public Particle, public DataAccessor
 public:
 
     /// Constructor
-    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+    DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// \return Ampltiude for particle
     /// \param d DataPoint to evaluate on

@@ -5,8 +5,9 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-    : InitialQuantumNumbers_(initial),
+SpinAmplitude::SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
+    : DataAccessor(isp),
+      InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}})
 {}
 

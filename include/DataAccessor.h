@@ -31,6 +31,7 @@
 namespace yap {
 
 class DataPoint;
+class InitialStateParticle;
 
 /// \name DataAccessor
 /// \brief Base class for all objects accessing DataPoint's
@@ -47,7 +48,7 @@ public:
 
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    DataAccessor(ParticleCombination::Equiv equiv = ParticleCombination::equivBySharedPointer);
+    DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv equiv = ParticleCombination::equivBySharedPointer);
 
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
@@ -102,9 +103,16 @@ public:
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const;
 
+    /// Get pointer to the initial state particle
+    InitialStateParticle* initialStateParticle() const
+    { return InitialStateParticle_; }
+
     /// @}
 
 protected:
+
+    /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
+    InitialStateParticle* InitialStateParticle_;
 
     /// Object to check equality of symmetrizations for determining storage indices
     ParticleCombination::Equiv Equiv_;

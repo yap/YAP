@@ -3,13 +3,14 @@
 #include "Constants.h"
 #include "FourMomenta.h"
 #include "logging.h"
+#include "InitialStateParticle.h"
 #include "ParticleCombination.h"
 
 namespace yap {
 
 //-------------------------
-BreitWigner::BreitWigner(double mass, double width) :
-    MassShape()
+BreitWigner::BreitWigner(InitialStateParticle* isp, double mass, double width) :
+    MassShape(isp)
 {
     ParameterSet::operator=({mass, width});
 }
@@ -30,7 +31,7 @@ Amp BreitWigner::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc
         }
 
         // calculate amplitude
-        Amp a = 1. / (M2iMG_ - Amp(fourMomenta.m2(d, pc), 0));
+        Amp a = 1. / (M2iMG_ - Amp(initialStateParticle()->fourMomenta().m2(d, pc), 0));
 
         // store into data point
         data(d, sym_index) = {real(a), imag(a)};

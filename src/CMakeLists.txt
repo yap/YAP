@@ -14,6 +14,7 @@ set(YAP_SOURCES
   DecayingParticle.cxx
   FinalStateParticle.cxx
   FourMomenta.cxx
+  HelicityAngles.cxx
   HelicitySpinAmplitude.cxx
   InitialStateParticle.cxx
   MassShape.cxx

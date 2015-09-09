@@ -14,6 +14,13 @@
 namespace yap {
 
 //-------------------------
+ParticleFactory::ParticleFactory(const std::string pdlFile) :
+    InitialStateParticle_(nullptr)
+{
+    readPDT(pdlFile);
+}
+
+//-------------------------
 std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
@@ -24,7 +31,10 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(in
 std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return std::make_shared<InitialStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
+    std::shared_ptr<InitialStateParticle> isp = std::make_shared<InitialStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
+    InitialStateParticle_ = isp.get();
+
+    return isp;
 }
 
 //-------------------------
@@ -38,7 +48,9 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
 std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return std::make_shared<Resonance>( createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, new BreitWigner(p.Mass_, p.Width_) );
+    return std::make_shared<Resonance>( createQuantumNumbers(PDG),
+                                        p.Mass_, p.Name_, radialSize,
+                                        new BreitWigner(initialStateParticle(), p.Mass_, p.Width_) );
 }
 
 //-------------------------
@@ -63,6 +75,15 @@ const PdlParticleProperties& ParticleFactory::particleProperties(int PDG) const
         LOG(ERROR) << "No PdlParticleProperties for PDG " << PDG;
     }
     return particleProperties_.at(PDG);
+}
+
+//-------------------------
+InitialStateParticle* ParticleFactory::initialStateParticle()
+{
+    if (InitialStateParticle_ == nullptr)
+        LOG(ERROR) << "ParticleFactory: no initialStateParticle. createInitialStateParticle first before creating other resonances.";
+
+    return InitialStateParticle_;
 }
 
 //-------------------------

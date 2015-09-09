@@ -1,10 +1,12 @@
 #include "BlattWeisskopf.h"
+#include "DecayChannel.h"
 
 namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     AmplitudeComponent(),
+    DataAccessor(decayChannel->initialStateParticle()),
     DecayChannel_(decayChannel)
 {}
 
