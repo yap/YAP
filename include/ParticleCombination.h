@@ -90,11 +90,11 @@ public:
     /// check if this and B share one or more ParticleIndex's
     bool sharesIndices(std::shared_ptr<ParticleCombination> B);
 
-
-    /// add this as a parent to daughters
+    /// create new daughters with this PC as parent
     void setParents();
 
     /// add a particle combination as parent
+    /// do not use. This function is used by makeParticleCombinationSetWithParents().
     void setParent(ParticleCombination* parent);
 
     /// equality operator
@@ -105,6 +105,7 @@ public:
     { return !(A == B); }
 
 protected:
+
     /// Parent of the particle combination.
     ParticleCombination* Parent_;
     std::vector<std::shared_ptr<ParticleCombination> > Daughters_;
@@ -131,8 +132,12 @@ public:
     /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
     static std::shared_ptr<ParticleCombination> uniqueSharedPtr(std::vector<std::shared_ptr<ParticleCombination> > c);
 
+    /// return the particleCombination set
     static const std::set<std::shared_ptr<ParticleCombination> >& particleCombinationSet()
     { return ParticleCombinationSet_; }
+
+    /// make new particle combinations with parents set
+    static void makeParticleCombinationSetWithParents();
 
     static void printParticleCombinationSet();
 

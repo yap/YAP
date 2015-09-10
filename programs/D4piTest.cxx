@@ -77,6 +77,12 @@ int main( int argc, char** argv)
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
 
+
+
+    yap::ParticleCombination::printParticleCombinationSet();
+    yap::ParticleCombination::makeParticleCombinationSetWithParents();
+    yap::ParticleCombination::printParticleCombinationSet();
+
     // consistency and optimizations
     assert(rho->consistent());
     assert(D->consistent());
@@ -113,8 +119,6 @@ int main( int argc, char** argv)
         momenta.push_back(*event.GetDecay(i));
 
     D->addDataPoint(yap::DataPoint(momenta));
-    //yap::fourMomenta.calculate(d);
-    //yap::HelicitySpinAmplitude::calculateHelicityAngles(d, D);
 
 
 

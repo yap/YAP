@@ -7,6 +7,8 @@
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 
+#include <assert.h>
+
 namespace yap {
 
 //-------------------------
@@ -78,7 +80,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
                       PCA.swap(copy);
                       PCA->setParent(dummy);
                       if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[0]))
-                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[0])->addSymmetrizationIndex(PCA);
+                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[0])->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(PCA));
+                      assert(ParticleCombination::uniqueSharedPtr(PCA)->parent() == dummy);
                       newPC = true;
                     }
 
@@ -93,7 +96,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
                       PCB.swap(copy);
                       PCB->setParent(dummy);
                       if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[1]))
-                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[1])->addSymmetrizationIndex(PCB);
+                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[1])->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(PCB));
                       newPC = true;
                     }
 

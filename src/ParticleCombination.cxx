@@ -40,10 +40,10 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 
 
 
-    /*if (daughter->Parent_ == nullptr) {
+    /*if (daughter->parent() == nullptr)
         // daughter has no parent yet. Set this as parent and add
-        daughter->Parent_ = this;
-    } else if (daughter->Parent_ == this) {
+        daughter->setParent(this);
+    else if (daughter->Parent_ == this) {
         // fine
     } else {
         LOG(ERROR) << "this should not happen!";
@@ -123,6 +123,9 @@ ParticleCombination::operator std::string() const
     std::string result = "(";
     for (ParticleIndex i : Indices_)
         result += std::to_string(static_cast<unsigned>(i));
+    /*std::ostringstream address;
+    address << ", " << Parent_ << "->" << this;
+    result += address.str();*/
     result += ")";
 
     if (Daughters_.empty() || (Daughters_.size() == 2 and Indices_.size() == 2))
@@ -157,23 +160,15 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
 void ParticleCombination::setParents()
 {
     for (auto& daughter : Daughters_) {
-        if (daughter->Parent_ == nullptr) {
-            // daughter has no parent yet. Set this as parent and add
-            daughter->Parent_ = this;
-        } else if (daughter->Parent_ == this) {
-            // fine
-        } else {
-            // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
-            std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
-            copy->Parent_ = this;
-            std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-            // need to swap so that parent of daughter is now set
-            daughter.swap(uniqueCopy);
-        }
+      // make copy, set this as parent and get unique shared_ptr
+      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
+      copy->Parent_ = this;
+      std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
 
-        assert(daughter->Parent_ == this);
+      uniqueCopy->setParent(this);
 
-        daughter->setParent(this);
+      // call recursively
+      uniqueCopy->setParents();
     }
 }
 
@@ -190,8 +185,8 @@ void ParticleCombination::setParent(ParticleCombination* parent)
         LOG(ERROR) << "duplicate parent.";
     }*/
 
-    if (Parent_)
-        LOG(ERROR) << "particle combination already has a parent.";
+    //if (Parent_)
+    //    LOG(ERROR) << "particle combination already has a parent.";
 
     Parent_ = parent;
 }
@@ -211,7 +206,7 @@ std::set<std::shared_ptr<ParticleCombination> > ParticleCombination::ParticleCom
 std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<ParticleCombination> pc)
 {
     for (std::shared_ptr<ParticleCombination> d : ParticleCombinationSet_)
-        if (ParticleCombination::equivDown(pc, d))
+        if (ParticleCombination::equivUpAndDown(pc, d))
             return d;
 
     ParticleCombinationSet_.insert(pc);
@@ -231,11 +226,50 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::v
 }
 
 //-------------------------
+void ParticleCombination::makeParticleCombinationSetWithParents()
+{
+  unsigned maxSize(0);
+  for (auto& pc : ParticleCombinationSet_) {
+    if (pc->indices().size() > maxSize)
+      maxSize = pc->indices().size();
+
+    if (pc->parent() != nullptr) {
+      LOG(ERROR) << "parents are already set.";
+      return;
+    }
+  }
+
+  // get initial state particle combinations
+  std::vector<std::shared_ptr<ParticleCombination> > initialPCs;
+  for (auto& pc : ParticleCombinationSet_) {
+    if (pc->indices().size() == maxSize)
+      initialPCs.push_back(pc);
+  }
+
+  for (auto& pc : initialPCs) {
+    pc->setParents();
+  }
+
+}
+
+//-------------------------
 void ParticleCombination::printParticleCombinationSet()
 {
     std::cout << "ParticleCombination set:\n";
     for (auto pc : ParticleCombinationSet_) {
-        std::cout << "  " << std::string(*pc) << "\n";
+        std::cout << "  " << std::string(*pc);
+        if (pc->parent()) {
+          std::cout << "   \t in decay chain ";
+          const ParticleCombination* parent = pc->parent();
+          while (true) {
+            if (parent->parent())
+              parent = parent->parent();
+            else
+              break;
+          }
+          std::cout << std::string(*parent);
+        }
+        std::cout << "\n";
     }
     std::cout << std::endl;
 }
