@@ -160,15 +160,15 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
 void ParticleCombination::setParents()
 {
     for (auto& daughter : Daughters_) {
-      // make copy, set this as parent and get unique shared_ptr
-      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
-      copy->Parent_ = this;
-      std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
+        // make copy, set this as parent and get unique shared_ptr
+        std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
+        copy->Parent_ = this;
+        std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
 
-      uniqueCopy->setParent(this);
+        uniqueCopy->setParent(this);
 
-      // call recursively
-      uniqueCopy->setParents();
+        // call recursively
+        uniqueCopy->setParents();
     }
 }
 
@@ -228,27 +228,27 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::v
 //-------------------------
 void ParticleCombination::makeParticleCombinationSetWithParents()
 {
-  unsigned maxSize(0);
-  for (auto& pc : ParticleCombinationSet_) {
-    if (pc->indices().size() > maxSize)
-      maxSize = pc->indices().size();
+    unsigned maxSize(0);
+    for (auto& pc : ParticleCombinationSet_) {
+        if (pc->indices().size() > maxSize)
+            maxSize = pc->indices().size();
 
-    if (pc->parent() != nullptr) {
-      LOG(ERROR) << "parents are already set.";
-      return;
+        if (pc->parent() != nullptr) {
+            LOG(ERROR) << "parents are already set.";
+            return;
+        }
     }
-  }
 
-  // get initial state particle combinations
-  std::vector<std::shared_ptr<ParticleCombination> > initialPCs;
-  for (auto& pc : ParticleCombinationSet_) {
-    if (pc->indices().size() == maxSize)
-      initialPCs.push_back(pc);
-  }
+    // get initial state particle combinations
+    std::vector<std::shared_ptr<ParticleCombination> > initialPCs;
+    for (auto& pc : ParticleCombinationSet_) {
+        if (pc->indices().size() == maxSize)
+            initialPCs.push_back(pc);
+    }
 
-  for (auto& pc : initialPCs) {
-    pc->setParents();
-  }
+    for (auto& pc : initialPCs) {
+        pc->setParents();
+    }
 
 }
 
@@ -259,15 +259,15 @@ void ParticleCombination::printParticleCombinationSet()
     for (auto pc : ParticleCombinationSet_) {
         std::cout << "  " << std::string(*pc);
         if (pc->parent()) {
-          std::cout << "   \t in decay chain ";
-          const ParticleCombination* parent = pc->parent();
-          while (true) {
-            if (parent->parent())
-              parent = parent->parent();
-            else
-              break;
-          }
-          std::cout << std::string(*parent);
+            std::cout << "   \t in decay chain ";
+            const ParticleCombination* parent = pc->parent();
+            while (true) {
+                if (parent->parent())
+                    parent = parent->parent();
+                else
+                    break;
+            }
+            std::cout << std::string(*parent);
         }
         std::cout << "\n";
     }
