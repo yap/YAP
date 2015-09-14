@@ -23,11 +23,39 @@ bool InitialStateParticle::consistent() const
 }
 
 //-------------------------
+bool InitialStateParticle::prepare()
+{
+    if (!consistent()) {
+      LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
+      return false;
+    }
+
+    ParticleCombination::makeParticleCombinationSetWithParents();
+
+    setSymmetrizationIndexParents();
+    optimizeSpinAmplitudeSharing();
+
+    // add particle combinations to FourMomenta_ and HelicityAngles_
+    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+      if (pc->indices().size() < 2)
+          continue;
+
+      FourMomenta_.addSymmetrizationIndex(pc);
+      HelicityAngles_.addSymmetrizationIndex(pc);
+    }
+
+    if (!consistent()) {
+      LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent.";
+      return false;
+    }
+
+    return true;
+}
+
+//-------------------------
 void InitialStateParticle::setSymmetrizationIndexParents()
 {
     //std::cout << "InitialStateParticle::setSymmetrizationIndexParents()\n";
-
-    ParticleCombination::makeParticleCombinationSetWithParents();
 
     unsigned size = particleCombinations()[0]->indices().size();
     assert(size > 1);

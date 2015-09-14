@@ -8,7 +8,7 @@ namespace yap {
 unsigned DataAccessor::GlobalIndex = 0;
 
 //-------------------------
-DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv equiv) :
+DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
     InitialStateParticle_(isp),
     Equiv_(equiv),
     Index_(0)
@@ -78,7 +78,7 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
-        if (Equiv_(kv.first, c)) {
+        if ((*Equiv_)(kv.first, c)) {
             // equating member found; set index; return
             SymmetrizationIndices_[c] = kv.second;
             return;

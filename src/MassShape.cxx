@@ -7,7 +7,7 @@ namespace yap {
 //-------------------------
 MassShape::MassShape(InitialStateParticle* isp) :
     AmplitudeComponent(),
-    DataAccessor(isp, ParticleCombination::equivByOrderlessContent),
+    DataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
     ParameterSet()
 {
 }

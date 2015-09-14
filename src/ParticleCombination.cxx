@@ -386,6 +386,7 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<Pa
     // since order doesn't matter)
     std::set<ParticleIndex> a(A->indices().begin(), A->indices().end());
     std::set<ParticleIndex> b(B->indices().begin(), B->indices().end());
+
     return std::equal(a.begin(), a.end(), b.begin());
 }
 

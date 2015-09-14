@@ -51,8 +51,8 @@ public:
     virtual bool consisent(const DataPoint& d) const
     { return true; }
 
-    /// Set parents of symmetrization indices (recursively)
-    virtual void setSymmetrizationIndexParents() override;
+    /// call this function after you have added all decay channels and before adding DataPoints
+    bool prepare();
 
     /// \name Getters
     /// @{
@@ -82,6 +82,9 @@ public:
     bool addDataPoint(const DataPoint& d);
 
 private:
+
+    /// Set parents of symmetrization indices (recursively)
+    virtual void setSymmetrizationIndexParents() override;
 
     /// vector of final state particles
     std::vector<FinalStateParticle*> FinalStateParticles;

@@ -48,7 +48,7 @@ public:
 
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv equiv = ParticleCombination::equivBySharedPointer);
+    DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
@@ -118,7 +118,7 @@ protected:
     InitialStateParticle* InitialStateParticle_;
 
     /// Object to check equality of symmetrizations for determining storage indices
-    ParticleCombination::Equiv Equiv_;
+    ParticleCombination::Equiv* Equiv_;
 
     /// vector of calculation statuses for each index in the data (as needed by #SymmetrizationIndices_
     std::vector<CalculationStatus> CalculationStatuses_;

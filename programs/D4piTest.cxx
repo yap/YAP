@@ -79,32 +79,32 @@ int main( int argc, char** argv)
 
 
 
-    yap::ParticleCombination::printParticleCombinationSet();
-    //yap::ParticleCombination::makeParticleCombinationSetWithParents();
-    D->setSymmetrizationIndexParents();
-    yap::ParticleCombination::printParticleCombinationSet();
-
     // consistency and optimizations
-    assert(rho->consistent());
-    assert(D->consistent());
-
-
-    D->optimizeSpinAmplitudeSharing();
-    assert(D->consistent());
+    assert(D->prepare());
     std::cout << "consistent! \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
-    D->printSpinAmplitudes();
+    // print stuff
+    yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "\nD symmetrizations: \n";
     for (std::shared_ptr<yap::ParticleCombination>& pc : D->particleCombinations())
         std::cout << std::string(*pc) << "\n";
+    std::cout << "\n";
+
+    std::cout << "\nFour momenta symmetrizations with indices: \n";
+    for (auto& pc : D->fourMomenta().particleCombinations())
+      std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
+
+    std::cout << "\nHelicity angles symmetrizations with indices: \n";
+    for (auto& pc : D->helicityAngles().particleCombinations())
+      std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
+
+    D->printDecayChain();
+    std::cout << "\n";
+
+    D->printSpinAmplitudes();
 
 
-
-    // blub
-    yap::ParticleCombination::printParticleCombinationSet();
 
 
     // test helicity angles
