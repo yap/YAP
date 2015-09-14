@@ -26,8 +26,8 @@ bool InitialStateParticle::consistent() const
 bool InitialStateParticle::prepare()
 {
     if (!consistent()) {
-      LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
-      return false;
+        LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
+        return false;
     }
 
     ParticleCombination::makeParticleCombinationSetWithParents();
@@ -35,17 +35,28 @@ bool InitialStateParticle::prepare()
     setSymmetrizationIndexParents();
     optimizeSpinAmplitudeSharing();
 
+    // make sure that final state particles get the correct indices
+    for (unsigned i = 0; i < particleCombinations()[0]->indices().size(); ++i) {
+        std::shared_ptr<ParticleCombination> index = std::make_shared<ParticleCombination>(i);
+        for (std::shared_ptr<ParticleCombination> pc : ParticleCombination::particleCombinationSet()) {
+            if (ParticleCombination::equivByOrderlessContent(index, pc)) {
+                FourMomenta_.addSymmetrizationIndex(pc);
+                continue;
+            }
+        }
+    }
+
     // add particle combinations to FourMomenta_ and HelicityAngles_
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
-      FourMomenta_.addSymmetrizationIndex(pc);
+        FourMomenta_.addSymmetrizationIndex(pc);
 
-      if (pc->indices().size() > 1)
-          HelicityAngles_.addSymmetrizationIndex(pc);
+        if (pc->indices().size() > 1)
+            HelicityAngles_.addSymmetrizationIndex(pc);
     }
 
     if (!consistent()) {
-      LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent.";
-      return false;
+        LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent.";
+        return false;
     }
 
     return true;

@@ -93,11 +93,11 @@ int main( int argc, char** argv)
 
     std::cout << "\nFour momenta symmetrizations with indices: \n";
     for (auto& pc : D->fourMomenta().particleCombinations())
-      std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
+        std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
 
     std::cout << "\nHelicity angles symmetrizations with indices: \n";
     for (auto& pc : D->helicityAngles().particleCombinations())
-      std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
+        std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
 
     D->printDecayChain();
     std::cout << "\n";
