@@ -264,35 +264,63 @@ void DecayChannel::setSymmetrizationIndexParents()
     std::cout << "DecayChannel::setSymmetrizationIndexParents()\n";
 
     std::vector<std::shared_ptr<ParticleCombination> > chPCs = particleCombinations();
-    //ch->clearSymmetrizationIndices();
+
+    // clean up PCs without parents
+    std::vector<std::shared_ptr<ParticleCombination> > chPCsParents = particleCombinations();
+    auto it = chPCsParents.begin();
+    while (it != chPCsParents.end()) {
+        if ((*it)->parent() == nullptr) {
+            it = chPCsParents.erase(it);
+        } else
+            ++it;
+    }
+    clearSymmetrizationIndices();
+
+    for (auto& pc : chPCsParents) {
+      std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
+      addSymmetrizationIndex(pc);
+    }
+
 
     // loop over channel's particle combinations
     for (auto& chPC : chPCs) {
         for (auto& pc : ParticleCombination::particleCombinationSet()) {
             if (ParticleCombination::equivDown(chPC, pc)) {
-                std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
+
+                //std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
+
                 // check if parent is correct
-                for (auto& pcThis : parent()->particleCombinations()) {
-                    if (pc->parent() == pcThis.get()) {
+                //for (auto& pcThis : parent()->particleCombinations()) {
+
+                    //std::cout << std::string(*pc) << " from decay " << std::string(*pc->parent()) << "\n";
+                    //std::cout << std::string(*pcThis) << "\n";
+
+                    //if (pc->parent() == pcThis.get()) {
                         std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
                         addSymmetrizationIndex(pc);
                         //for (auto& daughPC : pc->daughters())
                         //  addSymmetrizationIndex(daughPC);
 
-                        break;
-                    }
+                        //break;
+                    //}
                 }
 
             }
-        }
+
     }
 
+    std::cout << "Particle combinations in channel " <<  std::string(*this) << "\n";
+    for (auto& chPC : particleCombinations()) {
+      std::cout << "  " << std::string(*chPC);
+      if (chPC->parent())
+        std::cout << " from decay " << std::string(*chPC->parent());
+      std::cout << "\n";
+    }
 
     // next level
-    /*for (auto& ch : channels()) {
-        for (auto d : ch->daughters())
-            d->setSymmetrizationIndexParents();
-    }*/
+    for (auto d : daughters())
+       d->setSymmetrizationIndexParents();
+
 }
 
 

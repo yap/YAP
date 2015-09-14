@@ -166,9 +166,10 @@ void ParticleCombination::setParents()
         std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
 
         uniqueCopy->setParent(this);
+        daughter.swap(uniqueCopy);
 
         // call recursively
-        uniqueCopy->setParents();
+        daughter->setParents();
     }
 }
 
