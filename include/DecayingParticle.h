@@ -70,6 +70,10 @@ public:
     /// \name Getters
     /// @{
 
+    /// return channels
+    const std::vector< std::unique_ptr<yap::DecayChannel> >& channels() const
+    { return Channels_;}
+
     /// \return Number of decay channels for this object
     unsigned int nChannels() const
     { return Channels_.size(); }
@@ -107,6 +111,9 @@ public:
 
     /// Print SpinAmplitudes involved in decay chain
     void printSpinAmplitudes(int level = 0);
+
+    // for internal use only
+    virtual void setSymmetrizationIndexParents() override;
 
 private:
 

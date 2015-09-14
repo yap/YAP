@@ -80,14 +80,14 @@ int main( int argc, char** argv)
 
 
     yap::ParticleCombination::printParticleCombinationSet();
-    yap::ParticleCombination::makeParticleCombinationSetWithParents();
+    //yap::ParticleCombination::makeParticleCombinationSetWithParents();
+    D->setSymmetrizationIndexParents();
     yap::ParticleCombination::printParticleCombinationSet();
 
     // consistency and optimizations
     assert(rho->consistent());
     assert(D->consistent());
 
-    D->setSymmetrizationIndexParents();
 
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());

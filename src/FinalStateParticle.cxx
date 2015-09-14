@@ -53,5 +53,27 @@ void FinalStateParticle::addSymmetrizationIndex(std::shared_ptr<ParticleCombinat
     }
 }
 
+//-------------------------
+void FinalStateParticle::setSymmetrizationIndexParents()
+{
+    std::vector<std::shared_ptr<ParticleCombination> > PCs = SymmetrizationIndices_;
+
+    // check if already set
+    if (PCs[0]->parent() != nullptr)
+        return;
+
+    SymmetrizationIndices_.clear();
+
+    for (auto& PC : PCs) {
+        for (auto& pc : ParticleCombination::particleCombinationSet()) {
+            if (ParticleCombination::equivDown(PC, pc)) {
+                LOG(DEBUG) << "  add " << std::string(*pc) << " to fsp " << name() << "\n";
+                SymmetrizationIndices_.push_back(pc);
+            }
+        }
+    }
+
+}
+
 }
 

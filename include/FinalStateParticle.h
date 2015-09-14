@@ -59,6 +59,9 @@ public:
     std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const
     { return SymmetrizationIndices_; }
 
+    // for internal use only
+    virtual void setSymmetrizationIndexParents() override;
+
 private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_

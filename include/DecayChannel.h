@@ -106,6 +106,12 @@ public:
     /// also add to BlattWeisskopf_ and SpinAmplitude_
     virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
 
+    /// clear SymmetrizationIndices_
+    virtual void clearSymmetrizationIndices() override;
+
+    // for internal use only
+    void setSymmetrizationIndexParents();
+
 protected:
 
     /// 2 daughters of the decay

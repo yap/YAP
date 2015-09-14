@@ -92,6 +92,13 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 }
 
 //-------------------------
+void DataAccessor::clearSymmetrizationIndices()
+{
+    SymmetrizationIndices_.clear();
+    CalculationStatuses_.clear();
+}
+
+//-------------------------
 std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
     return d.Data_[index()][i];

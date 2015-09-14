@@ -4,6 +4,8 @@
 
 #include <TLorentzRotation.h>
 
+#include <assert.h>
+
 namespace yap {
 
 //-------------------------
@@ -23,10 +25,76 @@ bool InitialStateParticle::consistent() const
 //-------------------------
 void InitialStateParticle::setSymmetrizationIndexParents()
 {
-    for (std::shared_ptr<yap::ParticleCombination>& pc : particleCombinations()) {
-        pc->setParents();
+    std::cout << "InitialStateParticle::setSymmetrizationIndexParents()";
+
+    ParticleCombination::makeParticleCombinationSetWithParents();
+
+    unsigned size = particleCombinations()[0]->indices().size();
+    assert(size > 1);
+
+    clearSymmetrizationIndices();
+
+    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        if (pc->indices().size() < size)
+            continue;
+
+        if (pc->daughters()[0]->parent() == nullptr)
+            continue;
+
+        std::cout << "  add " << std::string(*pc) << "\n";
+        addSymmetrizationIndex(pc);
+    }
+
+
+    for (auto& ch : channels()) {
+        std::vector<std::shared_ptr<ParticleCombination> > chPCs = ch->particleCombinations();
+        ch->clearSymmetrizationIndices();
+
+        // loop over channel's particle combinations
+        for (auto& chPC : chPCs) {
+            for (auto& pc : ParticleCombination::particleCombinationSet()) {
+                if (ParticleCombination::equivDown(chPC, pc)) {
+                    //std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
+                    std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*ch) << "\n";
+                    ch->addSymmetrizationIndex(pc);
+
+                    // set PCs for channel's daughters
+                    for (auto& pcDaughPC : pc->daughters()) {
+                        for (const std::shared_ptr<Particle>& chDaugh : ch->daughters()) {
+                            if (std::dynamic_pointer_cast<DecayingParticle>(chDaugh))
+                                for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations()) {
+                                    if (ParticleCombination::equivDown(pcDaughPC, chDaughPC)) {
+                                        addSymmetrizationIndex(pcDaughPC);
+                                        std::cout << "  add " << std::string(*pcDaughPC) << " to particle " << chDaugh->name() << "\n";
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+        std::cout << "  PCs in channel " << std::string(*ch) << ":\n";
+        for (auto& meh : ch->particleCombinations())
+            std::cout << "    " << std::string(*meh) << "\n";
+    }
+
+    // next level
+    for (auto& ch : channels()) {
+        for (std::shared_ptr<Particle> d : ch->daughters()) {
+            std::cout << "Now setSymmetrizationIndexParents for " << d->name() << "\n";
+            d->setSymmetrizationIndexParents();
+        }
     }
 }
+
+//-------------------------
+/*void InitialStateParticle::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+{
+  DecayingParticle::addSymmetrizationIndex(c);
+  FourMomenta_.addSymmetrizationIndex(c);
+  HelicityAngles_.addSymmetrizationIndex(c);
+}*/
 
 //-------------------------
 bool InitialStateParticle::addDataPoint(DataPoint&& d)

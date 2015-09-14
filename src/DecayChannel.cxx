@@ -123,6 +123,9 @@ bool DecayChannel::consistent() const
     bool result = true;
 
     result &= DataAccessor::consistent();
+    if (!result) {
+        LOG(ERROR) << "Channel's DataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
+    }
 
     // check number of daughters greater than 1
     if (Daughters_.size() < 2) {
@@ -138,6 +141,7 @@ bool DecayChannel::consistent() const
     }
 
     // check daughters
+    bool prevResult = result;
     for (std::shared_ptr<Particle> d : Daughters_)  {
         if (!d) {
             LOG(ERROR) << "DecayChannel::consistent() - null pointer in daughters vector.";
@@ -145,7 +149,7 @@ bool DecayChannel::consistent() const
         } else
             result &= d->consistent();
     }
-    if (!result)
+    if (prevResult != result)
         LOG(ERROR) << "DecayChannel::consistent() - daughter(s) inconsistent";
 
     // Check Blatt-Weisskopf object
@@ -244,6 +248,51 @@ void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
     DataAccessor::addSymmetrizationIndex(c);
     BlattWeisskopf_.addSymmetrizationIndex(c);
     SpinAmplitude_->addSymmetrizationIndex(c);
+}
+
+//-------------------------
+void DecayChannel::clearSymmetrizationIndices()
+{
+    DataAccessor::clearSymmetrizationIndices();
+    BlattWeisskopf_.clearSymmetrizationIndices();
+    SpinAmplitude_->clearSymmetrizationIndices();
+}
+
+//-------------------------
+void DecayChannel::setSymmetrizationIndexParents()
+{
+    std::cout << "DecayChannel::setSymmetrizationIndexParents()\n";
+
+    std::vector<std::shared_ptr<ParticleCombination> > chPCs = particleCombinations();
+    //ch->clearSymmetrizationIndices();
+
+    // loop over channel's particle combinations
+    for (auto& chPC : chPCs) {
+        for (auto& pc : ParticleCombination::particleCombinationSet()) {
+            if (ParticleCombination::equivDown(chPC, pc)) {
+                std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
+                // check if parent is correct
+                for (auto& pcThis : parent()->particleCombinations()) {
+                    if (pc->parent() == pcThis.get()) {
+                        std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
+                        addSymmetrizationIndex(pc);
+                        //for (auto& daughPC : pc->daughters())
+                        //  addSymmetrizationIndex(daughPC);
+
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
+
+
+    // next level
+    /*for (auto& ch : channels()) {
+        for (auto d : ch->daughters())
+            d->setSymmetrizationIndexParents();
+    }*/
 }
 
 

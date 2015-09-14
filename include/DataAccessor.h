@@ -92,6 +92,9 @@ public:
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
 
+    /// clear SymmetrizationIndices_
+    virtual void clearSymmetrizationIndices();
+
     /// @}
 
     /// \name Data access

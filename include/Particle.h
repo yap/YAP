@@ -76,6 +76,9 @@ public:
 
     /// @}
 
+    /// for internal use only
+    virtual void setSymmetrizationIndexParents() = 0;
+
 private:
 
     /// Quantum numbers of particle

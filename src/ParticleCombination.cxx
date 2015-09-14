@@ -250,6 +250,20 @@ void ParticleCombination::makeParticleCombinationSetWithParents()
         pc->setParents();
     }
 
+    // clean up old PCs without parents
+    auto it = ParticleCombinationSet_.begin();
+    while (it != ParticleCombinationSet_.end()) {
+        if ((*it)->indices().size() < maxSize
+                and (*it)->parent() == nullptr) {
+            it = ParticleCombinationSet_.erase(it);
+        } else
+            ++it;
+    }
+
+    // check consistency
+    for (auto& pc : ParticleCombinationSet_) {
+        assert(pc->consistent());
+    }
 }
 
 //-------------------------
