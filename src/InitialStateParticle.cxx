@@ -37,11 +37,10 @@ bool InitialStateParticle::prepare()
 
     // add particle combinations to FourMomenta_ and HelicityAngles_
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
-      if (pc->indices().size() < 2)
-          continue;
-
       FourMomenta_.addSymmetrizationIndex(pc);
-      HelicityAngles_.addSymmetrizationIndex(pc);
+
+      if (pc->indices().size() > 1)
+          HelicityAngles_.addSymmetrizationIndex(pc);
     }
 
     if (!consistent()) {
