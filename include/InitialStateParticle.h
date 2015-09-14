@@ -54,9 +54,6 @@ public:
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    //virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
-
     /// \name Getters
     /// @{
 

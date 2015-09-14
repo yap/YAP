@@ -91,6 +91,7 @@ int main( int argc, char** argv)
 
     D->optimizeSpinAmplitudeSharing();
     assert(D->consistent());
+    std::cout << "consistent! \n";
 
     D->printDecayChain();
     std::cout << "\n";

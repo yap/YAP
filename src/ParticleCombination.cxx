@@ -105,6 +105,21 @@ bool ParticleCombination::consistent() const
         result = false;
     }
 
+    // check if in ParticleCombinationSet_
+    bool found(false);
+    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        if (pc.get() == this) {
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this);
+        if (parent())
+            std::cout << "from decay " << std::string(*parent());
+        result = false;
+    }
+
     // check daughters
     for (std::shared_ptr<ParticleCombination> d : Daughters_) {
         if (d->parent() and  d->parent() != this) {

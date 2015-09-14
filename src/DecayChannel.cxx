@@ -53,7 +53,6 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
         for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
             if (!PCA->sharesIndices(PCB)) {
                 std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
-                //std::shared_ptr<ParticleCombination> a_b = std::make_shared<ParticleCombination>(ParticleCombination({PCA, PCB}));
 
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
@@ -64,50 +63,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
                             break;
                         }
                 }
-                if (can_has_symmetrization) {
-
-                    /*bool newPC(false);
-                    ParticleCombination* dummy = new ParticleCombination;
-                    // set parents of daughter PCs
-                    if (PCA->parent() == nullptr) {
-                      // daughter has no parent yet. Set this as parent and add
-                      PCA->setParent(a_b.get());
-                    } else if (PCA->parent() == a_b.get()) {
-                      // fine
-                    } else {
-                      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
-                      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*PCA));
-                      PCA.swap(copy);
-                      PCA->setParent(dummy);
-                      if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[0]))
-                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[0])->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(PCA));
-                      assert(ParticleCombination::uniqueSharedPtr(PCA)->parent() == dummy);
-                      newPC = true;
-                    }
-
-                    if (PCB->parent() == nullptr) {
-                      // daughter has no parent yet. Set this as parent and add
-                      PCB->setParent(a_b.get());
-                    } else if (PCB->parent() == a_b.get()) {
-                      // fine
-                    } else {
-                      // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
-                      std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*PCB));
-                      PCB.swap(copy);
-                      PCB->setParent(dummy);
-                      if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[1]))
-                          std::dynamic_pointer_cast<DataAccessor>(Daughters_[1])->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(PCB));
-                      newPC = true;
-                    }
-
-                    if (newPC) {
-                      a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
-                      PCA->setParent(a_b.get());
-                      PCB->setParent(a_b.get());
-                    }*/
-
+                if (can_has_symmetrization)
                     addSymmetrizationIndex(a_b);
-                }
             }
 }
 
@@ -261,7 +218,7 @@ void DecayChannel::clearSymmetrizationIndices()
 //-------------------------
 void DecayChannel::setSymmetrizationIndexParents()
 {
-    std::cout << "DecayChannel::setSymmetrizationIndexParents()\n";
+    //std::cout << "DecayChannel::setSymmetrizationIndexParents()\n";
 
     std::vector<std::shared_ptr<ParticleCombination> > chPCs = particleCombinations();
 
@@ -277,39 +234,45 @@ void DecayChannel::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     for (auto& pc : chPCsParents) {
-      std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
-      addSymmetrizationIndex(pc);
+        //std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
+        addSymmetrizationIndex(pc);
     }
 
 
-    // loop over channel's particle combinations
     for (auto& chPC : chPCs) {
         for (auto& pc : ParticleCombination::particleCombinationSet()) {
             if (ParticleCombination::equivDown(chPC, pc)) {
 
                 //std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
-
-                // check if parent is correct
-                //for (auto& pcThis : parent()->particleCombinations()) {
-
-                    //std::cout << std::string(*pc) << " from decay " << std::string(*pc->parent()) << "\n";
-                    //std::cout << std::string(*pcThis) << "\n";
-
-                    //if (pc->parent() == pcThis.get()) {
-                        std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
-                        addSymmetrizationIndex(pc);
-                        //for (auto& daughPC : pc->daughters())
-                        //  addSymmetrizationIndex(daughPC);
-
-                        //break;
-                    //}
+                /*std::cout << "  add " << std::string(*pc);
+                if  (pc->parent()){
+                  std::cout << " from decay " << std::string(*pc->parent());
                 }
+                std::cout << " to channel " << std::string(*this) << "\n";*/
 
+                addSymmetrizationIndex(pc);
+
+                // set PCs for channel's daughters
+                for (auto& pcDaughPC : pc->daughters()) {
+                    for (const std::shared_ptr<Particle>& chDaugh : daughters()) {
+                        if (std::dynamic_pointer_cast<DecayingParticle>(chDaugh))
+                            for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations()) {
+                                if (ParticleCombination::equivDown(pcDaughPC, chDaughPC)) {
+                                    std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addSymmetrizationIndex(pcDaughPC);
+                                    /*std::cout << "   add " << std::string(*pcDaughPC);
+                                    if (pcDaughPC->parent()) {
+                                      std::cout << " from decay " << std::string(*pcDaughPC->parent());
+                                    }
+                                    std::cout << " to particle " << chDaugh->name() << "\n";*/
+                                }
+                            }
+                    }
+                }
             }
-
+        }
     }
 
-    std::cout << "Particle combinations in channel " <<  std::string(*this) << "\n";
+    /*std::cout << "Particle combinations in channel " <<  std::string(*this) << "\n";
     for (auto& chPC : particleCombinations()) {
       std::cout << "  " << std::string(*chPC);
       if (chPC->parent())
@@ -317,9 +280,21 @@ void DecayChannel::setSymmetrizationIndexParents()
       std::cout << "\n";
     }
 
+    for (auto d : daughters()) {
+      if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
+        std::cout << "    PCs in particle " << d->name() << ":\n";
+        for (auto& meh : std::dynamic_pointer_cast<DecayingParticle>(d)->particleCombinations()) {
+            std::cout << "      " << std::string(*meh);
+            if (meh->parent())
+              std::cout << " from decay " << std::string(*meh->parent());
+            std::cout <<"\n";
+        }
+      }
+    }*/
+
     // next level
     for (auto d : daughters())
-       d->setSymmetrizationIndexParents();
+        d->setSymmetrizationIndexParents();
 
 }
 

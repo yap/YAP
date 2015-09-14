@@ -218,45 +218,27 @@ void DecayingParticle::printSpinAmplitudes(int level)
 //-------------------------
 void DecayingParticle::setSymmetrizationIndexParents()
 {
+    //std::cout << "DecayingParticle::setSymmetrizationIndexParents()\n";
 
-    std::cout << "DecayingParticle::setSymmetrizationIndexParents()\n";
-
-    for (auto& ch : channels()) {
-        ch->setSymmetrizationIndexParents();
+    // clean up PCs without parents
+    std::vector<std::shared_ptr<ParticleCombination> > PCsParents = particleCombinations();
+    auto it = PCsParents.begin();
+    while (it != PCsParents.end()) {
+        if ((*it)->parent() == nullptr) {
+            it = PCsParents.erase(it);
+        } else
+            ++it;
     }
+    clearSymmetrizationIndices();
 
-    /*for (auto& ch : channels()) {
-        std::vector<std::shared_ptr<ParticleCombination> > chPCs = ch->particleCombinations();
-        //ch->clearSymmetrizationIndices();
-
-        // loop over channel's particle combinations
-        for (auto& chPC : chPCs) {
-            for (auto& pc : ParticleCombination::particleCombinationSet()) {
-                if (ParticleCombination::equivDown(chPC, pc)) {
-                    std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
-                    // check if parent is correct
-                    for (auto& pcThis : parent()->particleCombinations()) {
-                        if (pc->parent()() == pcThis.get()) {
-                            std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*ch) << "\n";
-                            ch->addSymmetrizationIndex(pc);
-                            //for (auto& daughPC : pc->daughters())
-                            //  addSymmetrizationIndex(daughPC);
-
-                            break;
-                        }
-                    }
-
-                }
-            }
-        }
-
-    }
+    for (auto& pc : PCsParents)
+        addSymmetrizationIndex(pc);
 
     // next level
-    for (auto& ch : channels()) {
-        for (auto d : ch->daughters())
-            d->setSymmetrizationIndexParents();
-    }*/
+    for (auto& ch : channels())
+        ch->setSymmetrizationIndexParents();
+
+
 }
 
 
