@@ -36,29 +36,13 @@ bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
         return false;
     }
 
-    /// \todo Check that new daughter does not share content with other daughters?
-
-
-
-    /*if (daughter->parent() == nullptr)
-        // daughter has no parent yet. Set this as parent and add
-        daughter->setParent(this);
-    else if (daughter->Parent_ == this) {
-        // fine
-    } else {
-        LOG(ERROR) << "this should not happen!";
-
-        // daughter has already different parent -> make copy, set this as parent and get unique shared_ptr
-        std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
-        copy->Parent_ = this;
-        std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-        // need to swap so that parent of argument daughter is now set
-
-        // \todo does not work since it would have to operate on the original shared_ptr object
-        daughter.swap(uniqueCopy);
-    }
-
-    assert(daughter->Parent_ == this);*/
+    /// Check that new daughter does not share content with other daughters?
+    for (unsigned indexP : Indices_)
+        for (unsigned indexD : daughter->indices())
+            if (indexP == indexD) {
+                LOG(ERROR) << "ParticleCombination::addDaughter - daughter contains indices that are already in parent.";
+                return false;
+            }
 
     // add daughter to vector
     Daughters_.push_back(daughter);
@@ -191,19 +175,6 @@ void ParticleCombination::setParents()
 //-------------------------
 void ParticleCombination::setParent(ParticleCombination* parent)
 {
-    /*unsigned n = std::count(Parents_.begin(), Parents_.end(), parent);
-    if (n == 0) {
-        Parents_.push_back(parent);
-        return;
-    }
-
-    if (n > 1) {
-        LOG(ERROR) << "duplicate parent.";
-    }*/
-
-    //if (Parent_)
-    //    LOG(ERROR) << "particle combination already has a parent.";
-
     Parent_ = parent;
 }
 
@@ -305,7 +276,7 @@ void ParticleCombination::printParticleCombinationSet()
 }
 
 //-------------------------
-// Comparison shtuff:
+// Comparison stuff:
 
 ParticleCombination::Equiv ParticleCombination::equivBySharedPointer;
 ParticleCombination::EquivDown ParticleCombination::equivDown;

@@ -85,8 +85,6 @@ bool DataAccessor::consistent() const
     for (auto& kv : SymmetrizationIndices_)
         result &= kv.first->consistent();
 
-    // find number of indices:
-
     return result;
 }
 
@@ -109,7 +107,6 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
     SymmetrizationIndices_[c] = CalculationStatuses_.size();
     // and add entry to
     CalculationStatuses_.push_back(kUncalculated);
-
 }
 
 //-------------------------
