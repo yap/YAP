@@ -1,5 +1,6 @@
 #include "InitialStateParticle.h"
 
+#include "DataSet.h"
 #include "logging.h"
 
 #include <TLorentzRotation.h>
@@ -14,6 +15,8 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     FourMomenta_(this),
     HelicityAngles_(this)
 {
+    addDataAccessor(this);
+    removeDataAccessor(&HelicityAngles_);
 }
 
 //-------------------------
@@ -54,6 +57,10 @@ bool InitialStateParticle::prepare()
             HelicityAngles_.addSymmetrizationIndex(pc);
     }
 
+    FourMomenta_.findInitialStateParticle();
+
+    setDataAcessorIndices();
+
     if (!consistent()) {
         LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent.";
         return false;
@@ -93,10 +100,14 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 //-------------------------
 bool InitialStateParticle::addDataPoint(DataPoint&& d)
 {
+    d.allocateStorage(FourMomenta_, HelicityAngles_, DataAccessors_);
+
     FourMomenta_.calculate(d);
     HelicityAngles_.calculate(d);
+
     if (!DataSet_.consistent(d))
         return false;
+
     return DataSet_.addDataPoint(d);;
 }
 
@@ -104,6 +115,26 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
 bool InitialStateParticle::addDataPoint(const DataPoint& d)
 {
     return addDataPoint(DataPoint(d));
+}
+
+//-------------------------
+void InitialStateParticle::printDataAccessors()
+{
+    std::cout << "DataAccessors of " << name() << " with indices and number of symIndices\n";
+    for (DataAccessor* d : DataAccessors_) {
+      std::cout << "  " << d << ": " << d->index() << " \t" << d->maxSymmetrizationIndex()+1
+          << "  \t(" << typeid(*d).name() << ")\n";
+    }
+    std::cout << std::endl;
+}
+
+//-------------------------
+void InitialStateParticle::setDataAcessorIndices()
+{
+  unsigned i(0);
+  for (DataAccessor* d : DataAccessors_) {
+      d->setIndex(i++);
+  }
 }
 
 

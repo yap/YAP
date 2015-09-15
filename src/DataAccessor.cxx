@@ -1,11 +1,10 @@
 #include "DataAccessor.h"
 
 #include "DataPoint.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 
 namespace yap {
-
-unsigned DataAccessor::GlobalIndex = 0;
 
 //-------------------------
 DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
@@ -16,20 +15,42 @@ DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv
     if (isp == nullptr)
         LOG(ERROR) << "DataAccessor: no InitialStateParticle provided!";
 
-    // assign a running index to this DataAccessor
-    /// \todo Come up with something smarter
-    Index_ = GlobalIndex++;
+    if (this != InitialStateParticle_)
+        InitialStateParticle_->addDataAccessor(this);
+
+    // index is set later by InitialStateParticle::setDataAcessorIndices()
+    // via InitialStateParticle::prepare()
 }
 
 //-------------------------
 DataAccessor::DataAccessor(const DataAccessor& other) :
+    InitialStateParticle_(other.InitialStateParticle_),
     Equiv_(other.Equiv_),
     CalculationStatuses_(other.CalculationStatuses_),
     SymmetrizationIndices_(other.SymmetrizationIndices_),
     Index_(0)
 {
-    // uses new index
-    Index_ = GlobalIndex++;
+    InitialStateParticle_->addDataAccessor(this);
+}
+
+//-------------------------
+DataAccessor::~DataAccessor()
+{
+    if (this != InitialStateParticle_)
+        InitialStateParticle_->removeDataAccessor(this);
+}
+
+//-------------------------
+unsigned DataAccessor::maxSymmetrizationIndex() const
+{
+    /// I don't know why, but std::max_element returns wrong numbers sometimes!
+    //return std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
+    unsigned max(0);
+    for (auto& kv : SymmetrizationIndices_)
+      if (kv.second > max)
+        max = kv.second;
+
+    return max;
 }
 
 //-------------------------
@@ -53,7 +74,7 @@ bool DataAccessor::consistent() const
     bool result = true;
 
     // find number of indices:
-    unsigned n_indices = std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
+    unsigned n_indices = maxSymmetrizationIndex();
     // check that CalculationStatuses_ has right number of entries
     if (CalculationStatuses_.size() != n_indices + 1) {
         LOG(ERROR) << "DataAccessor::consistent() - CalculationStatuses_ has wrong number of entries ("
@@ -101,13 +122,15 @@ void DataAccessor::clearSymmetrizationIndices()
 //-------------------------
 std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
-    return d.Data_[index()][i];
+    return d.Data_.at(index()).at(i);
+    //return d.Data_[index()][i];
 }
 
 //-------------------------
 const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
 {
-    return d.Data_[index()][i];
+    return d.Data_.at(index()).at(i);
+    //return d.Data_[index()][i];
 }
 
 }

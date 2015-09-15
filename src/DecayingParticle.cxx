@@ -107,7 +107,7 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
         bool found(false);
         for (auto sa : ampSet) {
             if (comp(sa, amp)) {
-                LOG(INFO) << "Sharing spin amplitude " << std::string(*amp) << " and " << std::string(*sa);
+                LOG(INFO) << "Sharing spin amplitude " << std::string(*sa) << " and " << std::string(*amp) << " (" << amp.get() << ")";
                 channel(i)->spinAmplitude() = sa;
                 found = true;
                 break;

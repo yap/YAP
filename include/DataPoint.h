@@ -21,9 +21,10 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include <DataAccessor.h>
-#include <DataSet.h>
-#include <FourMomenta.h>
+#include "DataAccessor.h"
+#include "DataSet.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
 
 #include <TLorentzVector.h>
 
@@ -65,6 +66,8 @@ public:
     friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
 
     friend bool DataSet::consistent(const DataPoint&) const;
+
+    void allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
 
     /// @}
 

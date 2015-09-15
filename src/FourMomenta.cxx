@@ -21,14 +21,19 @@ int FourMomenta::findInitialStateParticle()
         // count FSP
         unsigned fsp = 0;
         for (auto& kv : SymmetrizationIndices_)
-            if (kv.first->isFinalStateParticle())
-                fsp += 1;
+            if (kv.first->indices().size() > fsp)
+                fsp = kv.first->indices().size();
 
         // look for ISP
         for (auto& kv : SymmetrizationIndices_)
-            if (kv.first->indices().size() == fsp)
+            if (kv.first->indices().size() == fsp) {
                 InitialStateIndex_ = kv.second;
+                break;
+            }
     }
+
+    if (InitialStateIndex_ < 0)
+        LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle index.";
 
     return InitialStateIndex_;
 }
@@ -84,6 +89,7 @@ void FourMomenta::calculate(DataPoint& d)
         double m = sqrt(m2);
 
         std::vector<double>& D = data(d, kv.second);
+        //D.resize(2); // \todo make once in beginning?
         D = {m2, m};
         CalculationStatuses_[kv.second] = kCalculated;
     }
@@ -92,7 +98,7 @@ void FourMomenta::calculate(DataPoint& d)
 //-------------------------
 const TLorentzVector& FourMomenta::p(const DataPoint& d, unsigned i) const
 {
-    return d.FourMomenta_[i];
+    return d.FourMomenta_.at(i);
 }
 
 }

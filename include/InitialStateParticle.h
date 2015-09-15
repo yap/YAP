@@ -21,12 +21,13 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
-#include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 
 namespace yap {
+
+class DataSet;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
@@ -40,6 +41,9 @@ public:
     /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
+    ~InitialStateParticle()
+    { DataAccessors_.clear(); }
+
     //virtual Amp amplitude(DataPoint& d) override;
 
     /// Check consistency of object
@@ -51,7 +55,7 @@ public:
     virtual bool consisent(const DataPoint& d) const
     { return true; }
 
-    /// call this function after you have added all decay channels and before adding DataPoints
+    /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
 
     /// \name Getters
@@ -81,18 +85,35 @@ public:
     /// \return Success of action
     bool addDataPoint(const DataPoint& d);
 
+    void printDataAccessors();
+
 private:
 
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 
+    /// add DataAccessor to set
+    void addDataAccessor(DataAccessor* d)
+    { DataAccessors_.insert(d); }
+
+    /// add DataAccessor to set
+    void removeDataAccessor(DataAccessor* d)
+    { DataAccessors_.erase(d); }
+
+    void setDataAcessorIndices();
+
+    friend class DataAccessor;
+
+    /// List of all DataAccessor objects in the InitialsStateParticle and below
+    std::set<DataAccessor*> DataAccessors_;
+
     /// vector of final state particles
     std::vector<FinalStateParticle*> FinalStateParticles;
 
-    /// four momenta
+    /// four momenta manager
     FourMomenta FourMomenta_;
 
-    /// helicity angles
+    /// helicity angles manager
     HelicityAngles HelicityAngles_;
 
     /// Data set

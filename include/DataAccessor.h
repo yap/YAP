@@ -53,8 +53,10 @@ public:
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
 
+    /// Destructor
+    ~DataAccessor();
+
     // Defaulted move constructor
-    // Defaulted destructor
     // Defaulted move assignment operator
 
     /// @}
@@ -69,6 +71,9 @@ public:
     /// \return index inside row of DataPoint for the requested symmetrization
     unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
     { return SymmetrizationIndices_.at(c); }
+
+    /// \return ,maximum index of SymmetrizationIndices_
+    unsigned maxSymmetrizationIndex() const;
 
     /// \return list of all ParticleCombinations
     std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const;
@@ -114,6 +119,11 @@ public:
 
 protected:
 
+    friend class InitialStateParticle;
+
+    void setIndex(unsigned i)
+    { Index_ = i; }
+
     /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
     InitialStateParticle* InitialStateParticle_;
 
@@ -128,11 +138,10 @@ protected:
 
 private:
 
+
     /// storage index used in DataPoint. Must be unique.
     unsigned Index_;
 
-    /// static counter for setting indices
-    static unsigned GlobalIndex;
 };
 
 }

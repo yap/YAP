@@ -91,11 +91,11 @@ int main( int argc, char** argv)
         std::cout << std::string(*pc) << "\n";
     std::cout << "\n";
 
-    std::cout << "\nFour momenta symmetrizations with indices: \n";
+    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex()+1 << " indices: \n";
     for (auto& pc : D->fourMomenta().particleCombinations())
         std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
 
-    std::cout << "\nHelicity angles symmetrizations with indices: \n";
+    std::cout << "\nHelicity angles symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex()+1 << " indices: \n";
     for (auto& pc : D->helicityAngles().particleCombinations())
         std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
 
@@ -103,7 +103,7 @@ int main( int argc, char** argv)
     std::cout << "\n";
 
     D->printSpinAmplitudes();
-
+    D->printDataAccessors();
 
 
 
