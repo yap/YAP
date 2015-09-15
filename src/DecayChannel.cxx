@@ -179,7 +179,7 @@ double DecayChannel::breakupMomentum() const
     double m_b = Daughters_[1]->mass();
 
     if (m_a == m_b) {
-      return m2_R / 4.0 - m_a * m_a;
+        return m2_R / 4.0 - m_a * m_a;
     }
 
     return (m2_R - (m_a + m_b) * (m_a + m_b)) *

@@ -50,7 +50,7 @@ public:
 
     using AmplitudeComponent::amplitude;
 
-    /// Calculate MassShape ampltude from squared mass
+    /// Calculate MassShape amplitude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
     virtual Amp amplitude(double s) = 0;
