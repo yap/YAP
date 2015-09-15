@@ -41,8 +41,6 @@ class DataAccessor
 {
 public:
 
-    /// \todo Make a function to reserve space in the DataPoint?
-
     /// \name Constructors, destructor, & operators
     /// @{
 
@@ -137,7 +135,6 @@ protected:
     std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;
 
 private:
-
 
     /// storage index used in DataPoint. Must be unique.
     unsigned Index_;

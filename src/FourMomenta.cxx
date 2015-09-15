@@ -86,7 +86,6 @@ void FourMomenta::calculate(DataPoint& d)
         double m = sqrt(m2);
 
         std::vector<double>& D = data(d, kv.second);
-        //D.resize(2); // \todo make once in beginning?
         D = {m2, m};
         CalculationStatuses_.at(kv.second) = kCalculated;
     }

@@ -70,6 +70,7 @@ public:
 
     friend bool DataSet::consistent(const DataPoint&) const;
 
+    /// reserve space in vectors
     void allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
 
     /// @}
