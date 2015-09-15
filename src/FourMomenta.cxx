@@ -64,34 +64,31 @@ bool FourMomenta::consistent() const
 //-------------------------
 void FourMomenta::calculate(DataPoint& d)
 {
-    // reserve space for four momenta
-    d.FourMomenta_.resize(CalculationStatuses_.size());
-
     CalculationStatuses_.assign(CalculationStatuses_.size(), kUncalculated);
 
     for (auto& kv : SymmetrizationIndices_) {
 
         // check if calculation necessary
-        if (CalculationStatuses_[kv.second] == kCalculated)
+        if (CalculationStatuses_.at(kv.second) == kCalculated)
             continue;
 
         // if final state particle, 4-momentum already set; else
         if (!kv.first->isFinalStateParticle()) {
             // reset 4-momentum
-            d.FourMomenta_[kv.second].SetXYZT(0, 0, 0, 0);
+            d.FourMomenta_.at(kv.second).SetXYZT(0, 0, 0, 0);
 
             // add in final-state particle momenta
-            for (unsigned i = 0 : kv.first->indices())
-                d.FourMomenta_[kv.second] += d.FourMomenta_[i];
+            for (unsigned i : kv.first->indices())
+                d.FourMomenta_.at(kv.second) += d.FourMomenta_.at(i);
         }
 
-        double m2 = d.FourMomenta_[kv.second].M2();
+        double m2 = d.FourMomenta_.at(kv.second).M2();
         double m = sqrt(m2);
 
         std::vector<double>& D = data(d, kv.second);
         //D.resize(2); // \todo make once in beginning?
         D = {m2, m};
-        CalculationStatuses_[kv.second] = kCalculated;
+        CalculationStatuses_.at(kv.second) = kCalculated;
     }
 }
 
