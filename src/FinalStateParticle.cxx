@@ -10,10 +10,8 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std
     : Particle(q, mass, name),
       PDGCode_(pdg)
 {
-    for (ParticleIndex i : indices) {
+    for (ParticleIndex i : indices)
         addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));
-        //addSymmetrizationIndex(std::make_shared<ParticleCombination>(ParticleCombination(i)));
-    }
 }
 
 //-------------------------

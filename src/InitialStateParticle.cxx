@@ -144,9 +144,8 @@ void InitialStateParticle::printDataAccessors()
 void InitialStateParticle::setDataAcessorIndices()
 {
     unsigned i(0);
-    for (DataAccessor* d : DataAccessors_) {
+    for (DataAccessor* d : DataAccessors_)
         d->setIndex(i++);
-    }
 }
 
 

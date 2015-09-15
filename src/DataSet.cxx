@@ -9,10 +9,7 @@ namespace yap {
 //-------------------------
 bool DataSet::addDataPoint(DataPoint&& d)
 {
-    // is now done in InitialStateParticle
-    /*fourMomenta.calculate(d);
-    if (!consistent(d))
-        return false;*/
+    // consistency check is done in InitialStateParticle
     DataPoints_.push_back(d);
     return true;
 }

@@ -55,7 +55,6 @@ std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj)
     else
         os << "JP = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-");
 
-    //os << "\n";
     return os;
 }
 
