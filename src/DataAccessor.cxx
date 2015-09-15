@@ -26,7 +26,6 @@ DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv
 DataAccessor::DataAccessor(const DataAccessor& other) :
     InitialStateParticle_(other.InitialStateParticle_),
     Equiv_(other.Equiv_),
-    CalculationStatuses_(other.CalculationStatuses_),
     SymmetrizationIndices_(other.SymmetrizationIndices_),
     Index_(0)
 {
@@ -73,15 +72,6 @@ bool DataAccessor::consistent() const
 
     bool result = true;
 
-    // find number of indices:
-    unsigned n_indices = maxSymmetrizationIndex();
-    // check that CalculationStatuses_ has right number of entries
-    if (CalculationStatuses_.size() != n_indices + 1) {
-        LOG(ERROR) << "DataAccessor::consistent() - CalculationStatuses_ has wrong number of entries ("
-                   << CalculationStatuses_.size() << " != " << n_indices + 1 << ")";
-        result = false;
-    }
-
     for (auto& kv : SymmetrizationIndices_)
         result &= kv.first->consistent();
 
@@ -104,31 +94,45 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
         }
 
     // else assign to current size = highest current index + 1
-    SymmetrizationIndices_[c] = CalculationStatuses_.size();
-    // and add entry to
-    CalculationStatuses_.push_back(kUncalculated);
+    SymmetrizationIndices_[c] = maxSymmetrizationIndex() + 1;
 }
 
 //-------------------------
 void DataAccessor::clearSymmetrizationIndices()
 {
     SymmetrizationIndices_.clear();
-    CalculationStatuses_.clear();
 }
 
 //-------------------------
 std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
     return d.Data_.at(index()).at(i);
-    //return d.Data_[index()][i];
 }
 
 //-------------------------
 const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
 {
     return d.Data_.at(index()).at(i);
-    //return d.Data_[index()][i];
 }
+
+//-------------------------
+CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
+{
+    return d.CalculationStatuses_.at(index()).at(i);
+}
+
+//-------------------------
+CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const
+{
+    return d.CalculationStatuses_.at(index()).at(i);
+}
+
+//-------------------------
+InitialStateParticle* DataAccessor::initialStateParticle() const
+{
+    return InitialStateParticle_;
+}
+
 
 }
 

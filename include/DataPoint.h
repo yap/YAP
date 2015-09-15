@@ -33,7 +33,6 @@
 
 namespace yap {
 
-class DataAccessor;
 class ParticleCombination;
 
 /// \class DataPoint
@@ -68,6 +67,9 @@ public:
     friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
     friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
 
+    friend CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i);
+    friend CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const;
+
     friend bool DataSet::consistent(const DataPoint&) const;
 
     /// reserve space in vectors
@@ -91,6 +93,11 @@ protected:
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor
     std::vector<std::vector<std::vector<double> > > Data_;
+
+    /// vector of calculation statuses
+    /// first index is for the DataAccessor
+    /// second index is for the symmeterization state (as known by the DataAccessor)
+    std::vector<std::vector<CalculationStatus> > CalculationStatuses_;
 
 
 };

@@ -54,6 +54,9 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
+    /// \return breakup momentum
+    double breakupMomentum() const;
+
     /// cast into string
     operator std::string() const;
 

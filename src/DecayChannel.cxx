@@ -71,6 +71,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 //-------------------------
 Amp DecayChannel::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
+    /// \todo implement
     return Amp(1);
 }
 
@@ -162,6 +163,27 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
 
     return result;
+}
+
+//-------------------------
+double DecayChannel::breakupMomentum() const
+{
+    if (Daughters_.size() != 2) {
+        LOG(ERROR) << "DecayChannel::breakupMomentum() - channel has != 2 daughters. Cannot calculate!";
+        return 0;
+    }
+
+    /// \todo take masses from mass shape instead?
+    double m2_R =  pow(Parent_->mass(), 2);
+    double m_a = Daughters_[0]->mass();
+    double m_b = Daughters_[1]->mass();
+
+    if (m_a == m_b) {
+      return m2_R / 4.0 - m_a * m_a;
+    }
+
+    return (m2_R - (m_a + m_b) * (m_a + m_b)) *
+           (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0;
 }
 
 //-------------------------

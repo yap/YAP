@@ -43,4 +43,5 @@ void Resonance::addChannel(DecayChannel* c)
         MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
 }
 
+
 }

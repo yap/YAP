@@ -64,12 +64,12 @@ bool FourMomenta::consistent() const
 //-------------------------
 void FourMomenta::calculate(DataPoint& d)
 {
-    CalculationStatuses_.assign(CalculationStatuses_.size(), kUncalculated);
+    std::vector<CalculationStatus> calculationStatuses(SymmetrizationIndices_.size(), kUncalculated);
 
     for (auto& kv : SymmetrizationIndices_) {
 
         // check if calculation necessary
-        if (CalculationStatuses_.at(kv.second) == kCalculated)
+        if (calculationStatuses.at(kv.second) == kCalculated)
             continue;
 
         // if final state particle, 4-momentum already set; else
@@ -87,7 +87,7 @@ void FourMomenta::calculate(DataPoint& d)
 
         std::vector<double>& D = data(d, kv.second);
         D = {m2, m};
-        CalculationStatuses_.at(kv.second) = kCalculated;
+        calculationStatuses.at(kv.second) = kCalculated;
     }
 }
 

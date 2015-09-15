@@ -76,14 +76,6 @@ public:
     /// \return list of all ParticleCombinations
     std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const;
 
-    /// \return calculation statuses
-    std::vector<CalculationStatus>& CalculationStatuses()
-    { return CalculationStatuses_; }
-
-    /// \return calculation statuses (const)
-    const std::vector<CalculationStatus>& CalculationStatuses() const
-    { return CalculationStatuses_; }
-
     /// @}
 
     /// Check consistency of object
@@ -109,9 +101,14 @@ public:
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const;
 
+    /// \return calculation statuses
+    CalculationStatus& CalculationStatuses(DataPoint& d, unsigned i);
+
+    /// \return calculation statuses (const)
+    CalculationStatus CalculationStatuses(DataPoint& d, unsigned i) const;
+
     /// Get pointer to the initial state particle
-    InitialStateParticle* initialStateParticle() const
-    { return InitialStateParticle_; }
+    InitialStateParticle* initialStateParticle() const;
 
     /// @}
 
@@ -127,9 +124,6 @@ protected:
 
     /// Object to check equality of symmetrizations for determining storage indices
     ParticleCombination::Equiv* Equiv_;
-
-    /// vector of calculation statuses for each index in the data (as needed by #SymmetrizationIndices_
-    std::vector<CalculationStatus> CalculationStatuses_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;

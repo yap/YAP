@@ -22,7 +22,8 @@ Amp BreitWigner::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc
     unsigned sym_index = SymmetrizationIndices_[pc];
 
     // check whether data-dependent calculation needs to be made
-    if (CalculationStatuses_[sym_index] == kUncalculated) {
+    CalculationStatus& calcStat = CalculationStatuses(d, sym_index);
+    if (calcStat == kUncalculated) {
 
         // check whether data-independent calculation needs to be made
         if (CalcStatus_ == kUncalculated) {
@@ -37,7 +38,7 @@ Amp BreitWigner::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc
         data(d, sym_index) = {real(a), imag(a)};
 
         // set calculation status
-        CalculationStatuses_[sym_index] = kCalculated;
+        calcStat = kCalculated;
 
         return a;
     }
