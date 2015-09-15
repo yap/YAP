@@ -103,13 +103,19 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
     d.allocateStorage(FourMomenta_, HelicityAngles_, DataAccessors_);
 
     FourMomenta_.calculate(d);
+    HelicityAngles_.calculate(d);
 
     /*for (auto& pc : FourMomenta_.particleCombinations()) {
       std::cout << FourMomenta_.symmetrizationIndex(pc) << "  \t" << std::string(*pc) << "  \t";
       FourMomenta_.p(d, FourMomenta_.symmetrizationIndex(pc)).Print();
-    }*/
+    }
 
-    HelicityAngles_.calculate(d);
+    for (auto& pc : HelicityAngles_.particleCombinations()) {
+      std::cout << HelicityAngles_.symmetrizationIndex(pc) << "  \t" << std::string(*pc) << "  \t";
+      for (double a : HelicityAngles_.helicityAngles(d, HelicityAngles_.symmetrizationIndex(pc)))
+          std::cout << a << "  \t";
+      std::cout << "\n";
+    }*/
 
     if (!DataSet_.consistent(d))
         return false;
@@ -128,8 +134,8 @@ void InitialStateParticle::printDataAccessors()
 {
     std::cout << "DataAccessors of " << name() << " with indices and number of symIndices\n";
     for (DataAccessor* d : DataAccessors_) {
-      std::cout << "  " << d << ": " << d->index() << "  \t" << d->maxSymmetrizationIndex()+1
-          << "  \t(" << typeid(*d).name() << ")\n";
+        std::cout << "  " << d << ": " << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1
+                  << "  \t(" << typeid(*d).name() << ")\n";
     }
     std::cout << std::endl;
 }
@@ -137,10 +143,10 @@ void InitialStateParticle::printDataAccessors()
 //-------------------------
 void InitialStateParticle::setDataAcessorIndices()
 {
-  unsigned i(0);
-  for (DataAccessor* d : DataAccessors_) {
-      d->setIndex(i++);
-  }
+    unsigned i(0);
+    for (DataAccessor* d : DataAccessors_) {
+        d->setIndex(i++);
+    }
 }
 
 

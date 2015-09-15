@@ -47,8 +47,8 @@ unsigned DataAccessor::maxSymmetrizationIndex() const
     //return std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
     unsigned max(0);
     for (auto& kv : SymmetrizationIndices_)
-      if (kv.second > max)
-        max = kv.second;
+        if (kv.second > max)
+            max = kv.second;
 
     return max;
 }

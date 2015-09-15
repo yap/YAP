@@ -42,14 +42,25 @@ public:
     /// Calculate helicity angles for all possible symmetrization indices
     void calculate(DataPoint& d);
 
-private:
+    /// Access helicity angles (const)
+    /// \param d DataPoint to get data from
+    /// \param i Symmetrization index to access
+    const std::vector<double>& helicityAngles(const DataPoint& d, unsigned i) const;
+
+    /// Access helicity angles (const)
+    /// \param d DataPoint to get data from
+    /// \param pc ParticleCombination to return helicity angles of
+    const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    { return helicityAngles(d, SymmetrizationIndices_[pc]); }
+
+//protected:
 
     /// Caclulate Lorentz-transformation for helicity frame
     TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
 
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
-    void transformDaughters(std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    void transformDaughters(DataPoint& d, std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
 
 };
 

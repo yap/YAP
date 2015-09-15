@@ -62,6 +62,9 @@ public:
     friend void FourMomenta::calculate(DataPoint&);
     friend const TLorentzVector& FourMomenta::p(const DataPoint&, unsigned) const;
 
+    friend void HelicityAngles::transformDaughters(DataPoint& d, std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    friend const std::vector<double>& HelicityAngles::helicityAngles(const DataPoint& d, unsigned i) const;
+
     friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
     friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
 

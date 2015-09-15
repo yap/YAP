@@ -53,7 +53,7 @@ public:
     /// Fill 4-momenta
     void calculate(DataPoint& d);
 
-    /// Access 4-momentum
+    /// Access 4-momentum (const)
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access
     const TLorentzVector& p(const DataPoint& d, unsigned i) const;

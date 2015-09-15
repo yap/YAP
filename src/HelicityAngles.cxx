@@ -19,11 +19,8 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 //-------------------------
 void HelicityAngles::calculate(DataPoint& d)
 {
-/// \todo Use kinematics::fourMomenta
-
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)
         LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
-
 
     // final state 4-momenta
     std::vector<TLorentzVector> finalStatesLab;
@@ -41,9 +38,15 @@ void HelicityAngles::calculate(DataPoint& d)
         lv.Transform(boost);
 
     for (std::shared_ptr<ParticleCombination>& pc : initialStateParticle()->particleCombinations()) {
-        transformDaughters(pc, finalStatesHf);
+        transformDaughters(d, pc, finalStatesHf);
     }
 
+}
+
+//-------------------------
+const std::vector<double>& HelicityAngles::helicityAngles(const DataPoint& d, unsigned i) const
+{
+    return d.HelicityAngles_.at(i);
 }
 
 //-------------------------
@@ -70,7 +73,8 @@ TLorentzRotation HelicityAngles::hfTransform(const TLorentzVector& daughterLv)
 }
 
 //-------------------------
-void HelicityAngles::transformDaughters(std::shared_ptr<ParticleCombination> pc,
+void HelicityAngles::transformDaughters(DataPoint& d,
+                                        std::shared_ptr<ParticleCombination> pc,
                                         std::vector<TLorentzVector> finalStatesHf)
 {
     // loop over daughters
@@ -79,20 +83,6 @@ void HelicityAngles::transformDaughters(std::shared_ptr<ParticleCombination> pc,
         if (daugh->daughters().empty())
             continue;
 
-        // testing ...
-        /*std::cout << std::string(*daugh) << "\n";
-        // find matching decay channels
-        for (unsigned i = 0; i < initialStateParticle()->nChannels(); ++i) {
-            std::shared_ptr<yap::SpinAmplitude> sa = initialStateParticle()->channel(i)->spinAmplitude();
-            for (std::shared_ptr<ParticleCombination> pcSa : sa->particleCombinations()) {
-                if (pcSa == daugh) {
-                    std::cout << " matches " << sa << std::string(*sa) << ", " << std::string(*pcSa) << "; ";
-                }
-            }
-        }
-        std::cout << "\n";*/
-
-
         // construct 4-vector of daughter
         TLorentzVector daughter;
         for (ParticleIndex i : daugh->indices())
@@ -100,14 +90,16 @@ void HelicityAngles::transformDaughters(std::shared_ptr<ParticleCombination> pc,
 
         double phi = daughter.Phi();
         double theta = daughter.Theta();
-        LOG(DEBUG) << std::string(*daugh) << " helicity angles (phi, theta) = (" << phi << ", " << theta << ")\n";
+        d.HelicityAngles_.at(symmetrizationIndex(daugh)) = {phi, theta};
+
+        //LOG(DEBUG) << std::string(*daugh) << " helicity angles (phi, theta) = (" << phi << ", " << theta << ")\n";
 
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);
         for (ParticleIndex i : daugh->indices())
             finalStatesHf.at(i).Transform(transDaugh);
 
-        transformDaughters(daugh, finalStatesHf);
+        transformDaughters(d, daugh, finalStatesHf);
     }
 }
 
