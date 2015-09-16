@@ -19,8 +19,7 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
-    AmplitudeComponent(),
-    DataAccessor(spinAmplitude->initialStateParticle()),
+    AmplitudeComponentDataAccessor(spinAmplitude->initialStateParticle()),
     Daughters_(daughters),
     BlattWeisskopf_(this),
     SpinAmplitude_(spinAmplitude),
@@ -69,7 +68,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-Amp DecayChannel::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     /// \todo implement
     return Amp(1);
@@ -80,9 +79,9 @@ bool DecayChannel::consistent() const
 {
     bool result = true;
 
-    result &= DataAccessor::consistent();
+    result &= AmplitudeComponentDataAccessor::consistent();
     if (!result) {
-        LOG(ERROR) << "Channel's DataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
+        LOG(ERROR) << "Channel's AmplitudeComponentDataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
     }
 
     // check number of daughters greater than 1
@@ -210,7 +209,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
             fsps.push_back(std::static_pointer_cast<FinalStateParticle>(d));
 
         } else if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-            std::vector<std::shared_ptr<FinalStateParticle> > ddaughters = std::static_pointer_cast<DecayingParticle>(d)->finalStateParticles();
+            std::vector<std::shared_ptr<FinalStateParticle> > ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles();
             fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
 
         } else {
@@ -248,7 +247,7 @@ void DecayChannel::setSymmetrizationIndexParents()
     std::vector<std::shared_ptr<ParticleCombination> > chPCsParents = particleCombinations();
     auto it = chPCsParents.begin();
     while (it != chPCsParents.end()) {
-        if ((*it)->parent() == nullptr) {
+        if (not (*it)->parent()) {
             it = chPCsParents.erase(it);
         } else
             ++it;
@@ -256,7 +255,12 @@ void DecayChannel::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     for (auto& pc : chPCsParents) {
-        //std::cout << "  add " << std::string(*pc) << " to channel " << std::string(*this) << "\n";
+        /*std::cout << "  add " << std::string(*pc);
+        if  (pc->parent()){
+          std::cout << " from decay " << std::string(*pc->parent());
+        }
+        std::cout  << " to channel " << std::string(*this) << "\n";*/
+
         addSymmetrizationIndex(pc);
     }
 

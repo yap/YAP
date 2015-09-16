@@ -12,13 +12,14 @@ namespace yap {
 
 //-------------------------
 DecayingParticle::DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+    AmplitudeComponent(),
     Particle(q, mass, name),
-    DataAccessor(isp),
+    AmplitudeComponentDataAccessor(isp),
     RadialSize_(radialSize)
 {}
 
 //-------------------------
-Amp DecayingParticle::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
     return Amp(1);
@@ -224,7 +225,7 @@ void DecayingParticle::setSymmetrizationIndexParents()
     std::vector<std::shared_ptr<ParticleCombination> > PCsParents = particleCombinations();
     auto it = PCsParents.begin();
     while (it != PCsParents.end()) {
-        if ((*it)->parent() == nullptr) {
+        if (!(*it)->parent()) {
             it = PCsParents.erase(it);
         } else
             ++it;
@@ -233,6 +234,16 @@ void DecayingParticle::setSymmetrizationIndexParents()
 
     for (auto& pc : PCsParents)
         addSymmetrizationIndex(pc);
+
+
+    /*std::cout << "  Particle combinations in DecayingParticle " <<  name() << "\n";
+    for (auto& chPC : particleCombinations()) {
+      std::cout << "    " << std::string(*chPC);
+      if (chPC->parent())
+        std::cout << " from decay " << std::string(*chPC->parent());
+      std::cout << "\n";
+    }*/
+
 
     // next level
     for (auto& ch : channels())

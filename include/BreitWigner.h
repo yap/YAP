@@ -89,16 +89,11 @@ public:
     /// \name Amplitude related
     /// @{
 
-    /// Calculate MassShape amplitude from DataPoint
-    /// \return amplitude evaluated on DataPoint
-    /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
-
     /// Calculate MassShape ampltude from squared mass;
     /// A = 1 / [Mass^2 - s - i * Mass * Width]
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp amplitude(double s);
+    virtual Amp calcAmplitudeS(double s);
 
     /// @}
 

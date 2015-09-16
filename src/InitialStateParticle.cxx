@@ -30,15 +30,15 @@ double InitialStateParticle::logLikelihood()
     // test amplitude calculation
     for (DataPoint& dataPoint : DataSet_.dataPoints()) {
 
-      for (DataAccessor* component : DataAccessors_) {
-        // skip initialStateParticle and FourMomenta
-        if (component->index() < 2)
-          continue;
+        for (DataAccessor* component : DataAccessors_) {
+            // skip initialStateParticle and FourMomenta
+            if (component->index() < 2)
+                continue;
 
-        if (dynamic_cast<AmplitudeComponent*>(component))
-          for (auto& pc : component->particleCombinations())
-            dynamic_cast<AmplitudeComponent*>(component)->amplitude(dataPoint, pc);
-      }
+            if (dynamic_cast<AmplitudeComponent*>(component))
+                for (auto& pc : component->particleCombinations())
+                    dynamic_cast<AmplitudeComponent*>(component)->amplitude(dataPoint, pc);
+        }
 
     }
 
@@ -60,6 +60,19 @@ bool InitialStateParticle::prepare()
     }
 
     ParticleCombination::makeParticleCombinationSetWithParents();
+
+    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        if (not pc->consistent()) {
+            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationSet is not consistent.";
+            return false;
+        }
+        if (pc->indices().size() < particleCombinations()[0]->indices().size() and not pc->parent()) {
+            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombination is not consistent.";
+            return false;
+        }
+    }
+
+    //ParticleCombination::printParticleCombinationSet();
 
     setSymmetrizationIndexParents();
     optimizeSpinAmplitudeSharing();
@@ -88,7 +101,7 @@ bool InitialStateParticle::prepare()
     setDataAcessorIndices();
 
     if (!consistent()) {
-        LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent.";
+        LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent anymore.";
         return false;
     }
 

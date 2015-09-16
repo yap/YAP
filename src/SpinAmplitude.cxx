@@ -6,7 +6,7 @@ namespace yap {
 
 //-------------------------
 SpinAmplitude::SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2)
-    : DataAccessor(isp),
+    : AmplitudeComponentDataAccessor(isp),
       InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}})
 {

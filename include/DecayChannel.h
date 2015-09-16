@@ -19,9 +19,8 @@
 #ifndef yap_DecayChannel_h
 #define yap_DecayChannel_h
 
-#include "AmplitudeComponent.h"
+#include "AmplitudeComponentDataAccessor.h"
 #include "BlattWeisskopf.h"
-#include "DataAccessor.h"
 
 #include <memory>
 #include <string>
@@ -39,7 +38,7 @@ class SpinAmplitude;
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DecayChannel : public AmplitudeComponent, public DataAccessor
+class DecayChannel : public AmplitudeComponentDataAccessor
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
@@ -49,7 +48,7 @@ public:
     DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// \return Amplitude for decay channel
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// check consistency of object
     virtual bool consistent() const override;

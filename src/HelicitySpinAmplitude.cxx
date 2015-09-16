@@ -17,7 +17,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const Qu
 }
 
 //-------------------------
-Amp HelicitySpinAmplitude::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
     return Complex_0;

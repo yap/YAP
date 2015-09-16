@@ -22,8 +22,8 @@
 #define yap_MassShape_h
 
 #include "Amp.h"
-#include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "AmplitudeComponentDataAccessor.h"
+#include "InitialStateParticle.h"
 #include "ParameterSet.h"
 
 #include <memory>
@@ -38,7 +38,7 @@ class ParticleCombination;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
 
-class MassShape : public AmplitudeComponent, public DataAccessor, public ParameterSet
+class MassShape : public AmplitudeComponentDataAccessor, public ParameterSet
 {
 public:
 
@@ -48,12 +48,16 @@ public:
     /// \name Amplitude related
     /// @{
 
-    using AmplitudeComponent::amplitude;
-
     /// Calculate MassShape amplitude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp amplitude(double s) = 0;
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
+    { return calcAmplitudeS(initialStateParticle()->fourMomenta().m2(d, pc)); }
+
+    /// Calculate MassShape ampltude from squared mass
+    /// \return amplitude evaluated at squared mass
+    /// \param s squared mass to evaluate at
+    virtual Amp calcAmplitudeS(double s) = 0;
 
     /// @}
 
@@ -62,7 +66,7 @@ public:
 
     /// Check consistency of object
     virtual bool consistent() const override
-    { return DataAccessor::consistent() and ParameterSet::consistent(); }
+    { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
 
     /// @}
 

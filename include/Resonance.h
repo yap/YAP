@@ -46,7 +46,7 @@ public:
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
 
     /// \return amplitude for resonance evaluated at DataPoint
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -59,6 +59,13 @@ public:
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
     void addChannel(DecayChannel* c) override;
+
+    /// add symmetrizationIndex to SymmetrizationIndices_,
+    /// also add to MassShape_
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
+
+    /// clear SymmetrizationIndices_
+    virtual void clearSymmetrizationIndices() override;
 
 private:
 

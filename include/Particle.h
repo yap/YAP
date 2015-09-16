@@ -34,15 +34,12 @@ class ParticleCombination;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
 
-class Particle : public AmplitudeComponent
+class Particle : public virtual AmplitudeComponent
 {
 public:
 
     /// Constructor
     Particle(const QuantumNumbers& q, double mass, std::string name);
-
-    /// \return Amplitude for particle (and subsequent possible decay)
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
 
     /// Check consitency of object
     virtual bool consistent() const override;

@@ -22,8 +22,7 @@
 #define yap_SpinAmplitude_h
 
 #include "Amp.h"
-#include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "AmplitudeComponentDataAccessor.h"
 #include "logging.h"
 #include "ParticleCombination.h"
 #include "QuantumNumbers.h"
@@ -38,7 +37,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup SpinAmplitude Spin Amplitudes
 
-class SpinAmplitude : public AmplitudeComponent, public DataAccessor
+class SpinAmplitude : public AmplitudeComponentDataAccessor
 {
 public:
 
@@ -47,7 +46,7 @@ public:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
 
     /// Check consistency of object
     virtual bool consistent() const override;

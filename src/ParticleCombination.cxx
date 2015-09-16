@@ -98,9 +98,10 @@ bool ParticleCombination::consistent() const
         }
     }
     if (!found) {
-        LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this);
         if (parent())
-            std::cout << "from decay " << std::string(*parent());
+            LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this) << " from decay " << std::string(*parent());
+        else
+            LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this) << " (no parent)";
         result = false;
     }
 

@@ -13,7 +13,7 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-Amp Resonance::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp Resonance::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
     return Amp(0.);
@@ -41,6 +41,20 @@ void Resonance::addChannel(DecayChannel* c)
 
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations())
         MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+}
+
+//-------------------------
+void Resonance::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+{
+    DecayingParticle::addSymmetrizationIndex(c);
+    MassShape_->addSymmetrizationIndex(c);
+}
+
+//-------------------------
+void Resonance::clearSymmetrizationIndices()
+{
+    DecayingParticle::clearSymmetrizationIndices();
+    MassShape_->clearSymmetrizationIndices();
 }
 
 
