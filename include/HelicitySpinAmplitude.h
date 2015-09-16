@@ -40,10 +40,6 @@ public:
     /// Constructor
     HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
-    /// \return Complex spin amplitude evaluated at data point
-    /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -68,6 +64,12 @@ public:
 
     /// Print Clebsch-Gordan coefficients
     void printClebschGordanCoefficients() const;
+
+protected:
+
+    /// \return Complex spin amplitude evaluated at data point
+    /// \param d DataPoint to evaluate on
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 

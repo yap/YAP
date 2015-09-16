@@ -45,10 +45,6 @@ public:
     /// Constructor
     DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
-    /// \return Ampltiude for particle
-    /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -114,6 +110,12 @@ public:
 
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
+
+protected:
+
+    /// \return Ampltiude for particle
+    /// \param d DataPoint to evaluate on
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 

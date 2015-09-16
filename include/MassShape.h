@@ -45,6 +45,17 @@ public:
     /// Constructor
     MassShape(InitialStateParticle* isp);
 
+    /// \name Bookkeeping related
+    /// @{
+
+    /// Check consistency of object
+    virtual bool consistent() const override
+    { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
+
+    /// @}
+
+protected:
+
     /// \name Amplitude related
     /// @{
 
@@ -58,15 +69,6 @@ public:
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
     virtual Amp calcAmplitudeS(double s) = 0;
-
-    /// @}
-
-    /// \name Bookkeeping related
-    /// @{
-
-    /// Check consistency of object
-    virtual bool consistent() const override
-    { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
 
     /// @}
 

@@ -57,14 +57,16 @@ public:
     /// @}
 
     /// Handle complex amplitude caching
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc);
-
-    /// Calculate complex amplitude
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) = 0;
+    Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc);
 
     /// Check if AmplitudeComponentDataAccessor is consistent
     virtual bool consistent() const
     { return DataAccessor::consistent(); }
+
+protected :
+
+    /// Calculate complex amplitude
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) = 0;
 
 };
 

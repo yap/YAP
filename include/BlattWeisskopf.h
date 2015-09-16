@@ -42,14 +42,16 @@ public:
     /// Constructor
     BlattWeisskopf(DecayChannel* decayChannel);
 
-    /// Blatt-Weisskopf amplitude at DataPoint
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
-
     /// check consistency of object
     virtual bool consistent() const override;
 
     /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
+
+protected:
+
+    /// Blatt-Weisskopf amplitude at DataPoint
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 

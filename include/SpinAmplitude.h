@@ -44,10 +44,6 @@ public:
     /// Constructor
     SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
 
-    /// \return Complex spin amplitude evaluated at data point
-    /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -72,6 +68,10 @@ public:
     { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
 
 protected:
+
+    /// \return Complex spin amplitude evaluated at data point
+    /// \param d DataPoint to evaluate on
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
 
     /// Check if SpinAmplitudes are equal
     virtual bool equals(const SpinAmplitude& rhs) const;
