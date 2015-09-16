@@ -70,7 +70,7 @@ public:
     unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
     { return SymmetrizationIndices_.at(c); }
 
-    /// \return ,maximum index of SymmetrizationIndices_
+    /// \return maximum index of SymmetrizationIndices_
     unsigned maxSymmetrizationIndex() const;
 
     /// \return list of all ParticleCombinations

@@ -46,6 +46,9 @@ public:
     /// \return Success of action
     bool addDataPoint(const DataPoint& d);
 
+    std::vector<DataPoint>& dataPoints()
+    { return DataPoints_; }
+
     /// Check if data point is consisent with data set
     bool consistent(const DataPoint& d) const;
 

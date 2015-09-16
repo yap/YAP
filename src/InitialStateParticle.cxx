@@ -1,5 +1,6 @@
 #include "InitialStateParticle.h"
 
+#include "Constants.h"
 #include "DataSet.h"
 #include "logging.h"
 
@@ -16,7 +17,32 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     HelicityAngles_(this)
 {
     addDataAccessor(this);
+
+    // helicity angles do not store in Data_, so they don't need an index
     removeDataAccessor(&HelicityAngles_);
+}
+
+//-------------------------
+double InitialStateParticle::logLikelihood()
+{
+    /// \todo implement
+
+    // test amplitude calculation
+    for (DataPoint& dataPoint : DataSet_.dataPoints()) {
+
+      for (DataAccessor* component : DataAccessors_) {
+        // skip initialStateParticle and FourMomenta
+        if (component->index() < 2)
+          continue;
+
+        if (dynamic_cast<AmplitudeComponent*>(component))
+          for (auto& pc : component->particleCombinations())
+            dynamic_cast<AmplitudeComponent*>(component)->amplitude(dataPoint, pc);
+      }
+
+    }
+
+    return 0;
 }
 
 //-------------------------

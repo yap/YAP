@@ -44,7 +44,7 @@ public:
     ~InitialStateParticle()
     { DataAccessors_.clear(); }
 
-    //virtual Amp amplitude(DataPoint& d) override;
+    double logLikelihood();
 
     /// Check consistency of object
     virtual bool consistent() const override;

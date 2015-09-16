@@ -121,6 +121,8 @@ int main( int argc, char** argv)
 
     D->addDataPoint(yap::DataPoint(momenta));
 
+    D->logLikelihood();
+
 
 
 

@@ -41,7 +41,6 @@ Amp BlattWeisskopf::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination>
         /**
          * The following code was copied from rootPWA
          */
-
         const double z   = (breakupMom * breakupMom) / (Pr * Pr);
         double       bf2 = 0;
         switch (twoL) {
