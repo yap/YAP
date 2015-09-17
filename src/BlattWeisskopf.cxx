@@ -3,8 +3,8 @@
 #include "Constants.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
-#include "HelicitySpinAmplitude.h"
 #include "logging.h"
+#include "SpinAmplitude.h"
 #include "SpinUtilities.h"
 
 namespace yap {
@@ -19,12 +19,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 Amp BlattWeisskopf::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     double breakupMom = DecayChannel_->breakupMomentum();
-    if (not std::dynamic_pointer_cast<HelicitySpinAmplitude>(DecayChannel_->spinAmplitude())) {
-        LOG(ERROR) << "Blatt-Weisskopf barrier factor can only be calculated with a  HelicitySpinAmplitude.";
-        return Complex_0;
-    }
-
-    unsigned twoL = std::static_pointer_cast<HelicitySpinAmplitude>(DecayChannel_->spinAmplitude())->twoL();
+    unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
 
     /// \todo confirm
     // const double Pr    = 0.1973)  // momentum scale 0.1973 GeV/c corresponds to 1 fm interaction radius

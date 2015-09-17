@@ -1,6 +1,5 @@
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
-#include "HelicitySpinAmplitude.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
@@ -29,6 +28,7 @@ int main( int argc, char** argv)
     /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory("evt.pdl");
 
+
     // initial state particle
     double radialSize = 1.;
     std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
@@ -36,6 +36,7 @@ int main( int argc, char** argv)
     // final state particles
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
     std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211, {1, 3});
+
 
     // rho rho
     std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
