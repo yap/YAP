@@ -21,10 +21,10 @@ Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleC
 {
     // \todo implement
 
-  // needs helicity of parent!!!!
-  // DecayChannel needs to sum over daughter helicities
+    // needs helicity of parent!!!!
+    // DecayChannel needs to sum over daughter helicities
 
-  // make multiple channels, each with definite helicities?
+    // make multiple channels, each with definite helicities?
 
     return Complex_0;
 }
