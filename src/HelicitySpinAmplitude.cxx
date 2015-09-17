@@ -9,11 +9,12 @@
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL)
-    : SpinAmplitude(isp, initial, final1, final2),
-      TwoL_(twoL)
+HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+        const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL,
+        std::pair<std::array<int, 2>, double> clebschGordanCoefficient) :
+    SpinAmplitude(isp, initial, final1, final2, twoL),
+    ClebschGordanCoefficient_(clebschGordanCoefficient)
 {
-    calculateClebschGordanCoefficients();
 }
 
 //-------------------------
@@ -34,33 +35,8 @@ bool HelicitySpinAmplitude::consistent() const
 {
     bool consistent = SpinAmplitude::consistent();
 
-    // check angular momentum conservation laws
-    int twoJ_P = InitialQuantumNumbers_.twoJ();
-    int twoJ_A = FinalQuantumNumbers_[0].twoJ();
-    int twoJ_B = FinalQuantumNumbers_[1].twoJ();
-
-    // check if
-    // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
-    bool ok = false;
-    for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
-        for (int rhs = abs(TwoL_ - twoL_AB); rhs <= abs(TwoL_ + twoL_AB); rhs += 2) {
-            if (twoJ_P == rhs) {
-                ok = true;
-                break;
-            }
-            if (ok)
-                break;
-        }
-    }
-
-    if (!ok) {
-        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - angular momentum conservation violated. " <<
-                   "J(parent) = " << spinToString(twoJ_P) << "; J(daughter1) = " << spinToString(twoJ_A) << "; J(daughter2) = " << spinToString(twoJ_B) << "; l = " << spinToString(TwoL_);
-        consistent =  false;
-    }
-
-    if (ClebschGordanCoefficients_.empty()) {
-        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficients_ are empty. They are probably all 0 and you can remove this channel.";
+    if (ClebschGordanCoefficient_.second == 0) {
+        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficient is 0.";
         consistent =  false;
     }
 
@@ -72,41 +48,26 @@ HelicitySpinAmplitude::operator std::string() const
 {
     std::string result = "(l=" + spinToString(TwoL_);
 
-    if (not ClebschGordanCoefficients_.empty()) {
-        result += "; λ=";
-        auto& last = *(--ClebschGordanCoefficients_.end());
-        for (auto& kv : ClebschGordanCoefficients_) {
-            result += spinToString(kv.first[0]) + "," + spinToString(kv.first[1]);
-            if (&kv != &last)
-                result += "; ";
-        }
-    }
-
-    result += ")";
+    result += "; λ=";
+    result += spinToString(ClebschGordanCoefficient_.first[0]) + ",";
+    result += spinToString(ClebschGordanCoefficient_.first[1]) + ")";
 
     return result;
 }
 
 //-------------------------
-void HelicitySpinAmplitude::printClebschGordanCoefficients() const
+std::map<std::array<int, 2>, double> HelicitySpinAmplitude::calculateClebschGordanCoefficients(
+    const QuantumNumbers& initial,
+    const QuantumNumbers& final1, const QuantumNumbers& final2,
+    unsigned char twoL)
 {
-    std::cout << "Clebsch-Gordan coefficients for decay: (" << InitialQuantumNumbers_ << ") -> ("
-              << FinalQuantumNumbers_[0] << ") + ("
-              << FinalQuantumNumbers_[1] << "), " << std::string(*this) << "\n";
-    for (auto& kv : ClebschGordanCoefficients_) {
-        std::cout << "  λ_1, λ_2 = (" << spinToString(kv.first[0]) << "," << spinToString(kv.first[1])
-                  << "): \t" << kv.second << "\n";
-    }
-}
+    std::map<std::array<int, 2>, double> coeffs;
 
-//-------------------------
-void HelicitySpinAmplitude::calculateClebschGordanCoefficients()
-{
     /// code is copied in parts from rootpwa
 
-    const int J  = InitialQuantumNumbers_.twoJ();
-    const int s1 = FinalQuantumNumbers_[0].twoJ();
-    const int s2 = FinalQuantumNumbers_[1].twoJ();
+    const int J  = initial.twoJ();
+    const int s1 = final1.twoJ();
+    const int s2 = final2.twoJ();
 
     for (int lambda1 = -s1; lambda1 <= +s1; lambda1 += 2) {
         for (int lambda2 = -s2; lambda2 <= +s2; lambda2 += 2) {
@@ -116,7 +77,7 @@ void HelicitySpinAmplitude::calculateClebschGordanCoefficients()
             const int    lambda    = lambda1 - lambda2;
 
             // calculate Clebsch-Gordan coefficient for L-S coupling
-            const double lsClebsch = clebschGordan(TwoL_, 0, S, lambda, J, lambda);
+            const double lsClebsch = clebschGordan(twoL, 0, S, lambda, J, lambda);
             if (lsClebsch == 0.)
                 continue;
 
@@ -129,10 +90,11 @@ void HelicitySpinAmplitude::calculateClebschGordanCoefficients()
                        << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
                        << " = " << ssClebsch* lsClebsch << "\n";
 
-            ClebschGordanCoefficients_[ {lambda1, lambda2}] = ssClebsch * lsClebsch;
+            coeffs[ {lambda1, lambda2}] = ssClebsch * lsClebsch;
         }
     }
 
+    return coeffs;
 }
 
 //-------------------------
@@ -143,8 +105,7 @@ bool HelicitySpinAmplitude::equals(const SpinAmplitude& rhs) const
     const HelicitySpinAmplitude* cSA = dynamic_cast<const HelicitySpinAmplitude*>(&rhs);
     if (!cSA) return false;
 
-    return (TwoL_ == cSA->TwoL_
-            and ClebschGordanCoefficients_ == cSA->ClebschGordanCoefficients_
+    return (ClebschGordanCoefficient_ == cSA->ClebschGordanCoefficient_
             and SpinAmplitude::equals(rhs) );
 }
 

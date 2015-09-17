@@ -42,7 +42,9 @@ class SpinAmplitude : public AmplitudeComponentDataAccessor
 public:
 
     /// Constructor
-    SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2);
+    SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+                  const QuantumNumbers& final1, const QuantumNumbers& final2,
+                  unsigned char twoL);
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -60,6 +62,14 @@ public:
     /// Get QuantumNumbers of daughters const
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
+
+    /// Get relative angular momentum between daughters * 2
+    unsigned char twoL() const
+    { return TwoL_; }
+
+    /// Get relative angular momentum between daughters
+    double L() const
+    { return 0.5 * TwoL_; }
 
     /// @}
 
@@ -81,6 +91,9 @@ protected:
 
     /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
+
+    /// relative angular momentum between daughters * 2
+    unsigned char TwoL_;
 
 };
 

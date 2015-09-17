@@ -38,7 +38,9 @@ class HelicitySpinAmplitude : public SpinAmplitude
 public:
 
     /// Constructor
-    HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
+    HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+                          const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL,
+                          std::pair<std::array<int, 2>, double> clebschGordanCoefficient);
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -49,21 +51,10 @@ public:
     /// \name Getters
     /// @{
 
-    /// Get relative angular momentum between daughters * 2
-    unsigned char twoL() const
-    { return TwoL_; }
-
-    /// Get relative angular momentum between daughters
-    double L() const
-    { return 0.5 * TwoL_; }
-
-    const std::map<std::array<int, 2>, double>& clebschGordanCoefficients()
-    { return ClebschGordanCoefficients_; }
+    const std::pair<std::array<int, 2>, double>& clebschGordanCoefficient()
+    { return ClebschGordanCoefficient_; }
 
     /// @}
-
-    /// Print Clebsch-Gordan coefficients
-    void printClebschGordanCoefficients() const;
 
 protected:
 
@@ -74,17 +65,16 @@ protected:
 private:
 
     /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
-    /// and store them in ClebschGordanCoefficients_
-    void calculateClebschGordanCoefficients();
+    static std::map<std::array<int, 2>, double> calculateClebschGordanCoefficients(
+        const QuantumNumbers& initial,
+        const QuantumNumbers& final1, const QuantumNumbers& final2,
+        unsigned char twoL);
 
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;
 
-    /// relative angular momentum between daughters * 2
-    unsigned char TwoL_;
-
-    /// Clebsch-Gordan coefficients for λ_1, λ_2
-    std::map<std::array<int, 2>, double> ClebschGordanCoefficients_;
+    /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
+    std::pair<std::array<int, 2>, double> ClebschGordanCoefficient_;
 
 };
 
