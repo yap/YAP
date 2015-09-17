@@ -51,8 +51,17 @@ public:
     /// \name Getters
     /// @{
 
+    /// \return helicities 2*λ and  Clebsch-Gordan coefficient
     const std::pair<std::array<int, 2>, double>& clebschGordanCoefficient()
     { return ClebschGordanCoefficient_; }
+
+    /// \return helicities 2*λ
+    const std::array<int, 2>& helicities()
+    { return ClebschGordanCoefficient_.first; }
+
+    /// \return value of Clebsch-Gordan coefficient
+    double clebschGordanCoefficient()
+    { return ClebschGordanCoefficient_.second(); }
 
     /// @}
 

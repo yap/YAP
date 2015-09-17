@@ -52,7 +52,7 @@ public:
     /// \param c DecayingParticle takes ownership of c
     virtual void addChannel(DecayChannel* c);
 
-    /// Add a two-body DecayChannels with CanonicalSpinAmplitudes
+    /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
     /// \param A daughter particle
     /// \param B daughter particle
     /// \param L maximum relative angular momentum between A and B * 2
