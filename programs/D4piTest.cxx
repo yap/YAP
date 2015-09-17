@@ -24,7 +24,7 @@ int main( int argc, char** argv)
 
     //yap::disableLogs(el::Level::Debug);
 
-    unsigned max2L(2*4);
+    unsigned max2L(2 * 4);
 
     /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory("evt.pdl");
