@@ -56,6 +56,12 @@ public:
 
     /// @}
 
+    /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
+    static std::map<std::array<int, 2>, double> calculateClebschGordanCoefficients(
+        const QuantumNumbers& initial,
+        const QuantumNumbers& final1, const QuantumNumbers& final2,
+        unsigned char twoL);
+
 protected:
 
     /// \return Complex spin amplitude evaluated at data point
@@ -63,12 +69,6 @@ protected:
     virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
 private:
-
-    /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
-    static std::map<std::array<int, 2>, double> calculateClebschGordanCoefficients(
-        const QuantumNumbers& initial,
-        const QuantumNumbers& final1, const QuantumNumbers& final2,
-        unsigned char twoL);
 
     /// Check if SpinAmplitudes are equal
     bool equals(const SpinAmplitude& rhs) const override;

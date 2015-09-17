@@ -81,10 +81,10 @@ void DecayingParticle::addChannel(DecayChannel* c)
 }
 
 //-------------------------
-void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned twoL)
+void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
 {
-    addChannel(new DecayChannel(A, B,
-                                std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
+    //addChannel(new DecayChannel(A, B,
+    //                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)));
 }
 
 //-------------------------

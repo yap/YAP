@@ -52,11 +52,11 @@ public:
     /// \param c DecayingParticle takes ownership of c
     virtual void addChannel(DecayChannel* c);
 
-    /// Add a two-body DecayChannel with CanonicalSpinAmplitude
+    /// Add a two-body DecayChannels with CanonicalSpinAmplitudes
     /// \param A daughter particle
     /// \param B daughter particle
-    /// \param L relative angular momentum between A and B * 2
-    virtual void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned twoL);
+    /// \param L maximum relative angular momentum between A and B * 2
+    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)

@@ -24,6 +24,7 @@ int main( int argc, char** argv)
 
     //yap::disableLogs(el::Level::Debug);
 
+    unsigned max2L(2*4);
 
     /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory("evt.pdl");
@@ -38,38 +39,30 @@ int main( int argc, char** argv)
 
     // rho rho
     std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
-    rho->addChannel(piPlus, piMinus, 2 * 1);
+    rho->addChannels(piPlus, piMinus, max2L);
 
-    //D->addChannel(rho, rho, 2 * 0); // Clebsch-Gordan coeffs == 0
-    //D->addChannel(rho, rho, 2 * 1); // Clebsch-Gordan coeffs == 0
-    D->addChannel(rho, rho, 2 * 2);
+    D->addChannels(rho, rho, max2L);
 
     // omega omega
     std::shared_ptr<yap::Resonance> omega = factory.createResonanceBreitWigner(223, radialSize);
-    omega->addChannel(piPlus, piMinus, 2 * 1);
+    omega->addChannels(piPlus, piMinus, max2L);
 
-    //D->addChannel(omega, omega, 2 * 0); // Clebsch-Gordan coeffs == 0
-    //D->addChannel(omega, omega, 2 * 1); // Clebsch-Gordan coeffs == 0
-    D->addChannel(omega, omega, 2 * 2);
+    D->addChannels(omega, omega, max2L);
 
     // rho omega
-    //D->addChannel(rho, omega, 2 * 0); // Clebsch-Gordan coeffs == 0
-    //D->addChannel(rho, omega, 2 * 1); // Clebsch-Gordan coeffs == 0
-    D->addChannel(rho, omega, 2 * 2);
+    D->addChannels(rho, omega, max2L);
 
 
     // a_1 channels
     std::shared_ptr<yap::Resonance> sigma = factory.createResonanceBreitWigner(9000221, radialSize);
-    sigma->addChannel(piPlus, piMinus, 2 * 0);
+    sigma->addChannels(piPlus, piMinus, max2L);
 
     std::shared_ptr<yap::Resonance> a_1 = factory.createResonanceBreitWigner(20213, radialSize);
-    a_1->addChannel(sigma, piPlus, 2 * 1);
+    a_1->addChannels(sigma, piPlus, max2L);
 
-    a_1->addChannel(rho, piPlus, 2 * 0); // S-wave
-    a_1->addChannel(rho, piPlus, 2 * 1); // not in Focus model
-    a_1->addChannel(rho, piPlus, 2 * 2); // D-wave
+    a_1->addChannels(rho, piPlus, max2L);
 
-    D->addChannel(a_1, piMinus, 2 * 1);
+    D->addChannels(a_1, piMinus, max2L);
 
 
     // R pi pi channels

@@ -77,6 +77,11 @@ public:
     friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
     { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
 
+    static bool angularMomentumConserved(
+        const QuantumNumbers& initial,
+        const QuantumNumbers& final1, const QuantumNumbers& final2,
+        unsigned char twoL);
+
 protected:
 
     /// \return Complex spin amplitude evaluated at data point

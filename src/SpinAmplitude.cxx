@@ -31,31 +31,42 @@ bool SpinAmplitude::consistent() const
 
 
     // check angular momentum conservation laws
-    int twoJ_P = InitialQuantumNumbers_.twoJ();
-    int twoJ_A = FinalQuantumNumbers_[0].twoJ();
-    int twoJ_B = FinalQuantumNumbers_[1].twoJ();
-
-    // check if
-    // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
-    bool ok = false;
-    for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
-        for (int rhs = abs(TwoL_ - twoL_AB); rhs <= abs(TwoL_ + twoL_AB); rhs += 2) {
-            if (twoJ_P == rhs) {
-                ok = true;
-                break;
-            }
-            if (ok)
-                break;
-        }
-    }
-
-    if (!ok) {
-        LOG(ERROR) << "SpinAmplitude::consistent() - angular momentum conservation violated. " <<
-                   "J(parent) = " << spinToString(twoJ_P) << "; J(daughter1) = " << spinToString(twoJ_A) << "; J(daughter2) = " << spinToString(twoJ_B) << "; l = " << spinToString(TwoL_);
+    if (!angularMomentumConserved(InitialQuantumNumbers_, FinalQuantumNumbers_[0], FinalQuantumNumbers_[1], TwoL_)) {
+        LOG(ERROR) << "SpinAmplitude::consistent() - angular momentum conservation violated. "
+            << "J(parent) = " << spinToString(InitialQuantumNumbers_.twoJ())
+            << "; J(daughter1) = " << spinToString(FinalQuantumNumbers_[0].twoJ())
+            << "; J(daughter2) = " << spinToString(FinalQuantumNumbers_[1].twoJ())
+            << "; l = " << spinToString(TwoL_);
         consistent =  false;
     }
 
     return consistent;
+}
+
+//-------------------------
+bool SpinAmplitude::angularMomentumConserved(const QuantumNumbers& initial,
+    const QuantumNumbers& final1, const QuantumNumbers& final2,
+    unsigned char twoL)
+{
+  int twoJ_P = initial.twoJ();
+  int twoJ_A = final1.twoJ();
+  int twoJ_B = final2.twoJ();
+
+  // check if
+  // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
+  bool ok = false;
+  for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
+      for (int rhs = abs(twoL - twoL_AB); rhs <= abs(twoL + twoL_AB); rhs += 2) {
+          if (twoJ_P == rhs) {
+              ok = true;
+              break;
+          }
+          if (ok)
+              break;
+      }
+  }
+
+  return ok;
 }
 
 //-------------------------
