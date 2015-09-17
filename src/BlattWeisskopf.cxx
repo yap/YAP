@@ -77,10 +77,8 @@ Amp BlattWeisskopf::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinat
                        << spinToString(twoL) << ". returning 0." << std::endl;
             return 0;
     }
-    /*if (debug)
-              LOG(ERROR) << "squared Blatt-Weisskopf barrier factor(L = " << spinQn(twoL) << ", "
-                         << "q = " << maxPrecision(breakupMom) << " GeV/c; P_r = " << Pr << " GeV/c) = "
-                         << maxPrecision(bf2) << std::endl;*/
+
+    LOG(DEBUG) << "Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; P_r = " << Pr << " GeV/c) = " << sqrt(bf2) << std::endl;
 
     return sqrt(bf2);
 }

@@ -21,6 +21,8 @@ Amp BreitWigner::calcAmplitudeS(double s)
     if (CalcStatus_ == kUncalculated)
         M2iMG_ = Amp(mass() * mass(), -mass() * width());
 
+    LOG(DEBUG) << "BreitWigner amplitude (s = " << s << ") = " << 1. / (M2iMG_ - Amp(s, 0));
+
     return 1. / (M2iMG_ - Amp(s, 0));
 }
 

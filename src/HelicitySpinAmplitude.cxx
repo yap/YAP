@@ -20,6 +20,12 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const Qu
 Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo implement
+
+  // needs helicity of parent!!!!
+  // DecayChannel needs to sum over daughter helicities
+
+  // make multiple channels, each with definite helicities?
+
     return Complex_0;
 }
 
