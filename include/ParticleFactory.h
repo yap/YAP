@@ -50,6 +50,10 @@ struct PdlParticleProperties {
     int TwoJ_;
 };
 
+struct helicityStates : public std::vector<std::shared_ptr<Particle> > {
+    void addChannels(helicityStates& A, helicityStates& B, unsigned maxTwoL);
+};
+
 /// \class ParticleFactory
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
@@ -66,7 +70,7 @@ public:
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \return pointer to new FinalStateParticle object
-    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
+    helicityStates createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
@@ -79,19 +83,19 @@ public:
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, MassShape* massShape);
+    helicityStates createResonance(int PDG, double radialSize, MassShape* massShape);
 
     /// Create a Resonance from a PDG code. Use BreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonanceBreitWigner(int PDG, double radialSize);
+    helicityStates createResonanceBreitWigner(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code. Use RelativisticBreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonanceRelativisticBreitWigner(int PDG, double radialSize);
+    helicityStates createResonanceRelativisticBreitWigner(int PDG, double radialSize);
 
     /// Create quantum number object from PDG code
     /// \param PDG PDG code to look up

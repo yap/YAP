@@ -14,6 +14,15 @@
 namespace yap {
 
 //-------------------------
+void helicityStates::addChannels(helicityStates& A, helicityStates& B, unsigned maxTwoL)
+{
+    for (auto p : *this) {
+        if (std::dynamic_pointer_cast<DecayingParticle>(p))
+            std::dynamic_pointer_cast<DecayingParticle>(p)->addChannels(A, B, maxTwoL);
+    }
+}
+
+//-------------------------
 ParticleFactory::ParticleFactory(const std::string pdlFile) :
     InitialStateParticle_(nullptr)
 {
@@ -21,16 +30,30 @@ ParticleFactory::ParticleFactory(const std::string pdlFile) :
 }
 
 //-------------------------
-std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
+helicityStates ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return std::make_shared<FinalStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, PDG, indices);
+    helicityStates res;
+
+    // all possible helicities
+    for (int lambda = -p.TwoJ_; lambda <= p.TwoJ_; lambda += 2) {
+        QuantumNumbers q = createQuantumNumbers(PDG);
+        q.setTwoHelicity(lambda);
+        res.push_back(std::make_shared<FinalStateParticle>(q, p.Mass_, p.Name_, PDG, indices));
+    }
+
+    return res;
 }
 
 //-------------------------
 std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
+    helicityStates res;
+
+    if (p.TwoJ_ != 0)
+        LOG(ERROR) << "InitialStateParticle has spin != 0. ";
+
     std::shared_ptr<InitialStateParticle> isp = std::make_shared<InitialStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
     InitialStateParticle_ = isp.get();
 
@@ -38,19 +61,26 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
+helicityStates ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return std::make_shared<Resonance>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize, massShape);
+    helicityStates res;
+
+    // all possible helicities
+    for (int lambda = -p.TwoJ_; lambda <= p.TwoJ_; lambda += 2) {
+        QuantumNumbers q = createQuantumNumbers(PDG);
+        q.setTwoHelicity(lambda);
+        res.push_back(std::make_shared<Resonance>(q, p.Mass_, p.Name_, radialSize, massShape));
+    }
+
+    return res;
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
+helicityStates ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return std::make_shared<Resonance>( createQuantumNumbers(PDG),
-                                        p.Mass_, p.Name_, radialSize,
-                                        new BreitWigner(initialStateParticle(), p.Mass_, p.Width_) );
+    return createResonance(PDG, radialSize, new BreitWigner(initialStateParticle(), p.Mass_, p.Width_) );
 }
 
 //-------------------------

@@ -54,6 +54,8 @@ bool InitialStateParticle::consistent() const
 //-------------------------
 bool InitialStateParticle::prepare()
 {
+    //setParentHelicities();
+
     if (!consistent()) {
         LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
         return false;

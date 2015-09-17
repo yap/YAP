@@ -40,7 +40,7 @@ public:
     /// Constructor
     HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
                           const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL,
-                          std::pair<std::array<int, 2>, double> clebschGordanCoefficient);
+                          double clebschGordanCoefficient);
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -51,22 +51,14 @@ public:
     /// \name Getters
     /// @{
 
-    /// \return helicities 2*λ and  Clebsch-Gordan coefficient
-    const std::pair<std::array<int, 2>, double>& clebschGordanCoefficient()
-    { return ClebschGordanCoefficient_; }
-
-    /// \return helicities 2*λ
-    const std::array<int, 2>& helicities()
-    { return ClebschGordanCoefficient_.first; }
-
     /// \return value of Clebsch-Gordan coefficient
     double clebschGordanCoefficient()
-    { return ClebschGordanCoefficient_.second(); }
+    { return ClebschGordanCoefficient_; }
 
     /// @}
 
-    /// Calculate Clebsch-Gordan coefficients for all possible helicity combinations
-    static std::map<std::array<int, 2>, double> calculateClebschGordanCoefficients(
+    /// Calculate Clebsch-Gordan coefficient
+    static double calculateClebschGordanCoefficient(
         const QuantumNumbers& initial,
         const QuantumNumbers& final1, const QuantumNumbers& final2,
         unsigned char twoL);
@@ -83,7 +75,7 @@ private:
     bool equals(const SpinAmplitude& rhs) const override;
 
     /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
-    std::pair<std::array<int, 2>, double> ClebschGordanCoefficient_;
+    double ClebschGordanCoefficient_;
 
 };
 

@@ -56,7 +56,14 @@ public:
     /// \param A daughter particle
     /// \param B daughter particle
     /// \param L maximum relative angular momentum between A and B * 2
-    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL);
+    //virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
+    //{ addChannels({A}, {B}, maxTwoL); }
+
+    /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
+    /// \param A daughter particle in all possible helicity states
+    /// \param B daughter particle in all possible helicity states
+    /// \param L maximum relative angular momentum between A and B * 2
+    virtual void addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -96,6 +103,9 @@ public:
     { RadialSize_ = r; }
 
     /// @}
+
+    /// recursively set parent helicities of HelicitySpinAmplitudes
+    void setParentHelicities(int twoParentHelicity = 0);
 
     /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
     /// Check if this is the case, and share SpinAmplitudes

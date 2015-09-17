@@ -21,7 +21,8 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    //yap::disableLogs(el::Level::Debug);
+    yap::disableLogs(el::Level::Debug);
+
 
     unsigned max2L(2 * 4);
 
@@ -34,19 +35,19 @@ int main( int argc, char** argv)
     std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
 
     // final state particles
-    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211, {0, 2});
-    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211, {1, 3});
+    yap::helicityStates piPlus = factory.createFinalStateParticle(211, {0, 2});
+    yap::helicityStates piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
 
     // rho rho
-    std::shared_ptr<yap::Resonance> rho = factory.createResonanceBreitWigner(113, radialSize);
-    rho->addChannels(piPlus, piMinus, max2L);
+    yap::helicityStates rho = factory.createResonanceBreitWigner(113, radialSize);
+    rho.addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(rho, rho, max2L);
 
     // omega omega
-    std::shared_ptr<yap::Resonance> omega = factory.createResonanceBreitWigner(223, radialSize);
-    omega->addChannels(piPlus, piMinus, max2L);
+    yap::helicityStates omega = factory.createResonanceBreitWigner(223, radialSize);
+    omega.addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(omega, omega, max2L);
 
@@ -55,13 +56,13 @@ int main( int argc, char** argv)
 
 
     // a_1 channels
-    std::shared_ptr<yap::Resonance> sigma = factory.createResonanceBreitWigner(9000221, radialSize);
-    sigma->addChannels(piPlus, piMinus, max2L);
+    yap::helicityStates sigma = factory.createResonanceBreitWigner(9000221, radialSize);
+    sigma.addChannels(piPlus, piMinus, max2L);
 
-    std::shared_ptr<yap::Resonance> a_1 = factory.createResonanceBreitWigner(20213, radialSize);
-    a_1->addChannels(sigma, piPlus, max2L);
+    yap::helicityStates a_1 = factory.createResonanceBreitWigner(20213, radialSize);
+    a_1.addChannels(sigma, piPlus, max2L);
 
-    a_1->addChannels(rho, piPlus, max2L);
+    a_1.addChannels(rho, piPlus, max2L);
 
     D->addChannels(a_1, piMinus, max2L);
 
@@ -103,7 +104,7 @@ int main( int argc, char** argv)
 
     // test helicity angles
     TLorentzVector P(0.0, 0.0, 0.0, D->mass());
-    Double_t masses[4] = { piPlus->mass(), piMinus->mass(), piPlus->mass(), piMinus->mass() };
+    Double_t masses[4] = { piPlus[0]->mass(), piMinus[0]->mass(), piPlus[0]->mass(), piMinus[0]->mass() };
 
     TGenPhaseSpace event;
     event.SetDecay(P, 4, masses);

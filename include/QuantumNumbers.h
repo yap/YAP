@@ -60,6 +60,14 @@ public:
     double J() const
     { return TwoJ_ * 0.5; }
 
+    /// \return Helicity * 2
+    char twoHelicity() const
+    { return TwoHelicity_; }
+
+    /// \return Helicity
+    double Helicity() const
+    { return TwoHelicity_ * 0.5; }
+
     /// \return parity
     signed char P() const
     { return P_; }
@@ -97,6 +105,15 @@ public:
     void setTwoJ(unsigned char J)
     { TwoJ_ = J; }
 
+    /// Set Helicity
+    void setHelicity(double h)
+    { TwoHelicity_ = std::round(2.*h); }
+
+    /// Set 2 * Helicity
+    void setTwoHelicity(char h)
+    { TwoHelicity_ = h; }
+
+
     /// @}
 
     /// equality operator
@@ -110,6 +127,9 @@ private:
 
     /// Spin * 2
     unsigned char TwoJ_;
+
+    /// Helicity * 2
+    char TwoHelicity_;
 
     /// Parity
     signed char P_;

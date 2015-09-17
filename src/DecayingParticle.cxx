@@ -76,28 +76,36 @@ void DecayingParticle::addChannel(DecayChannel* c)
 
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
         addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-        //addSymmetrizationIndex(pc);
     }
 }
 
 //-------------------------
-void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
+void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL)
 {
     // loop over possible l
     for (unsigned twoL = 0; twoL < maxTwoL; ++twoL) {
-        if (SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)) {
-            // possible helicities
-            std::map<std::array<int, 2>, double> clebschGordanCoeffs =
-                HelicitySpinAmplitude::calculateClebschGordanCoefficients(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL);
+        if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A[0]->quantumNumbers(), B[0]->quantumNumbers(), twoL))
+            continue;
 
-            // add channel
-            for (auto& coeff : clebschGordanCoeffs) {
-                addChannel(new DecayChannel(A, B,
-                                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL, coeff)));
+        // loop over helicity combinations
+        for (auto& partA : A) {
+            for (auto& partB : B) {
+                double cg = HelicitySpinAmplitude::calculateClebschGordanCoefficient(quantumNumbers(), partA->quantumNumbers(), partB->quantumNumbers(), twoL);
+                if (cg == 0.)
+                    continue;
+
+                addChannel(new DecayChannel(partA, partB,
+                                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
+                                                    partA->quantumNumbers(), partB->quantumNumbers(),
+                                                    twoL, cg)));
+
+                std::cout << "add channel " << std::string(*Channels_.back()) << "\n";
             }
         }
     }
+
 }
+
 
 //-------------------------
 std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
@@ -108,8 +116,66 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
 }
 
 //-------------------------
+void DecayingParticle::setParentHelicities(int twoParentHelicity)
+{
+    std::cout << "DecayingParticle::setParentHelicities(" << twoParentHelicity << ") of " << name() << "\n";
+
+    /*bool found(false);
+    for (unsigned i = 0; i < Channels_.size(); ++i) {
+      std::shared_ptr<HelicitySpinAmplitude> amp = std::dynamic_pointer_cast<HelicitySpinAmplitude>(channel(i)->spinAmplitude());
+      if (amp->twoParentHelicity() == twoParentHelicity) {
+          found = true;
+          break;
+      }
+    }*/
+
+
+
+    /*for (unsigned i = 0; i < Channels_.size(); ++i) {
+
+          std::shared_ptr<HelicitySpinAmplitude> amp = std::dynamic_pointer_cast<HelicitySpinAmplitude>(channel(i)->spinAmplitude());
+
+          std::array<int, 2> helicities({0,0});
+          if (amp) {
+              helicities = amp->helicities();
+
+              if (not amp->twoParentHelicitySet()) {
+                  amp->setTwoParentHelicity(twoParentHelicity);
+                  std::cout << "  setTwoParentHelicity of " << std::string(*channel(i)) << "\n";
+              }
+              else if (amp->twoParentHelicity() == twoParentHelicity) {
+                // fine
+                std::cout << "  twoParentHelicity already set of " << std::string(*channel(i)) << "\n";
+              }
+              else {
+                std::shared_ptr<HelicitySpinAmplitude> newAmp = std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
+                       channel(i)->daughters()[0]->quantumNumbers(), channel(i)->daughters()[1]->quantumNumbers(),
+                       amp->twoL(), amp->clebschGordanCoefficient());
+                newAmp->setTwoParentHelicity(twoParentHelicity);
+                std::unique_ptr<yap::DecayChannel> newChannel(new DecayChannel(channel(i)->daughters()[0], channel(i)->daughters()[1], newAmp));
+                Channels_[i].swap(newChannel);
+                std::cout << "  setTwoParentHelicity of " << std::string(*newAmp) << " to " << twoParentHelicity << "/2 and add new channel.\n";
+              }
+          }
+          else {
+              std::cout << "  meh\n";
+          }
+
+
+          unsigned iDaugh(0);
+
+          for (std::shared_ptr<Particle> d : channel(i)->daughters()) {
+              if (std::dynamic_pointer_cast<DecayingParticle>(d))
+                  std::static_pointer_cast<DecayingParticle>(d)->setParentHelicities(helicities[iDaugh++]);
+          }
+    }*/
+}
+
+//-------------------------
 void DecayingParticle::optimizeSpinAmplitudeSharing()
 {
+    /// \todo Will not work if we have more than one initial state particle
+    /// make ampSet member of initialStateParticle ???
     static std::set<std::shared_ptr<SpinAmplitude> > ampSet;
     static SharedSpinAmplitudeComparator comp;
 
