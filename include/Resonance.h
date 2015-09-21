@@ -45,14 +45,12 @@ public:
     /// Constructor
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
 
-    /// \return amplitude for resonance evaluated at DataPoint
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// access MassShape
-    const MassShape* massShape() const {return MassShape_.get();}
+    const MassShape* massShape() const
+    { return MassShape_.get(); }
 
     using DecayingParticle::addChannel;
 
@@ -66,6 +64,11 @@ public:
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
+
+protected:
+
+    /// \return amplitude for resonance evaluated at DataPoint
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 

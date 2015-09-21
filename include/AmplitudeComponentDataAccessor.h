@@ -57,7 +57,7 @@ public:
     /// @}
 
     /// Handle complex amplitude caching
-    Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc);
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc);
 
     /// Check if AmplitudeComponentDataAccessor is consistent
     virtual bool consistent() const

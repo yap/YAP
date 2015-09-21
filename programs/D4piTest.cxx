@@ -116,6 +116,12 @@ int main( int argc, char** argv)
 
     D->addDataPoint(yap::DataPoint(momenta));
 
+    // to test amplitude calculation, set all free amps to 1
+    std::vector<yap::Amp> freeAmps = D->freeAmplitudes();
+    for (yap::Amp& a : freeAmps)
+        a = yap::Complex_1;
+    D->setFreeAmplitudes(freeAmps);
+
     D->logLikelihood();
 
 

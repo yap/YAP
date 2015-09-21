@@ -58,6 +58,9 @@ public:
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
 
+    /// set free amplitudes to DecayChannels
+    bool setFreeAmplitudes(const std::vector<Amp>& amps);
+
     /// \name Getters
     /// @{
 
@@ -72,6 +75,12 @@ public:
 
     const HelicityAngles& helicityAngles() const
     { return HelicityAngles_; }
+
+    bool prepared() const
+    {return Prepared_; }
+
+    /// \return free amplitudes of DecayChannels_
+    std::vector<Amp> freeAmplitudes() const;
 
     /// @}
 
@@ -104,8 +113,13 @@ private:
 
     friend class DataAccessor;
 
+    bool Prepared_;
+
     /// List of all DataAccessor objects in the InitialsStateParticle and below
     std::set<DataAccessor*> DataAccessors_;
+
+    /// List of all DecayChannel objects in the InitialsStateParticle and below
+    std::vector<DecayChannel*> DecayChannels_;
 
     /// vector of final state particles
     std::vector<FinalStateParticle*> FinalStateParticles;

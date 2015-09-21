@@ -15,8 +15,18 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 //-------------------------
 Amp Resonance::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
-    // \todo implement
-    return Amp(0.);
+    /// \todo check
+    Amp a = Complex_0;
+
+    for (auto& c : channels()) {
+        a += c->amplitude(d, pc);
+    }
+
+    a *= MassShape_->amplitude(d, pc);
+
+    LOG(DEBUG) << "Resonance: amplitude = " << a;
+
+    return a;
 }
 
 //-------------------------

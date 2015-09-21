@@ -70,8 +70,15 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 //-------------------------
 Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
-    /// \todo implement
-    return Amp(1);
+    /// \todo check
+    Amp a = BlattWeisskopf_.amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
+    for (auto& daugh : Daughters_) {
+        a *= daugh->amplitude(d, pc);
+    }
+
+    LOG(DEBUG) << "DecayChannel: amplitude = " << a;
+
+    return a;
 }
 
 //-------------------------

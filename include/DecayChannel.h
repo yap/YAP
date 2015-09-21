@@ -47,8 +47,9 @@ public:
     /// 2-particle Constructor
     DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
-    /// \return Amplitude for decay channel
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    /// get complex amplitude
+    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    { return FreeAmplitude_ * AmplitudeComponentDataAccessor::amplitude(d, pc); }
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -115,6 +116,9 @@ public:
     void setSymmetrizationIndexParents();
 
 protected:
+
+    /// \return (fixed) Amplitude for decay channel
+    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
     /// 2 daughters of the decay
     std::vector<std::shared_ptr<Particle> > Daughters_;

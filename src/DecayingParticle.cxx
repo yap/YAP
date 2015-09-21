@@ -21,8 +21,16 @@ DecayingParticle::DecayingParticle(InitialStateParticle* isp, const QuantumNumbe
 //-------------------------
 Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
-    // \todo implement
-    return Amp(1);
+    // \todo check
+    Amp a = Complex_0;
+
+    for (auto& c : channels()) {
+        a += c->amplitude(d, pc);
+    }
+
+    LOG(DEBUG) << "DecayingParticle: amplitude = " << a;
+
+    return a;
 }
 
 //-------------------------
@@ -84,20 +92,20 @@ void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, st
 {
     // consistency check
     for (auto& vec : {A, B}) {
-      std::string name = vec[0]->name();
-      std::set<int> helicities;
-      for (auto& part : vec) {
-        if (part->name() != name) {
-          LOG(ERROR) << "DecayingParticle::addChannels: particles in vector are not of the same type!";
-          return;
+        std::string name = vec[0]->name();
+        std::set<int> helicities;
+        for (auto& part : vec) {
+            if (part->name() != name) {
+                LOG(ERROR) << "DecayingParticle::addChannels: particles in vector are not of the same type!";
+                return;
+            }
+            int hel = part->quantumNumbers().twoHelicity();
+            if (helicities.find(hel) != helicities.end()) {
+                LOG(ERROR) << "DecayingParticle::addChannels: particles in vector don't have different helicities!";
+                return;
+            }
+            helicities.insert(hel);
         }
-        int hel = part->quantumNumbers().twoHelicity();
-        if (helicities.find(hel) != helicities.end()) {
-          LOG(ERROR) << "DecayingParticle::addChannels: particles in vector don't have different helicities!";
-          return;
-        }
-        helicities.insert(hel);
-      }
     }
 
     // loop over possible l

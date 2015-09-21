@@ -15,8 +15,14 @@ DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv
     if (isp == nullptr)
         LOG(ERROR) << "DataAccessor: no InitialStateParticle provided!";
 
-    if (this != InitialStateParticle_)
+    if (this != InitialStateParticle_) {
         InitialStateParticle_->addDataAccessor(this);
+        if (isp->prepared()) {
+            LOG(ERROR) << "InitialStateParticle has already been prepared. "
+                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
+                       << "otherwise it will become inconsistent!";
+        }
+    }
 
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
