@@ -61,7 +61,7 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
 }
 
 //-------------------------
-helicityStates ParticleFactory::createResonance(int PDG, double radialSize, MassShape* massShape)
+helicityStates ParticleFactory::createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
     helicityStates res;
@@ -80,7 +80,8 @@ helicityStates ParticleFactory::createResonance(int PDG, double radialSize, Mass
 helicityStates ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const PdlParticleProperties& p = particleProperties(PDG);
-    return createResonance(PDG, radialSize, new BreitWigner(initialStateParticle(), p.Mass_, p.Width_) );
+    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(initialStateParticle(), p.Mass_, p.Width_);
+    return createResonance(PDG, radialSize, massShape);
 }
 
 //-------------------------

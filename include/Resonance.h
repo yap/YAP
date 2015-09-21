@@ -43,14 +43,14 @@ class Resonance : public DecayingParticle
 public:
 
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, MassShape* massShape);
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// access MassShape
-    const MassShape* massShape() const
-    { return MassShape_.get(); }
+    const std::shared_ptr<MassShape> massShape() const
+    { return MassShape_; }
 
     using DecayingParticle::addChannel;
 
@@ -73,7 +73,7 @@ protected:
 private:
 
     /// MassShape object
-    std::unique_ptr<MassShape> MassShape_;
+    std::shared_ptr<MassShape> MassShape_;
 
 };
 

@@ -124,6 +124,12 @@ int main( int argc, char** argv)
 
     D->logLikelihood();
 
+    for (yap::Amp& a : freeAmps)
+        a *= 0.5;
+    D->setFreeAmplitudes(freeAmps);
+
+    D->logLikelihood();
+
 
 
 

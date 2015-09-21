@@ -83,7 +83,7 @@ public:
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
-    helicityStates createResonance(int PDG, double radialSize, MassShape* massShape);
+    helicityStates createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// Create a Resonance from a PDG code. Use BreitWigner as MassShape
     /// \param PDG PDG code of particle to create
