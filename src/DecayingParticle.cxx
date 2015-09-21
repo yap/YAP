@@ -82,6 +82,24 @@ void DecayingParticle::addChannel(DecayChannel* c)
 //-------------------------
 void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL)
 {
+    // consistency check
+    for (auto& vec : {A, B}) {
+      std::string name = vec[0]->name();
+      std::set<int> helicities;
+      for (auto& part : vec) {
+        if (part->name() != name) {
+          LOG(ERROR) << "DecayingParticle::addChannels: particles in vector are not of the same type!";
+          return;
+        }
+        int hel = part->quantumNumbers().twoHelicity();
+        if (helicities.find(hel) != helicities.end()) {
+          LOG(ERROR) << "DecayingParticle::addChannels: particles in vector don't have different helicities!";
+          return;
+        }
+        helicities.insert(hel);
+      }
+    }
+
     // loop over possible l
     for (unsigned twoL = 0; twoL < maxTwoL; ++twoL) {
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A[0]->quantumNumbers(), B[0]->quantumNumbers(), twoL))
@@ -99,7 +117,7 @@ void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, st
                                                     partA->quantumNumbers(), partB->quantumNumbers(),
                                                     twoL, cg)));
 
-                std::cout << "add channel " << std::string(*Channels_.back()) << "\n";
+                //std::cout << "add channel " << std::string(*Channels_.back()) << "\n";
             }
         }
     }
