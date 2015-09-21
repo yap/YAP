@@ -5,6 +5,7 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "SpinUtilities.h"
+#include "WignerD.h"
 
 namespace yap {
 
@@ -20,14 +21,27 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const Qu
 //-------------------------
 Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
-    /*const int       Lambda = parent->spinProj();
-    const int       P      = parent->P();
-    const int       refl   = parent->reflectivity();
-    const double    phi    = daughter1->lzVec().Phi();  // use daughter1 as analyzer
-    const double    theta  = daughter1->lzVec().Theta();
+   	const int J       = InitialQuantumNumbers_.twoJ();
+    const int Lambda  = InitialQuantumNumbers_.twoHelicity();
+    const int P       = InitialQuantumNumbers_.P();
+	
+  	const int lambda1 = FinalQuantumNumbers_[0].twoHelicity();
+  	const int lambda2 = FinalQuantumNumbers_[1].twoHelicity();
+  	const int lambda  = lambda1 - lambda2;
+    
+    const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d, pc);
+    const double phi   = helAngles[0];  // use daughter1 as analyzer
+    const double theta = helAngles[1];
+    
+    // \todo angular normalization factor??? sqrt(2*L + 1)
+    Amp a = ClebschGordanCoefficient_ * DFunctionConj(J, Lambda, lambda, P, phi, theta);
+    
+    /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
+    /// implemented in rootPWA by C. Bicker
 
-    // \todo normalization factor???
-    return clebschGordanValue() * DFunctionConj();*/
+    LOG(DEBUG) << "HelicitySpinAmplitude = " << a;
+
+    return a;
 }
 
 //-------------------------
