@@ -41,8 +41,8 @@ public:
     /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
-    ~InitialStateParticle()
-    { DataAccessors_.clear(); }
+    /// Destructor
+    ~InitialStateParticle();
 
     double logLikelihood();
 
@@ -105,9 +105,8 @@ private:
     void addDataAccessor(DataAccessor* d)
     { DataAccessors_.insert(d); }
 
-    /// add DataAccessor to set
-    void removeDataAccessor(DataAccessor* d)
-    { DataAccessors_.erase(d); }
+    /// remove DataAccessor from set
+    void removeDataAccessor(DataAccessor* d);
 
     void setDataAcessorIndices();
 

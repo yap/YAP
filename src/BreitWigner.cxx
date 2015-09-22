@@ -10,7 +10,9 @@ namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(InitialStateParticle* isp, double mass, double width) :
-    MassShape(isp)
+    MassShape(isp),
+    CalcStatus_(kUncalculated),
+    M2iMG_(0)
 {
     ParameterSet::operator=({mass, width});
 }
@@ -18,8 +20,10 @@ BreitWigner::BreitWigner(InitialStateParticle* isp, double mass, double width) :
 //-------------------------
 Amp BreitWigner::calcAmplitudeS(double s)
 {
-    if (CalcStatus_ == kUncalculated)
+    if (CalcStatus_ == kUncalculated) {
         M2iMG_ = Amp(mass() * mass(), -mass() * width());
+        CalcStatus_ = kCalculated;
+    }
 
     Amp a = 1. / (M2iMG_ - Amp(s, 0));
 

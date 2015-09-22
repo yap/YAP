@@ -21,7 +21,7 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    //yap::disableLogs(el::Level::Debug);
+    yap::disableLogs(el::Level::Debug);
 
 
     unsigned max2L(2 * 4);
@@ -106,15 +106,17 @@ int main( int argc, char** argv)
     TLorentzVector P(0.0, 0.0, 0.0, D->mass());
     Double_t masses[4] = { piPlus[0]->mass(), piMinus[0]->mass(), piPlus[0]->mass(), piMinus[0]->mass() };
 
-    TGenPhaseSpace event;
-    event.SetDecay(P, 4, masses);
-    event.Generate();
+    for (unsigned int iEvt = 0; iEvt < 1000; ++iEvt) {
+        TGenPhaseSpace event;
+        event.SetDecay(P, 4, masses);
+        event.Generate();
 
-    std::vector<TLorentzVector> momenta;
-    for (unsigned i = 0; i < 4; ++i)
-        momenta.push_back(*event.GetDecay(i));
+        std::vector<TLorentzVector> momenta;
+        for (unsigned i = 0; i < 4; ++i)
+            momenta.push_back(*event.GetDecay(i));
 
-    D->addDataPoint(yap::DataPoint(momenta));
+        D->addDataPoint(yap::DataPoint(momenta));
+    }
 
     // to test amplitude calculation, set all free amps to 1
     std::vector<yap::Amp> freeAmps = D->freeAmplitudes();
@@ -124,11 +126,11 @@ int main( int argc, char** argv)
 
     D->logLikelihood();
 
-    for (yap::Amp& a : freeAmps)
+    /*for (yap::Amp& a : freeAmps)
         a *= 0.5;
     D->setFreeAmplitudes(freeAmps);
 
-    D->logLikelihood();
+    D->logLikelihood();*/
 
 
 

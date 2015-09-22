@@ -24,6 +24,12 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
 }
 
 //-------------------------
+InitialStateParticle::~InitialStateParticle()
+{
+    DataAccessors_.clear();
+}
+
+//-------------------------
 double InitialStateParticle::logLikelihood()
 {
     /// \todo implement
@@ -140,9 +146,18 @@ bool InitialStateParticle::setFreeAmplitudes(const std::vector<Amp>& amps)
         return false;
     }
 
-    for (unsigned i = 0; i < amps.size(); ++i) {
-        DecayChannels_[i]->setFreeAmplitude(amps[i]);
-    }
+    /// \todo this is way too complicated!
+    /*for (unsigned i = 0; i < amps.size(); ++i) {
+        if (amps[i] != DecayChannels_[i]->freeAmplitude()) {
+            DecayChannels_[i]->setFreeAmplitude(amps[i]);
+            for (auto& data : DataSet_.dataPoints()) {
+              for (auto& pc : DecayChannels_[i]->particleCombinations()) {
+                  DecayChannels_[i]->CalculationStatuses(data, DecayChannels_[i]->symmetrizationIndex(pc)) = kUncalculated;
+
+              }
+            }
+        }
+    }*/
 
     return true;
 }
@@ -237,6 +252,13 @@ void InitialStateParticle::printDataAccessors()
         std::cout << "\n";
     }
     std::cout << std::endl;
+}
+
+//-------------------------
+void InitialStateParticle::removeDataAccessor(DataAccessor* d)
+{
+    if (! DataAccessors_.empty())
+        DataAccessors_.erase(d);
 }
 
 //-------------------------
