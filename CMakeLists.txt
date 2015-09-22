@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11" )
 include(CommonMacros)
 
 # setup ROOT includes and libraries
-find_package(ROOT 5.34)
+find_package(ROOT 6)
 
 #BAT
 # find_program(BAT_CONFIG_EXECUTABLE bat-config)
@@ -40,7 +40,8 @@ set( CMAKE_CXX_COMPILER g++)
 message(${CMAKE_CXX_COMPILER})
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Werror=overloaded-virtual" )
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g2" )
+#set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g2" )
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3" )
 
 add_subdirectory(src)
 add_subdirectory(programs)

@@ -1,5 +1,7 @@
 #include "DataPoint.h"
 
+#include "logging.h"
+
 #include <assert.h>
 #include <iostream>
 
@@ -9,6 +11,19 @@ namespace yap {
 DataPoint::DataPoint(const std::vector<TLorentzVector>& P) :
     FourMomenta_(P)
 {}
+
+//-------------------------
+bool DataPoint::setFourMomenta(const std::vector<TLorentzVector>& fourMomenta)
+{
+    if (FourMomenta_.size() < fourMomenta.size()) {
+        LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
+            << fourMomenta.size() << " > " << FourMomenta_.size();
+        return false;
+    }
+
+    std::copy(fourMomenta.begin(), fourMomenta.end(), FourMomenta_.begin());
+    return true;
+}
 
 //-------------------------
 void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors)

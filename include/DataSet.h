@@ -21,6 +21,7 @@
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
+#include <memory>
 #include <vector>
 
 namespace yap {
@@ -32,30 +33,13 @@ class DataPoint;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 
-class DataSet
+class DataSet : public std::vector<DataPoint>
 {
 public:
-
-    /// Add data point via move
-    /// \param d DataPoint to move into DataSet
-    /// \return Success of action
-    bool addDataPoint(DataPoint&& d);
-
-    /// Add data point via copy
-    /// \param d DataPoint to copy into DataSet
-    /// \return Success of action
-    bool addDataPoint(const DataPoint& d);
-
-    std::vector<DataPoint>& dataPoints()
-    { return DataPoints_; }
 
     /// Check if data point is consisent with data set
     bool consistent(const DataPoint& d) const;
 
-private:
-
-    /// Vector of data points
-    std::vector<DataPoint> DataPoints_;
 };
 
 }

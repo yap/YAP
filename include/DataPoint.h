@@ -55,6 +55,8 @@ public:
 
     /// @}
 
+    bool setFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
+
     /// \name Data accessor friends
     /// @{
 

@@ -84,6 +84,11 @@ public:
 
     /// @}
 
+    /// Add data point via four-momenta
+    /// This method is faster since it avoids unneccessary copying of objects
+    /// and resizing of the DataPoint's storage
+    bool addDataPoint(const std::vector<TLorentzVector>& fourMomenta);
+
     /// Add data point via move
     /// \param d DataPoint to move into DataSet
     /// \return Success of action

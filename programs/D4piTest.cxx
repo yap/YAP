@@ -115,7 +115,7 @@ int main( int argc, char** argv)
         for (unsigned i = 0; i < 4; ++i)
             momenta.push_back(*event.GetDecay(i));
 
-        D->addDataPoint(yap::DataPoint(momenta));
+        assert(D->addDataPoint(momenta));
     }
 
     // to test amplitude calculation, set all free amps to 1

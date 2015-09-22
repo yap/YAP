@@ -49,7 +49,7 @@ double InitialStateParticle::logLikelihood()
 
     }*/
 
-    for (DataPoint& dataPoint : DataSet_.dataPoints()) {
+    for (DataPoint& dataPoint : DataSet_) {
         Amp a = Complex_0;
         for (auto& pc : particleCombinations()) {
             a += amplitude(dataPoint, pc);
@@ -203,6 +203,34 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 }
 
 //-------------------------
+bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourMomenta)
+{
+    if (!Prepared_) {
+        LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
+        return false;
+    }
+
+    if (DataSet_.empty()) {
+        return addDataPoint(DataPoint(fourMomenta));
+    }
+
+    DataSet_.push_back(DataPoint(DataSet_[0]));
+
+    DataPoint& d = DataSet_.back();
+
+    if (! d.setFourMomenta(fourMomenta))
+        return false;
+
+    FourMomenta_.calculate(d);
+    HelicityAngles_.calculate(d);
+
+    if (!DataSet_.consistent(d))
+        return false;
+
+    return true;
+}
+
+//-------------------------
 bool InitialStateParticle::addDataPoint(DataPoint&& d)
 {
     if (!Prepared_) {
@@ -230,7 +258,8 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
     if (!DataSet_.consistent(d))
         return false;
 
-    return DataSet_.addDataPoint(d);;
+    DataSet_.push_back(d);
+    return true;
 }
 
 //-------------------------
