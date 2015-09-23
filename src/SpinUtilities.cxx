@@ -15,20 +15,20 @@ double clebschGordan(int two_j1, int two_m1, int two_j2, int two_m2, int two_J, 
     if (not spinAndProjAreCompatible(two_j1, two_m1)
             or not spinAndProjAreCompatible(two_j2, two_m2)
             or not spinAndProjAreCompatible(two_J,  two_M )) {
-        LOG(DEBUG) << "spins and spin projections are inconsistent: "
+      DEBUG("spins and spin projections are inconsistent: "
                    << "(j1 = " << spinToString(two_j1) << ", m1 = " << spinToString(two_m1) << ", "
                    << "j2 = "  << spinToString(two_j2) << ", m2 = " << spinToString(two_m2) << ", "
-                   << "J = "   << spinToString(two_J)  << ", M = "  << spinToString(two_M)  << ")" << std::endl;
+                   << "J = "   << spinToString(two_J)  << ", M = "  << spinToString(two_M)  << ")");
         return 0;
     }
     if (not spinStatesCanCouple(two_j1, two_j2, two_J)) {
-        LOG(DEBUG) << "spins j1 = " << spinToString(two_j1) << " and j2 = " << spinToString(two_j2)
-                   << " cannot couple to J = "  << spinToString(two_J) << std::endl;
+      DEBUG("spins j1 = " << spinToString(two_j1) << " and j2 = " << spinToString(two_j2)
+                   << " cannot couple to J = "  << spinToString(two_J));
         return 0;
     }
     if (two_m1 + two_m2 != two_M) {
-        LOG(DEBUG) << "spin projections m1 = " << spinToString(two_m1) << " and m2 = " << spinToString(two_m2)
-                   << " cannot couple to M = " << spinToString(two_M) << std::endl;
+      DEBUG("spin projections m1 = " << spinToString(two_m1) << " and m2 = " << spinToString(two_m2)
+                   << " cannot couple to M = " << spinToString(two_M));
         return 0;
     }
 

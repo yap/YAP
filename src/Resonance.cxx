@@ -24,7 +24,7 @@ Amp Resonance::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> 
 
     a *= MassShape_->amplitude(d, pc);
 
-    LOG(DEBUG) << "Resonance: amplitude = " << a;
+    DEBUG("Resonance: amplitude = " << a);
 
     return a;
 }

@@ -45,7 +45,7 @@ Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleC
         a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
     }
 
-    LOG(DEBUG) << "HelicitySpinAmplitude = " << a;
+    DEBUG("HelicitySpinAmplitude = " << a);
     return a;
 }
 
@@ -104,9 +104,9 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(
     if (ssClebsch == 0.)
         return 0;
 
-    LOG(DEBUG) << "Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
+    DEBUG("Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
                << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
-               << " = " << ssClebsch* lsClebsch << "\n";
+               << " = " << ssClebsch* lsClebsch);
 
 
     return ssClebsch * lsClebsch;
@@ -115,7 +115,7 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(
 //-------------------------
 bool HelicitySpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
-    //LOG(DEBUG) << "compare " << std::string(*this) << " and " << std::string(rhs);
+    //DEBUG("compare " << std::string(*this) << " and " << std::string(rhs));
 
     const HelicitySpinAmplitude* cSA = dynamic_cast<const HelicitySpinAmplitude*>(&rhs);
     if (!cSA) return false;

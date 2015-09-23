@@ -24,6 +24,9 @@ namespace yap {
  * Available levels:
  * INFO, WARNING, DEBUG, ERROR, FATAL, TRACE, VERBOSE
  *
+ * To completely disable DEBUG logging messages on preprocessor level, use the macro DEBUG(...),
+ * and define ELPP_DISABLE_DEBUG_LOGS
+ *
  * A complete manual for easylogging++ is available at:
  * https://github.com/easylogging/easyloggingpp/blob/master/README.md
  */
@@ -37,6 +40,12 @@ inline void disableLogs(el::Level lvl)
     defaultConf.set(lvl, el::ConfigurationType::Enabled, "0");
     el::Loggers::reconfigureLogger("default", defaultConf);
 }
+
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+  #define DEBUG(x)
+#else
+  #define DEBUG(x) LOG(DEBUG) << x;
+#endif
 
 }
 

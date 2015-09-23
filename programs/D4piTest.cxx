@@ -21,7 +21,7 @@ INITIALIZE_EASYLOGGINGPP
 int main( int argc, char** argv)
 {
 
-    yap::disableLogs(el::Level::Debug);
+    //yap::disableLogs(el::Level::Debug);
 
 
     unsigned max2L(2 * 4);

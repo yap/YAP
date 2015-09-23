@@ -28,7 +28,7 @@ Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombin
         a += c->amplitude(d, pc);
     }
 
-    LOG(DEBUG) << "DecayingParticle: amplitude = " << a;
+    DEBUG("DecayingParticle: amplitude = " << a);
 
     return a;
 }

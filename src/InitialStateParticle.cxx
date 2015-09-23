@@ -55,7 +55,7 @@ double InitialStateParticle::logLikelihood()
             a += amplitude(dataPoint, pc);
         }
 
-        LOG(DEBUG) << "InitialStateParticle amplitude = " << a;
+        DEBUG("InitialStateParticle amplitude = " << a);
     }
 
     return 0;

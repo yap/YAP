@@ -76,7 +76,7 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
         a *= daugh->amplitude(d, pc);
     }
 
-    LOG(DEBUG) << "DecayChannel: amplitude = " << a;
+    DEBUG("DecayChannel: amplitude = " << a);
 
     return a;
 }

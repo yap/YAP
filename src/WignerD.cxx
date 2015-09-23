@@ -23,9 +23,8 @@ double dFunction(const int two_j,
                  const double theta) ///< Wigner d-function d^j_{two_m two_n}(theta)
 {
     const double dFuncVal = dFunctionCached::instance()(two_j, two_m, two_n, theta);
-    LOG(DEBUG) << "Wigner d^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
-               << "M' = " << spinToString(two_n) << "}(theta = " << (theta) << ") = "
-               << (dFuncVal) << std::endl;
+    DEBUG("Wigner d^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
+        << "M' = " << spinToString(two_n) << "}(theta = " << (theta) << ") = " << dFuncVal);
     return dFuncVal;
 }
 
@@ -38,9 +37,8 @@ Amp sphericalHarmonic(const int two_l,
     // crude implementation using Wigner d-function
     const Amp YVal = sqrt((two_l + 1) / (4.*PI))
                      * std::exp(Amp(0, ((double)two_m / 2) * phi)) * dFunction(two_l, two_m, 0, theta);
-    LOG(DEBUG) << "spherical harmonic Y_{l = " << spinToString(two_l) << "}^{m = " << spinToString(two_m) << "}"
-               << "(phi = " << (phi) << ", theta = " << (theta) << ") = "
-               << (YVal) << std::endl;
+    DEBUG("spherical harmonic Y_{l = " << spinToString(two_l) << "}^{m = " << spinToString(two_m)
+        << "}" << "(phi = " << (phi) << ", theta = " << (theta) << ") = " << YVal);
     return YVal;
 }
 
@@ -54,10 +52,9 @@ Amp DFunction(const int two_j,
 {
     const double arg = ((double)two_m / 2) * alpha + ((double)two_n / 2) * gamma;
     const Amp DFuncVal = std::exp(Amp(0, -arg)) * dFunction(two_j, two_m, two_n, beta);
-    LOG(DEBUG) << "Wigner D^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
-               << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
-               << ", beta = " << (beta) << ", gamma = " << (gamma)
-               << ") = " << (DFuncVal) << std::endl;
+    DEBUG("Wigner D^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
+        << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
+        << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
     return DFuncVal;
 }
 
@@ -70,10 +67,9 @@ Amp DFunctionConj(const int two_j,
                   const double gamma)
 {
     const Amp DFuncVal = std::conj(DFunction(two_j, two_m, two_n, alpha, beta, gamma));
-    LOG(DEBUG) << "Wigner D^{J = " << spinToString(two_j) << "}*_{M = " << spinToString(two_m) << ", "
-               << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
-               << ", beta = " << (beta) << ", gamma = " << (gamma)
-               << ") = " << (DFuncVal) << std::endl;
+    DEBUG("Wigner D^{J = " << spinToString(two_j) << "}*_{M = " << spinToString(two_m) << ", "
+        << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
+        << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
     return DFuncVal;
 }
 
@@ -86,13 +82,13 @@ double dFunctionCached::operator ()(const int two_j,
     // check input parameters
     if (two_j >= (int)_maxJ) {
         LOG(ERROR) << "J = " << spinToString(two_j) << " is too large. maximum allowed J is "
-                   << spinToString(_maxJ - 1) << ". Aborting..." << std::endl;
+            << spinToString(_maxJ - 1) << ". Aborting...";
         throw;
     }
     if ((two_j < 0) or (abs(two_m) > two_j) or (abs(two_n) > two_j)) {
         LOG(ERROR) << "illegal argument for Wigner d^{J = " << spinToString(two_j) << "}"
-                   << "_{M = " << spinToString(two_m) << ", M' = " << spinToString(two_n) << "}"
-                   << "(theta = " << (theta) << "). Aborting..." << std::endl;
+            << "_{M = " << spinToString(two_m) << ", M' = " << spinToString(two_n) << "}"
+            << "(theta = " << (theta) << "). Aborting...";
         throw;
     }
 

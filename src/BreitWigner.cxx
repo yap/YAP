@@ -27,7 +27,7 @@ Amp BreitWigner::calcAmplitudeS(double s)
 
     Amp a = 1. / (M2iMG_ - Amp(s, 0));
 
-    LOG(DEBUG) << "BreitWigner amplitude (s = " << s << ") = " << a;
+    DEBUG("BreitWigner amplitude (s = " << s << ") = " << a);
 
     return a;
 }
