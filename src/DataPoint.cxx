@@ -37,12 +37,12 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles
 
     //Data_.resize(dataAccessors.size());
     CachedAmplitudes_.resize(dataAccessors.size());
-    CalculationStatuses_.resize(dataAccessors.size());
+    //CalculationStatuses_.resize(dataAccessors.size());
 
     for (DataAccessor* d : dataAccessors) {
         //Data_.at(d->index()).resize(d->maxSymmetrizationIndex() + 1);
         CachedAmplitudes_.at(d->index()) = std::vector<Amp>(d->maxSymmetrizationIndex() + 1, 0);
-        CalculationStatuses_.at(d->index()) = std::vector<CalculationStatus>(d->maxSymmetrizationIndex() + 1, kUncalculated);
+        //CalculationStatuses_.at(d->index()) = std::vector<CalculationStatus>(d->maxSymmetrizationIndex() + 1, kUncalculated);
         /*for (unsigned int symInd = 0; symInd < d->maxSymmetrizationIndex() + 1; ++symInd) {
             /// \todo size 1 ok?
             Data_.at(d->index()).at(symInd) = {0.};
@@ -57,14 +57,14 @@ void DataPoint::printDataSize()
 
     unsigned size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
-    std::cout << "  Size of FourMomenta_:         " << size << " byte";
+    std::cout << "  Size of FourMomenta_:         " << size << " byte\n";
 
     size = sizeof(HelicityAngles_);
     for (std::vector<double>& v : HelicityAngles_) {
         size += sizeof(v);
         size += v.size() * sizeof(double);
     }
-    std::cout << "+ Size of HelicityAngles_:      " << size << " byte";
+    std::cout << "+ Size of HelicityAngles_:      " << size << " byte\n";
     totSize += size;
 
     size = sizeof(Data_);
@@ -75,7 +75,7 @@ void DataPoint::printDataSize()
           size += vv.size() * sizeof(double);
         }
     }
-    std::cout << "+ Size of Data_:                " << size << " byte";
+    std::cout << "+ Size of Data_:                " << size << " byte\n";
     totSize += size;
 
     size = sizeof(CachedAmplitudes_);
@@ -83,18 +83,18 @@ void DataPoint::printDataSize()
         size += sizeof(v);
         size += v.size() * sizeof(Amp);
     }
-    std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte";
+    std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte\n";
     totSize += size;
 
-    size = sizeof(CalculationStatuses_);
+    /*size = sizeof(CalculationStatuses_);
     for (std::vector<CalculationStatus>& v : CalculationStatuses_) {
         size += sizeof(v);
         size += v.size() * sizeof(CalculationStatus);
     }
-    std::cout << "+ Size of CalculationStatuses_: " << size << " byte";
-    totSize += size;
+    std::cout << "+ Size of CalculationStatuses_: " << size << " byte\n";
+    totSize += size;*/
 
-    std::cout << "= Size of DataPoint:            " << totSize << " byte";
+    std::cout << "= Size of DataPoint:            " << totSize << " byte\n";
 }
 
 }

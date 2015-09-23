@@ -1,5 +1,7 @@
 #include "AmplitudeComponentDataAccessor.h"
 
+#include "InitialStateParticle.h"
+
 namespace yap {
 
 //-------------------------
@@ -19,10 +21,13 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPoint& d, std::shared_p
     Amp& a = cachedAmplitude(d, sym_index);
 
     // check whether data-dependent calculation needs to be made
-    CalculationStatus& calcStat = CalculationStatuses(d, sym_index);
+    CalculationStatus& calcStat = CalculationStatuses_[sym_index];
     if (calcStat == kUncalculated) {
-        // calculate amplitude
-        a = calcAmplitude(d, pc);
+
+        // calculate amplitude for ALL dataPoints
+        for (DataPoint& dataPt : initialStateParticle()->dataSet()) {
+            cachedAmplitude(dataPt, sym_index) = calcAmplitude(dataPt, pc);
+        }
 
         // set calculation status
         calcStat = kCalculated;

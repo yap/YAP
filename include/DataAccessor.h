@@ -107,10 +107,10 @@ public:
 
 
     /// \return calculation statuses
-    CalculationStatus& CalculationStatuses(DataPoint& d, unsigned i);
+    //CalculationStatus& CalculationStatuses(DataPoint& d, unsigned i);
 
     /// \return calculation statuses (const)
-    CalculationStatus CalculationStatuses(DataPoint& d, unsigned i) const;
+    //CalculationStatus CalculationStatuses(DataPoint& d, unsigned i) const;
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;
@@ -132,6 +132,10 @@ protected:
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;
+
+    /// vector of calculation statuses
+    /// index is for the symmeterization state
+    std::vector<CalculationStatus> CalculationStatuses_;
 
 private:
 

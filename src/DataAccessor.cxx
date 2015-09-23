@@ -89,6 +89,7 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 {
     if (SymmetrizationIndices_.empty()) {
         SymmetrizationIndices_[c] = 0;
+        CalculationStatuses_.resize(1, kUncalculated);
         return;
     }
 
@@ -106,12 +107,16 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 
     // else assign to current size = highest current index + 1
     SymmetrizationIndices_[c] = maxSymmetrizationIndex() + 1;
+
+    CalculationStatuses_.resize(maxSymmetrizationIndex(), kUncalculated);
+
 }
 
 //-------------------------
 void DataAccessor::clearSymmetrizationIndices()
 {
     SymmetrizationIndices_.clear();
+    CalculationStatuses_.clear();
 }
 
 //-------------------------
@@ -146,7 +151,7 @@ const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const
 }
 
 //-------------------------
-CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
+/*CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
 {
     return d.CalculationStatuses_.at(index()).at(i);
 }
@@ -155,7 +160,7 @@ CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
 CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const
 {
     return d.CalculationStatuses_.at(index()).at(i);
-}
+}*/
 
 //-------------------------
 InitialStateParticle* DataAccessor::initialStateParticle() const

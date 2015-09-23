@@ -82,6 +82,9 @@ public:
     /// \return free amplitudes of DecayChannels_
     std::vector<Amp> freeAmplitudes() const;
 
+    DataSet& dataSet()
+    { return DataSet_; }
+
     /// @}
 
     /// Add data point via four-momenta

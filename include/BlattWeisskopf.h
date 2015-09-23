@@ -57,7 +57,7 @@ private:
     /// DecayChannel this BlattWeisskopf belongs to
     DecayChannel* DecayChannel_;
 
-    Amp Amplitude_;
+    Amp CachedAmplitude_;
     CalculationStatus CalculationStatus_;
 
 };

@@ -13,7 +13,7 @@ namespace yap {
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     AmplitudeComponent(),
     DecayChannel_(decayChannel),
-    Amplitude_(0),
+    CachedAmplitude_(0),
     CalculationStatus_(kUncalculated)
 {}
 
@@ -75,17 +75,17 @@ const Amp& BlattWeisskopf::amplitude(DataPoint& d, std::shared_ptr<ParticleCombi
             default:
                 LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                            << spinToString(twoL) << ". returning 0." << std::endl;
-                Amplitude_ = Complex_0;
+                CachedAmplitude_ = Complex_0;
         }
 
-        Amplitude_ = sqrt(bf2);
+        CachedAmplitude_ = sqrt(bf2);
         CalculationStatus_ = kCalculated;
 
-        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; P_r = " << Pr << " GeV/c) = " << Amplitude_);
+        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; P_r = " << Pr << " GeV/c) = " << CachedAmplitude_);
 
     }
 
-    return Amplitude_;
+    return CachedAmplitude_;
 }
 
 //-------------------------
