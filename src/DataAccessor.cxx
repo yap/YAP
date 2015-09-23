@@ -127,6 +127,18 @@ const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) co
 }
 
 //-------------------------
+Amp& DataAccessor::cachedAmplitude(DataPoint& d, unsigned i) const
+{
+    return d.CachedAmplitudes_.at(index()).at(i);
+}
+
+//-------------------------
+const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const
+{
+    return d.CachedAmplitudes_.at(index()).at(i);
+}
+
+//-------------------------
 CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
 {
     return d.CalculationStatuses_.at(index()).at(i);

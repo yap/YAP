@@ -47,10 +47,6 @@ public:
     /// 2-particle Constructor
     DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
-    /// get complex amplitude
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
-    { return FreeAmplitude_ * AmplitudeComponentDataAccessor::amplitude(d, pc); }
-
     /// check consistency of object
     virtual bool consistent() const override;
 
@@ -79,7 +75,7 @@ public:
     { return SpinAmplitude_.get(); }
 
     /// Get free amplitude
-    Amp freeAmplitude() const
+    const Amp& freeAmplitude() const
     { return FreeAmplitude_; }
 
     /// Get parent particle

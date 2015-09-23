@@ -69,6 +69,9 @@ public:
     friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
     friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
 
+    friend Amp& DataAccessor::cachedAmplitude(DataPoint& d, unsigned i) const;
+    friend const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const;
+
     friend CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i);
     friend CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const;
 
@@ -95,6 +98,10 @@ protected:
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor
     std::vector<std::vector<std::vector<double> > > Data_;
+
+    /// first index is for the DataAccessor
+    /// second index is for the symmeterization state (as known by the DataAccessor)
+    std::vector<std::vector<Amp> > CachedAmplitudes_;
 
     /// vector of calculation statuses
     /// first index is for the DataAccessor

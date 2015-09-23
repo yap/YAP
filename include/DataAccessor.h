@@ -101,6 +101,11 @@ public:
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const;
 
+    Amp& cachedAmplitude(DataPoint& d, unsigned i) const;
+
+    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const;
+
+
     /// \return calculation statuses
     CalculationStatus& CalculationStatuses(DataPoint& d, unsigned i);
 

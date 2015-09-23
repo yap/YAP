@@ -46,8 +46,8 @@ public:
     FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices);
 
     /// \return 1 + 0i
-    virtual Amp amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
-    { return Complex_1; }
+    virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
+    { static Amp a = Complex_1; return a; }
 
     virtual bool consistent() const override;
 

@@ -25,7 +25,7 @@ Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombin
     Amp a = Complex_0;
 
     for (auto& c : channels()) {
-        a += c->amplitude(d, pc);
+        a += c->freeAmplitude() * c->amplitude(d, pc);
     }
 
     DEBUG("DecayingParticle: amplitude = " << a);
