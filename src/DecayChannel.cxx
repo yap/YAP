@@ -231,7 +231,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
     DataAccessor::addSymmetrizationIndex(c);
-    BlattWeisskopf_.addSymmetrizationIndex(c);
+    //BlattWeisskopf_.addSymmetrizationIndex(c);
     SpinAmplitude_->addSymmetrizationIndex(c);
 }
 
@@ -239,7 +239,7 @@ void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 void DecayChannel::clearSymmetrizationIndices()
 {
     DataAccessor::clearSymmetrizationIndices();
-    BlattWeisskopf_.clearSymmetrizationIndices();
+    //BlattWeisskopf_.clearSymmetrizationIndices();
     SpinAmplitude_->clearSymmetrizationIndices();
 }
 

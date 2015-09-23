@@ -43,10 +43,55 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles
         Data_.at(d->index()).resize(d->maxSymmetrizationIndex() + 1);
         CachedAmplitudes_.at(d->index()) = std::vector<Amp>(d->maxSymmetrizationIndex() + 1, 0);
         CalculationStatuses_.at(d->index()) = std::vector<CalculationStatus>(d->maxSymmetrizationIndex() + 1, kUncalculated);
-        for (unsigned int symInd = 0; symInd < d->maxSymmetrizationIndex() + 1; ++symInd) {
+        /*for (unsigned int symInd = 0; symInd < d->maxSymmetrizationIndex() + 1; ++symInd) {
             /// \todo size 1 ok?
             Data_.at(d->index()).at(symInd) = {0.};
+        }*/
+    }
+
+    if (true) {
+        unsigned totSize(0);
+
+        unsigned size = sizeof(FourMomenta_);
+        size += FourMomenta_.size() * sizeof(TLorentzVector);
+        LOG(INFO) << " Size of FourMomenta_:         " << size << " byte";
+
+        size = sizeof(HelicityAngles_);
+        for (std::vector<double>& v : HelicityAngles_) {
+            size += sizeof(v);
+            size += v.size() * sizeof(double);
         }
+        LOG(INFO) << " Size of HelicityAngles_:      " << size << " byte";
+        totSize += size;
+
+        size = sizeof(Data_);
+        for (std::vector<std::vector<double> >& v : Data_) {
+            size += sizeof(v);
+            for (std::vector<double>& vv : v) {
+              size += sizeof(vv);
+              size += vv.size() * sizeof(double);
+            }
+        }
+        LOG(INFO) << " Size of Data_:                " << size << " byte";
+        totSize += size;
+
+        size = sizeof(CachedAmplitudes_);
+        for (std::vector<Amp>& v : CachedAmplitudes_) {
+            size += sizeof(v);
+            size += v.size() * sizeof(Amp);
+        }
+        LOG(INFO) << " Size of CachedAmplitudes_:    " << size << " byte";
+        totSize += size;
+
+        size = sizeof(CalculationStatuses_);
+        for (std::vector<CalculationStatus>& v : CalculationStatuses_) {
+            size += sizeof(v);
+            size += v.size() * sizeof(CalculationStatus);
+        }
+        LOG(INFO) << " Size of CalculationStatuses_: " << size << " byte";
+        totSize += size;
+
+        LOG(INFO) << "Size of DataPoint:             " << totSize << " byte";
     }
 }
 
