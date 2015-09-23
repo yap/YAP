@@ -117,6 +117,13 @@ void DataAccessor::clearSymmetrizationIndices()
 //-------------------------
 std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
+    // dynamically allocate memory as needed
+    if (d.Data_.size() <= index())
+        d.Data_.resize(index()+1);
+
+    if (d.Data_.at(index()).size() <= i)
+        d.Data_.at(index()).resize(i+1);
+
     return d.Data_.at(index()).at(i);
 }
 
