@@ -39,8 +39,8 @@ Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleC
         const int lambda  = lambda1 - lambda2;
 
         const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d, pc);
-        const double phi   = helAngles[0];  // use daughter1 as analyzer
-        const double theta = helAngles[1];
+        const double phi   = helAngles.at(0);  // use daughter1 as analyzer
+        const double theta = helAngles.at(1);
 
         a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
     }

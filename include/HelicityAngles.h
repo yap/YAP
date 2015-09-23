@@ -51,7 +51,7 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
     const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
-    { return helicityAngles(d, SymmetrizationIndices_[pc]); }
+    { return helicityAngles(d, SymmetrizationIndices_.at(pc)); }
 
 //protected:
 

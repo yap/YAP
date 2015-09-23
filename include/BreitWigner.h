@@ -61,7 +61,7 @@ public:
 
     /// \return nominal mass
     double mass() const
-    { return Parameters_[0]; }
+    { return Parameters_.at(0); }
 
     /// \return nominal squared masss
     double squaredMass() const
@@ -69,7 +69,7 @@ public:
 
     /// \return nominal width
     double width() const
-    { return Parameters_[1]; }
+    { return Parameters_.at(1); }
 
     /// @}
 
@@ -78,11 +78,11 @@ public:
 
     /// Set nominal mass
     void setMass(double m)
-    { Parameters_[0] = m; }
+    { Parameters_.at(0) = m; }
 
     /// Set nominal width
     void setWidth(double w)
-    { Parameters_[1] = w; }
+    { Parameters_.at(1) = w; }
 
     /// @}
 

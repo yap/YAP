@@ -72,11 +72,14 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
 {
     /// \todo check
     Amp a = BlattWeisskopf_.amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
-    for (auto& daugh : Daughters_) {
-        a *= daugh->amplitude(d, pc);
+
+    const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = pc->daughters();
+
+    for (unsigned i=0; i<Daughters_.size(); ++i) {
+        a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
     }
 
-    DEBUG("DecayChannel: amplitude = " << a);
+    DEBUG("DecayChannel " << std::string(*this) << " amplitude for " << std::string(*pc) << " = " << a);
 
     return a;
 }
@@ -103,6 +106,13 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "DecayChannel::consistent() - invalid number of daughters (" << Daughters_.size() << " != 2).";
         result = false;
     }
+
+    // compare number of daughters
+    for (auto& pc : particleCombinations())
+        if (Daughters_.size() != pc->daughters().size()) {
+            LOG(ERROR) << "DecayChannel::consistent() - DecayChannel and its particleCombinations do not have the same number of daughters.";
+            result = false;
+        }
 
     // check daughters
     bool prevResult = result;

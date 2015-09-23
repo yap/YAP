@@ -41,6 +41,16 @@ inline void disableLogs(el::Level lvl)
     el::Loggers::reconfigureLogger("default", defaultConf);
 }
 
+/// just print the debug message without any additional info
+/// \param lvl (Global, Trace, Debug, Fatal, Error, Warning, Verbose, Info)
+inline void plainLogs(el::Level lvl)
+{
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    defaultConf.set(lvl, el::ConfigurationType::Format, "%msg");
+    el::Loggers::reconfigureLogger("default", defaultConf);
+}
+
 #ifdef ELPP_DISABLE_DEBUG_LOGS
   #define DEBUG(x)
 #else

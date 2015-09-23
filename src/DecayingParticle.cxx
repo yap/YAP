@@ -25,10 +25,11 @@ Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombin
     Amp a = Complex_0;
 
     for (auto& c : channels()) {
-        a += c->freeAmplitude() * c->amplitude(d, pc);
+        if (c->hasSymmetrizationIndex(pc))
+            a += c->freeAmplitude() * c->amplitude(d, pc);
     }
 
-    DEBUG("DecayingParticle: amplitude = " << a);
+    DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
 
     return a;
 }
@@ -136,7 +137,7 @@ void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, st
 //-------------------------
 std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
 {
-    if (!Channels_[i])
+    if (!Channels_.at(i))
         return std::vector<std::shared_ptr<FinalStateParticle>>();
     return Channels_[i]->finalStateParticles();
 }

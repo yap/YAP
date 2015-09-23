@@ -19,12 +19,13 @@ Amp Resonance::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> 
     Amp a = Complex_0;
 
     for (auto& c : channels()) {
-        a += c->freeAmplitude() * c->amplitude(d, pc);
+        if (c->hasSymmetrizationIndex(pc))
+            a += c->freeAmplitude() * c->amplitude(d, pc);
     }
 
     a *= MassShape_->amplitude(d, pc);
 
-    DEBUG("Resonance: amplitude = " << a);
+    DEBUG("Resonance " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
 
     return a;
 }

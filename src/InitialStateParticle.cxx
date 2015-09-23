@@ -147,17 +147,15 @@ bool InitialStateParticle::setFreeAmplitudes(const std::vector<Amp>& amps)
     }
 
     /// \todo this is way too complicated!
-    /*for (unsigned i = 0; i < amps.size(); ++i) {
+    for (unsigned i = 0; i < amps.size(); ++i) {
         if (amps[i] != DecayChannels_[i]->freeAmplitude()) {
             DecayChannels_[i]->setFreeAmplitude(amps[i]);
-            for (auto& data : DataSet_.dataPoints()) {
-              for (auto& pc : DecayChannels_[i]->particleCombinations()) {
-                  DecayChannels_[i]->CalculationStatuses(data, DecayChannels_[i]->symmetrizationIndex(pc)) = kUncalculated;
-
-              }
+            for (auto& pc : DecayChannels_[i]->particleCombinations()) {
+                DecayChannels_[i]->CalculationStatuses(DecayChannels_[i]->symmetrizationIndex(pc)) = kUncalculated;
+                /// \todo propagate CalculationStatus
             }
         }
-    }*/
+    }
 
     return true;
 }

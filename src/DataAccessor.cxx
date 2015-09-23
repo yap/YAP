@@ -46,6 +46,16 @@ DataAccessor::~DataAccessor()
 }
 
 //-------------------------
+bool DataAccessor::hasSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
+{
+    for (auto& kv : SymmetrizationIndices_)
+        if (kv.first == c)
+            return true;
+
+    return false;
+}
+
+//-------------------------
 unsigned DataAccessor::maxSymmetrizationIndex() const
 {
     /// I don't know why, but std::max_element returns wrong numbers sometimes!
@@ -108,7 +118,7 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
     // else assign to current size = highest current index + 1
     SymmetrizationIndices_[c] = maxSymmetrizationIndex() + 1;
 
-    CalculationStatuses_.resize(maxSymmetrizationIndex(), kUncalculated);
+    CalculationStatuses_.resize(maxSymmetrizationIndex() + 1, kUncalculated);
 
 }
 

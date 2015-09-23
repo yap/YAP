@@ -22,6 +22,7 @@ int main( int argc, char** argv)
 {
 
     //yap::disableLogs(el::Level::Debug);
+    yap::plainLogs(el::Level::Debug);
 
 
     unsigned max2L(2 * 4);
@@ -106,7 +107,7 @@ int main( int argc, char** argv)
     TLorentzVector P(0.0, 0.0, 0.0, D->mass());
     Double_t masses[4] = { piPlus[0]->mass(), piMinus[0]->mass(), piPlus[0]->mass(), piMinus[0]->mass() };
 
-    for (unsigned int iEvt = 0; iEvt < 100000; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 5; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();

@@ -66,6 +66,9 @@ public:
     unsigned index() const
     { return Index_; }
 
+    /// \return if the given ParticleCombination is in SymmetrizationIndices_
+    bool hasSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) const;
+
     /// \return index inside row of DataPoint for the requested symmetrization
     unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
     { return SymmetrizationIndices_.at(c); }
@@ -107,10 +110,12 @@ public:
 
 
     /// \return calculation statuses
-    //CalculationStatus& CalculationStatuses(DataPoint& d, unsigned i);
+    CalculationStatus& CalculationStatuses(unsigned i)
+    { return CalculationStatuses_.at(i); }
 
     /// \return calculation statuses (const)
-    //CalculationStatus CalculationStatuses(DataPoint& d, unsigned i) const;
+    CalculationStatus CalculationStatuses(unsigned i) const
+    { return CalculationStatuses_.at(i); }
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;
