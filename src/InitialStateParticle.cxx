@@ -255,6 +255,8 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
       std::cout << "\n";
     }*/
 
+    d.printDataSize();
+
     if (!DataSet_.consistent(d))
         return false;
 

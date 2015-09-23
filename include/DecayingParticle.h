@@ -104,9 +104,6 @@ public:
 
     /// @}
 
-    /// recursively set parent helicities of HelicitySpinAmplitudes
-    void setParentHelicities(int twoParentHelicity = 0);
-
     /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
     /// Check if this is the case, and share SpinAmplitudes
     void optimizeSpinAmplitudeSharing();

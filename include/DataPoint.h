@@ -57,6 +57,8 @@ public:
 
     bool setFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
 
+    void printDataSize();
+
     /// \name Data accessor friends
     /// @{
 
