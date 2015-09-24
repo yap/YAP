@@ -23,6 +23,7 @@
 
 #include "Amp.h"
 #include "CalculationStatus.h"
+#include "DataPoint.h"
 #include "ParticleCombination.h"
 
 #include <map>
@@ -30,7 +31,6 @@
 
 namespace yap {
 
-class DataPoint;
 class InitialStateParticle;
 
 /// \name DataAccessor
@@ -101,20 +101,39 @@ public:
     /// Access a data point's data (by friendship)
     std::vector<double>& data(DataPoint& d, unsigned i) const;
 
+#ifdef ELPP_DISABLE_DEBUG_LOGS
     /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const;
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const
+    { return d.Data_[Index_][i]; }
 
-    Amp& cachedAmplitude(DataPoint& d, unsigned i) const;
+    Amp& cachedAmplitude(DataPoint& d, unsigned i) const
+    { return d.CachedAmplitudes_[Index_][i]; }
 
-    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const;
+    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
+    { return d.CachedAmplitudes_[Index_][i]; }
 
     /// \return calculation statuses (const)
-    CalculationStatus calculationStatus(std::shared_ptr<ParticleCombination> c) const
-    { return CalculationStatuses_[this->symmetrizationIndex(c)]; }
+    CalculationStatus calculationStatus(unsigned i) const
+    { return CalculationStatuses_[i]; }
+#else
+    /// Access a data point's data (by friendship) (const)
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const
+    { return d.Data_.at(Index_).at(i); }
+
+    Amp& cachedAmplitude(DataPoint& d, unsigned i) const
+    { return d.CachedAmplitudes_.at(Index_).at(i); }
+
+    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
+    { return d.CachedAmplitudes_.at(Index_).at(i); }
 
     /// \return calculation statuses (const)
     CalculationStatus calculationStatus(unsigned i) const
     { return CalculationStatuses_.at(i); }
+#endif
+
+    /// \return calculation statuses (const)
+    CalculationStatus calculationStatus(std::shared_ptr<ParticleCombination> c) const
+    { return CalculationStatuses_[this->symmetrizationIndex(c)]; }
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;

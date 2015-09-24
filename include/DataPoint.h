@@ -21,18 +21,19 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include "DataAccessor.h"
-#include "DataSet.h"
-#include "FourMomenta.h"
-#include "HelicityAngles.h"
+#include "Amp.h"
 
 #include <TLorentzVector.h>
 
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
 
+class DataAccessor;
+class FourMomenta;
+class HelicityAngles;
 class ParticleCombination;
 
 /// \class DataPoint
@@ -62,22 +63,10 @@ public:
     /// \name Data accessor friends
     /// @{
 
-    friend void FourMomenta::calculate(DataPoint&);
-    friend const TLorentzVector& FourMomenta::p(const DataPoint&, unsigned) const;
-
-    friend void HelicityAngles::transformDaughters(DataPoint& d, std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
-    friend const std::vector<double>& HelicityAngles::helicityAngles(const DataPoint& d, unsigned i) const;
-
-    friend std::vector<double>& DataAccessor::data(DataPoint&, unsigned) const;
-    friend const std::vector<double>& DataAccessor::data(const DataPoint&, unsigned) const;
-
-    friend Amp& DataAccessor::cachedAmplitude(DataPoint& d, unsigned i) const;
-    friend const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const;
-
-    //friend CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i);
-    //friend CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const;
-
-    friend bool DataSet::consistent(const DataPoint&) const;
+    friend class FourMomenta;
+    friend class HelicityAngles;
+    friend class DataAccessor;
+    friend class DataSet;
 
     /// reserve space in vectors
     void allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);

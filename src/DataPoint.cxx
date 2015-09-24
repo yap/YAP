@@ -1,5 +1,7 @@
 #include "DataPoint.h"
 
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
 #include "logging.h"
 
 #include <assert.h>

@@ -21,6 +21,7 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
+#include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"

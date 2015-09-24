@@ -133,31 +133,13 @@ void DataAccessor::clearSymmetrizationIndices()
 std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
     // dynamically allocate memory as needed
-    if (d.Data_.size() <= index())
+    if (d.Data_.size() <= Index_)
         d.Data_.resize(index()+1);
 
-    if (d.Data_.at(index()).size() <= i)
-        d.Data_.at(index()).resize(i+1);
+    if (d.Data_[Index_].size() <= i)
+        d.Data_[Index_].resize(i+1);
 
-    return d.Data_.at(index()).at(i);
-}
-
-//-------------------------
-const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
-{
-    return d.Data_.at(index()).at(i);
-}
-
-//-------------------------
-Amp& DataAccessor::cachedAmplitude(DataPoint& d, unsigned i) const
-{
-    return d.CachedAmplitudes_.at(index()).at(i);
-}
-
-//-------------------------
-const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const
-{
-    return d.CachedAmplitudes_.at(index()).at(i);
+    return d.Data_[Index_][i];
 }
 
 //-------------------------
