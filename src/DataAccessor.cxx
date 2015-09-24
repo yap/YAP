@@ -161,18 +161,6 @@ const Amp& DataAccessor::cachedAmplitude(const DataPoint& d, unsigned i) const
 }
 
 //-------------------------
-/*CalculationStatus& DataAccessor::CalculationStatuses(DataPoint& d, unsigned i)
-{
-    return d.CalculationStatuses_.at(index()).at(i);
-}
-
-//-------------------------
-CalculationStatus DataAccessor::CalculationStatuses(DataPoint& d, unsigned i) const
-{
-    return d.CalculationStatuses_.at(index()).at(i);
-}*/
-
-//-------------------------
 InitialStateParticle* DataAccessor::initialStateParticle() const
 {
     return InitialStateParticle_;

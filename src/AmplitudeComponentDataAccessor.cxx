@@ -26,8 +26,7 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPoint& d, std::shared_p
     Amp& a = cachedAmplitude(d, sym_index);
 
     // check whether data-dependent calculation needs to be made
-    CalculationStatus& calcStat = CalculationStatuses_.at(sym_index);
-    if (calcStat == kUncalculated) {
+    if (calculationStatus(sym_index) == kUncalculated) {
 
         // calculate amplitude for ALL dataPoints
         for (DataPoint& dataPt : initialStateParticle()->dataSet()) {
@@ -35,7 +34,7 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPoint& d, std::shared_p
         }
 
         // set calculation status
-        calcStat = kCalculated;
+        setCalculationStatus(sym_index, kCalculated);
     }
 
     return a;

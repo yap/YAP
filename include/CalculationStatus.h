@@ -24,7 +24,11 @@
 namespace yap {
 
 /// \enum CalculationStatus
-enum CalculationStatus : bool { kCalculated = true, kUncalculated = false };
+enum CalculationStatus : bool
+{
+    kCalculated = true,
+    kUncalculated = false
+};
 
 }
 

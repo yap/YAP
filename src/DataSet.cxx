@@ -16,11 +16,6 @@ bool DataSet::consistent(const DataPoint& d) const
         result = false;
     }
 
-    /*if (d.CalculationStatuses_.size() != d.Data_.size()) {
-        LOG(ERROR) << "DataSet::consistent(DataPoint) - number of CalculationStatuses (" << d.CalculationStatuses_.size() << ") != Data size (" << (*this)[0].FourMomenta_.size() << ")";
-        result = false;
-    }*/
-
     return result;
 }
 

@@ -108,17 +108,20 @@ public:
 
     const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const;
 
-
-    /// \return calculation statuses
-    CalculationStatus& CalculationStatuses(unsigned i)
-    { return CalculationStatuses_.at(i); }
-
     /// \return calculation statuses (const)
-    CalculationStatus CalculationStatuses(unsigned i) const
+    CalculationStatus calculationStatus(unsigned i) const
     { return CalculationStatuses_.at(i); }
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+
+    virtual void setCalculationStatus(unsigned i, CalculationStatus stat)
+    { CalculationStatuses_.at(i) = stat; }
 
     /// @}
 
