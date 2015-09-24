@@ -76,6 +76,26 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
+CalculationStatus DecayingParticle::updateCalculationStatus(std::shared_ptr<ParticleCombination> c)
+{
+    CalculationStatus retVal(kCalculated);
+
+    if (! hasSymmetrizationIndex(c))
+        return retVal;
+
+    // call updateCalculationStatus of channels
+    for (auto& ch : Channels_)
+        if (ch->updateCalculationStatus(c) == kUncalculated)
+            retVal = kUncalculated;
+
+    // set new Status
+    if (calculationStatus(c) == kCalculated)
+        setCalculationStatus(c, retVal);
+
+    return retVal;
+}
+
+//-------------------------
 void DecayingParticle::addChannel(DecayChannel* c)
 {
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));

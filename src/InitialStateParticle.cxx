@@ -34,21 +34,13 @@ double InitialStateParticle::logLikelihood()
 {
     /// \todo implement
 
-    // test amplitude calculation
-    /*for (DataPoint& dataPoint : DataSet_.dataPoints()) {
+    DEBUG("InitialStateParticle::logLikelihood()");
 
-        for (DataAccessor* component : DataAccessors_) {
-            // skip initialStateParticle and FourMomenta
-            if (component->index() < 2)
-                continue;
+    // update CalculationStatuses
+    for (auto& pc : particleCombinations())
+        updateCalculationStatus(pc);
 
-            if (dynamic_cast<AmplitudeComponent*>(component))
-                for (auto& pc : component->particleCombinations())
-                    dynamic_cast<AmplitudeComponent*>(component)->amplitude(dataPoint, pc);
-        }
-
-    }*/
-
+    // calculate amplitues
     for (DataPoint& dataPoint : DataSet_) {
         Amp a = Complex_0;
         for (auto& pc : particleCombinations()) {
@@ -147,9 +139,7 @@ bool InitialStateParticle::setFreeAmplitudes(const std::vector<Amp>& amps)
     }
 
     for (unsigned i = 0; i < amps.size(); ++i) {
-        if (amps[i] != DecayChannels_[i]->freeAmplitude()) {
-            DecayChannels_[i]->setFreeAmplitude(amps[i]);
-        }
+        DecayChannels_[i]->setFreeAmplitude(amps[i]);
     }
 
     return true;

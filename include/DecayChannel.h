@@ -50,6 +50,8 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
+    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
+
     /// \return breakup momentum
     double breakupMomentum() const;
 

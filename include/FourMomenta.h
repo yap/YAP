@@ -53,6 +53,9 @@ public:
     /// Fill 4-momenta
     void calculate(DataPoint& d);
 
+    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override
+    { return kCalculated; }
+
     /// Access 4-momentum (const)
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access

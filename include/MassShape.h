@@ -52,6 +52,8 @@ public:
     virtual bool consistent() const override
     { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
 
+    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
+
     /// @}
 
 protected:

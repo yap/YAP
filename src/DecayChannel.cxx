@@ -77,7 +77,6 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
         return a;
 
     const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = pc->daughters();
-
     for (unsigned i=0; i<Daughters_.size(); ++i) {
         a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
     }
@@ -185,6 +184,37 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
+CalculationStatus DecayChannel::updateCalculationStatus(std::shared_ptr<ParticleCombination> c)
+{
+    CalculationStatus retVal(kCalculated);
+
+    if (! hasSymmetrizationIndex(c))
+        return retVal;
+
+    // call updateCalculationStatus of components and daughters
+
+    if (BlattWeisskopf_.calculationStatus() == kUncalculated)
+        retVal = kUncalculated;
+
+    if (SpinAmplitude_->updateCalculationStatus(c) == kUncalculated)
+        retVal = kUncalculated;
+
+    const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = c->daughters();
+    for (unsigned i=0; i<Daughters_.size(); ++i) {
+        if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]))
+            if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i])->updateCalculationStatus(pcDaughters.at(i)) == kUncalculated)
+                retVal = kUncalculated;
+    }
+
+
+    // set new Status
+    if (calculationStatus(c) == kCalculated)
+        setCalculationStatus(c, retVal);
+
+    return retVal;
+}
+
+//-------------------------
 double DecayChannel::breakupMomentum() const
 {
     if (Daughters_.size() != 2) {
@@ -249,13 +279,18 @@ void DecayChannel::setFreeAmplitude(const Amp& amp)
     FreeAmplitude_ = amp;
 
     // set CalculationStatus of parent
+    bool set(false);
     for (auto& pc : particleCombinations()) {
-        const std::shared_ptr<ParticleCombination> parent = pc->sharedParent();
-        if (Parent_->hasSymmetrizationIndex(parent)) {
-            unsigned index = Parent_->symmetrizationIndex(parent);
+        if (Parent_->hasSymmetrizationIndex(pc)) {
+            unsigned index = Parent_->symmetrizationIndex(pc);
             Parent_->setCalculationStatus(index, kUncalculated);
+            set = true;
+            //DEBUG("DecayChannel::setFreeAmplitude - setCalculationStatus of " << Parent_->name() << " for " << std::string(*pc));
         }
     }
+
+    if (!set)
+        LOG(ERROR) << "DecayChannel::setFreeAmplitude - could not set calculationStatus od parent.";
 }
 
 //-------------------------

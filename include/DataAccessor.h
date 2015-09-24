@@ -153,6 +153,13 @@ public:
     { CalculationStatuses_.at(i) = stat; }
 #endif
 
+    /// Set CalculationStatus for particleCombination
+    void setCalculationStatus(std::shared_ptr<ParticleCombination> c, CalculationStatus stat)
+    { CalculationStatuses_.at(symmetrizationIndex(c)) = stat; }
+
+    /// Set CalculationStatuses_ depending on DataAccessor's components
+    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) = 0;
+
     /// @}
 
 protected:
