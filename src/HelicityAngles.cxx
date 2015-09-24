@@ -17,6 +17,17 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 }
 
 //-------------------------
+void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+{
+    /// dFunctions for J == 0 are 0, so we don't need to calculate and store helicity angles
+    if (initialStateParticle()->quantumNumbers().twoJ() == 0
+        and c->parent() == nullptr)
+        return;
+
+    DataAccessor::addSymmetrizationIndex(c);
+}
+
+//-------------------------
 void HelicityAngles::calculate(DataPoint& d)
 {
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)

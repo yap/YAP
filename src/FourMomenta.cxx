@@ -1,6 +1,7 @@
 #include "FourMomenta.h"
 
 #include "DataPoint.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 #include "ParticleCombination.h"
 
