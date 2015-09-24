@@ -65,6 +65,9 @@ public:
     const ParticleCombination* parent() const
     { return Parent_; }
 
+    /// get parent share_ptr
+    const std::shared_ptr<ParticleCombination> sharedParent() const;
+
     /// @}
 
     /// \name Get info on type

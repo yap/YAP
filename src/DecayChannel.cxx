@@ -73,6 +73,9 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
     /// \todo check
     Amp a = BlattWeisskopf_.amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
 
+    if (a == Complex_0)
+        return a;
+
     const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = pc->daughters();
 
     for (unsigned i=0; i<Daughters_.size(); ++i) {
@@ -235,6 +238,24 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
     }
 
     return fsps;
+}
+
+//-------------------------
+void DecayChannel::setFreeAmplitude(const Amp& amp)
+{
+    if (FreeAmplitude_ == amp)
+        return;
+
+    FreeAmplitude_ = amp;
+
+    // set CalculationStatus of parent
+    for (auto& pc : particleCombinations()) {
+        const std::shared_ptr<ParticleCombination> parent = pc->sharedParent();
+        if (Parent_->hasSymmetrizationIndex(parent)) {
+            unsigned index = Parent_->symmetrizationIndex(parent);
+            Parent_->setCalculationStatus(index, kUncalculated);
+        }
+    }
 }
 
 //-------------------------

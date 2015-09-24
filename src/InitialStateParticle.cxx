@@ -267,10 +267,18 @@ bool InitialStateParticle::addDataPoint(const DataPoint& d)
 void InitialStateParticle::printDataAccessors()
 {
     std::cout << "DataAccessors of " << name() << "\n"
-              << "index \tnSymIndices \tname  \t\tparticleCombinations\n";
+              << "index \tnSymIndices \taddress  \tname  \t\tparticleCombinations\n";
     for (DataAccessor* d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1
+                  << "  \t" << d
                   << "  \t(" << typeid(*d).name() << ")  \t";
+        if (dynamic_cast<Particle*>(d))
+            std::cout << dynamic_cast<Particle*>(d)->name();
+        else if (dynamic_cast<DecayChannel*>(d))
+            std::cout << std::string(*dynamic_cast<DecayChannel*>(d));
+
+        std::cout << " \t";
+
         for (auto& pc : d->particleCombinations())
             std::cout << std::string(*pc) << ";  ";
         std::cout << "\n";
@@ -283,6 +291,8 @@ void InitialStateParticle::removeDataAccessor(DataAccessor* d)
 {
     if (! DataAccessors_.empty())
         DataAccessors_.erase(d);
+
+    //DEBUG("size of InitialStateParticle's DataAccessors_ = " << DataAccessors_.size());
 }
 
 //-------------------------

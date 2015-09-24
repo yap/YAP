@@ -109,6 +109,10 @@ public:
     const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const;
 
     /// \return calculation statuses (const)
+    CalculationStatus calculationStatus(std::shared_ptr<ParticleCombination> c) const
+    { return CalculationStatuses_[this->symmetrizationIndex(c)]; }
+
+    /// \return calculation statuses (const)
     CalculationStatus calculationStatus(unsigned i) const
     { return CalculationStatuses_.at(i); }
 
@@ -120,7 +124,7 @@ public:
     /// \name Setters
     /// @{
 
-    virtual void setCalculationStatus(unsigned i, CalculationStatus stat)
+    void setCalculationStatus(unsigned i, CalculationStatus stat)
     { CalculationStatuses_.at(i) = stat; }
 
     /// @}

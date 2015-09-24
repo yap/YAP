@@ -29,6 +29,22 @@ ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCom
 }
 
 //-------------------------
+const std::shared_ptr<ParticleCombination> ParticleCombination::sharedParent() const
+{
+    if (! Parent_) {
+        return std::shared_ptr<ParticleCombination>(Parent_);
+    }
+
+    for (auto& pc : ParticleCombinationSet_)
+        if (Parent_ == pc.get())
+            return pc;
+
+    LOG(WARNING) << "ParticleCombination::parent() - could not find parent in ParticleCombinationSet_.";
+
+    return std::shared_ptr<ParticleCombination>(Parent_);
+}
+
+//-------------------------
 bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daughter)
 {
     if (daughter->indices().empty()) {

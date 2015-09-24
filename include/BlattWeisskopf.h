@@ -52,6 +52,14 @@ public:
     /// Blatt-Weisskopf amplitude at DataPoint
     virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
 
+    /// \return CalculationStatus
+    CalculationStatus calculationStatus() const
+    { return CalculationStatus_; }
+
+    /// Set CalculationStatus_
+    virtual void setCalculationStatus(CalculationStatus stat)
+    { CalculationStatus_ = stat; }
+
 private:
 
     /// DecayChannel this BlattWeisskopf belongs to

@@ -106,6 +106,8 @@ public:
 
 private:
 
+    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
+
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 

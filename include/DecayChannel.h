@@ -92,8 +92,7 @@ public:
     /// @{
 
     /// Set the free (complex) amplitude
-    void setFreeAmplitude(const Amp& amp)
-    { FreeAmplitude_ = amp; }
+    void setFreeAmplitude(const Amp& amp);
 
     /// Set parent
     void setParent(DecayingParticle* parent)

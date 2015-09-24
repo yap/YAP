@@ -2,6 +2,7 @@
 
 #include "HelicitySpinAmplitude.h"
 #include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
 
@@ -145,6 +146,11 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
 //-------------------------
 void DecayingParticle::optimizeSpinAmplitudeSharing()
 {
+    static bool firstCalled(true);
+    bool first = firstCalled;
+
+    firstCalled = false;
+
     /// \todo Will not work if we have more than one initial state particle
     /// make ampSet member of initialStateParticle ???
     static std::set<std::shared_ptr<SpinAmplitude> > ampSet;
@@ -157,18 +163,49 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
         bool found(false);
         for (auto sa : ampSet) {
             if (comp(sa, amp)) {
-                LOG(INFO) << "Sharing spin amplitude " << std::string(*sa) << " and " << std::string(*amp) << " (" << amp.get() << ")   \t Size of ampSet: " << ampSet.size();
+                LOG(INFO) << "Sharing spin amplitude " << std::string(*sa) << " and " << std::string(*amp) << " (" << amp.get() << ")";
                 channel(i)->spinAmplitude() = sa;
                 found = true;
                 break;
             }
         }
-        if (!found)
+        if (!found) {
             ampSet.insert(amp);
+            //LOG(INFO) << "Size of ampSet: " << ampSet.size();
+        }
 
         for (std::shared_ptr<Particle> d : channel(i)->daughters()) {
             if (std::dynamic_pointer_cast<DecayingParticle>(d))
                 std::static_pointer_cast<DecayingParticle>(d)->optimizeSpinAmplitudeSharing();
+        }
+    }
+
+    if (first) {
+        DEBUG("AmpSet:");
+        for (auto& amp : ampSet) {
+            DEBUG("  " << amp.get());
+        }
+
+        std::set<DataAccessor*> removeAmps;
+        for (DataAccessor* dataAcc : initialStateParticle()->DataAccessors_) {
+            if (dynamic_cast<SpinAmplitude*>(dataAcc)) {
+                bool found(false);
+                for (auto& amp : ampSet) {
+                    if (amp.get() == dataAcc) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    removeAmps.insert(dataAcc);
+                }
+            }
+        }
+
+        for (DataAccessor* dataAcc : removeAmps) {
+            initialStateParticle()->removeDataAccessor(dataAcc);
+            LOG(INFO) << "remove unused SpinAmplitude " << dataAcc << " from InitialStateParticle's DataAccessors.";
         }
     }
 }
