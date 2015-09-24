@@ -134,10 +134,10 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
     // dynamically allocate memory as needed
     if (d.Data_.size() <= Index_)
-        d.Data_.resize(index()+1);
+        d.Data_.resize(Index_ + 1);
 
     if (d.Data_[Index_].size() <= i)
-        d.Data_[Index_].resize(i+1);
+        d.Data_[Index_].resize(i + 1);
 
     return d.Data_[Index_][i];
 }

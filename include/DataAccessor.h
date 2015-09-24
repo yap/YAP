@@ -143,8 +143,15 @@ public:
     /// \name Setters
     /// @{
 
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+    /// Set CalculationStatus for index i
+    void setCalculationStatus(unsigned i, CalculationStatus stat)
+    { CalculationStatuses_[i] = stat; }
+#else
+    /// Set CalculationStatus for index i
     void setCalculationStatus(unsigned i, CalculationStatus stat)
     { CalculationStatuses_.at(i) = stat; }
+#endif
 
     /// @}
 
