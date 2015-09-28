@@ -42,8 +42,16 @@ class DecayingParticle : public Particle, public AmplitudeComponentDataAccessor
 {
 public:
 
+    /// \name Constructors
+    /// @{
+
     /// Constructor
     DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize);
+
+    /// Copy constructor
+    DecayingParticle(const DecayingParticle& other);
+
+    /// @}
 
     /// Check consistency of object
     virtual bool consistent() const override;

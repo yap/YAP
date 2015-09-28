@@ -23,7 +23,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     Daughters_(daughters),
     BlattWeisskopf_(this),
     SpinAmplitude_(spinAmplitude),
-    FreeAmplitude_(0)
+    FreeAmplitude_(new Amp(0, 0))
 {
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<ParticleCombination> > > PCs;
@@ -77,7 +77,7 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
         return a;
 
     const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = pc->daughters();
-    for (unsigned i=0; i<Daughters_.size(); ++i) {
+    for (unsigned i = 0; i < Daughters_.size(); ++i) {
         a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
     }
 
@@ -200,7 +200,7 @@ CalculationStatus DecayChannel::updateCalculationStatus(std::shared_ptr<Particle
         retVal = kUncalculated;
 
     const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = c->daughters();
-    for (unsigned i=0; i<Daughters_.size(); ++i) {
+    for (unsigned i = 0; i < Daughters_.size(); ++i) {
         if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]))
             if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i])->updateCalculationStatus(pcDaughters.at(i)) == kUncalculated)
                 retVal = kUncalculated;
@@ -273,10 +273,10 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 //-------------------------
 void DecayChannel::setFreeAmplitude(const Amp& amp)
 {
-    if (FreeAmplitude_ == amp)
+    if (*FreeAmplitude_ == amp)
         return;
 
-    FreeAmplitude_ = amp;
+    *FreeAmplitude_ = amp;
 
     // set CalculationStatus of parent
     bool set(false);

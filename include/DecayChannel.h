@@ -78,7 +78,7 @@ public:
 
     /// Get free amplitude
     const Amp& freeAmplitude() const
-    { return FreeAmplitude_; }
+    { return *FreeAmplitude_; }
 
     /// Get parent particle
     DecayingParticle* parent()
@@ -127,7 +127,7 @@ protected:
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
     /// free ("fit") amplitude to multiply all others by
-    Amp FreeAmplitude_;
+    std::shared_ptr<Amp> FreeAmplitude_;
 
     /// DecayingParticle this DecayChannel belongs to
     DecayingParticle* Parent_;

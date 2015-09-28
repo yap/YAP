@@ -31,11 +31,11 @@ Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleC
     const int J = InitialQuantumNumbers_.twoJ();
     // DFunction == 1  for  J == 0
     if (J != 0) {
-        const int Lambda  = InitialQuantumNumbers_.twoHelicity();
+        const int Lambda  = InitialQuantumNumbers_.twoLambda();
         const int P       = InitialQuantumNumbers_.P();
 
-        const int lambda1 = FinalQuantumNumbers_[0].twoHelicity();
-        const int lambda2 = FinalQuantumNumbers_[1].twoHelicity();
+        const int lambda1 = FinalQuantumNumbers_[0].twoLambda();
+        const int lambda2 = FinalQuantumNumbers_[1].twoLambda();
         const int lambda  = lambda1 - lambda2;
 
         const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d, pc);
@@ -67,10 +67,10 @@ HelicitySpinAmplitude::operator std::string() const
 {
     std::string result = "(l=" + spinToString(TwoL_);
 
-    result += "; λ_p=" + spinToString(InitialQuantumNumbers_.twoHelicity());
+    result += "; λ_p=" + spinToString(InitialQuantumNumbers_.twoLambda());
     result += "; λ=";
-    result += spinToString(FinalQuantumNumbers_[0].twoHelicity()) + ",";
-    result += spinToString(FinalQuantumNumbers_[1].twoHelicity()) + ")";
+    result += spinToString(FinalQuantumNumbers_[0].twoLambda()) + ",";
+    result += spinToString(FinalQuantumNumbers_[1].twoLambda()) + ")";
 
     return result;
 }
@@ -87,8 +87,8 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(
     const int s1 = final1.twoJ();
     const int s2 = final2.twoJ();
 
-    int lambda1 = final1.twoHelicity();
-    int lambda2 = final2.twoHelicity();
+    int lambda1 = final1.twoLambda();
+    int lambda2 = final2.twoLambda();
 
     // \todo: cross check that S is really meant to be s1 +s2
     const int    S         = s1 + s2;
@@ -105,8 +105,8 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(
         return 0;
 
     DEBUG("Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
-               << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
-               << " = " << ssClebsch* lsClebsch);
+          << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
+          << " = " << ssClebsch * lsClebsch);
 
 
     return ssClebsch * lsClebsch;

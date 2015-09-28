@@ -39,8 +39,16 @@ class Particle : public virtual AmplitudeComponent
 {
 public:
 
+    /// \name Constructor & clone
+    /// @{
+
     /// Constructor
     Particle(const QuantumNumbers& q, double mass, std::string name);
+
+    /// Clone
+    virtual std::shared_ptr<Particle> clone() const = 0;
+
+    /// @}
 
     /// Check consitency of object
     virtual bool consistent() const override;

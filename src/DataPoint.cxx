@@ -19,7 +19,7 @@ bool DataPoint::setFourMomenta(const std::vector<TLorentzVector>& fourMomenta)
 {
     if (FourMomenta_.size() < fourMomenta.size()) {
         LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
-            << fourMomenta.size() << " > " << FourMomenta_.size();
+                   << fourMomenta.size() << " > " << FourMomenta_.size();
         return false;
     }
 
@@ -64,8 +64,8 @@ void DataPoint::printDataSize()
     for (std::vector<std::vector<double> >& v : Data_) {
         size += sizeof(v);
         for (std::vector<double>& vv : v) {
-          size += sizeof(vv);
-          size += vv.size() * sizeof(double);
+            size += sizeof(vv);
+            size += vv.size() * sizeof(double);
         }
     }
     std::cout << "+ Size of Data_:                " << size << " byte\n";

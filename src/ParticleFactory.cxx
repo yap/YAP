@@ -14,7 +14,41 @@
 namespace yap {
 
 //-------------------------
-void helicityStates::addChannels(helicityStates& A, helicityStates& B, unsigned maxTwoL)
+ParticleFactory::ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, double width) :
+    QuantumNumbers(q),
+    PDG_(pdg),
+    Name_(name),
+    Mass_(mass),
+    Width_(width)
+{
+}
+
+//-------------------------
+bool ParticleFactory::ParticleTableEntry::consistent() const
+{
+    bool result = QuantumNumbers::consistent();
+
+    if (Name_.empty()) {
+        LOG(ERROR) << "ParticleTableEntry::consistent : No name specified.";
+        result = false;
+    }
+
+    return result;
+}
+
+//-------------------------
+ParticleFactory::HelicityStates::HelicityStates(Particle&& P) :
+    std::vector<std::shared_ptr<Particle> >()
+{
+    // loop through all possible helicity states
+    for (int lambda = -P.quantumNumbers().twoJ(); lambda <= P.quantumNumbers().twoJ(); lambda += 2) {
+        push_back(P.clone());
+        back()->quantumNumbers().setTwoLambda(lambda);
+    }
+}
+
+//-------------------------
+void ParticleFactory::HelicityStates::addChannels(HelicityStates& A, HelicityStates& B, unsigned maxTwoL)
 {
     for (auto p : *this) {
         if (std::dynamic_pointer_cast<DecayingParticle>(p))
@@ -30,82 +64,67 @@ ParticleFactory::ParticleFactory(const std::string pdlFile) :
 }
 
 //-------------------------
-helicityStates ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
+ParticleFactory::HelicityStates ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
 {
-    const PdlParticleProperties& p = particleProperties(PDG);
-    helicityStates res;
-
-    // all possible helicities
-    for (int lambda = -p.TwoJ_; lambda <= p.TwoJ_; lambda += 2) {
-        QuantumNumbers q = createQuantumNumbers(PDG);
-        q.setTwoHelicity(lambda);
-        res.push_back(std::make_shared<FinalStateParticle>(q, p.Mass_, p.Name_, PDG, indices));
-    }
-
-    return res;
+    const ParticleTableEntry& p = particleTableEntry(PDG);
+    return HelicityStates(FinalStateParticle(p, p.Mass_, p.Name_, PDG, indices));
 }
 
 //-------------------------
 std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
-    const PdlParticleProperties& p = particleProperties(PDG);
-    helicityStates res;
+    const ParticleTableEntry& p = particleTableEntry(PDG);
 
-    if (p.TwoJ_ != 0)
+    if (p.twoJ() != 0)
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
-    std::shared_ptr<InitialStateParticle> isp = std::make_shared<InitialStateParticle>(createQuantumNumbers(PDG), p.Mass_, p.Name_, radialSize);
+    std::shared_ptr<InitialStateParticle> isp = std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
     InitialStateParticle_ = isp.get();
 
     return isp;
 }
 
 //-------------------------
-helicityStates ParticleFactory::createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape)
+ParticleFactory::HelicityStates ParticleFactory::createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape)
 {
-    const PdlParticleProperties& p = particleProperties(PDG);
-    helicityStates res;
-
-    // all possible helicities
-    for (int lambda = -p.TwoJ_; lambda <= p.TwoJ_; lambda += 2) {
-        QuantumNumbers q = createQuantumNumbers(PDG);
-        q.setTwoHelicity(lambda);
-        res.push_back(std::make_shared<Resonance>(q, p.Mass_, p.Name_, radialSize, massShape));
-    }
-
-    return res;
+    const ParticleTableEntry& p = particleTableEntry(PDG);
+    return HelicityStates(Resonance(p, p.Mass_, p.Name_, radialSize, massShape));
 }
 
 //-------------------------
-helicityStates ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
+ParticleFactory::HelicityStates ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
-    const PdlParticleProperties& p = particleProperties(PDG);
+    const ParticleTableEntry& p = particleTableEntry(PDG);
     std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(initialStateParticle(), p.Mass_, p.Width_);
     return createResonance(PDG, radialSize, massShape);
 }
 
 //-------------------------
-QuantumNumbers ParticleFactory::createQuantumNumbers(int PDG)
+const ParticleFactory::ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 {
-    const PdlParticleProperties& p = particleProperties(PDG);
-
-    unsigned char twoJ = p.TwoJ_;
-    char Q = std::round(1. / 3. * p.ThreeCharge_);
-
-    // \todo
-    unsigned char twoI = 0;
-    unsigned char P = 0;
-
-    return QuantumNumbers(twoI, twoJ, P, Q);
+    if (particleTable_.count(PDG) == 0) {
+        LOG(FATAL) << "ParticleFactory::particleTableEntry : No particle table entry for PDG " << PDG;
+    }
+    return particleTable_.at(PDG);
 }
 
 //-------------------------
-const PdlParticleProperties& ParticleFactory::particleProperties(int PDG) const
+bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
 {
-    if (particleProperties_.count(PDG) == 0) {
-        LOG(ERROR) << "No PdlParticleProperties for PDG " << PDG;
+    if (!entry.consistent()) {
+        LOG(ERROR) << "ParticleFactory::addParticleTableEntry : entry with PDG code " << entry.PDG_ << " inconsistent";
+        return false;
     }
-    return particleProperties_.at(PDG);
+
+    if (particleTable_.count(entry.PDG_) != 0) {
+        LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG_ << " already exists. Overwriting entry.";
+    }
+
+    particleTable_[entry.PDG_] = entry;
+    // } else
+    //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG_, entry));
+
+    return true;
 }
 
 //-------------------------
@@ -156,10 +175,12 @@ void ParticleFactory::readPDT(const std::string fname)
 
         char ch, ch1;
 
+        // ignoring commented lines
         do {
-
             indec.get(ch);
-            if (ch == '\n') indec.get(ch);
+            if (ch == '\n') {
+                indec.get(ch);
+            }
             if (ch != '*') {
                 indec.putback(ch);
             } else {
@@ -170,9 +191,7 @@ void ParticleFactory::readPDT(const std::string fname)
         indec >> cmnd;
 
         if (strcmp(cmnd, "end")) {
-
             if (!strcmp(cmnd, "add")) {
-
                 indec >> xxxx;
                 indec >> xxxx;
                 indec >> pname;
@@ -185,34 +204,22 @@ void ParticleFactory::readPDT(const std::string fname)
                 indec >> ctau;
                 indec >> lundkc;
 
-
-                PdlParticleProperties tmp;
-
-                tmp.PDGCode_ = stdhepid;
-                tmp.Name_ = std::string(pname);
-                tmp.Mass_ = mass;
-                tmp.Width_ = pwidth;
-                tmp.ThreeCharge_ = chg3;
-                tmp.TwoJ_ = spin2;
-
-                particleProperties_[stdhepid] = tmp;
-
+                // note: isospin & parity are missing from .pdl format
+                addParticleTableEntry(ParticleTableEntry(stdhepid, pname,
+                                      QuantumNumbers(0, spin2, 0, std::round(1. * chg3 / 3)),
+                                      mass, pwidth));
             }
 
             // if find a set read information and discard it
-
             if (!strcmp(cmnd, "set")) {
-
                 indec >> xxxx;
                 indec >> xxxx;
                 indec >> xxxx;
                 indec >> xxxx;
             }
-
         }
 
     } while (strcmp(cmnd, "end"));
-
 }
 
 }

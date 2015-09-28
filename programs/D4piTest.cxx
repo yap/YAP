@@ -13,6 +13,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <string>
 
 #include "logging.h"
 INITIALIZE_EASYLOGGINGPP
@@ -28,7 +29,7 @@ int main( int argc, char** argv)
     unsigned max2L(2 * 4);
 
     /// \todo Figure out clever way to find PDL file
-    yap::ParticleFactory factory("evt.pdl");
+    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
 
     // initial state particle
@@ -36,18 +37,18 @@ int main( int argc, char** argv)
     std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
 
     // final state particles
-    yap::helicityStates piPlus = factory.createFinalStateParticle(211, {0, 2});
-    yap::helicityStates piMinus = factory.createFinalStateParticle(-211, {1, 3});
+    auto piPlus = factory.createFinalStateParticle(211, {0, 2});
+    auto piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
 
     // rho rho
-    yap::helicityStates rho = factory.createResonanceBreitWigner(113, radialSize);
+    auto rho = factory.createResonanceBreitWigner(113, radialSize);
     rho.addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(rho, rho, max2L);
 
     // omega omega
-    yap::helicityStates omega = factory.createResonanceBreitWigner(223, radialSize);
+    auto omega = factory.createResonanceBreitWigner(223, radialSize);
     omega.addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(omega, omega, max2L);
@@ -57,10 +58,10 @@ int main( int argc, char** argv)
 
 
     // a_1 channels
-    yap::helicityStates sigma = factory.createResonanceBreitWigner(9000221, radialSize);
+    auto sigma = factory.createResonanceBreitWigner(9000221, radialSize);
     sigma.addChannels(piPlus, piMinus, max2L);
 
-    yap::helicityStates a_1 = factory.createResonanceBreitWigner(20213, radialSize);
+    auto a_1 = factory.createResonanceBreitWigner(20213, radialSize);
     a_1.addChannels(sigma, piPlus, max2L);
 
     a_1.addChannels(rho, piPlus, max2L);

@@ -5,9 +5,9 @@
 namespace yap {
 
 //-------------------------
-QuantumNumbers::QuantumNumbers(unsigned char twoJ, char P, char C, unsigned char twoI, char G, char Q) :
+QuantumNumbers::QuantumNumbers(unsigned char twoJ, char P, char C, unsigned char twoI, char G, char Q, char twoLambda) :
     TwoJ_(twoJ),
-    TwoHelicity_(0),
+    TwoLambda_(twoLambda),
     P_(P),
     C_(C),
     TwoI_(twoI),
@@ -28,12 +28,12 @@ bool QuantumNumbers::consistent() const
     }
 
     // check parity is set
-    if (P_ == 0) {
-        LOG(ERROR) << "QuantumNumbers::consistent() - parity unset.";
-        result = false;
-    }
+    // if (P_ == 0) {
+    //     LOG(ERROR) << "QuantumNumbers::consistent() - parity unset.";
+    //     result = false;
+    // }
 
-    if (abs(TwoHelicity_) > TwoJ_) {
+    if (abs(TwoLambda_) > TwoJ_) {
         LOG(ERROR) << "QuantumNumbers::consistent() - Helicity is too big.";
         result = false;
     }
@@ -46,7 +46,7 @@ bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 {
     //std::cout << lhs << " == " << rhs << "?\n";
     return (lhs.TwoJ_ == rhs.TwoJ_
-            && lhs.TwoHelicity_ == rhs.TwoHelicity_
+            && lhs.TwoLambda_ == rhs.TwoLambda_
             && lhs.P_ == rhs.P_
             && lhs.C_ == rhs.C_
             && lhs.TwoI_ == rhs.TwoI_

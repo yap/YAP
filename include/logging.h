@@ -52,9 +52,9 @@ inline void plainLogs(el::Level lvl)
 }
 
 #ifdef ELPP_DISABLE_DEBUG_LOGS
-  #define DEBUG(x)
+#define DEBUG(x)
 #else
-  #define DEBUG(x) LOG(DEBUG) << x;
+#define DEBUG(x) LOG(DEBUG) << x;
 #endif
 
 }

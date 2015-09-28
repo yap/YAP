@@ -21,7 +21,7 @@ void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<ParticleCombination>
 {
     /// dFunctions for J == 0 are 0, so we don't need to calculate and store helicity angles
     if (initialStateParticle()->quantumNumbers().twoJ() == 0
-        and c->parent() == nullptr)
+            and c->parent() == nullptr)
         return;
 
     DataAccessor::addSymmetrizationIndex(c);
@@ -104,8 +104,8 @@ void HelicityAngles::transformDaughters(DataPoint& d,
         d.HelicityAngles_.at(symmetrizationIndex(daugh)) = {phi, theta};
 
         DEBUG(std::string(*daugh) << " helicity angles (phi, theta) = ("
-            << d.HelicityAngles_.at(symmetrizationIndex(daugh))[0] << ", "
-            << d.HelicityAngles_.at(symmetrizationIndex(daugh))[1] << ")");
+              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[0] << ", "
+              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[1] << ")");
 
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);

@@ -41,9 +41,18 @@ class FinalStateParticle : public Particle
 {
 public:
 
+    /// \name Constructor & clone
+    /// @{
+
     /// Constructor
     /// \param indices index or indices (if there are identical final state particles) that this particle has in the DataPoint
     FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices);
+
+    /// Clone
+    virtual std::shared_ptr<Particle> clone() const override
+    { return std::make_shared<FinalStateParticle>(*this); }
+
+    /// @}
 
     /// \return 1 + 0i
     virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override

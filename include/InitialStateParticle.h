@@ -39,12 +39,22 @@ class InitialStateParticle : public DecayingParticle
 {
 public:
 
+    /// \name Constructor, destructor, clone
+    /// @{
+
     /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// Destructor
     ~InitialStateParticle();
 
+    /// Clone
+    virtual std::shared_ptr<Particle> clone() const override
+    { return std::make_shared<InitialStateParticle>(*this); }
+
+    /// @}
+
+    /// \todo remove!
     double logLikelihood();
 
     /// Check consistency of object

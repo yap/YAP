@@ -20,6 +20,17 @@ DecayingParticle::DecayingParticle(InitialStateParticle* isp, const QuantumNumbe
 {}
 
 //-------------------------
+DecayingParticle::DecayingParticle(const DecayingParticle& other) :
+    AmplitudeComponent(other),
+    Particle(other),
+    AmplitudeComponentDataAccessor(other),
+    RadialSize_(other.RadialSize_)
+{
+    for (auto& c : other.Channels_)
+        addChannel(new DecayChannel(*c));
+}
+
+//-------------------------
 Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
 {
     // \todo check
@@ -121,7 +132,7 @@ void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, st
                 LOG(ERROR) << "DecayingParticle::addChannels: particles in vector are not of the same type!";
                 return;
             }
-            int hel = part->quantumNumbers().twoHelicity();
+            int hel = part->quantumNumbers().twoLambda();
             if (helicities.find(hel) != helicities.end()) {
                 LOG(ERROR) << "DecayingParticle::addChannels: particles in vector don't have different helicities!";
                 return;
