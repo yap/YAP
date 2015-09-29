@@ -315,8 +315,6 @@ void DecayChannel::clearSymmetrizationIndices()
 //-------------------------
 void DecayChannel::setSymmetrizationIndexParents()
 {
-    //std::cout << "DecayChannel::setSymmetrizationIndexParents()\n";
-
     std::vector<std::shared_ptr<ParticleCombination> > chPCs = particleCombinations();
 
     // clean up PCs without parents
@@ -331,12 +329,6 @@ void DecayChannel::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     for (auto& pc : chPCsParents) {
-        /*std::cout << "  add " << std::string(*pc);
-        if  (pc->parent()){
-          std::cout << " from decay " << std::string(*pc->parent());
-        }
-        std::cout  << " to channel " << std::string(*this) << "\n";*/
-
         addSymmetrizationIndex(pc);
     }
 
@@ -344,13 +336,6 @@ void DecayChannel::setSymmetrizationIndexParents()
     for (auto& chPC : chPCs) {
         for (auto& pc : ParticleCombination::particleCombinationSet()) {
             if (ParticleCombination::equivDown(chPC, pc)) {
-
-                //std::cout << std::string(*chPC) << " == " << std::string(*pc) << "\n";
-                /*std::cout << "  add " << std::string(*pc);
-                if  (pc->parent()){
-                  std::cout << " from decay " << std::string(*pc->parent());
-                }
-                std::cout << " to channel " << std::string(*this) << "\n";*/
 
                 addSymmetrizationIndex(pc);
 
@@ -361,11 +346,6 @@ void DecayChannel::setSymmetrizationIndexParents()
                             for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations()) {
                                 if (ParticleCombination::equivDown(pcDaughPC, chDaughPC)) {
                                     std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addSymmetrizationIndex(pcDaughPC);
-                                    /*std::cout << "   add " << std::string(*pcDaughPC);
-                                    if (pcDaughPC->parent()) {
-                                      std::cout << " from decay " << std::string(*pcDaughPC->parent());
-                                    }
-                                    std::cout << " to particle " << chDaugh->name() << "\n";*/
                                 }
                             }
                     }
@@ -373,26 +353,6 @@ void DecayChannel::setSymmetrizationIndexParents()
             }
         }
     }
-
-    /*std::cout << "Particle combinations in channel " <<  std::string(*this) << "\n";
-    for (auto& chPC : particleCombinations()) {
-      std::cout << "  " << std::string(*chPC);
-      if (chPC->parent())
-        std::cout << " from decay " << std::string(*chPC->parent());
-      std::cout << "\n";
-    }
-
-    for (auto d : daughters()) {
-      if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-        std::cout << "    PCs in particle " << d->name() << ":\n";
-        for (auto& meh : std::dynamic_pointer_cast<DecayingParticle>(d)->particleCombinations()) {
-            std::cout << "      " << std::string(*meh);
-            if (meh->parent())
-              std::cout << " from decay " << std::string(*meh->parent());
-            std::cout <<"\n";
-        }
-      }
-    }*/
 
     // next level
     for (auto d : daughters())

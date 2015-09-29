@@ -59,8 +59,8 @@ public:
     virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c
-    virtual void addChannel(DecayChannel* c);
+    /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
+    virtual void addChannel(std::unique_ptr<DecayChannel>& c);
 
     /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
     /// \param A daughter particle
@@ -139,7 +139,7 @@ private:
     void printDecayChainLevel(int level) const;
 
     /// vector of decay channel objects
-    std::vector< std::unique_ptr<yap::DecayChannel> > Channels_;
+    std::vector< std::unique_ptr<DecayChannel> > Channels_;
 
     /// Radial size parameter [GeV^-1]
     double RadialSize_;

@@ -85,9 +85,7 @@ bool InitialStateParticle::prepare()
 
     //
     setSymmetrizationIndexParents();
-
-    // \todo enable again
-    //optimizeSpinAmplitudeSharing();
+    optimizeSpinAmplitudeSharing();
 
     // make sure that final state particles get the correct indices
     for (unsigned i = 0; i < particleCombinations()[0]->indices().size(); ++i) {

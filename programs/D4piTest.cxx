@@ -74,12 +74,6 @@ int main( int argc, char** argv)
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
 
-    std::cout << "\nD symmetrizations before preparing: \n";
-    for (std::shared_ptr<yap::ParticleCombination>& pc : D->particleCombinations())
-        std::cout << std::string(*pc) << "\n";
-    std::cout << "\n";
-
-
     // consistency and optimizations
     assert(D->prepare());
     std::cout << "consistent! \n";

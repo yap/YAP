@@ -27,8 +27,10 @@ DecayingParticle::DecayingParticle(const DecayingParticle& other) :
     AmplitudeComponentDataAccessor(other),
     RadialSize_(other.RadialSize_)
 {
-    for (auto& c : other.Channels_)
-        addChannel(new DecayChannel(*c));
+    for (auto& c : other.Channels_) {
+        std::unique_ptr<DecayChannel> channelCopy(new DecayChannel(*c));
+        addChannel(channelCopy);
+    }
 }
 
 //-------------------------
@@ -108,24 +110,19 @@ CalculationStatus DecayingParticle::updateCalculationStatus(std::shared_ptr<Part
 }
 
 //-------------------------
-void DecayingParticle::addChannel(DecayChannel* c)
+void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
 {
-    Channels_.push_back(std::unique_ptr<yap::DecayChannel>(c));
+    Channels_.push_back(std::unique_ptr<yap::DecayChannel>(nullptr));
+    Channels_.back().swap(c);
+
     Channels_.back()->setParent(this);
 
-    if (c->particleCombinations().empty())
+    if (Channels_.back()->particleCombinations().empty())
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
 
-    // add particle combination in all possible helicity states
-    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
+    // add particle combinations
+    for (std::shared_ptr<ParticleCombination> pc : Channels_.back()->particleCombinations())
         addSymmetrizationIndex(pc);
-
-        /*for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
-            std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
-            pcHel -> setTwoLambda(twoLambda);
-            addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pcHel));
-        }*/
-    }
 }
 
 //-------------------------
@@ -136,9 +133,9 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
-        DecayChannel* chan = new DecayChannel(A, B,
+        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B,
             std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
-                A->quantumNumbers(), B->quantumNumbers(), twoL));
+                A->quantumNumbers(), B->quantumNumbers(), twoL)) );
 
         bool notZero(false);
         std::vector<std::shared_ptr<ParticleCombination>> PCs;
@@ -153,9 +150,6 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
                 notZero = true;
 
             }
-            else {
-                //DEBUG("Clebsch-Gordan is 0 for " << std::string(*pcHel));
-            }
           }
         }
 
@@ -163,15 +157,10 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
             DEBUG("add channel " << std::string(*chan) << " to " << name());
             chan->clearSymmetrizationIndices();
             for (auto& pc : PCs) {
-                //DEBUG(std::string(*pc));
                 chan->addSymmetrizationIndex(pc);
             }
 
             addChannel(chan);
-        }
-        else {
-            //DEBUG("could NOT add channel " << std::string(*chan) << " to " << name());
-            delete chan;
         }
     }
 
@@ -275,7 +264,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
 
     for (unsigned int i = 0; i < nChannels(); ++i) {
         if (i > 0)
-            std::cout << "\n" << std::setw(level * (padding * 3 + 7 + paddingSpinAmp)) << "";
+            std::cout << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
 
         std::cout << std::left << std::setw(padding) << this->name() << " ->";
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
@@ -301,7 +290,7 @@ void DecayingParticle::printSpinAmplitudes(int level)
 
     // get maximum length of particle names
     static size_t padding = 0;
-    static size_t paddingSpinAmp = 0;
+    static size_t paddingSpinAmp = 6;
     if (padding == 0 || level == -1) {
         ampSet.clear();
         padding = std::max(padding, name().length());
@@ -330,7 +319,7 @@ void DecayingParticle::printSpinAmplitudes(int level)
             ampSet.insert(amp);
             std::cout << std::left << std::setw(paddingSpinAmp) << std::string(*amp);
         } else {
-            std::cout << std::left << std::setw(paddingSpinAmp - 1) << "sharedSpinAmp";
+            std::cout << std::left << std::setw(paddingSpinAmp - 1) << "shared";
         }
 
 
@@ -363,16 +352,6 @@ void DecayingParticle::setSymmetrizationIndexParents()
 
     for (auto& pc : PCsParents)
         addSymmetrizationIndex(pc);
-
-
-    /*std::cout << "  Particle combinations in DecayingParticle " <<  name() << "\n";
-    for (auto& chPC : particleCombinations()) {
-      std::cout << "    " << std::string(*chPC);
-      if (chPC->parent())
-        std::cout << " from decay " << std::string(*chPC->parent());
-      std::cout << "\n";
-    }*/
-
 
     // next level
     for (auto& ch : channels())

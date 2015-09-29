@@ -50,15 +50,6 @@ public:
     /// cast into string
     operator std::string() const override;
 
-    /// \name Getters
-    /// @{
-
-    /// \return value of Clebsch-Gordan coefficient
-    //double clebschGordanCoefficient()
-    //{ return ClebschGordanCoefficient_; }
-
-    /// @}
-
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<ParticleCombination> c) const;
 
