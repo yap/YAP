@@ -25,7 +25,6 @@ int main( int argc, char** argv)
     //yap::disableLogs(el::Level::Debug);
     yap::plainLogs(el::Level::Debug);
 
-
     unsigned max2L(2 * 4);
 
     /// \todo Figure out clever way to find PDL file
@@ -34,7 +33,7 @@ int main( int argc, char** argv)
 
     // initial state particle
     double radialSize = 1.;
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
+    auto D = factory.createInitialStateParticle(421, radialSize);
 
     // final state particles
     auto piPlus = factory.createFinalStateParticle(211, {0, 2});
