@@ -134,23 +134,23 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
             continue;
 
         std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B,
-            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
-                A->quantumNumbers(), B->quantumNumbers(), twoL)) );
+                                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
+                                                    A->quantumNumbers(), B->quantumNumbers(), twoL)) );
 
         bool notZero(false);
         std::vector<std::shared_ptr<ParticleCombination>> PCs;
 
         for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
-          for (std::shared_ptr<ParticleCombination> pc : chan->particleCombinations()) {
-            std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
-            pcHel -> setTwoLambda(twoLambda);
+            for (std::shared_ptr<ParticleCombination> pc : chan->particleCombinations()) {
+                std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
+                pcHel -> setTwoLambda(twoLambda);
 
-            if (std::static_pointer_cast<HelicitySpinAmplitude>(chan->spinAmplitude())->calculateClebschGordanCoefficient(pcHel) != 0) {
-                PCs.push_back(ParticleCombination::uniqueSharedPtr(pcHel));
-                notZero = true;
+                if (std::static_pointer_cast<HelicitySpinAmplitude>(chan->spinAmplitude())->calculateClebschGordanCoefficient(pcHel) != 0) {
+                    PCs.push_back(ParticleCombination::uniqueSharedPtr(pcHel));
+                    notZero = true;
 
+                }
             }
-          }
         }
 
         if (notZero) {

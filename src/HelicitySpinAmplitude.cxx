@@ -79,37 +79,37 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<
 {
     /// code is copied in parts from rootpwa
 
-        const int J  = InitialQuantumNumbers_.twoJ();
-        const int s1 = FinalQuantumNumbers_[0].twoJ();
-        const int s2 = FinalQuantumNumbers_[1].twoJ();
+    const int J  = InitialQuantumNumbers_.twoJ();
+    const int s1 = FinalQuantumNumbers_[0].twoJ();
+    const int s2 = FinalQuantumNumbers_[1].twoJ();
 
-        int lambda1 = c->daughters()[0]->twoLambda();
-        int lambda2 = c->daughters()[1]->twoLambda();
+    int lambda1 = c->daughters()[0]->twoLambda();
+    int lambda2 = c->daughters()[1]->twoLambda();
 
-        // \todo: cross check that S is really meant to be s1 +s2
-        const int    S         = s1 + s2;
-        const int    lambda    = lambda1 - lambda2;
+    // \todo: cross check that S is really meant to be s1 +s2
+    const int    S         = s1 + s2;
+    const int    lambda    = lambda1 - lambda2;
 
-        // calculate Clebsch-Gordan coefficient for L-S coupling
-        const double lsClebsch = clebschGordan(TwoL_, 0, S, lambda, J, lambda);
-        if (lsClebsch == 0) {
-            //DEBUG("lsClebsch == 0");
-            return 0;
-        }
+    // calculate Clebsch-Gordan coefficient for L-S coupling
+    const double lsClebsch = clebschGordan(TwoL_, 0, S, lambda, J, lambda);
+    if (lsClebsch == 0) {
+        //DEBUG("lsClebsch == 0");
+        return 0;
+    }
 
-        // calculate Clebsch-Gordan coefficient for S-S coupling
-        const double ssClebsch = clebschGordan(s1, lambda1, s2, -lambda2, S, lambda);
-        if (ssClebsch == 0) {
-            //DEBUG("ssClebsch == 0");
-            return 0;
-        }
+    // calculate Clebsch-Gordan coefficient for S-S coupling
+    const double ssClebsch = clebschGordan(s1, lambda1, s2, -lambda2, S, lambda);
+    if (ssClebsch == 0) {
+        //DEBUG("ssClebsch == 0");
+        return 0;
+    }
 
-        /*DEBUG("Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
-              << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
-              << " = " << ssClebsch * lsClebsch);*/
+    /*DEBUG("Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spinToString(lambda1)
+          << "," << spinToString(lambda2) << "): " << ssClebsch << " * " << lsClebsch
+          << " = " << ssClebsch * lsClebsch);*/
 
 
-        return ssClebsch * lsClebsch;
+    return ssClebsch * lsClebsch;
 
 }
 
