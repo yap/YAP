@@ -69,7 +69,7 @@ bool InitialStateParticle::prepare()
     }
 
     //
-    ParticleCombination::makeParticleCombinationSetWithParents();
+    ParticleCombination::makeParticleCombinationSetWithParents(particleCombinations());
 
     // check
     for (auto& pc : ParticleCombination::particleCombinationSet()) {

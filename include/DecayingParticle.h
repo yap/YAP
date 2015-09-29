@@ -59,8 +59,8 @@ public:
     virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c
-    virtual void addChannel(DecayChannel* c);
+    /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
+    virtual void addChannel(std::unique_ptr<DecayChannel>& c);
 
     /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
     /// \param A daughter particle
@@ -73,7 +73,7 @@ public:
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
     /// \param L maximum relative angular momentum between A and B * 2
-    virtual void addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL);
+    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -139,7 +139,7 @@ private:
     void printDecayChainLevel(int level) const;
 
     /// vector of decay channel objects
-    std::vector< std::unique_ptr<yap::DecayChannel> > Channels_;
+    std::vector< std::unique_ptr<DecayChannel> > Channels_;
 
     /// Radial size parameter [GeV^-1]
     double RadialSize_;

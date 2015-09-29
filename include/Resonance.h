@@ -65,7 +65,7 @@ public:
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
-    void addChannel(DecayChannel* c) override;
+    void addChannel(std::unique_ptr<DecayChannel>& c) override;
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to MassShape_

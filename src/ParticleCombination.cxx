@@ -1,6 +1,7 @@
 #include "ParticleCombination.h"
 
 #include "logging.h"
+#include "SpinUtilities.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -14,15 +15,17 @@ ParticleCombination::ParticleCombination() :
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(ParticleIndex index) :
+ParticleCombination::ParticleCombination(ParticleIndex index, char twoLambda) :
     Parent_(nullptr),
-    Indices_(1, index)
+    Indices_(1, index),
+    TwoLambda_(twoLambda)
 {
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c) :
-    Parent_(nullptr)
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c, char twoLambda) :
+    Parent_(nullptr),
+    TwoLambda_(twoLambda)
 {
     for (std::shared_ptr<ParticleCombination>& d : c)
         addDaughter(d);
@@ -142,6 +145,7 @@ ParticleCombination::operator std::string() const
     /*std::ostringstream address;
     address << ", " << Parent_ << "->" << this;
     result += address.str();*/
+    result += " λ=" + spinToString(TwoLambda_);
     result += ")";
 
     if (Daughters_.empty() || (Daughters_.size() == 2 and Indices_.size() == 2))
@@ -230,38 +234,15 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::v
 }
 
 //-------------------------
-void ParticleCombination::makeParticleCombinationSetWithParents()
+void ParticleCombination::makeParticleCombinationSetWithParents(std::vector<std::shared_ptr<ParticleCombination> > initialStateParticleCombinations)
 {
-    unsigned maxSize(0);
-    for (auto& pc : ParticleCombinationSet_) {
-        if (pc->indices().size() > maxSize)
-            maxSize = pc->indices().size();
+    ParticleCombinationSet_.clear();
 
-        if (pc->parent() != nullptr) {
-            LOG(ERROR) << "parents are already set.";
-            return;
-        }
-    }
+    for (auto& pc : initialStateParticleCombinations)
+        ParticleCombinationSet_.insert(pc);
 
-    // get initial state particle combinations
-    std::vector<std::shared_ptr<ParticleCombination> > initialPCs;
-    for (auto& pc : ParticleCombinationSet_) {
-        if (pc->indices().size() == maxSize)
-            initialPCs.push_back(pc);
-    }
-
-    for (auto& pc : initialPCs) {
+    for (auto& pc : initialStateParticleCombinations) {
         pc->setParents();
-    }
-
-    // clean up old PCs without parents
-    auto it = ParticleCombinationSet_.begin();
-    while (it != ParticleCombinationSet_.end()) {
-        if ((*it)->indices().size() < maxSize
-                and (*it)->parent() == nullptr) {
-            it = ParticleCombinationSet_.erase(it);
-        } else
-            ++it;
     }
 
     // check consistency
@@ -297,7 +278,9 @@ void ParticleCombination::printParticleCombinationSet()
 
 ParticleCombination::Equiv ParticleCombination::equivBySharedPointer;
 ParticleCombination::EquivDown ParticleCombination::equivDown;
+ParticleCombination::EquivDownButLambda ParticleCombination::equivDownButLambda;
 ParticleCombination::EquivUpAndDown ParticleCombination::equivUpAndDown;
+ParticleCombination::EquivUpAndDownButLambda ParticleCombination::equivUpAndDownButLambda;
 ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
 ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
 
@@ -319,7 +302,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<Part
 }
 
 //-------------------------
-bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -335,6 +318,50 @@ bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombinat
     for (unsigned i = 0; i < A->daughters().size(); ++i)
         if (!operator()(A->daughters()[i], B->daughters()[i]))
             return false;
+
+    // a match!
+    return true;
+}
+
+//-------------------------
+bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    /// check lambda
+    if (A->TwoLambda_ != B->TwoLambda_)
+        return false;
+
+    if (!ParticleCombination::equivByOrderedContent(A, B))
+        return false;
+
+    // Check daughters
+    if (A->daughters().size() != B->daughters().size()) {
+        return false;
+    }
+    for (unsigned i = 0; i < A->daughters().size(); ++i)
+        if (!operator()(A->daughters()[i], B->daughters()[i]))
+            return false;
+
+    // a match!
+    return true;
+}
+
+//-------------------------
+bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+{
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    if (!ParticleCombination::equivDownButLambda(A, B))
+        return false;
+
+    // check parent
+    if (A->parent() != B->parent())
+        return false;
 
     // a match!
     return true;

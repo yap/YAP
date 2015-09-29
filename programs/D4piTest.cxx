@@ -42,13 +42,13 @@ int main( int argc, char** argv)
 
     // rho rho
     auto rho = factory.createResonanceBreitWigner(113, radialSize);
-    rho.addChannels(piPlus, piMinus, max2L);
+    rho->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(rho, rho, max2L);
 
     // omega omega
     auto omega = factory.createResonanceBreitWigner(223, radialSize);
-    omega.addChannels(piPlus, piMinus, max2L);
+    omega->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(omega, omega, max2L);
 
@@ -58,12 +58,12 @@ int main( int argc, char** argv)
 
     // a_1 channels
     auto sigma = factory.createResonanceBreitWigner(9000221, radialSize);
-    sigma.addChannels(piPlus, piMinus, max2L);
+    sigma->addChannels(piPlus, piMinus, max2L);
 
     auto a_1 = factory.createResonanceBreitWigner(20213, radialSize);
-    a_1.addChannels(sigma, piPlus, max2L);
+    a_1->addChannels(sigma, piPlus, max2L);
 
-    a_1.addChannels(rho, piPlus, max2L);
+    a_1->addChannels(rho, piPlus, max2L);
 
     D->addChannels(a_1, piMinus, max2L);
 
@@ -71,8 +71,6 @@ int main( int argc, char** argv)
     // R pi pi channels
     //yap::Resonance* f_0_980 = factory.createResonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
-
-
 
 
     // consistency and optimizations
@@ -105,9 +103,9 @@ int main( int argc, char** argv)
 
     // test helicity angles
     TLorentzVector P(0.0, 0.0, 0.0, D->mass());
-    Double_t masses[4] = { piPlus[0]->mass(), piMinus[0]->mass(), piPlus[0]->mass(), piMinus[0]->mass() };
+    Double_t masses[4] = { piPlus->mass(), piMinus->mass(), piPlus->mass(), piMinus->mass() };
 
-    for (unsigned int iEvt = 0; iEvt < 200000; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 2; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();

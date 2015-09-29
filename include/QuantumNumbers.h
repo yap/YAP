@@ -38,16 +38,16 @@ public:
     /// @{
 
     /// Constructor
-    QuantumNumbers(unsigned char twoJ, char P, char C, unsigned char twoI, char G, char Q, char twoLambda);
+    QuantumNumbers(unsigned char twoJ, char P, char C, unsigned char twoI, char G, char Q);
 
     /// IJPQ(lambda) constructor
-    QuantumNumbers(unsigned char twoI, unsigned char twoJ, char P, char Q, char twoLambda = 0)
-        : QuantumNumbers(twoJ, P, 0, twoI, 0, Q, twoLambda) {}
+    QuantumNumbers(unsigned char twoI, unsigned char twoJ, char P, char Q)
+        : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
 
     /// Default constructor
     /// is inconsistent
     QuantumNumbers()
-        : QuantumNumbers(0, 0, 0, 0, -1) {}
+        : QuantumNumbers(0, 0, 0, 0) {}
 
     /// @}
 
@@ -64,14 +64,6 @@ public:
     /// \return spin
     double J() const
     { return TwoJ_ * 0.5; }
-
-    /// \return helicity spin projection ("lambda") * 2
-    char twoLambda() const
-    { return TwoLambda_; }
-
-    /// \return helicity spin projection ("lambda")
-    double lambda() const
-    { return TwoLambda_ * 0.5; }
 
     /// \return parity
     signed char P() const
@@ -110,15 +102,6 @@ public:
     void setTwoJ(unsigned char J)
     { TwoJ_ = J; }
 
-    /// Set helicity ("lambda")
-    void setLambda(double l)
-    { TwoLambda_ = std::round(2.*l); }
-
-    /// Set 2 * helicity ("lambda")
-    void setTwoLambda(char l)
-    { TwoLambda_ = l; }
-
-
     /// @}
 
     /// equality operator
@@ -132,9 +115,6 @@ private:
 
     /// Spin * 2
     unsigned char TwoJ_;
-
-    /// Helicity * 2
-    char TwoLambda_;
 
     /// Parity
     signed char P_;

@@ -46,12 +46,12 @@ bool Resonance::consistent() const
 }
 
 //-------------------------
-void Resonance::addChannel(DecayChannel* c)
+void Resonance::addChannel(std::unique_ptr<DecayChannel>& c)
 {
-    DecayingParticle::addChannel(c);
-
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations())
         MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+
+    DecayingParticle::addChannel(c);
 }
 
 //-------------------------
