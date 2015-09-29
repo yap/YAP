@@ -23,7 +23,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     Daughters_(daughters),
     BlattWeisskopf_(this),
     SpinAmplitude_(spinAmplitude),
-    FreeAmplitude_(new Amp(0, 0))
+    FreeAmplitude_(new Amp(0, 0)),
+    Parent_(nullptr)
 {
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<ParticleCombination> > > PCs;
@@ -238,7 +239,9 @@ double DecayChannel::breakupMomentum() const
 //-------------------------
 DecayChannel::operator std::string() const
 {
-    std::string result = parent()->name() + " ->";
+    std::string result;
+    if (Parent_)
+        result += Parent_->name() + " ->";
     if (Daughters_.empty())
         result += " (nothing)";
     for (std::shared_ptr<Particle> d : Daughters_)

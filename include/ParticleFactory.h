@@ -62,16 +62,6 @@ public:
         bool consistent() const override;
     };
 
-    /// \struct HelicityStates
-    /// \brief Struct inheriting from vector of shared_ptr's of Particles for particle in all helicity states.
-    struct HelicityStates : public std::vector<std::shared_ptr<Particle> > {
-        HelicityStates(Particle&& P);
-        void addChannels(HelicityStates& A, HelicityStates& B, unsigned maxTwoL);
-    };
-
-    /// @}
-
-
     /// Constructor
     /// \param pdlFile Path to a pdl file like used by EvtGen
     ParticleFactory(const std::string pdlFile);
@@ -79,7 +69,7 @@ public:
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \return HelicityStates object for new final state particle
-    HelicityStates createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
+    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
@@ -92,19 +82,19 @@ public:
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
-    HelicityStates createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
+    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// Create a Resonance from a PDG code. Use BreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    HelicityStates createResonanceBreitWigner(int PDG, double radialSize);
+    std::shared_ptr<Resonance> createResonanceBreitWigner(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code. Use RelativisticBreitWigner as MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \return pointer to new Resonance object
-    HelicityStates createResonanceRelativisticBreitWigner(int PDG, double radialSize);
+    std::shared_ptr<Resonance> createResonanceRelativisticBreitWigner(int PDG, double radialSize);
 
     /// \name Particle table access
     /// @{

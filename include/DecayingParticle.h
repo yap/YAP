@@ -73,7 +73,7 @@ public:
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
     /// \param L maximum relative angular momentum between A and B * 2
-    virtual void addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL);
+    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)

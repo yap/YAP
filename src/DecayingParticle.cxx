@@ -5,6 +5,7 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
+#include "SpinUtilities.h"
 
 #include <iomanip>
 #include <memory>
@@ -115,51 +116,62 @@ void DecayingParticle::addChannel(DecayChannel* c)
     if (c->particleCombinations().empty())
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
 
+    // add particle combination in all possible helicity states
     for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations()) {
-        addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+        addSymmetrizationIndex(pc);
+
+        /*for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
+            std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
+            pcHel -> setTwoLambda(twoLambda);
+            addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pcHel));
+        }*/
     }
 }
 
 //-------------------------
-void DecayingParticle::addChannels(std::vector<std::shared_ptr<Particle> > A, std::vector<std::shared_ptr<Particle> > B, unsigned maxTwoL)
+void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
 {
-    // consistency check
-    for (auto& vec : {A, B}) {
-        std::string name = vec[0]->name();
-        std::set<int> helicities;
-        for (auto& part : vec) {
-            if (part->name() != name) {
-                LOG(ERROR) << "DecayingParticle::addChannels: particles in vector are not of the same type!";
-                return;
-            }
-            int hel = part->quantumNumbers().twoLambda();
-            if (helicities.find(hel) != helicities.end()) {
-                LOG(ERROR) << "DecayingParticle::addChannels: particles in vector don't have different helicities!";
-                return;
-            }
-            helicities.insert(hel);
-        }
-    }
-
     // loop over possible l
     for (unsigned twoL = 0; twoL < maxTwoL; ++twoL) {
-        if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A[0]->quantumNumbers(), B[0]->quantumNumbers(), twoL))
+        if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
-        // loop over helicity combinations
-        for (auto& partA : A) {
-            for (auto& partB : B) {
-                double cg = HelicitySpinAmplitude::calculateClebschGordanCoefficient(quantumNumbers(), partA->quantumNumbers(), partB->quantumNumbers(), twoL);
-                if (cg == 0.)
-                    continue;
+        DecayChannel* chan = new DecayChannel(A, B,
+            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
+                A->quantumNumbers(), B->quantumNumbers(), twoL));
 
-                addChannel(new DecayChannel(partA, partB,
-                                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
-                                                    partA->quantumNumbers(), partB->quantumNumbers(),
-                                                    twoL, cg)));
+        bool notZero(false);
+        std::vector<std::shared_ptr<ParticleCombination>> PCs;
 
-                //std::cout << "add channel " << std::string(*Channels_.back()) << "\n";
+        for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
+          for (std::shared_ptr<ParticleCombination> pc : chan->particleCombinations()) {
+            std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
+            pcHel -> setTwoLambda(twoLambda);
+
+            if (std::static_pointer_cast<HelicitySpinAmplitude>(chan->spinAmplitude())->calculateClebschGordanCoefficient(pcHel) != 0) {
+                PCs.push_back(ParticleCombination::uniqueSharedPtr(pcHel));
+                notZero = true;
+
             }
+            else {
+                //DEBUG("Clebsch-Gordan is 0 for " << std::string(*pcHel));
+            }
+          }
+        }
+
+        if (notZero) {
+            DEBUG("add channel " << std::string(*chan) << " to " << name());
+            chan->clearSymmetrizationIndices();
+            for (auto& pc : PCs) {
+                //DEBUG(std::string(*pc));
+                chan->addSymmetrizationIndex(pc);
+            }
+
+            addChannel(chan);
+        }
+        else {
+            //DEBUG("could NOT add channel " << std::string(*chan) << " to " << name());
+            delete chan;
         }
     }
 

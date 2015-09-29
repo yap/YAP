@@ -69,7 +69,7 @@ bool InitialStateParticle::prepare()
     }
 
     //
-    ParticleCombination::makeParticleCombinationSetWithParents();
+    ParticleCombination::makeParticleCombinationSetWithParents(particleCombinations());
 
     // check
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
@@ -85,7 +85,9 @@ bool InitialStateParticle::prepare()
 
     //
     setSymmetrizationIndexParents();
-    optimizeSpinAmplitudeSharing();
+
+    // \todo enable again
+    //optimizeSpinAmplitudeSharing();
 
     // make sure that final state particles get the correct indices
     for (unsigned i = 0; i < particleCombinations()[0]->indices().size(); ++i) {
