@@ -9,6 +9,7 @@ set(YAP_SOURCES
   BreitWigner.cxx
   Constants.cxx
   DataAccessor.cxx
+  DataPartition.cxx
   DataPoint.cxx
   DataSet.cxx
   DecayChannel.cxx

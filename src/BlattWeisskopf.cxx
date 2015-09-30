@@ -25,15 +25,14 @@ const Amp& BlattWeisskopf::amplitude(DataPoint& d, std::shared_ptr<ParticleCombi
         /// \todo What if we want to fit masses?
         double breakupMom = DecayChannel_->breakupMomentum();
         unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
+        double R = DecayChannel_->parent()->radialSize();
 
-        /// \todo confirm
-        // const double Pr    = 0.1973)  // momentum scale 0.1973 GeV/c corresponds to 1 fm interaction radius
-        double Pr = 1. / DecayChannel_->parent()->radialSize();
+        /// \todo ? in denominator, there must be q^2_(ab), the breakup momentum calculated from the invariant masses
 
         /**
          * The following code was copied from rootPWA
          */
-        const double z   = (breakupMom * breakupMom) / (Pr * Pr);
+        const double z   = (breakupMom * breakupMom) * (R * R);
         double       bf2 = 0;
         switch (twoL) {
             case 0:  // L = 0
@@ -81,7 +80,7 @@ const Amp& BlattWeisskopf::amplitude(DataPoint& d, std::shared_ptr<ParticleCombi
         CachedAmplitude_ = sqrt(bf2);
         CalculationStatus_ = kCalculated;
 
-        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; P_r = " << Pr << " GeV/c) = " << CachedAmplitude_);
+        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; R = " << R << " 1/GeV) = " << CachedAmplitude_);
 
     }
 

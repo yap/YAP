@@ -66,6 +66,7 @@ public:
     friend class FourMomenta;
     friend class HelicityAngles;
     friend class DataAccessor;
+    friend class DataPartition;
     friend class DataSet;
 
     /// reserve space in vectors

@@ -224,6 +224,7 @@ double DecayChannel::breakupMomentum() const
     }
 
     /// \todo take masses from mass shape instead?
+    /// or do we need the invariant masses instead of the nominal masses?
     double m2_R =  pow(Parent_->mass(), 2);
     double m_a = Daughters_[0]->mass();
     double m_b = Daughters_[1]->mass();

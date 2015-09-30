@@ -308,7 +308,7 @@ void DecayingParticle::printSpinAmplitudes(int level)
 
     for (unsigned int i = 0; i < nChannels(); ++i) {
         if (i > 0)
-            std::cout << "\n" << std::setw(level * (padding * 3 + 7 + paddingSpinAmp)) << "";
+            std::cout << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
 
         std::cout << std::left << std::setw(padding) << this->name() << " ->";
         for (std::shared_ptr<Particle> d : channel(i)->daughters())
