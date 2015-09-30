@@ -33,6 +33,7 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPoint& d, std::shared_p
     if (calculationStatus(sym_index) == kUncalculated) {
 
         // calculate amplitude for ALL dataPoints
+        /// \todo do this smarter, we do NOT want to loop over the complete dataset here!
         for (DataPoint& dataPt : initialStateParticle()->dataSet()) {
             cachedAmplitude(dataPt, sym_index) = calcAmplitude(dataPt, pc);
         }
