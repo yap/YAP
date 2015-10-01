@@ -6,9 +6,8 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices)
-    : Particle(q, mass, name),
-      PDGCode_(pdg)
+FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, std::vector<ParticleIndex>& indices)
+    : Particle(q, mass, name)
 {
     for (ParticleIndex i : indices)
         addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));

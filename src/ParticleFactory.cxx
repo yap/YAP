@@ -48,7 +48,7 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(in
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_, PDG, indices);
+    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_, indices);
 }
 
 //-------------------------
