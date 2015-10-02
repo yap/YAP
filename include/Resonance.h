@@ -69,15 +69,18 @@ public:
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to MassShape_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
 
 protected:
 
+    virtual void precalculate() override
+    {}
+
     /// \return amplitude for resonance evaluated at DataPoint
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

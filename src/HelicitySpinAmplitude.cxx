@@ -17,16 +17,20 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const Qu
 }
 
 //-------------------------
-Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+void HelicitySpinAmplitude::precalculate()
 {
-
-    /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
-    /// implemented in rootPWA by C. Bicker
-
     if (ClebschGordanCoefficients_.empty()) {
         for (auto& pc : particleCombinations())
             ClebschGordanCoefficients_[pc] = calculateClebschGordanCoefficient(pc);
     }
+}
+
+//-------------------------
+Amp HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+{
+
+    /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
+    /// implemented in rootPWA by C. Bicker
 
     Amp a = ClebschGordanCoefficients_.at(pc);
 
@@ -42,7 +46,7 @@ Amp HelicitySpinAmplitude::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleC
         const int lambda2 = pc->daughters()[1]->twoLambda();
         const int lambda  = lambda1 - lambda2;
 
-        const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d, pc);
+        const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d.dataPoint(), pc);
         const double phi   = helAngles.at(0);  // use daughter1 as analyzer
         const double theta = helAngles.at(1);
 
@@ -75,7 +79,7 @@ HelicitySpinAmplitude::operator std::string() const
 }
 
 //-------------------------
-double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<ParticleCombination> c) const
+double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const
 {
     /// code is copied in parts from rootpwa
 

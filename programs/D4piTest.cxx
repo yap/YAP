@@ -1,3 +1,4 @@
+#include "DataPartition.h"
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
@@ -81,7 +82,7 @@ int main( int argc, char** argv)
     yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "\nD symmetrizations: \n";
-    for (std::shared_ptr<yap::ParticleCombination>& pc : D->particleCombinations())
+    for (auto& pc : D->particleCombinations())
         std::cout << std::string(*pc) << "\n";
     std::cout << "\n";
 
@@ -117,19 +118,22 @@ int main( int argc, char** argv)
         assert(D->addDataPoint(momenta));
     }
 
+    /// \todo put into a factory
+    yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
+
     // to test amplitude calculation, set all free amps to 1
     std::vector<yap::Amp> freeAmps = D->freeAmplitudes();
     for (yap::Amp& a : freeAmps)
         a = yap::Complex_1;
     D->setFreeAmplitudes(freeAmps);
 
-    D->logLikelihood();
+    D->logLikelihood(d);
 
     for (yap::Amp& a : freeAmps)
         a *= 0.5;
     assert(D->setFreeAmplitudes(freeAmps));
 
-    D->logLikelihood();
+    D->logLikelihood(d);
 
 
 

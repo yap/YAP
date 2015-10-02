@@ -46,7 +46,7 @@ DataAccessor::~DataAccessor()
 }
 
 //-------------------------
-bool DataAccessor::hasSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
+bool DataAccessor::hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
 {
     for (auto& kv : SymmetrizationIndices_)
         if (kv.first == c)
@@ -69,9 +69,9 @@ unsigned DataAccessor::maxSymmetrizationIndex() const
 }
 
 //-------------------------
-std::vector<std::shared_ptr<ParticleCombination> > DataAccessor::particleCombinations() const
+std::vector<std::shared_ptr<const ParticleCombination> > DataAccessor::particleCombinations() const
 {
-    std::vector<std::shared_ptr<ParticleCombination> > retVal;
+    std::vector<std::shared_ptr<const ParticleCombination> > retVal;
     for (auto& kv : SymmetrizationIndices_)
         retVal.push_back(kv.first);
 
@@ -95,11 +95,10 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     if (SymmetrizationIndices_.empty()) {
         SymmetrizationIndices_[c] = 0;
-        CalculationStatuses_.resize(1, kUncalculated);
         return;
     }
 
@@ -117,16 +116,12 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c
 
     // else assign to current size = highest current index + 1
     SymmetrizationIndices_[c] = maxSymmetrizationIndex() + 1;
-
-    CalculationStatuses_.resize(maxSymmetrizationIndex() + 1, kUncalculated);
-
 }
 
 //-------------------------
 void DataAccessor::clearSymmetrizationIndices()
 {
     SymmetrizationIndices_.clear();
-    CalculationStatuses_.clear();
 }
 
 //-------------------------

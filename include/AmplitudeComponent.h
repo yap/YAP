@@ -22,6 +22,8 @@
 #define yap_AmplitudeComponent_h
 
 #include "Amp.h"
+#include "CalculationStatus.h"
+#include "DataPartition.h"
 #include "DataPoint.h"
 
 #include <memory>
@@ -42,7 +44,8 @@ public:
     /// @{
 
     /// Default constructor
-    AmplitudeComponent()
+    AmplitudeComponent() :
+      CalculationStatus_(kUncalculated)
     {}
 
     // Defaulted copy constructor
@@ -52,12 +55,27 @@ public:
 
     /// @}
 
+    /// prepare Amplitude component, to be called before looping over DataPoints
+    void prepare()
+    { if (CalculationStatus_ == kUncalculated) {
+          precalculate();
+          CalculationStatus_ = kCalculated;
+      }
+    }
+
     /// Calculate complex amplitude
-    virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) = 0;
+    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
+protected:
+
+    /// precalculate values needed for the AmplitudeComponent;
+    virtual void precalculate() = 0;
+
+    /// Does precalculate need to recalculate?
+    CalculationStatus CalculationStatus_;
 };
 
 }

@@ -20,14 +20,14 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
     AmplitudeComponentDataAccessor(spinAmplitude->initialStateParticle()),
+    ParameterSet({0, 0}, kChanged), // free amplitude
     Daughters_(daughters),
     BlattWeisskopf_(this),
     SpinAmplitude_(spinAmplitude),
-    FreeAmplitude_(new Amp(0, 0)),
     Parent_(nullptr)
 {
     // set symmetrization indices
-    std::vector<std::vector<std::shared_ptr<ParticleCombination> > > PCs;
+    std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
     for (std::shared_ptr<Particle> d : Daughters_) {
         if (std::dynamic_pointer_cast<DataAccessor>(d))
             PCs.push_back(std::dynamic_pointer_cast<DataAccessor>(d)->particleCombinations());
@@ -49,10 +49,10 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 
     /// \todo how to for three?
     // hard-coded for two
-    for (std::shared_ptr<ParticleCombination> PCA : PCs[0])
-        for (std::shared_ptr<ParticleCombination> PCB : PCs[1])
+    for (std::shared_ptr<const ParticleCombination> PCA : PCs[0])
+        for (std::shared_ptr<const ParticleCombination> PCB : PCs[1])
             if (!PCA->sharesIndices(PCB)) {
-                std::shared_ptr<ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
+                std::shared_ptr<const ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
 
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
@@ -69,7 +69,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp DecayChannel::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo check
     Amp a = BlattWeisskopf_.amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
@@ -77,7 +77,7 @@ Amp DecayChannel::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombinatio
     if (a == Complex_0)
         return a;
 
-    const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = pc->daughters();
+    auto& pcDaughters = pc->daughters();
     for (unsigned i = 0; i < Daughters_.size(); ++i) {
         a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
     }
@@ -185,7 +185,7 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
-CalculationStatus DecayChannel::updateCalculationStatus(std::shared_ptr<ParticleCombination> c)
+CalculationStatus DecayChannel::updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
 {
     CalculationStatus retVal(kCalculated);
 
@@ -197,20 +197,20 @@ CalculationStatus DecayChannel::updateCalculationStatus(std::shared_ptr<Particle
     if (BlattWeisskopf_.calculationStatus() == kUncalculated)
         retVal = kUncalculated;
 
-    if (SpinAmplitude_->updateCalculationStatus(c) == kUncalculated)
+    if (SpinAmplitude_->updateCalculationStatus(d, c) == kUncalculated)
         retVal = kUncalculated;
 
-    const std::vector<std::shared_ptr<ParticleCombination> >& pcDaughters = c->daughters();
+    auto& pcDaughters = c->daughters();
     for (unsigned i = 0; i < Daughters_.size(); ++i) {
         if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]))
-            if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i])->updateCalculationStatus(pcDaughters.at(i)) == kUncalculated)
+            if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i])->updateCalculationStatus(d, pcDaughters.at(i)) == kUncalculated)
                 retVal = kUncalculated;
     }
 
 
     // set new Status
-    if (calculationStatus(c) == kCalculated)
-        setCalculationStatus(c, retVal);
+    if (calculationStatus(d, c) == kCalculated)
+        setCalculationStatus(d, c, retVal);
 
     return retVal;
 }
@@ -275,7 +275,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 }
 
 //-------------------------
-void DecayChannel::setFreeAmplitude(const Amp& amp)
+/*void DecayChannel::setFreeAmplitude(const Amp& amp)
 {
     if (*FreeAmplitude_ == amp)
         return;
@@ -295,10 +295,10 @@ void DecayChannel::setFreeAmplitude(const Amp& amp)
 
     if (!set)
         LOG(ERROR) << "DecayChannel::setFreeAmplitude - could not set calculationStatus od parent.";
-}
+}*/
 
 //-------------------------
-void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     DataAccessor::addSymmetrizationIndex(c);
     //BlattWeisskopf_.addSymmetrizationIndex(c);
@@ -316,10 +316,10 @@ void DecayChannel::clearSymmetrizationIndices()
 //-------------------------
 void DecayChannel::setSymmetrizationIndexParents()
 {
-    std::vector<std::shared_ptr<ParticleCombination> > chPCs = particleCombinations();
+    auto chPCs = particleCombinations();
 
     // clean up PCs without parents
-    std::vector<std::shared_ptr<ParticleCombination> > chPCsParents = particleCombinations();
+    auto chPCsParents = particleCombinations();
     auto it = chPCsParents.begin();
     while (it != chPCsParents.end()) {
         if (not (*it)->parent()) {

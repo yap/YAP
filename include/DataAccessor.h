@@ -23,6 +23,7 @@
 
 #include "Amp.h"
 #include "CalculationStatus.h"
+#include "DataPartition.h"
 #include "DataPoint.h"
 #include "ParticleCombination.h"
 
@@ -67,17 +68,17 @@ public:
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) const;
+    bool hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const;
 
     /// \return index inside row of DataPoint for the requested symmetrization
-    unsigned symmetrizationIndex(std::shared_ptr<ParticleCombination> c) const
+    unsigned symmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
     { return SymmetrizationIndices_.at(c); }
 
     /// \return maximum index of SymmetrizationIndices_
     unsigned maxSymmetrizationIndex() const;
 
     /// \return list of all ParticleCombinations
-    std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const;
+    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations() const;
 
     /// @}
 
@@ -88,7 +89,7 @@ public:
     /// @{
 
     /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices();
@@ -110,11 +111,7 @@ public:
     { return d.CachedAmplitudes_[Index_][i]; }
 
     const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_[Index_][i]; }
-
-    /// \return calculation statuses (const)
-    CalculationStatus calculationStatus(unsigned i) const
-    { return CalculationStatuses_[i]; }
+    { return d.CachedAmplitudes_[Index_][i]; }}
 #else
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
@@ -125,15 +122,14 @@ public:
 
     const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
     { return d.CachedAmplitudes_.at(Index_).at(i); }
-
-    /// \return calculation statuses (const)
-    CalculationStatus calculationStatus(unsigned i) const
-    { return CalculationStatuses_.at(i); }
 #endif
 
-    /// \return calculation statuses (const)
-    CalculationStatus calculationStatus(std::shared_ptr<ParticleCombination> c) const
-    { return CalculationStatuses_[this->symmetrizationIndex(c)]; }
+    CalculationStatus calculationStatus(const DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
+    { return d.CalculationStatusesDataSet(Index_, symmetrizationIndex(c)); }
+
+    CalculationStatus calculationStatus(const DataPartition& d, unsigned symIndex) const
+    { return d.CalculationStatusesDataSet(Index_, symIndex); }
+
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;
@@ -143,24 +139,17 @@ public:
     /// \name Setters
     /// @{
 
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    /// Set CalculationStatus for index i
-    void setCalculationStatus(unsigned i, CalculationStatus stat)
-    { CalculationStatuses_[i] = stat; }
-#else
-    /// Set CalculationStatus for index i
-    void setCalculationStatus(unsigned i, CalculationStatus stat)
-    { CalculationStatuses_.at(i) = stat; }
-#endif
-
     /// Set CalculationStatus for particleCombination
-    void setCalculationStatus(std::shared_ptr<ParticleCombination> c, CalculationStatus stat)
-    { CalculationStatuses_.at(symmetrizationIndex(c)) = stat; }
+    void setCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c, CalculationStatus stat) const
+    { d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)) = stat; }
 
-    /// Set CalculationStatuses_ depending on DataAccessor's components
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) = 0;
+    void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus stat) const
+    { d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
 
     /// @}
+
+    /// Set CalculationStatuses_ depending on DataAccessor's components
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const = 0;
 
 protected:
 
@@ -176,11 +165,7 @@ protected:
     ParticleCombination::Equiv* Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
-    std::map<std::shared_ptr<ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<ParticleCombination> > > SymmetrizationIndices_;
-
-    /// vector of calculation statuses
-    /// index is for the symmeterization state
-    std::vector<CalculationStatus> CalculationStatuses_;
+    std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
 private:
 

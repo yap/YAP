@@ -13,7 +13,7 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-Amp Resonance::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo check
     Amp a = Complex_0;
@@ -48,14 +48,14 @@ bool Resonance::consistent() const
 //-------------------------
 void Resonance::addChannel(std::unique_ptr<DecayChannel>& c)
 {
-    for (std::shared_ptr<ParticleCombination> pc : c->particleCombinations())
+    for (auto& pc : c->particleCombinations())
         MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
 
     DecayingParticle::addChannel(c);
 }
 
 //-------------------------
-void Resonance::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+void Resonance::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     DecayingParticle::addSymmetrizationIndex(c);
     MassShape_->addSymmetrizationIndex(c);

@@ -43,9 +43,9 @@ public:
     void calculate(DataPoint& d);
 
     /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override
     { return kCalculated; }
 
     /// Access helicity angles (const)
@@ -56,7 +56,7 @@ public:
     /// Access helicity angles (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
-    const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
     { return helicityAngles(d, SymmetrizationIndices_.at(pc)); }
 
 //protected:
@@ -66,7 +66,7 @@ public:
 
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
-    void transformDaughters(DataPoint& d, std::shared_ptr<ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    void transformDaughters(DataPoint& d, std::shared_ptr<const ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
 
 };
 

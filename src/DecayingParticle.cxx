@@ -34,7 +34,7 @@ DecayingParticle::DecayingParticle(const DecayingParticle& other) :
 }
 
 //-------------------------
-Amp DecayingParticle::calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+Amp DecayingParticle::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     // \todo check
     Amp a = Complex_0;
@@ -90,11 +90,12 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
-CalculationStatus DecayingParticle::updateCalculationStatus(std::shared_ptr<ParticleCombination> c)
+CalculationStatus DecayingParticle::updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
 {
     CalculationStatus retVal(kCalculated);
 
-    if (! hasSymmetrizationIndex(c))
+    /// \todo implement
+    /*if (! hasSymmetrizationIndex(c))
         return retVal;
 
     // call updateCalculationStatus of channels
@@ -104,7 +105,7 @@ CalculationStatus DecayingParticle::updateCalculationStatus(std::shared_ptr<Part
 
     // set new Status
     if (calculationStatus(c) == kCalculated)
-        setCalculationStatus(c, retVal);
+        setCalculationStatus(c, retVal);*/
 
     return retVal;
 }
@@ -121,7 +122,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
 
     // add particle combinations
-    for (std::shared_ptr<ParticleCombination> pc : Channels_.back()->particleCombinations())
+    for (auto pc : Channels_.back()->particleCombinations())
         addSymmetrizationIndex(pc);
 }
 
@@ -138,10 +139,10 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
                                                     A->quantumNumbers(), B->quantumNumbers(), twoL)) );
 
         bool notZero(false);
-        std::vector<std::shared_ptr<ParticleCombination>> PCs;
+        std::vector<std::shared_ptr<const ParticleCombination>> PCs;
 
         for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
-            for (std::shared_ptr<ParticleCombination> pc : chan->particleCombinations()) {
+            for (auto& pc : chan->particleCombinations()) {
                 std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
                 pcHel -> setTwoLambda(twoLambda);
 
@@ -340,7 +341,7 @@ void DecayingParticle::setSymmetrizationIndexParents()
     //std::cout << "DecayingParticle::setSymmetrizationIndexParents()\n";
 
     // clean up PCs without parents
-    std::vector<std::shared_ptr<ParticleCombination> > PCsParents = particleCombinations();
+    auto PCsParents = particleCombinations();
     auto it = PCsParents.begin();
     while (it != PCsParents.end()) {
         if (!(*it)->parent()) {

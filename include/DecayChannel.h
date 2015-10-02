@@ -21,6 +21,7 @@
 
 #include "AmplitudeComponentDataAccessor.h"
 #include "BlattWeisskopf.h"
+#include "ParameterSet.h"
 
 #include <memory>
 #include <string>
@@ -38,7 +39,7 @@ class SpinAmplitude;
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DecayChannel : public AmplitudeComponentDataAccessor
+class DecayChannel : public AmplitudeComponentDataAccessor, public ParameterSet
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
@@ -50,7 +51,7 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
 
     /// \return breakup momentum
     double breakupMomentum() const;
@@ -76,10 +77,6 @@ public:
     const SpinAmplitude* spinAmplitude() const
     { return SpinAmplitude_.get(); }
 
-    /// Get free amplitude
-    const Amp& freeAmplitude() const
-    { return *FreeAmplitude_; }
-
     /// Get parent particle
     DecayingParticle* parent()
     { return Parent_; }
@@ -88,23 +85,26 @@ public:
     const DecayingParticle* parent() const
     { return Parent_; }
 
+    Amp freeAmplitude() const
+    { return Amp(parameters()[0], parameters()[1]); }
+
     /// @}
 
     /// \name Setters
     /// @{
 
-    /// Set the free (complex) amplitude
-    void setFreeAmplitude(const Amp& amp);
-
     /// Set parent
     void setParent(DecayingParticle* parent)
     { Parent_ = parent; }
+
+    void setFreeAmplitude(Amp a)
+    { ParameterSet::operator =({a.real(), a.imag()}); }
 
     /// @}
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to BlattWeisskopf_ and SpinAmplitude_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
@@ -114,8 +114,11 @@ public:
 
 protected:
 
+    virtual void precalculate() override
+    {}
+
     /// \return (fixed) Amplitude for decay channel
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// 2 daughters of the decay
     std::vector<std::shared_ptr<Particle> > Daughters_;
@@ -125,9 +128,6 @@ protected:
 
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
-
-    /// free ("fit") amplitude to multiply all others by
-    std::shared_ptr<Amp> FreeAmplitude_;
 
     /// DecayingParticle this DecayChannel belongs to
     DecayingParticle* Parent_;

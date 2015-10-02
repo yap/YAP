@@ -30,7 +30,7 @@ InitialStateParticle::~InitialStateParticle()
 }
 
 //-------------------------
-double InitialStateParticle::logLikelihood()
+double InitialStateParticle::logLikelihood(DataPartition& d)
 {
     /// \todo implement
 
@@ -38,17 +38,17 @@ double InitialStateParticle::logLikelihood()
 
     // update CalculationStatuses
     for (auto& pc : particleCombinations())
-        updateCalculationStatus(pc);
+        updateCalculationStatus(d, pc);
 
     // calculate amplitues
-    for (DataPoint& dataPoint : DataSet_) {
+    do {
         Amp a = Complex_0;
         for (auto& pc : particleCombinations()) {
-            a += amplitude(dataPoint, pc);
+            a += amplitude(d, pc);
         }
 
         DEBUG("InitialStateParticle amplitude = " << a);
-    }
+    } while (d.increment());
 
     return 0;
 }
@@ -68,8 +68,15 @@ bool InitialStateParticle::prepare()
         return false;
     }
 
-    //
-    ParticleCombination::makeParticleCombinationSetWithParents(particleCombinations());
+    // particle combinations
+    std::vector<std::shared_ptr<ParticleCombination> > PCs;
+    for (auto& pc : particleCombinations()) {
+        PCs.push_back(std::make_shared<ParticleCombination>(*pc));
+    }
+    ParticleCombination::makeParticleCombinationSetWithParents(PCs);
+    clearSymmetrizationIndices();
+    for (auto& pc : PCs)
+        addSymmetrizationIndex(pc);
 
     // check
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
@@ -90,7 +97,7 @@ bool InitialStateParticle::prepare()
     // make sure that final state particles get the correct indices
     for (unsigned i = 0; i < particleCombinations()[0]->indices().size(); ++i) {
         std::shared_ptr<ParticleCombination> index = std::make_shared<ParticleCombination>(i);
-        for (std::shared_ptr<ParticleCombination> pc : ParticleCombination::particleCombinationSet()) {
+        for (auto& pc : ParticleCombination::particleCombinationSet()) {
             if (ParticleCombination::equivByOrderlessContent(index, pc)) {
                 FourMomenta_.addSymmetrizationIndex(pc);
                 continue;

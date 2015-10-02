@@ -20,6 +20,7 @@ set(YAP_SOURCES
   HelicitySpinAmplitude.cxx
   InitialStateParticle.cxx
   MassShape.cxx
+  ParameterSet.cxx
   ParticleCombination.cxx
   Particle.cxx
   ParticleFactory.cxx

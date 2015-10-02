@@ -44,20 +44,22 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override
-    { return calculationStatus(c); }
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override
+    { return d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)); }
 
     /// cast into string
     operator std::string() const override;
 
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
-    double calculateClebschGordanCoefficient(std::shared_ptr<ParticleCombination> c) const;
+    double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
 protected:
 
+    void precalculate() override;
+
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 
@@ -65,7 +67,7 @@ private:
     bool equals(const SpinAmplitude& rhs) const override;
 
     /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
-    std::map<std::shared_ptr<ParticleCombination>, double> ClebschGordanCoefficients_;
+    std::map<std::shared_ptr<const ParticleCombination>, double> ClebschGordanCoefficients_;
 
 };
 

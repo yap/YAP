@@ -56,7 +56,7 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
@@ -132,7 +132,7 @@ protected:
 
     /// \return Ampltiude for particle
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

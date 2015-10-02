@@ -53,7 +53,7 @@ public:
     /// Fill 4-momenta
     void calculate(DataPoint& d);
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override
     { return kCalculated; }
 
     /// Access 4-momentum (const)
@@ -64,19 +64,19 @@ public:
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const TLorentzVector& p(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    const TLorentzVector& p(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
     { return p(d, SymmetrizationIndices_.at(pc)); }
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    double m2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
     { return data(d, SymmetrizationIndices_.at(pc)).at(0); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+    double m(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
     { return data(d, SymmetrizationIndices_.at(pc)).at(1); }
 
     /// Access initial-state 4-momentum (const)

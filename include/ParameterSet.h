@@ -54,27 +54,21 @@ public:
     {}
 
     /// assignment operator
-    ParameterSet& operator=(std::initializer_list<double> pars)
-    { Parameters_ = pars; synchronizeParameterStatuses(); return *this;}
+    ParameterSet& operator=(std::initializer_list<double> pars);
 
     /// @}
 
-    /// synchronize #ParameterStatuses_ to #Parameters_
-    /// \param status Status to initialize new parameters with (default = #kFixed)
-    void synchronizeParameterStatuses(ParameterStatus status = kFixed)
-    { ParameterStatuses_.resize(Parameters_.size(), status); }
-
     /// Get parameters
-    std::vector<double>& parameters()
-    { return Parameters_; }
+    /*std::vector<double>& parameters()
+    { return Parameters_; }*/
 
     /// Get (const) parameters
     const std::vector<double>& parameters() const
     { return Parameters_; }
 
     /// Get parameter statuses
-    std::vector<ParameterStatus>& parameterStatuses()
-    { return ParameterStatuses_; }
+    /*std::vector<ParameterStatus>& parameterStatuses()
+    { return ParameterStatuses_; }*/
 
     /// Get (const) parameters
     const std::vector<ParameterStatus>& parameterStatuses() const
@@ -85,6 +79,11 @@ public:
     { return Parameters_.size() == ParameterStatuses_.size(); }
 
 protected:
+
+    /// synchronize #ParameterStatuses_ to #Parameters_
+    /// \param status Status to initialize new parameters with (default = #kFixed)
+    void synchronizeParameterStatuses(ParameterStatus status = kFixed)
+    { ParameterStatuses_.resize(Parameters_.size(), status); }
 
     /// Parameters
     std::vector<double> Parameters_;

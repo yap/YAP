@@ -87,7 +87,7 @@ protected:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override = 0;
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override = 0;
 
     /// Check if SpinAmplitudes are equal
     virtual bool equals(const SpinAmplitude& rhs) const;

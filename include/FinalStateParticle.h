@@ -55,7 +55,7 @@ public:
     /// @}
 
     /// \return 1 + 0i
-    virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
+    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
     { static Amp a = Complex_1; return a; }
 
     virtual bool consistent() const override;
@@ -65,21 +65,25 @@ public:
     { return PDGCode_; }
 
     /// \return list of all ParticleCombinations
-    std::vector<std::shared_ptr<ParticleCombination> > particleCombinations() const
+    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations() const
     { return SymmetrizationIndices_; }
 
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
+protected:
+    virtual void precalculate() override
+    {}
+
 private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_
-    void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+    void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     /// PDG code of the particle
     int PDGCode_;
 
-    std::vector<std::shared_ptr<ParticleCombination> > SymmetrizationIndices_;
+    std::vector<std::shared_ptr<const ParticleCombination> > SymmetrizationIndices_;
 
 };
 

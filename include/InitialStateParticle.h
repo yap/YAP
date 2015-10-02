@@ -56,7 +56,7 @@ public:
     /// @}
 
     /// \todo remove!
-    double logLikelihood();
+    double logLikelihood(DataPartition& d);
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -115,6 +115,10 @@ public:
     bool addDataPoint(const DataPoint& d);
 
     void printDataAccessors();
+
+protected:
+    virtual void precalculate()
+    {}
 
 private:
 

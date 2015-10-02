@@ -52,7 +52,7 @@ public:
     virtual bool consistent() const override
     { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
 
-    virtual CalculationStatus updateCalculationStatus(std::shared_ptr<ParticleCombination> c) override;
+    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
 
     /// @}
 
@@ -64,13 +64,13 @@ protected:
     /// Calculate MassShape amplitude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override
-    { return calcAmplitudeS(initialStateParticle()->fourMomenta().m2(d, pc)); }
+    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
+    { return calcAmplitudeS(initialStateParticle()->fourMomenta().m2(d.dataPoint(), pc)); }
 
     /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitudeS(double s) = 0;
+    virtual Amp calcAmplitudeS(double s) const = 0;
 
     /// @}
 

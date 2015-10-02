@@ -42,28 +42,38 @@ public:
 
     DataPartition(const DataPoint& dataPoint, DataIterator begin, DataIterator end, unsigned spacing = 1);
 
-    /// post increment operator
-    virtual DataIterator operator++()
+    /// increment and
+    /// \return if still in range
+    bool increment()
     {
-        // get current position to return later
-        DataIterator currentPosition = CurrentPosition_;
-
         // advance
         CurrentPosition_ += Spacing_;
 
         // reset CalculationStatusesDataPoint_ to CalculationStatusesDataSet_
         CalculationStatusesDataPoint_ = CalculationStatusesDataSet_;
-        return currentPosition;
+
+        return CurrentPosition_ < End_;
     }
 
     /// \return current DataPoint
     DataPoint& dataPoint()
     { return *CurrentPosition_; }
 
+    /// \return current DataPoint (const)
+    const DataPoint& dataPoint() const
+    { return *CurrentPosition_; }
+
     CalculationStatus& CalculationStatusesDataSet(unsigned index, unsigned pcIndex)
     { return CalculationStatusesDataSet_.at(index).at(pcIndex); }
 
+    CalculationStatus CalculationStatusesDataSet(unsigned index, unsigned pcIndex) const
+    { return CalculationStatusesDataSet_.at(index).at(pcIndex); }
+
+
     CalculationStatus& CalculationStatusesDataPoint(unsigned index, unsigned pcIndex)
+    { return CalculationStatusesDataPoint_.at(index).at(pcIndex); }
+
+    CalculationStatus CalculationStatusesDataPoint(unsigned index, unsigned pcIndex) const
     { return CalculationStatusesDataPoint_.at(index).at(pcIndex); }
 
 private:

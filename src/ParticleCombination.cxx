@@ -23,16 +23,26 @@ ParticleCombination::ParticleCombination(ParticleIndex index, char twoLambda) :
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<ParticleCombination> > c, char twoLambda) :
+ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<const ParticleCombination> > c, char twoLambda) :
     Parent_(nullptr),
     TwoLambda_(twoLambda)
 {
-    for (std::shared_ptr<ParticleCombination>& d : c)
+    for (auto& d : c)
         addDaughter(d);
 }
 
 //-------------------------
-const std::shared_ptr<ParticleCombination> ParticleCombination::sharedParent() const
+/*std::vector<std::shared_ptr<const ParticleCombination> > ParticleCombination::daughters() const
+{
+    std::vector<std::shared_ptr<const ParticleCombination> > daughters;
+    for (auto& d : Daughters_)
+        daughters.push_back(d);
+
+    return daughters;
+}*/
+
+//-------------------------
+const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedParent() const
 {
     if (! Parent_) {
         return std::shared_ptr<ParticleCombination>(Parent_);
@@ -44,11 +54,11 @@ const std::shared_ptr<ParticleCombination> ParticleCombination::sharedParent() c
 
     LOG(WARNING) << "ParticleCombination::parent() - could not find parent in ParticleCombinationSet_.";
 
-    return std::shared_ptr<ParticleCombination>(Parent_);
+    return std::shared_ptr<const ParticleCombination>(Parent_);
 }
 
 //-------------------------
-bool ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daughter)
+bool ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
 {
     if (daughter->indices().empty()) {
         LOG(ERROR) << "ParticleCombination::addDaughter - daughter contains no indices.";
@@ -125,7 +135,7 @@ bool ParticleCombination::consistent() const
     }
 
     // check daughters
-    for (std::shared_ptr<ParticleCombination> d : Daughters_) {
+    for (auto& d : Daughters_) {
         if (d->parent() and  d->parent() != this) {
             LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
             result = false;
@@ -166,7 +176,7 @@ ParticleCombination::operator std::string() const
 }
 
 //-------------------------
-bool ParticleCombination::sharesIndices(std::shared_ptr<ParticleCombination> B)
+bool ParticleCombination::sharesIndices(std::shared_ptr<const ParticleCombination> B) const
 {
     for (ParticleIndex a : Indices_)
         for (ParticleIndex b : B->indices())
@@ -183,13 +193,12 @@ void ParticleCombination::setParents()
         // make copy, set this as parent and get unique shared_ptr
         std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
         copy->Parent_ = this;
-        std::shared_ptr<ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-
-        uniqueCopy->setParent(this);
-        daughter.swap(uniqueCopy);
 
         // call recursively
-        daughter->setParents();
+        copy->setParents();
+
+        std::shared_ptr<const ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
+        daughter.swap(uniqueCopy);
     }
 }
 
@@ -208,12 +217,12 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 /////////////////////////
 // Static stuff:
 
-std::set<std::shared_ptr<ParticleCombination> > ParticleCombination::ParticleCombinationSet_;
+std::set<std::shared_ptr<const ParticleCombination> > ParticleCombination::ParticleCombinationSet_;
 
 //-------------------------
-std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<ParticleCombination> pc)
+std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<const ParticleCombination> pc)
 {
-    for (std::shared_ptr<ParticleCombination> d : ParticleCombinationSet_)
+    for (auto& d : ParticleCombinationSet_)
         if (ParticleCombination::equivUpAndDown(pc, d))
             return d;
 
@@ -222,13 +231,13 @@ std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::s
 }
 
 //-------------------------
-std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleIndex i)
+std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleIndex i)
 {
     return uniqueSharedPtr(std::make_shared<ParticleCombination>(i));
 }
 
 //-------------------------
-std::shared_ptr<ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<std::shared_ptr<ParticleCombination> > c)
+std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<std::shared_ptr<const ParticleCombination> > c)
 {
     return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
 }
@@ -238,12 +247,12 @@ void ParticleCombination::makeParticleCombinationSetWithParents(std::vector<std:
 {
     ParticleCombinationSet_.clear();
 
-    for (auto& pc : initialStateParticleCombinations)
-        ParticleCombinationSet_.insert(pc);
-
     for (auto& pc : initialStateParticleCombinations) {
         pc->setParents();
     }
+
+    for (auto& pc : initialStateParticleCombinations)
+        ParticleCombinationSet_.insert(pc);
 
     // check consistency
     for (auto& pc : ParticleCombinationSet_) {
@@ -285,7 +294,7 @@ ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedCo
 ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
 
 //-------------------------
-bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -302,7 +311,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<Part
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -324,7 +333,7 @@ bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<Particl
 }
 
 //-------------------------
-bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivDown::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -350,7 +359,7 @@ bool ParticleCombination::EquivDown::operator()(std::shared_ptr<ParticleCombinat
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -368,7 +377,7 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<Pa
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -386,7 +395,7 @@ bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<ParticleCom
 }
 
 //-------------------------
-bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<ParticleCombination> A, std::shared_ptr<ParticleCombination> B) const
+bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
     // compare shared_ptr addresses
     if (A == B)

@@ -50,7 +50,10 @@ public:
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
     /// Blatt-Weisskopf amplitude at DataPoint
-    virtual const Amp& amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc) override;
+    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
+    { return CachedAmplitude_; }
+
+    virtual void precalculate() override;
 
     /// \return CalculationStatus
     CalculationStatus calculationStatus() const
@@ -66,7 +69,6 @@ private:
     DecayChannel* DecayChannel_;
 
     Amp CachedAmplitude_;
-    CalculationStatus CalculationStatus_;
 
 };
 

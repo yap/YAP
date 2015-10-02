@@ -93,7 +93,7 @@ public:
     /// A = 1 / [Mass^2 - s - i * Mass * Width]
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitudeS(double s);
+    virtual Amp calcAmplitudeS(double s) const;
 
     /// @}
 
@@ -105,7 +105,9 @@ public:
     /// @}
 
 protected:
-    CalculationStatus CalcStatus_;
+
+    /// precalculate M2iMG_
+    void precalculate() override;
 
     Amp M2iMG_;                  // mass * mass - i * mass * width
 

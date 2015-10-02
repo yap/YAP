@@ -17,7 +17,7 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 }
 
 //-------------------------
-void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     /// dFunctions for J == 0 are 0, so we don't need to calculate and store helicity angles
     if (initialStateParticle()->quantumNumbers().twoJ() == 0
@@ -48,7 +48,7 @@ void HelicityAngles::calculate(DataPoint& d)
     for (TLorentzVector& lv : finalStatesHf)
         lv.Transform(boost);
 
-    for (std::shared_ptr<ParticleCombination>& pc : initialStateParticle()->particleCombinations()) {
+    for (std::shared_ptr<const ParticleCombination>& pc : initialStateParticle()->particleCombinations()) {
         transformDaughters(d, pc, finalStatesHf);
     }
 
@@ -85,11 +85,11 @@ TLorentzRotation HelicityAngles::hfTransform(const TLorentzVector& daughterLv)
 
 //-------------------------
 void HelicityAngles::transformDaughters(DataPoint& d,
-                                        std::shared_ptr<ParticleCombination> pc,
+                                        std::shared_ptr<const ParticleCombination> pc,
                                         std::vector<TLorentzVector> finalStatesHf)
 {
     // loop over daughters
-    for (const std::shared_ptr<ParticleCombination>& daugh : pc->daughters()) {
+    for (auto& daugh : pc->daughters()) {
 
         if (daugh->daughters().empty())
             continue;

@@ -15,37 +15,35 @@ AmplitudeComponentDataAccessor::AmplitudeComponentDataAccessor(InitialStateParti
 
 
 //-------------------------
-const Amp& AmplitudeComponentDataAccessor::amplitude(DataPoint& d, std::shared_ptr<ParticleCombination> pc)
+const Amp& AmplitudeComponentDataAccessor::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    // has to made sure in caller!
 #ifdef ELPP_DISABLE_DEBUG_LOGS
+    // find symmetrization index
+    unsigned sym_index = SymmetrizationIndices_[pc];
 #else
+    // has to made sure in caller! This is just for safety while debugging!
     if (! hasSymmetrizationIndex(pc)) {
         LOG(ERROR) << "AmplitudeComponentDataAccessor::amplitude - called with wrong symmetrization index!";
         static Amp zero(Complex_0);
         return zero;
     }
-#endif
 
     // find symmetrization index
     unsigned sym_index = SymmetrizationIndices_.at(pc);
+#endif
 
-    Amp& a = cachedAmplitude(d, sym_index);
+    Amp& a = cachedAmplitude(d.dataPoint(), sym_index);
 
-    // check whether data-dependent calculation needs to be made
-    if (calculationStatus(sym_index) == kUncalculated) {
+    CalculationStatus& calcStat = d.CalculationStatusesDataPoint(index(), sym_index);
 
-        // calculate amplitude for ALL dataPoints
-        /// \todo do this smarter, we do NOT want to loop over the complete dataset here!
-        /*for (DataPoint& dataPt : initialStateParticle()->dataSet()) {
-            cachedAmplitude(dataPt, sym_index) = calcAmplitude(dataPt, pc);
-        }*/
+    if (calcStat == kCalculated and d.CalculationStatusesDataSet(index(), sym_index) == kCalculated)
+        return a;
 
-        cachedAmplitude(d, sym_index) = calcAmplitude(d, pc);
+    // calculate amplitude and store in cache
+    a = calcAmplitude(d, pc);
 
-        // set calculation status
-        setCalculationStatus(sym_index, kCalculated);
-    }
+    // set calculation status for dataPoint
+    calcStat = kCalculated;
 
     return a;
 }
