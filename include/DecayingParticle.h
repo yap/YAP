@@ -128,6 +128,12 @@ public:
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
+    virtual void precalculate() override
+    { for (auto& c : Channels_)
+        c->precalculate();
+      AmplitudeComponentDataAccessor::precalculate();
+    }
+
 protected:
 
     /// \return Ampltiude for particle

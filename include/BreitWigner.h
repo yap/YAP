@@ -107,7 +107,7 @@ public:
 protected:
 
     /// precalculate M2iMG_
-    void precalculate() override;
+    void calcPrecalculate() override;
 
     Amp M2iMG_;                  // mass * mass - i * mass * width
 

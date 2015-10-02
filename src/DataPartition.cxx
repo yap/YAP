@@ -4,6 +4,7 @@ namespace yap {
 
 //-------------------------
 DataPartition::DataPartition(const DataPoint& dataPoint, DataIterator begin, DataIterator end, unsigned spacing) :
+    CurrentPosition_(begin),
     Begin_(begin),
     End_(end),
     Spacing_(spacing)

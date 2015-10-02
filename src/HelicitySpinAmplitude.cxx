@@ -17,7 +17,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const Qu
 }
 
 //-------------------------
-void HelicitySpinAmplitude::precalculate()
+void HelicitySpinAmplitude::calcPrecalculate()
 {
     if (ClebschGordanCoefficients_.empty()) {
         for (auto& pc : particleCombinations())

@@ -44,9 +44,7 @@ public:
     /// @{
 
     /// Default constructor
-    AmplitudeComponent() :
-      CalculationStatus_(kUncalculated)
-    {}
+    AmplitudeComponent();
 
     // Defaulted copy constructor
     // Defaulted move constructor
@@ -55,10 +53,10 @@ public:
 
     /// @}
 
-    /// prepare Amplitude component, to be called before looping over DataPoints
-    void prepare()
+    /// precalculate Amplitude component, to be called before looping over DataPoints
+    virtual void precalculate()
     { if (CalculationStatus_ == kUncalculated) {
-          precalculate();
+          calcPrecalculate();
           CalculationStatus_ = kCalculated;
       }
     }
@@ -72,7 +70,7 @@ public:
 protected:
 
     /// precalculate values needed for the AmplitudeComponent;
-    virtual void precalculate() = 0;
+    virtual void calcPrecalculate() = 0;
 
     /// Does precalculate need to recalculate?
     CalculationStatus CalculationStatus_;

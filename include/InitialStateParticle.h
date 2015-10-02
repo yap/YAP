@@ -117,7 +117,7 @@ public:
     void printDataAccessors();
 
 protected:
-    virtual void precalculate()
+    virtual void calcPrecalculate()
     {}
 
 private:
@@ -134,14 +134,25 @@ private:
     /// remove DataAccessor from set
     void removeDataAccessor(DataAccessor* d);
 
+    /// add AmplitudeComponent to set
+    void addAmplitudeComponent(AmplitudeComponent* d)
+    { AmplitudeComponents_.insert(d); }
+
+    /// remove AmplitudeComponent from set
+    void removeAmplitudeComponent(AmplitudeComponent* d);
+
     void setDataAcessorIndices();
 
     friend class DataAccessor;
+    friend class AmplitudeComponent;
 
     bool Prepared_;
 
     /// List of all DataAccessor objects in the InitialsStateParticle and below
     std::set<DataAccessor*> DataAccessors_;
+
+    /// List of all AmplitudeComponent objects in the InitialsStateParticle and below
+    std::set<AmplitudeComponent*> AmplitudeComponents_;
 
     /// List of all DecayChannel objects in the InitialsStateParticle and below
     std::vector<DecayChannel*> DecayChannels_;

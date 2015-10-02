@@ -8,7 +8,6 @@ namespace yap {
 
 //-------------------------
 AmplitudeComponentDataAccessor::AmplitudeComponentDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
-    AmplitudeComponent(),
     DataAccessor(isp, equiv)
 {
 }

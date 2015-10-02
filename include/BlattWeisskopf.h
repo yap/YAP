@@ -53,7 +53,7 @@ public:
     virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
     { return CachedAmplitude_; }
 
-    virtual void precalculate() override;
+    virtual void calcPrecalculate() override;
 
     /// \return CalculationStatus
     CalculationStatus calculationStatus() const

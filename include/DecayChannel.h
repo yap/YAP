@@ -112,9 +112,11 @@ public:
     // for internal use only
     void setSymmetrizationIndexParents();
 
+    virtual void precalculate() override;
+
 protected:
 
-    virtual void precalculate() override
+    virtual void calcPrecalculate() override
     {}
 
     /// \return (fixed) Amplitude for decay channel

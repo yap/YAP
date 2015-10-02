@@ -362,4 +362,15 @@ void DecayChannel::setSymmetrizationIndexParents()
 }
 
 
+void DecayChannel::precalculate()
+{
+  /// \todo find a solution to do this not recursively?
+  BlattWeisskopf_.precalculate();
+  SpinAmplitude_->precalculate();
+  for(auto& d : Daughters_)
+    d->precalculate();
+  AmplitudeComponentDataAccessor::precalculate();
+}
+
+
 }

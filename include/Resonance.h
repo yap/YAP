@@ -76,7 +76,7 @@ public:
 
 protected:
 
-    virtual void precalculate() override
+    virtual void calcPrecalculate() override
     {}
 
     /// \return amplitude for resonance evaluated at DataPoint

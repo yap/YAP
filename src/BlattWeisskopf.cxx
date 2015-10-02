@@ -11,12 +11,11 @@ namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
-    AmplitudeComponent(),
     DecayChannel_(decayChannel),
     CachedAmplitude_(0)
 {}
 
-void BlattWeisskopf::precalculate() {
+void BlattWeisskopf::calcPrecalculate() {
   /// \todo What if we want to fit masses?
   double breakupMom = DecayChannel_->breakupMomentum();
   unsigned twoL = DecayChannel_->spinAmplitude()->twoL();

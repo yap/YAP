@@ -4,31 +4,32 @@ set(INCLUDE_DIRECTORIES
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
-  AmplitudeComponentDataAccessor.cxx
-  BlattWeisskopf.cxx
-  BreitWigner.cxx
-  Constants.cxx
-  DataAccessor.cxx
-  DataPartition.cxx
-  DataPoint.cxx
-  DataSet.cxx
-  DecayChannel.cxx
-  DecayingParticle.cxx
-  FinalStateParticle.cxx
-  FourMomenta.cxx
-  HelicityAngles.cxx
-  HelicitySpinAmplitude.cxx
-  InitialStateParticle.cxx
-  MassShape.cxx
-  ParameterSet.cxx
-  ParticleCombination.cxx
-  Particle.cxx
-  ParticleFactory.cxx
-  QuantumNumbers.cxx
-  Resonance.cxx
-  SpinAmplitude.cxx
-  SpinUtilities.cxx
-  WignerD.cxx
+	AmplitudeComponent.cxx
+	AmplitudeComponentDataAccessor.cxx
+	BlattWeisskopf.cxx
+	BreitWigner.cxx
+	Constants.cxx
+	DataAccessor.cxx
+	DataPartition.cxx
+	DataPoint.cxx
+	DataSet.cxx
+	DecayChannel.cxx
+	DecayingParticle.cxx
+	FinalStateParticle.cxx
+	FourMomenta.cxx
+	HelicityAngles.cxx
+	HelicitySpinAmplitude.cxx
+	InitialStateParticle.cxx
+	MassShape.cxx
+	ParameterSet.cxx
+	ParticleCombination.cxx
+	Particle.cxx
+	ParticleFactory.cxx
+	QuantumNumbers.cxx
+	Resonance.cxx
+	SpinAmplitude.cxx
+	SpinUtilities.cxx
+	WignerD.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")

@@ -50,14 +50,14 @@ void DataPoint::printDataSize()
 
     unsigned size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
-    std::cout << "  Size of FourMomenta_:         " << size << " byte\n";
+    std::cout << "  Size of FourMomenta_:         " << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
 
     size = sizeof(HelicityAngles_);
     for (std::vector<double>& v : HelicityAngles_) {
         size += sizeof(v);
         size += v.size() * sizeof(double);
     }
-    std::cout << "+ Size of HelicityAngles_:      " << size << " byte\n";
+    std::cout << "+ Size of HelicityAngles_:      " << size << " byte  \tNumber of Indices: " << HelicityAngles_.size() << "\n";
     totSize += size;
 
     size = sizeof(Data_);
@@ -68,7 +68,7 @@ void DataPoint::printDataSize()
             size += vv.size() * sizeof(double);
         }
     }
-    std::cout << "+ Size of Data_:                " << size << " byte\n";
+    std::cout << "+ Size of Data_:                " << size << " byte  \tNumber of Indices: " << Data_.size() << "\n";
     totSize += size;
 
     size = sizeof(CachedAmplitudes_);
@@ -76,10 +76,10 @@ void DataPoint::printDataSize()
         size += sizeof(v);
         size += v.size() * sizeof(Amp);
     }
-    std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte\n";
+    std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
     totSize += size;
 
-    std::cout << "= Size of DataPoint:            " << totSize << " byte\n";
+    std::cout << "= Size of DataPoint:            " << totSize << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
 }
 
 }

@@ -40,12 +40,15 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
     for (auto& pc : particleCombinations())
         updateCalculationStatus(d, pc);
 
+    // precalculate
+    /// \todo do outside of this function
+    precalculate();
+
     // calculate amplitues
     do {
         Amp a = Complex_0;
-        for (auto& pc : particleCombinations()) {
+        for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
-        }
 
         DEBUG("InitialStateParticle amplitude = " << a);
     } while (d.increment());

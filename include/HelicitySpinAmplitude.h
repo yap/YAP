@@ -55,7 +55,7 @@ public:
 
 protected:
 
-    void precalculate() override;
+    void calcPrecalculate() override;
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on

@@ -72,7 +72,7 @@ public:
     virtual void setSymmetrizationIndexParents() override;
 
 protected:
-    virtual void precalculate() override
+    virtual void calcPrecalculate() override
     {}
 
 private:
