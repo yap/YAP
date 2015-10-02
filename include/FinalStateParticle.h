@@ -46,7 +46,7 @@ public:
 
     /// Constructor
     /// \param indices index or indices (if there are identical final state particles) that this particle has in the DataPoint
-    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, int pdg, std::vector<ParticleIndex>& indices);
+    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, std::vector<ParticleIndex>& indices);
 
     /// Clone
     virtual std::shared_ptr<Particle> clone() const override
@@ -59,10 +59,6 @@ public:
     { static Amp a = Complex_1; return a; }
 
     virtual bool consistent() const override;
-
-    /// \return PDG code indicating particle type
-    int pdgCode() const
-    { return PDGCode_; }
 
     /// \return list of all ParticleCombinations
     std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations() const
@@ -79,9 +75,6 @@ private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_
     void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
-
-    /// PDG code of the particle
-    int PDGCode_;
 
     std::vector<std::shared_ptr<const ParticleCombination> > SymmetrizationIndices_;
 
