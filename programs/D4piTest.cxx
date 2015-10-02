@@ -28,7 +28,6 @@ int main( int argc, char** argv)
 
     unsigned max2L(2 * 4);
 
-    /// \todo Figure out clever way to find PDL file
     yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
 

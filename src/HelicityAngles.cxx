@@ -39,7 +39,7 @@ void HelicityAngles::calculate(DataPoint& d)
         finalStatesLab.push_back(initialStateParticle()->fourMomenta().p(d, i));
     }
 
-    // initial helicity frame. \todo Not sure if correct
+    // initial helicity frame.
     //const TLorentzRotation trans = hfTransform(initialStateLab); // ??
     // boost into RF of initialState
     TLorentzRotation boost;

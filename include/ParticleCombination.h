@@ -37,7 +37,7 @@ class ParticleCombination
 {
 public:
 
-    /// \todo Private constructor to force use of static creation functions?
+    /// Default constructor
     ParticleCombination();
 
     /// Final-state-particle constructor
@@ -200,6 +200,15 @@ public:
         virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
     };
 
+
+    /// \struct EquivUpButLambda
+    /// \brief Check objects referenced by shared pointers,
+    /// check self, all daughters (down-), and parent (up the decay tree) for equality
+    /// Does NOT compare helicity
+    struct EquivUpButLambda : EquivByOrderedContent {
+        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+    };
+
     /// \struct EquivUpAndDownButLambda
     /// \brief Check objects referenced by shared pointers,
     /// check self, all daughters (down-), and parent (up the decay tree) for equality
@@ -229,6 +238,7 @@ public:
     static EquivDown equivDown;
     static EquivDownButLambda equivDownButLambda;
     static EquivUpAndDown equivUpAndDown;
+    static EquivUpButLambda equivUpButLambda;
     static EquivUpAndDownButLambda equivUpAndDownButLambda;
     static EquivByOrderedContent equivByOrderedContent;
     static EquivByOrderlessContent equivByOrderlessContent;

@@ -90,7 +90,6 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<
     int lambda1 = c->daughters()[0]->twoLambda();
     int lambda2 = c->daughters()[1]->twoLambda();
 
-    // \todo: cross check that S is really meant to be s1 +s2
     const int    S         = s1 + s2;
     const int    lambda    = lambda1 - lambda2;
 

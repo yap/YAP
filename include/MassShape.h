@@ -43,7 +43,7 @@ class MassShape : public AmplitudeComponentDataAccessor, public ParameterSet
 public:
 
     /// Constructor
-    MassShape(InitialStateParticle* isp);
+    MassShape(InitialStateParticle* isp, std::initializer_list<double> pars);
 
     /// \name Bookkeeping related
     /// @{

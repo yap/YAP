@@ -10,10 +10,10 @@ namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(InitialStateParticle* isp, double mass, double width) :
-    MassShape(isp),
+    MassShape(isp, {mass, width}),
     M2iMG_(0)
 {
-    ParameterSet::operator=({mass, width});
+    //ParameterSet::operator=({mass, width});
 }
 
 //-------------------------
