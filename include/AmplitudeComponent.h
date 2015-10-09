@@ -55,10 +55,11 @@ public:
 
     /// precalculate Amplitude component, to be called before looping over DataPoints
     virtual void precalculate()
-    { if (CalculationStatus_ == kUncalculated) {
-          calcPrecalculate();
-          CalculationStatus_ = kCalculated;
-      }
+    {
+        if (CalculationStatus_ == kUncalculated) {
+            calcPrecalculate();
+            CalculationStatus_ = kCalculated;
+        }
     }
 
     /// Calculate complex amplitude

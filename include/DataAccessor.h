@@ -111,7 +111,8 @@ public:
     { return d.CachedAmplitudes_[Index_][i]; }
 
     const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_[Index_][i]; }}
+    { return d.CachedAmplitudes_[Index_][i]; }
+}
 #else
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
@@ -124,53 +125,53 @@ public:
     { return d.CachedAmplitudes_.at(Index_).at(i); }
 #endif
 
-    CalculationStatus calculationStatus(const DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
-    { return d.CalculationStatusesDataSet(Index_, symmetrizationIndex(c)); }
+CalculationStatus calculationStatus(const DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
+{ return d.CalculationStatusesDataSet(Index_, symmetrizationIndex(c)); }
 
-    CalculationStatus calculationStatus(const DataPartition& d, unsigned symIndex) const
-    { return d.CalculationStatusesDataSet(Index_, symIndex); }
+CalculationStatus calculationStatus(const DataPartition& d, unsigned symIndex) const
+{ return d.CalculationStatusesDataSet(Index_, symIndex); }
 
 
-    /// Get pointer to the initial state particle
-    InitialStateParticle* initialStateParticle() const;
+/// Get pointer to the initial state particle
+InitialStateParticle* initialStateParticle() const;
 
-    /// @}
+/// @}
 
-    /// \name Setters
-    /// @{
+/// \name Setters
+/// @{
 
-    /// Set CalculationStatus for particleCombination
-    void setCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c, CalculationStatus stat) const
-    { d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)) = stat; }
+/// Set CalculationStatus for particleCombination
+void setCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c, CalculationStatus stat) const
+{ d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)) = stat; }
 
-    void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus stat) const
-    { d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
+void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus stat) const
+{ d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
 
-    /// @}
+/// @}
 
-    /// Set CalculationStatuses_ depending on DataAccessor's components
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const = 0;
+/// Set CalculationStatuses_ depending on DataAccessor's components
+virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const = 0;
 
 protected:
 
-    friend class InitialStateParticle;
+friend class InitialStateParticle;
 
-    void setIndex(unsigned i)
-    { Index_ = i; }
+void setIndex(unsigned i)
+{ Index_ = i; }
 
-    /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
-    InitialStateParticle* InitialStateParticle_;
+/// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
+InitialStateParticle* InitialStateParticle_;
 
-    /// Object to check equality of symmetrizations for determining storage indices
-    ParticleCombination::Equiv* Equiv_;
+/// Object to check equality of symmetrizations for determining storage indices
+ParticleCombination::Equiv* Equiv_;
 
-    /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
-    std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
+/// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
+std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
 private:
 
-    /// storage index used in DataPoint. Must be unique.
-    unsigned Index_;
+/// storage index used in DataPoint. Must be unique.
+unsigned Index_;
 
 };
 

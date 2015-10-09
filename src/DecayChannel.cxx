@@ -20,11 +20,11 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
     AmplitudeComponentDataAccessor(spinAmplitude->initialStateParticle()),
-    ParameterSet({0, 0}, kChanged), // free amplitude
-    Daughters_(daughters),
-    BlattWeisskopf_(this),
-    SpinAmplitude_(spinAmplitude),
-    Parent_(nullptr)
+    ParameterSet( {0, 0}, kChanged), // free amplitude
+              Daughters_(daughters),
+              BlattWeisskopf_(this),
+              SpinAmplitude_(spinAmplitude),
+              Parent_(nullptr)
 {
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
@@ -364,12 +364,12 @@ void DecayChannel::setSymmetrizationIndexParents()
 
 void DecayChannel::precalculate()
 {
-  /// \todo find a solution to do this not recursively?
-  BlattWeisskopf_.precalculate();
-  SpinAmplitude_->precalculate();
-  for(auto& d : Daughters_)
-    d->precalculate();
-  AmplitudeComponentDataAccessor::precalculate();
+    /// \todo find a solution to do this not recursively?
+    BlattWeisskopf_.precalculate();
+    SpinAmplitude_->precalculate();
+    for (auto& d : Daughters_)
+        d->precalculate();
+    AmplitudeComponentDataAccessor::precalculate();
 }
 
 

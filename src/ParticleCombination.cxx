@@ -362,19 +362,19 @@ bool ParticleCombination::EquivDown::operator()(std::shared_ptr<const ParticleCo
 //-------------------------
 bool ParticleCombination::EquivUpButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
 {
-  // compare shared_ptr addresses
-  if (A == B)
-      return true;
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
 
-  if (!ParticleCombination::equivByOrderedContent(A, B))
-      return false;
+    if (!ParticleCombination::equivByOrderedContent(A, B))
+        return false;
 
-  // check parent
-  if (! ParticleCombination::equivUpButLambda(A->sharedParent(), B->sharedParent()))
-      return false;
+    // check parent
+    if (! ParticleCombination::equivUpButLambda(A->sharedParent(), B->sharedParent()))
+        return false;
 
-  // a match!
-  return true;
+    // a match!
+    return true;
 }
 
 //-------------------------

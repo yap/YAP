@@ -129,9 +129,10 @@ public:
     virtual void setSymmetrizationIndexParents() override;
 
     virtual void precalculate() override
-    { for (auto& c : Channels_)
-        c->precalculate();
-      AmplitudeComponentDataAccessor::precalculate();
+    {
+        for (auto& c : Channels_)
+            c->precalculate();
+        AmplitudeComponentDataAccessor::precalculate();
     }
 
 protected:
