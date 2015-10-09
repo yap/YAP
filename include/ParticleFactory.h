@@ -54,12 +54,12 @@ public:
     /// \brief Data container for storing particle information in database
     /// \author Johannes Rauch, Daniel Greenwald
     struct ParticleTableEntry : public QuantumNumbers {
-        ParticleTableEntry(int pdg = std::numeric_limits<int>::quiet_NaN(), std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, double width = -1);
+        ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
+        bool consistent() const override;
         int PDG_;
         std::string Name_;
         double Mass_;
-        double Width_;
-        bool consistent() const override;
+        std::vector<double> MassShapeParameters_;
     };
 
     /// Constructor

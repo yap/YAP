@@ -14,12 +14,12 @@
 namespace yap {
 
 //-------------------------
-ParticleFactory::ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, double width) :
+ParticleFactory::ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
     QuantumNumbers(q),
     PDG_(pdg),
     Name_(name),
     Mass_(mass),
-    Width_(width)
+    MassShapeParameters_(parameters)
 {
 }
 
@@ -78,7 +78,7 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
 std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
-    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(initialStateParticle(), p.Mass_, p.Width_);
+    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(initialStateParticle(), p.Mass_, p.MassShapeParameters_[0]);
     return createResonance(PDG, radialSize, massShape);
 }
 
@@ -189,8 +189,8 @@ void ParticleFactory::readPDT(const std::string fname)
 
                 // note: isospin & parity are missing from .pdl format
                 addParticleTableEntry(ParticleTableEntry(stdhepid, pname,
-                                      QuantumNumbers(0, spin2, 0, std::round(1. * chg3 / 3)),
-                                      mass, pwidth));
+                                                         QuantumNumbers(0, spin2, 0, std::round(1. * chg3 / 3)),
+                                                         mass, {pwidth}));
             }
 
             // if find a set read information and discard it
