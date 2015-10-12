@@ -131,14 +131,8 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
 {
     InitialStateParticle_ = isp;
-    if (InitialStateParticle_ and this != InitialStateParticle_) {
+    if (InitialStateParticle_ and this != InitialStateParticle_)
         InitialStateParticle_->addDataAccessor(this);
-        if (InitialStateParticle_->prepared()) {
-            LOG(ERROR) << "InitialStateParticle has already been prepared. "
-                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
-                       << "otherwise it will become inconsistent!";
-        }
-    }
 }
 
 //-------------------------

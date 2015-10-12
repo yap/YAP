@@ -128,8 +128,7 @@ private:
     virtual void setSymmetrizationIndexParents() override;
 
     /// add DataAccessor to set
-    void addDataAccessor(DataAccessor* d)
-    { DataAccessors_.insert(d); }
+    void addDataAccessor(DataAccessor* d);
 
     /// remove DataAccessor from set
     void removeDataAccessor(DataAccessor* d);

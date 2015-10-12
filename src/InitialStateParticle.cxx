@@ -287,10 +287,27 @@ void InitialStateParticle::printDataAccessors()
 }
 
 //-------------------------
+void InitialStateParticle::addDataAccessor(DataAccessor* d)
+{
+    DataAccessors_.insert(d);
+    if (prepared()) {
+        LOG(ERROR) << "InitialStateParticle has already been prepared. "
+                   << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
+                   << "otherwise it will become inconsistent!";
+    }
+}
+
+
+//-------------------------
 void InitialStateParticle::removeDataAccessor(DataAccessor* d)
 {
     if (! DataAccessors_.empty())
         DataAccessors_.erase(d);
+    if (prepared()) {
+        LOG(ERROR) << "InitialStateParticle has already been prepared. "
+                   << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
+                   << "otherwise it will become inconsistent!";
+    }
 
     //DEBUG("size of InitialStateParticle's DataAccessors_ = " << DataAccessors_.size());
 }
