@@ -2,6 +2,7 @@
 
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 #include "Particle.h"
 #include "Resonance.h"
@@ -19,7 +20,7 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
-    AmplitudeComponentDataAccessor(spinAmplitude->initialStateParticle()),
+    AmplitudeComponentDataAccessor(),
     ParameterSet( {0, 0}, kChanged), // free amplitude
               Daughters_(daughters),
               BlattWeisskopf_(this),
@@ -296,6 +297,18 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
     if (!set)
         LOG(ERROR) << "DecayChannel::setFreeAmplitude - could not set calculationStatus od parent.";
 }*/
+
+//-------------------------
+void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
+{
+    AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
+    // hand ISP to daughters
+    for (auto d : Daughters_)
+        if (std::dynamic_pointer_cast<DecayingParticle>(d))
+            std::static_pointer_cast<DecayingParticle>(d)->setInitialStateParticle(initialStateParticle());
+    // and to SpinAmplitude
+    SpinAmplitude_->setInitialStateParticle(initialStateParticle());
+}
 
 //-------------------------
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)

@@ -52,7 +52,7 @@ public:
     /// @{
 
     /// Default constructor
-    BreitWigner(InitialStateParticle* isp, double mass = -1, double width = -1);
+    BreitWigner(double mass = -1, double width = -1);
 
     /// @}
 

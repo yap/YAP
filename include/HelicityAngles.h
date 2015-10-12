@@ -37,10 +37,13 @@ class HelicityAngles : public DataAccessor
 public:
 
     /// Constructor
-    HelicityAngles(InitialStateParticle* isp);
+    HelicityAngles();
 
     /// Calculate helicity angles for all possible symmetrization indices
     void calculate(DataPoint& d);
+
+    /// Set pointer to initial state particle
+    void setInitialStateParticle(InitialStateParticle* isp) override;
 
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);

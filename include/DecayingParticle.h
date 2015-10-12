@@ -31,6 +31,7 @@
 namespace yap {
 
 class FinalStateParticle;
+class InitialStateParticle;
 class ParticleCombination;
 
 /// \class DecayingParticle
@@ -46,7 +47,7 @@ public:
     /// @{
 
     /// Constructor
-    DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize);
+    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// Copy constructor
     DecayingParticle(const DecayingParticle& other);
@@ -107,6 +108,9 @@ public:
 
     /// \name Setters
     /// @{
+
+    /// Set pointer to initial state particle
+    void setInitialStateParticle(InitialStateParticle* isp) override;
 
     /// Set radial size [GeV^-1]
     void setRadialSize(double r)

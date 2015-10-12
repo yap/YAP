@@ -5,8 +5,8 @@
 namespace yap {
 
 //-------------------------
-MassShape::MassShape(InitialStateParticle* isp, std::initializer_list<double> pars) :
-    AmplitudeComponentDataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
+MassShape::MassShape(std::initializer_list<double> pars) :
+    AmplitudeComponentDataAccessor(&ParticleCombination::equivByOrderlessContent),
     ParameterSet(pars)
 {
 }

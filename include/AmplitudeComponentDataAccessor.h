@@ -47,7 +47,7 @@ public:
     /// @{
 
     /// Default constructor
-    AmplitudeComponentDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+    AmplitudeComponentDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
     // Defaulted copy constructor
     // Defaulted move constructor

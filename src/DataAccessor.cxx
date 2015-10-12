@@ -7,31 +7,29 @@
 namespace yap {
 
 //-------------------------
-DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
+DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
     InitialStateParticle_(nullptr),
     Equiv_(equiv),
     Index_(0)
 {
-    setInitialStateParticle(isp);
-
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
 }
 
 //-------------------------
 DataAccessor::DataAccessor(const DataAccessor& other) :
-    InitialStateParticle_(other.InitialStateParticle_),
+    InitialStateParticle_(nullptr),
     Equiv_(other.Equiv_),
     SymmetrizationIndices_(other.SymmetrizationIndices_),
     Index_(0)
 {
-    InitialStateParticle_->addDataAccessor(this);
+    setInitialStateParticle(other.InitialStateParticle_);
 }
 
 //-------------------------
 DataAccessor::~DataAccessor()
 {
-    if (this != InitialStateParticle_)
+    if (InitialStateParticle_)
         InitialStateParticle_->removeDataAccessor(this);
 }
 

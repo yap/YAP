@@ -38,7 +38,7 @@ class HelicitySpinAmplitude : public SpinAmplitude
 public:
 
     /// Constructor
-    HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+    HelicitySpinAmplitude(const QuantumNumbers& initial,
                           const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
     /// Check consistency of object

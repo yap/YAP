@@ -31,6 +31,7 @@ namespace yap {
 
 class DecayChannel;
 class FinalStateParticle;
+class InitialStateParticle;
 class ParticleCombination;
 
 /// \class Resonance
@@ -60,6 +61,9 @@ public:
     /// access MassShape
     const std::shared_ptr<MassShape> massShape() const
     { return MassShape_; }
+
+    /// Set pointer to initial state particle
+    void setInitialStateParticle(InitialStateParticle* isp) override;
 
     using DecayingParticle::addChannel;
 

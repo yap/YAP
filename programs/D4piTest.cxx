@@ -39,7 +39,6 @@ int main( int argc, char** argv)
     auto piPlus = factory.createFinalStateParticle(211, {0, 2});
     auto piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
-
     // rho rho
     auto rho = factory.createResonanceBreitWigner(113, radialSize);
     rho->addChannels(piPlus, piMinus, max2L);

@@ -37,8 +37,7 @@ bool ParticleFactory::ParticleTableEntry::consistent() const
 }
 
 //-------------------------
-ParticleFactory::ParticleFactory(const std::string pdlFile) :
-    InitialStateParticle_(nullptr)
+ParticleFactory::ParticleFactory(const std::string pdlFile)
 {
     readPDT(pdlFile);
 }
@@ -60,10 +59,7 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name_ << " with quantum numbers " << p);
-    std::shared_ptr<InitialStateParticle> isp = std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
-    InitialStateParticle_ = isp.get();
-
-    return isp;
+    return std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
 }
 
 //-------------------------
@@ -78,7 +74,7 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
 std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
-    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(initialStateParticle(), p.Mass_, p.MassShapeParameters_[0]);
+    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(p.Mass_, p.MassShapeParameters_[0]);
     return createResonance(PDG, radialSize, massShape);
 }
 
@@ -108,15 +104,6 @@ bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
     //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG_, entry));
 
     return true;
-}
-
-//-------------------------
-InitialStateParticle* ParticleFactory::initialStateParticle()
-{
-    if (InitialStateParticle_ == nullptr)
-        LOG(ERROR) << "ParticleFactory: no initialStateParticle. createInitialStateParticle first before creating other resonances.";
-
-    return InitialStateParticle_;
 }
 
 //-------------------------

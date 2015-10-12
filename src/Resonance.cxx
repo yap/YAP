@@ -2,13 +2,14 @@
 
 #include "DecayChannel.h"
 #include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 
 namespace yap {
 
 //-------------------------
 Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape) :
-    DecayingParticle(massShape->initialStateParticle(), q, mass, name, radialSize),
+    DecayingParticle(q, mass, name, radialSize),
     MassShape_(massShape)
 {}
 
@@ -43,6 +44,14 @@ bool Resonance::consistent() const
     }
 
     return consistent;
+}
+
+//-------------------------
+void Resonance::setInitialStateParticle(InitialStateParticle* isp)
+{
+    DecayingParticle::setInitialStateParticle(isp);
+    // hand ISP to mass shape
+    MassShape_->setInitialStateParticle(initialStateParticle());
 }
 
 //-------------------------

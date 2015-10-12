@@ -8,8 +8,8 @@
 namespace yap {
 
 //-------------------------
-FourMomenta::FourMomenta(InitialStateParticle* isp) :
-    DataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
+FourMomenta::FourMomenta() :
+    DataAccessor(&ParticleCombination::equivByOrderlessContent),
     InitialStateIndex_(-1)
 {
 }

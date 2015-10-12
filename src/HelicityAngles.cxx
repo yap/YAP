@@ -10,10 +10,16 @@
 namespace yap {
 
 //-------------------------
-HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
-    DataAccessor(isp, &ParticleCombination::equivUpAndDownButLambda)
+HelicityAngles::HelicityAngles() :
+    DataAccessor(&ParticleCombination::equivUpAndDownButLambda)
 {
 
+}
+
+//-------------------------
+void HelicityAngles::setInitialStateParticle(InitialStateParticle* isp)
+{
+    InitialStateParticle_ = isp;
 }
 
 //-------------------------

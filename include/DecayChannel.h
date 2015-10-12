@@ -31,6 +31,7 @@ namespace yap {
 
 class DecayingParticle;
 class FinalStateParticle;
+class InitialStateParticle;
 class Particle;
 class ParticleCombination;
 class SpinAmplitude;
@@ -92,6 +93,9 @@ public:
 
     /// \name Setters
     /// @{
+
+    /// Set pointer to initial state particle
+    void setInitialStateParticle(InitialStateParticle* isp) override;
 
     /// Set parent
     void setParent(DecayingParticle* parent)

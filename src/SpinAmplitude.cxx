@@ -6,9 +6,9 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL)
-    : AmplitudeComponentDataAccessor(isp),
+    : AmplitudeComponentDataAccessor(),
       InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}}),
 TwoL_(twoL)

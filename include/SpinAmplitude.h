@@ -42,7 +42,7 @@ class SpinAmplitude : public AmplitudeComponentDataAccessor
 public:
 
     /// Constructor
-    SpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+    SpinAmplitude(const QuantumNumbers& initial,
                   const QuantumNumbers& final1, const QuantumNumbers& final2,
                   unsigned char twoL);
 

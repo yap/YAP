@@ -12,15 +12,14 @@ namespace yap {
 
 //-------------------------
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-    DecayingParticle(this, q, mass, name, radialSize),
+    DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
-    FourMomenta_(this),
-    HelicityAngles_(this)
+    FourMomenta_(),
+    HelicityAngles_()
 {
-    addDataAccessor(this);
-
-    // helicity angles do not store in Data_, so they don't need an index
-    removeDataAccessor(&HelicityAngles_);
+    setInitialStateParticle(this);
+    FourMomenta_.setInitialStateParticle(this);
+    HelicityAngles_.setInitialStateParticle(this);
 }
 
 //-------------------------

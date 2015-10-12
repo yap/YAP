@@ -1,14 +1,13 @@
 #include "AmplitudeComponentDataAccessor.h"
 
 #include "Constants.h"
-#include "InitialStateParticle.h"
 #include "logging.h"
 
 namespace yap {
 
 //-------------------------
-AmplitudeComponentDataAccessor::AmplitudeComponentDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
-    DataAccessor(isp, equiv)
+AmplitudeComponentDataAccessor::AmplitudeComponentDataAccessor(ParticleCombination::Equiv* equiv) :
+    DataAccessor(equiv)
 {
 }
 

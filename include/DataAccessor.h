@@ -47,13 +47,13 @@ public:
 
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+    DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
     /// Copy constructor
     DataAccessor(const DataAccessor& other);
 
     /// Destructor
-    ~DataAccessor();
+    virtual ~DataAccessor();
 
     // Defaulted move constructor
     // Defaulted move assignment operator
@@ -148,7 +148,7 @@ void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus
 { d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
 
 /// Set pointer to initial state particle
-void setInitialStateParticle(InitialStateParticle* isp);
+virtual void setInitialStateParticle(InitialStateParticle* isp);
 
 /// @}
 

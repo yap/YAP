@@ -9,8 +9,8 @@
 namespace yap {
 
 //-------------------------
-BreitWigner::BreitWigner(InitialStateParticle* isp, double mass, double width) :
-    MassShape(isp, {mass, width})
+BreitWigner::BreitWigner(double mass, double width) :
+    MassShape( {mass, width})
 {
 }
 

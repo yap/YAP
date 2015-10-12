@@ -10,9 +10,9 @@
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(InitialStateParticle* isp, const QuantumNumbers& initial,
+HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
         const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL) :
-    SpinAmplitude(isp, initial, final1, final2, twoL)
+    SpinAmplitude(initial, final1, final2, twoL)
 {
 }
 

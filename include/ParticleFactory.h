@@ -114,13 +114,9 @@ private:
     /// read pdl file and fill #particleTable_
     void readPDT(const std::string fname);
 
-    /// get InitialStateParticle_
-    InitialStateParticle* initialStateParticle();
-
     /// maps PDGCodes to ParticleTableEntry's
     std::map<int, ParticleTableEntry> particleTable_;
 
-    InitialStateParticle* InitialStateParticle_;
 };
 
 }

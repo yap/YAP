@@ -13,10 +13,10 @@
 namespace yap {
 
 //-------------------------
-DecayingParticle::DecayingParticle(InitialStateParticle* isp, const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     AmplitudeComponent(),
     Particle(q, mass, name),
-    AmplitudeComponentDataAccessor(isp),
+    AmplitudeComponentDataAccessor(),
     RadialSize_(radialSize)
 {}
 
@@ -115,6 +115,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
 {
     Channels_.push_back(std::unique_ptr<yap::DecayChannel>(nullptr));
     Channels_.back().swap(c);
+    Channels_.back()->setInitialStateParticle(initialStateParticle());
 
     Channels_.back()->setParent(this);
 
@@ -134,9 +135,7 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
-        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B,
-                                            std::make_shared<HelicitySpinAmplitude>(initialStateParticle(), quantumNumbers(),
-                                                    A->quantumNumbers(), B->quantumNumbers(), twoL)) );
+        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)) );
 
         bool notZero(false);
         std::vector<std::shared_ptr<const ParticleCombination>> PCs;
@@ -174,6 +173,15 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
     if (!Channels_.at(i))
         return std::vector<std::shared_ptr<FinalStateParticle>>();
     return Channels_[i]->finalStateParticles();
+}
+
+//-------------------------
+void DecayingParticle::setInitialStateParticle(InitialStateParticle* isp)
+{
+    AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
+    // hand ISP to channels
+    for (auto& c : Channels_)
+        c->setInitialStateParticle(initialStateParticle());
 }
 
 //-------------------------
