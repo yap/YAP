@@ -7,7 +7,7 @@ namespace yap {
 //-------------------------
 ParameterSet& ParameterSet::operator=(std::initializer_list<double> pars)
 {
-    //Parameters_ = pars; synchronizeParameterStatuses(); return *this;
+    //Parameters_ = pars; synchronizeVariableStatuses(); return *this;
 
     std::vector<double> parsVec(pars);
 
@@ -17,7 +17,7 @@ ParameterSet& ParameterSet::operator=(std::initializer_list<double> pars)
     for (unsigned i = 0; i < parsVec.size(); ++i) {
         if (parsVec[i] != Parameters_[i]) {
             Parameters_[i] = parsVec[i];
-            ParameterStatuses_[i] = kChanged;
+            VariableStatuses_[i] = kChanged;
         }
     }
 

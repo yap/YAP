@@ -21,6 +21,8 @@
 #ifndef yap__ParameterSet_h
 #define yap__ParameterSet_h
 
+#include "VariableStatus.h"
+
 #include <initializer_list>
 #include <vector>
 
@@ -42,8 +44,8 @@ public:
     /// constructor
     /// \param pars An initializer_list of doubles to set into the parameters
     /// \param status the status to set for all parameters
-    ParameterSet(std::initializer_list<double> pars = {}, ParameterStatus status = kFixed)
-        : Parameters_(pars), ParameterStatuses_(pars.size(), status)
+    ParameterSet(std::initializer_list<double> pars = {}, VariableStatus status = kFixed)
+        : Parameters_(pars), VariableStatuses_(pars.size(), status)
     {}
 
     /// assignment operator
@@ -60,29 +62,29 @@ public:
     { return Parameters_; }
 
     /// Get parameter statuses
-    /*std::vector<ParameterStatus>& parameterStatuses()
-    { return ParameterStatuses_; }*/
+    /*std::vector<VariableStatus>& VariableStatuses()
+    { return VariableStatuses_; }*/
 
     /// Get (const) parameters
-    const std::vector<ParameterStatus>& parameterStatuses() const
-    { return ParameterStatuses_; }
+    const std::vector<VariableStatus>& VariableStatuses() const
+    { return VariableStatuses_; }
 
     /// Check consistency of object
     virtual bool consistent() const
-    { return Parameters_.size() == ParameterStatuses_.size(); }
+    { return Parameters_.size() == VariableStatuses_.size(); }
 
 protected:
 
-    /// synchronize #ParameterStatuses_ to #Parameters_
+    /// synchronize #VariableStatuses_ to #Parameters_
     /// \param status Status to initialize new parameters with (default = #kFixed)
-    void synchronizeParameterStatuses(ParameterStatus status = kFixed)
-    { ParameterStatuses_.resize(Parameters_.size(), status); }
+    void synchronizeVariableStatuses(VariableStatus status = kFixed)
+    { VariableStatuses_.resize(Parameters_.size(), status); }
 
     /// Parameters
     std::vector<double> Parameters_;
 
     /// Status of parameters
-    std::vector<ParameterStatus> ParameterStatuses_;
+    std::vector<VariableStatus> VariableStatuses_;
 
 };
 
