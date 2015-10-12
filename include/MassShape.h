@@ -25,6 +25,7 @@
 #include "AmplitudeComponentDataAccessor.h"
 #include "InitialStateParticle.h"
 #include "ParameterSet.h"
+#include "ParticleFactory.h"
 
 #include <memory>
 #include <vector>
@@ -44,6 +45,11 @@ public:
 
     /// Constructor
     MassShape(std::initializer_list<double> pars);
+
+    /// Set parameters from ParticleTableEntry
+    /// \param entry ParticleTableEntry containing information to create mass shape object
+    /// \return Success of action
+    virtual bool setParameters(const ParticleTableEntry& entry);
 
     /// \name Bookkeeping related
     /// @{

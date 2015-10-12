@@ -1,5 +1,6 @@
 #include "MassShape.h"
 
+#include "logging.h"
 #include "ParticleCombination.h"
 
 namespace yap {
@@ -9,6 +10,17 @@ MassShape::MassShape(std::initializer_list<double> pars) :
     AmplitudeComponentDataAccessor(&ParticleCombination::equivByOrderlessContent),
     ParameterSet(pars)
 {
+}
+
+//-------------------------
+bool MassShape::setParameters(const ParticleTableEntry& entry)
+{
+    if (entry.MassShapeParameters_.size() < Parameters_.size()) {
+        LOG(ERROR) << "MassShape::setParameters - entry.MassShapeParameters_ is too small for MassShape object.";
+        return false;
+    }
+    Parameters_.assign(entry.MassShapeParameters_.begin(), entry.MassShapeParameters_.begin() + Parameters_.size());
+    return true;
 }
 
 //-------------------------

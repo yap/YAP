@@ -1,6 +1,5 @@
 #include "ParticleFactory.h"
 
-#include "BreitWigner.h"
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
@@ -14,17 +13,18 @@
 namespace yap {
 
 //-------------------------
-ParticleFactory::ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
+ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
     QuantumNumbers(q),
     PDG_(pdg),
-    Name_(name),
-    Mass_(mass),
-    MassShapeParameters_(parameters)
+    Name_(name)
 {
+    MassShapeParameters_.reserve(parameters.size() + 1);
+    MassShapeParameters_.push_back(mass);
+    MassShapeParameters_.insert(MassShapeParameters_.end(), parameters.begin(), parameters.end());
 }
 
 //-------------------------
-bool ParticleFactory::ParticleTableEntry::consistent() const
+bool ParticleTableEntry::consistent() const
 {
     bool result = QuantumNumbers::consistent();
 
@@ -47,7 +47,7 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(in
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_, indices);
+    return std::make_shared<FinalStateParticle>(p, p.mass(), p.Name_, indices);
 }
 
 //-------------------------
@@ -59,7 +59,7 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
+    return std::make_shared<InitialStateParticle>(p, p.mass(), p.Name_, radialSize);
 }
 
 //-------------------------
@@ -67,19 +67,12 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<Resonance>(p, p.Mass_, p.Name_, radialSize, massShape);
+    massShape->setParameters(p);
+    return std::make_shared<Resonance>(p, p.mass(), p.Name_, radialSize, massShape);
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::createResonanceBreitWigner(int PDG, double radialSize)
-{
-    const ParticleTableEntry& p = particleTableEntry(PDG);
-    std::shared_ptr<MassShape> massShape = std::make_shared<BreitWigner>(p.Mass_, p.MassShapeParameters_[0]);
-    return createResonance(PDG, radialSize, massShape);
-}
-
-//-------------------------
-const ParticleFactory::ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
+const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 {
     if (particleTable_.count(PDG) == 0) {
         LOG(FATAL) << "ParticleFactory::particleTableEntry : No particle table entry for PDG " << PDG;

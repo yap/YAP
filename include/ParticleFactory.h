@@ -38,6 +38,19 @@ class MassShape;
 class Particle;
 class Resonance;
 
+/// \struct ParticleTableEntry
+/// \brief Data container for storing particle information in database
+/// \author Johannes Rauch, Daniel Greenwald
+struct ParticleTableEntry : public QuantumNumbers {
+    ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
+    bool consistent() const override;
+    double mass() const
+    { return MassShapeParameters_.at(0); }
+    int PDG_;
+    std::string Name_;
+    std::vector<double> MassShapeParameters_; ///< first entry should always be nominal mass
+};
+
 /// \class ParticleFactory
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
@@ -46,21 +59,6 @@ class Resonance;
 class ParticleFactory
 {
 public:
-
-    /// \name Structs
-    /// @{
-
-    /// \struct ParticleTableEntry
-    /// \brief Data container for storing particle information in database
-    /// \author Johannes Rauch, Daniel Greenwald
-    struct ParticleTableEntry : public QuantumNumbers {
-        ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
-        bool consistent() const override;
-        int PDG_;
-        std::string Name_;
-        double Mass_;
-        std::vector<double> MassShapeParameters_;
-    };
 
     /// Constructor
     /// \param pdlFile Path to a pdl file like used by EvtGen
@@ -83,18 +81,6 @@ public:
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
     std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
-
-    /// Create a Resonance from a PDG code. Use BreitWigner as MassShape
-    /// \param PDG PDG code of particle to create
-    /// \param radialSize Radial size of particle to create [GeV^-1]
-    /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonanceBreitWigner(int PDG, double radialSize);
-
-    /// Create a Resonance from a PDG code. Use RelativisticBreitWigner as MassShape
-    /// \param PDG PDG code of particle to create
-    /// \param radialSize Radial size of particle to create [GeV^-1]
-    /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonanceRelativisticBreitWigner(int PDG, double radialSize);
 
     /// \name Particle table access
     /// @{
