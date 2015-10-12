@@ -147,6 +147,9 @@ void setCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombin
 void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus stat) const
 { d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
 
+/// Set pointer to initial state particle
+void setInitialStateParticle(InitialStateParticle* isp);
+
 /// @}
 
 /// Set CalculationStatuses_ depending on DataAccessor's components

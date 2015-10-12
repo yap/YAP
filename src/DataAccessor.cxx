@@ -8,21 +8,11 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
-    InitialStateParticle_(isp),
+    InitialStateParticle_(nullptr),
     Equiv_(equiv),
     Index_(0)
 {
-    if (isp == nullptr)
-        LOG(ERROR) << "DataAccessor: no InitialStateParticle provided!";
-
-    if (this != InitialStateParticle_) {
-        InitialStateParticle_->addDataAccessor(this);
-        if (isp->prepared()) {
-            LOG(ERROR) << "InitialStateParticle has already been prepared. "
-                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
-                       << "otherwise it will become inconsistent!";
-        }
-    }
+    setInitialStateParticle(isp);
 
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
@@ -135,6 +125,20 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
         d.Data_[Index_].resize(i + 1);
 
     return d.Data_[Index_][i];
+}
+
+//-------------------------
+void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
+{
+    InitialStateParticle_ = isp;
+    if (InitialStateParticle_ and this != InitialStateParticle_) {
+        InitialStateParticle_->addDataAccessor(this);
+        if (InitialStateParticle_->prepared()) {
+            LOG(ERROR) << "InitialStateParticle has already been prepared. "
+                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
+                       << "otherwise it will become inconsistent!";
+        }
+    }
 }
 
 //-------------------------
