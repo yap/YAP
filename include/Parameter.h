@@ -28,12 +28,13 @@
 
 namespace yap {
 
-class ParameterBase {
+class ParameterBase
+{
 
     /// Constructor
     ParameterBase(unsigned nDataPartitions = 1) :
-      VariableStatus_(kChanged),
-      CalculationStatuses_(nDataPartitions, kUncalculated)
+        VariableStatus_(kChanged),
+        CalculationStatuses_(nDataPartitions, kUncalculated)
     {}
 
     /// \name getters
@@ -61,7 +62,7 @@ class ParameterBase {
     /// @}
 
 
-  private:
+private:
     VariableStatus VariableStatus_;
     /// One CalculationStatus per DataPartition
     std::vector<CalculationStatus> CalculationStatuses_;
@@ -69,11 +70,12 @@ class ParameterBase {
 
 
 template <typename T>
-class Parameter : public ParameterBase {
+class Parameter : public ParameterBase
+{
 public:
     /// Constructor
     Parameter(unsigned nDataPartitions = 1) :
-      ParameterBase(nDataPartitions)
+        ParameterBase(nDataPartitions)
     {}
 
     /// \name getters

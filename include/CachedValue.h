@@ -27,15 +27,16 @@
 
 namespace yap {
 
-class CachedValueBase {
+class CachedValueBase
+{
 public:
     /// Constructor
     CachedValueBase(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn,
-        std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
-      ParametersItDependsOn_(ParametersItDependsOn),
-      CachedValuesItDependsOn_(CachedValuesItDependsOn),
-      VariableStatus_(kChanged)
-      CalculationStatus_(kUncalculated),
+                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
+        ParametersItDependsOn_(ParametersItDependsOn),
+        CachedValuesItDependsOn_(CachedValuesItDependsOn),
+        VariableStatus_(kChanged),
+        CalculationStatus_(kUncalculated)
     {}
 
     /// \name getters
@@ -87,12 +88,13 @@ private:
 
 
 template <typename T>
-class CachedValue : public CachedValueBase {
+class CachedValue : public CachedValueBase
+{
 public:
     /// Constructor
     CachedValue(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn,
-          std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
-      CachedValueBase(ParametersItDependsOn, CachedValuesItDependsOn)
+                std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
+        CachedValueBase(ParametersItDependsOn, CachedValuesItDependsOn)
     {}
 
     /// \name getters
