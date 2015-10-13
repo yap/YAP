@@ -43,6 +43,7 @@ public:
         VariableStatus_(kChanged)
     {}
 
+    /// Constructor
     Parameter(std::complex<double> val) :
         ParameterValue_(val),
         VariableStatus_(kChanged)
@@ -51,17 +52,24 @@ public:
     /// \name getters
     /// @{
 
+    /// \return complex value
     const std::complex<double>& value() const
     { return ParameterValue_; }
 
+    /// \return VariableStatus
     VariableStatus variableStatus() const
     { return VariableStatus_; }
+
+    /// \return number of real parameters
+    virtual unsigned size() const
+    { return 2; }
 
     /// @}
 
     /// \name setters
     /// @{
 
+    /// set complex value
     virtual void setValue(std::complex<double> val)
     {
         if (ParameterValue_ != val) {
@@ -70,6 +78,7 @@ public:
         }
     }
 
+    /// set VariableStatus
     void setVariableStatus(VariableStatus stat)
     { VariableStatus_ = stat; }
 
@@ -90,19 +99,27 @@ class RealParameter : public Parameter
 {
 public:
 
+    /// Constructor
     RealParameter(double real = 0) :
         Parameter(real, 0)
     {}
 
+    /// \return real value
     double realValue() const
     { return ParameterValue_.real(); }
 
+    /// \return number of real parameters
+    virtual unsigned size() const override
+    { return 1; }
+
+    /// set (complex) value, imaginary part is ignored and set to 0
     virtual void setValue(std::complex<double> val) override
     {
         val = (val.real()); // sets imag to 0
         Parameter::setValue(val);
     }
 
+    /// set real value
     void setValue(double val)
     { Parameter::setValue(std::complex<double>(val)); }
 
