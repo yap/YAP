@@ -21,9 +21,8 @@
 #ifndef yap__ParameterSet_h
 #define yap__ParameterSet_h
 
-#include "VariableStatus.h"
+#include "Parameter.h"
 
-#include <initializer_list>
 #include <vector>
 
 namespace yap {
@@ -34,57 +33,9 @@ namespace yap {
 ///
 /// Manages locking and unlocking of parameters
 
-class ParameterSet
+class ParameterSet : public std::vector<std::shared_ptr<Parameter> >
 {
 public:
-
-    /// \name Constructors and operators
-    /// @{
-
-    /// constructor
-    /// \param pars An initializer_list of doubles to set into the parameters
-    /// \param status the status to set for all parameters
-    ParameterSet(std::initializer_list<double> pars = {}, VariableStatus status = kFixed)
-        : Parameters_(pars), VariableStatuses_(pars.size(), status)
-    {}
-
-    /// assignment operator
-    ParameterSet& operator=(std::initializer_list<double> pars);
-
-    /// @}
-
-    /// Get parameters
-    /*std::vector<double>& parameters()
-    { return Parameters_; }*/
-
-    /// Get (const) parameters
-    const std::vector<double>& parameters() const
-    { return Parameters_; }
-
-    /// Get parameter statuses
-    /*std::vector<VariableStatus>& VariableStatuses()
-    { return VariableStatuses_; }*/
-
-    /// Get (const) parameters
-    const std::vector<VariableStatus>& VariableStatuses() const
-    { return VariableStatuses_; }
-
-    /// Check consistency of object
-    virtual bool consistent() const
-    { return Parameters_.size() == VariableStatuses_.size(); }
-
-protected:
-
-    /// synchronize #VariableStatuses_ to #Parameters_
-    /// \param status Status to initialize new parameters with (default = #kFixed)
-    void synchronizeVariableStatuses(VariableStatus status = kFixed)
-    { VariableStatuses_.resize(Parameters_.size(), status); }
-
-    /// Parameters
-    std::vector<double> Parameters_;
-
-    /// Status of parameters
-    std::vector<VariableStatus> VariableStatuses_;
 
 };
 

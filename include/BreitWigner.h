@@ -62,7 +62,7 @@ public:
 
     /// \return nominal mass
     double mass() const
-    { return Parameters_.at(0); }
+    { return at(0)->value().real(); }
 
     /// \return nominal squared masss
     double squaredMass() const
@@ -70,7 +70,7 @@ public:
 
     /// \return nominal width
     double width() const
-    { return Parameters_.at(1); }
+    { return at(1)->value().real(); }
 
     /// @}
 
@@ -79,11 +79,11 @@ public:
 
     /// Set nominal mass
     void setMass(double m)
-    { Parameters_.at(0) = m; }
+    { at(0)->setValue(std::complex<double>(m)); }
 
     /// Set nominal width
     void setWidth(double w)
-    { Parameters_.at(1) = w; }
+    { at(1)->setValue(std::complex<double>(w)); }
 
     /// @}
 

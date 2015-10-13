@@ -27,20 +27,30 @@
 
 namespace yap {
 
-class CachedValueBase
+class CachedValue
 {
 public:
     /// Constructor
-    CachedValueBase(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn,
-                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
+    CachedValue(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn = {},
+                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {}) :
         ParametersItDependsOn_(ParametersItDependsOn),
         CachedValuesItDependsOn_(CachedValuesItDependsOn),
-        VariableStatus_(kChanged),
+        CalculationStatus_(kUncalculated)
+    {}
+
+    CachedValue(ParameterSet ParametersItDependsOn = {},
+                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {}) :
+        ParametersItDependsOn_(ParametersItDependsOn),
+        CachedValuesItDependsOn_(CachedValuesItDependsOn),
         CalculationStatus_(kUncalculated)
     {}
 
     /// \name getters
     /// @{
+
+    /// get CalculationStatus of ith DataPartition
+    const T& value() const
+    { return CachedValueValue_; }
 
     /// get CalculationStatus of ith DataPartition
     CalculationStatus calculationStatus(unsigned iDataPartition) const
@@ -54,12 +64,17 @@ public:
     /// \name setters
     /// @{
 
+    void setValue(std::complex<double> val)
+    {
+        if (val != CachedValue_) {
+            CachedValue_ = val;
+            CalculationStatus_ = kCalculated;
+        }
+    }
+
     /// get CalculationStatus of ith DataPartition
     void setCalculationStatus(CalculationStatus stat)
     { CalculationStatus_ = stat; }
-
-    void setVariableStatus(VariableStatus stat)
-    { VariableStatus_ = stat; }
 
     /// @}
 
@@ -67,7 +82,8 @@ public:
     {
         result = CalculationStatus_;
         for (auto& p : ParametersItDependsOn_) {
-            // \todo check p
+            if (p->variableStatus() == kChanged)
+                result = kUncalculated;
         }
 
         for (auto& v : CachedValuesItDependsOn_) {
@@ -78,45 +94,11 @@ public:
         return result;
     }
 
-
 private:
+    std::complex<double> CachedValue_;
     std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn_;
     std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn_;
-    VariableStatus VariableStatus_;
     CalculationStatus CalculationStatus_;
-};
-
-
-template <typename T>
-class CachedValue : public CachedValueBase
-{
-public:
-    /// Constructor
-    CachedValue(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn,
-                std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn) :
-        CachedValueBase(ParametersItDependsOn, CachedValuesItDependsOn)
-    {}
-
-    /// \name getters
-    /// @{
-
-    /// get CalculationStatus of ith DataPartition
-    const T& value() const
-    { return CachedValueValue_; }
-
-    /// @}
-
-    /// \name setters
-    /// @{
-
-    void setValue(T val)
-    { CachedValueValue_ = val; }
-
-    /// @}
-
-
-private:
-    T CachedValueValue_;
 };
 
 }

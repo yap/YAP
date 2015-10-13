@@ -21,12 +21,13 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
     AmplitudeComponentDataAccessor(),
-    ParameterSet( {0, 0}, kChanged), // free amplitude
               Daughters_(daughters),
               BlattWeisskopf_(this),
               SpinAmplitude_(spinAmplitude),
               Parent_(nullptr)
 {
+    push_back(std::make_shared<Parameter>(0., 0.));
+
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
     for (std::shared_ptr<Particle> d : Daughters_) {

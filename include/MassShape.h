@@ -56,7 +56,7 @@ public:
 
     /// Check consistency of object
     virtual bool consistent() const override
-    { return AmplitudeComponentDataAccessor::consistent() and ParameterSet::consistent(); }
+    { return AmplitudeComponentDataAccessor::consistent(); }
 
     virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
 

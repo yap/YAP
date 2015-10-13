@@ -24,21 +24,25 @@
 #include "CalculationStatus.h"
 #include "VariableStatus.h"
 
+#include <complex>
 #include <vector>
 
 namespace yap {
 
-class ParameterBase
+class Parameter
 {
-
+public:
     /// Constructor
-    ParameterBase(unsigned nDataPartitions = 1) :
+    Parameter(unsigned nDataPartitions = 1) :
         VariableStatus_(kChanged),
         CalculationStatuses_(nDataPartitions, kUncalculated)
     {}
 
     /// \name getters
     /// @{
+
+    const std::complex<double>& value() const
+    { return ParameterValue_; }
 
     /// get CalculationStatus of ith DataPartition
     CalculationStatus calculationStatus(unsigned iDataPartition) const
@@ -52,6 +56,9 @@ class ParameterBase
     /// \name setters
     /// @{
 
+    void setValue(std::complex<double> val)
+    { ParameterValue_ = val; }
+
     /// get CalculationStatus of ith DataPartition
     void setCalculationStatus(unsigned iDataPartition, CalculationStatus stat)
     { CalculationStatuses_.at(iDataPartition) = stat; }
@@ -61,41 +68,11 @@ class ParameterBase
 
     /// @}
 
-
 private:
+    std::complex<double> ParameterValue_;
     VariableStatus VariableStatus_;
     /// One CalculationStatus per DataPartition
     std::vector<CalculationStatus> CalculationStatuses_;
-};
-
-
-template <typename T>
-class Parameter : public ParameterBase
-{
-public:
-    /// Constructor
-    Parameter(unsigned nDataPartitions = 1) :
-        ParameterBase(nDataPartitions)
-    {}
-
-    /// \name getters
-    /// @{
-
-    const T& value() const
-    { return ParameterValue_; }
-
-    /// @}
-
-    /// \name setters
-    /// @{
-
-    void setValue(T val)
-    { ParameterValue_ = val; }
-
-    /// @}
-
-private:
-    T ParameterValue_;
 };
 
 }

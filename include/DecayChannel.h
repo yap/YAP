@@ -45,10 +45,10 @@ class DecayChannel : public AmplitudeComponentDataAccessor, public ParameterSet
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
-    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, unsigned nDataPartitions = 1);
 
     /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, unsigned nDataPartitions = 1);
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -88,7 +88,7 @@ public:
     { return Parent_; }
 
     std::complex<double> freeAmplitude() const
-    { return std::complex<double>(parameters()[0], parameters()[1]); }
+    { return this->at(0)->value(); }
 
     /// @}
 
@@ -103,7 +103,7 @@ public:
     { Parent_ = parent; }
 
     void setFreeAmplitude(std::complex<double> a)
-    { ParameterSet::operator =({a.real(), a.imag()}); }
+    { at(0)->setValue(a); }
 
     /// @}
 
