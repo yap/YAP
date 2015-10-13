@@ -72,13 +72,13 @@ public:
     void addDependencies(std::vector<std::shared_ptr<Parameter> > dep)
     { ParametersItDependsOn_.insert(ParametersItDependsOn_.end(), dep.begin(), dep.end()); }
 
-    void addDependencies(std::shared_ptr<Parameter> dep)
+    void addDependency(std::shared_ptr<Parameter> dep)
     { ParametersItDependsOn_.push_back(dep); }
 
     void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep)
     { CachedValuesItDependsOn_.insert(CachedValuesItDependsOn_.end(), dep.begin(), dep.end()); }
 
-    void addDependencies(std::shared_ptr<CachedValue> dep)
+    void addDependency(std::shared_ptr<CachedValue> dep)
     { CachedValuesItDependsOn_.push_back(dep); }
 
     CalculationStatus cache()
