@@ -17,7 +17,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
 }
 
 //-------------------------
-void HelicitySpinAmplitude::calcPrecalculate()
+void HelicitySpinAmplitude::precalculate()
 {
     if (ClebschGordanCoefficients_.empty()) {
         for (auto& pc : particleCombinations())

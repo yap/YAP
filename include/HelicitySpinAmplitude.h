@@ -48,18 +48,15 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override
-    { return d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)); }
-
     /// cast into string
     operator std::string() const override;
 
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
-protected:
+    void precalculate() override;
 
-    void calcPrecalculate() override;
+protected:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on

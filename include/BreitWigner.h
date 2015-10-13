@@ -106,10 +106,10 @@ public:
 
     /// @}
 
-protected:
-
     /// precalculate M2iMG_
-    void calcPrecalculate() override;
+    void precalculate() override;
+
+protected:
 
     CachedValue M2iMG_;                  // mass * mass - i * mass * width
 

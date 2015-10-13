@@ -187,37 +187,6 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
-CalculationStatus DecayChannel::updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
-{
-    CalculationStatus retVal(kCalculated);
-
-    if (! hasSymmetrizationIndex(c))
-        return retVal;
-
-    // call updateCalculationStatus of components and daughters
-
-    if (BlattWeisskopf_.calculationStatus() == kUncalculated)
-        retVal = kUncalculated;
-
-    if (SpinAmplitude_->updateCalculationStatus(d, c) == kUncalculated)
-        retVal = kUncalculated;
-
-    auto& pcDaughters = c->daughters();
-    for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]))
-            if (std::dynamic_pointer_cast<DataAccessor>(Daughters_[i])->updateCalculationStatus(d, pcDaughters.at(i)) == kUncalculated)
-                retVal = kUncalculated;
-    }
-
-
-    // set new Status
-    if (calculationStatus(d, c) == kCalculated)
-        setCalculationStatus(d, c, retVal);
-
-    return retVal;
-}
-
-//-------------------------
 double DecayChannel::breakupMomentum() const
 {
     if (Daughters_.size() != 2) {

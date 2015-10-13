@@ -53,8 +53,6 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
-
     /// \return breakup momentum
     double breakupMomentum() const;
 
@@ -120,9 +118,6 @@ public:
     virtual void precalculate() override;
 
 protected:
-
-    virtual void calcPrecalculate() override
-    {}
 
     /// \return (fixed) Amplitude for decay channel
     virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;

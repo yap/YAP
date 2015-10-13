@@ -44,7 +44,7 @@ public:
     /// @{
 
     /// Default constructor
-    AmplitudeComponent();
+    AmplitudeComponent() {};
 
     // Defaulted copy constructor
     // Defaulted move constructor

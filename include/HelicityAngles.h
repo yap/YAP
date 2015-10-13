@@ -48,9 +48,6 @@ public:
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override
-    { return kCalculated; }
-
     /// Access helicity angles (const)
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access

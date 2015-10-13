@@ -51,14 +51,15 @@ public:
     /// \return Success of action
     virtual bool setParameters(const ParticleTableEntry& entry);
 
+    const ParameterSet& parameters()
+    { return Parameters_; }
+
     /// \name Bookkeeping related
     /// @{
 
     /// Check consistency of object
     virtual bool consistent() const override
     { return AmplitudeComponentDataAccessor::consistent(); }
-
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
 
     /// @}
 

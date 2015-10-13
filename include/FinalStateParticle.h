@@ -68,10 +68,6 @@ public:
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
-protected:
-    virtual void calcPrecalculate() override
-    {}
-
 private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_

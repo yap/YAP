@@ -35,10 +35,6 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     DEBUG("InitialStateParticle::logLikelihood()");
 
-    // update CalculationStatuses
-    for (auto& pc : particleCombinations())
-        updateCalculationStatus(d, pc);
-
     // precalculate
     /// \todo do outside of this function
     precalculate();

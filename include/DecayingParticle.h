@@ -58,8 +58,6 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    virtual CalculationStatus updateCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c) const override;
-
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
     virtual void addChannel(std::unique_ptr<DecayChannel>& c);

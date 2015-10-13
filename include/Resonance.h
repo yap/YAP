@@ -81,9 +81,6 @@ public:
 
 protected:
 
-    virtual void calcPrecalculate() override
-    {}
-
     /// \return amplitude for resonance evaluated at DataPoint
     virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
