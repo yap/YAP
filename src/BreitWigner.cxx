@@ -10,20 +10,24 @@ namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
-    MassShape( {mass, width})
+    MassShape( {mass, width}),
+    M2iMG_({Parameters_[0], Parameters_[1]})
 {
 }
 
 //-------------------------
 void BreitWigner::calcPrecalculate()
 {
-    M2iMG_ = std::complex<double>(mass() * mass(), -mass() * width());
+    if (M2iMG_.cache() == kUncalculated) {
+        // m*m -i*m*w
+        M2iMG_.setValue(Parameters_[0]->value() * Parameters_[0]->value() - Complex_i * Parameters_[0]->value() * Parameters_[1]->value());
+    }
 }
 
 //-------------------------
 std::complex<double> BreitWigner::calcAmplitudeS(double s) const
 {
-    std::complex<double> a = 1. / (M2iMG_ - Complex_1 * s);
+    std::complex<double> a = 1. / (M2iMG_.value() - Complex_1 * s);
 
     DEBUG("BreitWigner amplitude (s = " << s << ") = " << a);
 

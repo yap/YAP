@@ -39,7 +39,7 @@ class ParticleCombination;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
 
-class MassShape : public AmplitudeComponentDataAccessor, public ParameterSet
+class MassShape : public AmplitudeComponentDataAccessor
 {
 public:
 
@@ -79,6 +79,8 @@ protected:
     virtual std::complex<double> calcAmplitudeS(double s) const = 0;
 
     /// @}
+
+    ParameterSet Parameters_;
 
 };
 

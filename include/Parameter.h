@@ -29,13 +29,23 @@
 
 namespace yap {
 
+/// \class Parameter
+/// \brief Complex Parameter
+/// \author Johannes Rauch, Daniel Greenwald
+/// \defgroup Parameters
+
 class Parameter
 {
 public:
     /// Constructor
-    Parameter(unsigned nDataPartitions = 1) :
-        VariableStatus_(kChanged),
-        CalculationStatuses_(nDataPartitions, kUncalculated)
+    Parameter(double real = 0, double imag = 0) :
+        ParameterValue_(real, imag),
+        VariableStatus_(kChanged)
+    {}
+
+    Parameter(std::complex<double> val) :
+        ParameterValue_(val),
+        VariableStatus_(kChanged)
     {}
 
     /// \name getters
@@ -43,10 +53,6 @@ public:
 
     const std::complex<double>& value() const
     { return ParameterValue_; }
-
-    /// get CalculationStatus of ith DataPartition
-    CalculationStatus calculationStatus(unsigned iDataPartition) const
-    { return CalculationStatuses_.at(iDataPartition); }
 
     VariableStatus variableStatus() const
     { return VariableStatus_; }
@@ -56,12 +62,13 @@ public:
     /// \name setters
     /// @{
 
-    void setValue(std::complex<double> val)
-    { ParameterValue_ = val; }
-
-    /// get CalculationStatus of ith DataPartition
-    void setCalculationStatus(unsigned iDataPartition, CalculationStatus stat)
-    { CalculationStatuses_.at(iDataPartition) = stat; }
+    virtual void setValue(std::complex<double> val)
+    {
+        if (ParameterValue_ != val) {
+            ParameterValue_ = val;
+            VariableStatus_ = kChanged;
+        }
+    }
 
     void setVariableStatus(VariableStatus stat)
     { VariableStatus_ = stat; }
@@ -71,8 +78,31 @@ public:
 private:
     std::complex<double> ParameterValue_;
     VariableStatus VariableStatus_;
-    /// One CalculationStatus per DataPartition
-    std::vector<CalculationStatus> CalculationStatuses_;
+
+};
+
+/// \class RealParameter
+/// \brief Real Parameter
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Parameters
+
+class RealParameter : public Parameter
+{
+public:
+
+    RealParameter(double real = 0) :
+        Parameter(real, 0)
+    {}
+
+    virtual void setValue(std::complex<double> val) override
+    {
+        val = (val.real()); // sets imag to 0
+        Parameter::setValue(val);
+    }
+
+    void setValue(double val)
+    { Parameter::setValue(std::complex<double>(val)); }
+
 };
 
 }

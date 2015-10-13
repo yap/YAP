@@ -14,7 +14,7 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude) :
-    DecayChannel( {daughterA, daughterB}, spinAmplitude)
+        DecayChannel( {daughterA, daughterB}, spinAmplitude)
 {
 }
 
@@ -26,7 +26,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
               SpinAmplitude_(spinAmplitude),
               Parent_(nullptr)
 {
-    push_back(std::make_shared<Parameter>(0., 0.));
+    push_back(std::make_shared<Parameter>());
 
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;

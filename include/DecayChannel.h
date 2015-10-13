@@ -45,10 +45,10 @@ class DecayChannel : public AmplitudeComponentDataAccessor, public ParameterSet
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
-    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, unsigned nDataPartitions = 1);
+    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, unsigned nDataPartitions = 1);
+    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// check consistency of object
     virtual bool consistent() const override;

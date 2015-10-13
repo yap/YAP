@@ -21,6 +21,7 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "MassShape.h"
 
@@ -62,7 +63,7 @@ public:
 
     /// \return nominal mass
     double mass() const
-    { return at(0)->value().real(); }
+    { return Parameters_.at(0)->value().real(); }
 
     /// \return nominal squared masss
     double squaredMass() const
@@ -70,7 +71,7 @@ public:
 
     /// \return nominal width
     double width() const
-    { return at(1)->value().real(); }
+    { return Parameters_.at(1)->value().real(); }
 
     /// @}
 
@@ -79,11 +80,11 @@ public:
 
     /// Set nominal mass
     void setMass(double m)
-    { at(0)->setValue(std::complex<double>(m)); }
+    { Parameters_.at(0)->setValue(m); }
 
     /// Set nominal width
     void setWidth(double w)
-    { at(1)->setValue(std::complex<double>(w)); }
+    { Parameters_.at(1)->setValue(w); }
 
     /// @}
 
@@ -110,7 +111,7 @@ protected:
     /// precalculate M2iMG_
     void calcPrecalculate() override;
 
-    std::complex<double> M2iMG_;                  // mass * mass - i * mass * width
+    CachedValue M2iMG_;                  // mass * mass - i * mass * width
 
 };
 

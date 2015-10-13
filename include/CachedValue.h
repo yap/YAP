@@ -22,6 +22,7 @@
 #define yap_CachedValue_h
 
 #include "Parameter.h"
+#include "ParameterSet.h"
 
 #include <memory>
 
@@ -31,15 +32,8 @@ class CachedValue
 {
 public:
     /// Constructor
-    CachedValue(std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn = {},
-                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {}) :
-        ParametersItDependsOn_(ParametersItDependsOn),
-        CachedValuesItDependsOn_(CachedValuesItDependsOn),
-        CalculationStatus_(kUncalculated)
-    {}
-
-    CachedValue(ParameterSet ParametersItDependsOn = {},
-                    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {}) :
+    CachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
+                    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn = {}) :
         ParametersItDependsOn_(ParametersItDependsOn),
         CachedValuesItDependsOn_(CachedValuesItDependsOn),
         CalculationStatus_(kUncalculated)
@@ -48,16 +42,13 @@ public:
     /// \name getters
     /// @{
 
-    /// get CalculationStatus of ith DataPartition
-    const T& value() const
-    { return CachedValueValue_; }
+    /// get
+    const std::complex<double>& value() const
+    { return CachedValue_; }
 
     /// get CalculationStatus of ith DataPartition
-    CalculationStatus calculationStatus(unsigned iDataPartition) const
-    { return CalculationStatuses_.at(iDataPartition); }
-
-    VariableStatus variableStatus() const
-    { return VariableStatus_; }
+    CalculationStatus calculationStatus() const
+    { return CalculationStatus_; }
 
     /// @}
 
@@ -78,26 +69,37 @@ public:
 
     /// @}
 
+    void addDependencies(std::vector<std::shared_ptr<Parameter> > dep)
+    { ParametersItDependsOn_.insert(ParametersItDependsOn_.end(), dep.begin(), dep.end()); }
+
+    void addDependencies(std::shared_ptr<Parameter> dep)
+    { ParametersItDependsOn_.push_back(dep); }
+
+    void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep)
+    { CachedValuesItDependsOn_.insert(CachedValuesItDependsOn_.end(), dep.begin(), dep.end()); }
+
+    void addDependencies(std::shared_ptr<CachedValue> dep)
+    { CachedValuesItDependsOn_.push_back(dep); }
+
     CalculationStatus cache()
     {
-        result = CalculationStatus_;
         for (auto& p : ParametersItDependsOn_) {
             if (p->variableStatus() == kChanged)
-                result = kUncalculated;
+                CalculationStatus_ = kUncalculated;
         }
 
         for (auto& v : CachedValuesItDependsOn_) {
-            if (v.cache() == kUncalculated)
-                result = kUncalculated;
+            if (v->cache() == kUncalculated)
+                CalculationStatus_ = kUncalculated;
         }
 
-        return result;
+        return CalculationStatus_;
     }
 
 private:
     std::complex<double> CachedValue_;
-    std::vector<std::shared_ptr<ParameterBase> > ParametersItDependsOn_;
-    std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn_;
+    std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn_;
+    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn_;
     CalculationStatus CalculationStatus_;
 };
 
