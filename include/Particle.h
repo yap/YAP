@@ -21,7 +21,6 @@
 #ifndef yap_Particle_h
 #define yap_Particle_h
 
-#include "Amp.h"
 #include "AmplitudeComponent.h"
 #include "QuantumNumbers.h"
 
