@@ -75,7 +75,7 @@ public:
 
     /// @}
 
-private:
+protected:
     std::complex<double> ParameterValue_;
     VariableStatus VariableStatus_;
 
@@ -93,6 +93,9 @@ public:
     RealParameter(double real = 0) :
         Parameter(real, 0)
     {}
+
+    double realValue() const
+    { return ParameterValue_.real(); }
 
     virtual void setValue(std::complex<double> val) override
     {
