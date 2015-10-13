@@ -30,7 +30,6 @@ enum VariableStatus {
     kUnchanged = +1,        ///< Parameter is free but has not been changed
 };
 
-//meh
 }
 
 #endif
