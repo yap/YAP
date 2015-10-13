@@ -22,6 +22,7 @@
 #define yap_BlattWeisskopf_h
 
 #include "AmplitudeComponent.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 
 #include <complex>
@@ -51,24 +52,16 @@ public:
 
     /// Blatt-Weisskopf amplitude at DataPoint
     virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
-    { return CachedAmplitude_; }
+    { return Value_.value(); }
 
-    virtual void calcPrecalculate() override;
-
-    /// \return CalculationStatus
-    CalculationStatus calculationStatus() const
-    { return CalculationStatus_; }
-
-    /// Set CalculationStatus_
-    virtual void setCalculationStatus(CalculationStatus stat)
-    { CalculationStatus_ = stat; }
+    virtual void precalculate() override;
 
 private:
 
     /// DecayChannel this BlattWeisskopf belongs to
     DecayChannel* DecayChannel_;
 
-    std::complex<double> CachedAmplitude_;
+    CachedValue Value_;
 
 };
 

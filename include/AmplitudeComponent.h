@@ -53,14 +53,9 @@ public:
 
     /// @}
 
-    /// precalculate Amplitude component, to be called before looping over DataPoints
-    virtual void precalculate()
-    {
-        if (CalculationStatus_ == kUncalculated) {
-            calcPrecalculate();
-            CalculationStatus_ = kCalculated;
-        }
-    }
+    /// precalculate intermediary vaules needed for amplitude calculation,
+    /// to be called before looping over DataPoints
+    virtual void precalculate() {};
 
     /// Calculate complex amplitude
     virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
@@ -68,13 +63,6 @@ public:
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
-protected:
-
-    /// precalculate values needed for the AmplitudeComponent;
-    virtual void calcPrecalculate() = 0;
-
-    /// Does precalculate need to recalculate?
-    CalculationStatus CalculationStatus_;
 };
 
 }
