@@ -26,13 +26,13 @@ void HelicitySpinAmplitude::calcPrecalculate()
 }
 
 //-------------------------
-Amp HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
 
     /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
     /// implemented in rootPWA by C. Bicker
 
-    Amp a = ClebschGordanCoefficients_.at(pc);
+    std::complex<double> a = ClebschGordanCoefficients_.at(pc);
 
     // \todo angular normalization factor??? sqrt(2*L + 1)
 

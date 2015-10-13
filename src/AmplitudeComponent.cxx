@@ -3,7 +3,6 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 
-
 namespace yap {
 
 //-------------------------

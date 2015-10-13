@@ -23,6 +23,7 @@
 #include "BlattWeisskopf.h"
 #include "ParameterSet.h"
 
+#include <complex>
 #include <memory>
 #include <string>
 #include <vector>
@@ -86,8 +87,8 @@ public:
     const DecayingParticle* parent() const
     { return Parent_; }
 
-    Amp freeAmplitude() const
-    { return Amp(parameters()[0], parameters()[1]); }
+    std::complex<double> freeAmplitude() const
+    { return std::complex<double>(parameters()[0], parameters()[1]); }
 
     /// @}
 
@@ -101,7 +102,7 @@ public:
     void setParent(DecayingParticle* parent)
     { Parent_ = parent; }
 
-    void setFreeAmplitude(Amp a)
+    void setFreeAmplitude(std::complex<double> a)
     { ParameterSet::operator =({a.real(), a.imag()}); }
 
     /// @}
@@ -124,7 +125,7 @@ protected:
     {}
 
     /// \return (fixed) Amplitude for decay channel
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// 2 daughters of the decay
     std::vector<std::shared_ptr<Particle> > Daughters_;

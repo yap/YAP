@@ -25,6 +25,7 @@
 #include "DataAccessor.h"
 #include "MassShape.h"
 
+#include <complex>
 #include <memory>
 
 namespace yap {
@@ -84,7 +85,7 @@ protected:
     {}
 
     /// \return amplitude for resonance evaluated at DataPoint
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

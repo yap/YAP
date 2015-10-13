@@ -17,10 +17,7 @@ dFunctionCached::cacheEntryType*
 dFunctionCached::_cache[_maxJ][_maxJ + 1][_maxJ + 1];
 
 //-------------------------
-double dFunction(const int two_j,
-                 const int two_m,
-                 const int two_n,
-                 const double theta) ///< Wigner d-function d^j_{two_m two_n}(theta)
+double dFunction(const int two_j, const int two_m, const int two_n, const double theta)
 {
     const double dFuncVal = dFunctionCached::instance()(two_j, two_m, two_n, theta);
     DEBUG("Wigner d^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
@@ -29,29 +26,20 @@ double dFunction(const int two_j,
 }
 
 //-------------------------
-Amp sphericalHarmonic(const int two_l,
-                      const int two_m,
-                      const double theta,
-                      const double phi)
+std::complex<double> sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi)
 {
     // crude implementation using Wigner d-function
-    const Amp YVal = sqrt((two_l + 1) / (4.*PI))
-                     * std::exp(Amp(0, ((double)two_m / 2) * phi)) * dFunction(two_l, two_m, 0, theta);
+    const std::complex<double> YVal = sqrt((two_l + 1) / (4.*PI)) * std::exp(Complex_i * phi * (double)two_m / 2.) * dFunction(two_l, two_m, 0, theta);
     DEBUG("spherical harmonic Y_{l = " << spinToString(two_l) << "}^{m = " << spinToString(two_m)
           << "}" << "(phi = " << (phi) << ", theta = " << (theta) << ") = " << YVal);
     return YVal;
 }
 
 //-------------------------
-Amp DFunction(const int two_j,
-              const int two_m,
-              const int two_n,
-              const double alpha,
-              const double beta,
-              const double gamma)
+std::complex<double> DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma)
 {
     const double arg = ((double)two_m / 2) * alpha + ((double)two_n / 2) * gamma;
-    const Amp DFuncVal = std::exp(Amp(0, -arg)) * dFunction(two_j, two_m, two_n, beta);
+    const std::complex<double> DFuncVal = std::exp(-Complex_i * arg) * dFunction(two_j, two_m, two_n, beta);
     DEBUG("Wigner D^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
           << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
           << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
@@ -59,14 +47,9 @@ Amp DFunction(const int two_j,
 }
 
 //-------------------------
-Amp DFunctionConj(const int two_j,
-                  const int two_m,
-                  const int two_n,
-                  const double alpha,
-                  const double beta,
-                  const double gamma)
+std::complex<double> DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma)
 {
-    const Amp DFuncVal = std::conj(DFunction(two_j, two_m, two_n, alpha, beta, gamma));
+    const std::complex<double> DFuncVal = std::conj(DFunction(two_j, two_m, two_n, alpha, beta, gamma));
     DEBUG("Wigner D^{J = " << spinToString(two_j) << "}*_{M = " << spinToString(two_m) << ", "
           << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
           << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
@@ -74,10 +57,7 @@ Amp DFunctionConj(const int two_j,
 }
 
 //-------------------------
-double dFunctionCached::operator ()(const int two_j,
-                                    const int two_m,
-                                    const int two_n,
-                                    const double theta)
+double dFunctionCached::operator ()(const int two_j, const int two_m, const int two_n, const double theta)
 {
     // check input parameters
     if (two_j >= (int)_maxJ) {

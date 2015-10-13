@@ -25,6 +25,7 @@
 #include "DecayChannel.h"
 #include "Particle.h"
 
+#include <complex>
 #include <memory>
 #include <vector>
 
@@ -143,7 +144,7 @@ protected:
 
     /// \return Ampltiude for particle
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

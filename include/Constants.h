@@ -21,18 +21,18 @@
 #ifndef yap_Constants_h
 #define yap_Constants_h
 
-#include "Amp.h"
+#include <complex>
 
 namespace yap {
 
 /// complex zero
-extern const Amp Complex_0;
+extern const std::complex<double> Complex_0;
 
 /// complex one
-extern const Amp Complex_1;
+extern const std::complex<double> Complex_1;
 
 /// complex i
-extern const Amp Complex_i;
+extern const std::complex<double> Complex_i;
 
 /// pi (11 digits)
 extern const double PI;

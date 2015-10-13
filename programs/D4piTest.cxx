@@ -119,14 +119,14 @@ int main( int argc, char** argv)
     yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
 
     // to test amplitude calculation, set all free amps to 1
-    std::vector<yap::Amp> freeAmps = D->freeAmplitudes();
-    for (yap::Amp& a : freeAmps)
+    auto freeAmps = D->freeAmplitudes();
+    for (auto& a : freeAmps)
         a = yap::Complex_1;
     D->setFreeAmplitudes(freeAmps);
 
     D->logLikelihood(d);
 
-    for (yap::Amp& a : freeAmps)
+    for (auto& a : freeAmps)
         a *= 0.5;
     assert(D->setFreeAmplitudes(freeAmps));
 

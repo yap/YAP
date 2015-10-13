@@ -23,6 +23,10 @@
 
 #include "SpinAmplitude.h"
 
+#include <complex>
+#include <map>
+#include <memory>
+
 namespace yap {
 
 class InitialStateParticle;
@@ -59,7 +63,7 @@ protected:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

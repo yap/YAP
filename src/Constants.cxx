@@ -3,13 +3,13 @@
 namespace yap {
 
 /// complex zero
-extern const Amp Complex_0 = Amp(0, 0);
+extern const std::complex<double> Complex_0(0, 0);
 
 /// complex one
-extern const Amp Complex_1 = Amp(1, 0);
+extern const std::complex<double> Complex_1(1, 0);
 
 /// complex i
-extern const Amp Complex_i = Amp(0, 1);
+extern const std::complex<double> Complex_i(0, 1);
 
 /// pi (11 digits)
 extern const double PI = 3.14159226535;

@@ -21,12 +21,13 @@
 #ifndef yap_FinalStateParticle_h
 #define yap_FinalStateParticle_h
 
-#include "Amp.h"
 #include "Constants.h"
 #include "Particle.h"
 #include "ParticleIndex.h"
 
+#include <complex>
 #include <memory>
+#include <vector>
 
 namespace yap {
 
@@ -55,8 +56,8 @@ public:
     /// @}
 
     /// \return 1 + 0i
-    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
-    { static Amp a = Complex_1; return a; }
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
+    { static std::complex<double> a = Complex_1; return a; }
 
     virtual bool consistent() const override;
 

@@ -1,5 +1,6 @@
 #include "DataPoint.h"
 
+#include "Constants.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "logging.h"
@@ -40,7 +41,7 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles
     CachedAmplitudes_.resize(dataAccessors.size());
 
     for (DataAccessor* d : dataAccessors)
-        CachedAmplitudes_.at(d->index()) = std::vector<Amp>(d->maxSymmetrizationIndex() + 1, 0);
+        CachedAmplitudes_.at(d->index()).assign(d->maxSymmetrizationIndex() + 1, Complex_0);
 }
 
 //-------------------------
@@ -72,9 +73,9 @@ void DataPoint::printDataSize()
     totSize += size;
 
     size = sizeof(CachedAmplitudes_);
-    for (std::vector<Amp>& v : CachedAmplitudes_) {
+    for (std::vector<std::complex<double> >& v : CachedAmplitudes_) {
         size += sizeof(v);
-        size += v.size() * sizeof(Amp);
+        size += v.size() * sizeof(std::complex<double>);
     }
     std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
     totSize += size;

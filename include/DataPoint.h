@@ -21,10 +21,9 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include "Amp.h"
-
 #include <TLorentzVector.h>
 
+#include <complex>
 #include <memory>
 #include <set>
 #include <vector>
@@ -93,7 +92,7 @@ protected:
 
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
-    std::vector<std::vector<Amp> > CachedAmplitudes_;
+    std::vector<std::vector<std::complex<double> > > CachedAmplitudes_;
 
 };
 

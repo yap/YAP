@@ -21,13 +21,13 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
-#include "Amp.h"
 #include "AmplitudeComponentDataAccessor.h"
 #include "logging.h"
 #include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 
 #include <array>
+#include <complex>
 #include <memory>
 
 namespace yap {
@@ -87,7 +87,7 @@ protected:
 
     /// \return Complex spin amplitude evaluated at data point
     /// \param d DataPoint to evaluate on
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override = 0;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override = 0;
 
     /// Check if SpinAmplitudes are equal
     virtual bool equals(const SpinAmplitude& rhs) const;

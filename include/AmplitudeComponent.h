@@ -21,11 +21,11 @@
 #ifndef yap_AmplitudeComponent_h
 #define yap_AmplitudeComponent_h
 
-#include "Amp.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
 
+#include <complex>
 #include <memory>
 
 namespace yap {
@@ -63,7 +63,7 @@ public:
     }
 
     /// Calculate complex amplitude
-    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;

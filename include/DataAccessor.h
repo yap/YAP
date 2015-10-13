@@ -21,12 +21,12 @@
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
-#include "Amp.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "ParticleCombination.h"
 
+#include <complex>
 #include <map>
 #include <vector>
 
@@ -107,10 +107,10 @@ public:
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
     { return d.Data_[Index_][i]; }
 
-    Amp& cachedAmplitude(DataPoint& d, unsigned i) const
+    std::complex<double>& cachedAmplitude(DataPoint& d, unsigned i) const
     { return d.CachedAmplitudes_[Index_][i]; }
 
-    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
+    const std::complex<double>& cachedAmplitude(const DataPoint& d, unsigned i) const
     { return d.CachedAmplitudes_[Index_][i]; }
 }
 #else
@@ -118,10 +118,10 @@ public:
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
     { return d.Data_.at(Index_).at(i); }
 
-    Amp& cachedAmplitude(DataPoint& d, unsigned i) const
+    std::complex<double>& cachedAmplitude(DataPoint& d, unsigned i) const
     { return d.CachedAmplitudes_.at(Index_).at(i); }
 
-    const Amp& cachedAmplitude(const DataPoint& d, unsigned i) const
+    const std::complex<double>& cachedAmplitude(const DataPoint& d, unsigned i) const
     { return d.CachedAmplitudes_.at(Index_).at(i); }
 #endif
 

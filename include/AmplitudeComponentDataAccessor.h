@@ -24,9 +24,7 @@
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 
-#include "Amp.h"
-#include "DataPoint.h"
-
+#include <complex>
 #include <memory>
 
 namespace yap {
@@ -57,7 +55,7 @@ public:
     /// @}
 
     /// Handle complex amplitude caching
-    virtual const Amp& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check if AmplitudeComponentDataAccessor is consistent
     virtual bool consistent() const
@@ -66,7 +64,7 @@ public:
 protected :
 
     /// Calculate complex amplitude
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
 
 };
 

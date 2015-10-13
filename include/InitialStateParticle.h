@@ -27,9 +27,11 @@
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 
-namespace yap {
+#include <complex>
+#include <memory>
+#include <vector>
 
-class DataSet;
+namespace yap {
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
@@ -71,7 +73,7 @@ public:
     bool prepare();
 
     /// set free amplitudes to DecayChannels
-    bool setFreeAmplitudes(const std::vector<Amp>& amps);
+    bool setFreeAmplitudes(const std::vector<std::complex<double> >& amps);
 
     /// \name Getters
     /// @{
@@ -92,7 +94,7 @@ public:
     {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
-    std::vector<Amp> freeAmplitudes() const;
+    std::vector<std::complex<double> > freeAmplitudes() const;
 
     DataSet& dataSet()
     { return DataSet_; }

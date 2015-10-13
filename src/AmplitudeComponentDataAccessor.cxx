@@ -13,7 +13,7 @@ AmplitudeComponentDataAccessor::AmplitudeComponentDataAccessor(ParticleCombinati
 
 
 //-------------------------
-const Amp& AmplitudeComponentDataAccessor::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+const std::complex<double>& AmplitudeComponentDataAccessor::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     // find symmetrization index
@@ -22,7 +22,7 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPartition& d, std::shar
     // has to made sure in caller! This is just for safety while debugging!
     if (! hasSymmetrizationIndex(pc)) {
         LOG(ERROR) << "AmplitudeComponentDataAccessor::amplitude - called with wrong symmetrization index!";
-        static Amp zero(Complex_0);
+        static std::complex<double> zero(Complex_0);
         return zero;
     }
 
@@ -30,7 +30,7 @@ const Amp& AmplitudeComponentDataAccessor::amplitude(DataPartition& d, std::shar
     unsigned sym_index = SymmetrizationIndices_.at(pc);
 #endif
 
-    Amp& a = cachedAmplitude(d.dataPoint(), sym_index);
+    std::complex<double>& a = cachedAmplitude(d.dataPoint(), sym_index);
 
     CalculationStatus& calcStat = d.CalculationStatusesDataPoint(index(), sym_index);
 

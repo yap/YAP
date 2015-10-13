@@ -21,9 +21,10 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
-#include "Amp.h"
 #include "CalculationStatus.h"
 #include "MassShape.h"
+
+#include <complex>
 
 namespace yap {
 
@@ -93,7 +94,7 @@ public:
     /// A = 1 / [Mass^2 - s - i * Mass * Width]
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitudeS(double s) const;
+    virtual std::complex<double> calcAmplitudeS(double s) const override;
 
     /// @}
 
@@ -109,7 +110,7 @@ protected:
     /// precalculate M2iMG_
     void calcPrecalculate() override;
 
-    Amp M2iMG_;                  // mass * mass - i * mass * width
+    std::complex<double> M2iMG_;                  // mass * mass - i * mass * width
 
 };
 

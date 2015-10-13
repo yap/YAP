@@ -17,13 +17,13 @@ BreitWigner::BreitWigner(double mass, double width) :
 //-------------------------
 void BreitWigner::calcPrecalculate()
 {
-    M2iMG_ = Amp(mass() * mass(), -mass() * width());
+    M2iMG_ = std::complex<double>(mass() * mass(), -mass() * width());
 }
 
 //-------------------------
-Amp BreitWigner::calcAmplitudeS(double s) const
+std::complex<double> BreitWigner::calcAmplitudeS(double s) const
 {
-    Amp a = 1. / (M2iMG_ - Amp(s, 0));
+    std::complex<double> a = 1. / (M2iMG_ - Complex_1 * s);
 
     DEBUG("BreitWigner amplitude (s = " << s << ") = " << a);
 

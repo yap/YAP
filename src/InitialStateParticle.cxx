@@ -45,7 +45,7 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     // calculate amplitues
     do {
-        Amp a = Complex_0;
+        std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
 
@@ -139,7 +139,7 @@ bool InitialStateParticle::prepare()
 }
 
 //-------------------------
-bool InitialStateParticle::setFreeAmplitudes(const std::vector<Amp>& amps)
+bool InitialStateParticle::setFreeAmplitudes(const std::vector<std::complex<double> >& amps)
 {
     if (amps.size() != DecayChannels_.size()) {
         LOG(ERROR) << "InitialStateParticle::setFreeAmplitudes - amplitudes have wrong size "
@@ -155,9 +155,9 @@ bool InitialStateParticle::setFreeAmplitudes(const std::vector<Amp>& amps)
 }
 
 //-------------------------
-std::vector<Amp> InitialStateParticle::freeAmplitudes() const
+std::vector<std::complex<double> > InitialStateParticle::freeAmplitudes() const
 {
-    std::vector<Amp> amps;
+    std::vector<std::complex<double> > amps;
     amps.reserve(DecayChannels_.size());
 
     for (DecayChannel* ch : DecayChannels_)

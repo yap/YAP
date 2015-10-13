@@ -21,12 +21,12 @@
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
-#include "Amp.h"
 #include "AmplitudeComponentDataAccessor.h"
 #include "InitialStateParticle.h"
 #include "ParameterSet.h"
 #include "ParticleFactory.h"
 
+#include <complex>
 #include <memory>
 #include <vector>
 
@@ -70,13 +70,13 @@ protected:
     /// Calculate MassShape amplitude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
     { return calcAmplitudeS(initialStateParticle()->fourMomenta().m2(d.dataPoint(), pc)); }
 
     /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
-    virtual Amp calcAmplitudeS(double s) const = 0;
+    virtual std::complex<double> calcAmplitudeS(double s) const = 0;
 
     /// @}
 

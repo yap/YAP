@@ -14,10 +14,10 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-Amp Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo check
-    Amp a = Complex_0;
+    std::complex<double> a = Complex_0;
 
     for (auto& c : channels()) {
         if (c->hasSymmetrizationIndex(pc))

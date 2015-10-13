@@ -21,23 +21,22 @@
 #ifndef yap_WignerD_h
 #define yap_WignerD_h
 
-#include "Amp.h"
-
+#include <complex>
 #include <vector>
 
 namespace yap {
 
-///< Wigner d-function d^j_{two_m two_n}(theta)
+/// Wigner d-function d^j_{two_m two_n}(theta)
 double dFunction(const int two_j, const int two_m, const int two_n, const double theta);
 
-///< spherical harmonics Y_l^{two_m}(theta, phi)
-Amp sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
+/// spherical harmonics Y_l^{two_m}(theta, phi)
+std::complex<double> sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
 
-///< Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
+/// Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+std::complex<double> DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
 
-///< complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-Amp DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
+/// complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
+std::complex<double> DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
 
 
 /// \class dFunctionCached
@@ -63,21 +62,22 @@ public:
     typedef std::vector<std::vector<std::vector<cacheEntryType> > > cacheType;
 
 
-    ///< get singleton instance
-    static dFunctionCached& instance() { return _instance; }
+    /// get singleton instance
+    static dFunctionCached& instance()
+    { return _instance; }
 
-    ///< returns d^j_{two_m two_n}(theta)
+    /// \return d^j_{two_m two_n}(theta)
     double operator ()(const int two_j, const int two_m, const int two_n, const double theta);
 
-    ///< returns caching flag
+    /// \return caching flag
     static bool useCache()
     { return _useCache; }
 
-    ///< sets caching flag
+    /// sets caching flag
     static void setUseCache(const bool useCache = true)
     { _useCache = useCache; }
 
-    ///< returns cache size in bytes
+    /// \return cache size in bytes
     static unsigned int cacheSize();
 
 

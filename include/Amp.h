@@ -26,7 +26,7 @@
 namespace yap {
 
 /// \typedef A complex amplitude
-typedef std::complex<double> Amp;
+//typedef std::complex<double> Amp;
 
 }
 
