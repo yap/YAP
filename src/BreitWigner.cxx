@@ -18,7 +18,7 @@ BreitWigner::BreitWigner(double mass, double width) :
 //-------------------------
 void BreitWigner::calcPrecalculate()
 {
-    if (M2iMG_.cache() == kUncalculated) {
+    if (M2iMG_.calculationStatus() == kUncalculated) {
         // m*m -i*m*w
         M2iMG_.setValue(Parameters_[0]->value() * Parameters_[0]->value() - Complex_i * Parameters_[0]->value() * Parameters_[1]->value());
     }

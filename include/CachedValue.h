@@ -33,11 +33,7 @@ class CachedValue
 public:
     /// Constructor
     CachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
-                    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn = {}) :
-        ParametersItDependsOn_(ParametersItDependsOn),
-        CachedValuesItDependsOn_(CachedValuesItDependsOn),
-        CalculationStatus_(kUncalculated)
-    {}
+                    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn = {});
 
     /// \name getters
     /// @{
@@ -46,55 +42,34 @@ public:
     const std::complex<double>& value() const
     { return CachedValue_; }
 
-    /// get CalculationStatus of ith DataPartition
-    CalculationStatus calculationStatus() const
-    { return CalculationStatus_; }
-
     /// @}
 
     /// \name setters
     /// @{
 
-    void setValue(std::complex<double> val)
-    {
-        if (val != CachedValue_) {
-            CachedValue_ = val;
-            CalculationStatus_ = kCalculated;
-        }
-    }
-
-    /// get CalculationStatus of ith DataPartition
-    void setCalculationStatus(CalculationStatus stat)
-    { CalculationStatus_ = stat; }
+    /// set value and set CalculationStatus_ to kCalculated
+    void setValue(std::complex<double> val);
 
     /// @}
 
+    /// add Parameters this CachedValue depends on
     void addDependencies(std::vector<std::shared_ptr<Parameter> > dep)
     { ParametersItDependsOn_.insert(ParametersItDependsOn_.end(), dep.begin(), dep.end()); }
 
+    /// add Parameter this CachedValue depends on
     void addDependency(std::shared_ptr<Parameter> dep)
     { ParametersItDependsOn_.push_back(dep); }
 
+    /// add CachedValues this CachedValue depends on
     void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep)
     { CachedValuesItDependsOn_.insert(CachedValuesItDependsOn_.end(), dep.begin(), dep.end()); }
 
+    /// add CachedValue this CachedValue depends on
     void addDependency(std::shared_ptr<CachedValue> dep)
     { CachedValuesItDependsOn_.push_back(dep); }
 
-    CalculationStatus cache()
-    {
-        for (auto& p : ParametersItDependsOn_) {
-            if (p->variableStatus() == kChanged)
-                CalculationStatus_ = kUncalculated;
-        }
-
-        for (auto& v : CachedValuesItDependsOn_) {
-            if (v->cache() == kUncalculated)
-                CalculationStatus_ = kUncalculated;
-        }
-
-        return CalculationStatus_;
-    }
+    /// update (depending on Parameters and CachedValues it depends) and return CalculationStatus_
+    CalculationStatus calculationStatus();
 
 private:
     std::complex<double> CachedValue_;
