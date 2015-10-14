@@ -21,13 +21,48 @@
 #ifndef yap_CachedValue_h
 #define yap_CachedValue_h
 
-#include "CachedValueBase.h"
 #include "Constants.h"
 #include "Parameter.h"
 
 #include <memory>
+#include <set>
+#include <vector>
 
 namespace yap {
+
+/// \class CachedValueBase
+/// \brief Base class for cached value managers
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Parameters
+
+class CachedValueBase
+{
+public:
+    /// Constructor
+    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
+    CachedValueBase(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {});
+
+    /// add Parameters this CachedValueBase depends on
+    void addDependencies(std::vector<std::shared_ptr<Parameter> > deps)
+        { for (auto& dep : deps) addDependency(dep); }
+
+    /// add Parameter this CachedValueBase depends on
+    void addDependency(std::shared_ptr<Parameter> dep)
+    { ParametersItDependsOn_.insert(dep); }
+
+    /// update (depending on Parameters and CachedValueBase's it
+    /// depends) and return CalculationStatus_
+    CalculationStatus calculationStatus();
+
+    /// set VariableStatus of members of #ParametersItDependsOn_ to
+    /// kUnchanged (or leave at kFixed).
+    void finishedPrecalculation();
+
+protected:
+    std::set<std::shared_ptr<Parameter> > ParametersItDependsOn_;
+    CalculationStatus CalculationStatus_;
+
+};
 
 /// \class CachedValue
 /// \brief Class for managing cached values (as complex numbers)

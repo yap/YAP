@@ -1,4 +1,4 @@
-#include "CachedValueBase.h"
+#include "CachedValue.h"
 
 #include "logging.h"
 

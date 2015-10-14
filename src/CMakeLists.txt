@@ -7,7 +7,7 @@ set(YAP_SOURCES
 	AmplitudeComponentDataAccessor.cxx
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
-  CachedValueBase.cxx
+  CachedValue.cxx
 	Constants.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
