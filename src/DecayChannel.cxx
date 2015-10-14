@@ -352,7 +352,6 @@ void DecayChannel::precalculate()
     SpinAmplitude_->precalculate();
     for (auto& d : Daughters_)
         d->precalculate();
-    AmplitudeComponentDataAccessor::precalculate();
 }
 
 

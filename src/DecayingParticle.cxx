@@ -345,7 +345,13 @@ void DecayingParticle::setSymmetrizationIndexParents()
     for (auto& ch : channels())
         ch->setSymmetrizationIndexParents();
 
+}
 
+//-------------------------
+void DecayingParticle::precalculate()
+{
+    for (auto& c : Channels_)
+        c->precalculate();
 }
 
 

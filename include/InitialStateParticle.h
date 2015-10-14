@@ -118,10 +118,6 @@ public:
 
     void printDataAccessors();
 
-protected:
-    virtual void calcPrecalculate()
-    {}
-
 private:
 
     friend void DecayingParticle::optimizeSpinAmplitudeSharing();
