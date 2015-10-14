@@ -62,7 +62,7 @@ public:
     { return VariableStatus_; }
 
     /// \return number of real parameters
-    virtual unsigned size() const
+    virtual const unsigned size() const
     { return 2; }
 
     /// @}
@@ -110,7 +110,7 @@ public:
     { return real(ParameterValue_); }
 
     /// \return number of real components in parameter
-    unsigned size() const override
+    const unsigned size() const override
     { return 1; }
 
     /// Overloads & hides #Parameters::setValue taking double argument

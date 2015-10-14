@@ -21,12 +21,11 @@
 #ifndef yap_CachedValue_h
 #define yap_CachedValue_h
 
+#include "CachedValueBase.h"
 #include "Constants.h"
 #include "Parameter.h"
-#include "ParameterSet.h"
 
 #include <memory>
-#include <set>
 
 namespace yap {
 
@@ -35,61 +34,20 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 
-class CachedValue
+class CachedValue : public CachedValueBase, public Parameter
 {
 public:
     /// Constructor
     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    CachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
-                std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn = {});
-
-    /// \name getters
-    /// @{
-
-    /// get value
-    const std::complex<double>& value() const
-    { return CachedValue_; }
-
-    /// get number of real components in cached value (complex number = 2 real components)
-    const unsigned size() const
-    { return 2; }
-
-    /// @}
-
-    /// \name setters
-    /// @{
+    CachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {})
+        : CachedValueBase(ParametersItDependsOn), Parameter()
+    {}
 
     /// set value and set CalculationStatus_ to kCalculated
-    void setValue(std::complex<double> val);
+    void setValue(std::complex<double> val)
+    { Parameter::setValue(val); CalculationStatus_ = kCalculated; }
 
-    /// @}
-
-    /// add Parameters this CachedValue depends on
-    void addDependencies(std::vector<std::shared_ptr<Parameter> > dep);
-
-    /// add Parameter this CachedValue depends on
-    void addDependency(std::shared_ptr<Parameter> dep)
-    { ParametersItDependsOn_.insert(dep); }
-
-    /// add CachedValues this CachedValue depends on
-    void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep);
-
-    /// add CachedValue this CachedValue depends on
-    void addDependency(std::shared_ptr<CachedValue> dep)
-    { CachedValuesItDependsOn_.insert(dep); }
-
-    /// update (depending on Parameters and CachedValues it depends) and return CalculationStatus_
-    CalculationStatus calculationStatus();
-
-    /// set VariableStatus of ParametersItDependsOn_ to kUnchanged (or leave at kFixed)
-    void finishedPrecalculation();
-
-protected:
-    std::complex<double> CachedValue_;
-    std::set<std::shared_ptr<Parameter> > ParametersItDependsOn_;
-    std::set<std::shared_ptr<CachedValue> > CachedValuesItDependsOn_;
-    CalculationStatus CalculationStatus_;
 };
 
 /// \class RealCachedValue
@@ -97,29 +55,20 @@ protected:
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 
-class RealCachedValue : public CachedValue
+class RealCachedValue : public CachedValueBase, public RealParameter
 {
 public:
 
     /// Constructor
     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    RealCachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
-                    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn = {})
-        : CachedValue(ParametersItDependsOn, CachedValuesItDependsOn)
+    RealCachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {})
+        : CachedValueBase(ParametersItDependsOn), RealParameter()
     {}
-
-    /// Replaces & hides #CachedValue::value with return type double
-    const double value() const
-    { return real(CachedValue_); }
-
-    /// get number of real components in cached value (real number = 1 real components)
-    const unsigned size() const
-    { return 1; }
 
     /// Overloading & hides #CachedValue::setValue with argument double
     void setValue(double val)
-    { CachedValue::setValue(val * Complex_1); }
+    { RealParameter::setValue(val); CalculationStatus_ = kCalculated; }
+
 };
 
 }
