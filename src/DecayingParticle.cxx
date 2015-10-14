@@ -17,11 +17,11 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
     AmplitudeComponent(),
     Particle(q, mass, name),
     AmplitudeComponentDataAccessor(),
-    RadialSize_(radialSize)
+    RadialSize_(new RealParameter(radialSize))
 {}
 
 //-------------------------
-DecayingParticle::DecayingParticle(const DecayingParticle& other) :
+/*DecayingParticle::DecayingParticle(const DecayingParticle& other) :
     AmplitudeComponent(other),
     Particle(other),
     AmplitudeComponentDataAccessor(other),
@@ -31,7 +31,7 @@ DecayingParticle::DecayingParticle(const DecayingParticle& other) :
         std::unique_ptr<DecayChannel> channelCopy(new DecayChannel(*c));
         addChannel(channelCopy);
     }
-}
+}*/
 
 //-------------------------
 std::complex<double> DecayingParticle::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
@@ -41,7 +41,7 @@ std::complex<double> DecayingParticle::calcAmplitude(DataPartition& d, std::shar
 
     for (auto& c : channels()) {
         if (c->hasSymmetrizationIndex(pc))
-            a += c->freeAmplitude() * c->amplitude(d, pc);
+            a += c->freeAmplitude()->value() * c->amplitude(d, pc);
     }
 
     DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
@@ -57,7 +57,7 @@ bool DecayingParticle::consistent() const
     result &= DataAccessor::consistent();
     result &= Particle::consistent();
 
-    if (RadialSize_ <= 0.) {
+    if (RadialSize_->realValue() <= 0.) {
         LOG(ERROR) << "DecayingParticle::consistent() - Radial size not positive.";
         result = false;
     }
@@ -96,8 +96,6 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
     Channels_.back().swap(c);
     Channels_.back()->setInitialStateParticle(initialStateParticle());
 
-    Channels_.back()->setParent(this);
-
     if (Channels_.back()->particleCombinations().empty())
         LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
 
@@ -114,7 +112,7 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
-        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL)) );
+        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this) );
 
         bool notZero(false);
         std::vector<std::shared_ptr<const ParticleCombination>> PCs;
@@ -354,5 +352,11 @@ void DecayingParticle::precalculate()
         c->precalculate();
 }
 
+//-------------------------
+void DecayingParticle::finishedPrecalculation()
+{
+    for (auto& c : Channels_)
+        c->finishedPrecalculation();
+}
 
 }

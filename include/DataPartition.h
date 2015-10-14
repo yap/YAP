@@ -44,16 +44,7 @@ public:
 
     /// increment and
     /// \return if still in range
-    bool increment()
-    {
-        // advance
-        CurrentPosition_ += Spacing_;
-
-        // reset CalculationStatusesDataPoint_ to CalculationStatusesDataSet_
-        CalculationStatusesDataPoint_ = CalculationStatusesDataSet_;
-
-        return CurrentPosition_  + Spacing_ < End_;
-    }
+    bool increment();
 
     /// \return current DataPoint
     DataPoint& dataPoint()

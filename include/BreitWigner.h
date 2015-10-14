@@ -107,7 +107,9 @@ public:
     /// @}
 
     /// precalculate M2iMG_
-    void precalculate() override;
+    virtual void precalculate() override;
+    virtual void finishedPrecalculation() override
+    { M2iMG_.finishedPrecalculation(); }
 
 protected:
 

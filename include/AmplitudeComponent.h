@@ -57,6 +57,10 @@ public:
     /// to be called before looping over DataPoints
     virtual void precalculate() {};
 
+    /// call after precalculate()
+    /// this function should set the VariableStatus_ of all parameters to kUnchanged (or leave it at kFixed)
+    virtual void finishedPrecalculation() {};
+
     /// Calculate complex amplitude
     virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
 

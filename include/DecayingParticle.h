@@ -51,7 +51,7 @@ public:
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// Copy constructor
-    DecayingParticle(const DecayingParticle& other);
+    DecayingParticle(const DecayingParticle& other) = delete;
 
     /// @}
 
@@ -100,7 +100,7 @@ public:
     { return Channels_.at(i).get(); }
 
     /// \return Radial size [GeV^-1]
-    double radialSize() const
+    std::shared_ptr<RealParameter> radialSize()
     { return RadialSize_; }
 
     /// @}
@@ -110,10 +110,6 @@ public:
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    /// Set radial size [GeV^-1]
-    void setRadialSize(double r)
-    { RadialSize_ = r; }
 
     /// @}
 
@@ -132,6 +128,7 @@ public:
     virtual void setSymmetrizationIndexParents() override;
 
     virtual void precalculate() override;
+    virtual void finishedPrecalculation() override;
 
 protected:
 
@@ -147,7 +144,7 @@ private:
     std::vector< std::unique_ptr<DecayChannel> > Channels_;
 
     /// Radial size parameter [GeV^-1]
-    double RadialSize_;
+    std::shared_ptr<RealParameter> RadialSize_;
 };
 
 }

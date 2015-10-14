@@ -12,25 +12,21 @@ namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
-    DecayChannel_(decayChannel)
+    DecayChannel_(decayChannel),
+    Value_(new CachedValue())
 {
-    /// \todo parent R
-    for (auto& d : DecayChannel_->daughters()) {
-        if (std::dynamic_pointer_cast<Resonance>(d)) {
-            Value_.addDependency(
-                    std::dynamic_pointer_cast<Resonance>(d)->massShape()->parameters().at(0));
-        }
-    }
+    Value_->addDependency(DecayChannel_->parent()->radialSize());
+    Value_->addDependency(DecayChannel_->breakupMomentum());
 }
 
 void BlattWeisskopf::precalculate()
 {
-    if (Value_.calculationStatus() == kUncalculated) {
+    if (Value_->calculationStatus() == kUncalculated) {
 
         /// \todo What if we want to fit masses?
-        double breakupMom = DecayChannel_->breakupMomentum();
+        double breakupMom = DecayChannel_->breakupMomentum()->value().real();
         unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
-        double R = DecayChannel_->parent()->radialSize();
+        double R = DecayChannel_->parent()->radialSize()->realValue();
 
         /// \todo ? in denominator, there must be q^2_(ab), the breakup momentum calculated from the invariant masses
 
@@ -79,12 +75,12 @@ void BlattWeisskopf::precalculate()
             default:
                 LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                            << spinToString(twoL) << ". returning 0." << std::endl;
-                Value_.setValue(Complex_0);
+                Value_->setValue(Complex_0);
         }
 
-        Value_.setValue(sqrt(bf2));
+        Value_->setValue(sqrt(bf2));
 
-        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; R = " << R << " 1/GeV) = " << Value_.value());
+        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
     }
 }
 

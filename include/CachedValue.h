@@ -25,6 +25,7 @@
 #include "ParameterSet.h"
 
 #include <memory>
+#include <set>
 
 namespace yap {
 
@@ -53,28 +54,29 @@ public:
     /// @}
 
     /// add Parameters this CachedValue depends on
-    void addDependencies(std::vector<std::shared_ptr<Parameter> > dep)
-    { ParametersItDependsOn_.insert(ParametersItDependsOn_.end(), dep.begin(), dep.end()); }
+    void addDependencies(std::vector<std::shared_ptr<Parameter> > dep);
 
     /// add Parameter this CachedValue depends on
     void addDependency(std::shared_ptr<Parameter> dep)
-    { ParametersItDependsOn_.push_back(dep); }
+    { ParametersItDependsOn_.insert(dep); }
 
     /// add CachedValues this CachedValue depends on
-    void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep)
-    { CachedValuesItDependsOn_.insert(CachedValuesItDependsOn_.end(), dep.begin(), dep.end()); }
+    void addDependencies(std::vector<std::shared_ptr<CachedValue> > dep);
 
     /// add CachedValue this CachedValue depends on
     void addDependency(std::shared_ptr<CachedValue> dep)
-    { CachedValuesItDependsOn_.push_back(dep); }
+    { CachedValuesItDependsOn_.insert(dep); }
 
     /// update (depending on Parameters and CachedValues it depends) and return CalculationStatus_
     CalculationStatus calculationStatus();
 
+    /// set VariableStatus of ParametersItDependsOn_ to kUnchanged (or leave at kFixed)
+    void finishedPrecalculation();
+
 private:
     std::complex<double> CachedValue_;
-    std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn_;
-    std::vector<std::shared_ptr<CachedValue> > CachedValuesItDependsOn_;
+    std::set<std::shared_ptr<Parameter> > ParametersItDependsOn_;
+    std::set<std::shared_ptr<CachedValue> > CachedValuesItDependsOn_;
     CalculationStatus CalculationStatus_;
 };
 

@@ -13,20 +13,29 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude) :
-        DecayChannel( {daughterA, daughterB}, spinAmplitude)
+DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
+        DecayChannel( {daughterA, daughterB}, spinAmplitude, parent)
 {
 }
 
 //-------------------------
-DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude) :
+DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
     AmplitudeComponentDataAccessor(),
+              Parent_(parent),
               Daughters_(daughters),
-              BlattWeisskopf_(this),
+              BlattWeisskopf_(nullptr), // see comment below!
               SpinAmplitude_(spinAmplitude),
-              Parent_(nullptr)
+              FreeAmplitude_(new Parameter(0)),
+              BreakupMomentum_(new CachedValue())
 {
-    push_back(std::make_shared<Parameter>());
+    /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
+    std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
+    BlattWeisskopf_.swap(bw);
+
+    // BreakupMomentum_ dependencies
+    BreakupMomentum_->addDependency(Parent_->mass());
+    for (auto& d : Daughters_)
+        BreakupMomentum_->addDependency(d->mass());
 
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
@@ -74,7 +83,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 std::complex<double> DecayChannel::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo check
-    std::complex<double> a = BlattWeisskopf_.amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
+    std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
 
     if (a == Complex_0)
         return a;
@@ -132,9 +141,9 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "DecayChannel::consistent() - daughter(s) inconsistent";
 
     // Check Blatt-Weisskopf object
-    result &= BlattWeisskopf_.consistent();
+    result &= BlattWeisskopf_->consistent();
     // check if BlattWeisskopf points back to this DecayChannel
-    if (this != BlattWeisskopf_.decayChannel()) {
+    if (this != BlattWeisskopf_->decayChannel()) {
         LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
         result =  false;
     }
@@ -174,8 +183,8 @@ bool DecayChannel::consistent() const
     // check masses
     double finalMass = 0;
     for (std::shared_ptr<Particle> d : Daughters_)
-        finalMass += (!d) ? 0 : d->mass();
-    if (finalMass > parent()->mass()) {
+        finalMass += (!d) ? 0 : d->mass()->realValue();
+    if (finalMass > parent()->mass()->realValue()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
         result =  false;
     }
@@ -184,28 +193,6 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
 
     return result;
-}
-
-//-------------------------
-double DecayChannel::breakupMomentum() const
-{
-    if (Daughters_.size() != 2) {
-        LOG(ERROR) << "DecayChannel::breakupMomentum() - channel has != 2 daughters. Cannot calculate!";
-        return 0;
-    }
-
-    /// \todo take masses from mass shape instead?
-    /// or do we need the invariant masses instead of the nominal masses?
-    double m2_R =  pow(Parent_->mass(), 2);
-    double m_a = Daughters_[0]->mass();
-    double m_b = Daughters_[1]->mass();
-
-    if (m_a == m_b) {
-        return m2_R / 4.0 - m_a * m_a;
-    }
-
-    return (m2_R - (m_a + m_b) * (m_a + m_b)) *
-           (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0;
 }
 
 //-------------------------
@@ -246,29 +233,6 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 }
 
 //-------------------------
-/*void DecayChannel::setFreeAmplitude(const Amp& amp)
-{
-    if (*FreeAmplitude_ == amp)
-        return;
-
-    *FreeAmplitude_ = amp;
-
-    // set CalculationStatus of parent
-    bool set(false);
-    for (auto& pc : particleCombinations()) {
-        if (Parent_->hasSymmetrizationIndex(pc)) {
-            unsigned index = Parent_->symmetrizationIndex(pc);
-            Parent_->setCalculationStatus(index, kUncalculated);
-            set = true;
-            //DEBUG("DecayChannel::setFreeAmplitude - setCalculationStatus of " << Parent_->name() << " for " << std::string(*pc));
-        }
-    }
-
-    if (!set)
-        LOG(ERROR) << "DecayChannel::setFreeAmplitude - could not set calculationStatus od parent.";
-}*/
-
-//-------------------------
 void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 {
     AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
@@ -284,7 +248,7 @@ void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     DataAccessor::addSymmetrizationIndex(c);
-    //BlattWeisskopf_.addSymmetrizationIndex(c);
+    //BlattWeisskopf_->addSymmetrizationIndex(c);
     SpinAmplitude_->addSymmetrizationIndex(c);
 }
 
@@ -292,7 +256,7 @@ void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombinat
 void DecayChannel::clearSymmetrizationIndices()
 {
     DataAccessor::clearSymmetrizationIndices();
-    //BlattWeisskopf_.clearSymmetrizationIndices();
+    //BlattWeisskopf_->clearSymmetrizationIndices();
     SpinAmplitude_->clearSymmetrizationIndices();
 }
 
@@ -344,14 +308,43 @@ void DecayChannel::setSymmetrizationIndexParents()
 
 }
 
-
+//-------------------------
 void DecayChannel::precalculate()
 {
+    if (BreakupMomentum_->calculationStatus() == kUncalculated) {
+        if (Daughters_.size() != 2) {
+            LOG(FATAL) << "DecayChannel::breakupMomentum() - channel has != 2 daughters. Cannot calculate!";
+            BreakupMomentum_->setValue( 0 );
+        }
+
+        /// \todo take masses from mass shape instead?
+        /// or do we need the invariant masses instead of the nominal masses?
+        double m2_R =  pow(Parent_->mass()->realValue(), 2);
+        double m_a = Daughters_[0]->mass()->realValue();
+        double m_b = Daughters_[1]->mass()->realValue();
+
+        if (m_a == m_b) {
+            BreakupMomentum_->setValue( m2_R / 4.0 - m_a * m_a );
+        }
+
+        BreakupMomentum_->setValue(  (m2_R - (m_a + m_b) * (m_a + m_b)) *
+               (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0 );
+    }
+
     /// \todo find a solution to do this not recursively?
-    BlattWeisskopf_.precalculate();
+    BlattWeisskopf_->precalculate();
     SpinAmplitude_->precalculate();
     for (auto& d : Daughters_)
         d->precalculate();
+}
+
+//-------------------------
+void DecayChannel::finishedPrecalculation()
+{
+    BlattWeisskopf_->finishedPrecalculation();
+    SpinAmplitude_->finishedPrecalculation();
+    for (auto& d : Daughters_)
+        d->finishedPrecalculation();
 }
 
 

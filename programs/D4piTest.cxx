@@ -100,8 +100,9 @@ int main( int argc, char** argv)
 
 
     // test helicity angles
-    TLorentzVector P(0.0, 0.0, 0.0, D->mass());
-    Double_t masses[4] = { piPlus->mass(), piMinus->mass(), piPlus->mass(), piMinus->mass() };
+    TLorentzVector P(0., 0., 0., D->mass()->realValue());
+    Double_t masses[4] = { piPlus->mass()->realValue(), piMinus->mass()->realValue(),
+            piPlus->mass()->realValue(), piMinus->mass()->realValue() };
 
     for (unsigned int iEvt = 0; iEvt < 2; ++iEvt) {
         TGenPhaseSpace event;
@@ -119,17 +120,15 @@ int main( int argc, char** argv)
     yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
 
     // to test amplitude calculation, set all free amps to 1
-    auto freeAmps = D->freeAmplitudes();
+    yap::ParameterSet freeAmps = D->freeAmplitudes();
     for (auto& a : freeAmps)
-        a = yap::Complex_1;
-    D->setFreeAmplitudes(freeAmps);
+        a->setValue(yap::Complex_1);
 
     D->logLikelihood(d);
 
 
     for (auto& a : freeAmps)
-        a *= 0.5;
-    assert(D->setFreeAmplitudes(freeAmps));
+        a->setValue(0.5 * a->value());
 
     std::cout << "try second calculation after changing free amps! ============================== \n";
 

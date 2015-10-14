@@ -51,10 +51,6 @@ public:
     /// Destructor
     ~InitialStateParticle();
 
-    /// Clone
-    virtual std::shared_ptr<Particle> clone() const override
-    { return std::make_shared<InitialStateParticle>(*this); }
-
     /// @}
 
     /// \todo remove!
@@ -71,9 +67,6 @@ public:
 
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
-
-    /// set free amplitudes to DecayChannels
-    bool setFreeAmplitudes(const std::vector<std::complex<double> >& amps);
 
     /// \name Getters
     /// @{
@@ -94,7 +87,7 @@ public:
     {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
-    std::vector<std::complex<double> > freeAmplitudes() const;
+    ParameterSet freeAmplitudes() const;
 
     DataSet& dataSet()
     { return DataSet_; }

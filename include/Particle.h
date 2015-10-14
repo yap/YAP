@@ -22,6 +22,7 @@
 #define yap_Particle_h
 
 #include "AmplitudeComponent.h"
+#include "Parameter.h"
 #include "QuantumNumbers.h"
 
 namespace yap {
@@ -44,9 +45,6 @@ public:
     /// Constructor
     Particle(const QuantumNumbers& q, double mass, std::string name);
 
-    /// Clone
-    virtual std::shared_ptr<Particle> clone() const = 0;
-
     /// @}
 
     /// Check consitency of object
@@ -63,21 +61,12 @@ public:
     /// @{
 
     /// Get mass [GeV]
-    double mass() const
+    std::shared_ptr<RealParameter> mass() const
     { return Mass_; }
 
     /// Get name
     std::string name() const
     { return Name_; }
-
-    /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set mass [GeV]
-    void setMass(double m)
-    { Mass_ = m; }
 
     /// @}
 
@@ -90,7 +79,8 @@ private:
     QuantumNumbers QuantumNumbers_;
 
     /// Mass [GeV]
-    double Mass_;
+    /// \todo share with massShape
+    std::shared_ptr<RealParameter> Mass_;
 
     /// Name of particle
     std::string Name_;

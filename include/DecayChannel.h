@@ -41,20 +41,28 @@ class SpinAmplitude;
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DecayChannel : public AmplitudeComponentDataAccessor, public ParameterSet
+class DecayChannel : public AmplitudeComponentDataAccessor
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
-    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
 
     /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
+
+    /// Copy constructor
+    DecayChannel(const DecayChannel& other) = delete;
 
     /// check consistency of object
     virtual bool consistent() const override;
 
+    /// \return breakup momentum value
+    double breakupMomentum() const
+    { return BreakupMomentum_->value().real(); }
+
     /// \return breakup momentum
-    double breakupMomentum() const;
+    std::shared_ptr<CachedValue> breakupMomentum()
+    { return BreakupMomentum_; }
 
     /// cast into string
     operator std::string() const;
@@ -85,8 +93,8 @@ public:
     const DecayingParticle* parent() const
     { return Parent_; }
 
-    std::complex<double> freeAmplitude() const
-    { return this->at(0)->value(); }
+    std::shared_ptr<Parameter> freeAmplitude() const
+    { return FreeAmplitude_; }
 
     /// @}
 
@@ -95,13 +103,6 @@ public:
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    /// Set parent
-    void setParent(DecayingParticle* parent)
-    { Parent_ = parent; }
-
-    void setFreeAmplitude(std::complex<double> a)
-    { at(0)->setValue(a); }
 
     /// @}
 
@@ -116,23 +117,28 @@ public:
     void setSymmetrizationIndexParents();
 
     virtual void precalculate() override;
+    virtual void finishedPrecalculation() override;
 
 protected:
 
     /// \return (fixed) Amplitude for decay channel
     virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
+    /// DecayingParticle this DecayChannel belongs to
+    DecayingParticle* Parent_;
+
     /// 2 daughters of the decay
     std::vector<std::shared_ptr<Particle> > Daughters_;
 
     /// Blatt-Weisskopf calculator
-    BlattWeisskopf BlattWeisskopf_;
+    std::unique_ptr<BlattWeisskopf> BlattWeisskopf_;
 
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
-    /// DecayingParticle this DecayChannel belongs to
-    DecayingParticle* Parent_;
+    std::shared_ptr<Parameter> FreeAmplitude_;
+
+    std::shared_ptr<CachedValue> BreakupMomentum_;
 
 };
 

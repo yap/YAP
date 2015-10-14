@@ -54,7 +54,8 @@ public:
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
-    void precalculate() override;
+    virtual void precalculate() override;
+    virtual void finishedPrecalculation() override {};
 
 protected:
 

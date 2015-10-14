@@ -7,14 +7,14 @@ namespace yap {
 //-------------------------
 Particle::Particle(const QuantumNumbers& q, double mass, std::string name) :
     QuantumNumbers_(q),
-    Mass_(mass),
+    Mass_(new RealParameter(mass)),
     Name_(name)
 {}
 
 //-------------------------
 bool Particle::consistent() const
 {
-    if (Mass_ <= 0.) {
+    if (Mass_->realValue() <= 0.) {
         LOG(ERROR) << "Particle::consistent() - mass not positive.";
         return false;
     }

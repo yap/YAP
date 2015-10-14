@@ -21,7 +21,7 @@ std::complex<double> Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<
 
     for (auto& c : channels()) {
         if (c->hasSymmetrizationIndex(pc))
-            a += c->freeAmplitude() * c->amplitude(d, pc);
+            a += c->freeAmplitude()->value() * c->amplitude(d, pc);
     }
 
     a *= MassShape_->amplitude(d, pc);

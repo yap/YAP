@@ -50,10 +50,6 @@ public:
     /// Constructor
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
 
-    /// Clone
-    virtual std::shared_ptr<Particle> clone() const override
-    { return std::make_shared<Resonance>(*this); }
-
     /// @}
 
     /// Check consistency of object
