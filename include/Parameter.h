@@ -22,6 +22,7 @@
 #define yap_Parameter_h
 
 #include "CalculationStatus.h"
+#include "Constants.h"
 #include "VariableStatus.h"
 
 #include <complex>
@@ -70,7 +71,7 @@ public:
     /// @{
 
     /// set complex value
-    virtual void setValue(std::complex<double> val)
+    void setValue(std::complex<double> val)
     {
         if (ParameterValue_ != val) {
             ParameterValue_ = val;
@@ -101,27 +102,20 @@ public:
 
     /// Constructor
     RealParameter(double real = 0) :
-        Parameter(real, 0)
+        Parameter(real * Complex_1)
     {}
 
-    /// \return real value
-    double realValue() const
-    { return ParameterValue_.real(); }
+    /// Replace & hide #Parameters::value returning double
+    double value() const
+    { return real(ParameterValue_); }
 
-    /// \return number of real parameters
-    virtual unsigned size() const override
+    /// \return number of real components in parameter
+    unsigned size() const override
     { return 1; }
 
-    /// set (complex) value, imaginary part is ignored and set to 0
-    virtual void setValue(std::complex<double> val) override
-    {
-        val = (val.real()); // sets imag to 0
-        Parameter::setValue(val);
-    }
-
-    /// set real value
+    /// Overloads & hides #Parameters::setValue taking double argument
     void setValue(double val)
-    { Parameter::setValue(std::complex<double>(val)); }
+    { Parameter::setValue(val * Complex_1); }
 
 };
 

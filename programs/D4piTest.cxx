@@ -99,9 +99,10 @@ int main( int argc, char** argv)
 
 
     // test helicity angles
-    TLorentzVector P(0., 0., 0., D->mass()->realValue());
-    Double_t masses[4] = { piPlus->mass()->realValue(), piMinus->mass()->realValue(),
-            piPlus->mass()->realValue(), piMinus->mass()->realValue() };
+    TLorentzVector P(0., 0., 0., D->mass()->value());
+    Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(),
+                           piPlus->mass()->value(), piMinus->mass()->value()
+                         };
 
     for (unsigned int iEvt = 0; iEvt < 2; ++iEvt) {
         TGenPhaseSpace event;

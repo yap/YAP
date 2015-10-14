@@ -11,7 +11,7 @@ namespace yap {
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
     MassShape( {mass, width}),
-    M2iMG_({Parameters_[0], Parameters_[1]})
+           M2iMG_({Parameters_[0], Parameters_[1]})
 {
 }
 

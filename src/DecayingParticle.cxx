@@ -57,7 +57,7 @@ bool DecayingParticle::consistent() const
     result &= DataAccessor::consistent();
     result &= Particle::consistent();
 
-    if (RadialSize_->realValue() <= 0.) {
+    if (RadialSize_->value() <= 0.) {
         LOG(ERROR) << "DecayingParticle::consistent() - Radial size not positive.";
         result = false;
     }

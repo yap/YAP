@@ -24,9 +24,9 @@ void BlattWeisskopf::precalculate()
     if (Value_->calculationStatus() == kUncalculated) {
 
         /// \todo What if we want to fit masses?
-        double breakupMom = DecayChannel_->breakupMomentum()->value().real();
+        double breakupMom = DecayChannel_->breakupMomentum()->value();
         unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
-        double R = DecayChannel_->parent()->radialSize()->realValue();
+        double R = DecayChannel_->parent()->radialSize()->value();
 
         /// \todo ? in denominator, there must be q^2_(ab), the breakup momentum calculated from the invariant masses
 

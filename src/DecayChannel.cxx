@@ -14,19 +14,19 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
-        DecayChannel( {daughterA, daughterB}, spinAmplitude, parent)
+    DecayChannel( {daughterA, daughterB}, spinAmplitude, parent)
 {
 }
 
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
     AmplitudeComponentDataAccessor(),
-              Parent_(parent),
-              Daughters_(daughters),
-              BlattWeisskopf_(nullptr), // see comment below!
-              SpinAmplitude_(spinAmplitude),
-              FreeAmplitude_(new Parameter(0)),
-              BreakupMomentum_(new CachedValue())
+    Parent_(parent),
+    Daughters_(daughters),
+    BlattWeisskopf_(nullptr), // see comment below!
+    SpinAmplitude_(spinAmplitude),
+    FreeAmplitude_(new Parameter(0)),
+    BreakupMomentum_(new RealCachedValue())
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
@@ -183,8 +183,8 @@ bool DecayChannel::consistent() const
     // check masses
     double finalMass = 0;
     for (std::shared_ptr<Particle> d : Daughters_)
-        finalMass += (!d) ? 0 : d->mass()->realValue();
-    if (finalMass > parent()->mass()->realValue()) {
+        finalMass += (!d) ? 0 : d->mass()->value();
+    if (finalMass > parent()->mass()->value()) {
         LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
         result =  false;
     }
@@ -193,6 +193,31 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
 
     return result;
+}
+
+//-------------------------
+std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum()
+{
+    if (BreakupMomentum_->calculationStatus() == kUncalculated) {
+        if (Daughters_.size() != 2) {
+            LOG(FATAL) << "DecayChannel::breakupMomentum() - wrong number of daughters (" << Daughters_.size() << " != 2). Cannot calculate!";
+            BreakupMomentum_->setValue(std::numeric_limits<double>::quiet_NaN());
+        }
+
+        /// \todo take masses from mass shape instead?
+        /// or do we need the invariant masses instead of the nominal masses?
+        double m2_R =  pow(Parent_->mass()->value(), 2);
+        double m_a = Daughters_[0]->mass()->value();
+        double m_b = Daughters_[1]->mass()->value();
+
+        if (m_a == m_b) {
+            BreakupMomentum_->setValue( m2_R / 4.0 - m_a * m_a );
+        }
+
+        BreakupMomentum_->setValue( (m2_R - (m_a + m_b) * (m_a + m_b)) * (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0 );
+    }
+
+    return BreakupMomentum_;
 }
 
 //-------------------------
@@ -311,25 +336,8 @@ void DecayChannel::setSymmetrizationIndexParents()
 //-------------------------
 void DecayChannel::precalculate()
 {
-    if (BreakupMomentum_->calculationStatus() == kUncalculated) {
-        if (Daughters_.size() != 2) {
-            LOG(FATAL) << "DecayChannel::breakupMomentum() - channel has != 2 daughters. Cannot calculate!";
-            BreakupMomentum_->setValue( 0 );
-        }
-
-        /// \todo take masses from mass shape instead?
-        /// or do we need the invariant masses instead of the nominal masses?
-        double m2_R =  pow(Parent_->mass()->realValue(), 2);
-        double m_a = Daughters_[0]->mass()->realValue();
-        double m_b = Daughters_[1]->mass()->realValue();
-
-        if (m_a == m_b) {
-            BreakupMomentum_->setValue( m2_R / 4.0 - m_a * m_a );
-        }
-
-        BreakupMomentum_->setValue(  (m2_R - (m_a + m_b) * (m_a + m_b)) *
-               (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0 );
-    }
+    // calculates it
+    breakupMomentum();
 
     /// \todo find a solution to do this not recursively?
     BlattWeisskopf_->precalculate();

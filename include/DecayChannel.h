@@ -58,11 +58,10 @@ public:
 
     /// \return breakup momentum value
     double breakupMomentum() const
-    { return BreakupMomentum_->value().real(); }
+    { return BreakupMomentum_->value(); }
 
     /// \return breakup momentum
-    std::shared_ptr<CachedValue> breakupMomentum()
-    { return BreakupMomentum_; }
+    std::shared_ptr<RealCachedValue> breakupMomentum();
 
     /// cast into string
     operator std::string() const;
@@ -138,7 +137,7 @@ protected:
 
     std::shared_ptr<Parameter> FreeAmplitude_;
 
-    std::shared_ptr<CachedValue> BreakupMomentum_;
+    std::shared_ptr<RealCachedValue> BreakupMomentum_;
 
 };
 
