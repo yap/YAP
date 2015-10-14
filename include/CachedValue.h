@@ -21,8 +21,10 @@
 #ifndef yap_CachedValue_h
 #define yap_CachedValue_h
 
+#include "CalculationStatus.h"
 #include "Constants.h"
 #include "Parameter.h"
+#include "VariableStatus.h"
 
 #include <memory>
 #include <set>
@@ -44,7 +46,7 @@ public:
 
     /// add Parameters this CachedValueBase depends on
     void addDependencies(std::vector<std::shared_ptr<Parameter> > deps)
-        { for (auto& dep : deps) addDependency(dep); }
+    { for (auto& dep : deps) addDependency(dep); }
 
     /// add Parameter this CachedValueBase depends on
     void addDependency(std::shared_ptr<Parameter> dep)
