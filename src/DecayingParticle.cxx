@@ -201,10 +201,10 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
     }
 
     if (first) {
-        DEBUG("AmpSet:");
+        /*DEBUG("AmpSet:");
         for (auto& amp : ampSet) {
             DEBUG("  " << amp.get());
-        }
+        }*/
 
         std::set<DataAccessor*> removeAmps;
         for (DataAccessor* dataAcc : initialStateParticle()->DataAccessors_) {

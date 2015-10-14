@@ -21,7 +21,7 @@ const std::complex<double>& AmplitudeComponentDataAccessor::amplitude(DataPartit
 #else
     // has to made sure in caller! This is just for safety while debugging!
     if (! hasSymmetrizationIndex(pc)) {
-        LOG(ERROR) << "AmplitudeComponentDataAccessor::amplitude - called with wrong symmetrization index!";
+        LOG(FATAL) << "AmplitudeComponentDataAccessor::amplitude - called with wrong symmetrization index!";
         static std::complex<double> zero(Complex_0);
         return zero;
     }

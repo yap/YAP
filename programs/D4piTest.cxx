@@ -76,20 +76,20 @@ int main( int argc, char** argv)
     std::cout << "consistent! \n";
 
     // print stuff
-    yap::ParticleCombination::printParticleCombinationSet();
+    //yap::ParticleCombination::printParticleCombinationSet();
 
-    std::cout << "\nD symmetrizations: \n";
-    for (auto& pc : D->particleCombinations())
+    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
+    /*for (auto& pc : D->particleCombinations())
         std::cout << std::string(*pc) << "\n";
-    std::cout << "\n";
+    std::cout << "\n";*/
 
-    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices: \n";
-    for (auto& pc : D->fourMomenta().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
+    /*for (auto& pc : D->fourMomenta().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";*/
 
-    std::cout << "\nHelicity angles symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices: \n";
-    for (auto& pc : D->helicityAngles().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nHelicity angles symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
+    /*for (auto& pc : D->helicityAngles().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";*/
 
     D->printDecayChain();
     std::cout << "\n";
@@ -126,9 +126,12 @@ int main( int argc, char** argv)
 
     D->logLikelihood(d);
 
+
     for (auto& a : freeAmps)
         a *= 0.5;
     assert(D->setFreeAmplitudes(freeAmps));
+
+    std::cout << "try second calculation after changing free amps! ============================== \n";
 
     D->logLikelihood(d);
 

@@ -80,7 +80,7 @@ void DataPoint::printDataSize()
     std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
     totSize += size;
 
-    std::cout << "= Size of DataPoint:            " << totSize << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
+    std::cout << "= Size of DataPoint:            " << totSize << " byte\n";
 }
 
 }

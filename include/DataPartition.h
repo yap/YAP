@@ -52,7 +52,7 @@ public:
         // reset CalculationStatusesDataPoint_ to CalculationStatusesDataSet_
         CalculationStatusesDataPoint_ = CalculationStatusesDataSet_;
 
-        return CurrentPosition_ < End_;
+        return CurrentPosition_  + Spacing_ < End_;
     }
 
     /// \return current DataPoint

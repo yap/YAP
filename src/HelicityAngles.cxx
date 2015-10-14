@@ -109,9 +109,9 @@ void HelicityAngles::transformDaughters(DataPoint& d,
         double theta = daughter.Theta();
         d.HelicityAngles_.at(symmetrizationIndex(daugh)) = {phi, theta};
 
-        DEBUG(std::string(*daugh) << " helicity angles (phi, theta) = ("
+        /*DEBUG(std::string(*daugh) << " helicity angles (phi, theta) = ("
               << d.HelicityAngles_.at(symmetrizationIndex(daugh))[0] << ", "
-              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[1] << ")");
+              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[1] << ")");*/
 
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);

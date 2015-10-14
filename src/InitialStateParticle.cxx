@@ -20,6 +20,8 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     setInitialStateParticle(this);
     FourMomenta_.setInitialStateParticle(this);
     HelicityAngles_.setInitialStateParticle(this);
+
+    addDataAccessor(this);
 }
 
 //-------------------------
@@ -41,6 +43,8 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     // calculate amplitues
     do {
+        d.dataPoint().printDataSize();
+
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
@@ -215,6 +219,9 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
     if (!DataSet_.consistent(d))
         return false;
 
+    /// \todo remove
+    d.printDataSize();
+
     return true;
 }
 
@@ -296,13 +303,17 @@ void InitialStateParticle::addDataAccessor(DataAccessor* d)
 //-------------------------
 void InitialStateParticle::removeDataAccessor(DataAccessor* d)
 {
-    if (! DataAccessors_.empty())
+    if (! DataAccessors_.empty()) {
+
         DataAccessors_.erase(d);
-    if (prepared()) {
-        LOG(ERROR) << "InitialStateParticle has already been prepared. "
-                   << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
-                   << "otherwise it will become inconsistent!";
+
+        if (prepared()) {
+            LOG(ERROR) << "InitialStateParticle has already been prepared. "
+                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
+                       << "otherwise it will become inconsistent!";
+        }
     }
+
 
     //DEBUG("size of InitialStateParticle's DataAccessors_ = " << DataAccessors_.size());
 }
