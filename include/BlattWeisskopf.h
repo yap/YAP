@@ -21,7 +21,7 @@
 #ifndef yap_BlattWeisskopf_h
 #define yap_BlattWeisskopf_h
 
-#include "AmplitudeComponent.h"
+#include "AmplitudeComponentDataAccessor.h"
 #include "CachedValue.h"
 #include "CalculationStatus.h"
 
@@ -37,7 +37,7 @@ class ParticleCombination;
 /// \brief Class implementing BlattWeisskopf barrier factors
 /// \author Johannes Rauch, Daniel Greenwald
 
-class BlattWeisskopf : public AmplitudeComponent
+class BlattWeisskopf : public AmplitudeComponentDataAccessor
 {
 public:
 
@@ -50,13 +50,13 @@ public:
     /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
-    /// Blatt-Weisskopf amplitude at DataPoint
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
-    { return Complex_0; }//Value_->value(); } /// \todo make AmplitudeComponentDataAccessor
-
     virtual void precalculate() override;
     virtual void finishedPrecalculation() override
     { Value_->finishedPrecalculation(); }
+
+protected:
+
+    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const;
 
 private:
 

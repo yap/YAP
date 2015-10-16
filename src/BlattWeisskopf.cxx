@@ -12,6 +12,7 @@ namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
+    AmplitudeComponentDataAccessor(&ParticleCombination::equivByOrderlessContent),
     DecayChannel_(decayChannel),
     Value_(new RealCachedValue())
 {
@@ -83,6 +84,13 @@ void BlattWeisskopf::precalculate()
 
         DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
     }
+}
+
+//-------------------------
+std::complex<double> BlattWeisskopf::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+{
+    /// \todo implement
+    return std::complex<double>(Value_->value());
 }
 
 //-------------------------
