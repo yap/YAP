@@ -66,18 +66,18 @@ protected:
 
 };
 
-/// \class CachedValue
+/// \class ComplexCachedValue
 /// \brief Class for managing cached values (as complex numbers)
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 
-class CachedValue : public CachedValueBase, public ComplexParameter
+class ComplexCachedValue : public CachedValueBase, public ComplexParameter
 {
 public:
     /// Constructor
     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    CachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {})
+    ComplexCachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {})
         : CachedValueBase(ParametersItDependsOn), ComplexParameter()
     {}
 
@@ -88,7 +88,7 @@ public:
 };
 
 /// \class RealCachedValue
-/// \brief extension of #CachedValue for a real numbers
+/// \brief extension of #ComplexCachedValue for a real numbers
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 
@@ -102,7 +102,7 @@ public:
         : CachedValueBase(ParametersItDependsOn), RealParameter()
     {}
 
-    /// Overloading & hides #CachedValue::setValue with argument double
+    /// Overloading & hides #ComplexCachedValue::setValue with argument double
     void setValue(double val)
     { RealParameter::setValue(val); CalculationStatus_ = kCalculated; }
 

@@ -109,11 +109,11 @@ public:
     /// precalculate M2iMG_
     virtual void precalculate() override;
     virtual void finishedPrecalculation() override
-    { M2iMG_.finishedPrecalculation(); }
+    { M2iMG_->finishedPrecalculation(); }
 
 protected:
 
-    CachedValue M2iMG_;                  // mass * mass - i * mass * width
+    std::shared_ptr<ComplexCachedValue> M2iMG_;                  // mass * mass - i * mass * width
 
 };
 

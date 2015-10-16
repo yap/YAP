@@ -273,7 +273,7 @@ void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
     DataAccessor::addSymmetrizationIndex(c);
-    //BlattWeisskopf_->addSymmetrizationIndex(c);
+    BlattWeisskopf_->addSymmetrizationIndex(c);
     SpinAmplitude_->addSymmetrizationIndex(c);
 }
 
@@ -281,7 +281,7 @@ void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombinat
 void DecayChannel::clearSymmetrizationIndices()
 {
     DataAccessor::clearSymmetrizationIndices();
-    //BlattWeisskopf_->clearSymmetrizationIndices();
+    BlattWeisskopf_->clearSymmetrizationIndices();
     SpinAmplitude_->clearSymmetrizationIndices();
 }
 
