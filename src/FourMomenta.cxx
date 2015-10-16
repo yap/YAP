@@ -70,8 +70,6 @@ void FourMomenta::calculate(DataPoint& d)
     M2_.setCalculationStatus(kUncalculated);
     M_.setCalculationStatus(kUncalculated);
 
-    std::vector<CalculationStatus> calculationStatuses(SymmetrizationIndices_.size(), kUncalculated);
-
     for (auto& kv : SymmetrizationIndices_) {
 
         // check if calculation necessary
