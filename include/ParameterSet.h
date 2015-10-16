@@ -34,7 +34,7 @@ namespace yap {
 ///
 /// Manages locking and unlocking of parameters
 
-class ParameterSet : public std::vector<std::shared_ptr<Parameter> >
+class ParameterSet : public std::vector<std::shared_ptr<ComplexParameter> >
 {
 public:
 
@@ -45,7 +45,7 @@ public:
     ParameterSet(std::initializer_list<std::complex<double> > pars)
     {
         for (auto val : pars)
-            push_back(std::make_shared<Parameter>(val));
+            push_back(std::make_shared<ComplexParameter>(val));
     }
 
     /// Constructor for set of #RealParameters with initializer list

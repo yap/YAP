@@ -92,7 +92,7 @@ public:
     const DecayingParticle* parent() const
     { return Parent_; }
 
-    std::shared_ptr<Parameter> freeAmplitude() const
+    std::shared_ptr<ComplexParameter> freeAmplitude() const
     { return FreeAmplitude_; }
 
     /// @}
@@ -135,7 +135,7 @@ protected:
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
-    std::shared_ptr<Parameter> FreeAmplitude_;
+    std::shared_ptr<ComplexParameter> FreeAmplitude_;
 
     std::shared_ptr<RealCachedValue> BreakupMomentum_;
 

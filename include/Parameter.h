@@ -30,22 +30,22 @@
 
 namespace yap {
 
-/// \class Parameter
+/// \class ComplexParameter
 /// \brief Complex Parameter
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Parameters
 
-class Parameter
+class ComplexParameter
 {
 public:
     /// Constructor
-    Parameter(double real = 0, double imag = 0) :
+    ComplexParameter(double real = 0, double imag = 0) :
         ParameterValue_(real, imag),
         VariableStatus_(kChanged)
     {}
 
     /// Constructor
-    Parameter(std::complex<double> val) :
+    ComplexParameter(std::complex<double> val) :
         ParameterValue_(val),
         VariableStatus_(kChanged)
     {}
@@ -96,13 +96,13 @@ protected:
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 
-class RealParameter : public Parameter
+class RealParameter : public ComplexParameter
 {
 public:
 
     /// Constructor
     RealParameter(double real = 0) :
-        Parameter(real * Complex_1)
+        ComplexParameter(real * Complex_1)
     {}
 
     /// Replace & hide #Parameters::value returning double
@@ -115,7 +115,7 @@ public:
 
     /// Overloads & hides #Parameters::setValue taking double argument
     void setValue(double val)
-    { Parameter::setValue(val * Complex_1); }
+    { ComplexParameter::setValue(val * Complex_1); }
 
 };
 

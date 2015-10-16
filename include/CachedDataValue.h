@@ -43,15 +43,15 @@ public:
     /// Constructor
     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    CachedDataValueBase(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
+    CachedDataValueBase(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
                         std::vector<std::shared_ptr<CachedDataValueBase> > CachedDataValuesItDependsOn = {});
 
     /// add Parameters this CachedDataValueBase depends on
-    void addDependencies(std::vector<std::shared_ptr<Parameter> > deps)
+    void addDependencies(std::vector<std::shared_ptr<ComplexParameter> > deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add Parameter this CachedDataValueBase depends on
-    void addDependency(std::shared_ptr<Parameter> dep)
+    void addDependency(std::shared_ptr<ComplexParameter> dep)
     { ParametersItDependsOn_.insert(dep); }
 
     /// add CachedDataValueBase's this CachedDataValueBase depends on
@@ -85,7 +85,7 @@ public:
     { VariableStatus_[symmetrizationIndex][dataPartitionIndex] = stat; }
 
 protected:
-    std::set<std::shared_ptr<Parameter> > ParametersItDependsOn_;
+    std::set<std::shared_ptr<ComplexParameter> > ParametersItDependsOn_;
     std::set<std::shared_ptr<CachedDataValueBase> > CachedDataValuesItDependsOn_;
 
     /// first index is for data partion
@@ -110,7 +110,7 @@ protected:
 //     /// Constructor
 //     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
 //     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-//     RealCachedValue(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn = {},
+//     RealCachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
 //                     std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {})
 //         : CachedValue(ParametersItDependsOn, CachedValuesItDependsOn)
 //     {}

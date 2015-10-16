@@ -5,7 +5,7 @@
 namespace yap {
 
 //-------------------------
-CachedValueBase::CachedValueBase(std::vector<std::shared_ptr<Parameter> > ParametersItDependsOn) :
+CachedValueBase::CachedValueBase(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn) :
     CalculationStatus_(kUncalculated)
 {
     addDependencies(ParametersItDependsOn);
