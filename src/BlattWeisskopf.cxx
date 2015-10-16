@@ -13,12 +13,13 @@ namespace yap {
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     DecayChannel_(decayChannel),
-    Value_(new CachedValue())
+    Value_(new RealCachedValue())
 {
     Value_->addDependency(DecayChannel_->parent()->radialSize());
     Value_->addDependency(DecayChannel_->breakupMomentum());
 }
 
+//-------------------------
 void BlattWeisskopf::precalculate()
 {
     if (Value_->calculationStatus() == kUncalculated) {
@@ -75,7 +76,7 @@ void BlattWeisskopf::precalculate()
             default:
                 LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                            << spinToString(twoL) << ". returning 0." << std::endl;
-                Value_->setValue(Complex_0);
+                Value_->setValue(0);
         }
 
         Value_->setValue(sqrt(bf2));

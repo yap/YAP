@@ -52,7 +52,7 @@ public:
 
     /// Blatt-Weisskopf amplitude at DataPoint
     virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
-    { return Value_->value(); }
+    { return Complex_0; }//Value_->value(); } /// \todo make AmplitudeComponentDataAccessor
 
     virtual void precalculate() override;
     virtual void finishedPrecalculation() override
@@ -64,7 +64,7 @@ private:
     DecayChannel* DecayChannel_;
 
     /// \todo rename
-    std::shared_ptr<CachedValue> Value_;
+    std::shared_ptr<RealCachedValue> Value_;
 
 };
 
