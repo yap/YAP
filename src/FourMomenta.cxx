@@ -10,7 +10,9 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta() :
     DataAccessor(&ParticleCombination::equivByOrderlessContent),
-    InitialStateIndex_(-1)
+    InitialStateIndex_(-1),
+    M2_(this),
+    M_(this)
 {
 }
 
@@ -65,12 +67,15 @@ bool FourMomenta::consistent() const
 //-------------------------
 void FourMomenta::calculate(DataPoint& d)
 {
+    M2_.setCalculationStatus(kUncalculated);
+    M_.setCalculationStatus(kUncalculated);
+
     std::vector<CalculationStatus> calculationStatuses(SymmetrizationIndices_.size(), kUncalculated);
 
     for (auto& kv : SymmetrizationIndices_) {
 
         // check if calculation necessary
-        if (calculationStatuses.at(kv.second) == kCalculated)
+        if (M2_.calculationStatus(kv.second) == kCalculated)
             continue;
 
         // if final state particle, 4-momentum already set; else
@@ -84,11 +89,8 @@ void FourMomenta::calculate(DataPoint& d)
         }
 
         double m2 = d.FourMomenta_.at(kv.second).M2();
-        double m = sqrt(m2);
-
-        std::vector<double>& D = data(d, kv.second);
-        D = {m2, m};
-        calculationStatuses.at(kv.second) = kCalculated;
+        M2_.setValue(m2, d, kv.second);
+        M_.setValue(sqrt(m2), d, kv.second);
     }
 }
 

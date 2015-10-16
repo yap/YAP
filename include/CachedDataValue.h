@@ -23,6 +23,8 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "DataAccessor.h"
+#include "DataPoint.h"
 #include "Parameter.h"
 #include "VariableStatus.h"
 
@@ -32,61 +34,125 @@
 
 namespace yap {
 
-/// \class CachedDataValueBase
+/// \class CachedDataValue
 /// \brief Class for managing cached values inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 
-class CachedDataValueBase
+class CachedDataValue
 {
 public:
     /// Constructor
+    /// \param owner #DataAccessor to which this cached value belongs
+    /// \param size Length of cached value (number of real elements)
     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    CachedDataValueBase(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
-                        std::vector<std::shared_ptr<CachedDataValueBase> > CachedDataValuesItDependsOn = {});
+    CachedDataValue(DataAccessor* owner, unsigned size,
+                    std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
+                    std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {});
 
-    /// add Parameters this CachedDataValueBase depends on
+    /// \name CachedDataValue friends
+    /// @{
+
+    friend class DataAccessor;
+
+    /// @}
+
+    /// add Parameters this CachedDataValue depends on
     void addDependencies(std::vector<std::shared_ptr<ComplexParameter> > deps)
     { for (auto& dep : deps) addDependency(dep); }
 
-    /// add Parameter this CachedDataValueBase depends on
+    /// add Parameter this CachedDataValue depends on
     void addDependency(std::shared_ptr<ComplexParameter> dep)
     { ParametersItDependsOn_.insert(dep); }
 
-    /// add CachedDataValueBase's this CachedDataValueBase depends on
-    void addDependencies(std::vector<std::shared_ptr<CachedDataValueBase> > deps)
+    /// add CachedDataValue's this CachedDataValue depends on
+    void addDependencies(std::vector<std::shared_ptr<CachedDataValue> > deps)
     { for (auto& dep : deps) addDependency(dep); }
 
-    /// add CachedDataValueBase this CachedDataValueBase depends on
-    void addDependency(std::shared_ptr<CachedDataValueBase> dep)
+    /// add CachedDataValue this CachedDataValue depends on
+    void addDependency(std::shared_ptr<CachedDataValue> dep)
     { CachedDataValuesItDependsOn_.insert(dep); }
 
-    /// overload and hide #CachedValueBase::calculationStatus
+    /// \name Getters
+    /// @{
+
+    /// overload and hide #CachedValue::calculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
     /// \todo Use ParticleCombination instead of symmetrization index?
     /// This would allow us to use dependencies from outside the
     /// owning DataAccessor.
-    CalculationStatus calculationStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    CalculationStatus calculationStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
 
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+    VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0) const
     { return VariableStatus_[symmetrizationIndex][dataPartitionIndex]; }
 
+    /// Get value from #DataPoint for particular symmetrization
+    /// \param index index of value to get from within cached value (must be less than #Size_)
+    /// \param d #DataPoint to get value from
+    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \return Value of CachedDataValue inside the data point
+    double value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const
+    { return d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index];}
+
+    /// \return Size of cached value (number of real elements)
+    virtual unsigned size() const
+    { return Size_; }
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+
     /// set VariableStatus for symmetrization index and data-partition index
-    /// \param symmetrizationIndex index of symmetrization to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
     /// \param stat VariableStatus to set to
-    void setVariableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex, VariableStatus stat)
-    { VariableStatus_[symmetrizationIndex][dataPartitionIndex] = stat; }
+    /// \param symmetrizationIndex index of symmetrization to set status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
+    void setVariableStatus(VariableStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    { VariableStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
+
+    /// set all variable statuses
+    /// \param stat VariableStatus to set to
+    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
+    void setVariableStatus(VariableStatus stat, unsigned dataPartitionIndex = 0)
+    { for (VariableStatus& s : VariableStatus_[dataPartitionIndex]) s = stat; }
+
+    /// set CalculationStatus for symmetrization index and data-partition index
+    /// \param stat VariableStatus to set to
+    /// \param symmetrizationIndex index of symmetrization to set status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
+    void setCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    { CalculationStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
+
+    /// set all calculation statuses
+    /// \param stat CalculationStatus to set to
+    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
+    void setCalculationStatus(CalculationStatus stat, unsigned dataPartitionIndex = 0)
+    { for (CalculationStatus& s : CalculationStatus_[dataPartitionIndex]) s = stat; }
+
+    /// Set value into #DataPoint for particular symmetrization
+    /// (No update to VariableStatus or CalculationStatus is made!)
+    /// \param index index of value to get from within cached value (must be less than #Size_)
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    void setValue(unsigned index, double val, DataPoint& d, unsigned symmetrizationIndex) const
+    { d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index] = val; }
+
+    /// @}
 
 protected:
+    DataAccessor* Owner_;       ///< Owning #DataAccessor
+    int Position_;              ///< Position of first element of cached value within data vector
+    unsigned Size_;             ///< Size of cached value (number of real elements)
+
     std::set<std::shared_ptr<ComplexParameter> > ParametersItDependsOn_;
-    std::set<std::shared_ptr<CachedDataValueBase> > CachedDataValuesItDependsOn_;
+    std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn_;
 
     /// first index is for data partion
     /// second index is for symmetrization
@@ -96,37 +162,93 @@ protected:
     /// second index is for symmetrization
     std::vector<std::vector<VariableStatus> > VariableStatus_;
 
+    /// resize status vectors for number of symmetrizations
+    void setNumberOfSymmetrizations(unsigned n);
+
+    /// resize status vectors for number of data partitions
+    void setNumberOfDataPartitions(unsigned n);
+
 };
 
-// /// \class RealCachedValue
-// /// \brief extension of #CachedValue for a real numbers
-// /// \author Johannes Rauch, Daniel Greenwald
-// /// \ingroup Parameters
+/// \class RealCachedValue
+/// \brief Class for managing a single real cached value inside a #DataPoint
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
 
-// class RealCachedValue : public CachedValue
-// {
-// public:
+class RealCachedDataValue : public CachedDataValue
+{
+public:
 
-//     /// Constructor
-//     /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-//     /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-//     RealCachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
-//                     std::vector<std::shared_ptr<CachedValueBase> > CachedValuesItDependsOn = {})
-//         : CachedValue(ParametersItDependsOn, CachedValuesItDependsOn)
-//     {}
+    /// Constructor
+    /// \param owner #DataAccessor to which this cached value belongs
+    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
+    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
+    RealCachedDataValue(DataAccessor* owner,
+                        std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
+                        std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
+        : CachedDataValue(owner, 1, ParametersItDependsOn, CachedDataValuesItDependsOn)
+    {}
 
-//     /// Replaces & hides #CachedValue::value with return type double
-//     const double value() const
-//     { return real(CachedValue_); }
+    /// Set value into #DataPoint for particular symmetrization, and
+    /// update VariableStatus for symm. and partition index
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    /// \param dataPartitionIndex index of data partition being worked on
+    void setValue(double val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
 
-//     /// get number of real components in cached value (real number = 1 real components)
-//     const unsigned size() const
-//     { return 1; }
+    /// Get value from #DataPoint for particular symmetrization
+    /// \param d #DataPoint to get value from
+    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \return Value of CachedDataValue inside the data point
+    double value(const DataPoint& d, unsigned  symmetrizationIndex) const
+    { return CachedDataValue::value(0, d, symmetrizationIndex); }
+};
 
-//     /// Overloading & hides #CachedValue::setValue with argument double
-//     void setValue(double val)
-//     { CachedValue::setValue(val * Complex_1); }
-// };
+/// \class ComplexCachedValue
+/// \brief Class for managing a complex cached value inside a #DataPoint
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
+
+class ComplexCachedDataValue : public CachedDataValue
+{
+public:
+
+    /// Constructor
+    /// \param owner #DataAccessor to which this cached value belongs
+    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
+    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
+    ComplexCachedDataValue(DataAccessor* owner,
+                           std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
+                           std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
+        : CachedDataValue(owner, 2, ParametersItDependsOn, CachedDataValuesItDependsOn)
+    {}
+
+    /// Set value into #DataPoint for particular symmetrization, and
+    /// update VariableStatus for symm. and partition index
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    /// \param dataPartitionIndex index of data partition being worked on
+    void setValue(std::complex<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    { setValue(real(val), imag(val), d, symmetrizationIndex, dataPartitionIndex); }
+
+    /// Set value into #DataPoint for particular symmetrization, and
+    /// update VariableStatus for symm. and partition index
+    /// \param val_re real part of value to set to
+    /// \param val_im imaginary part of value to set to
+    /// \param d #DataPoint to update
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    /// \param dataPartitionIndex index of data partition being worked on
+    void setValue(double val_re, double val_im, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
+
+    /// Get value from #DataPoint for particular symmetrization
+    /// \param d #DataPoint to get value from
+    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \return Value of CachedDataValue inside the data point
+    std::complex<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
+    { return std::complex<double>(CachedDataValue::value(0, d, symmetrizationIndex), CachedDataValue::value(1, d, symmetrizationIndex)); }
+};
 
 }
 

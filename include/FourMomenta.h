@@ -21,6 +21,7 @@
 #ifndef yap_FourMomenta_
 #define yap_FourMomenta_
 
+#include "CachedDataValue.h"
 #include "DataAccessor.h"
 
 #include <TLorentzVector.h>
@@ -68,13 +69,13 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
     double m2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
-    { return data(d, SymmetrizationIndices_.at(pc)).at(0); }
+    { return M2_.value(d, SymmetrizationIndices_.at(pc)); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc)
-    { return data(d, SymmetrizationIndices_.at(pc)).at(1); }
+    { return M_.value(d, SymmetrizationIndices_.at(pc)); }
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
@@ -85,6 +86,12 @@ protected:
 
     /// Symmetrization index of initial state
     int InitialStateIndex_;
+
+    /// squared mass [GeV^2]
+    RealCachedDataValue M2_;
+
+    /// mass [GeV]
+    RealCachedDataValue M_;
 
 };
 

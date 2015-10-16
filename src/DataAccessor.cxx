@@ -10,6 +10,7 @@ namespace yap {
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
     InitialStateParticle_(nullptr),
     Equiv_(equiv),
+    Size_(0),
     Index_(0)
 {
     // index is set later by InitialStateParticle::setDataAcessorIndices()
@@ -21,6 +22,7 @@ DataAccessor::DataAccessor(const DataAccessor& other) :
     InitialStateParticle_(nullptr),
     Equiv_(other.Equiv_),
     SymmetrizationIndices_(other.SymmetrizationIndices_),
+    Size_(other.Size_),
     Index_(0)
 {
     setInitialStateParticle(other.InitialStateParticle_);
@@ -103,7 +105,10 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombinat
         }
 
     // else assign to current size = highest current index + 1
-    SymmetrizationIndices_[c] = maxSymmetrizationIndex() + 1;
+    unsigned size = maxSymmetrizationIndex() + 1;
+    SymmetrizationIndices_[c] = size;
+    for (CachedDataValue* d : CachedDataValues_)
+        d->setNumberOfSymmetrizations(size);
 }
 
 //-------------------------

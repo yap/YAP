@@ -38,10 +38,14 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles
     for (auto& helAngles : HelicityAngles_)
         helAngles = {0, 0};
 
+    // allocate space in vectors
+    Data_.resize(dataAccessors.size());
     CachedAmplitudes_.resize(dataAccessors.size());
 
-    for (DataAccessor* d : dataAccessors)
-        CachedAmplitudes_.at(d->index()).assign(d->maxSymmetrizationIndex() + 1, Complex_0);
+    for (DataAccessor* d : dataAccessors) {
+        Data_[d->index()].assign(d->maxSymmetrizationIndex() + 1, std::vector<double>(d->size()));
+        CachedAmplitudes_[d->index()].assign(d->maxSymmetrizationIndex() + 1, Complex_0);
+    }
 }
 
 //-------------------------

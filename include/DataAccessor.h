@@ -32,6 +32,7 @@
 
 namespace yap {
 
+class CachedDataValue;
 class InitialStateParticle;
 
 /// \name DataAccessor
@@ -50,6 +51,7 @@ public:
     DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
     /// Copy constructor
+    /// \todo Do we need a DataAccessor copy constructor? (Currently copies size, but not CachedDataValue's)
     DataAccessor(const DataAccessor& other);
 
     /// Destructor
@@ -82,8 +84,21 @@ public:
 
     /// @}
 
+    /// \return size of storage in data point (number of real values)
+    unsigned size() const
+    { return Size_; }
+
+    /// Increase storage
+    /// \param n number of elements to increase by
+    void increaseSize(unsigned n)
+    { Size_ += n; }
+
     /// Check consistency of object
     bool consistent() const;
+
+    /// add CachedDataValue
+    void addCachedDataValue(CachedDataValue* c)
+    { CachedDataValues_.push_back(c); }
 
     /// \name Symmetrization functions
     /// @{
@@ -167,6 +182,11 @@ ParticleCombination::Equiv* Equiv_;
 
 /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
 std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
+
+std::vector<CachedDataValue*> CachedDataValues_;
+
+/// number of real values stored per symm. index
+unsigned Size_;
 
 private:
 

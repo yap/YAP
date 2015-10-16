@@ -30,6 +30,7 @@
 
 namespace yap {
 
+class CachedDataValue;
 class DataAccessor;
 class FourMomenta;
 class HelicityAngles;
@@ -67,6 +68,7 @@ public:
     friend class DataAccessor;
     friend class DataPartition;
     friend class DataSet;
+    friend class CachedDataValue;
 
     /// reserve space in vectors
     void allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
