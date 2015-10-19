@@ -26,6 +26,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     BlattWeisskopf_(nullptr), // see comment below!
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
+    FixedAmplitude_(new CachedDataValue(this, {})),
     BreakupMomentum_(new RealCachedValue())
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
@@ -36,6 +37,9 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     BreakupMomentum_->addDependency(Parent_->mass());
     for (auto& d : Daughters_)
         BreakupMomentum_->addDependency(d->mass());
+
+    /// \todo set all other dependencies
+
 
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;

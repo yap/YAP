@@ -34,6 +34,7 @@ class CachedDataValue;
 class DataAccessor;
 class FourMomenta;
 class HelicityAngles;
+class MeasuredBreakupMomenta;
 class ParticleCombination;
 
 /// \class DataPoint
@@ -63,15 +64,16 @@ public:
     /// \name Data accessor friends
     /// @{
 
-    friend class FourMomenta;
-    friend class HelicityAngles;
+    friend class CachedDataValue;
     friend class DataAccessor;
     friend class DataPartition;
     friend class DataSet;
-    friend class CachedDataValue;
+    friend class FourMomenta;
+    friend class HelicityAngles;
+    friend class MeasuredBreakupMomenta;
 
     /// reserve space in vectors
-    void allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
+    void allocateStorage(const FourMomenta& fourMom, const MeasuredBreakupMomenta& breakupMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
 
     /// @}
 
@@ -79,6 +81,10 @@ protected:
 
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
+
+    /// Measured breakup momenta
+    /// index is for the symmeterization state (as known by the InitialStateParticle)
+    std::vector<double> MeasuredBreakupMomenta_;
 
     /// Helicity angles phi and theta
     /// first index is for the symmeterization state (as known by the InitialStateParticle)

@@ -22,6 +22,7 @@ set(YAP_SOURCES
 	HelicitySpinAmplitude.cxx
 	InitialStateParticle.cxx
 	MassShape.cxx
+	MeasuredBreakupMomenta.cxx
 	ParticleCombination.cxx
 	Particle.cxx
 	ParticleFactory.cxx

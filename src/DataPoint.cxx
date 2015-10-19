@@ -4,6 +4,7 @@
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "logging.h"
+#include "MeasuredBreakupMomenta.h"
 
 #include <assert.h>
 #include <iostream>
@@ -29,10 +30,11 @@ bool DataPoint::setFourMomenta(const std::vector<TLorentzVector>& fourMomenta)
 }
 
 //-------------------------
-void DataPoint::allocateStorage(const FourMomenta& fourMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors)
+void DataPoint::allocateStorage(const FourMomenta& fourMom, const MeasuredBreakupMomenta& breakupMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors)
 {
     FourMomenta_.resize(fourMom.maxSymmetrizationIndex() + 1);
     HelicityAngles_.resize(helAngles.maxSymmetrizationIndex() + 1);
+    MeasuredBreakupMomenta_.resize(breakupMom.maxSymmetrizationIndex() + 1);
 
     // initialize helicity angles
     for (auto& helAngles : HelicityAngles_)
@@ -55,14 +57,19 @@ void DataPoint::printDataSize()
 
     unsigned size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
-    std::cout << "  Size of FourMomenta_:         " << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
+    std::cout << "  Size of FourMomenta_:            " << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
+
+    size = sizeof(MeasuredBreakupMomenta_);
+    size += MeasuredBreakupMomenta_.size() * sizeof(double);
+    std::cout << "+ Size of MeasuredBreakupMomenta_: " << size << " byte  \tNumber of Indices: " << MeasuredBreakupMomenta_.size() << "\n";
+    totSize += size;
 
     size = sizeof(HelicityAngles_);
     for (std::vector<double>& v : HelicityAngles_) {
         size += sizeof(v);
         size += v.size() * sizeof(double);
     }
-    std::cout << "+ Size of HelicityAngles_:      " << size << " byte  \tNumber of Indices: " << HelicityAngles_.size() << "\n";
+    std::cout << "+ Size of HelicityAngles_:         " << size << " byte  \tNumber of Indices: " << HelicityAngles_.size() << "\n";
     totSize += size;
 
     size = sizeof(Data_);
@@ -73,7 +80,7 @@ void DataPoint::printDataSize()
             size += vv.size() * sizeof(double);
         }
     }
-    std::cout << "+ Size of Data_:                " << size << " byte  \tNumber of Indices: " << Data_.size() << "\n";
+    std::cout << "+ Size of Data_:                   " << size << " byte  \tNumber of Indices: " << Data_.size() << "\n";
     totSize += size;
 
     size = sizeof(CachedAmplitudes_);
@@ -81,10 +88,10 @@ void DataPoint::printDataSize()
         size += sizeof(v);
         size += v.size() * sizeof(std::complex<double>);
     }
-    std::cout << "+ Size of CachedAmplitudes_:    " << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
+    std::cout << "+ Size of CachedAmplitudes_:       " << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
     totSize += size;
 
-    std::cout << "= Size of DataPoint:            " << totSize << " byte\n";
+    std::cout << "= Size of DataPoint:               " << totSize << " byte\n";
 }
 
 }

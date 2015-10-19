@@ -293,6 +293,7 @@ ParticleCombination::EquivUpButLambda ParticleCombination::equivUpButLambda;
 ParticleCombination::EquivUpAndDownButLambda ParticleCombination::equivUpAndDownButLambda;
 ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
 ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
+ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
 
 //-------------------------
 bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
@@ -431,6 +432,36 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<co
     std::set<ParticleIndex> b(B->indices().begin(), B->indices().end());
 
     return std::equal(a.begin(), a.end(), b.begin());
+}
+
+//-------------------------
+bool ParticleCombination::EquivDownByOrderlessContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+{
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    if (!ParticleCombination::equivByOrderlessContent(A, B))
+        return false;
+
+    // Check daughters
+    if (A->daughters().size() != B->daughters().size()) {
+        return false;
+    }
+
+    unsigned matches(0);
+    for (unsigned i = 0; i < A->daughters().size(); ++i)
+        for (unsigned j = 0; j < B->daughters().size(); ++j)
+            if (ParticleCombination::equivByOrderlessContent(A->daughters()[i], B->daughters()[j])) {
+                ++matches;
+                break;
+            }
+
+    if (matches == A->daughters().size())
+        // a match!
+        return true;
+
+    return false;
 }
 
 }

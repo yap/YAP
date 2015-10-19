@@ -15,10 +15,13 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     FourMomenta_(),
+    MeasuredBreakupMomenta_(),
     HelicityAngles_()
 {
     setInitialStateParticle(this);
+
     FourMomenta_.setInitialStateParticle(this);
+    MeasuredBreakupMomenta_.setInitialStateParticle(this);
     HelicityAngles_.setInitialStateParticle(this);
 
     addDataAccessor(this);
@@ -109,12 +112,14 @@ bool InitialStateParticle::prepare()
         }
     }
 
-    // add particle combinations to FourMomenta_ and HelicityAngles_
+    // add particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
         FourMomenta_.addSymmetrizationIndex(pc);
 
-        if (pc->indices().size() > 1)
+        if (pc->indices().size() > 1) {
             HelicityAngles_.addSymmetrizationIndex(pc);
+            MeasuredBreakupMomenta_.addSymmetrizationIndex(pc);
+        }
     }
 
     FourMomenta_.findInitialStateParticle();
@@ -200,6 +205,7 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
         return false;
 
     FourMomenta_.calculate(d);
+    MeasuredBreakupMomenta_.calculate(d);
     HelicityAngles_.calculate(d);
 
     if (!DataSet_.consistent(d))
@@ -219,9 +225,10 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
         return false;
     }
 
-    d.allocateStorage(FourMomenta_, HelicityAngles_, DataAccessors_);
+    d.allocateStorage(FourMomenta_, MeasuredBreakupMomenta_, HelicityAngles_, DataAccessors_);
 
     FourMomenta_.calculate(d);
+    MeasuredBreakupMomenta_.calculate(d);
     HelicityAngles_.calculate(d);
 
     /*for (auto& pc : FourMomenta_.particleCombinations()) {

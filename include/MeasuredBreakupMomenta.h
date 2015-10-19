@@ -18,57 +18,43 @@
 
 /// \file
 
-#ifndef yap_HelicityAngles_h
-#define yap_HelicityAngles_h
+#ifndef yap_MeasuredBreakupMomenta_h
+#define yap_MeasuredBreakupMomenta_h
 
 #include "DataAccessor.h"
 
-#include <TLorentzVector.h>
-
 namespace yap {
 
-/// \class HelicityAngles
-/// \brief Calculates, stores and gives access to helicity angles
+/// \class MeasuredBreakupMomenta
+/// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
 
-class HelicityAngles : public DataAccessor
+class MeasuredBreakupMomenta : public DataAccessor
 {
 public:
 
     /// Constructor
-    HelicityAngles();
+    MeasuredBreakupMomenta();
 
-    /// Calculate helicity angles for all possible symmetrization indices
+    /// Calculate breakup momenta for all possible symmetrization indices
     void calculate(DataPoint& d);
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override
     { InitialStateParticle_ = isp; }
 
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
-
-    /// Access helicity angles (const)
+    /// Access breakup momenta
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access
-    const std::vector<double>& helicityAngles(const DataPoint& d, unsigned i) const
-    { return d.HelicityAngles_.at(i); }
+    double measuredBreakupMomentum(const DataPoint& d, unsigned i) const
+    { return d.MeasuredBreakupMomenta_.at(i); }
 
-    /// Access helicity angles (const)
+    /// Access breakup momenta
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
-    const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return helicityAngles(d, SymmetrizationIndices_.at(pc)); }
-
-//protected:
-
-    /// Caclulate Lorentz-transformation for helicity frame
-    TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
-
-    /// Transform daughters to helicity frame and calculate helicity angles
-    /// Calls this funciton recursively
-    void transformDaughters(DataPoint& d, std::shared_ptr<const ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
+    double measuredBreakupMomentum(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return measuredBreakupMomentum(d, SymmetrizationIndices_.at(pc)); }
 
 };
 

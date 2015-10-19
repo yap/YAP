@@ -26,6 +26,7 @@
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
+#include "MeasuredBreakupMomenta.h"
 
 #include <complex>
 #include <memory>
@@ -76,6 +77,12 @@ public:
 
     const FourMomenta& fourMomenta() const
     { return FourMomenta_; }
+
+    MeasuredBreakupMomenta& measuredBreakupMomenta()
+    { return MeasuredBreakupMomenta_; }
+
+    const MeasuredBreakupMomenta& measuredBreakupMomenta() const
+    { return MeasuredBreakupMomenta_; }
 
     HelicityAngles& helicityAngles()
     { return HelicityAngles_; }
@@ -152,6 +159,9 @@ private:
 
     /// four momenta manager
     FourMomenta FourMomenta_;
+
+    /// Breakup momenta manager
+    MeasuredBreakupMomenta MeasuredBreakupMomenta_;
 
     /// helicity angles manager
     HelicityAngles HelicityAngles_;

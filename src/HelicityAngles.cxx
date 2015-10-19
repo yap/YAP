@@ -13,13 +13,6 @@ namespace yap {
 HelicityAngles::HelicityAngles() :
     DataAccessor(&ParticleCombination::equivUpAndDownButLambda)
 {
-
-}
-
-//-------------------------
-void HelicityAngles::setInitialStateParticle(InitialStateParticle* isp)
-{
-    InitialStateParticle_ = isp;
 }
 
 //-------------------------
@@ -58,12 +51,6 @@ void HelicityAngles::calculate(DataPoint& d)
         transformDaughters(d, pc, finalStatesHf);
     }
 
-}
-
-//-------------------------
-const std::vector<double>& HelicityAngles::helicityAngles(const DataPoint& d, unsigned i) const
-{
-    return d.HelicityAngles_.at(i);
 }
 
 //-------------------------
