@@ -265,12 +265,13 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 {
     AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
+    SpinAmplitude_->setInitialStateParticle(initialStateParticle());
+    BlattWeisskopf_->setInitialStateParticle(initialStateParticle());
+
     // hand ISP to daughters
     for (auto d : Daughters_)
         if (std::dynamic_pointer_cast<DecayingParticle>(d))
             std::static_pointer_cast<DecayingParticle>(d)->setInitialStateParticle(initialStateParticle());
-    // and to SpinAmplitude
-    SpinAmplitude_->setInitialStateParticle(initialStateParticle());
 }
 
 //-------------------------

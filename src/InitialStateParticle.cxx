@@ -18,13 +18,11 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     MeasuredBreakupMomenta_(),
     HelicityAngles_()
 {
-    setInitialStateParticle(this);
-
     FourMomenta_.setInitialStateParticle(this);
     MeasuredBreakupMomenta_.setInitialStateParticle(this);
     HelicityAngles_.setInitialStateParticle(this);
 
-    addDataAccessor(this);
+    setInitialStateParticle(this);
 }
 
 //-------------------------
@@ -259,7 +257,7 @@ bool InitialStateParticle::addDataPoint(const DataPoint& d)
 }
 
 //-------------------------
-void InitialStateParticle::printDataAccessors()
+void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 {
     std::cout << "DataAccessors of " << name() << "\n"
               << "index \tnSymIndices \taddress  \tname  \t\tparticleCombinations\n";
@@ -272,10 +270,13 @@ void InitialStateParticle::printDataAccessors()
         else if (dynamic_cast<DecayChannel*>(d))
             std::cout << std::string(*dynamic_cast<DecayChannel*>(d));
 
-        std::cout << " \t";
+        if (printParticleCombinations) {
+            std::cout << " \t";
 
-        for (auto& pc : d->particleCombinations())
-            std::cout << std::string(*pc) << ";  ";
+            for (auto& pc : d->particleCombinations())
+                std::cout << std::string(*pc) << ";  ";
+        }
+
         std::cout << "\n";
     }
     std::cout << std::endl;

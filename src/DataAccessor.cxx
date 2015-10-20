@@ -134,7 +134,7 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
 {
     InitialStateParticle_ = isp;
-    if (InitialStateParticle_ and this != InitialStateParticle_)
+    if (InitialStateParticle_)
         InitialStateParticle_->addDataAccessor(this);
 }
 

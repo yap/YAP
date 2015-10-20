@@ -116,7 +116,7 @@ public:
     /// \return Success of action
     bool addDataPoint(const DataPoint& d);
 
-    void printDataAccessors();
+    void printDataAccessors(bool printParticleCombinations = true);
 
 private:
 

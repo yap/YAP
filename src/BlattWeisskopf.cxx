@@ -12,7 +12,7 @@ namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
-    AmplitudeComponentDataAccessor(&ParticleCombination::equivByOrderlessContent),
+    AmplitudeComponentDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     DecayChannel_(decayChannel),
     Value_(new RealCachedValue())
 {

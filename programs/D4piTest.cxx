@@ -94,7 +94,7 @@ int main( int argc, char** argv)
     std::cout << "\n";
 
     D->printSpinAmplitudes();
-    D->printDataAccessors();
+    D->printDataAccessors(false);
 
 
 
