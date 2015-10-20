@@ -30,7 +30,7 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
 }
 
 //-------------------------
-CalculationStatus CachedDataValue::calculationStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+CalculationStatus CachedDataValue::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
     // if uncalculated, return without further checking
     if (CalculationStatus_[dataPartitionIndex][symmetrizationIndex] == kUncalculated)
@@ -38,8 +38,11 @@ CalculationStatus CachedDataValue::calculationStatus(unsigned symmetrizationInde
 
     // else check if any dependencies are changed
     for (auto& c : CachedDataValuesItDependsOn_) {
-        if (c->variableStatus(symmetrizationIndex, dataPartitionIndex) == kChanged) {
-            // if so, update to uncalculated and return
+        // get symmetrization index for particular cached data value,
+        // checking if owner is different and grabbing if needed
+        unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
+        if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
+            // if dependency has changed, update to uncalculated and return
             setCalculationStatus(kUncalculated, symmetrizationIndex, dataPartitionIndex);
             return kUncalculated;
         }

@@ -27,7 +27,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
     FixedAmplitude_(new CachedDataValue(this, {})),
-    NominalBreakupMomentum_(new RealCachedValue())
+                NominalBreakupMomentum_(new RealCachedValue())
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));

@@ -26,10 +26,12 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Parameter.h"
+#include "ParticleCombination.h"
 #include "VariableStatus.h"
 
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 namespace yap {
@@ -77,14 +79,29 @@ public:
     /// \name Getters
     /// @{
 
+    DataAccessor* owner() const
+    { return Owner_; }
+
     /// overload and hide #CachedValue::calculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    /// \todo Use ParticleCombination instead of symmetrization index?
-    /// This would allow us to use dependencies from outside the
-    /// owning DataAccessor.
-    CalculationStatus calculationStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
+    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
+
+    /// overload and hide #CachedValue::calculationStatus
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc_symInd pair of shared pointer to #ParticleCombination and symmetrization index
+    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
+    CalculationStatus calculationStatus(std::pair<std::shared_ptr<const ParticleCombination>, unsigned> pc_symInd, unsigned dataPartitionIndex = 0)
+    { return calculationStatus(pc_symInd.first, pc_symInd.second, dataPartitionIndex); }
+
+    /// overload and hide #CachedValue::calculationStatus
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc shared pointer to #ParticleCombination to check status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
+    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned dataPartitionIndex = 0)
+    { return calculationStatus(pc, Owner_->symmetrizationIndex(pc), dataPartitionIndex); }
 
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
