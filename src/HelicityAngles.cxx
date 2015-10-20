@@ -11,7 +11,8 @@ namespace yap {
 
 //-------------------------
 HelicityAngles::HelicityAngles() :
-    DataAccessor(&ParticleCombination::equivUpAndDownButLambda)
+    DataAccessor(&ParticleCombination::equivUpAndDownButLambda),
+    HelicityAngles_(this, 2)
 {
 }
 
@@ -29,6 +30,8 @@ void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<const ParticleCombin
 //-------------------------
 void HelicityAngles::calculate(DataPoint& d)
 {
+    HelicityAngles_.setCalculationStatus(kUncalculated);
+
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)
         LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
 
@@ -94,7 +97,8 @@ void HelicityAngles::transformDaughters(DataPoint& d,
 
         double phi = daughter.Phi();
         double theta = daughter.Theta();
-        d.HelicityAngles_.at(symmetrizationIndex(daugh)) = {phi, theta};
+        HelicityAngles_.setValue(0, phi,   d, symmetrizationIndex(daugh));
+        HelicityAngles_.setValue(1, theta, d, symmetrizationIndex(daugh));
 
         /*DEBUG(std::string(*daugh) << " helicity angles (phi, theta) = ("
               << d.HelicityAngles_.at(symmetrizationIndex(daugh))[0] << ", "

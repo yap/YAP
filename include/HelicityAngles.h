@@ -21,6 +21,7 @@
 #ifndef yap_HelicityAngles_h
 #define yap_HelicityAngles_h
 
+#include "CachedDataValue.h"
 #include "DataAccessor.h"
 
 #include <TLorentzVector.h>
@@ -42,24 +43,20 @@ public:
     /// Calculate helicity angles for all possible symmetrization indices
     void calculate(DataPoint& d);
 
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override
-    { InitialStateParticle_ = isp; }
-
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     /// Access helicity angles (const)
     /// \param d DataPoint to get data from
-    /// \param i Symmetrization index to access
-    const std::vector<double>& helicityAngles(const DataPoint& d, unsigned i) const
-    { return d.HelicityAngles_.at(i); }
+    /// \param pc ParticleCombination to return helicity angles of
+    double phi(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return HelicityAngles_.value(0, d, SymmetrizationIndices_.at(pc)); }
 
     /// Access helicity angles (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
-    const std::vector<double>& helicityAngles(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return helicityAngles(d, SymmetrizationIndices_.at(pc)); }
+    double theta(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return HelicityAngles_.value(1, d, SymmetrizationIndices_.at(pc)); }
 
 //protected:
 
@@ -70,6 +67,10 @@ public:
     /// Calls this funciton recursively
     void transformDaughters(DataPoint& d, std::shared_ptr<const ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
 
+protected:
+
+    /// Helicity angles phi and theta
+    CachedDataValue HelicityAngles_;
 };
 
 }

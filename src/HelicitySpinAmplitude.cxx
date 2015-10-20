@@ -46,9 +46,8 @@ std::complex<double> HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std:
         const int lambda2 = pc->daughters()[1]->twoLambda();
         const int lambda  = lambda1 - lambda2;
 
-        const std::vector<double>& helAngles = initialStateParticle()->helicityAngles().helicityAngles(d.dataPoint(), pc);
-        const double phi   = helAngles.at(0);  // use daughter1 as analyzer
-        const double theta = helAngles.at(1);
+        const double phi   = initialStateParticle()->helicityAngles().phi(d.dataPoint(), pc);
+        const double theta = initialStateParticle()->helicityAngles().theta(d.dataPoint(), pc);
 
         a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
     }

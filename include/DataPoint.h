@@ -73,7 +73,7 @@ public:
     friend class MeasuredBreakupMomenta;
 
     /// reserve space in vectors
-    void allocateStorage(const FourMomenta& fourMom, const MeasuredBreakupMomenta& breakupMom, const HelicityAngles& helAngles, const std::set<DataAccessor*> dataAccessors);
+    void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
 
     /// @}
 
@@ -81,11 +81,6 @@ protected:
 
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
-
-    /// Helicity angles phi and theta
-    /// first index is for the symmeterization state (as known by the InitialStateParticle)
-    /// second index is for [phi, theta]
-    std::vector<std::vector<double> > HelicityAngles_;
 
     /// Data storage for all DataAccessors
 

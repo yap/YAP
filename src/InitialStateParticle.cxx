@@ -225,7 +225,7 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
         return false;
     }
 
-    d.allocateStorage(FourMomenta_, MeasuredBreakupMomenta_, HelicityAngles_, DataAccessors_);
+    d.allocateStorage(FourMomenta_, DataAccessors_);
 
     FourMomenta_.calculate(d);
     MeasuredBreakupMomenta_.calculate(d);
