@@ -92,10 +92,5 @@ void FourMomenta::calculate(DataPoint& d)
     }
 }
 
-//-------------------------
-const TLorentzVector& FourMomenta::p(const DataPoint& d, unsigned i) const
-{
-    return d.FourMomenta_.at(i);
-}
 
 }

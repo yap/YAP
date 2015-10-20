@@ -21,6 +21,7 @@
 #ifndef yap_MeasuredBreakupMomenta_h
 #define yap_MeasuredBreakupMomenta_h
 
+#include "CachedDataValue.h"
 #include "DataAccessor.h"
 
 namespace yap {
@@ -40,34 +41,22 @@ public:
     /// Calculate breakup momenta for all possible symmetrization indices
     void calculate(DataPoint& d);
 
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override
-    { InitialStateParticle_ = isp; }
-
-    /// Access squared breakup momenta
+    /// Access squared breakup momentum
     /// \param d DataPoint to get data from
-    /// \param i Symmetrization index to access
-    double p2(const DataPoint& d, unsigned i) const
-    { return d.MeasuredBreakupMomenta2_.at(i); }
-
-    /// Access squared breakup momenta
-    /// \param d DataPoint to get data from
-    /// \param pc ParticleCombination to return helicity angles of
+    /// \param pc ParticleCombination to return breakup momentum of
     double p2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return p2(d, SymmetrizationIndices_.at(pc)); }
+    { return Q2_.value(d, SymmetrizationIndices_.at(pc)); }
 
-    /// Access breakup momenta
+    /// Access breakup momentum
     /// \param d DataPoint to get data from
-    /// \param i Symmetrization index to access
-    double p(const DataPoint& d, unsigned i) const
-    { return sqrt(d.MeasuredBreakupMomenta2_.at(i)); }
-
-    /// Access breakup momenta
-    /// \param d DataPoint to get data from
-    /// \param pc ParticleCombination to return helicity angles of
+    /// \param pc ParticleCombination to return breakup momentum of
     double p(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return p(d, SymmetrizationIndices_.at(pc)); }
+    { return sqrt(p2(d, pc)); }
 
+protected:
+
+    /// squared breakup momentum [GeV^2]
+    RealCachedDataValue Q2_;
 };
 
 }

@@ -34,7 +34,6 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const MeasuredBreaku
 {
     FourMomenta_.resize(fourMom.maxSymmetrizationIndex() + 1);
     HelicityAngles_.resize(helAngles.maxSymmetrizationIndex() + 1);
-    MeasuredBreakupMomenta2_.resize(breakupMom.maxSymmetrizationIndex() + 1);
 
     // initialize helicity angles
     for (auto& helAngles : HelicityAngles_)
@@ -58,11 +57,6 @@ void DataPoint::printDataSize()
     unsigned size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
     std::cout << "  Size of FourMomenta_:             " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
-
-    size = sizeof(MeasuredBreakupMomenta2_);
-    size += MeasuredBreakupMomenta2_.size() * sizeof(double);
-    std::cout << "+ Size of MeasuredBreakupMomenta2_: " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << MeasuredBreakupMomenta2_.size() << "\n";
-    totSize += size;
 
     size = sizeof(HelicityAngles_);
     for (std::vector<double>& v : HelicityAngles_) {

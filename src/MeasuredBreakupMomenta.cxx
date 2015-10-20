@@ -12,18 +12,20 @@ namespace yap {
 
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta() :
-    DataAccessor(&ParticleCombination::equivDownByOrderlessContent)
+    DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
+    Q2_(this)
 {
 }
 
 //-------------------------
 void MeasuredBreakupMomenta::calculate(DataPoint& d)
 {
-    std::set<unsigned> alreadyCalculated;
+    Q2_.setCalculationStatus(kUncalculated);
 
     for (auto& kv : SymmetrizationIndices_) {
 
-        if (alreadyCalculated.find(kv.second) != alreadyCalculated.end())
+        // check if calculation necessary
+        if (Q2_.calculationStatus(kv) == kCalculated)
             continue;
 
         if (kv.first->daughters().size() != 2) {
@@ -36,8 +38,9 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
         double m_a  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
         double m_b  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
 
-        d.MeasuredBreakupMomenta2_.at(kv.second) = (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.;
-        alreadyCalculated.insert(kv.second);
+        double q2 = (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.;
+
+        Q2_.setValue(q2, d, kv.second);
     }
 }
 

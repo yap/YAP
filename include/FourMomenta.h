@@ -57,7 +57,8 @@ public:
     /// Access 4-momentum (const)
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access
-    const TLorentzVector& p(const DataPoint& d, unsigned i) const;
+    const TLorentzVector& p(const DataPoint& d, unsigned i) const
+    { return d.FourMomenta_.at(i); }
 
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
