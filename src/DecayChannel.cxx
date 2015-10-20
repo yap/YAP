@@ -27,16 +27,16 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
     FixedAmplitude_(new CachedDataValue(this, {})),
-    BreakupMomentum_(new RealCachedValue())
+    NominalBreakupMomentum_(new RealCachedValue())
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
     BlattWeisskopf_.swap(bw);
 
-    // BreakupMomentum_ dependencies
-    BreakupMomentum_->addDependency(Parent_->mass());
+    // NominalBreakupMomentum_ dependencies
+    NominalBreakupMomentum_->addDependency(Parent_->mass());
     for (auto& d : Daughters_)
-        BreakupMomentum_->addDependency(d->mass());
+        NominalBreakupMomentum_->addDependency(d->mass());
 
     /// \todo set all other dependencies
 
@@ -202,10 +202,10 @@ bool DecayChannel::consistent() const
 //-------------------------
 std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum()
 {
-    if (BreakupMomentum_->calculationStatus() == kUncalculated) {
+    if (NominalBreakupMomentum_->calculationStatus() == kUncalculated) {
         if (Daughters_.size() != 2) {
             LOG(FATAL) << "DecayChannel::breakupMomentum() - wrong number of daughters (" << Daughters_.size() << " != 2). Cannot calculate!";
-            BreakupMomentum_->setValue(std::numeric_limits<double>::quiet_NaN());
+            NominalBreakupMomentum_->setValue(std::numeric_limits<double>::quiet_NaN());
         }
 
         /// \todo take masses from mass shape instead?
@@ -215,13 +215,13 @@ std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum()
         double m_b = Daughters_[1]->mass()->value();
 
         if (m_a == m_b) {
-            BreakupMomentum_->setValue( m2_R / 4.0 - m_a * m_a );
+            NominalBreakupMomentum_->setValue( sqrt(m2_R / 4. - m_a * m_a) );
         }
 
-        BreakupMomentum_->setValue( (m2_R - (m_a + m_b) * (m_a + m_b)) * (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0 );
+        NominalBreakupMomentum_->setValue( sqrt((m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.) );
     }
 
-    return BreakupMomentum_;
+    return NominalBreakupMomentum_;
 }
 
 //-------------------------
