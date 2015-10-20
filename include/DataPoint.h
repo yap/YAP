@@ -82,9 +82,9 @@ protected:
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
 
-    /// Measured breakup momenta
+    /// Measured squared breakup momenta
     /// index is for the symmeterization state (as known by the InitialStateParticle)
-    std::vector<double> MeasuredBreakupMomenta_;
+    std::vector<double> MeasuredBreakupMomenta2_;
 
     /// Helicity angles phi and theta
     /// first index is for the symmeterization state (as known by the InitialStateParticle)

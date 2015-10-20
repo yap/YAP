@@ -44,17 +44,29 @@ public:
     void setInitialStateParticle(InitialStateParticle* isp) override
     { InitialStateParticle_ = isp; }
 
+    /// Access squared breakup momenta
+    /// \param d DataPoint to get data from
+    /// \param i Symmetrization index to access
+    double p2(const DataPoint& d, unsigned i) const
+    { return d.MeasuredBreakupMomenta2_.at(i); }
+
+    /// Access squared breakup momenta
+    /// \param d DataPoint to get data from
+    /// \param pc ParticleCombination to return helicity angles of
+    double p2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return p2(d, SymmetrizationIndices_.at(pc)); }
+
     /// Access breakup momenta
     /// \param d DataPoint to get data from
     /// \param i Symmetrization index to access
-    double measuredBreakupMomentum(const DataPoint& d, unsigned i) const
-    { return d.MeasuredBreakupMomenta_.at(i); }
+    double p(const DataPoint& d, unsigned i) const
+    { return sqrt(d.MeasuredBreakupMomenta2_.at(i)); }
 
     /// Access breakup momenta
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
-    double measuredBreakupMomentum(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return measuredBreakupMomentum(d, SymmetrizationIndices_.at(pc)); }
+    double p(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return p(d, SymmetrizationIndices_.at(pc)); }
 
 };
 
