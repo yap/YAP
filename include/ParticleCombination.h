@@ -237,6 +237,7 @@ public:
     /// \brief Check objects referenced by shared pointers,
     /// check indices only, disregarding order, and check daughters (but not daughter's daughters)
     /// Does NOT compare helicity
+    /// Use e.g. for breakup momenta
     struct EquivDownByOrderlessContent : EquivByOrderlessContent {
         virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
     };

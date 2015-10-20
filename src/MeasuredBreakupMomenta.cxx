@@ -19,23 +19,22 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
 {
     std::set<unsigned> alreadyCalculated;
 
-    for (auto& pc : particleCombinations()) {
-        unsigned index = symmetrizationIndex(pc);
+    for (auto& kv : SymmetrizationIndices_) {
 
-        if (alreadyCalculated.find(index) != alreadyCalculated.end())
+        if (alreadyCalculated.find(kv.second) != alreadyCalculated.end())
             continue;
 
-        if (pc->daughters().size() != 2) {
-            LOG(ERROR) << "MeasuredBreakupMomenta::calculate - invalid number of daughters (" << pc->daughters().size() << " != 2)";
+        if (kv.first->daughters().size() != 2) {
+            LOG(ERROR) << "MeasuredBreakupMomenta::calculate - invalid number of daughters (" << kv.first->daughters().size() << " != 2)";
             return;
         }
 
-        double m2_R = initialStateParticle()->fourMomenta().m2(d, pc);
-        double m_a = initialStateParticle()->fourMomenta().m(d, pc->daughters()[0]);
-        double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters()[1]);
+        double m2_R = initialStateParticle()->fourMomenta().m2(d, kv.first);
+        double m_a = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
+        double m_b = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
 
-        d.MeasuredBreakupMomenta_.at(symmetrizationIndex(pc)) = (m2_R - (m_a + m_b) * (m_a + m_b)) * (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0;
-        alreadyCalculated.insert(index);
+        d.MeasuredBreakupMomenta_.at(kv.second) = (m2_R - (m_a + m_b) * (m_a + m_b)) * (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0;
+        alreadyCalculated.insert(kv.second);
 
         //DEBUG("breakup momentum for " << std::string(*pc) << " = " << d.MeasuredBreakupMomenta_.at(symmetrizationIndex(pc)));
     }
