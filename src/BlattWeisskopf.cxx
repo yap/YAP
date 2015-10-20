@@ -17,7 +17,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     Value_(new RealCachedValue())
 {
     Value_->addDependency(DecayChannel_->parent()->radialSize());
-    Value_->addDependency(DecayChannel_->breakupMomentum());
+    Value_->addDependency(DecayChannel_->breakupMomentum2());
 }
 
 //-------------------------
@@ -26,7 +26,7 @@ void BlattWeisskopf::precalculate()
     if (Value_->calculationStatus() == kUncalculated) {
 
         /// \todo What if we want to fit masses?
-        double breakupMom = DecayChannel_->breakupMomentum()->value();
+        double breakupMom2 = DecayChannel_->breakupMomentum2()->value();
         unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
         double R = DecayChannel_->parent()->radialSize()->value();
 
@@ -35,7 +35,7 @@ void BlattWeisskopf::precalculate()
         //
         // The following code was copied from rootPWA
         //
-        const double z   = (breakupMom * breakupMom) * (R * R);
+        const double z   = breakupMom2 * (R * R);
         double       bf2 = 0;
         switch (twoL) {
             case 0:  // L = 0
@@ -82,7 +82,7 @@ void BlattWeisskopf::precalculate()
 
         Value_->setValue(sqrt(bf2));
 
-        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << breakupMom << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
+        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << sqrt(breakupMom2) << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
     }
 }
 

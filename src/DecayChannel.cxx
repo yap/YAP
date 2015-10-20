@@ -27,16 +27,16 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
     FixedAmplitude_(new CachedDataValue(this, {})),
-                NominalBreakupMomentum_(new RealCachedValue())
+    NominalBreakupMomentum2_(new RealCachedValue())
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
     BlattWeisskopf_.swap(bw);
 
-    // NominalBreakupMomentum_ dependencies
-    NominalBreakupMomentum_->addDependency(Parent_->mass());
+    // NominalBreakupMomentum2_ dependencies
+    NominalBreakupMomentum2_->addDependency(Parent_->mass());
     for (auto& d : Daughters_)
-        NominalBreakupMomentum_->addDependency(d->mass());
+        NominalBreakupMomentum2_->addDependency(d->mass());
 
     /// \todo set all other dependencies
 
@@ -200,12 +200,12 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
-std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum()
+std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum2()
 {
-    if (NominalBreakupMomentum_->calculationStatus() == kUncalculated) {
+    if (NominalBreakupMomentum2_->calculationStatus() == kUncalculated) {
         if (Daughters_.size() != 2) {
             LOG(FATAL) << "DecayChannel::breakupMomentum() - wrong number of daughters (" << Daughters_.size() << " != 2). Cannot calculate!";
-            NominalBreakupMomentum_->setValue(std::numeric_limits<double>::quiet_NaN());
+            NominalBreakupMomentum2_->setValue(std::numeric_limits<double>::quiet_NaN());
         }
 
         /// \todo take masses from mass shape instead?
@@ -215,13 +215,13 @@ std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum()
         double m_b = Daughters_[1]->mass()->value();
 
         if (m_a == m_b) {
-            NominalBreakupMomentum_->setValue( sqrt(m2_R / 4. - m_a * m_a) );
+            NominalBreakupMomentum2_->setValue( m2_R / 4. - m_a * m_a );
         }
 
-        NominalBreakupMomentum_->setValue( sqrt((m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.) );
+        NominalBreakupMomentum2_->setValue( (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4. );
     }
 
-    return NominalBreakupMomentum_;
+    return NominalBreakupMomentum2_;
 }
 
 //-------------------------
@@ -341,7 +341,7 @@ void DecayChannel::setSymmetrizationIndexParents()
 void DecayChannel::precalculate()
 {
     // calculates it
-    breakupMomentum();
+    breakupMomentum2();
 
     /// \todo find a solution to do this not recursively?
     BlattWeisskopf_->precalculate();

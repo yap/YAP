@@ -56,12 +56,8 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
-    /// \return breakup momentum
-    std::shared_ptr<RealCachedValue> breakupMomentum();
-
-    /// \return breakup momentum value
-    double breakupMomentum() const
-    { return NominalBreakupMomentum_->value(); }
+    /// \return squared nominal breakup momentum
+    std::shared_ptr<RealCachedValue> breakupMomentum2();
 
     /// cast into string
     operator std::string() const;
@@ -138,7 +134,8 @@ protected:
     std::shared_ptr<ComplexParameter> FreeAmplitude_;
     std::shared_ptr<CachedDataValue> FixedAmplitude_;
 
-    std::shared_ptr<RealCachedValue> NominalBreakupMomentum_;
+    /// \todo has to be a RealCachedDataValue
+    std::shared_ptr<RealCachedValue> NominalBreakupMomentum2_;
 
 };
 
