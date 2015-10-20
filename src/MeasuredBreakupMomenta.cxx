@@ -30,13 +30,13 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
         }
 
         double m2_R = initialStateParticle()->fourMomenta().m2(d, kv.first);
-        double m_a = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
-        double m_b = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
+        double m_a  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
+        double m_b  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
 
-        d.MeasuredBreakupMomenta_.at(kv.second) = (m2_R - (m_a + m_b) * (m_a + m_b)) * (m2_R - (m_a - m_b) * (m_a - m_b)) / m2_R / 4.0;
+        d.MeasuredBreakupMomenta_.at(kv.second) = (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.0;
         alreadyCalculated.insert(kv.second);
 
-        //DEBUG("breakup momentum for " << std::string(*pc) << " = " << d.MeasuredBreakupMomenta_.at(symmetrizationIndex(pc)));
+        //DEBUG("breakup momentum for " << std::string(*kv.first) << " = " << d.MeasuredBreakupMomenta_.at(symmetrizationIndex(kv.first)));
     }
 }
 
