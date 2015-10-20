@@ -69,8 +69,6 @@ public:
     friend class DataPartition;
     friend class DataSet;
     friend class FourMomenta;
-    friend class HelicityAngles;
-    friend class MeasuredBreakupMomenta;
 
     /// reserve space in vectors
     void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
