@@ -121,31 +121,11 @@ public:
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
     { return d.Data_[Index_][i]; }
-
-    std::complex<double>& cachedAmplitude(DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_[Index_][i]; }
-
-    const std::complex<double>& cachedAmplitude(const DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_[Index_][i]; }
-}
 #else
     /// Access a data point's data (by friendship) (const)
     const std::vector<double>& data(const DataPoint& d, unsigned i) const
     { return d.Data_.at(Index_).at(i); }
-
-    std::complex<double>& cachedAmplitude(DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_.at(Index_).at(i); }
-
-    const std::complex<double>& cachedAmplitude(const DataPoint& d, unsigned i) const
-    { return d.CachedAmplitudes_.at(Index_).at(i); }
 #endif
-
-    CalculationStatus calculationStatus(const DataPartition& d, std::shared_ptr<const ParticleCombination> c) const
-    { return d.CalculationStatusesDataSet(Index_, symmetrizationIndex(c)); }
-
-    CalculationStatus calculationStatus(const DataPartition& d, unsigned symIndex) const
-    { return d.CalculationStatusesDataSet(Index_, symIndex); }
-
 
     /// Get pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const;
@@ -154,13 +134,6 @@ public:
 
     /// \name Setters
     /// @{
-
-    /// Set CalculationStatus for particleCombination
-    void setCalculationStatus(DataPartition& d, std::shared_ptr<const ParticleCombination> c, CalculationStatus stat) const
-    { d.CalculationStatusesDataSet(index(), symmetrizationIndex(c)) = stat; }
-
-    void setCalculationStatus(DataPartition& d, unsigned symIndex, CalculationStatus stat) const
-    { d.CalculationStatusesDataSet(Index_, symIndex) = stat; }
 
     /// Set pointer to initial state particle
     virtual void setInitialStateParticle(InitialStateParticle* isp);

@@ -126,7 +126,7 @@ protected:
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
     std::shared_ptr<ComplexParameter> FreeAmplitude_;
-    std::shared_ptr<CachedDataValue> FixedAmplitude_;
+    std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
 
 };
 

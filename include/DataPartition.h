@@ -54,19 +54,6 @@ public:
     const DataPoint& dataPoint() const
     { return *CurrentPosition_; }
 
-    CalculationStatus& CalculationStatusesDataSet(unsigned index, unsigned pcIndex)
-    { return CalculationStatusesDataSet_.at(index).at(pcIndex); }
-
-    CalculationStatus CalculationStatusesDataSet(unsigned index, unsigned pcIndex) const
-    { return CalculationStatusesDataSet_.at(index).at(pcIndex); }
-
-
-    CalculationStatus& CalculationStatusesDataPoint(unsigned index, unsigned pcIndex)
-    { return CalculationStatusesDataPoint_.at(index).at(pcIndex); }
-
-    CalculationStatus CalculationStatusesDataPoint(unsigned index, unsigned pcIndex) const
-    { return CalculationStatusesDataPoint_.at(index).at(pcIndex); }
-
     /// \return DataPartition's index
     unsigned index() const
     { return DataPartitionIndex_; }
@@ -79,14 +66,6 @@ private:
     DataIterator Begin_;
     DataIterator End_;
     unsigned Spacing_;
-
-    /// first index is for the DataAccessor
-    /// second index is for the symmeterization state (as known by the DataAccessor)
-    std::vector<std::vector<CalculationStatus> > CalculationStatusesDataSet_;
-
-    /// first index is for the DataAccessor
-    /// second index is for the symmeterization state (as known by the DataAccessor)
-    std::vector<std::vector<CalculationStatus> > CalculationStatusesDataPoint_;
 
 };
 

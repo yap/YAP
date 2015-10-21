@@ -36,11 +36,9 @@ void DataPoint::allocateStorage(const FourMomenta& fourMom, const std::set<DataA
 
     // allocate space in vectors
     Data_.resize(dataAccessors.size());
-    CachedAmplitudes_.resize(dataAccessors.size());
 
     for (DataAccessor* d : dataAccessors) {
         Data_[d->index()].assign(d->maxSymmetrizationIndex() + 1, std::vector<double>(d->size()));
-        CachedAmplitudes_[d->index()].assign(d->maxSymmetrizationIndex() + 1, Complex_0);
     }
 }
 
@@ -62,14 +60,6 @@ void DataPoint::printDataSize()
         }
     }
     std::cout << "+ Size of Data_:             " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << Data_.size() << "\n";
-    totSize += size;
-
-    size = sizeof(CachedAmplitudes_);
-    for (std::vector<std::complex<double> >& v : CachedAmplitudes_) {
-        size += sizeof(v);
-        size += v.size() * sizeof(std::complex<double>);
-    }
-    std::cout << "+ Size of CachedAmplitudes_: " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << CachedAmplitudes_.size() << "\n";
     totSize += size;
 
     std::cout << "= Size of DataPoint:         " << std::right << std::setw(5) << totSize << " byte\n";

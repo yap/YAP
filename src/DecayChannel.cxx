@@ -26,13 +26,16 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     BlattWeisskopf_(nullptr), // see comment below!
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
-    FixedAmplitude_(new CachedDataValue(this, {}))
+    FixedAmplitude_(new ComplexCachedDataValue(this))
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
     BlattWeisskopf_.swap(bw);
 
-    /// \todo set all other dependencies
+    /// \todo set dependencies
+    FixedAmplitude_->addDependencies(BlattWeisskopf_->dependencies());
+    // \todo add spinAmplitude and daughters
+    //FixedAmplitude_
 
 
     // set symmetrization indices
@@ -80,22 +83,25 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 //-------------------------
 std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo implement and check
-    /*
-    std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
+    /// \todo check
+    unsigned symIndex = symmetrizationIndex(pc);
 
-    if (a == Complex_0)
-        return a;
+    if (FixedAmplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
 
-    auto& pcDaughters = pc->daughters();
-    for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
+        if (a != Complex_0) {
+            auto& pcDaughters = pc->daughters();
+            for (unsigned i = 0; i < Daughters_.size(); ++i) {
+                a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
+            }
+        }
+
+        FixedAmplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("DecayChannel " << std::string(*this) << " fixed amplitude for " << std::string(*pc) << " = " << a);
     }
 
-    DEBUG("DecayChannel " << std::string(*this) << " amplitude for " << std::string(*pc) << " = " << a);
-
-    return a;*/
-    return Complex_0;
+    return FreeAmplitude_->value() * FixedAmplitude_->value(d.dataPoint(), symIndex);
 }
 
 //-------------------------
