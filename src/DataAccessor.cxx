@@ -15,6 +15,8 @@ DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
 {
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
+
+    //DEBUG("construct DataAccessor with address " << this);
 }
 
 //-------------------------
@@ -33,6 +35,8 @@ DataAccessor::~DataAccessor()
 {
     if (InitialStateParticle_)
         InitialStateParticle_->removeDataAccessor(this);
+
+    //DEBUG("destruct DataAccessor with address " << this);
 }
 
 //-------------------------
@@ -81,17 +85,40 @@ bool DataAccessor::consistent() const
     for (auto& kv : SymmetrizationIndices_)
         result &= kv.first->consistent();
 
+    // check CachedDataValues_
+    for (CachedDataValue* c : CachedDataValues_) {
+        if (c->CalculationStatus_.size() == 0) {
+            LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_.size() == 0";
+            result = false;
+        }
+        if (c->CalculationStatus_.size() != c->VariableStatus_.size()) {
+            LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_.size() != c->VariableStatus_.size()";
+            result = false;
+        }
+
+        for (unsigned i=0; i<c->CalculationStatus_.size(); ++i) {
+            if (c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1) {
+                LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1";
+                LOG(ERROR) << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
+                DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
+                result = false;
+            }
+            if (c->VariableStatus_[i].size() != maxSymmetrizationIndex() + 1) {
+                LOG(ERROR) << "DataAccessor::consistent() - c->VariableStatus_[i].size() != maxSymmetrizationIndex() + 1";
+                LOG(ERROR) << c->VariableStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
+                DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
+                result = false;
+            }
+        }
+
+    }
+
     return result;
 }
 
 //-------------------------
 void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
-    if (SymmetrizationIndices_.empty()) {
-        SymmetrizationIndices_[c] = 0;
-        return;
-    }
-
     if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
         // c is already in map
         return;
@@ -107,14 +134,22 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombinat
     // else assign to current size = highest current index + 1
     unsigned size = maxSymmetrizationIndex() + 1;
     SymmetrizationIndices_[c] = size;
+
     for (CachedDataValue* d : CachedDataValues_)
-        d->setNumberOfSymmetrizations(size);
+        d->setNumberOfSymmetrizations(size + 1);
 }
 
 //-------------------------
 void DataAccessor::clearSymmetrizationIndices()
 {
     SymmetrizationIndices_.clear();
+}
+
+//-------------------------
+void DataAccessor::addCachedDataValue(CachedDataValue* c)
+{
+    c->setNumberOfSymmetrizations(maxSymmetrizationIndex() + 1);
+    CachedDataValues_.push_back(c);
 }
 
 //-------------------------

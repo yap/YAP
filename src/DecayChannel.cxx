@@ -36,8 +36,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
     FixedAmplitude_->addDependencies(BlattWeisskopf_->CachedDataValuesItDependsOn());
 
-    FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
-    FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
+    // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharinf SpinAmplitudes
+
 
     for (auto& d : Daughters_) {
         FixedAmplitude_->addDependencies(d->ParametersItDependsOn());
@@ -100,6 +100,8 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<c
             auto& pcDaughters = pc->daughters();
             for (unsigned i = 0; i < Daughters_.size(); ++i) {
                 a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
+                if (a == Complex_0)
+                    break;
             }
         }
 
@@ -320,6 +322,13 @@ void DecayChannel::setSymmetrizationIndexParents()
     for (auto d : daughters())
         d->setSymmetrizationIndexParents();
 
+}
+
+//-------------------------
+void DecayChannel::addSpinAmplitudeDependencies()
+{
+    FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
+    FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
 }
 
 

@@ -17,24 +17,31 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
     AmplitudeComponent(),
     Particle(q, mass, name),
     DataAccessor(),
-    RadialSize_(new RealParameter(radialSize))
+    RadialSize_(new RealParameter(radialSize)),
+    Amplitude_(new ComplexCachedDataValue(this))
 {}
 
 //-------------------------
 std::complex<double> DecayingParticle::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    // \todo implement and check
-    /*std::complex<double> a = Complex_0;
+    // \todo check
+    unsigned symIndex = symmetrizationIndex(pc);
 
-    for (auto& c : channels()) {
-        if (c->hasSymmetrizationIndex(pc))
-            a += c->freeAmplitude()->value() * c->amplitude(d, pc);
+    if (Amplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+
+        std::complex<double> a = Complex_0;
+
+        for (auto& c : channels()) {
+            if (c->hasSymmetrizationIndex(pc))
+                a += c->amplitude(d, pc);
+        }
+
+        Amplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
     }
 
-    DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
-
-    return a;*/
-    return Complex_0;
+    return Amplitude_->value(d.dataPoint(), symIndex);
 }
 
 //-------------------------
@@ -90,6 +97,10 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations())
         addSymmetrizationIndex(pc);
+
+    // add dependencies
+    Amplitude_->addDependencies(Channels_.back()->ParametersItDependsOn());
+    Amplitude_->addDependencies(Channels_.back()->CachedDataValuesItDependsOn());
 }
 
 //-------------------------
@@ -180,6 +191,10 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
             //LOG(INFO) << "Size of ampSet: " << ampSet.size();
         }
 
+        // set dependencies
+        channel(i)->addSpinAmplitudeDependencies();
+
+        // recurse down
         for (std::shared_ptr<Particle> d : channel(i)->daughters()) {
             if (std::dynamic_pointer_cast<DecayingParticle>(d))
                 std::static_pointer_cast<DecayingParticle>(d)->optimizeSpinAmplitudeSharing();

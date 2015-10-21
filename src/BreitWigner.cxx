@@ -18,7 +18,7 @@ BreitWigner::BreitWigner(double mass, double width) :
 std::complex<double> BreitWigner::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo implement
-    return Complex_0;
+    return Complex_1;
 }
 
 //-------------------------

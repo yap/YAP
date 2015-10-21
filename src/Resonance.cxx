@@ -11,26 +11,34 @@ namespace yap {
 Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape) :
     DecayingParticle(q, mass, name, radialSize),
     MassShape_(massShape)
-{}
+{
+    Amplitude_->addDependencies(MassShape_->ParametersItDependsOn());
+    Amplitude_->addDependencies(MassShape_->CachedDataValuesItDependsOn());
+}
 
 //-------------------------
 std::complex<double> Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo implement and check
-    /*
-    std::complex<double> a = Complex_0;
+    /// \todo check
+    unsigned symIndex = symmetrizationIndex(pc);
 
-    for (auto& c : channels()) {
-        if (c->hasSymmetrizationIndex(pc))
-            a += c->freeAmplitude()->value() * c->amplitude(d, pc);
+    if (Amplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+
+        std::complex<double> a = Complex_0;
+
+        for (auto& c : channels()) {
+            if (c->hasSymmetrizationIndex(pc))
+                a += c->amplitude(d, pc);
+        }
+
+        a *= MassShape_->amplitude(d, pc);
+
+        Amplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("Resonance " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
     }
 
-    a *= MassShape_->amplitude(d, pc);
-
-    DEBUG("Resonance " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
-
-    return a;*/
-    return Complex_0;
+    return Amplitude_->value(d.dataPoint(), symIndex);
 }
 
 //-------------------------

@@ -26,6 +26,8 @@
 #include "DataPoint.h"
 #include "ParticleCombination.h"
 
+#include "logging.h"
+
 #include <complex>
 #include <map>
 #include <vector>
@@ -97,8 +99,7 @@ public:
     bool consistent() const;
 
     /// add CachedDataValue
-    void addCachedDataValue(CachedDataValue* c)
-    { CachedDataValues_.push_back(c); }
+    void addCachedDataValue(CachedDataValue* c);
 
     /// \name Symmetrization functions
     /// @{
@@ -140,7 +141,7 @@ public:
 
     /// @}
 
-    protected:
+protected:
 
     friend class InitialStateParticle;
 
@@ -161,7 +162,7 @@ public:
     /// number of real values stored per symm. index
     unsigned Size_;
 
-    private:
+private:
 
     /// storage index used in DataPoint. Must be unique.
     unsigned Index_;

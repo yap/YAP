@@ -111,6 +111,15 @@ public:
     // for internal use only
     void setSymmetrizationIndexParents();
 
+    // for internal use only
+    void addSpinAmplitudeDependencies();
+
+    virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
+    { return std::vector<std::shared_ptr<ComplexParameter> >{FreeAmplitude_}; }
+
+    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return std::vector<std::shared_ptr<CachedDataValue> >{FixedAmplitude_}; }
+
 protected:
 
     /// DecayingParticle this DecayChannel belongs to

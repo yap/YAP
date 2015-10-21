@@ -41,6 +41,8 @@ std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr
         double R = DecayChannel_->parent()->radialSize()->value();
         double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
         Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("Blatt-Weisskopf barrier factor Fq_r (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d.dataPoint(), symIndex));
     }
 
     if (Fq_ab->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
@@ -49,11 +51,13 @@ std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr
 
         double R = DecayChannel_->parent()->radialSize()->value();
         double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
-        Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
+        Fq_ab->setValue(f, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("Blatt-Weisskopf barrier factor Fq_ab (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d.dataPoint(), symIndex));
     }
 
     double Fq_rOFq_ab = Fq_r->value(d.dataPoint(), symIndex) / Fq_ab->value(d.dataPoint(), symIndex);
-    DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
+    DEBUG("Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
     return std::complex<double>(Fq_rOFq_ab);
 }
 

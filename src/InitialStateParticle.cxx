@@ -227,13 +227,6 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
     /*for (auto& pc : FourMomenta_.particleCombinations()) {
       std::cout << FourMomenta_.symmetrizationIndex(pc) << "  \t" << std::string(*pc) << "  \t";
       FourMomenta_.p(d, FourMomenta_.symmetrizationIndex(pc)).Print();
-    }
-
-    for (auto& pc : HelicityAngles_.particleCombinations()) {
-      std::cout << HelicityAngles_.symmetrizationIndex(pc) << "  \t" << std::string(*pc) << "  \t";
-      for (double a : HelicityAngles_.helicityAngles(d, HelicityAngles_.symmetrizationIndex(pc)))
-          std::cout << a << "  \t";
-      std::cout << "\n";
     }*/
 
     d.printDataSize();

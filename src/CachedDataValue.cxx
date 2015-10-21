@@ -33,13 +33,25 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
 CalculationStatus CachedDataValue::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
     // if uncalculated, return without further checking
+#ifdef ELPP_DISABLE_DEBUG_LOGS
     if (CalculationStatus_[dataPartitionIndex][symmetrizationIndex] == kUncalculated)
         return kUncalculated;
+#else
+    if (CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kUncalculated)
+        return kUncalculated;
+#endif
 
     // else check if any dependencies are changed
     for (auto& c : CachedDataValuesItDependsOn_) {
         // get symmetrization index for particular cached data value,
         // checking if owner is different and grabbing if needed
+
+        LOG(ERROR) << "owner " << c->owner();
+        if (! c->owner()->hasSymmetrizationIndex(pc)) {
+            LOG(ERROR) << "Error, owner  does not have " << std::string(*pc);
+            LOG(ERROR) << "owner " << typeid(*c->owner()).name();
+        }
+
         unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
         if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
             // if dependency has changed, update to uncalculated and return
@@ -62,10 +74,12 @@ CalculationStatus CachedDataValue::calculationStatus(std::shared_ptr<const Parti
 //-------------------------
 void CachedDataValue::setNumberOfSymmetrizations(unsigned n)
 {
-    for (auto& v : CalculationStatus_)
+    for (auto& v : CalculationStatus_) {
         v.resize(n, kUncalculated);
-    for (auto& v : VariableStatus_)
+    }
+    for (auto& v : VariableStatus_) {
         v.resize(n, kChanged);
+    }
 }
 
 //-------------------------

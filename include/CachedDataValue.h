@@ -107,7 +107,11 @@ public:
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
     VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0) const
-    { return VariableStatus_[symmetrizationIndex][dataPartitionIndex]; }
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+    { return VariableStatus_[dataPartitionIndex][symmetrizationIndex]; }
+#else
+    { return VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex); }
+#endif
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param index index of value to get from within cached value (must be less than #Size_)

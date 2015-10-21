@@ -130,7 +130,13 @@ public:
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
-private:
+    //virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
+    //{ return std::vector<std::shared_ptr<ComplexParameter> >{FreeAmplitude_}; }
+
+    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return std::vector<std::shared_ptr<CachedDataValue> >{Amplitude_}; }
+
+protected:
 
     void printDecayChainLevel(int level) const;
 
@@ -139,6 +145,8 @@ private:
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;
+
+    std::shared_ptr<ComplexCachedDataValue> Amplitude_;
 };
 
 }
