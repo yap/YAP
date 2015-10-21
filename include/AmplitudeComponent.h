@@ -22,8 +22,10 @@
 #define yap_AmplitudeComponent_h
 
 #include "CalculationStatus.h"
+#include "CachedDataValue.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
+#include "Parameter.h"
 
 #include <complex>
 #include <memory>
@@ -59,6 +61,17 @@ public:
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
+    /// \return a list of parameters this AmplitudeComponent depends on
+    /// to be overridden in the concrete AmplitudeComponent
+    /// \return empty vector
+    virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn()
+    { return std::vector<std::shared_ptr<ComplexParameter> >(); }
+
+    /// \return a list of CachedDataValues this AmplitudeComponent depends on
+    /// to be overridden in the concrete AmplitudeComponent
+    /// \return empty vector
+    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn()
+    { return std::vector<std::shared_ptr<CachedDataValue> >(); }
 };
 
 }

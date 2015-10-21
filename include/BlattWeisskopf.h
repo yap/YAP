@@ -56,7 +56,10 @@ public:
     /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
     static double F2(int twoL, double R2, double q2);
 
-    std::vector<std::shared_ptr<CachedDataValue> > dependencies()
+    //virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
+    //{ return std::vector<std::shared_ptr<ComplexParameter> >(); }
+
+    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
     { return std::vector<std::shared_ptr<CachedDataValue> >{Fq_r, Fq_ab}; }
 
 private:

@@ -50,11 +50,24 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// also calculates ClebschGordan coefficient
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+
+    /// also clears ClebschGordanCoefficients_
+    virtual void clearSymmetrizationIndices();
+
     /// cast into string
     operator std::string() const override;
 
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
+
+    //virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
+    //{ return std::vector<std::shared_ptr<ComplexParameter> >; }
+
+    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return std::vector<std::shared_ptr<CachedDataValue> >{SpinAmplitude_}; }
+
 
 private:
 
@@ -62,7 +75,10 @@ private:
     bool equals(const SpinAmplitude& rhs) const override;
 
     /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
+    /// \todo make this a Parameter???
     std::map<std::shared_ptr<const ParticleCombination>, double> ClebschGordanCoefficients_;
+
+    std::shared_ptr<ComplexCachedDataValue> SpinAmplitude_;
 
 };
 

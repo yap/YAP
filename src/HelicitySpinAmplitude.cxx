@@ -12,46 +12,48 @@ namespace yap {
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
         const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL) :
-    SpinAmplitude(initial, final1, final2, twoL)
+    SpinAmplitude(initial, final1, final2, twoL),
+    SpinAmplitude_(new ComplexCachedDataValue(this))
 {
 }
 
 //-------------------------
 std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo implement
-    /*
-    if (ClebschGordanCoefficients_.empty()) {
-        for (auto& pc : particleCombinations())
-            ClebschGordanCoefficients_[pc] = calculateClebschGordanCoefficient(pc);
+    /// \todo check
+    unsigned symIndex = symmetrizationIndex(pc);
+
+    if (SpinAmplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+
+        /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
+        /// implemented in rootPWA by C. Bicker
+
+        std::complex<double> a = ClebschGordanCoefficients_.at(pc);
+
+        // \todo angular normalization factor??? sqrt(2*L + 1)
+
+        const int J = InitialQuantumNumbers_.twoJ();
+        // DFunction == 1  for  J == 0
+        if (J != 0) {
+            const int Lambda  = pc->twoLambda();
+            const int P       = InitialQuantumNumbers_.P();
+
+            const int lambda1 = pc->daughters()[0]->twoLambda();
+            const int lambda2 = pc->daughters()[1]->twoLambda();
+            const int lambda  = lambda1 - lambda2;
+
+            const double phi   = initialStateParticle()->helicityAngles().phi(d.dataPoint(), pc);
+            const double theta = initialStateParticle()->helicityAngles().theta(d.dataPoint(), pc);
+
+            a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
+        }
+
+        SpinAmplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+
+        DEBUG("HelicitySpinAmplitude = " << a);
     }
 
-    /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
-    /// implemented in rootPWA by C. Bicker
-
-    std::complex<double> a = ClebschGordanCoefficients_.at(pc);
-
-    // \todo angular normalization factor??? sqrt(2*L + 1)
-
-    const int J = InitialQuantumNumbers_.twoJ();
-    // DFunction == 1  for  J == 0
-    if (J != 0) {
-        const int Lambda  = pc->twoLambda();
-        const int P       = InitialQuantumNumbers_.P();
-
-        const int lambda1 = pc->daughters()[0]->twoLambda();
-        const int lambda2 = pc->daughters()[1]->twoLambda();
-        const int lambda  = lambda1 - lambda2;
-
-        const double phi   = initialStateParticle()->helicityAngles().phi(d.dataPoint(), pc);
-        const double theta = initialStateParticle()->helicityAngles().theta(d.dataPoint(), pc);
-
-        a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
-    }
-
-    DEBUG("HelicitySpinAmplitude = " << a);
-    return a;*/
-    return Complex_0;
+    return SpinAmplitude_->value(d.dataPoint(), symIndex);
 }
 
 //-------------------------
@@ -59,12 +61,26 @@ bool HelicitySpinAmplitude::consistent() const
 {
     bool consistent = SpinAmplitude::consistent();
 
-    /*if (ClebschGordanCoefficients_.empty()) {
-        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficients are empty.";
+    if (ClebschGordanCoefficients_.size() != particleCombinations().size()) {
+        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficients have wrong size.";
         consistent =  false;
-    }*/
+    }
 
     return consistent;
+}
+
+//-------------------------
+void HelicitySpinAmplitude::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+{
+    ClebschGordanCoefficients_[c] = calculateClebschGordanCoefficient(c);
+    SpinAmplitude::addSymmetrizationIndex(c);
+}
+
+//-------------------------
+void HelicitySpinAmplitude::clearSymmetrizationIndices()
+{
+    ClebschGordanCoefficients_.clear();
+    SpinAmplitude::clearSymmetrizationIndices();
 }
 
 //-------------------------

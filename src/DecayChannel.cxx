@@ -32,10 +32,17 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
     BlattWeisskopf_.swap(bw);
 
-    /// \todo set dependencies
-    FixedAmplitude_->addDependencies(BlattWeisskopf_->dependencies());
-    // \todo add spinAmplitude and daughters
-    //FixedAmplitude_
+    /// set dependencies
+    FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
+    FixedAmplitude_->addDependencies(BlattWeisskopf_->CachedDataValuesItDependsOn());
+
+    FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
+    FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
+
+    for (auto& d : Daughters_) {
+        FixedAmplitude_->addDependencies(d->ParametersItDependsOn());
+        FixedAmplitude_->addDependencies(d->CachedDataValuesItDependsOn());
+    }
 
 
     // set symmetrization indices
