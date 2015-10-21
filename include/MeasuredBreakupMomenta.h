@@ -44,14 +44,17 @@ public:
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double p2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    double q2(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
     { return Q2_.value(d, SymmetrizationIndices_.at(pc)); }
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double p(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
-    { return sqrt(p2(d, pc)); }
+    double q(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
+    { return sqrt(q2(d, pc)); }
+
+    /// Calculate breakup momentum from parent and daughter masses
+    static double calcQ2(double m2_R, double m_a, double m_b);
 
 protected:
 

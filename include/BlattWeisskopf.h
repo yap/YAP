@@ -22,7 +22,7 @@
 #define yap_BlattWeisskopf_h
 
 #include "AmplitudeComponent.h"
-#include "CachedValue.h"
+#include "CachedDataValue.h"
 #include "CalculationStatus.h"
 #include "DataAccessor.h"
 
@@ -45,7 +45,7 @@ public:
     /// Constructor
     BlattWeisskopf(DecayChannel* decayChannel);
 
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -53,16 +53,16 @@ public:
     /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
+    /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
+    static double F2(int twoL, double R2, double q2);
+
 private:
 
     /// DecayChannel this BlattWeisskopf belongs to
     DecayChannel* DecayChannel_;
 
-    std::shared_ptr<RealCachedValue> NominalBreakupMomentum2_;
-
-    /// \todo rename
-    std::shared_ptr<RealCachedValue> Value_;
-
+    std::shared_ptr<RealCachedDataValue> Fq_r;
+    std::shared_ptr<RealCachedDataValue> Fq_ab;
 };
 
 }

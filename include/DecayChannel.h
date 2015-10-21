@@ -54,13 +54,10 @@ public:
     /// Copy constructor
     DecayChannel(const DecayChannel& other) = delete;
 
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;
-
-    /// \return squared nominal breakup momentum
-    std::shared_ptr<RealCachedValue> breakupMomentum2();
 
     /// cast into string
     operator std::string() const;
@@ -130,9 +127,6 @@ protected:
 
     std::shared_ptr<ComplexParameter> FreeAmplitude_;
     std::shared_ptr<CachedDataValue> FixedAmplitude_;
-
-    /// \todo has to be a RealCachedDataValue
-    std::shared_ptr<RealCachedValue> NominalBreakupMomentum2_;
 
 };
 

@@ -14,7 +14,7 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-const std::complex<double>& Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo implement and check
     /*

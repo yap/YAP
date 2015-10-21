@@ -67,7 +67,13 @@ public:
     CalculationStatus CalculationStatusesDataPoint(unsigned index, unsigned pcIndex) const
     { return CalculationStatusesDataPoint_.at(index).at(pcIndex); }
 
+    /// \return DataPartition's index
+    unsigned index() const
+    { return DataPartitionIndex_; }
+
 private:
+    unsigned DataPartitionIndex_;
+
     DataIterator CurrentPosition_;
 
     DataIterator Begin_;

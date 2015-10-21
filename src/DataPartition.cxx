@@ -9,6 +9,11 @@ DataPartition::DataPartition(const DataPoint& dataPoint, DataIterator begin, Dat
     End_(end),
     Spacing_(spacing)
 {
+    // set DataPartitionIndex_
+    /// \todo make this smarter?
+    static unsigned index(0);
+    DataPartitionIndex_ = (index++);
+
     // initialize CalculationStatusesDataSet_ with kUncalculated flags
     CalculationStatusesDataSet_.resize(dataPoint.CachedAmplitudes_.size());
     unsigned i(0);

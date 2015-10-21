@@ -14,90 +14,71 @@ namespace yap {
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     DecayChannel_(decayChannel),
-    Value_(new RealCachedValue())
+    Fq_r(new RealCachedDataValue(this)),
+    Fq_ab(new RealCachedDataValue(this))
 {
-    Value_->addDependency(DecayChannel_->parent()->radialSize());
-    Value_->addDependency(DecayChannel_->breakupMomentum2());
+    Fq_r->addDependency(DecayChannel_->parent()->mass());
+    Fq_r->addDependency(DecayChannel_->parent()->radialSize());
+
+    Fq_ab->addDependency(DecayChannel_->parent()->radialSize());
+
+    /// measured breakup momenta and four momenta never change, so no need to add them here
 }
 
 //-------------------------
-const std::complex<double>& BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo implement
-    /*
-    if (NominalBreakupMomentum2_->calculationStatus() == kUncalculated) {
+    /// \todo check
+    unsigned symIndex = symmetrizationIndex(pc);
 
+    if (Fq_r->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+        // nominal breakup momentum
+        double m2_R = DecayChannel_->parent()->mass()->value();
+        double m_a = initialStateParticle()->fourMomenta().m(d.dataPoint(), pc->daughters().at(0));
+        double m_b = initialStateParticle()->fourMomenta().m(d.dataPoint(), pc->daughters().at(1));
+        double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
+
+        double R = DecayChannel_->parent()->radialSize()->value();
+        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
+        Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
     }
 
+    if (Fq_ab->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+        // measured breakup momentum
+        double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d.dataPoint(), pc);
 
-    if (Value_->calculationStatus() == kUncalculated) {
-
-        /// \todo What if we want to fit masses?
-        double breakupMom2 = DecayChannel_->breakupMomentum2()->value();
-        unsigned twoL = DecayChannel_->spinAmplitude()->twoL();
         double R = DecayChannel_->parent()->radialSize()->value();
+        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
+        Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
+    }
 
-        /// \todo ? in denominator, there must be q^2_(ab), the breakup momentum calculated from the invariant masses
-
-        //
-        // The following code was copied from rootPWA
-        //
-        const double z   = breakupMom2 * (R * R);
-        double       bf2 = 0;
-        switch (twoL) {
-            case 0:  // L = 0
-                bf2 = 1;
-                break;
-            case 2:  // L = 1
-                bf2 = (2 * z) / (z + 1);
-                break;
-            case 4:  // L = 2
-                bf2 = (13 * z * z) / (z * (z + 3) + 9);
-                break;
-            case 6:  // L = 3
-                bf2 = (277 * z * z * z) / (z * (z * (z + 6) + 45) + 225);
-                break;
-            case 8: { // L = 4
-                const double z2 = z * z;
-                bf2 = (12746 * z2 * z2) / (z * (z * (z * (z + 10) + 135) + 1575) + 11025);
-            }
-            break;
-            case 10: { // L = 5
-                const double z2 = z * z;
-                bf2 = (998881 * z2 * z2 * z)
-                      / (z * (z * (z * (z * (z + 15) + 315) + 6300) + 99225) + 893025);
-            }
-            break;
-            case 12: { // L = 6
-                const double z3 = z * z * z;
-                bf2 = (118394977 * z3 * z3)
-                      / (z * (z * (z * (z * (z * (z + 21) + 630) + 18900) + 496125) + 9823275) + 108056025);
-            }
-            break;
-            case 14: { // L = 7
-                const double z3 = z * z * z;
-                bf2 = (19727003738LL * z3 * z3 * z)
-                      / (z * (z * (z * (z * (z * (z * (z + 28) + 1134) + 47250) + 1819125) + 58939650)
-                              + 1404728325L) + 18261468225LL);
-            }
-            break;
-            default:
-                LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
-                           << spinToString(twoL) << ". returning 0." << std::endl;
-                Value_->setValue(0);
-        }
-
-        Value_->setValue(sqrt(bf2));
-
-        DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << sqrt(breakupMom2) << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
-    }*/
-    return Complex_0;
+    double Fq_rOFq_ab = Fq_r->value(d.dataPoint(), symIndex) / Fq_ab->value(d.dataPoint(), symIndex);
+    DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
+    return std::complex<double>(Fq_rOFq_ab);
 }
 
 //-------------------------
 bool BlattWeisskopf::consistent() const
 {
     return true;
+}
+
+//-------------------------
+double BlattWeisskopf::F2(int twoL, double R2, double q2)
+{
+    const double z   = q2 * R2;
+    switch (twoL) {
+        case 0:  // L = 0
+            return 1.;
+        case 2:  // L = 1
+            return 1. + z;
+        case 4:  // L = 2
+            return 9. + 3.*z + z*z;
+        default:
+            LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
+                       << spinToString(twoL) << ". returning 0." << std::endl;
+            return 0;
+    }
 }
 
 }

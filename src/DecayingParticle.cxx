@@ -21,7 +21,7 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 {}
 
 //-------------------------
-const std::complex<double>& DecayingParticle::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> DecayingParticle::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     // \todo implement and check
     /*std::complex<double> a = Complex_0;

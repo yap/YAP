@@ -58,7 +58,7 @@ public:
 
     /// @}
 
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// \name Getters
     /// @{

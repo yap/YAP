@@ -45,7 +45,7 @@ public:
     HelicitySpinAmplitude(const QuantumNumbers& initial,
                           const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

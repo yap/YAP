@@ -54,7 +54,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;

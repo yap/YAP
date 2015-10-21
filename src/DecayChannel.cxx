@@ -26,17 +26,11 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     BlattWeisskopf_(nullptr), // see comment below!
     SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(new ComplexParameter(0)),
-    FixedAmplitude_(new CachedDataValue(this, {})),
-    NominalBreakupMomentum2_(new RealCachedValue())
+    FixedAmplitude_(new CachedDataValue(this, {}))
 {
     /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
     std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
     BlattWeisskopf_.swap(bw);
-
-    // NominalBreakupMomentum2_ dependencies
-    NominalBreakupMomentum2_->addDependency(Parent_->mass());
-    for (auto& d : Daughters_)
-        NominalBreakupMomentum2_->addDependency(d->mass());
 
     /// \todo set all other dependencies
 
@@ -84,7 +78,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-const std::complex<double>& DecayChannel::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo implement and check
     /*
@@ -199,31 +193,6 @@ bool DecayChannel::consistent() const
         LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
 
     return result;
-}
-
-//-------------------------
-std::shared_ptr<RealCachedValue> DecayChannel::breakupMomentum2()
-{
-    if (NominalBreakupMomentum2_->calculationStatus() == kUncalculated) {
-        if (Daughters_.size() != 2) {
-            LOG(FATAL) << "DecayChannel::breakupMomentum() - wrong number of daughters (" << Daughters_.size() << " != 2). Cannot calculate!";
-            NominalBreakupMomentum2_->setValue(std::numeric_limits<double>::quiet_NaN());
-        }
-
-        /// \todo take masses from mass shape instead?
-        /// or do we need the invariant masses instead of the nominal masses?
-        double m2_R =  pow(Parent_->mass()->value(), 2);
-        double m_a = Daughters_[0]->mass()->value();
-        double m_b = Daughters_[1]->mass()->value();
-
-        if (m_a == m_b) {
-            NominalBreakupMomentum2_->setValue( m2_R / 4. - m_a * m_a );
-        }
-
-        NominalBreakupMomentum2_->setValue( (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4. );
-    }
-
-    return NominalBreakupMomentum2_;
 }
 
 //-------------------------

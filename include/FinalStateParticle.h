@@ -52,7 +52,7 @@ public:
     /// @}
 
     /// \return 1 + 0i
-    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
+    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
     { static std::complex<double> a = Complex_1; return a; }
 
     virtual bool consistent() const override;
