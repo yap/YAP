@@ -14,9 +14,10 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 {}
 
 //-------------------------
-std::complex<double> Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+const std::complex<double>& Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo check
+    /// \todo implement and check
+    /*
     std::complex<double> a = Complex_0;
 
     for (auto& c : channels()) {
@@ -28,7 +29,8 @@ std::complex<double> Resonance::calcAmplitude(DataPartition& d, std::shared_ptr<
 
     DEBUG("Resonance " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
 
-    return a;
+    return a;*/
+    return Complex_0;
 }
 
 //-------------------------

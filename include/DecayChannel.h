@@ -19,8 +19,9 @@
 #ifndef yap_DecayChannel_h
 #define yap_DecayChannel_h
 
-#include "AmplitudeComponentDataAccessor.h"
+#include "AmplitudeComponent.h"
 #include "BlattWeisskopf.h"
+#include "DataAccessor.h"
 #include "ParameterSet.h"
 
 #include <complex>
@@ -41,7 +42,7 @@ class SpinAmplitude;
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DecayChannel : public AmplitudeComponentDataAccessor
+class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
     /// N-particle Constructor [at the moment only valid for 2 particles]
@@ -52,6 +53,8 @@ public:
 
     /// Copy constructor
     DecayChannel(const DecayChannel& other) = delete;
+
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -111,13 +114,7 @@ public:
     // for internal use only
     void setSymmetrizationIndexParents();
 
-    virtual void precalculate() override;
-    virtual void finishedPrecalculation() override;
-
 protected:
-
-    /// \return (fixed) Amplitude for decay channel
-    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// DecayingParticle this DecayChannel belongs to
     DecayingParticle* Parent_;

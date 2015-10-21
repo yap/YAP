@@ -12,7 +12,7 @@ namespace yap {
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
-    AmplitudeComponentDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
+    DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     DecayChannel_(decayChannel),
     Value_(new RealCachedValue())
 {
@@ -21,8 +21,15 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 }
 
 //-------------------------
-void BlattWeisskopf::precalculate()
+const std::complex<double>& BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
+    /// \todo implement
+    /*
+    if (NominalBreakupMomentum2_->calculationStatus() == kUncalculated) {
+
+    }
+
+
     if (Value_->calculationStatus() == kUncalculated) {
 
         /// \todo What if we want to fit masses?
@@ -83,14 +90,8 @@ void BlattWeisskopf::precalculate()
         Value_->setValue(sqrt(bf2));
 
         DEBUG("Blatt-Weisskopf barrier factor (L = " << spinToString(twoL) << ", " << "q = " << sqrt(breakupMom2) << " GeV/c; R = " << R << " 1/GeV) = " << Value_->value());
-    }
-}
-
-//-------------------------
-std::complex<double> BlattWeisskopf::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
-{
-    /// \todo implement
-    return std::complex<double>(Value_->value());
+    }*/
+    return Complex_0;
 }
 
 //-------------------------

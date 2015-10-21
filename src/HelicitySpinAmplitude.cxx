@@ -17,17 +17,14 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
 }
 
 //-------------------------
-void HelicitySpinAmplitude::precalculate()
+const std::complex<double>& HelicitySpinAmplitude::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
+    /// \todo implement
+    /*
     if (ClebschGordanCoefficients_.empty()) {
         for (auto& pc : particleCombinations())
             ClebschGordanCoefficients_[pc] = calculateClebschGordanCoefficient(pc);
     }
-}
-
-//-------------------------
-std::complex<double> HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
-{
 
     /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
     /// implemented in rootPWA by C. Bicker
@@ -53,7 +50,8 @@ std::complex<double> HelicitySpinAmplitude::calcAmplitude(DataPartition& d, std:
     }
 
     DEBUG("HelicitySpinAmplitude = " << a);
-    return a;
+    return a;*/
+    return Complex_0;
 }
 
 //-------------------------

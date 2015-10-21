@@ -15,14 +15,20 @@ BreitWigner::BreitWigner(double mass, double width) :
 {
 }
 
+const std::complex<double>& BreitWigner::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+{
+    /// \todo implement
+    return Complex_0;
+}
+
 //-------------------------
-void BreitWigner::precalculate()
+/*void BreitWigner::precalculate()
 {
     if (M2iMG_->calculationStatus() == kUncalculated) {
         // m*m -i*m*w
         M2iMG_->setValue(Parameters_[0]->value() * Parameters_[0]->value() - Complex_i * Parameters_[0]->value() * Parameters_[1]->value());
     }
-}
+}*/
 
 //-------------------------
 std::complex<double> BreitWigner::calcAmplitudeS(double s) const

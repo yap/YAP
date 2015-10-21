@@ -21,7 +21,8 @@
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
-#include "AmplitudeComponentDataAccessor.h"
+#include "AmplitudeComponent.h"
+#include "DataAccessor.h"
 #include "InitialStateParticle.h"
 #include "ParameterSet.h"
 #include "ParticleFactory.h"
@@ -39,7 +40,7 @@ class ParticleCombination;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
 
-class MassShape : public AmplitudeComponentDataAccessor
+class MassShape : public AmplitudeComponent, public DataAccessor
 {
 public:
 
@@ -59,7 +60,7 @@ public:
 
     /// Check consistency of object
     virtual bool consistent() const override
-    { return AmplitudeComponentDataAccessor::consistent(); }
+    { return DataAccessor::consistent(); }
 
     /// @}
 
@@ -69,12 +70,6 @@ protected:
     /// @{
 
     /// Calculate MassShape amplitude from squared mass
-    /// \return amplitude evaluated at squared mass
-    /// \param s squared mass to evaluate at
-    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
-    { return calcAmplitudeS(initialStateParticle()->fourMomenta().m2(d.dataPoint(), pc)); }
-
-    /// Calculate MassShape ampltude from squared mass
     /// \return amplitude evaluated at squared mass
     /// \param s squared mass to evaluate at
     virtual std::complex<double> calcAmplitudeS(double s) const = 0;

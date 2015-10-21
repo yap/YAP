@@ -52,6 +52,8 @@ public:
 
     /// @}
 
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -74,11 +76,6 @@ public:
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
-
-protected:
-
-    /// \return amplitude for resonance evaluated at DataPoint
-    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 

@@ -16,28 +16,15 @@ namespace yap {
 DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     AmplitudeComponent(),
     Particle(q, mass, name),
-    AmplitudeComponentDataAccessor(),
+    DataAccessor(),
     RadialSize_(new RealParameter(radialSize))
 {}
 
 //-------------------------
-/*DecayingParticle::DecayingParticle(const DecayingParticle& other) :
-    AmplitudeComponent(other),
-    Particle(other),
-    AmplitudeComponentDataAccessor(other),
-    RadialSize_(other.RadialSize_)
+const std::complex<double>& DecayingParticle::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    for (auto& c : other.Channels_) {
-        std::unique_ptr<DecayChannel> channelCopy(new DecayChannel(*c));
-        addChannel(channelCopy);
-    }
-}*/
-
-//-------------------------
-std::complex<double> DecayingParticle::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
-{
-    // \todo check
-    std::complex<double> a = Complex_0;
+    // \todo implement and check
+    /*std::complex<double> a = Complex_0;
 
     for (auto& c : channels()) {
         if (c->hasSymmetrizationIndex(pc))
@@ -46,7 +33,8 @@ std::complex<double> DecayingParticle::calcAmplitude(DataPartition& d, std::shar
 
     DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
 
-    return a;
+    return a;*/
+    return Complex_0;
 }
 
 //-------------------------
@@ -155,7 +143,7 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
 //-------------------------
 void DecayingParticle::setInitialStateParticle(InitialStateParticle* isp)
 {
-    AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
+    DataAccessor::setInitialStateParticle(isp);
     // hand ISP to channels
     for (auto& c : Channels_)
         c->setInitialStateParticle(initialStateParticle());
@@ -345,18 +333,5 @@ void DecayingParticle::setSymmetrizationIndexParents()
 
 }
 
-//-------------------------
-void DecayingParticle::precalculate()
-{
-    for (auto& c : Channels_)
-        c->precalculate();
-}
-
-//-------------------------
-void DecayingParticle::finishedPrecalculation()
-{
-    for (auto& c : Channels_)
-        c->finishedPrecalculation();
-}
 
 }

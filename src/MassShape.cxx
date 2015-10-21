@@ -7,7 +7,7 @@ namespace yap {
 
 //-------------------------
 MassShape::MassShape(std::initializer_list<double> pars) :
-    AmplitudeComponentDataAccessor(&ParticleCombination::equivByOrderlessContent),
+    DataAccessor(&ParticleCombination::equivByOrderlessContent),
     Parameters_(pars)
 {
 }

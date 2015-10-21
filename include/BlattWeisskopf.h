@@ -21,9 +21,10 @@
 #ifndef yap_BlattWeisskopf_h
 #define yap_BlattWeisskopf_h
 
-#include "AmplitudeComponentDataAccessor.h"
+#include "AmplitudeComponent.h"
 #include "CachedValue.h"
 #include "CalculationStatus.h"
+#include "DataAccessor.h"
 
 #include <complex>
 #include <memory>
@@ -37,12 +38,14 @@ class ParticleCombination;
 /// \brief Class implementing BlattWeisskopf barrier factors
 /// \author Johannes Rauch, Daniel Greenwald
 
-class BlattWeisskopf : public AmplitudeComponentDataAccessor
+class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
 
     /// Constructor
     BlattWeisskopf(DecayChannel* decayChannel);
+
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -50,18 +53,12 @@ public:
     /// Return DecayChannel this BlattWeisskopf belongs to
     DecayChannel* decayChannel() const {return DecayChannel_;}
 
-    virtual void precalculate() override;
-    virtual void finishedPrecalculation() override
-    { Value_->finishedPrecalculation(); }
-
-protected:
-
-    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const;
-
 private:
 
     /// DecayChannel this BlattWeisskopf belongs to
     DecayChannel* DecayChannel_;
+
+    std::shared_ptr<RealCachedValue> NominalBreakupMomentum2_;
 
     /// \todo rename
     std::shared_ptr<RealCachedValue> Value_;

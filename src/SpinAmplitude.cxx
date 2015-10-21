@@ -8,7 +8,7 @@ namespace yap {
 //-------------------------
 SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL)
-    : AmplitudeComponentDataAccessor(),
+    : DataAccessor(),
       InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}}),
 TwoL_(twoL)

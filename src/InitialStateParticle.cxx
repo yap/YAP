@@ -38,11 +38,6 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     DEBUG("InitialStateParticle::logLikelihood()");
 
-    // precalculate
-    /// \todo do outside of this function
-    precalculate();
-    finishedPrecalculation();
-
     // calculate amplitues
     do {
         std::complex<double> a = Complex_0;

@@ -58,6 +58,8 @@ public:
 
     /// @}
 
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+
     /// \name Getters
     /// @{
 
@@ -105,11 +107,6 @@ public:
     virtual bool consistent() const override;
 
     /// @}
-
-    /// precalculate M2iMG_
-    virtual void precalculate() override;
-    virtual void finishedPrecalculation() override
-    { M2iMG_->finishedPrecalculation(); }
 
 protected:
 

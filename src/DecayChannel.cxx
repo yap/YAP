@@ -20,7 +20,7 @@ DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<
 
 //-------------------------
 DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
-    AmplitudeComponentDataAccessor(),
+    DataAccessor(),
     Parent_(parent),
     Daughters_(daughters),
     BlattWeisskopf_(nullptr), // see comment below!
@@ -84,9 +84,10 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-std::complex<double> DecayChannel::calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+const std::complex<double>& DecayChannel::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
-    /// \todo check
+    /// \todo implement and check
+    /*
     std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
 
     if (a == Complex_0)
@@ -99,7 +100,8 @@ std::complex<double> DecayChannel::calcAmplitude(DataPartition& d, std::shared_p
 
     DEBUG("DecayChannel " << std::string(*this) << " amplitude for " << std::string(*pc) << " = " << a);
 
-    return a;
+    return a;*/
+    return Complex_0;
 }
 
 //-------------------------
@@ -107,9 +109,9 @@ bool DecayChannel::consistent() const
 {
     bool result = true;
 
-    result &= AmplitudeComponentDataAccessor::consistent();
+    result &= DataAccessor::consistent();
     if (!result) {
-        LOG(ERROR) << "Channel's AmplitudeComponentDataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
+        LOG(ERROR) << "Channel's DataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
     }
 
     // check number of daughters greater than 1
@@ -264,7 +266,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 //-------------------------
 void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 {
-    AmplitudeComponentDataAccessor::setInitialStateParticle(isp);
+    DataAccessor::setInitialStateParticle(isp);
     SpinAmplitude_->setInitialStateParticle(initialStateParticle());
     BlattWeisskopf_->setInitialStateParticle(initialStateParticle());
 
@@ -336,28 +338,6 @@ void DecayChannel::setSymmetrizationIndexParents()
     for (auto d : daughters())
         d->setSymmetrizationIndexParents();
 
-}
-
-//-------------------------
-void DecayChannel::precalculate()
-{
-    // calculates it
-    breakupMomentum2();
-
-    /// \todo find a solution to do this not recursively?
-    BlattWeisskopf_->precalculate();
-    SpinAmplitude_->precalculate();
-    for (auto& d : Daughters_)
-        d->precalculate();
-}
-
-//-------------------------
-void DecayChannel::finishedPrecalculation()
-{
-    BlattWeisskopf_->finishedPrecalculation();
-    SpinAmplitude_->finishedPrecalculation();
-    for (auto& d : Daughters_)
-        d->finishedPrecalculation();
 }
 
 

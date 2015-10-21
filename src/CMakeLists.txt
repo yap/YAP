@@ -4,11 +4,10 @@ set(INCLUDE_DIRECTORIES
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
-	AmplitudeComponentDataAccessor.cxx
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
-  CachedDataValue.cxx
-  CachedValue.cxx
+	CachedDataValue.cxx
+	CachedValue.cxx
 	Constants.cxx
 	DataAccessor.cxx
 	DataPartition.cxx

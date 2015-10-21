@@ -21,7 +21,8 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
-#include "AmplitudeComponentDataAccessor.h"
+#include "AmplitudeComponent.h"
+#include "DataAccessor.h"
 #include "DecayChannel.h"
 #include "Particle.h"
 
@@ -40,7 +41,7 @@ class ParticleCombination;
 /// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class DecayingParticle : public Particle, public AmplitudeComponentDataAccessor
+class DecayingParticle : public Particle, public DataAccessor
 {
 public:
 
@@ -54,6 +55,8 @@ public:
     DecayingParticle(const DecayingParticle& other) = delete;
 
     /// @}
+
+    virtual const std::complex<double>& amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -126,15 +129,6 @@ public:
 
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
-
-    virtual void precalculate() override;
-    virtual void finishedPrecalculation() override;
-
-protected:
-
-    /// \return Ampltiude for particle
-    /// \param d DataPoint to evaluate on
-    virtual std::complex<double> calcAmplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
 private:
 
