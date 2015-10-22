@@ -33,6 +33,8 @@
 
 namespace yap {
 
+class Resonance;
+
 class ParticleCombination;
 
 /// \class MassShape
@@ -45,7 +47,7 @@ class MassShape : public AmplitudeComponent, public DataAccessor
 public:
 
     /// Constructor
-    MassShape(std::initializer_list<double> pars);
+    MassShape(std::vector<std::shared_ptr<ComplexParameter> > pars = {});
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
@@ -64,6 +66,13 @@ public:
 
     /// @}
 
+    /// \name Friends
+    /// @{
+
+    friend class Resonance;
+
+    /// @}
+
 protected:
 
     /// \name Amplitude related
@@ -76,6 +85,11 @@ protected:
 
     /// @}
 
+    /// override in inheriting classes to borrow parameters from Resonance
+    virtual void borrowParametersFromResonance(Resonance* R)
+        {}
+
+    /// Parameters of the mass shape
     ParameterSet Parameters_;
 
 };

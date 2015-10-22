@@ -6,7 +6,7 @@
 namespace yap {
 
 //-------------------------
-MassShape::MassShape(std::initializer_list<double> pars) :
+MassShape::MassShape(std::vector<std::shared_ptr<ComplexParameter> > pars) :
     DataAccessor(&ParticleCombination::equivByOrderlessContent),
     Parameters_(pars)
 {
