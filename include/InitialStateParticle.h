@@ -60,12 +60,6 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// Check consistency of data point with this initial state and its final state particles
-    /// \param d DataPoint to check
-    /// \todo Flesh out
-    virtual bool consisent(const DataPoint& d) const
-    { return true; }
-
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
 
@@ -101,6 +95,9 @@ public:
 
     /// @}
 
+    /// \name DataPoints
+    /// @{
+
     /// Add data point via four-momenta
     /// This method is faster since it avoids unneccessary copying of objects
     /// and resizing of the DataPoint's storage
@@ -116,6 +113,8 @@ public:
     /// \return Success of action
     bool addDataPoint(const DataPoint& d);
 
+    /// @}
+
     void printDataAccessors(bool printParticleCombinations = true);
 
 private:
@@ -124,6 +123,10 @@ private:
 
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
+
+    /// set all parameter flags to kUnchanged (or leave at kFixed)
+    /// call after looping over a DataPartition
+    void setParameterFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// add DataAccessor to set
     void addDataAccessor(DataAccessor* d);

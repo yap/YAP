@@ -117,14 +117,22 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<c
 //-------------------------
 CalculationStatus DecayChannel::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
 {
-    if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
+    // must not check free amplitude
+    //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
+    //    return kUncalculated;
+
+    if (FixedAmplitude_->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
+        //DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated");
         return kUncalculated;
+    }
 
     // check daughters
     for (unsigned i=0; i<Daughters_.size(); ++i) {
         auto daugh = std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]);
-        if (daugh and daugh->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated)
+        if (daugh and daugh->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated) {
+            //DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
             return kUncalculated;
+        }
     }
 
     return kCalculated;

@@ -57,6 +57,7 @@ public:
     /// @{
 
     friend class DataAccessor;
+    friend class InitialStateParticle;
 
     /// @}
 
@@ -134,7 +135,7 @@ public:
     /// \param stat VariableStatus to set to
     /// \param symmetrizationIndex index of symmetrization to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setVariableStatus(VariableStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    void setVariableStatus(VariableStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
     { VariableStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
 
     /// set all variable statuses

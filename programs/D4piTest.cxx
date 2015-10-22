@@ -130,7 +130,7 @@ int main( int argc, char** argv)
     for (auto& a : freeAmps)
         a->setValue(0.5 * a->value());
 
-    std::cout << "try second calculation after changing free amps! ============================== \n";
+    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
 
     D->logLikelihood(d);
 

@@ -57,7 +57,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, std::shared_ptr
     }
 
     double Fq_rOFq_ab = Fq_r->value(d.dataPoint(), symIndex) / Fq_ab->value(d.dataPoint(), symIndex);
-    DEBUG("Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
+    //DEBUG("Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
     return std::complex<double>(Fq_rOFq_ab);
 }
 

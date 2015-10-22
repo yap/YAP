@@ -38,7 +38,7 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     DEBUG("InitialStateParticle::logLikelihood()");
 
-    // calculate amplitues
+    // calculate amplitudes
     do {
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
@@ -47,8 +47,8 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
         DEBUG("InitialStateParticle amplitude = " << a);
     } while (d.increment());
 
-    /// \todo set DataPartition flags to Caclulated
 
+    setParameterFlagsToUnchanged(d.index());
 
     return 0;
 }
@@ -151,34 +151,6 @@ ParameterSet InitialStateParticle::freeAmplitudes() const
 }
 
 //-------------------------
-void InitialStateParticle::setSymmetrizationIndexParents()
-{
-    //std::cout << "InitialStateParticle::setSymmetrizationIndexParents()\n";
-
-    unsigned size = particleCombinations()[0]->indices().size();
-    assert(size > 1);
-
-    clearSymmetrizationIndices();
-
-    // get initial state PCs from set and add them
-    for (auto& pc : ParticleCombination::particleCombinationSet()) {
-        if (pc->indices().size() < size)
-            continue;
-
-        if (pc->daughters()[0]->parent() == nullptr)
-            continue;
-
-        //std::cout << "  add " << std::string(*pc) << "\n";
-        addSymmetrizationIndex(pc);
-    }
-
-    // next level
-    for (auto& ch : channels())
-        ch->setSymmetrizationIndexParents();
-
-}
-
-//-------------------------
 bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourMomenta)
 {
     if (!Prepared_) {
@@ -273,6 +245,50 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
         std::cout << "\n";
     }
     std::cout << std::endl;
+}
+
+//-------------------------
+void InitialStateParticle::setSymmetrizationIndexParents()
+{
+    //std::cout << "InitialStateParticle::setSymmetrizationIndexParents()\n";
+
+    unsigned size = particleCombinations()[0]->indices().size();
+    assert(size > 1);
+
+    clearSymmetrizationIndices();
+
+    // get initial state PCs from set and add them
+    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        if (pc->indices().size() < size)
+            continue;
+
+        if (pc->daughters()[0]->parent() == nullptr)
+            continue;
+
+        //std::cout << "  add " << std::string(*pc) << "\n";
+        addSymmetrizationIndex(pc);
+    }
+
+    // next level
+    for (auto& ch : channels())
+        ch->setSymmetrizationIndexParents();
+
+}
+
+//-------------------------
+void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIndex)
+{
+    for (DataAccessor* d : DataAccessors_) {
+        for (CachedDataValue* c : d->CachedDataValues_) {
+            c->setVariableStatus(kUnchanged, dataPartitionIndex);
+
+            for (auto& p : c->ParametersItDependsOn_) {
+                if (p->variableStatus() == kChanged) {
+                    p->setVariableStatus(kUnchanged);
+                }
+            }
+        }
+    }
 }
 
 //-------------------------
