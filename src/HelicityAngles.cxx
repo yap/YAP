@@ -81,7 +81,7 @@ TLorentzRotation HelicityAngles::hfTransform(const TLorentzVector& daughterLv)
 
 //-------------------------
 void HelicityAngles::transformDaughters(DataPoint& d,
-                                        std::shared_ptr<const ParticleCombination> pc,
+                                        const std::shared_ptr<const ParticleCombination>& pc,
                                         std::vector<TLorentzVector> finalStatesHf)
 {
     // loop over daughters
