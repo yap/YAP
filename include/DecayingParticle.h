@@ -122,6 +122,9 @@ public:
     virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
     { return std::vector<std::shared_ptr<CachedDataValue> >{Amplitude_}; }
 
+
+    using DataAccessor::calculationStatus;
+
 protected:
 
     void printDecayChainLevel(int level) const;
