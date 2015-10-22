@@ -63,7 +63,7 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape)
+std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);

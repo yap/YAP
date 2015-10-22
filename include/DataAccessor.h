@@ -71,7 +71,8 @@ public:
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const;
+    bool hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
+    { return (SymmetrizationIndices_.count(c)); }
 
     /// \return index inside row of DataPoint for the requested symmetrization
     unsigned symmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const

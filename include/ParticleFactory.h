@@ -80,7 +80,7 @@ public:
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
+    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape);
 
     /// \name Particle table access
     /// @{

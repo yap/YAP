@@ -3,6 +3,7 @@
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
+#include "make_unique.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
@@ -39,13 +40,13 @@ int main( int argc, char** argv)
     auto piMinus = factory.createFinalStateParticle(-211, {1, 3});
 
     // rho rho
-    auto rho = factory.createResonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());
     rho->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(rho, rho, max2L);
 
     // omega omega
-    auto omega = factory.createResonance(223, radialSize, std::make_shared<yap::BreitWigner>());
+    auto omega = factory.createResonance(223, radialSize, std::make_unique<yap::BreitWigner>());
     omega->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(omega, omega, max2L);
@@ -54,10 +55,10 @@ int main( int argc, char** argv)
     D->addChannels(rho, omega, max2L);
 
     // a_1 channels
-    auto sigma = factory.createResonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = factory.createResonance(9000221, radialSize, std::make_unique<yap::BreitWigner>());
     sigma->addChannels(piPlus, piMinus, max2L);
 
-    auto a_1 = factory.createResonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = factory.createResonance(20213, radialSize, std::make_unique<yap::BreitWigner>());
     a_1->addChannels(sigma, piPlus, max2L);
 
     a_1->addChannels(rho, piPlus, max2L);

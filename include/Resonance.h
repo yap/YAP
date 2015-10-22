@@ -48,7 +48,7 @@ public:
     /// @{
 
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>& massShape);
 
     /// @}
 
@@ -58,8 +58,8 @@ public:
     virtual bool consistent() const override;
 
     /// access MassShape
-    const std::shared_ptr<MassShape> massShape() const
-    { return MassShape_; }
+    const MassShape& massShape() const
+    { return *(MassShape_.get()); }
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
@@ -80,7 +80,7 @@ public:
 private:
 
     /// MassShape object
-    std::shared_ptr<MassShape> MassShape_;
+    std::unique_ptr<MassShape> MassShape_;
 
 };
 

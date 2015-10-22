@@ -25,16 +25,6 @@ DataAccessor::~DataAccessor()
 }
 
 //-------------------------
-bool DataAccessor::hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
-{
-    for (auto& kv : SymmetrizationIndices_)
-        if (kv.first == c)
-            return true;
-
-    return false;
-}
-
-//-------------------------
 unsigned DataAccessor::maxSymmetrizationIndex() const
 {
     /// I don't know why, but std::max_element returns wrong numbers sometimes!

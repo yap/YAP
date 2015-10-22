@@ -8,10 +8,12 @@
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape) :
+Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>& massShape) :
     DecayingParticle(q, mass, name, radialSize),
-    MassShape_(massShape)
+    MassShape_(nullptr)
 {
+    MassShape_.swap(massShape);
+
     Amplitude_->addDependencies(MassShape_->ParametersItDependsOn());
     Amplitude_->addDependencies(MassShape_->CachedDataValuesItDependsOn());
 }
@@ -47,7 +49,7 @@ bool Resonance::consistent() const
     bool consistent = true;
 
     consistent &= DecayingParticle::consistent();
-    consistent &= massShape()->consistent();
+    consistent &= MassShape_->consistent();
 
     if (! consistent) {
         LOG(ERROR) << "Resonance is not consistent:  " << this->name() << "\n";
