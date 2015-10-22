@@ -28,7 +28,7 @@ void BreitWigner::borrowParametersFromResonance(Resonance* R)
 }
 
 //-------------------------
-std::complex<double> BreitWigner::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> BreitWigner::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     /// \todo implement
     return Complex_1;
