@@ -82,7 +82,6 @@ protected:
 
     /// Data storage for all DataAccessors
 
-    /// \todo Change to "RealData_"
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor

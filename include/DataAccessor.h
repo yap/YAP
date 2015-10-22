@@ -52,9 +52,8 @@ public:
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
-    /// Copy constructor
-    /// \todo Do we need a DataAccessor copy constructor? (Currently copies size, but not CachedDataValue's)
-    DataAccessor(const DataAccessor& other);
+    /// Copy constructor is deleted, since we don't need it and implementing it for all deriving classes would be too complicated
+    DataAccessor(const DataAccessor& other) = delete;
 
     /// Destructor
     virtual ~DataAccessor();

@@ -15,19 +15,6 @@ DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
 {
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
-
-    //DEBUG("construct DataAccessor with address " << this);
-}
-
-//-------------------------
-DataAccessor::DataAccessor(const DataAccessor& other) :
-    InitialStateParticle_(nullptr),
-    Equiv_(other.Equiv_),
-    SymmetrizationIndices_(other.SymmetrizationIndices_),
-    Size_(other.Size_),
-    Index_(0)
-{
-    setInitialStateParticle(other.InitialStateParticle_);
 }
 
 //-------------------------
@@ -35,8 +22,6 @@ DataAccessor::~DataAccessor()
 {
     if (InitialStateParticle_)
         InitialStateParticle_->removeDataAccessor(this);
-
-    //DEBUG("destruct DataAccessor with address " << this);
 }
 
 //-------------------------

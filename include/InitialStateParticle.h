@@ -54,7 +54,7 @@ public:
 
     /// @}
 
-    /// \todo remove!
+    /// \todo remove/rename/rework!
     double logLikelihood(DataPartition& d);
 
     /// Check consistency of object
