@@ -41,10 +41,16 @@ class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
+    /// \name Constructors
+    /// @{
+
     /// Constructor
     HelicitySpinAmplitude(const QuantumNumbers& initial,
                           const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
 
+    /// @}
+
+    /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check consistency of object

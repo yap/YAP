@@ -44,14 +44,10 @@ class Resonance : public DecayingParticle
 {
 public:
 
-    /// \name Constructor & clone
-    /// @{
-
     /// Constructor
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>& massShape);
 
-    /// @}
-
+    /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check consistency of object

@@ -182,7 +182,8 @@ protected:
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
-    std::vector<CachedDataValue*> CachedDataValues_;
+    /// Set of CachedDataValues that have this DataAccessor as an owner
+    std::set<CachedDataValue*> CachedDataValues_;
 
     /// number of real values stored per symm. index
     unsigned Size_;

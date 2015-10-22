@@ -124,7 +124,7 @@ void DataAccessor::clearSymmetrizationIndices()
 void DataAccessor::addCachedDataValue(CachedDataValue* c)
 {
     c->setNumberOfSymmetrizations(maxSymmetrizationIndex() + 1);
-    CachedDataValues_.push_back(c);
+    CachedDataValues_.insert(c);
 }
 
 //-------------------------

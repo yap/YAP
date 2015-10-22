@@ -45,17 +45,10 @@ class DecayingParticle : public Particle, public DataAccessor
 {
 public:
 
-    /// \name Constructors
-    /// @{
-
     /// Constructor
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
-    /// Copy constructor
-    DecayingParticle(const DecayingParticle& other) = delete;
-
-    /// @}
-
+    /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// Check consistency of object

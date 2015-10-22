@@ -42,18 +42,8 @@ class AmplitudeComponent
 {
 public:
 
-    /// \name Constructors, destructor, & operators
-    /// @{
-
     /// Default constructor
     AmplitudeComponent() {};
-
-    // Defaulted copy constructor
-    // Defaulted move constructor
-    // Defaulted destructor
-    // Defaulted move assignment operator
-
-    /// @}
 
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const = 0;

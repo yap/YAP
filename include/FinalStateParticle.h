@@ -42,7 +42,7 @@ class FinalStateParticle : public Particle
 {
 public:
 
-    /// \name Constructor & clone
+    /// \name Constructor
     /// @{
 
     /// Constructor
@@ -51,10 +51,12 @@ public:
 
     /// @}
 
+    /// Calculate complex amplitude
     /// \return 1 + 0i
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override
     { static std::complex<double> a = Complex_1; return a; }
 
+    /// Check consistency
     virtual bool consistent() const override;
 
     /// \return list of all ParticleCombinations

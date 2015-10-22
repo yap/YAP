@@ -50,14 +50,10 @@ class BreitWigner : public MassShape
 {
 public:
 
-    /// \name Constructors, destructor, & operators
-    /// @{
-
-    /// Default constructor
+    /// Constructor
     BreitWigner(double mass = -1, double width = -1);
 
-    /// @}
-
+    /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     /// \name Getters

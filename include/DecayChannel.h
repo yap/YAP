@@ -45,6 +45,10 @@ class SpinAmplitude;
 class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
+
+    /// \name Constructors
+    /// @{
+
     /// N-particle Constructor [at the moment only valid for 2 particles]
     DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
 
@@ -54,6 +58,9 @@ public:
     /// Copy constructor
     DecayChannel(const DecayChannel& other) = delete;
 
+    /// @}
+
+    /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
 
     virtual CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0) const override;

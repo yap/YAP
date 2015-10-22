@@ -176,9 +176,6 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
     if (!DataSet_.consistent(d))
         return false;
 
-    /// \todo remove
-    d.printDataSize();
-
     return true;
 }
 

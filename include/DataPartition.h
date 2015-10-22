@@ -40,6 +40,7 @@ class DataPartition
 {
 public:
 
+    /// Constructor
     DataPartition(const DataPoint& dataPoint, DataIterator begin, DataIterator end, unsigned spacing = 1);
 
     /// increment and
