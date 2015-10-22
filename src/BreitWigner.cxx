@@ -11,8 +11,8 @@ namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
-    MassShape({std::make_shared<RealParameter>(mass), std::make_shared<RealParameter>(width)}),
-    M2iMG_(new ComplexCachedValue({Parameters_[0], Parameters_[1]}))
+    MassShape( {std::make_shared<RealParameter>(mass), std::make_shared<RealParameter>(width)}),
+           M2iMG_(new ComplexCachedValue({Parameters_[0], Parameters_[1]}))
 {
 }
 

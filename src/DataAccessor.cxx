@@ -71,7 +71,7 @@ bool DataAccessor::consistent() const
             result = false;
         }
 
-        for (unsigned i=0; i<c->CalculationStatus_.size(); ++i) {
+        for (unsigned i = 0; i < c->CalculationStatus_.size(); ++i) {
             if (c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1) {
                 LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1";
                 LOG(ERROR) << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1;

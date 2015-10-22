@@ -21,15 +21,17 @@
 #ifndef yap_make_unique_h
 #define yap_make_unique_h
 
-/// c++ 14 implements make_unique
+/// c++14 implements make_unique
 /// for c++11 we have to define it ourselves
 #if __cplusplus <= 201103L
 namespace std {
-    template<typename T, typename ...Args>
-    std::unique_ptr<T> make_unique( Args&& ...args )
-    {
-        return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
-    }
+
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique( Args&& ...args )
+{
+    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}
+
 }
 #endif
 

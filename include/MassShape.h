@@ -87,7 +87,7 @@ protected:
 
     /// override in inheriting classes to borrow parameters from Resonance
     virtual void borrowParametersFromResonance(Resonance* R)
-        {}
+    {}
 
     /// Parameters of the mass shape
     ParameterSet Parameters_;

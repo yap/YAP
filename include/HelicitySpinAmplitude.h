@@ -72,7 +72,7 @@ public:
     //{ return std::vector<std::shared_ptr<ComplexParameter> >; }
 
     virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
-    { return std::vector<std::shared_ptr<CachedDataValue> >{SpinAmplitude_}; }
+    { return std::vector<std::shared_ptr<CachedDataValue> > {SpinAmplitude_}; }
 
 
 private:

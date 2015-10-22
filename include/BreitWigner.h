@@ -53,11 +53,11 @@ public:
 
     /// Get mass
     std::shared_ptr<RealParameter> mass() const
-        { return std::dynamic_pointer_cast<RealParameter>(Parameters_[0]); }
+    { return std::dynamic_pointer_cast<RealParameter>(Parameters_[0]); }
 
     /// Get width
     std::shared_ptr<RealParameter> width() const
-        { return std::dynamic_pointer_cast<RealParameter>(Parameters_[1]); }
+    { return std::dynamic_pointer_cast<RealParameter>(Parameters_[1]); }
 
     /// @}
 

@@ -121,10 +121,10 @@ public:
     void addSpinAmplitudeDependencies();
 
     virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
-    { return std::vector<std::shared_ptr<ComplexParameter> >{FreeAmplitude_}; }
+    { return std::vector<std::shared_ptr<ComplexParameter> > {FreeAmplitude_}; }
 
     virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
-    { return std::vector<std::shared_ptr<CachedDataValue> >{FixedAmplitude_}; }
+    { return std::vector<std::shared_ptr<CachedDataValue> > {FixedAmplitude_}; }
 
 protected:
 

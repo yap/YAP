@@ -39,7 +39,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, const std::shar
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
         double R = DecayChannel_->parent()->radialSize()->value();
-        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
+        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R * R, q2));
         Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
 
         DEBUG("Blatt-Weisskopf barrier factor Fq_r (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d.dataPoint(), symIndex));
@@ -50,7 +50,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, const std::shar
         double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d.dataPoint(), pc);
 
         double R = DecayChannel_->parent()->radialSize()->value();
-        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R*R, q2));
+        double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R * R, q2));
         Fq_ab->setValue(f, d.dataPoint(), symIndex, d.index());
 
         DEBUG("Blatt-Weisskopf barrier factor Fq_ab (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d.dataPoint(), symIndex));
@@ -77,7 +77,7 @@ double BlattWeisskopf::F2(int twoL, double R2, double q2)
         case 2:  // L = 1
             return 1. + z;
         case 4:  // L = 2
-            return 9. + 3.*z + z*z;
+            return 9. + 3.*z + z * z;
         default:
             LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                        << spinToString(twoL) << ". returning 0." << std::endl;

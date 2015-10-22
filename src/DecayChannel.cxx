@@ -123,7 +123,7 @@ CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const Pa
     }
 
     // check daughters
-    for (unsigned i=0; i<Daughters_.size(); ++i) {
+    for (unsigned i = 0; i < Daughters_.size(); ++i) {
         if (Daughters_[i]->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated) {
             //DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
             return kUncalculated;

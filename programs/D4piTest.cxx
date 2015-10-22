@@ -138,7 +138,7 @@ int main( int argc, char** argv)
     // only change some amps
     unsigned i(0);
     for (auto& a : freeAmps) {
-        if (i++%2 == 0)
+        if (i++ % 2 == 0)
             a->setValue(1.);
     }
 

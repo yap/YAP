@@ -65,7 +65,7 @@ public:
 
     /// \name Setters
     /// @{
-    
+
     /// set MassShape
     void setMassShape(std::unique_ptr<MassShape>& massShape);
 

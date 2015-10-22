@@ -213,7 +213,7 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
     std::cout << "DataAccessors of " << name() << "\n"
               << "index \tnSymIndices \taddress  \tname";
     if (printParticleCombinations)
-        std::cout <<"\t\tparticleCombinations";
+        std::cout << "\t\tparticleCombinations";
     std::cout << "\n";
 
     for (DataAccessor* d : DataAccessors_) {

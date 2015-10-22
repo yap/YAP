@@ -41,7 +41,7 @@ public:
     /// Empty constructor
     ParameterSet(std::vector<std::shared_ptr<ComplexParameter> > pars = {})
         : std::vector<std::shared_ptr<ComplexParameter> >(pars)
-        { }
+    { }
 
     /// Constructor for set of #Parameters with initializer list
     ParameterSet(std::vector<std::complex<double> > pars)
