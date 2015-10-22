@@ -30,7 +30,7 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
 }
 
 //-------------------------
-CalculationStatus CachedDataValue::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
     // if uncalculated, return without further checking
 #ifdef ELPP_DISABLE_DEBUG_LOGS

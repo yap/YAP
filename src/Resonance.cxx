@@ -13,8 +13,6 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
     MassShape_(nullptr)
 {
     setMassShape(massShape);
-    Amplitude_->addDependencies(MassShape_->ParametersItDependsOn());
-    Amplitude_->addDependencies(MassShape_->CachedDataValuesItDependsOn());
 }
 
 //-------------------------
@@ -24,30 +22,6 @@ void Resonance::setMassShape(std::unique_ptr<MassShape>& massShape)
     MassShape_->borrowParametersFromResonance(this);
 }
 
-//-------------------------
-std::complex<double> Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
-{
-    /// \todo check
-    unsigned symIndex = symmetrizationIndex(pc);
-
-    if (calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
-
-        std::complex<double> a = Complex_0;
-
-        for (auto& c : channels()) {
-            if (c->hasSymmetrizationIndex(pc))
-                a += c->amplitude(d, pc);
-        }
-
-        a *= MassShape_->amplitude(d, pc);
-
-        Amplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
-
-        DEBUG("Resonance " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
-    }
-
-    return Amplitude_->value(d.dataPoint(), symIndex);
-}
 
 //-------------------------
 bool Resonance::consistent() const

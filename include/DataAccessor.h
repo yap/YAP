@@ -78,11 +78,11 @@ public:
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
+    bool hasSymmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
     { return (SymmetrizationIndices_.count(c)); }
 
     /// \return index inside row of DataPoint for the requested symmetrization
-    unsigned symmetrizationIndex(std::shared_ptr<const ParticleCombination> c) const
+    unsigned symmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
 
     /// \return maximum index of SymmetrizationIndices_
@@ -157,7 +157,7 @@ public:
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const;
+    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const;
 
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc_symInd pair of shared pointer to #ParticleCombination and symmetrization index
@@ -168,7 +168,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned dataPartitionIndex = 0) const
+    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex = 0) const
     { return calculationStatus(pc, symmetrizationIndex(pc), dataPartitionIndex); }
 
     /// @}

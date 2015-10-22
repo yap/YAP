@@ -155,7 +155,7 @@ InitialStateParticle* DataAccessor::initialStateParticle() const
 }
 
 //-------------------------
-CalculationStatus DataAccessor::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
 {
     for (CachedDataValue* d : CachedDataValues_) {
         if (d->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)

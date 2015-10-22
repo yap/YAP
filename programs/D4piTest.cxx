@@ -99,7 +99,7 @@ int main( int argc, char** argv)
 
 
 
-    // test helicity angles
+    // create pseudo data
     TLorentzVector P(0., 0., 0., D->mass()->value());
     Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(),
                            piPlus->mass()->value(), piMinus->mass()->value()
@@ -135,7 +135,25 @@ int main( int argc, char** argv)
 
     D->logLikelihood(d);
 
+    // only change some amps
+    unsigned i(0);
+    for (auto& a : freeAmps) {
+        if (i++%2 == 0)
+            a->setValue(1.);
+    }
 
+    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
+
+    D->logLikelihood(d);
+
+    // set to zero
+    for (auto& a : freeAmps) {
+        a->setValue(0.);
+    }
+
+    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
+
+    D->logLikelihood(d);
 
 
 
