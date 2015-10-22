@@ -37,14 +37,6 @@ class ParticleCombination;
 /// \ingroup MassShapes
 ///
 /// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
-/// Variables stored in #MassShapes::Parameters_:\n
-///     MassShapes::#Parameters_[0] := nominal mass; set by setMass(double), returned by mass()\n
-///     MassShapes::#Parameters_[1] := nominal width; set by setWidth(double), returned by width()\n\n
-/// Values stored into DataPoint:
-///     [0] := real(A(s))
-///     [1] := imag(A(s))
-
-
 
 class BreitWigner : public MassShape
 {
@@ -59,30 +51,13 @@ public:
     /// \name Getters
     /// @{
 
-    /// \return nominal mass
-    double mass() const
-    { return Parameters_.at(0)->value().real(); }
+    /// Get mass
+    std::shared_ptr<RealParameter> mass() const
+        { return std::dynamic_pointer_cast<RealParameter>(Parameters_[0]); }
 
-    /// \return nominal squared masss
-    double squaredMass() const
-    { return mass() * mass(); }
-
-    /// \return nominal width
-    double width() const
-    { return Parameters_.at(1)->value().real(); }
-
-    /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set nominal mass
-    void setMass(double m)
-    { Parameters_.at(0)->setValue(m); }
-
-    /// Set nominal width
-    void setWidth(double w)
-    { Parameters_.at(1)->setValue(w); }
+    /// Get width
+    std::shared_ptr<RealParameter> width() const
+        { return std::dynamic_pointer_cast<RealParameter>(Parameters_[1]); }
 
     /// @}
 
@@ -107,6 +82,9 @@ public:
 protected:
 
     std::shared_ptr<ComplexCachedValue> M2iMG_;                  // mass * mass - i * mass * width
+
+    /// set owning resonance, borrow mass from owner
+    virtual void borrowParametersFromResonance(Resonance* R) override;
 
 };
 

@@ -5,16 +5,29 @@
 #include "logging.h"
 #include "InitialStateParticle.h"
 #include "ParticleCombination.h"
+#include "Resonance.h"
 
 namespace yap {
 
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
-    MassShape( {mass, width}),
-           M2iMG_(new ComplexCachedValue({Parameters_[0], Parameters_[1]}))
+    MassShape({std::make_shared<RealParameter>(mass), std::make_shared<RealParameter>(width)}),
+    M2iMG_(new ComplexCachedValue({Parameters_[0], Parameters_[1]}))
 {
 }
 
+//-------------------------
+void BreitWigner::borrowParametersFromResonance(Resonance* R)
+{
+    // Remove existing mass parameter from M2iMG_
+    M2iMG_->removeDependency(mass());
+    // borrow mass from Owner_
+    Parameters_[0] = R->mass();
+    // add new mass parameter into M2iMG_
+    M2iMG_->addDependency(mass());
+}
+
+//-------------------------
 std::complex<double> BreitWigner::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
 {
     /// \todo implement
@@ -45,11 +58,11 @@ bool BreitWigner::consistent() const
 {
     bool consistent = MassShape::consistent();
 
-    if (mass() <= 0) {
+    if (mass()->value() <= 0) {
         LOG(ERROR) << "BreitWigner::consistent() - mass <= 0";
         consistent = false;
     }
-    if (width() <= 0) {
+    if (width()->value() <= 0) {
         LOG(ERROR) << "BreitWigner::consistent() - width <= 0";
         consistent = false;
     }
