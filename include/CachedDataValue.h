@@ -88,7 +88,7 @@ public:
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
 
     /// overload and hide #CachedValue::calculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
@@ -101,7 +101,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned dataPartitionIndex = 0)
+    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex = 0)
     { return calculationStatus(pc, Owner_->symmetrizationIndex(pc), dataPartitionIndex); }
 
     /// \return VariableStatus for symmetrization index and data-partition index

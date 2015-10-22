@@ -84,7 +84,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> DecayChannel::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
@@ -111,7 +111,7 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<c
 
 
 //-------------------------
-CalculationStatus DecayChannel::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
 {
     // must not check free amplitude
     //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)

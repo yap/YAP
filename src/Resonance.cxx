@@ -16,12 +16,6 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 }
 
 //-------------------------
-std::complex<double> Resonance::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
-{
-    return DecayingParticle::amplitude(d, pc) * MassShape_->amplitude(d, pc);
-}
-
-//-------------------------
 bool Resonance::consistent() const
 {
     bool consistent = true;

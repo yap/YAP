@@ -18,7 +18,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
 }
 
 //-------------------------
-std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const
+std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);

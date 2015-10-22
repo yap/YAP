@@ -48,7 +48,8 @@ public:
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>& massShape);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override
+    { return DecayingParticle::amplitude(d, pc) * MassShape_->amplitude(d, pc); }
 
     /// Check consistency of object
     virtual bool consistent() const override;

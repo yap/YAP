@@ -54,7 +54,7 @@ public:
     BreitWigner(double mass = -1, double width = -1);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, std::shared_ptr<const ParticleCombination> pc) const override;
+    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
     /// \name Getters
     /// @{
