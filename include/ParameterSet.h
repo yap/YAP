@@ -39,17 +39,19 @@ class ParameterSet : public std::vector<std::shared_ptr<ComplexParameter> >
 public:
 
     /// Empty constructor
-    ParameterSet() {}
+    ParameterSet(std::vector<std::shared_ptr<ComplexParameter> > pars = {})
+        : std::vector<std::shared_ptr<ComplexParameter> >(pars)
+        { }
 
     /// Constructor for set of #Parameters with initializer list
-    ParameterSet(std::initializer_list<std::complex<double> > pars)
+    ParameterSet(std::vector<std::complex<double> > pars)
     {
         for (auto val : pars)
             push_back(std::make_shared<ComplexParameter>(val));
     }
 
     /// Constructor for set of #RealParameters with initializer list
-    ParameterSet(std::initializer_list<double> pars)
+    ParameterSet(std::vector<double> pars)
     {
         for (auto val : pars)
             push_back(std::make_shared<RealParameter>(val));
