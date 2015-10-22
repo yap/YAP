@@ -53,9 +53,20 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// \name Getters
+    /// @{
+
     /// access MassShape
     const MassShape& massShape() const
     { return *(MassShape_.get()); }
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+    
+    /// set MassShape
+    void setMassShape(std::unique_ptr<MassShape>& massShape);
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
@@ -69,6 +80,8 @@ public:
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to MassShape_
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
+
+    /// @}
 
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;

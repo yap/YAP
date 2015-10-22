@@ -12,10 +12,16 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
     DecayingParticle(q, mass, name, radialSize),
     MassShape_(nullptr)
 {
-    MassShape_.swap(massShape);
-
+    setMassShape(massShape);
     Amplitude_->addDependencies(MassShape_->ParametersItDependsOn());
     Amplitude_->addDependencies(MassShape_->CachedDataValuesItDependsOn());
+}
+
+//-------------------------
+void Resonance::setMassShape(std::unique_ptr<MassShape>& massShape)
+{
+    MassShape_.swap(massShape);
+    MassShape_->borrowParametersFromResonance(this);
 }
 
 //-------------------------
