@@ -52,6 +52,9 @@ public:
     void addDependency(std::shared_ptr<ComplexParameter> dep)
     { ParametersItDependsOn_.insert(dep); }
 
+    /// remove Parameter from list of dependencies
+    void removeDependency(std::shared_ptr<ComplexParameter> dep);
+
     /// update (depending on Parameters and CachedValueBase's it
     /// depends) and return CalculationStatus_
     CalculationStatus calculationStatus();

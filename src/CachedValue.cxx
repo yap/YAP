@@ -12,6 +12,16 @@ CachedValueBase::CachedValueBase(std::vector<std::shared_ptr<ComplexParameter> >
 }
 
 //-------------------------
+void CachedValueBase::removeDependency(std::shared_ptr<ComplexParameter> dep)
+{
+    // look for parameter in set of dependencies
+    auto it = ParametersItDependsOn_.find(dep);
+    // if found, erase
+    if (it != ParametersItDependsOn_.end())
+        ParametersItDependsOn_.erase(it);
+}
+
+//-------------------------
 CalculationStatus CachedValueBase::calculationStatus()
 {
     // if uncalculated, return without further checking
