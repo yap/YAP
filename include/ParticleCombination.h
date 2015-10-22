@@ -112,12 +112,18 @@ public:
     void setTwoLambda(char twoLambda)
     { TwoLambda_ = twoLambda; }
 
+
+    /// \name ParticleCombination friends
+    /// @{
+
     /// equality operator
     friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
 
     /// inequality operator
     friend bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
     { return !(A == B); }
+
+    /// @}
 
 protected:
 

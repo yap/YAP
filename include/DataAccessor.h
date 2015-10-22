@@ -63,6 +63,13 @@ public:
 
     /// @}
 
+    /// \name Data accessor friends
+    /// @{
+
+    friend class InitialStateParticle;
+
+    /// @}
+
     /// \name Access to indices
     /// @{
 
@@ -167,8 +174,6 @@ public:
     /// @}
 
 protected:
-
-    friend class InitialStateParticle;
 
     void setIndex(unsigned i)
     { Index_ = i; }

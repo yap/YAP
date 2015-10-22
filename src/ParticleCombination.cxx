@@ -32,16 +32,6 @@ ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<const Parti
 }
 
 //-------------------------
-/*std::vector<std::shared_ptr<const ParticleCombination> > ParticleCombination::daughters() const
-{
-    std::vector<std::shared_ptr<const ParticleCombination> > daughters;
-    for (auto& d : Daughters_)
-        daughters.push_back(d);
-
-    return daughters;
-}*/
-
-//-------------------------
 const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedParent() const
 {
     if (! Parent_) {

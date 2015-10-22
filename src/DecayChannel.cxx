@@ -39,10 +39,6 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharinf SpinAmplitudes
 
     // Note: daughter dependencies do not need to be set here, they are checked in calculationStatus()
-    /*for (auto& d : Daughters_) {
-        FixedAmplitude_->addDependencies(d->ParametersItDependsOn());
-        FixedAmplitude_->addDependencies(d->CachedDataValuesItDependsOn());
-    }*/
 
 
     // set symmetrization indices

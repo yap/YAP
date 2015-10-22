@@ -100,10 +100,6 @@ void HelicityAngles::transformDaughters(DataPoint& d,
         HelicityAngles_.setValue(0, phi,   d, symmetrizationIndex(daugh));
         HelicityAngles_.setValue(1, theta, d, symmetrizationIndex(daugh));
 
-        /*DEBUG(std::string(*daugh) << " helicity angles (phi, theta) = ("
-              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[0] << ", "
-              << d.HelicityAngles_.at(symmetrizationIndex(daugh))[1] << ")");*/
-
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);
         for (ParticleIndex i : daugh->indices())

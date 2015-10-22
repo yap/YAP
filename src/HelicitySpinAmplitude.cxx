@@ -132,8 +132,6 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<
 //-------------------------
 bool HelicitySpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
-    //DEBUG("compare " << std::string(*this) << " and " << std::string(rhs));
-
     const HelicitySpinAmplitude* cSA = dynamic_cast<const HelicitySpinAmplitude*>(&rhs);
     if (!cSA) return false;
 

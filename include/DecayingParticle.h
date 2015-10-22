@@ -59,13 +59,6 @@ public:
     virtual void addChannel(std::unique_ptr<DecayChannel>& c);
 
     /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
-    /// \param A daughter particle
-    /// \param B daughter particle
-    /// \param L maximum relative angular momentum between A and B * 2
-    //virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
-    //{ addChannels({A}, {B}, maxTwoL); }
-
-    /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
     /// \param L maximum relative angular momentum between A and B * 2

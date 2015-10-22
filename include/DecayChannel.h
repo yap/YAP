@@ -55,9 +55,6 @@ public:
     /// 2-particle Constructor
     DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
 
-    /// Copy constructor
-    DecayChannel(const DecayChannel& other) = delete;
-
     /// @}
 
     /// Calculate complex amplitude

@@ -58,7 +58,7 @@ public:
     double theta(const DataPoint& d, std::shared_ptr<const ParticleCombination> pc) const
     { return HelicityAngles_.value(1, d, SymmetrizationIndices_.at(pc)); }
 
-//protected:
+protected:
 
     /// Caclulate Lorentz-transformation for helicity frame
     TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
@@ -66,8 +66,6 @@ public:
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
     void transformDaughters(DataPoint& d, std::shared_ptr<const ParticleCombination> pc, std::vector<TLorentzVector> finalStatesHf);
-
-protected:
 
     /// Helicity angles phi and theta
     CachedDataValue HelicityAngles_;

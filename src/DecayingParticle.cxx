@@ -188,7 +188,6 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
         }
         if (!found) {
             ampSet.insert(amp);
-            //LOG(INFO) << "Size of ampSet: " << ampSet.size();
         }
 
         // set dependencies
@@ -202,11 +201,6 @@ void DecayingParticle::optimizeSpinAmplitudeSharing()
     }
 
     if (first) {
-        /*DEBUG("AmpSet:");
-        for (auto& amp : ampSet) {
-            DEBUG("  " << amp.get());
-        }*/
-
         std::set<DataAccessor*> removeAmps;
         for (DataAccessor* dataAcc : initialStateParticle()->DataAccessors_) {
             if (dynamic_cast<SpinAmplitude*>(dataAcc)) {
@@ -326,8 +320,6 @@ void DecayingParticle::printSpinAmplitudes(int level)
 //-------------------------
 void DecayingParticle::setSymmetrizationIndexParents()
 {
-    //std::cout << "DecayingParticle::setSymmetrizationIndexParents()\n";
-
     // clean up PCs without parents
     auto PCsParents = particleCombinations();
     auto it = PCsParents.begin();

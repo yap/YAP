@@ -64,7 +64,6 @@ void FinalStateParticle::setSymmetrizationIndexParents()
     for (auto& PC : PCs) {
         for (auto& pc : ParticleCombination::particleCombinationSet()) {
             if (ParticleCombination::equivDown(PC, pc)) {
-                //std::cout << "  add " << std::string(*pc) << " to fsp " << name() << "\n";
                 SymmetrizationIndices_.push_back(pc);
             }
         }

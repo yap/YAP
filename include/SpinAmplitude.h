@@ -74,9 +74,15 @@ public:
 
     /// @}
 
+
+    /// \name SpinAmplitude friends
+    /// @{
+
     /// Compare SpinAmplitude objects
     friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
     { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
+
+    /// @}
 
     /// check if angular momentum is conserved with the given quantum numbers
     static bool angularMomentumConserved(

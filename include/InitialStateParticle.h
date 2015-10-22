@@ -54,6 +54,15 @@ public:
 
     /// @}
 
+    /// \name InitialStateParticle friends
+    /// @{
+
+    friend class DataAccessor;
+    friend class AmplitudeComponent;
+    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
+
+    /// @}
+
     /// \todo remove/rename/rework!
     double logLikelihood(DataPartition& d);
 
@@ -119,8 +128,6 @@ public:
 
 private:
 
-    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
-
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 
@@ -142,9 +149,6 @@ private:
     void removeAmplitudeComponent(AmplitudeComponent* d);
 
     void setDataAcessorIndices();
-
-    friend class DataAccessor;
-    friend class AmplitudeComponent;
 
     bool Prepared_;
 

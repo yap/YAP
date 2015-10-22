@@ -61,19 +61,18 @@ public:
 
     void printDataSize();
 
-    /// \name Data accessor friends
+    /// \name DataPoint friends
     /// @{
 
     friend class CachedDataValue;
     friend class DataAccessor;
-    friend class DataPartition;
     friend class DataSet;
     friend class FourMomenta;
 
+    /// @}
+
     /// reserve space in vectors
     void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
-
-    /// @}
 
 protected:
 

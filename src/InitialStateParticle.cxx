@@ -193,13 +193,6 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
     MeasuredBreakupMomenta_.calculate(d);
     HelicityAngles_.calculate(d);
 
-    /*for (auto& pc : FourMomenta_.particleCombinations()) {
-      std::cout << FourMomenta_.symmetrizationIndex(pc) << "  \t" << std::string(*pc) << "  \t";
-      FourMomenta_.p(d, FourMomenta_.symmetrizationIndex(pc)).Print();
-    }*/
-
-    d.printDataSize();
-
     if (!DataSet_.consistent(d))
         return false;
 
@@ -247,8 +240,6 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 //-------------------------
 void InitialStateParticle::setSymmetrizationIndexParents()
 {
-    //std::cout << "InitialStateParticle::setSymmetrizationIndexParents()\n";
-
     unsigned size = particleCombinations()[0]->indices().size();
     assert(size > 1);
 
@@ -262,7 +253,6 @@ void InitialStateParticle::setSymmetrizationIndexParents()
         if (pc->daughters()[0]->parent() == nullptr)
             continue;
 
-        //std::cout << "  add " << std::string(*pc) << "\n";
         addSymmetrizationIndex(pc);
     }
 
@@ -313,9 +303,6 @@ void InitialStateParticle::removeDataAccessor(DataAccessor* d)
                        << "otherwise it will become inconsistent!";
         }
     }
-
-
-    //DEBUG("size of InitialStateParticle's DataAccessors_ = " << DataAccessors_.size());
 }
 
 //-------------------------
