@@ -124,6 +124,7 @@ CalculationStatus DecayChannel::calculationStatus(std::shared_ptr<const Particle
 
     // check daughters
     for (unsigned i=0; i<Daughters_.size(); ++i) {
+        /// \todo dynamic cast is expensive, find something smarter
         auto daugh = std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]);
         if (daugh and daugh->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated) {
             //DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
