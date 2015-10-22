@@ -42,26 +42,30 @@ CalculationStatus CachedDataValue::calculationStatus(std::shared_ptr<const Parti
 #endif
 
     // else check if any dependencies are changed
-    for (auto& c : CachedDataValuesItDependsOn_) {
-        // get symmetrization index for particular cached data value,
-        // checking if owner is different and grabbing if needed
-
-        LOG(ERROR) << "owner " << c->owner();
-        if (! c->owner()->hasSymmetrizationIndex(pc)) {
-            LOG(ERROR) << "Error, owner  does not have " << std::string(*pc);
-            LOG(ERROR) << "owner " << typeid(*c->owner()).name();
-        }
-
-        unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
-        if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
-            // if dependency has changed, update to uncalculated and return
+    for (auto& p : ParametersItDependsOn_) {
+        if (p->variableStatus() == kChanged) {
+            // if so, update to uncalculated and return
             setCalculationStatus(kUncalculated, symmetrizationIndex, dataPartitionIndex);
             return kUncalculated;
         }
     }
-    for (auto& p : ParametersItDependsOn_) {
-        if (p->variableStatus() == kChanged) {
-            // if so, update to uncalculated and return
+
+    for (auto& c : CachedDataValuesItDependsOn_) {
+
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+#else
+        // safety check
+        if (! c->owner()->hasSymmetrizationIndex(pc)) {
+            LOG(ERROR) << "Error, owner  does not have " << std::string(*pc);
+            LOG(ERROR) << "owner " << typeid(*c->owner()).name();
+        }
+#endif
+
+        // get symmetrization index for particular cached data value,
+        // checking if owner is different and grabbing if needed
+        unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
+        if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
+            // if dependency has changed, update to uncalculated and return
             setCalculationStatus(kUncalculated, symmetrizationIndex, dataPartitionIndex);
             return kUncalculated;
         }

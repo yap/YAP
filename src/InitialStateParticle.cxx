@@ -247,11 +247,16 @@ bool InitialStateParticle::addDataPoint(const DataPoint& d)
 //-------------------------
 void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 {
+    // header
     std::cout << "DataAccessors of " << name() << "\n"
-              << "index \tnSymIndices \taddress  \tname  \t\tparticleCombinations\n";
+              << "index \tnSymIndices \taddress  \tname";
+    if (printParticleCombinations)
+        std::cout <<"\t\tparticleCombinations";
+    std::cout << "\n";
+
     for (DataAccessor* d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1
-                  << "  \t" << d
+                  << "  \t\t" << d
                   << "  \t(" << typeid(*d).name() << ")  \t";
         if (dynamic_cast<Particle*>(d))
             std::cout << dynamic_cast<Particle*>(d)->name();

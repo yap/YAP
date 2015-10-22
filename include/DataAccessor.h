@@ -141,6 +141,31 @@ public:
 
     /// @}
 
+
+
+    /// \name calculation statuses
+    /// @{
+
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc shared pointer to #ParticleCombination to check status of
+    /// \param symmetrizationIndex index of symmetrization to check status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
+    virtual CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const;
+
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc_symInd pair of shared pointer to #ParticleCombination and symmetrization index
+    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
+    CalculationStatus calculationStatus(std::pair<std::shared_ptr<const ParticleCombination>, unsigned> pc_symInd, unsigned dataPartitionIndex = 0) const
+    { return calculationStatus(pc_symInd.first, pc_symInd.second, dataPartitionIndex); }
+
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc shared pointer to #ParticleCombination to check status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
+    CalculationStatus calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned dataPartitionIndex = 0) const
+    { return calculationStatus(pc, symmetrizationIndex(pc), dataPartitionIndex); }
+
+    /// @}
+
 protected:
 
     friend class InitialStateParticle;

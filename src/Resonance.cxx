@@ -22,7 +22,7 @@ std::complex<double> Resonance::amplitude(DataPartition& d, std::shared_ptr<cons
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (Amplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 

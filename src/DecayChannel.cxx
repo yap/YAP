@@ -38,11 +38,11 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 
     // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharinf SpinAmplitudes
 
-
-    for (auto& d : Daughters_) {
+    // Note: daughter dependencies do not need to be set here, they are checked in calculationStatus()
+    /*for (auto& d : Daughters_) {
         FixedAmplitude_->addDependencies(d->ParametersItDependsOn());
         FixedAmplitude_->addDependencies(d->CachedDataValuesItDependsOn());
-    }
+    }*/
 
 
     // set symmetrization indices
@@ -93,7 +93,7 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<c
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (FixedAmplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
         std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
 
         if (a != Complex_0) {
@@ -111,6 +111,23 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, std::shared_ptr<c
     }
 
     return FreeAmplitude_->value() * FixedAmplitude_->value(d.dataPoint(), symIndex);
+}
+
+
+//-------------------------
+CalculationStatus DecayChannel::calculationStatus(std::shared_ptr<const ParticleCombination> pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+{
+    if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
+        return kUncalculated;
+
+    // check daughters
+    for (unsigned i=0; i<Daughters_.size(); ++i) {
+        auto daugh = std::dynamic_pointer_cast<DataAccessor>(Daughters_[i]);
+        if (daugh and daugh->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated)
+            return kUncalculated;
+    }
+
+    return kCalculated;
 }
 
 //-------------------------
