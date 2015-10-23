@@ -47,11 +47,11 @@ public:
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param size Length of cached value (number of real elements)
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
     CachedDataValue(DataAccessor* owner, unsigned size,
-                    std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
-                    std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {});
+                    ParameterSet ParametersItDependsOn = {},
+                    std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {});
 
     /// \name CachedDataValue friends
     /// @{
@@ -61,21 +61,29 @@ public:
 
     /// @}
 
+    /// \name Managing dependencies
+    /// @{
+
     /// add Parameters this CachedDataValue depends on
-    void addDependencies(std::vector<std::shared_ptr<ComplexParameter> > deps)
+    void addDependencies(ParameterSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add Parameter this CachedDataValue depends on
-    void addDependency(std::shared_ptr<ComplexParameter> dep)
+    void addDependency(std::shared_ptr<ParameterBase> dep)
     { ParametersItDependsOn_.insert(dep); }
 
     /// add CachedDataValue's this CachedDataValue depends on
-    void addDependencies(std::vector<std::shared_ptr<CachedDataValue> > deps)
+    void addDependencies(std::set<std::shared_ptr<CachedDataValue> > deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue this CachedDataValue depends on
     void addDependency(std::shared_ptr<CachedDataValue> dep)
     { CachedDataValuesItDependsOn_.insert(dep); }
+
+    /// remove dependency
+    void removeDependency(std::shared_ptr<ParameterBase> dep);
+
+    /// @}
 
     /// \name Getters
     /// @{
@@ -173,7 +181,7 @@ protected:
     int Position_;              ///< Position of first element of cached value within data vector
     unsigned Size_;             ///< Size of cached value (number of real elements)
 
-    std::set<std::shared_ptr<ComplexParameter> > ParametersItDependsOn_;
+    ParameterSet ParametersItDependsOn_;
     std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn_;
 
     /// first index is for data partion
@@ -203,11 +211,11 @@ public:
 
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
     RealCachedDataValue(DataAccessor* owner,
-                        std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
-                        std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
+                        ParameterSet ParametersItDependsOn = {},
+                        std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
         : CachedDataValue(owner, 1, ParametersItDependsOn, CachedDataValuesItDependsOn)
     {}
 
@@ -238,11 +246,11 @@ public:
 
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
     ComplexCachedDataValue(DataAccessor* owner,
-                           std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {},
-                           std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
+                           ParameterSet ParametersItDependsOn = {},
+                           std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
         : CachedDataValue(owner, 2, ParametersItDependsOn, CachedDataValuesItDependsOn)
     {}
 

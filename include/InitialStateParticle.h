@@ -97,7 +97,7 @@ public:
     {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
-    ParameterSet freeAmplitudes() const;
+    std::vector<std::shared_ptr<ComplexParameter> > freeAmplitudes() const;
 
     DataSet& dataSet()
     { return DataSet_; }

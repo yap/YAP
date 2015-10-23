@@ -51,17 +51,17 @@ public:
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
-    /// \return a list of parameters this AmplitudeComponent depends on
+    /// \return a set of parameters this AmplitudeComponent depends on
     /// to be overridden in the concrete AmplitudeComponent
-    /// \return empty vector
-    virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn()
-    { return std::vector<std::shared_ptr<ComplexParameter> >(); }
+    /// \return empty set
+    virtual ParameterSet ParametersItDependsOn()
+    { return {}; }
 
     /// \return a list of CachedDataValues this AmplitudeComponent depends on
     /// to be overridden in the concrete AmplitudeComponent
     /// \return empty vector
-    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn()
-    { return std::vector<std::shared_ptr<CachedDataValue> >(); }
+    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn()
+    { return {}; }
 };
 
 }

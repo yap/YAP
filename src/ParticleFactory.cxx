@@ -16,11 +16,10 @@ namespace yap {
 ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
     QuantumNumbers(q),
     PDG_(pdg),
-    Name_(name)
+    Name_(name),
+    Mass_(mass),
+    MassShapeParameters_(parameters)
 {
-    MassShapeParameters_.reserve(parameters.size() + 1);
-    MassShapeParameters_.push_back(mass);
-    MassShapeParameters_.insert(MassShapeParameters_.end(), parameters.begin(), parameters.end());
 }
 
 //-------------------------
@@ -47,7 +46,7 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(in
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.mass(), p.Name_, indices);
+    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_, indices);
 }
 
 //-------------------------
@@ -59,7 +58,7 @@ std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<InitialStateParticle>(p, p.mass(), p.Name_, radialSize);
+    return std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
 }
 
 //-------------------------
@@ -68,7 +67,7 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);
     massShape->setParameters(p);
-    return std::make_shared<Resonance>(p, p.mass(), p.Name_, radialSize, massShape);
+    return std::make_shared<Resonance>(p, p.Mass_, p.Name_, radialSize, massShape);
 }
 
 //-------------------------

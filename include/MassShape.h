@@ -23,39 +23,35 @@
 
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "InitialStateParticle.h"
-#include "ParameterSet.h"
+#include "ParticleCombination.h"
 #include "ParticleFactory.h"
-
-#include <complex>
-#include <memory>
-#include <vector>
 
 namespace yap {
 
 class Resonance;
 
-class ParticleCombination;
-
 /// \class MassShape
 /// \brief Abstract base class for all mass shapes
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
+///
+/// Inheriting classes (mass shapes) must implement
+/// #AmplitudeComponent's amplitude(...) function.
 
 class MassShape : public AmplitudeComponent, public DataAccessor
 {
 public:
 
     /// Constructor
-    MassShape(std::vector<std::shared_ptr<ComplexParameter> > pars = {});
+    MassShape() : DataAccessor(&ParticleCombination::equivByOrderlessContent)
+    {}
 
     /// Set parameters from ParticleTableEntry
+    /// Can be overloaded in inheriting classes
     /// \param entry ParticleTableEntry containing information to create mass shape object
     /// \return Success of action
-    virtual bool setParameters(const ParticleTableEntry& entry);
-
-    const ParameterSet& parameters()
-    { return Parameters_; }
+    virtual bool setParameters(const ParticleTableEntry& entry)
+    { return false; }
 
     /// \name Bookkeeping related
     /// @{
@@ -75,22 +71,9 @@ public:
 
 protected:
 
-    /// \name Amplitude related
-    /// @{
-
-    /// Calculate MassShape amplitude from squared mass
-    /// \return amplitude evaluated at squared mass
-    /// \param s squared mass to evaluate at
-    virtual std::complex<double> calcAmplitudeS(double s) const = 0;
-
-    /// @}
-
     /// override in inheriting classes to borrow parameters from Resonance
     virtual void borrowParametersFromResonance(Resonance* R)
     {}
-
-    /// Parameters of the mass shape
-    ParameterSet Parameters_;
 
 };
 

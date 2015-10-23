@@ -5,14 +5,14 @@
 namespace yap {
 
 //-------------------------
-CachedValueBase::CachedValueBase(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn) :
+CachedValueBase::CachedValueBase(ParameterSet ParametersItDependsOn) :
     CalculationStatus_(kUncalculated)
 {
     addDependencies(ParametersItDependsOn);
 }
 
 //-------------------------
-void CachedValueBase::removeDependency(std::shared_ptr<ComplexParameter> dep)
+void CachedValueBase::removeDependency(std::shared_ptr<ParameterBase> dep)
 {
     // look for parameter in set of dependencies
     auto it = ParametersItDependsOn_.find(dep);

@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
+#include "InitialStateParticle.h"
 #include "logging.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"

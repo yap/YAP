@@ -68,11 +68,10 @@ public:
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
-    //virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
-    //{ return std::vector<std::shared_ptr<ComplexParameter> >; }
+    // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
 
-    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
-    { return std::vector<std::shared_ptr<CachedDataValue> > {SpinAmplitude_}; }
+    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return {SpinAmplitude_}; }
 
 
 private:

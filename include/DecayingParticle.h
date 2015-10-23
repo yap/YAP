@@ -116,11 +116,10 @@ public:
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
-    //virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
-    //{ return std::vector<std::shared_ptr<ComplexParameter> >{FreeAmplitude_}; }
+    // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
 
-    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
-    { return std::vector<std::shared_ptr<CachedDataValue> > {Amplitude_}; }
+    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return {Amplitude_}; }
 
 
     using DataAccessor::calculationStatus;

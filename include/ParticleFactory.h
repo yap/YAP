@@ -44,11 +44,10 @@ class Resonance;
 struct ParticleTableEntry : public QuantumNumbers {
     ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
     bool consistent() const override;
-    double mass() const
-    { return MassShapeParameters_.at(0); }
     int PDG_;
     std::string Name_;
-    std::vector<double> MassShapeParameters_; ///< first entry should always be nominal mass
+    double Mass_;
+    std::vector<double> MassShapeParameters_;
 };
 
 /// \class ParticleFactory

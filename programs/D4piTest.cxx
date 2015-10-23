@@ -121,7 +121,7 @@ int main( int argc, char** argv)
     yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
 
     // to test amplitude calculation, set all free amps to 1
-    yap::ParameterSet freeAmps = D->freeAmplitudes();
+    auto freeAmps = D->freeAmplitudes();
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 

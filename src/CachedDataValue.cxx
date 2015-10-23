@@ -7,8 +7,8 @@ namespace yap {
 
 //-------------------------
 CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
-                                 std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn,
-                                 std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn) :
+                                 ParameterSet ParametersItDependsOn,
+                                 std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn) :
     Owner_(owner),
     Position_(-1),
     Size_(size),
@@ -28,6 +28,17 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
     addDependencies(ParametersItDependsOn);
     addDependencies(CachedDataValuesItDependsOn);
 }
+
+//-------------------------
+void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
+{
+    // look for parameter in set of dependencies
+    auto it = ParametersItDependsOn_.find(dep);
+    // if found, erase
+    if (it != ParametersItDependsOn_.end())
+        ParametersItDependsOn_.erase(it);
+}
+
 
 //-------------------------
 CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)

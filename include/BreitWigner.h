@@ -48,27 +48,22 @@ public:
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
+
+    /// Set parameters from ParticleTableEntry
+    /// \param entry ParticleTableEntry containing information to create mass shape object
+    /// \return Success of action
+    virtual bool setParameters(const ParticleTableEntry& entry);
+
     /// \name Getters
     /// @{
 
     /// Get mass
     std::shared_ptr<RealParameter> mass() const
-    { return std::dynamic_pointer_cast<RealParameter>(Parameters_[0]); }
+    { return Mass_; }
 
     /// Get width
     std::shared_ptr<RealParameter> width() const
-    { return std::dynamic_pointer_cast<RealParameter>(Parameters_[1]); }
-
-    /// @}
-
-    /// \name Amplitude related
-    /// @{
-
-    /// Calculate MassShape ampltude from squared mass;
-    /// A = 1 / [Mass^2 - s - i * Mass * Width]
-    /// \return amplitude evaluated at squared mass
-    /// \param s squared mass to evaluate at
-    virtual std::complex<double> calcAmplitudeS(double s) const override;
+    { return Width_; }
 
     /// @}
 
@@ -81,10 +76,13 @@ public:
 
 protected:
 
-    std::shared_ptr<ComplexCachedValue> M2iMG_;                  // mass * mass - i * mass * width
-
     /// set owning resonance, borrow mass from owner
     virtual void borrowParametersFromResonance(Resonance* R) override;
+
+    std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
+    std::shared_ptr<RealParameter> Width_; ///< [GeV]
+
+    std::shared_ptr<ComplexCachedDataValue> T_; ///< Mass-shape amplitude
 
 };
 

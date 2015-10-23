@@ -41,19 +41,19 @@ class CachedValueBase
 {
 public:
     /// Constructor
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    CachedValueBase(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {});
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    CachedValueBase(ParameterSet ParametersItDependsOn = {});
 
     /// add Parameters this CachedValueBase depends on
-    void addDependencies(std::vector<std::shared_ptr<ComplexParameter> > deps)
+    void addDependencies(ParameterSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add Parameter this CachedValueBase depends on
-    void addDependency(std::shared_ptr<ComplexParameter> dep)
+    void addDependency(std::shared_ptr<ParameterBase> dep)
     { ParametersItDependsOn_.insert(dep); }
 
     /// remove Parameter from list of dependencies
-    void removeDependency(std::shared_ptr<ComplexParameter> dep);
+    void removeDependency(std::shared_ptr<ParameterBase> dep);
 
     /// update (depending on Parameters and CachedValueBase's it
     /// depends) and return CalculationStatus_
@@ -64,7 +64,7 @@ public:
     void finishedPrecalculation();
 
 protected:
-    std::set<std::shared_ptr<ComplexParameter> > ParametersItDependsOn_;
+    ParameterSet ParametersItDependsOn_;
     CalculationStatus CalculationStatus_;
 
 };
@@ -78,9 +78,8 @@ class ComplexCachedValue : public CachedValueBase, public ComplexParameter
 {
 public:
     /// Constructor
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn vector of shared pointers to CachedValues cached value depends on
-    ComplexCachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {})
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    ComplexCachedValue(ParameterSet ParametersItDependsOn = {})
         : CachedValueBase(ParametersItDependsOn), ComplexParameter()
     {}
 
@@ -100,8 +99,8 @@ class RealCachedValue : public CachedValueBase, public RealParameter
 public:
 
     /// Constructor
-    /// \param ParametersItDependsOn vector of shared pointers to Parameters cached value depends on
-    RealCachedValue(std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn = {})
+    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
+    RealCachedValue(ParameterSet ParametersItDependsOn = {})
         : CachedValueBase(ParametersItDependsOn), RealParameter()
     {}
 

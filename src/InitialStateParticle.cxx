@@ -139,9 +139,9 @@ bool InitialStateParticle::prepare()
 }
 
 //-------------------------
-ParameterSet InitialStateParticle::freeAmplitudes() const
+std::vector<std::shared_ptr<ComplexParameter> > InitialStateParticle::freeAmplitudes() const
 {
-    ParameterSet amps;
+    std::vector<std::shared_ptr<ComplexParameter> > amps;
     amps.reserve(DecayChannels_.size());
 
     for (DecayChannel* ch : DecayChannels_)

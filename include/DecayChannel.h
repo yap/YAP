@@ -22,7 +22,6 @@
 #include "AmplitudeComponent.h"
 #include "BlattWeisskopf.h"
 #include "DataAccessor.h"
-#include "ParameterSet.h"
 
 #include <complex>
 #include <memory>
@@ -120,11 +119,11 @@ public:
     // for internal use only
     void addSpinAmplitudeDependencies();
 
-    virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override
-    { return std::vector<std::shared_ptr<ComplexParameter> > {FreeAmplitude_}; }
+    virtual ParameterSet ParametersItDependsOn() override
+    { return {FreeAmplitude_}; }
 
-    virtual std::vector<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
-    { return std::vector<std::shared_ptr<CachedDataValue> > {FixedAmplitude_}; }
+    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    { return {FixedAmplitude_}; }
 
 protected:
 
