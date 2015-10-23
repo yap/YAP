@@ -20,7 +20,7 @@ void CachedValueBase::removeDependency(std::shared_ptr<ParameterBase> dep)
     if (it != ParametersItDependsOn_.end())
         ParametersItDependsOn_.erase(it);
 }
-
+a
 //-------------------------
 CalculationStatus CachedValueBase::calculationStatus()
 {
