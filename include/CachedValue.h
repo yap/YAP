@@ -36,13 +36,14 @@ namespace yap {
 /// \brief Base class for cached value managers
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
+/// \defgroup Cache
 
 class CachedValueBase
 {
 public:
     /// Constructor
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    CachedValueBase(ParameterSet ParametersItDependsOn = {});
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    CachedValueBase(ParameterSet pars = {});
 
     /// add Parameters this CachedValueBase depends on
     void addDependencies(ParameterSet deps)
@@ -69,46 +70,42 @@ protected:
 
 };
 
-/// \class ComplexCachedValue
-/// \brief Class for managing cached values (as complex numbers)
+/// \typedef CachedValueSet
+/// \ingroup Parameters
+/// \ingroup Cache
+using CachedValueSet = std::set<std::shared_ptr<CachedValueBase> >;
+
+/// \class CachedValue
+/// \brief Class for linking CachedValueBase and Parameter
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
+/// \ingroup Cache
 
-class ComplexCachedValue : public CachedValueBase, public ComplexParameter
+template <typename T>
+class CachedValue : public CachedValueBase, public Parameter<T>
 {
 public:
     /// Constructor
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    ComplexCachedValue(ParameterSet ParametersItDependsOn = {})
-        : CachedValueBase(ParametersItDependsOn), ComplexParameter()
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    CachedValue(ParameterSet pars = {})
+        : CachedValueBase(pars), Parameter<T>()
     {}
 
     /// set value and set CalculationStatus_ to kCalculated
-    void setValue(std::complex<double> val)
-    { ComplexParameter::setValue(val); CalculationStatus_ = kCalculated; }
+    void setValue(T val)
+    { Parameter<T>::setValue(val); CalculationStatus_ = kCalculated; }
 
 };
 
-/// \class RealCachedValue
-/// \brief extension of #ComplexCachedValue for a real numbers
-/// \author Johannes Rauch, Daniel Greenwald
+/// \typedef ComplexCachedValue
 /// \ingroup Parameters
+/// \ingroup Cache
+using ComplexCachedValue = CachedValue<std::complex<double> >;
 
-class RealCachedValue : public CachedValueBase, public RealParameter
-{
-public:
-
-    /// Constructor
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    RealCachedValue(ParameterSet ParametersItDependsOn = {})
-        : CachedValueBase(ParametersItDependsOn), RealParameter()
-    {}
-
-    /// Overloading & hides #ComplexCachedValue::setValue with argument double
-    void setValue(double val)
-    { RealParameter::setValue(val); CalculationStatus_ = kCalculated; }
-
-};
+/// \typedef RealCachedValue
+/// \ingroup Parameters
+/// \ingroup Cache
+using RealCachedValue = CachedValue<double>;
 
 }
 

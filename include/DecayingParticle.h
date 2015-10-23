@@ -116,9 +116,9 @@ public:
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
-    // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
+    // virtual ParameterSet ParametersItDependsOn() override;
 
-    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Amplitude_}; }
 
 

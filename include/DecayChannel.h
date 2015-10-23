@@ -122,7 +122,7 @@ public:
     virtual ParameterSet ParametersItDependsOn() override
     { return {FreeAmplitude_}; }
 
-    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {FixedAmplitude_}; }
 
 protected:

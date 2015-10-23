@@ -5,10 +5,10 @@
 namespace yap {
 
 //-------------------------
-CachedValueBase::CachedValueBase(ParameterSet ParametersItDependsOn) :
+CachedValueBase::CachedValueBase(ParameterSet pars) :
+    ParametersItDependsOn_(pars),
     CalculationStatus_(kUncalculated)
 {
-    addDependencies(ParametersItDependsOn);
 }
 
 //-------------------------

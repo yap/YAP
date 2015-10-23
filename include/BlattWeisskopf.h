@@ -59,7 +59,7 @@ public:
 
     //virtual ParameterSet ParametersItDependsOn() override;
 
-    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn() override
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
 private:

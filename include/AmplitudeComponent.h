@@ -60,7 +60,7 @@ public:
     /// \return a list of CachedDataValues this AmplitudeComponent depends on
     /// to be overridden in the concrete AmplitudeComponent
     /// \return empty vector
-    virtual std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn()
+    virtual CachedDataValueSet CachedDataValuesItDependsOn()
     { return {}; }
 };
 

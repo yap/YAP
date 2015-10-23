@@ -6,12 +6,12 @@
 namespace yap {
 
 //-------------------------
-CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
-                                 ParameterSet ParametersItDependsOn,
-                                 std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn) :
+CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars, CachedDataValueSet vals) :
     Owner_(owner),
     Position_(-1),
     Size_(size),
+    ParametersItDependsOn_(pars),
+    CachedDataValuesItDependsOn_(vals),
     CalculationStatus_(1, std::vector<CalculationStatus>()),
     VariableStatus_(1, std::vector<VariableStatus>())
 {
@@ -24,9 +24,6 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size,
         // increase owner's storage to accomodate cached value
         Owner_->increaseSize(Size_);
     }
-
-    addDependencies(ParametersItDependsOn);
-    addDependencies(CachedDataValuesItDependsOn);
 }
 
 //-------------------------

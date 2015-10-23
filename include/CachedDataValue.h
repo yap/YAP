@@ -36,10 +36,18 @@
 
 namespace yap {
 
+class CachedDataValue;
+
+/// \typedef CachedDataValueSet
+/// \ingroup Data
+/// \ingroup Cache
+using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
+
 /// \class CachedDataValue
 /// \brief Class for managing cached values inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
+/// \ingroup Cache
 
 class CachedDataValue
 {
@@ -47,11 +55,9 @@ public:
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param size Length of cached value (number of real elements)
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
-    CachedDataValue(DataAccessor* owner, unsigned size,
-                    ParameterSet ParametersItDependsOn = {},
-                    std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {});
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    /// \param vals set of shared pointers to CachedValues cached value depends on
+    CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// \name CachedDataValue friends
     /// @{
@@ -73,7 +79,7 @@ public:
     { ParametersItDependsOn_.insert(dep); }
 
     /// add CachedDataValue's this CachedDataValue depends on
-    void addDependencies(std::set<std::shared_ptr<CachedDataValue> > deps)
+    void addDependencies(CachedDataValueSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue this CachedDataValue depends on
@@ -182,7 +188,7 @@ protected:
     unsigned Size_;             ///< Size of cached value (number of real elements)
 
     ParameterSet ParametersItDependsOn_;
-    std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn_;
+    CachedDataValueSet CachedDataValuesItDependsOn_;
 
     /// first index is for data partion
     /// second index is for symmetrization
@@ -204,6 +210,7 @@ protected:
 /// \brief Class for managing a single real cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
+/// \ingroup Cache
 
 class RealCachedDataValue : public CachedDataValue
 {
@@ -211,12 +218,10 @@ public:
 
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
-    RealCachedDataValue(DataAccessor* owner,
-                        ParameterSet ParametersItDependsOn = {},
-                        std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
-        : CachedDataValue(owner, 1, ParametersItDependsOn, CachedDataValuesItDependsOn)
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    /// \param vals set of shared pointers to CachedValues cached value depends on
+    RealCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
+        : CachedDataValue(owner, 1, pars, vals)
     {}
 
     /// Set value into #DataPoint for particular symmetrization, and
@@ -239,6 +244,7 @@ public:
 /// \brief Class for managing a complex cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
+/// \ingroup Cache
 
 class ComplexCachedDataValue : public CachedDataValue
 {
@@ -246,12 +252,10 @@ public:
 
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param ParametersItDependsOn set of shared pointers to Parameters cached value depends on
-    /// \param CachedValuesItDependsOn set of shared pointers to CachedValues cached value depends on
-    ComplexCachedDataValue(DataAccessor* owner,
-                           ParameterSet ParametersItDependsOn = {},
-                           std::set<std::shared_ptr<CachedDataValue> > CachedDataValuesItDependsOn = {})
-        : CachedDataValue(owner, 2, ParametersItDependsOn, CachedDataValuesItDependsOn)
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    /// \param vals set of shared pointers to CachedValues cached value depends on
+    ComplexCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
+        : CachedDataValue(owner, 2, pars, vals)
     {}
 
     /// Set value into #DataPoint for particular symmetrization, and
