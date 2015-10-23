@@ -40,11 +40,13 @@ unsigned DataAccessor::maxSymmetrizationIndex() const
 //-------------------------
 std::vector<std::shared_ptr<const ParticleCombination> > DataAccessor::particleCombinations() const
 {
-    std::vector<std::shared_ptr<const ParticleCombination> > retVal;
-    for (auto& kv : SymmetrizationIndices_)
-        retVal.push_back(kv.first);
+    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations;
+    particleCombinations.reserve(SymmetrizationIndices_.size());
 
-    return retVal;
+    for (auto& kv : SymmetrizationIndices_)
+        particleCombinations.push_back(kv.first);
+
+    return particleCombinations;
 }
 
 //-------------------------
@@ -94,7 +96,7 @@ bool DataAccessor::consistent() const
 //-------------------------
 void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
-    if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
+    if (hasSymmetrizationIndex(c))
         // c is already in map
         return;
 
@@ -112,12 +114,6 @@ void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombinat
 
     for (CachedDataValue* d : CachedDataValues_)
         d->setNumberOfSymmetrizations(size + 1);
-}
-
-//-------------------------
-void DataAccessor::clearSymmetrizationIndices()
-{
-    SymmetrizationIndices_.clear();
 }
 
 //-------------------------
@@ -149,12 +145,6 @@ void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
 }
 
 //-------------------------
-InitialStateParticle* DataAccessor::initialStateParticle() const
-{
-    return InitialStateParticle_;
-}
-
-//-------------------------
 CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
 {
     for (CachedDataValue* d : CachedDataValues_) {
@@ -164,7 +154,6 @@ CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const Pa
 
     return kCalculated;
 }
-
 
 }
 

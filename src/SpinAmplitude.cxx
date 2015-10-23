@@ -11,7 +11,7 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
     : DataAccessor(),
       InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}}),
-TwoL_(twoL)
+      TwoL_(twoL)
 {
 }
 
@@ -72,7 +72,7 @@ bool SpinAmplitude::angularMomentumConserved(const QuantumNumbers& initial,
 //-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& rhs) const
 {
-    return (SymmetrizationIndices_ == rhs.SymmetrizationIndices_
+    return (symmetrizationIndices() == rhs.symmetrizationIndices()
             and InitialQuantumNumbers_ == rhs.InitialQuantumNumbers_
             and FinalQuantumNumbers_[0] == rhs.FinalQuantumNumbers_[0]
             and FinalQuantumNumbers_[1] == rhs.FinalQuantumNumbers_[1]

@@ -22,7 +22,7 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
 {
     Q2_.setCalculationStatus(kUncalculated);
 
-    for (auto& kv : SymmetrizationIndices_) {
+    for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
         if (Q2_.calculationStatus(kv) == kCalculated)

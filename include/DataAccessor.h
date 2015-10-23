@@ -85,6 +85,10 @@ public:
     unsigned symmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
 
+    /// \return SymmetrizationIndices_
+    const std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > >& symmetrizationIndices() const
+    { return SymmetrizationIndices_; }
+
     /// \return maximum index of SymmetrizationIndices_
     unsigned maxSymmetrizationIndex() const;
 
@@ -115,7 +119,8 @@ public:
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices();
+    virtual void clearSymmetrizationIndices()
+    { SymmetrizationIndices_.clear(); }
 
     /// @}
 
@@ -136,7 +141,8 @@ public:
 #endif
 
     /// Get pointer to the initial state particle
-    InitialStateParticle* initialStateParticle() const;
+    InitialStateParticle* initialStateParticle() const
+    { return InitialStateParticle_; }
 
     /// @}
 
@@ -178,6 +184,8 @@ protected:
     void setIndex(unsigned i)
     { Index_ = i; }
 
+private:
+
     /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
     InitialStateParticle* InitialStateParticle_;
 
@@ -192,8 +200,6 @@ protected:
 
     /// number of real values stored per symm. index
     unsigned Size_;
-
-private:
 
     /// storage index used in DataPoint. Must be unique.
     unsigned Index_;

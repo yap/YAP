@@ -23,12 +23,12 @@ int FourMomenta::findInitialStateParticle()
 
         // count FSP
         unsigned fsp = 0;
-        for (auto& kv : SymmetrizationIndices_)
-            if (kv.first->indices().size() > fsp)
-                fsp = kv.first->indices().size();
+        for (auto& pc : particleCombinations())
+            if (pc->indices().size() > fsp)
+                fsp = pc->indices().size();
 
         // look for ISP
-        for (auto& kv : SymmetrizationIndices_)
+        for (auto& kv : symmetrizationIndices())
             if (kv.first->indices().size() == fsp) {
                 InitialStateIndex_ = kv.second;
                 break;
@@ -47,7 +47,7 @@ bool FourMomenta::consistent() const
     bool result = true;
 
     // check that the first indices in the SymmetrizationIndices_ are the final state particles in order
-    for (auto& kv : SymmetrizationIndices_)
+    for (auto& kv : symmetrizationIndices())
         if (kv.first->isFinalStateParticle() and kv.first->indices()[0] != kv.second) {
             LOG(ERROR) << "FourMomenta::consistent - final-state particle id does not match index ("
                        << kv.first->indices()[0] << " != " << kv.second << ")";
@@ -70,7 +70,7 @@ void FourMomenta::calculate(DataPoint& d)
     M2_.setCalculationStatus(kUncalculated);
     M_.setCalculationStatus(kUncalculated);
 
-    for (auto& kv : SymmetrizationIndices_) {
+    for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
         if (M2_.calculationStatus(kv) == kCalculated)

@@ -64,19 +64,19 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
     const TLorentzVector& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return p(d, SymmetrizationIndices_.at(pc)); }
+    { return p(d, symmetrizationIndex(pc)); }
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
     double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return M2_.value(d, SymmetrizationIndices_.at(pc)); }
+    { return M2_.value(d, symmetrizationIndex(pc)); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return M_.value(d, SymmetrizationIndices_.at(pc)); }
+    { return M_.value(d, symmetrizationIndex(pc)); }
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from

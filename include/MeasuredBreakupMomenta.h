@@ -45,7 +45,7 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
     double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    { return Q2_.value(d, SymmetrizationIndices_.at(pc)); }
+    { return Q2_.value(d, symmetrizationIndex(pc)); }
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from

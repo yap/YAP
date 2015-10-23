@@ -50,7 +50,7 @@ void HelicityAngles::calculate(DataPoint& d)
     for (TLorentzVector& lv : finalStatesHf)
         lv.Transform(boost);
 
-    for (std::shared_ptr<const ParticleCombination>& pc : initialStateParticle()->particleCombinations()) {
+    for (auto& pc : initialStateParticle()->particleCombinations()) {
         transformDaughters(d, pc, finalStatesHf);
     }
 

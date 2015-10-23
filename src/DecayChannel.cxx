@@ -36,7 +36,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
     FixedAmplitude_->addDependencies(BlattWeisskopf_->CachedDataValuesItDependsOn());
 
-    // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharinf SpinAmplitudes
+    // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharing SpinAmplitudes
 
     // Note: daughter dependencies do not need to be set here, they are checked in calculationStatus()
 
@@ -72,8 +72,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
                     ParticleCombination b_a = ParticleCombination({PCB, PCA});
-                    for (auto& kv : SymmetrizationIndices_)
-                        if (*(kv.first) == b_a) {
+                    for (auto& pc : particleCombinations())
+                        if (*pc == b_a) {
                             can_has_symmetrization = false;
                             break;
                         }
@@ -299,10 +299,10 @@ void DecayChannel::clearSymmetrizationIndices()
 //-------------------------
 void DecayChannel::setSymmetrizationIndexParents()
 {
-    auto chPCs = particleCombinations();
+    std::vector<std::shared_ptr<const ParticleCombination> > chPCs = particleCombinations();
 
     // clean up PCs without parents
-    auto chPCsParents = particleCombinations();
+    std::vector<std::shared_ptr<const ParticleCombination> > chPCsParents = particleCombinations();
     auto it = chPCsParents.begin();
     while (it != chPCsParents.end()) {
         if (not (*it)->parent()) {

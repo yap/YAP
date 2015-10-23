@@ -40,17 +40,21 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
 //-------------------------
 CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
-    // if uncalculated, return without further checking
+    // if changed or uncalculated, return without further checking
 #ifdef ELPP_DISABLE_DEBUG_LOGS
+    if (VariableStatus_[dataPartitionIndex][symmetrizationIndex] == kChanged)
+        return kUncalculated;
+
     if (CalculationStatus_[dataPartitionIndex][symmetrizationIndex] == kUncalculated)
         return kUncalculated;
 #else
+    if (VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kChanged)
+        return kUncalculated;
+
     if (CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kUncalculated)
         return kUncalculated;
 #endif
 
-    if (VariableStatus_[dataPartitionIndex][symmetrizationIndex] == kChanged)
-        return kUncalculated;
 
     // else check if any dependencies are changed
     for (auto& p : ParametersItDependsOn_) {
