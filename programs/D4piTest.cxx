@@ -96,6 +96,7 @@ int main( int argc, char** argv)
 
     D->printSpinAmplitudes();
     D->printDataAccessors(false);
+    D->printDataAccessors();
 
 
 
@@ -125,9 +126,12 @@ int main( int argc, char** argv)
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
-    D->logLikelihood(d);
+    for (unsigned i=0; i<2;++i) {
+        std::cout << "===================================================================================================================== \n";
+        D->logLikelihood(d);
+    }
 
-
+/*
     for (auto& a : freeAmps)
         a->setValue(0.5 * a->value());
 
@@ -154,7 +158,7 @@ int main( int argc, char** argv)
     std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
 
     D->logLikelihood(d);
-
+*/
 
 
     std::cout << "alright! \n";

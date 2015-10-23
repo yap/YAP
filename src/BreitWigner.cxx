@@ -58,7 +58,7 @@ std::complex<double> BreitWigner::amplitude(DataPartition& d, const std::shared_
         return T;
     }
 
-    DEBUG("BreitWigner::amplitude - using cached T = " << T);
+    DEBUG("BreitWigner::amplitude - using cached T = " << T_->value(d.dataPoint(), symIndex));
 
     // else return cached value
     return T_->value(d.dataPoint(), symIndex);

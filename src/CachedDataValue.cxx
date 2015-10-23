@@ -49,6 +49,9 @@ CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const
         return kUncalculated;
 #endif
 
+    if (VariableStatus_[dataPartitionIndex][symmetrizationIndex] == kChanged)
+        return kUncalculated;
+
     // else check if any dependencies are changed
     for (auto& p : ParametersItDependsOn_) {
         if (p->variableStatus() == kChanged) {
@@ -60,14 +63,9 @@ CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const
 
     for (auto& c : CachedDataValuesItDependsOn_) {
 
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-#else
-        // safety check
-        if (! c->owner()->hasSymmetrizationIndex(pc)) {
-            LOG(ERROR) << "Error, owner  does not have " << std::string(*pc);
-            LOG(ERROR) << "owner " << typeid(*c->owner()).name();
-        }
-#endif
+        // if the owner does not have the symIndex, there is nothing to check
+        if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
+            continue;
 
         // get symmetrization index for particular cached data value,
         // checking if owner is different and grabbing if needed

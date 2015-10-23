@@ -21,7 +21,7 @@ bool DataPartition::increment()
     // advance
     CurrentPosition_ += Spacing_;
 
-    bool retVal = CurrentPosition_  + Spacing_ < End_;
+    bool retVal = CurrentPosition_  + Spacing_ <= End_;
 
     if (!retVal) {
         // reset
