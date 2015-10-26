@@ -50,9 +50,11 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, const st
 
         SpinAmplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
 
-        DEBUG("HelicitySpinAmplitude = " << a);
+        DEBUG("HelicitySpinAmplitude::amplitude - calculated amplitude = " << a);
+        return a;
     }
 
+    DEBUG("HelicitySpinAmplitude::amplitude - using cached amplitude = " << SpinAmplitude_->value(d.dataPoint(), symIndex));
     return SpinAmplitude_->value(d.dataPoint(), symIndex);
 }
 

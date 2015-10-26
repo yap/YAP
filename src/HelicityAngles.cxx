@@ -30,7 +30,9 @@ void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<const ParticleCombin
 //-------------------------
 void HelicityAngles::calculate(DataPoint& d)
 {
-    HelicityAngles_.setCalculationStatus(kUncalculated);
+    // use a default dataPartitionIndex of 0
+
+    HelicityAngles_.setCalculationStatus(kUncalculated, 0);
 
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)
         LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
@@ -99,6 +101,8 @@ void HelicityAngles::transformDaughters(DataPoint& d,
         double theta = daughter.Theta();
         HelicityAngles_.setValue(0, phi,   d, symmetrizationIndex(daugh));
         HelicityAngles_.setValue(1, theta, d, symmetrizationIndex(daugh));
+
+        HelicityAngles_.setCalculationStatus(kCalculated, symmetrizationIndex(daugh), 0);
 
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);

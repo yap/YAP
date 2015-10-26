@@ -67,13 +67,15 @@ bool FourMomenta::consistent() const
 //-------------------------
 void FourMomenta::calculate(DataPoint& d)
 {
-    M2_.setCalculationStatus(kUncalculated);
-    M_.setCalculationStatus(kUncalculated);
+    // use a default dataPartitionIndex of 0
+
+    M2_.setCalculationStatus(kUncalculated, 0);
+    M_.setCalculationStatus(kUncalculated, 0);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (M2_.calculationStatus(kv) == kCalculated)
+        if (M2_.calculationStatus(kv, 0) == kCalculated)
             continue;
 
         // if final state particle, 4-momentum already set; else
@@ -87,8 +89,8 @@ void FourMomenta::calculate(DataPoint& d)
         }
 
         double m2 = d.FourMomenta_.at(kv.second).M2();
-        M2_.setValue(m2, d, kv.second);
-        M_.setValue(sqrt(m2), d, kv.second);
+        M2_.setValue(m2, d, kv.second, 0);
+        M_.setValue(sqrt(m2), d, kv.second, 0);
     }
 }
 

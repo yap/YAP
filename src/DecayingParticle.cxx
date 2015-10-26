@@ -38,9 +38,11 @@ std::complex<double> DecayingParticle::amplitude(DataPartition& d, const std::sh
 
         Amplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
 
-        DEBUG("DecayingParticle " << name() << ": amplitude for " << std::string(*pc) << " = " << a);
+        DEBUG("DecayingParticle::amplitude - calculate amplitude for " << name() << " " << std::string(*pc) << " = " << a);
+        return a;
     }
 
+    DEBUG("DecayingParticle::amplitude - using cached amplitude for " << name() << " " << std::string(*pc) << " = " << Amplitude_->value(d.dataPoint(), symIndex));
     return Amplitude_->value(d.dataPoint(), symIndex);
 }
 

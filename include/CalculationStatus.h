@@ -21,13 +21,25 @@
 #ifndef yap_CalculationStatus_h
 #define yap_CalculationStatus_h
 
+#include <ostream>
+
 namespace yap {
 
 /// \enum CalculationStatus
-enum CalculationStatus : bool {
-    kCalculated = true,
-    kUncalculated = false
+enum CalculationStatus {
+    kCalculated,
+    kNeedsCheck,
+    kUncalculated
 };
+
+inline std::ostream & operator<<(std::ostream & str, CalculationStatus c) {
+  switch (c) {
+  case kCalculated: return str << "kCalculated";
+  case kNeedsCheck: return str << "kNeedsCheck";
+  case kUncalculated: return str << "kUncalculated";
+  default: return str << (int) c;
+  }
+}
 
 }
 

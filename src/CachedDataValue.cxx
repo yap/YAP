@@ -40,28 +40,34 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
 //-------------------------
 CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
-    // if changed or uncalculated, return without further checking
+
 #ifdef ELPP_DISABLE_DEBUG_LOGS
-    if (VariableStatus_[dataPartitionIndex][symmetrizationIndex] == kChanged)
-        return kUncalculated;
-
-    if (CalculationStatus_[dataPartitionIndex][symmetrizationIndex] == kUncalculated)
-        return kUncalculated;
+    CalculationStatus& calcStatus = CalculationStatus_[dataPartitionIndex][symmetrizationIndex];
 #else
-    if (VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kChanged)
-        return kUncalculated;
-
-    if (CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kUncalculated)
-        return kUncalculated;
+    CalculationStatus& calcStatus = CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex);
 #endif
 
+    if (calcStatus != kNeedsCheck) {
+        //DEBUG(calcStatus);
+        return calcStatus;
+    }
+
+    //DEBUG("CachedDataValue::calculationStatus needs check");
+
+    // check VariableStatus
+    if (VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kChanged) {
+        calcStatus = kUncalculated;
+        //DEBUG("  kUncalculated");
+        return calcStatus;
+    }
 
     // else check if any dependencies are changed
     for (auto& p : ParametersItDependsOn_) {
         if (p->variableStatus() == kChanged) {
             // if so, update to uncalculated and return
-            setCalculationStatus(kUncalculated, symmetrizationIndex, dataPartitionIndex);
-            return kUncalculated;
+            calcStatus = kUncalculated;
+            //DEBUG("  kUncalculated");
+            return calcStatus;
         }
     }
 
@@ -76,13 +82,16 @@ CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const
         unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
         if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
             // if dependency has changed, update to uncalculated and return
-            setCalculationStatus(kUncalculated, symmetrizationIndex, dataPartitionIndex);
-            return kUncalculated;
+            calcStatus = kUncalculated;
+            //DEBUG("  kUncalculated");
+            return calcStatus;
         }
     }
 
-    // else return calculated
-    return kCalculated;
+    // else, set to calculated and return
+    calcStatus = kCalculated;
+    //DEBUG("  kCalculated");
+    return calcStatus;
 }
 
 //-------------------------
@@ -114,6 +123,7 @@ void RealCachedDataValue::setValue(double val, DataPoint& d, unsigned symmetriza
         CachedDataValue::setValue(0, val, d, symmetrizationIndex);
         setVariableStatus(kChanged, symmetrizationIndex, dataPartitionIndex);
     }
+
     setCalculationStatus(kCalculated, symmetrizationIndex, dataPartitionIndex);
 }
 

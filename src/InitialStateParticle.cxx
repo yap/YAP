@@ -38,8 +38,11 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     DEBUG("InitialStateParticle::logLikelihood()");
 
+    setParameterCachedDataValueFlagsToNeedsCheck(d.index());
+
     // calculate amplitudes
     do {
+        DEBUG("----------------------------------------------------------------------------------------------------");
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
@@ -263,12 +266,26 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 }
 
 //-------------------------
+void InitialStateParticle::setParameterCachedDataValueFlagsToNeedsCheck(unsigned dataPartitionIndex)
+{
+    for (DataAccessor* d : DataAccessors_) {
+        for (CachedDataValue* c : d->CachedDataValues_) {
+            for (auto& pc : c->owner()->particleCombinations()) {
+                if (c->calculationStatus(pc, dataPartitionIndex) == kCalculated)
+                    c->setCalculationStatus(kNeedsCheck, pc, dataPartitionIndex);
+            }
+        }
+    }
+}
+
+//-------------------------
 void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIndex)
 {
     for (DataAccessor* d : DataAccessors_) {
         for (CachedDataValue* c : d->CachedDataValues_) {
             c->setVariableStatus(kUnchanged, dataPartitionIndex);
 
+            /// \todo I think this must only be done after looping over ALL dataPartitions
             for (auto& p : c->ParametersItDependsOn_) {
                 if (p->variableStatus() == kChanged) {
                     p->setVariableStatus(kUnchanged);

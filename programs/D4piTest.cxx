@@ -96,7 +96,7 @@ int main( int argc, char** argv)
 
     D->printSpinAmplitudes();
     D->printDataAccessors(false);
-    D->printDataAccessors();
+    //D->printDataAccessors();
 
 
 
@@ -106,7 +106,7 @@ int main( int argc, char** argv)
                            piPlus->mass()->value(), piMinus->mass()->value()
                          };
 
-    for (unsigned int iEvt = 0; iEvt < 100; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 3; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -126,10 +126,10 @@ int main( int argc, char** argv)
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
-    for (unsigned i=0; i<100;++i) {
+    for (unsigned i=0; i<3;++i) {
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
-        std::cout << "===================================================================================================================== \n";
+        DEBUG("===================================================================================================================== ");
         D->logLikelihood(d);
     }
 

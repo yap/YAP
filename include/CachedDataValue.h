@@ -108,20 +108,20 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc_symInd pair of shared pointer to #ParticleCombination and symmetrization index
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(std::pair<std::shared_ptr<const ParticleCombination>, unsigned> pc_symInd, unsigned dataPartitionIndex = 0)
+    CalculationStatus calculationStatus(std::pair<std::shared_ptr<const ParticleCombination>, unsigned> pc_symInd, unsigned dataPartitionIndex)
     { return calculationStatus(pc_symInd.first, pc_symInd.second, dataPartitionIndex); }
 
     /// overload and hide #CachedValue::calculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex = 0)
+    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
     { return calculationStatus(pc, Owner_->symmetrizationIndex(pc), dataPartitionIndex); }
 
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0) const
+    VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     { return VariableStatus_[dataPartitionIndex][symmetrizationIndex]; }
 #else
@@ -155,20 +155,27 @@ public:
     /// set all variable statuses
     /// \param stat VariableStatus to set to
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setVariableStatus(VariableStatus stat, unsigned dataPartitionIndex = 0)
+    void setVariableStatus(VariableStatus stat, unsigned dataPartitionIndex)
     { for (VariableStatus& s : VariableStatus_[dataPartitionIndex]) s = stat; }
 
     /// set CalculationStatus for symmetrization index and data-partition index
     /// \param stat VariableStatus to set to
     /// \param symmetrizationIndex index of symmetrization to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    void setCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex, unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
+
+    /// set CalculationStatus for ParticleCombination and data-partition index
+    /// \param stat VariableStatus to set to
+    /// \param ParticleCombination to set status of
+    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
+    void setCalculationStatus(CalculationStatus stat,  const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
+    { CalculationStatus_[dataPartitionIndex][Owner_->symmetrizationIndex(pc)] = stat; }
 
     /// set all calculation statuses
     /// \param stat CalculationStatus to set to
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, unsigned dataPartitionIndex = 0)
+    void setCalculationStatus(CalculationStatus stat, unsigned dataPartitionIndex)
     { for (CalculationStatus& s : CalculationStatus_[dataPartitionIndex]) s = stat; }
 
     /// Set value into #DataPoint for particular symmetrization
@@ -230,7 +237,7 @@ public:
     /// \param d #DataPoint to update
     /// \param symmetrizationIndex index of symmetrization to apply to
     /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(double val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
+    void setValue(double val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
@@ -264,7 +271,7 @@ public:
     /// \param d #DataPoint to update
     /// \param symmetrizationIndex index of symmetrization to apply to
     /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(std::complex<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0)
+    void setValue(std::complex<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
     { setValue(real(val), imag(val), d, symmetrizationIndex, dataPartitionIndex); }
 
     /// Set value into #DataPoint for particular symmetrization, and
@@ -274,7 +281,7 @@ public:
     /// \param d #DataPoint to update
     /// \param symmetrizationIndex index of symmetrization to apply to
     /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(double val_re, double val_im, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex = 0);
+    void setValue(double val_re, double val_im, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from

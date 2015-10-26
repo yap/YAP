@@ -30,6 +30,15 @@ enum VariableStatus {
     kUnchanged = +1,        ///< Parameter is free but has not been changed
 };
 
+inline std::ostream & operator<<(std::ostream & str, VariableStatus s) {
+  switch (s) {
+  case kChanged: return str << "kChanged";
+  case kFixed: return str << "kFixed";
+  case kUnchanged: return str << "kUnchanged";
+  default: return str << (int) s;
+  }
+}
+
 }
 
 #endif
