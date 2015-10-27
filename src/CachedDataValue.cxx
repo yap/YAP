@@ -38,7 +38,7 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
 
 
 //-------------------------
-CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+/*CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
 
 #ifdef ELPP_DISABLE_DEBUG_LOGS
@@ -92,6 +92,59 @@ CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const
     calcStatus = kCalculated;
     //DEBUG("  kCalculated");
     return calcStatus;
+}*/
+
+//-------------------------
+void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
+{
+    unsigned symmetrizationIndex = Owner_->symmetrizationIndex(pc);
+
+    // if CachedDataValue is uncalculated for any of the DataPartitions, set to uncalculated
+    // to make sure it will be calculated during the first iteration
+    for (auto& v : CalculationStatus_) {
+        if (v[symmetrizationIndex] == kUncalculated) {
+            GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
+            DEBUG("kUncalculated (CachedDataValue is uncalculated for some of the DataPartitions)");
+            return;
+        }
+    }
+
+    // check if any dependencies are changed
+    for (auto& p : ParametersItDependsOn_) {
+        if (p->variableStatus() == kChanged) {
+            // if so, update to uncalculated and return
+            GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
+            DEBUG("kUncalculated (ParametersItDependsOn_ are changed)");
+            return;
+        }
+    }
+
+    for (auto& c : CachedDataValuesItDependsOn_) {
+
+        // if the owner does not have the symIndex, there is nothing to check
+        if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
+            continue;
+
+        DEBUG(" updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+        c->updateGlobalCalculationStatus(pc);
+        DEBUG(" done updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+
+        if (c->globalCalculationStatus(pc) == kUncalculated) {
+            GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
+            DEBUG("kUncalculated (globalCalculationStatus is kUncalculated)");
+            return;
+        }
+    }
+
+    // otherwise nothing has changed and it is calculated
+    GlobalCalculationStatus_[symmetrizationIndex] = kCalculated;
+    DEBUG("kCalculated (nothing has changed)");
+}
+
+//-------------------------
+void CachedDataValue::resetCalculationStatus(unsigned dataPartitionIndex)
+{
+    CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_;
 }
 
 //-------------------------
@@ -100,6 +153,9 @@ void CachedDataValue::setNumberOfSymmetrizations(unsigned n)
     for (auto& v : CalculationStatus_) {
         v.resize(n, kUncalculated);
     }
+
+    GlobalCalculationStatus_.resize(n, kUncalculated);
+
     for (auto& v : VariableStatus_) {
         v.resize(n, kChanged);
     }

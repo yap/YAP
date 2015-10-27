@@ -102,7 +102,8 @@ public:
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+    { return CalculationStatus_[dataPartitionIndex][symmetrizationIndex]; }
 
     /// overload and hide #CachedValue::calculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
@@ -117,6 +118,20 @@ public:
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
     CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
     { return calculationStatus(pc, Owner_->symmetrizationIndex(pc), dataPartitionIndex); }
+
+
+    /// get global CalculationStatus
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param symmetrization index
+    CalculationStatus globalCalculationStatus(unsigned symmetrizationIndex)
+    { return GlobalCalculationStatus_[symmetrizationIndex]; }
+
+    /// get global CalculationStatus
+    /// \return #CalculationStatus of symmetrization index and data-partition index
+    /// \param pc shared pointer to #ParticleCombination to check status of
+    CalculationStatus globalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
+    { return GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)]; }
+
 
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
@@ -158,18 +173,19 @@ public:
     void setVariableStatus(VariableStatus stat, unsigned dataPartitionIndex)
     { for (VariableStatus& s : VariableStatus_[dataPartitionIndex]) s = stat; }
 
+
     /// set CalculationStatus for symmetrization index and data-partition index
     /// \param stat VariableStatus to set to
     /// \param symmetrizationIndex index of symmetrization to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+    void setCalculationStatus(CalculationStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
 
     /// set CalculationStatus for ParticleCombination and data-partition index
     /// \param stat VariableStatus to set to
     /// \param ParticleCombination to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat,  const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
+    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex][Owner_->symmetrizationIndex(pc)] = stat; }
 
     /// set all calculation statuses
@@ -177,6 +193,20 @@ public:
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
     void setCalculationStatus(CalculationStatus stat, unsigned dataPartitionIndex)
     { for (CalculationStatus& s : CalculationStatus_[dataPartitionIndex]) s = stat; }
+
+
+    /// set global CalculationStatus for symmetrization index
+    /// \param stat VariableStatus to set to
+    /// \param symmetrizationIndex index of symmetrization to set status of
+    void setGlobalCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex)
+    { GlobalCalculationStatus_[symmetrizationIndex] = stat; }
+
+    /// set global CalculationStatus for symmetrization index
+    /// \param stat VariableStatus to set to
+    /// \param ParticleCombination to set status of
+    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<const ParticleCombination>& pc)
+    { GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)] = stat; }
+
 
     /// Set value into #DataPoint for particular symmetrization
     /// (No update to VariableStatus or CalculationStatus is made!)
@@ -189,6 +219,9 @@ public:
 
     /// @}
 
+    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc);
+    void resetCalculationStatus(unsigned dataPartitionIndex);
+
 protected:
     DataAccessor* Owner_;       ///< Owning #DataAccessor
     int Position_;              ///< Position of first element of cached value within data vector
@@ -197,9 +230,13 @@ protected:
     ParameterSet ParametersItDependsOn_;
     CachedDataValueSet CachedDataValuesItDependsOn_;
 
+    /// CalculationStatus'es for the current DataPoint
     /// first index is for data partion
     /// second index is for symmetrization
     std::vector<std::vector<CalculationStatus> > CalculationStatus_;
+
+    /// index is for symmetrization
+    std::vector<CalculationStatus> GlobalCalculationStatus_;
 
     /// first index is for data partion
     /// second index is for symmetrization

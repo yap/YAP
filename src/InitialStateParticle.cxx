@@ -38,11 +38,20 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     DEBUG("InitialStateParticle::logLikelihood()");
 
-    setParameterCachedDataValueFlagsToNeedsCheck(d.index());
+    updateGlobalCalculationStatuses();
 
     // calculate amplitudes
     do {
         DEBUG("----------------------------------------------------------------------------------------------------");
+
+        // reset calculation flags
+        for (DataAccessor* da : DataAccessors_) {
+            for (CachedDataValue* c : da->CachedDataValues_) {
+                c->resetCalculationStatus(d.index());
+            }
+        }
+
+
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
@@ -266,13 +275,17 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 }
 
 //-------------------------
-void InitialStateParticle::setParameterCachedDataValueFlagsToNeedsCheck(unsigned dataPartitionIndex)
+void InitialStateParticle::updateGlobalCalculationStatuses()
 {
     for (DataAccessor* d : DataAccessors_) {
+        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+            continue;
+
+        // \todo need to go from bottom up
         for (CachedDataValue* c : d->CachedDataValues_) {
             for (auto& pc : c->owner()->particleCombinations()) {
-                if (c->calculationStatus(pc, dataPartitionIndex) == kCalculated)
-                    c->setCalculationStatus(kNeedsCheck, pc, dataPartitionIndex);
+                DEBUG("updateGlobalCalculationStatuses for " << typeid(*c->owner()).name() << " for " << std::string(*pc));
+                c->updateGlobalCalculationStatus(pc);
             }
         }
     }
@@ -282,6 +295,9 @@ void InitialStateParticle::setParameterCachedDataValueFlagsToNeedsCheck(unsigned
 void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIndex)
 {
     for (DataAccessor* d : DataAccessors_) {
+        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+            continue;
+
         for (CachedDataValue* c : d->CachedDataValues_) {
             c->setVariableStatus(kUnchanged, dataPartitionIndex);
 

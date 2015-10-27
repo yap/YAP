@@ -131,9 +131,8 @@ private:
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 
-    /// set all CachedDataValue flags to kNeedsCheck
-    /// call before looping over a DataPartition
-    void setParameterCachedDataValueFlagsToNeedsCheck(unsigned dataPartitionIndex);
+    /// call before looping over the DataSet
+    void updateGlobalCalculationStatuses();
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition

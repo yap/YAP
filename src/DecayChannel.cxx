@@ -120,14 +120,14 @@ CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const Pa
     //    return kUncalculated;
 
     if (FixedAmplitude_->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
-        //DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated");
+        DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated");
         return kUncalculated;
     }
 
     // check daughters
     for (unsigned i = 0; i < Daughters_.size(); ++i) {
         if (Daughters_[i]->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated) {
-            //DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
+            DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
             return kUncalculated;
         }
     }

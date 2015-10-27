@@ -19,7 +19,9 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
     DataAccessor(),
     RadialSize_(new RealParameter(radialSize)),
     Amplitude_(new ComplexCachedDataValue(this))
-{}
+{
+    // dependencies are added in addChannel()
+}
 
 //-------------------------
 std::complex<double> DecayingParticle::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const

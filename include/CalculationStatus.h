@@ -26,16 +26,14 @@
 namespace yap {
 
 /// \enum CalculationStatus
-enum CalculationStatus {
-    kCalculated,
-    kNeedsCheck,
-    kUncalculated
+enum CalculationStatus : bool {
+    kCalculated = true,
+    kUncalculated = false
 };
 
 inline std::ostream & operator<<(std::ostream & str, CalculationStatus c) {
   switch (c) {
   case kCalculated: return str << "kCalculated";
-  case kNeedsCheck: return str << "kNeedsCheck";
   case kUncalculated: return str << "kUncalculated";
   default: return str << (int) c;
   }
