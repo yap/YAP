@@ -89,6 +89,10 @@ public:
     /// remove dependency
     void removeDependency(std::shared_ptr<ParameterBase> dep);
 
+    /// remove dependencies
+    void removeDependencies(ParameterSet deps)
+        { for (auto& dep : deps) removeDependency(dep); }
+
     /// @}
 
     /// \name Getters

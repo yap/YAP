@@ -56,6 +56,10 @@ public:
     /// remove Parameter from list of dependencies
     void removeDependency(std::shared_ptr<ParameterBase> dep);
 
+    /// remove dependencies
+    void removeDependencies(ParameterSet deps)
+        { for (auto& dep : deps) removeDependency(dep); }
+
     /// update (depending on Parameters and CachedValueBase's it
     /// depends) and return CalculationStatus_
     CalculationStatus calculationStatus();
