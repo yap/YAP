@@ -40,18 +40,20 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
 
     updateGlobalCalculationStatuses();
 
-    // calculate amplitudes
+    // loop over DataPoints
     do {
         DEBUG("----------------------------------------------------------------------------------------------------");
 
         // reset calculation flags
         for (DataAccessor* da : DataAccessors_) {
+            DEBUG("resetCalculationStatus for " << typeid(*da).name() << "  " << da);
             for (CachedDataValue* c : da->CachedDataValues_) {
                 c->resetCalculationStatus(d.index());
             }
         }
 
 
+        // calculate amplitudes
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
             a += amplitude(d, pc);
@@ -278,13 +280,13 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 void InitialStateParticle::updateGlobalCalculationStatuses()
 {
     for (DataAccessor* d : DataAccessors_) {
+        // \todo move to DataAccessor? Get rid of continue by overriding
         if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
             continue;
 
-        // \todo need to go from bottom up
-        for (CachedDataValue* c : d->CachedDataValues_) {
-            for (auto& pc : c->owner()->particleCombinations()) {
-                DEBUG("updateGlobalCalculationStatuses for " << typeid(*c->owner()).name() << " for " << std::string(*pc));
+        for (auto& pc : d->particleCombinations()) {
+            for (CachedDataValue* c : d->CachedDataValues_) {
+                DEBUG("updateGlobalCalculationStatuses for " << typeid(*d).name() << " " << dynamic_cast<DataAccessor*>(d) << " for " << std::string(*pc));
                 c->updateGlobalCalculationStatus(pc);
             }
         }

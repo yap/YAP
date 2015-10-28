@@ -113,6 +113,8 @@ public:
     /// Print SpinAmplitudes involved in decay chain
     void printSpinAmplitudes(int level = 0);
 
+    using DataAccessor::calculationStatus;
+
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
 
@@ -120,9 +122,6 @@ public:
 
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Amplitude_}; }
-
-
-    using DataAccessor::calculationStatus;
 
 protected:
 

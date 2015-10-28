@@ -75,7 +75,7 @@ void FourMomenta::calculate(DataPoint& d)
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (M2_.calculationStatus(kv, 0) == kCalculated)
+        if (M2_.calculationStatus(kv.first, kv.second, 0) == kCalculated)
             continue;
 
         // if final state particle, 4-momentum already set; else

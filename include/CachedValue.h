@@ -60,10 +60,6 @@ public:
     /// depends) and return CalculationStatus_
     CalculationStatus calculationStatus();
 
-    /// set VariableStatus of members of #ParametersItDependsOn_ to
-    /// kUnchanged (or leave at kFixed).
-    void finishedPrecalculation();
-
 protected:
     ParameterSet ParametersItDependsOn_;
     CalculationStatus CalculationStatus_;

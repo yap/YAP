@@ -86,6 +86,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 //-------------------------
 std::complex<double> DecayChannel::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
+    DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << std::string(*pc));
+
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
@@ -113,7 +115,7 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, const std::shared
 
 
 //-------------------------
-CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc,unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 {
     // must not check free amplitude
     //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
@@ -125,13 +127,24 @@ CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const Pa
     }
 
     // check daughters
+    // \todo if daughters are the same objects, check only once
     for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        if (Daughters_[i]->calculationStatus(pc->daughters()[i], dataPartitionIndex) == kUncalculated) {
+        auto& pcDaugh = pc->daughters()[i];
+
+        if (pcDaugh->isFinalStateParticle())
+            continue;
+
+        // if it's not a finalStateParticle, it must be a decayingParticle
+        std::shared_ptr<DecayingParticle> daugh = std::static_pointer_cast<DecayingParticle>(Daughters_[i]);
+
+        if (daugh->calculationStatus(pcDaugh, daugh->symmetrizationIndex(pcDaugh), dataPartitionIndex) == kUncalculated) {
             DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
             return kUncalculated;
         }
+        DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << dynamic_cast<DataAccessor*>(Daughters_[i].get()) << ") is kCalculated");
     }
 
+    DEBUG("DecayChannel::calculationStatus kCalculated");
     return kCalculated;
 }
 

@@ -99,6 +99,8 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
 {
     unsigned symmetrizationIndex = Owner_->symmetrizationIndex(pc);
 
+    DEBUG("CachedDataValue::updateGlobalCalculationStatus - symIndex for " << std::string(*pc) << " = " << symmetrizationIndex);
+
     // if CachedDataValue is uncalculated for any of the DataPartitions, set to uncalculated
     // to make sure it will be calculated during the first iteration
     for (auto& v : CalculationStatus_) {
@@ -145,6 +147,11 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
 void CachedDataValue::resetCalculationStatus(unsigned dataPartitionIndex)
 {
     CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_;
+
+    for (auto c : CalculationStatus_[dataPartitionIndex])
+        std::cout << c << "    ";
+    std::cout << "\n";
+
 }
 
 //-------------------------

@@ -25,13 +25,13 @@ DataAccessor::~DataAccessor()
 }
 
 //-------------------------
-unsigned DataAccessor::maxSymmetrizationIndex() const
+int DataAccessor::maxSymmetrizationIndex() const
 {
     /// I don't know why, but std::max_element returns wrong numbers sometimes!
     //return std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
-    unsigned max(0);
+    int max(-1);
     for (auto& kv : SymmetrizationIndices_)
-        if (kv.second > max)
+        if (int(kv.second) > max)
             max = kv.second;
 
     return max;
@@ -74,13 +74,13 @@ bool DataAccessor::consistent() const
         }
 
         for (unsigned i = 0; i < c->CalculationStatus_.size(); ++i) {
-            if (c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1) {
+            if (int(c->CalculationStatus_[i].size()) != maxSymmetrizationIndex() + 1) {
                 LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1";
                 LOG(ERROR) << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
                 DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
                 result = false;
             }
-            if (c->VariableStatus_[i].size() != maxSymmetrizationIndex() + 1) {
+            if (int(c->VariableStatus_[i].size()) != maxSymmetrizationIndex() + 1) {
                 LOG(ERROR) << "DataAccessor::consistent() - c->VariableStatus_[i].size() != maxSymmetrizationIndex() + 1";
                 LOG(ERROR) << c->VariableStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
                 DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
@@ -145,13 +145,18 @@ void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
 }
 
 //-------------------------
-CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
+CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc,unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 {
+    DEBUG(" DataAccessor::calculationStatus in");
+
     for (CachedDataValue* d : CachedDataValues_) {
-        if (d->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
+        if (d->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
+            DEBUG(" DataAccessor::calculationStatus " << kUncalculated);
             return kUncalculated;
+        }
     }
 
+    DEBUG(" DataAccessor::calculationStatus " << kCalculated);
     return kCalculated;
 }
 

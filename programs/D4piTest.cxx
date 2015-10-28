@@ -121,6 +121,8 @@ int main( int argc, char** argv)
     /// \todo put into a factory
     yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
 
+    d.dataPoint()->printDataSize();
+
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
     for (auto& a : freeAmps)

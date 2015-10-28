@@ -27,7 +27,7 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (Q2_.calculationStatus(kv, 0) == kCalculated)
+        if (Q2_.calculationStatus(kv.first, kv.second, 0) == kCalculated)
             continue;
 
         if (kv.first->daughters().size() != 2) {

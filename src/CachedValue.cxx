@@ -41,14 +41,4 @@ CalculationStatus CachedValueBase::calculationStatus()
     return CalculationStatus_;
 }
 
-//-------------------------
-void CachedValueBase::finishedPrecalculation()
-{
-    for (auto& p : ParametersItDependsOn_) {
-        if (p->variableStatus() == kChanged)
-            p->setVariableStatus(kUnchanged);
-    }
-}
-
-
 }

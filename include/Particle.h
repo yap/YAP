@@ -35,7 +35,7 @@ class ParticleCombination;
 /// \defgroup Particle Particle-related classes
 
 // keyword virtual is needed to solve diamond problem in DecayingParticle
-class Particle : public virtual AmplitudeComponent
+class Particle : public virtual AmplitudeComponent, public virtual CalculationStatusHolder
 {
 public:
 
@@ -62,30 +62,6 @@ public:
     /// Get name
     std::string name() const
     { return Name_; }
-
-    /// @}
-
-    /// \name calculation statuses
-    /// @{
-
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc shared pointer to #ParticleCombination to check status of
-    /// \param symmetrizationIndex index of symmetrization to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
-    { return kCalculated;}
-
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc_symInd pair of shared pointer to #ParticleCombination and symmetrization index
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(std::pair<std::shared_ptr<const ParticleCombination>, unsigned> pc_symInd, unsigned dataPartitionIndex = 0) const
-    { return kCalculated;}
-
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc shared pointer to #ParticleCombination to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex = 0) const
-    { return kCalculated;}
 
     /// @}
 
