@@ -134,8 +134,16 @@ private:
     /// call before looping over the DataSet
     void updateGlobalCalculationStatuses();
 
+    /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
+    /// call before calculating the amplitude for a new dataPoint
+    void resetCalculationStatuses(unsigned dataPartitionIndex);
+
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition
+    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
+
+    /// set all parameter flags to kUnchanged (or leave at kFixed)
+    /// call after looping over ALL DataPartitions
     void setParameterFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// add DataAccessor to set

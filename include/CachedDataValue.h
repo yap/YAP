@@ -207,8 +207,13 @@ public:
 
     /// @}
 
+    /// update the global calculation status, depending on everything it depends on
     void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc);
-    void resetCalculationStatus(unsigned dataPartitionIndex);
+
+    /// reset the CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
+    /// to be called before calculating the amplitude for a new dataPoint
+    void resetCalculationStatus(unsigned dataPartitionIndex)
+    { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
 protected:
     DataAccessor* Owner_;       ///< Owning #DataAccessor

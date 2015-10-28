@@ -50,6 +50,7 @@ void DataPoint::printDataSize()
     unsigned size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
     std::cout << "  Size of FourMomenta_:      " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
+    totSize += size;
 
     size = sizeof(Data_);
     for (std::vector<std::vector<double> >& v : Data_) {

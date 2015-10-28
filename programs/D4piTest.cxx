@@ -106,7 +106,7 @@ int main( int argc, char** argv)
                            piPlus->mass()->value(), piMinus->mass()->value()
                          };
 
-    for (unsigned int iEvt = 0; iEvt < 3; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 100; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -121,14 +121,14 @@ int main( int argc, char** argv)
     /// \todo put into a factory
     yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
 
-    d.dataPoint()->printDataSize();
+    d.dataPoint().printDataSize();
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
-    for (unsigned i=0; i<3;++i) {
+    for (unsigned i=0; i<100;++i) {
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");

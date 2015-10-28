@@ -45,13 +45,7 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
         DEBUG("----------------------------------------------------------------------------------------------------");
 
         // reset calculation flags
-        for (DataAccessor* da : DataAccessors_) {
-            DEBUG("resetCalculationStatus for " << typeid(*da).name() << "  " << da);
-            for (CachedDataValue* c : da->CachedDataValues_) {
-                c->resetCalculationStatus(d.index());
-            }
-        }
-
+        resetCalculationStatuses(d.index());
 
         // calculate amplitudes
         std::complex<double> a = Complex_0;
@@ -62,7 +56,7 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
     } while (d.increment());
 
 
-    setParameterFlagsToUnchanged(d.index());
+    setCachedDataValueFlagsToUnchanged(d.index());
 
     return 0;
 }
@@ -294,6 +288,34 @@ void InitialStateParticle::updateGlobalCalculationStatuses()
 }
 
 //-------------------------
+void InitialStateParticle::resetCalculationStatuses(unsigned dataPartitionIndex)
+{
+    for (DataAccessor* d : DataAccessors_) {
+        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+            continue;
+
+        //DEBUG("resetCalculationStatus for " << typeid(*d).name() << "  " << d);
+
+        for (CachedDataValue* c : d->CachedDataValues_) {
+            c->resetCalculationStatus(dataPartitionIndex);
+        }
+    }
+}
+
+//-------------------------
+void InitialStateParticle::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
+{
+    for (DataAccessor* d : DataAccessors_) {
+        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+            continue;
+
+        for (CachedDataValue* c : d->CachedDataValues_) {
+            c->setVariableStatus(kUnchanged, dataPartitionIndex);
+        }
+    }
+}
+
+//-------------------------
 void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIndex)
 {
     for (DataAccessor* d : DataAccessors_) {
@@ -303,7 +325,6 @@ void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIn
         for (CachedDataValue* c : d->CachedDataValues_) {
             c->setVariableStatus(kUnchanged, dataPartitionIndex);
 
-            /// \todo I think this must only be done after looping over ALL dataPartitions
             for (auto& p : c->ParametersItDependsOn_) {
                 if (p->variableStatus() == kChanged) {
                     p->setVariableStatus(kUnchanged);
