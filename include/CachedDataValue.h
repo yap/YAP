@@ -212,7 +212,14 @@ public:
     /// @}
 
     /// update the global calculation status, depending on everything it depends on
-    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc);
+    /// \param pc Shared pointer (const reference) to a Particle combination
+    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
+    { updateGlobalCalculationStatus(pc, Owner_->symmetrizationIndex(pc)); }
+
+    /// update the global calculation status, depending on everything it depends on
+    /// \param pc Shared pointer (const reference) to a Particle combination
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex);
 
     /// reset the CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
     /// to be called before calculating the amplitude for a new dataPoint

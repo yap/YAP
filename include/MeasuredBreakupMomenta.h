@@ -22,7 +22,7 @@
 #define yap_MeasuredBreakupMomenta_h
 
 #include "CachedDataValue.h"
-#include "DataAccessor.h"
+#include "StaticDataAccessor.h"
 
 namespace yap {
 
@@ -31,7 +31,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
 
-class MeasuredBreakupMomenta : public DataAccessor
+class MeasuredBreakupMomenta : public StaticDataAccessor
 {
 public:
 

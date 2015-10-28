@@ -274,16 +274,10 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 void InitialStateParticle::updateGlobalCalculationStatuses()
 {
     for (DataAccessor* d : DataAccessors_) {
-        // \todo move to DataAccessor? Get rid of continue by overriding
-        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+        /// \todo Think hard about a less stupid solution
+        if (d == this)
             continue;
-
-        for (auto& pc : d->particleCombinations()) {
-            for (CachedDataValue* c : d->CachedDataValues_) {
-                DEBUG("updateGlobalCalculationStatuses for " << typeid(*d).name() << " " << dynamic_cast<DataAccessor*>(d) << " for " << std::string(*pc));
-                c->updateGlobalCalculationStatus(pc);
-            }
-        }
+        d->updateGlobalCalculationStatuses();
     }
 }
 

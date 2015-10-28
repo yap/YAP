@@ -12,7 +12,7 @@ namespace yap {
 
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta() :
-    DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
+    StaticDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     Q2_(this)
 {
 }

@@ -22,7 +22,7 @@
 #define yap_HelicityAngles_h
 
 #include "CachedDataValue.h"
-#include "DataAccessor.h"
+#include "StaticDataAccessor.h"
 
 #include <TLorentzVector.h>
 
@@ -33,7 +33,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
 
-class HelicityAngles : public DataAccessor
+class HelicityAngles : public StaticDataAccessor
 {
 public:
 

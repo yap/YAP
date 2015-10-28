@@ -11,7 +11,7 @@ namespace yap {
 
 //-------------------------
 HelicityAngles::HelicityAngles() :
-    DataAccessor(&ParticleCombination::equivUpAndDownButLambda),
+    StaticDataAccessor(&ParticleCombination::equivUpAndDownButLambda),
     HelicityAngles_(this, 2)
 {
 }

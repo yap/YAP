@@ -22,7 +22,7 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
-#include "DataAccessor.h"
+#include "StaticDataAccessor.h"
 
 #include <TLorentzVector.h>
 
@@ -37,7 +37,7 @@ class DataPoint;
 /// The final-state particles must have indices corresponding to number;
 /// initial state must also exist in entries
 
-class FourMomenta : public DataAccessor
+class FourMomenta : public StaticDataAccessor
 {
 public:
 

@@ -158,5 +158,16 @@ CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const Pa
     return kCalculated;
 }
 
+//-------------------------
+void DataAccessor::updateGlobalCalculationStatuses()
+{
+    for (CachedDataValue* c : CachedDataValues_) {
+        for (auto& kv : SymmetrizationIndices_) {
+            DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << std::string(*kv.first));
+            c->updateGlobalCalculationStatus(kv.first, kv.second);
+        }
+    }
+}
+
 }
 

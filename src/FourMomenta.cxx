@@ -9,7 +9,7 @@ namespace yap {
 
 //-------------------------
 FourMomenta::FourMomenta() :
-    DataAccessor(&ParticleCombination::equivByOrderlessContent),
+    StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
     InitialStateIndex_(-1),
     M2_(this),
     M_(this)

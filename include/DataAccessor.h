@@ -42,7 +42,7 @@ class InitialStateParticle;
 /// \brief Base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DataAccessor : public CalculationStatusHolder
+class DataAccessor : public virtual CalculationStatusHolder
 {
 public:
 
@@ -156,8 +156,6 @@ public:
 
     /// @}
 
-
-
     /// \name calculation statuses
     /// @{
 
@@ -165,6 +163,9 @@ public:
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
     virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override;
+
+    /// Update global calculation statuses of all CachedDataValues
+    virtual void updateGlobalCalculationStatuses();
 
     /// @}
 
