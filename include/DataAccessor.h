@@ -164,7 +164,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc,unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override;
+    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override;
 
     /// @}
 

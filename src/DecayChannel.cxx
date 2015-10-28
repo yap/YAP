@@ -115,7 +115,7 @@ std::complex<double> DecayChannel::amplitude(DataPartition& d, const std::shared
 
 
 //-------------------------
-CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc,unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
+CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 {
     // must not check free amplitude
     //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)

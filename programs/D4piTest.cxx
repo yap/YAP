@@ -128,41 +128,41 @@ int main( int argc, char** argv)
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
-    for (unsigned i=0; i<100;++i) {
+    for (unsigned i = 0; i < 100; ++i) {
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
         D->logLikelihood(d);
     }
 
-/*
-    for (auto& a : freeAmps)
-        a->setValue(0.5 * a->value());
+    /*
+        for (auto& a : freeAmps)
+            a->setValue(0.5 * a->value());
 
-    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
+        std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
 
-    D->logLikelihood(d);
+        D->logLikelihood(d);
 
-    // only change some amps
-    unsigned i(0);
-    for (auto& a : freeAmps) {
-        if (i++ % 2 == 0)
-            a->setValue(1.);
-    }
+        // only change some amps
+        unsigned i(0);
+        for (auto& a : freeAmps) {
+            if (i++ % 2 == 0)
+                a->setValue(1.);
+        }
 
-    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
+        std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
 
-    D->logLikelihood(d);
+        D->logLikelihood(d);
 
-    // set to zero
-    for (auto& a : freeAmps) {
-        a->setValue(0.);
-    }
+        // set to zero
+        for (auto& a : freeAmps) {
+            a->setValue(0.);
+        }
 
-    std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
+        std::cout << "try second calculation after changing free amps! ===================================================================================================================== \n";
 
-    D->logLikelihood(d);
-*/
+        D->logLikelihood(d);
+    */
 
 
     std::cout << "alright! \n";

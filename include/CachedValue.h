@@ -58,7 +58,7 @@ public:
 
     /// remove dependencies
     void removeDependencies(ParameterSet deps)
-        { for (auto& dep : deps) removeDependency(dep); }
+    { for (auto& dep : deps) removeDependency(dep); }
 
     /// update (depending on Parameters and CachedValueBase's it
     /// depends) and return CalculationStatus_

@@ -91,7 +91,7 @@ public:
 
     /// remove dependencies
     void removeDependencies(ParameterSet deps)
-        { for (auto& dep : deps) removeDependency(dep); }
+    { for (auto& dep : deps) removeDependency(dep); }
 
     /// @}
 
@@ -105,7 +105,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc,unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override
+    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     { return CalculationStatus_[dataPartitionIndex][symmetrizationIndex]; }
 #else

@@ -31,12 +31,16 @@ enum CalculationStatus : bool {
     kUncalculated = false
 };
 
-inline std::ostream & operator<<(std::ostream & str, CalculationStatus c) {
-  switch (c) {
-  case kCalculated: return str << "kCalculated";
-  case kUncalculated: return str << "kUncalculated";
-  default: return str << (int) c;
-  }
+inline std::ostream& operator<<(std::ostream& str, CalculationStatus c)
+{
+    switch (c) {
+        case kCalculated:
+            return str << "kCalculated";
+        case kUncalculated:
+            return str << "kUncalculated";
+        default:
+            return str << (int) c;
+    }
 }
 
 }
