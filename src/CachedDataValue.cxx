@@ -21,7 +21,7 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSe
         Owner_->addCachedDataValue(this);
         // set position to end of owner's current storage
         Position_ = Owner_->size();
-        // increase owner's storage to accomodate cached value
+        // increase owner's storage to accommodate cached value
         Owner_->increaseSize(Size_);
     }
 }
@@ -35,64 +35,6 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
     if (it != ParametersItDependsOn_.end())
         ParametersItDependsOn_.erase(it);
 }
-
-
-//-------------------------
-/*CalculationStatus CachedDataValue::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
-{
-
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    CalculationStatus& calcStatus = CalculationStatus_[dataPartitionIndex][symmetrizationIndex];
-#else
-    CalculationStatus& calcStatus = CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex);
-#endif
-
-    if (calcStatus != kNeedsCheck) {
-        //DEBUG(calcStatus);
-        return calcStatus;
-    }
-
-    //DEBUG("CachedDataValue::calculationStatus needs check");
-
-    // check VariableStatus
-    if (VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex) == kChanged) {
-        calcStatus = kUncalculated;
-        //DEBUG("  kUncalculated");
-        return calcStatus;
-    }
-
-    // else check if any dependencies are changed
-    for (auto& p : ParametersItDependsOn_) {
-        if (p->variableStatus() == kChanged) {
-            // if so, update to uncalculated and return
-            calcStatus = kUncalculated;
-            //DEBUG("  kUncalculated");
-            return calcStatus;
-        }
-    }
-
-    for (auto& c : CachedDataValuesItDependsOn_) {
-
-        // if the owner does not have the symIndex, there is nothing to check
-        if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
-            continue;
-
-        // get symmetrization index for particular cached data value,
-        // checking if owner is different and grabbing if needed
-        unsigned symInd = (c->owner() == Owner_) ? symmetrizationIndex : c->owner()->symmetrizationIndex(pc);
-        if (c->variableStatus(symInd, dataPartitionIndex) == kChanged) {
-            // if dependency has changed, update to uncalculated and return
-            calcStatus = kUncalculated;
-            //DEBUG("  kUncalculated");
-            return calcStatus;
-        }
-    }
-
-    // else, set to calculated and return
-    calcStatus = kCalculated;
-    //DEBUG("  kCalculated");
-    return calcStatus;
-}*/
 
 //-------------------------
 void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
@@ -141,17 +83,6 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
     // otherwise nothing has changed and it is calculated
     GlobalCalculationStatus_[symmetrizationIndex] = kCalculated;
     DEBUG("kCalculated (nothing has changed)");
-}
-
-//-------------------------
-void CachedDataValue::resetCalculationStatus(unsigned dataPartitionIndex)
-{
-    CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_;
-
-    for (auto c : CalculationStatus_[dataPartitionIndex])
-        std::cout << c << "    ";
-    std::cout << "\n";
-
 }
 
 //-------------------------
