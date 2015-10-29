@@ -109,7 +109,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
         return FreeAmplitude_->value() * a;
     }
 
-    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex, dataPartitionIndex));
+    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex));
     return FreeAmplitude_->value() * FixedAmplitude_->value(d, symIndex);
 }
 
