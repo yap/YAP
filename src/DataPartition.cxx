@@ -1,13 +1,20 @@
 #include "DataPartition.h"
 
+#include "logging.h"
+
 namespace yap {
 
 //-------------------------
-DataPartition::DataPartition(const DataPoint& dataPoint, DataIterator begin, DataIterator end, unsigned spacing) :
-    CurrentPosition_(begin),
-    Begin_(begin),
-    End_(end),
-    Spacing_(spacing)
+DataIterator& DataIterator::operator++()
+{
+    Owner_->increment(*this);
+    return *this;
+}
+
+//-------------------------
+DataPartitionBase::DataPartitionBase(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end) :
+    Begin_(this, begin),
+    End_(this, end)
 {
     // set DataPartitionIndex_
     /// \todo make this smarter?
@@ -16,19 +23,18 @@ DataPartition::DataPartition(const DataPoint& dataPoint, DataIterator begin, Dat
 }
 
 //-------------------------
-bool DataPartition::increment()
+void DataPartitionWeave::increment(DataIterator& it)
 {
-    // advance
-    CurrentPosition_ += Spacing_;
-
-    bool retVal = CurrentPosition_  + Spacing_ <= End_;
-
-    if (!retVal) {
-        // reset
-        CurrentPosition_ = Begin_;
+    // check that iterator belongs to this partition
+    if (!it.ownedBy(this)) {
+        LOG(FATAL) << "DataPartition::increment - called with DataIterator belonging to different partition!";
+        it = End_;
+        return;
     }
 
-    return retVal;
+    for (unsigned i = 0; i < Spacing_ && it != End_; ++i)
+        ++rawIterator(it);
 }
+
 
 }

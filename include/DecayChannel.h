@@ -22,6 +22,7 @@
 #include "AmplitudeComponent.h"
 #include "BlattWeisskopf.h"
 #include "DataAccessor.h"
+#include "DataPoint.h"
 
 #include <complex>
 #include <memory>
@@ -57,7 +58,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
 
     virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex, unsigned dataPartitionIndex) const override;

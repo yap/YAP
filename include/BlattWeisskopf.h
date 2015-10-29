@@ -25,6 +25,7 @@
 #include "CachedDataValue.h"
 #include "CalculationStatus.h"
 #include "DataAccessor.h"
+#include "DataPoint.h"
 
 #include <complex>
 #include <memory>
@@ -46,7 +47,7 @@ public:
     BlattWeisskopf(DecayChannel* decayChannel);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;

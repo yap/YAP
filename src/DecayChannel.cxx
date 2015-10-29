@@ -84,33 +84,33 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
+std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << std::string(*pc));
 
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
-        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc) * SpinAmplitude_->amplitude(d, pc);
+    if (calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
 
         if (a != Complex_0) {
             auto& pcDaughters = pc->daughters();
             for (unsigned i = 0; i < Daughters_.size(); ++i) {
-                a *= Daughters_[i]->amplitude(d, pcDaughters.at(i));
+                a *= Daughters_[i]->amplitude(d, pcDaughters.at(i), dataPartitionIndex);
                 if (a == Complex_0)
                     break;
             }
         }
 
-        FixedAmplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+        FixedAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 
         DEBUG("DecayChannel::amplitude - calculated fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << a);
         return FreeAmplitude_->value() * a;
     }
 
-    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d.dataPoint(), symIndex));
-    return FreeAmplitude_->value() * FixedAmplitude_->value(d.dataPoint(), symIndex);
+    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex, dataPartitionIndex));
+    return FreeAmplitude_->value() * FixedAmplitude_->value(d, symIndex);
 }
 
 

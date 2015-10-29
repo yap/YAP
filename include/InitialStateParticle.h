@@ -21,7 +21,6 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
-#include "DataPartition.h"
 #include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
@@ -33,6 +32,8 @@
 #include <vector>
 
 namespace yap {
+
+class DataPartitionBase;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
@@ -64,7 +65,7 @@ public:
     /// @}
 
     /// \todo remove/rename/rework!
-    double logLikelihood(DataPartition& d);
+    double logLikelihood(DataPartitionBase* D);
 
     /// Check consistency of object
     virtual bool consistent() const override;

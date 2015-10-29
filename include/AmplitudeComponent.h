@@ -23,7 +23,6 @@
 
 #include "CalculationStatus.h"
 #include "CachedDataValue.h"
-#include "DataPartition.h"
 #include "DataPoint.h"
 #include "Parameter.h"
 
@@ -46,7 +45,7 @@ public:
     AmplitudeComponent() {};
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const = 0;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;

@@ -27,40 +27,40 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 }
 
 //-------------------------
-std::complex<double> BlattWeisskopf::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
+std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
     bool calc(false); // for debugging
 
-    if (Fq_r->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
         double m2_R = DecayChannel_->parent()->mass()->value();
-        double m_a = initialStateParticle()->fourMomenta().m(d.dataPoint(), pc->daughters().at(0));
-        double m_b = initialStateParticle()->fourMomenta().m(d.dataPoint(), pc->daughters().at(1));
+        double m_a = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(0));
+        double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
         double R = DecayChannel_->parent()->radialSize()->value();
         double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R * R, q2));
-        Fq_r->setValue(f, d.dataPoint(), symIndex, d.index());
+        Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d.dataPoint(), symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d, symIndex));
     }
 
-    if (Fq_ab->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // measured breakup momentum
-        double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d.dataPoint(), pc);
+        double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d, pc);
 
         double R = DecayChannel_->parent()->radialSize()->value();
         double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R * R, q2));
-        Fq_ab->setValue(f, d.dataPoint(), symIndex, d.index());
+        Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d.dataPoint(), symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d, symIndex));
     }
 
-    double Fq_rOFq_ab = Fq_r->value(d.dataPoint(), symIndex) / Fq_ab->value(d.dataPoint(), symIndex);
+    double Fq_rOFq_ab = Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
 
     if (calc) {
         DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);

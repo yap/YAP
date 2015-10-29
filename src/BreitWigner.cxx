@@ -42,26 +42,26 @@ void BreitWigner::borrowParametersFromResonance(Resonance* R)
 }
 
 //-------------------------
-std::complex<double> BreitWigner::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
+std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
     // recalculate, cache, & return, if necessary
-    if (T_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (T_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         // T = 1 / (M^2 - m^2 - iMG)
-        std::complex<double> T = 1. / (pow(Mass_->value(), 2) - initialStateParticle()->fourMomenta().m2(d.dataPoint(), pc) - Complex_i * Mass_->value() * Width_->value());
+        std::complex<double> T = 1. / (pow(Mass_->value(), 2) - initialStateParticle()->fourMomenta().m2(d, pc) - Complex_i * Mass_->value() * Width_->value());
 
-        T_->setValue(T, d.dataPoint(), symIndex, d.index());
+        T_->setValue(T, d, symIndex, dataPartitionIndex);
 
         DEBUG("BreitWigner::amplitude - calculated T = " << T << " and stored it in the cache");
         return T;
     }
 
-    DEBUG("BreitWigner::amplitude - using cached T = " << T_->value(d.dataPoint(), symIndex));
+    DEBUG("BreitWigner::amplitude - using cached T = " << T_->value(d, symIndex));
 
     // else return cached value
-    return T_->value(d.dataPoint(), symIndex);
+    return T_->value(d, symIndex);
 }
 
 //-------------------------

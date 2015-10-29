@@ -23,6 +23,7 @@
 
 #include "CachedValue.h"
 #include "CalculationStatus.h"
+#include "DataPoint.h"
 #include "MassShape.h"
 
 #include <complex>
@@ -46,8 +47,7 @@ public:
     BreitWigner(double mass = -1, double width = -1);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
-
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object

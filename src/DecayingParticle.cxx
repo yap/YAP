@@ -24,28 +24,28 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 }
 
 //-------------------------
-std::complex<double> DecayingParticle::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
+std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     // \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 
         for (auto& c : channels()) {
             if (c->hasSymmetrizationIndex(pc))
-                a += c->amplitude(d, pc);
+                a += c->amplitude(d, pc, dataPartitionIndex);
         }
 
-        Amplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+        Amplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 
         DEBUG("DecayingParticle::amplitude - calculate amplitude for " << name() << " " << std::string(*pc) << " = " << a);
         return a;
     }
 
-    DEBUG("DecayingParticle::amplitude - using cached amplitude for " << name() << " " << std::string(*pc) << " = " << Amplitude_->value(d.dataPoint(), symIndex));
-    return Amplitude_->value(d.dataPoint(), symIndex);
+    DEBUG("DecayingParticle::amplitude - using cached amplitude for " << name() << " " << std::string(*pc) << " = " << Amplitude_->value(d, symIndex));
+    return Amplitude_->value(d, symIndex);
 }
 
 //-------------------------
