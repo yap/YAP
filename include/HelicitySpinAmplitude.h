@@ -21,6 +21,8 @@
 #ifndef yap_HelicitySpinAmplitude_h
 #define yap_HelicitySpinAmplitude_h
 
+#include "DataPoint.h"
+#include "ParticleCombination.h"
 #include "SpinAmplitude.h"
 
 #include <complex>
@@ -51,7 +53,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

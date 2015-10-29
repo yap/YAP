@@ -1,6 +1,7 @@
 #include "InitialStateParticle.h"
 
 #include "Constants.h"
+#include "DataPartition.h"
 #include "DataSet.h"
 #include "logging.h"
 
@@ -32,7 +33,7 @@ InitialStateParticle::~InitialStateParticle()
 }
 
 //-------------------------
-double InitialStateParticle::logLikelihood(DataPartition& d)
+double InitialStateParticle::logLikelihood(DataPartitionBase* D)
 {
     /// \todo implement
 
@@ -41,22 +42,23 @@ double InitialStateParticle::logLikelihood(DataPartition& d)
     updateGlobalCalculationStatuses();
 
     // loop over DataPoints
-    do {
+    /// \todo investigate what needs to be done to use 'for (X : Y)'
+    for (DataIterator d = D->begin(); d != D->end(); ++d) {
         DEBUG("----------------------------------------------------------------------------------------------------");
 
         // reset calculation flags
-        resetCalculationStatuses(d.index());
+        resetCalculationStatuses(D->index());
 
         // calculate amplitudes
         std::complex<double> a = Complex_0;
         for (auto& pc : particleCombinations())
-            a += amplitude(d, pc);
+            a += amplitude(*d, pc, D->index());
 
         DEBUG("InitialStateParticle amplitude = " << a);
-    } while (d.increment());
+    }
 
 
-    setCachedDataValueFlagsToUnchanged(d.index());
+    setCachedDataValueFlagsToUnchanged(D->index());
 
     return 0;
 }

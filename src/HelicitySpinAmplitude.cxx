@@ -18,12 +18,12 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
 }
 
 //-------------------------
-std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const
+std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (SpinAmplitude_->calculationStatus(pc, symIndex, d.index()) == kUncalculated) {
+    if (SpinAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
         /// implemented in rootPWA by C. Bicker
@@ -42,20 +42,20 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPartition& d, const st
             const int lambda2 = pc->daughters()[1]->twoLambda();
             const int lambda  = lambda1 - lambda2;
 
-            const double phi   = initialStateParticle()->helicityAngles().phi(d.dataPoint(), pc);
-            const double theta = initialStateParticle()->helicityAngles().theta(d.dataPoint(), pc);
+            const double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
+            const double theta = initialStateParticle()->helicityAngles().theta(d, pc);
 
             a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
         }
 
-        SpinAmplitude_->setValue(a, d.dataPoint(), symIndex, d.index());
+        SpinAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 
         DEBUG("HelicitySpinAmplitude::amplitude - calculated amplitude = " << a);
         return a;
     }
 
-    DEBUG("HelicitySpinAmplitude::amplitude - using cached amplitude = " << SpinAmplitude_->value(d.dataPoint(), symIndex));
-    return SpinAmplitude_->value(d.dataPoint(), symIndex);
+    DEBUG("HelicitySpinAmplitude::amplitude - using cached amplitude = " << SpinAmplitude_->value(d, symIndex));
+    return SpinAmplitude_->value(d, symIndex);
 }
 
 //-------------------------

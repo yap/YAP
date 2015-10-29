@@ -23,6 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "DataPoint.h"
 #include "Particle.h"
 #include "ParticleIndex.h"
 
@@ -54,7 +55,7 @@ public:
 
     /// Calculate complex amplitude
     /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPartition& d, const std::shared_ptr<const ParticleCombination>& pc) const override
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
     { return Complex_1; }
 
     /// Check consistency

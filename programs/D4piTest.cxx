@@ -119,9 +119,9 @@ int main( int argc, char** argv)
     }
 
     /// \todo put into a factory
-    yap::DataPartition d(D->dataSet()[0], D->dataSet().begin(), D->dataSet().end());
+    yap::DataPartitionBlock d(D->dataSet().begin(), D->dataSet().end());
 
-    d.dataPoint().printDataSize();
+    D->dataSet()[0].printDataSize();
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
@@ -132,7 +132,7 @@ int main( int argc, char** argv)
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
-        D->logLikelihood(d);
+        D->logLikelihood(&d);
     }
 
     /*
