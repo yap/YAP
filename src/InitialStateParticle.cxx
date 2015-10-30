@@ -52,6 +52,7 @@ double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBa
 
     // loop over data points in partition
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
+        DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
 
         // reset calculation flags
         resetCalculationStatuses(D->index());
