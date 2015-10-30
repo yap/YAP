@@ -45,16 +45,16 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 {
     double L = 0;
-    
+
     // loop over data points in partition
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
 
         // reset calculation flags
         resetCalculationStatuses(D->index());
 
-        L += logOfSquaredAmplitude(d, D->index());
+        L += logOfSquaredAmplitude(*d, D->index());
     }
-    
+
     return L;
 }
 
@@ -64,12 +64,10 @@ double InitialStateParticle::logLikelihood(DataPartitionBase* D)
     /// \todo implement
     DEBUG("InitialStateParticle::logLikelihood()");
 
-    updateGlobalCalculationStatuses();
-
     // loop over DataPoints
     /// \todo investigate what needs to be done to use 'for (X : Y)'
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
-        DEBUG("----------------------------------------------------------------------------------------------------");
+        DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
 
         // reset calculation flags
         resetCalculationStatuses(D->index());
@@ -298,6 +296,19 @@ void InitialStateParticle::setSymmetrizationIndexParents()
 }
 
 //-------------------------
+void InitialStateParticle::setNumberOfDataPartitions(unsigned n)
+{
+    for (DataAccessor* d : DataAccessors_) {
+        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
+            continue;
+
+        for (CachedDataValue* c : d->CachedDataValues_) {
+            c->setNumberOfDataPartitions(n);
+        }
+    }
+}
+
+//-------------------------
 void InitialStateParticle::updateGlobalCalculationStatuses()
 {
     for (DataAccessor* d : DataAccessors_) {
@@ -337,15 +348,13 @@ void InitialStateParticle::setCachedDataValueFlagsToUnchanged(unsigned dataParti
 }
 
 //-------------------------
-void InitialStateParticle::setParameterFlagsToUnchanged(unsigned dataPartitionIndex)
+void InitialStateParticle::setParameterFlagsToUnchanged()
 {
     for (DataAccessor* d : DataAccessors_) {
         if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
             continue;
 
         for (CachedDataValue* c : d->CachedDataValues_) {
-            c->setVariableStatus(kUnchanged, dataPartitionIndex);
-
             for (auto& p : c->ParametersItDependsOn_) {
                 if (p->variableStatus() == kChanged) {
                     p->setVariableStatus(kUnchanged);

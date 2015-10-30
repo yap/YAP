@@ -71,28 +71,37 @@ public:
     using DecayingParticle::amplitude;
 
     /// \return amplitude with a sum over all particle combinations
-    std::complex<double> DecayingParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
+    std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
-    double DecayingParticle::logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
-        { return log(norm(amplitude(d, dataPartitionIndex))); }
+    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
+    { return log(norm(amplitude(d, dataPartitionIndex))); }
 
     /// \return The sum of the squares of the amplitudes evaluated over the data partition
     /// \param D Pointer to a #DataPartitionBase object
     double sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
 
-    using logOfProductOfSquaredAmplitudes = sumOfLogsOfSquaredAmplitudes;
+    /// @}
 
+    /// call before looping over all DataPartitions
+    void updateGlobalCalculationStatuses();
+
+    /// loop over a DataPartition
     /// \todo remove/rename/rework!
     double logLikelihood(DataPartitionBase* D);
 
-    /// @}
+    /// set all parameter flags to kUnchanged (or leave at kFixed)
+    /// call after looping over ALL DataPartitions
+    void setParameterFlagsToUnchanged();
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
+
+    /// set number of data partitions of all #CachedDataValue's
+    void setNumberOfDataPartitions(unsigned n);
 
     /// \name Getters
     /// @{
@@ -153,9 +162,6 @@ private:
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
 
-    /// call before looping over the DataSet
-    void updateGlobalCalculationStatuses();
-
     /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
     /// call before calculating the amplitude for a new dataPoint
     void resetCalculationStatuses(unsigned dataPartitionIndex);
@@ -163,10 +169,6 @@ private:
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition
     void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
-
-    /// set all parameter flags to kUnchanged (or leave at kFixed)
-    /// call after looping over ALL DataPartitions
-    void setParameterFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// add DataAccessor to set
     void addDataAccessor(DataAccessor* d);
