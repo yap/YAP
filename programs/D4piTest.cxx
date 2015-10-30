@@ -118,10 +118,10 @@ int main( int argc, char** argv)
         assert(D->addDataPoint(momenta));
     }
 
-    /// \todo put into a factory
-    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
-
     D->dataSet()[0].printDataSize();
+
+    // create data partitions
+    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();

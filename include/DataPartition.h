@@ -41,6 +41,7 @@ class DataPartitionBase;
 class DataIterator : virtual public std::forward_iterator_tag
 {
 public:
+
     DataIterator& operator++();
 
     DataPoint& operator*()
@@ -66,6 +67,7 @@ protected:
 
     DataPartitionBase* Owner_;
     std::vector<DataPoint>::iterator Iterator_;
+
 };
 
 
@@ -77,6 +79,7 @@ protected:
 class DataPartitionBase
 {
 public:
+
     /// Constructor
     DataPartitionBase(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end);
 
@@ -128,6 +131,7 @@ protected:
 class DataPartitionWeave : public DataPartitionBase
 {
 public:
+
     /// Constructor
     DataPartitionWeave(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end,
                        unsigned spacing)
@@ -140,9 +144,11 @@ public:
     { return new DataPartitionWeave(*this); }
 
 protected:
+
     virtual void increment(DataIterator& it) override;
 
     unsigned Spacing_;
+
 };
 
 /// \class DataPartitionBlock
@@ -153,6 +159,7 @@ protected:
 class DataPartitionBlock : public DataPartitionWeave
 {
 public:
+
     /// Constructor
     DataPartitionBlock(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end)
         : DataPartitionWeave(begin, end, 1)
@@ -161,9 +168,10 @@ public:
     /// clone the DataPartition object
     virtual DataPartitionBase* clone() override
     { return new DataPartitionBlock(*this); }
+
 };
 
-// DataPartitionCreators
+/// DataPartitionCreators
 
 /// create DataPartitionWeave'es
 /// \param dataSet The dataSet

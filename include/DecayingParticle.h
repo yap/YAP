@@ -135,6 +135,7 @@ protected:
     std::shared_ptr<RealParameter> RadialSize_;
 
     std::shared_ptr<ComplexCachedDataValue> Amplitude_;
+
 };
 
 }

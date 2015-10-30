@@ -77,7 +77,6 @@ public:
         return kCalculated;
     }
 
-
 private:
 
     /// add symmetrizationIndex to SymmetrizationIndices_

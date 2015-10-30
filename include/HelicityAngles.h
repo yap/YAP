@@ -69,6 +69,7 @@ protected:
 
     /// Helicity angles phi and theta
     CachedDataValue HelicityAngles_;
+
 };
 
 }

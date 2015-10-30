@@ -75,7 +75,6 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {SpinAmplitude_}; }
 
-
 private:
 
     /// Check if SpinAmplitudes are equal

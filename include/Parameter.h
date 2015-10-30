@@ -58,8 +58,10 @@ public:
     { VariableStatus_ = stat; }
 
 protected:
+
     // unsigned Size_;
     VariableStatus VariableStatus_;
+
 };
 
 /// \typedef ParameterVector
@@ -104,6 +106,7 @@ public:
     }
 
 protected:
+
     T ParameterValue_;
 
 };
