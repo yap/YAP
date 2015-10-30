@@ -1,6 +1,7 @@
 #include "DataPartition.h"
 
 #include "logging.h"
+#include "make_unique.h"
 
 namespace yap {
 
@@ -35,27 +36,27 @@ void DataPartitionWeave::increment(DataIterator& it)
 }
 
 //-------------------------
-std::vector<DataPartitionBase*> createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions)
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions)
 {
     DEBUG("Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " interweaved partitions");
 
-    std::vector<DataPartitionBase*> partitions;
+    std::vector<std::unique_ptr<DataPartitionBase> > partitions;
     partitions.reserve(nPartitions);
 
     for (unsigned i = 0; i < nPartitions; ++i) {
         DEBUG("Create DataPartitionWeave with size " << unsigned(0.5 + double(std::distance(dataSet.begin() + i, dataSet.end())) / nPartitions));
-        partitions.push_back(new DataPartitionWeave(dataSet.begin() + i, dataSet.end(), nPartitions));
+        partitions.push_back(std::make_unique<DataPartitionWeave>(dataSet.begin() + i, dataSet.end(), nPartitions));
     }
 
     return partitions;
 }
 
 //-------------------------
-std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize)
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize)
 {
     DEBUG("Partition dataSet of size " << dataSet.size() << " into blocks with a maximum size of " << maxBlockSize);
 
-    std::vector<DataPartitionBase*> partitions;
+    std::vector<std::unique_ptr<DataPartitionBase> > partitions;
     unsigned dataSetSize = dataSet.size();
 
     maxBlockSize = std::min(dataSetSize, maxBlockSize);
@@ -68,7 +69,7 @@ std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet
 
     while (true) {
         DEBUG("Create DataPartitionBlock with size " << std::distance(begin, end));
-        partitions.push_back(new DataPartitionBlock(begin, end));
+        partitions.push_back(std::make_unique<DataPartitionBlock>(begin, end));
 
         if (end >= dataSet.end())
             break;
@@ -83,7 +84,7 @@ std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet
 }
 
 //-------------------------
-std::vector<DataPartitionBase*> createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions)
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions)
 {
     DEBUG("Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " partition blocks");
 

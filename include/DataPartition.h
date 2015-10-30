@@ -98,6 +98,9 @@ public:
 
 protected:
 
+    /// make copy constructor protected. use clone() instead
+    DataPartitionBase(const DataPartitionBase&) = default;
+
     /// \name DataPartitionBase friends
     /// @{
 
@@ -176,17 +179,17 @@ public:
 /// create DataPartitionWeave'es
 /// \param dataSet The dataSet
 /// \param nPartitions number of partitions to divide the dataSet into
-std::vector<DataPartitionBase*> createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions);
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions);
 
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param maxBlockSize maximum size of DataPoints a block can have
-std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize);
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize);
 
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param nPartitions number of blocks to divide the dataSet into
-std::vector<DataPartitionBase*> createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions);
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions);
 
 
 }

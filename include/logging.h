@@ -31,6 +31,8 @@ namespace yap {
  * https://github.com/easylogging/easyloggingpp/blob/master/README.md
  */
 
+#define Max_Log_File_Size 1000
+
 /// disable logging for lvl
 /// \param lvl (Global, Trace, Debug, Fatal, Error, Warning, Verbose, Info)
 inline void disableLogs(el::Level lvl)

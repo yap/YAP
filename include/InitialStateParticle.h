@@ -130,8 +130,8 @@ public:
     std::vector<DataPartitionBase*> dataPartitions();
 
     /// set data partitions
-    /// the DataPartitionBase objects will be cloned
-    void setDataPartitions(std::vector<DataPartitionBase*> partitions);
+    /// ownership over DataPartitionBase objects will be taken
+    void setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions);
 
     /// @}
 
