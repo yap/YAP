@@ -106,7 +106,7 @@ int main( int argc, char** argv)
                            piPlus->mass()->value(), piMinus->mass()->value()
                          };
 
-    for (unsigned int iEvt = 0; iEvt < 3; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 11; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -119,7 +119,8 @@ int main( int argc, char** argv)
     }
 
     /// \todo put into a factory
-    yap::DataPartitionBlock d(D->dataSet().begin(), D->dataSet().end());
+    auto dataPartitions = yap::createDataPartitionsBlock(D->dataSet(), 2);
+    D->setNumberOfDataPartitions(dataPartitions.size());
 
     D->dataSet()[0].printDataSize();
 
@@ -128,11 +129,25 @@ int main( int argc, char** argv)
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
+    // do several loops over all dataPartitions
     for (unsigned i = 0; i < 3; ++i) {
+
+        // change amplitudes
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
-        D->logLikelihood(&d);
+
+        // update global calculationStatuses before looping over partitions
+        D->updateGlobalCalculationStatuses();
+
+        // loop over partitions
+        for (yap::DataPartitionBase* partition : dataPartitions) {
+            DEBUG("calculate LogLikelihood for partition " << partition << " ---------------------------------------------------------------------------");
+            D->logLikelihood(partition);
+        }
+
+        // set parameter flags to unchanged after looping over all partitions
+        D->setParameterFlagsToUnchanged();
     }
 
     /*
