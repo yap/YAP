@@ -9,6 +9,7 @@
 #include <TLorentzRotation.h>
 
 #include <assert.h>
+#include <future>
 
 namespace yap {
 
@@ -43,7 +44,7 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 }
 
 //-------------------------
-double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
+double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 {
     if (!hasDataPartition(D))
         return 0;
@@ -60,6 +61,25 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
     }
 
     return L;
+}
+
+//-------------------------
+double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
+{
+    // update global caclulationStatus's before looping over partitions
+    updateGlobalCalculationStatuses();
+
+    // create thread for calculation on each partition
+    std::vector<std::future<double> > L;
+    for (auto& D : DataPartitions_)
+        L.push_back(std::async(&InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
+
+    // wait for each partition to finish calculating
+    double sum = 0;
+    for (auto& l : L)
+        sum += l.get();
+
+    return sum;
 }
 
 //-------------------------

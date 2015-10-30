@@ -68,9 +68,18 @@ public:
     double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
     { return log(norm(amplitude(d, dataPartitionIndex))); }
 
-    /// \return The sum of the squares of the amplitudes evaluated over the data partition
+    /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D Pointer to a #DataPartitionBase object
-    double sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
+    double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
+
+    /// Stores the sum of the logs of the squared amplitudes evaluated over all partitions
+    double sumOfLogsOfSquaredAmplitudes();
+
+    /// Stores the sum of the lqogs of the squared amplitudes evaluated over the data partition
+    /// \param D Pointer to a #DataPartitionBase
+    /// \param s Double to store sum of log of squared amplitudes in
+    void storeSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, double& s)
+        { s = partialSumOfLogsOfSquaredAmplitudes(D); }
 
     /// @}
 
