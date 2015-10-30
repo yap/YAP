@@ -62,14 +62,14 @@ public:
 
     /// @}
 
+protected:
+
     /// \name Friends
     /// @{
 
     friend class Resonance;
 
     /// @}
-
-protected:
 
     /// override in inheriting classes to borrow parameters from Resonance
     virtual void borrowParametersFromResonance(Resonance* R)

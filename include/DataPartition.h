@@ -55,9 +55,9 @@ public:
     bool ownedBy(DataPartitionBase* dpb) const
     { return Owner_ == dpb; }
 
-    friend DataPartitionBase;
-
 protected:
+
+    friend DataPartitionBase;
 
     // Protected constructor
     DataIterator(DataPartitionBase* p, std::vector<DataPoint>::iterator& it)
@@ -93,10 +93,15 @@ public:
     /// clone the DataPartition object
     virtual DataPartitionBase* clone() = 0;
 
+protected:
+
+    /// \name DataPartitionBase friends
+    /// @{
+
     friend DataIterator;
     friend class InitialStateParticle;
 
-protected:
+    /// @}
 
     /// increment and
     /// \return if still in range

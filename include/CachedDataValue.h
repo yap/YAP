@@ -59,14 +59,6 @@ public:
     /// \param vals set of shared pointers to CachedValues cached value depends on
     CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
-    /// \name CachedDataValue friends
-    /// @{
-
-    friend class DataAccessor;
-    friend class InitialStateParticle;
-
-    /// @}
-
     /// \name Managing dependencies
     /// @{
 
@@ -227,6 +219,15 @@ public:
     { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
 protected:
+
+    /// \name CachedDataValue friends
+    /// @{
+
+    friend class DataAccessor;
+    friend class InitialStateParticle;
+
+    /// @}
+
     DataAccessor* Owner_;       ///< Owning #DataAccessor
     int Position_;              ///< Position of first element of cached value within data vector
     unsigned Size_;             ///< Size of cached value (number of real elements)
