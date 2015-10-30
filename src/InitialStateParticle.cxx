@@ -33,10 +33,35 @@ InitialStateParticle::~InitialStateParticle()
 }
 
 //-------------------------
+std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
+{
+    std::complex<double> a = Complex_0;
+    for (auto& pc : particleCombinations())
+        a += amplitude(d, dataPartitionIndex);
+    return a;
+}
+
+//-------------------------
+double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
+{
+    double L = 0;
+    
+    // loop over data points in partition
+    for (DataIterator d = D->begin(); d != D->end(); ++d) {
+
+        // reset calculation flags
+        resetCalculationStatuses(D->index());
+
+        L += logOfSquaredAmplitude(d, D->index());
+    }
+    
+    return L;
+}
+
+//-------------------------
 double InitialStateParticle::logLikelihood(DataPartitionBase* D)
 {
     /// \todo implement
-
     DEBUG("InitialStateParticle::logLikelihood()");
 
     updateGlobalCalculationStatuses();

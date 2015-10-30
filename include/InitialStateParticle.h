@@ -64,8 +64,29 @@ public:
 
     /// @}
 
+    /// \name Amplitude-related
+    /// @{
+
+    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+    using DecayingParticle::amplitude;
+
+    /// \return amplitude with a sum over all particle combinations
+    std::complex<double> DecayingParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
+
+    /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
+    double DecayingParticle::logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
+        { return log(norm(amplitude(d, dataPartitionIndex))); }
+
+    /// \return The sum of the squares of the amplitudes evaluated over the data partition
+    /// \param D Pointer to a #DataPartitionBase object
+    double sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
+
+    using logOfProductOfSquaredAmplitudes = sumOfLogsOfSquaredAmplitudes;
+
     /// \todo remove/rename/rework!
     double logLikelihood(DataPartitionBase* D);
+
+    /// @}
 
     /// Check consistency of object
     virtual bool consistent() const override;
