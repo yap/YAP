@@ -41,6 +41,7 @@ public:
     /// [Does nothing since data is never to be updated!]
     virtual void updateGlobalCalculationStatuses() override
     { }
+
 };
 
 }

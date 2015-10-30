@@ -41,6 +41,7 @@ namespace yap {
 class CachedValueBase
 {
 public:
+
     /// Constructor
     /// \param pars set of shared pointers to Parameters cached value depends on
     CachedValueBase(ParameterSet pars = {});
@@ -65,6 +66,7 @@ public:
     CalculationStatus calculationStatus();
 
 protected:
+
     ParameterSet ParametersItDependsOn_;
     CalculationStatus CalculationStatus_;
 
@@ -85,6 +87,7 @@ template <typename T>
 class CachedValue : public CachedValueBase, public Parameter<T>
 {
 public:
+
     /// Constructor
     /// \param pars set of shared pointers to Parameters cached value depends on
     CachedValue(ParameterSet pars = {})

@@ -22,10 +22,13 @@
 #define yap_CalculationStatusHolder_h
 
 #include "CalculationStatus.h"
-#include "logging.h"
 #include "ParticleCombination.h"
 
 namespace yap {
+
+/// \class CalculationStatusHolder
+/// \brief Abstract base class for classes which have a calculation status
+/// \author Johannes Rauch, Daniel Greenwald
 
 class CalculationStatusHolder
 {

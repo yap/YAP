@@ -41,9 +41,6 @@ class AmplitudeComponent
 {
 public:
 
-    /// Default constructor
-    AmplitudeComponent() {};
-
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
 
@@ -61,6 +58,7 @@ public:
     /// \return empty vector
     virtual CachedDataValueSet CachedDataValuesItDependsOn()
     { return {}; }
+
 };
 
 }

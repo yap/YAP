@@ -59,7 +59,13 @@ public:
 
     bool setFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
 
+    /// print information about the size of the DataPoint and its members
     void printDataSize();
+
+    /// reserve space in Data_
+    void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
+
+protected:
 
     /// \name DataPoint friends
     /// @{
@@ -71,16 +77,10 @@ public:
 
     /// @}
 
-    /// reserve space in vectors
-    void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
-
-protected:
-
     /// Vector of 4-momenta of particles in event
     std::vector<TLorentzVector> FourMomenta_;
 
     /// Data storage for all DataAccessors
-
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor

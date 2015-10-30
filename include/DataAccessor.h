@@ -171,6 +171,7 @@ protected:
 
     /// @}
 
+    /// set storage index used in DataPoint. Must be unique.
     void setIndex(unsigned i)
     { Index_ = i; }
 

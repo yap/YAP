@@ -60,6 +60,7 @@ protected:
 
     /// squared breakup momentum [GeV^2]
     RealCachedDataValue Q2_;
+
 };
 
 }

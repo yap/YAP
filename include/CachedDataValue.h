@@ -52,6 +52,7 @@ using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
 class CachedDataValue : public CalculationStatusHolder
 {
 public:
+
     /// Constructor
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param size Length of cached value (number of real elements)
@@ -287,6 +288,7 @@ public:
     /// \return Value of CachedDataValue inside the data point
     double value(const DataPoint& d, unsigned  symmetrizationIndex) const
     { return CachedDataValue::value(0, d, symmetrizationIndex); }
+
 };
 
 /// \class ComplexCachedValue
@@ -331,6 +333,7 @@ public:
     /// \return Value of CachedDataValue inside the data point
     std::complex<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
     { return std::complex<double>(CachedDataValue::value(0, d, symmetrizationIndex), CachedDataValue::value(1, d, symmetrizationIndex)); }
+
 };
 
 }
