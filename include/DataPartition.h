@@ -90,7 +90,11 @@ public:
     unsigned index() const
     { return DataPartitionIndex_; }
 
+    /// clone the DataPartition object
+    virtual DataPartitionBase* clone() = 0;
+
     friend DataIterator;
+    friend class InitialStateParticle;
 
 protected:
 
@@ -100,6 +104,9 @@ protected:
 
     std::vector<DataPoint>::iterator& rawIterator(DataIterator& it)
     { return it.Iterator_; }
+
+    void setIndex(unsigned i)
+    { DataPartitionIndex_ = i; }
 
     DataIterator Begin_;
     DataIterator End_;
@@ -123,6 +130,10 @@ public:
           Spacing_(spacing)
     {}
 
+    /// clone the DataPartition object
+    virtual DataPartitionBase* clone() override
+    { return new DataPartitionWeave(*this); }
+
 protected:
     virtual void increment(DataIterator& it) override;
 
@@ -141,6 +152,10 @@ public:
     DataPartitionBlock(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end)
         : DataPartitionWeave(begin, end, 1)
     {}
+
+    /// clone the DataPartition object
+    virtual DataPartitionBase* clone() override
+    { return new DataPartitionBlock(*this); }
 };
 
 // DataPartitionCreators
@@ -148,71 +163,17 @@ public:
 /// create DataPartitionWeave'es
 /// \param dataSet The dataSet
 /// \param nPartitions number of partitions to divide the dataSet into
-inline std::vector<DataPartitionBase*> createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions)
-{
-    DEBUG("Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " interweaved partitions");
-
-    std::vector<DataPartitionBase*> partitions;
-    partitions.reserve(nPartitions);
-
-    for (unsigned i = 0; i < nPartitions; ++i) {
-        DEBUG("Create DataPartitionWeave with size " << unsigned(0.5 + double(std::distance(dataSet.begin() + i, dataSet.end())) / nPartitions));
-        partitions.push_back(new DataPartitionWeave(dataSet.begin() + i, dataSet.end(), nPartitions));
-    }
-
-    return partitions;
-}
+std::vector<DataPartitionBase*> createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions);
 
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param maxBlockSize maximum size of DataPoints a block can have
-inline std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize)
-{
-    DEBUG("Partition dataSet of size " << dataSet.size() << " into blocks with a maximum size of " << maxBlockSize);
-
-    std::vector<DataPartitionBase*> partitions;
-    unsigned dataSetSize = dataSet.size();
-
-    maxBlockSize = std::min(dataSetSize, maxBlockSize);
-    maxBlockSize = std::max(dataSetSize / unsigned(double(dataSetSize) / maxBlockSize + 0.5), maxBlockSize);
-
-    partitions.reserve(dataSetSize / maxBlockSize + 1);
-
-    auto begin = dataSet.begin();
-    auto end   = dataSet.begin() + maxBlockSize;
-
-    while (true) {
-        DEBUG("Create DataPartitionBlock with size " << std::distance(begin, end));
-        partitions.push_back(new DataPartitionBlock(begin, end));
-
-        if (end >= dataSet.end())
-            break;
-
-        begin = end;
-        end += maxBlockSize;
-        if (end >= dataSet.end())
-            end = dataSet.end();
-    }
-
-    return partitions;
-}
+std::vector<DataPartitionBase*> createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize);
 
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param nPartitions number of blocks to divide the dataSet into
-inline std::vector<DataPartitionBase*> createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions)
-{
-    DEBUG("Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " partition blocks");
-
-    unsigned partitionSize(dataSet.size());
-
-    if (nPartitions < dataSet.size())
-        partitionSize = 0.5 + double(dataSet.size()) / nPartitions;
-
-    partitionSize = std::max(1u, partitionSize);
-
-    return createDataPartitionsBlockBySize(dataSet, partitionSize);
-}
+std::vector<DataPartitionBase*> createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions);
 
 
 }

@@ -55,15 +55,6 @@ public:
 
     /// @}
 
-    /// \name InitialStateParticle friends
-    /// @{
-
-    friend class DataAccessor;
-    friend class AmplitudeComponent;
-    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
-
-    /// @}
-
     /// \name Amplitude-related
     /// @{
 
@@ -100,9 +91,6 @@ public:
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
     bool prepare();
 
-    /// set number of data partitions of all #CachedDataValue's
-    void setNumberOfDataPartitions(unsigned n);
-
     /// \name Getters
     /// @{
 
@@ -130,8 +118,20 @@ public:
     /// \return free amplitudes of DecayChannels_
     std::vector<std::shared_ptr<ComplexParameter> > freeAmplitudes() const;
 
+    /// @}
+
+    /// \name Data set and partitions
+    /// @{
+
     DataSet& dataSet()
     { return DataSet_; }
+
+    /// \return the data partitions
+    std::vector<DataPartitionBase*> dataPartitions();
+
+    /// set data partitions
+    /// the DataPartitionBase objects will be cloned
+    void setDataPartitions(std::vector<DataPartitionBase*> partitions);
 
     /// @}
 
@@ -158,6 +158,21 @@ public:
     void printDataAccessors(bool printParticleCombinations = true);
 
 private:
+
+    /// \name InitialStateParticle friends
+    /// @{
+
+    friend class DataAccessor;
+    friend class AmplitudeComponent;
+    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
+
+    /// @}
+
+    /// check if d is in DataPartitions_
+    bool hasDataPartition(DataPartitionBase* d);
+
+    /// set number of data partitions of all #CachedDataValue's
+    void setNumberOfDataPartitions(unsigned n);
 
     /// Set parents of symmetrization indices (recursively)
     virtual void setSymmetrizationIndexParents() override;
@@ -210,6 +225,9 @@ private:
 
     /// Data set
     DataSet DataSet_;
+
+    /// Data partitions
+    std::vector<std::unique_ptr<DataPartitionBase> > DataPartitions_;
 
 };
 

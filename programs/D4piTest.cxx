@@ -119,8 +119,7 @@ int main( int argc, char** argv)
     }
 
     /// \todo put into a factory
-    auto dataPartitions = yap::createDataPartitionsBlock(D->dataSet(), 2);
-    D->setNumberOfDataPartitions(dataPartitions.size());
+    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
 
     D->dataSet()[0].printDataSize();
 
@@ -141,7 +140,7 @@ int main( int argc, char** argv)
         D->updateGlobalCalculationStatuses();
 
         // loop over partitions
-        for (yap::DataPartitionBase* partition : dataPartitions) {
+        for (yap::DataPartitionBase* partition : D->dataPartitions()) {
             DEBUG("calculate LogLikelihood for partition " << partition << " ---------------------------------------------------------------------------");
             D->logLikelihood(partition);
         }

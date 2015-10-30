@@ -4,6 +4,7 @@
 #include "DataPartition.h"
 #include "DataSet.h"
 #include "logging.h"
+#include "make_unique.h"
 
 #include <TLorentzRotation.h>
 
@@ -44,6 +45,9 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 //-------------------------
 double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 {
+    if (!hasDataPartition(D))
+        return 0;
+
     double L = 0;
 
     // loop over data points in partition
@@ -61,6 +65,9 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 //-------------------------
 double InitialStateParticle::logLikelihood(DataPartitionBase* D)
 {
+    if (!hasDataPartition(D))
+        return 0;
+
     /// \todo implement
     DEBUG("InitialStateParticle::logLikelihood()");
 
@@ -184,6 +191,32 @@ std::vector<std::shared_ptr<ComplexParameter> > InitialStateParticle::freeAmplit
 }
 
 //-------------------------
+std::vector<DataPartitionBase*> InitialStateParticle::dataPartitions()
+{
+    std::vector<DataPartitionBase*> partitions;
+    partitions.reserve(DataPartitions_.size());
+
+    for (auto& d : DataPartitions_)
+        partitions.push_back(d.get());
+
+    return partitions;
+}
+
+//-------------------------
+void InitialStateParticle::setDataPartitions(std::vector<DataPartitionBase*> partitions)
+{
+    DataPartitions_.clear();
+    unsigned index(0);
+
+    for (DataPartitionBase* p : partitions) {
+        DataPartitions_.emplace_back(p->clone());
+        DataPartitions_.back()->setIndex(index++);
+    }
+
+    setNumberOfDataPartitions(DataPartitions_.size());
+}
+
+//-------------------------
 bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourMomenta)
 {
     if (!Prepared_) {
@@ -293,6 +326,18 @@ void InitialStateParticle::setSymmetrizationIndexParents()
     for (auto& ch : channels())
         ch->setSymmetrizationIndexParents();
 
+}
+
+//-------------------------
+bool InitialStateParticle::hasDataPartition(DataPartitionBase* d)
+{
+    for (auto& dp : DataPartitions_) {
+        if (d == dp.get())
+            return true;
+    }
+
+    LOG(ERROR) << "InitialStateParticle::hasDataPartition - trying to calculate for a DataPartition, which is not stored in this InitialStateParticle.";
+    return false;
 }
 
 //-------------------------
