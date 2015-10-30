@@ -38,7 +38,7 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 {
     std::complex<double> a = Complex_0;
     for (auto& pc : particleCombinations())
-        a += amplitude(d, dataPartitionIndex);
+        a += amplitude(d, pc, dataPartitionIndex);
     return a;
 }
 
@@ -77,6 +77,8 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
     double sum = 0;
     for (auto& l : L)
         sum += l.get();
+
+    setParameterFlagsToUnchanged();
 
     return sum;
 }

@@ -129,24 +129,29 @@ int main( int argc, char** argv)
         a->setValue(yap::Complex_1);
 
     // do several loops over all dataPartitions
-    for (unsigned i = 0; i < 3; ++i) {
+    for (unsigned i = 0; i < 300; ++i) {
 
         // change amplitudes
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
 
-        // update global calculationStatuses before looping over partitions
-        D->updateGlobalCalculationStatuses();
+        double logA = D->sumOfLogsOfSquaredAmplitudes();
 
-        // loop over partitions
-        for (yap::DataPartitionBase* partition : D->dataPartitions()) {
-            DEBUG("calculate LogLikelihood for partition " << partition << " ---------------------------------------------------------------------------");
-            D->logLikelihood(partition);
-        }
+        // // update global calculationStatuses before looping over partitions
+        // D->updateGlobalCalculationStatuses();
+
+        // // loop over partitions
+        // for (yap::DataPartitionBase* partition : D->dataPartitions()) {
+        //     DEBUG("calculate logA for partition " << partition << " ---------------------------------------------------------------------------");
+        //     // D->logLikelihood(partition);
+        //     logA += D->partialSumOfLogsOfSquaredAmplitudes(partition);
+        // }
+
+        DEBUG("logA = " << logA);
 
         // set parameter flags to unchanged after looping over all partitions
-        D->setParameterFlagsToUnchanged();
+        // D->setParameterFlagsToUnchanged();
     }
 
     /*
