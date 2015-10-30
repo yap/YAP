@@ -2817,11 +2817,11 @@ public:
 #else
         ELPP_UNUSED(base::consts::kDefaultLogFile);
 #endif  // !defined(ELPP_NO_DEFAULT_LOG_FILE)
-        setGlobally(ConfigurationType::ToFile, std::string("true"), true);
+        setGlobally(ConfigurationType::ToFile, std::string("false"), true);
         setGlobally(ConfigurationType::ToStandardOutput, std::string("true"), true);
         setGlobally(ConfigurationType::MillisecondsWidth, std::string("3"), true);
         setGlobally(ConfigurationType::PerformanceTracking, std::string("true"), true);
-        setGlobally(ConfigurationType::MaxLogFileSize, std::string("0"), true);
+        setGlobally(ConfigurationType::MaxLogFileSize, std::string("10000000"), true);
         setGlobally(ConfigurationType::LogFlushThreshold, std::string("0"), true);
 
         setGlobally(ConfigurationType::Format, std::string("%datetime %level [%logger] %msg"), true);
@@ -2847,11 +2847,11 @@ public:
 #if !defined(ELPP_NO_DEFAULT_LOG_FILE)
         unsafeSetIfNotExist(Level::Global, ConfigurationType::Filename, std::string(base::consts::kDefaultLogFile));
 #endif  // !defined(ELPP_NO_DEFAULT_LOG_FILE)
-        unsafeSetIfNotExist(Level::Global, ConfigurationType::ToFile, std::string("true"));
+        unsafeSetIfNotExist(Level::Global, ConfigurationType::ToFile, std::string("false"));
         unsafeSetIfNotExist(Level::Global, ConfigurationType::ToStandardOutput, std::string("true"));
         unsafeSetIfNotExist(Level::Global, ConfigurationType::MillisecondsWidth, std::string("3"));
         unsafeSetIfNotExist(Level::Global, ConfigurationType::PerformanceTracking, std::string("true"));
-        unsafeSetIfNotExist(Level::Global, ConfigurationType::MaxLogFileSize, std::string("0"));
+        unsafeSetIfNotExist(Level::Global, ConfigurationType::MaxLogFileSize, std::string("10000000"));
         unsafeSetIfNotExist(Level::Global, ConfigurationType::Format, std::string("%datetime %level [%logger] %msg"));
         unsafeSetIfNotExist(Level::Debug, ConfigurationType::Format,
                             std::string("%datetime %level [%logger] [%user@%host] [%func] [%loc] %msg"));

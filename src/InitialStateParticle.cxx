@@ -225,14 +225,12 @@ std::vector<DataPartitionBase*> InitialStateParticle::dataPartitions()
 }
 
 //-------------------------
-void InitialStateParticle::setDataPartitions(std::vector<DataPartitionBase*> partitions)
+void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions)
 {
-    DataPartitions_.clear();
-    unsigned index(0);
+    DataPartitions_ = std::move(partitions);
 
-    for (DataPartitionBase* p : partitions) {
-        DataPartitions_.emplace_back(p->clone());
-        DataPartitions_.back()->setIndex(index++);
+    for (unsigned i=0; i<DataPartitions_.size(); ++i) {
+        DataPartitions_[i]->setIndex(i);
     }
 
     setNumberOfDataPartitions(DataPartitions_.size());
