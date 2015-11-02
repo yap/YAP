@@ -72,7 +72,7 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
     // create thread for calculation on each partition
     std::vector<std::future<double> > L;
     for (auto& D : DataPartitions_)
-        L.push_back(std::async(&InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
+        L.push_back(std::async(std::launch::async, &InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
 
     // wait for each partition to finish calculating
     double sum = 0;

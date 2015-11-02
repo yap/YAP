@@ -106,7 +106,9 @@ int main( int argc, char** argv)
                            piPlus->mass()->value(), piMinus->mass()->value()
                          };
 
-    for (unsigned int iEvt = 0; iEvt < 11; ++iEvt) {
+    LOG(INFO) << "create dataPoints";
+
+    for (unsigned int iEvt = 0; iEvt < 10000; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -118,10 +120,12 @@ int main( int argc, char** argv)
         assert(D->addDataPoint(momenta));
     }
 
+    LOG(INFO) << "done creating dataPoints";
+
     D->dataSet()[0].printDataSize();
 
     // create data partitions
-    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
+    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 4));
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
@@ -148,7 +152,7 @@ int main( int argc, char** argv)
         //     logA += D->partialSumOfLogsOfSquaredAmplitudes(partition);
         // }
 
-        DEBUG("logA = " << logA);
+        LOG(INFO) << "logA = " << logA;
 
         // set parameter flags to unchanged after looping over all partitions
         // D->setParameterFlagsToUnchanged();
