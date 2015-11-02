@@ -57,6 +57,24 @@ std::complex<double> DFunctionConj(const int two_j, const int two_m, const int t
 }
 
 //-------------------------
+dFunctionCached::dFunctionCached()
+{
+    LOG(INFO) << "dFunctionCached - fill cache";
+
+    int maxJ(_maxJ);
+
+    for (int two_j=0; two_j<maxJ; ++two_j)
+        for (int two_m=0; two_m<=maxJ; ++two_m)
+            for (int two_n=0; two_n<=maxJ; ++two_n) {
+                if ((abs(two_m) > two_j) or (abs(two_n) > two_j))
+                    continue;
+                operator ()(two_j, two_m, two_n, 1.);
+            }
+
+    LOG(INFO) << "dFunctionCached - done filling cache, size = " << cacheSize();
+}
+
+//-------------------------
 double dFunctionCached::operator ()(const int two_j, const int two_m, const int two_n, const double theta)
 {
     // check input parameters

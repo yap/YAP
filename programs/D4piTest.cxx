@@ -108,7 +108,7 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "create dataPoints";
 
-    for (unsigned int iEvt = 0; iEvt < 10000; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 8; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -129,6 +129,9 @@ int main( int argc, char** argv)
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
+
+    LOG(INFO) << freeAmps.size() << " free amplitudes";
+
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 

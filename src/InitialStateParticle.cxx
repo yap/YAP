@@ -206,8 +206,14 @@ std::vector<std::shared_ptr<ComplexParameter> > InitialStateParticle::freeAmplit
     std::vector<std::shared_ptr<ComplexParameter> > amps;
     amps.reserve(DecayChannels_.size());
 
-    for (DecayChannel* ch : DecayChannels_)
+    for (DecayChannel* ch : DecayChannels_) {
+        // if there is only one channel, its amplitude is 1
+        // no need to change/fit it
+        if (ch->parent()->nChannels() == 1)
+            continue;
+
         amps.push_back(ch->freeAmplitude());
+    }
 
     return amps;
 }
