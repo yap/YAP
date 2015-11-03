@@ -39,6 +39,17 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharing SpinAmplitudes
 
     // Note: daughter dependencies do not need to be set here, they are checked in calculationStatus()
+    for (int i=0; i<int(Daughters_.size()); ++i) {
+        auto daugh = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]);
+        if (!daugh)
+            continue;
+        for (auto& c : daugh->CachedDataValuesItDependsOn()) {
+            FixedAmplitude_->addDependency(std::make_pair(c, i));
+        }
+    }
+
+
+
 
 
     // set symmetrization indices
@@ -91,7 +102,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (FixedAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
 
         if (a != Complex_0) {
@@ -115,14 +126,14 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
 
 //-------------------------
-CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
+/*CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 {
     // must not check free amplitude
     //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
     //    return kUncalculated;
 
     if (FixedAmplitude_->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
-        DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated");
+        DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated - " << std::string(*this));
         return kUncalculated;
     }
 
@@ -138,14 +149,23 @@ CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const Pa
         std::shared_ptr<DecayingParticle> daugh = std::static_pointer_cast<DecayingParticle>(Daughters_[i]);
 
         if (daugh->calculationStatus(pcDaugh, daugh->symmetrizationIndex(pcDaugh), dataPartitionIndex) == kUncalculated) {
-            DEBUG("DecayChannel::calculationStatus of daughter " << i << " is kUncalculated");
+            DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << daugh->name() << ") is kUncalculated - " << std::string(*this));
             return kUncalculated;
         }
-        DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << dynamic_cast<DataAccessor*>(Daughters_[i].get()) << ") is kCalculated");
+        DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << dynamic_cast<DataAccessor*>(Daughters_[i].get()) << ", " << daugh->name() << ") is kCalculated - " << std::string(*this));
     }
 
-    DEBUG("DecayChannel::calculationStatus kCalculated");
+    DEBUG("DecayChannel::calculationStatus kCalculated - " << std::string(*this));
     return kCalculated;
+}*/
+
+//-------------------------
+void DecayChannel::updateGlobalCalculationStatuses()
+{
+    for (auto& kv : symmetrizationIndices()) {
+        DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << std::string(*kv.first));
+        FixedAmplitude_->updateGlobalCalculationStatus(kv.first, kv.second);
+    }
 }
 
 //-------------------------
@@ -365,6 +385,26 @@ void DecayChannel::addSpinAmplitudeDependencies()
     FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
     FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
 }
+
+//-------------------------
+/*CachedDataValuePcIndexSet DecayChannel::CachedDataValuesItDependsOn()
+{
+    CachedDataValuePcIndexSet set;
+    set.insert(std::make_pair(FixedAmplitude_, -1));
+
+    for (int i=0; i<int(Daughters_.size()); ++i) {
+        auto daugh = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]);
+        if (!daugh)
+            continue;
+        for (auto& c : daugh->CachedDataValuesItDependsOn()) {
+            if (c.second >= 0)
+                LOG(FATAL) << "fatal error";
+            set.insert(std::make_pair(c.first, i));
+        }
+    }
+
+    return set;
+}*/
 
 
 }

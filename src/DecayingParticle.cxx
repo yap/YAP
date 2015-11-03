@@ -29,7 +29,7 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
     // \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (Amplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 
