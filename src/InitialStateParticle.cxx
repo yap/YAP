@@ -118,14 +118,21 @@ double InitialStateParticle::logLikelihood(DataPartitionBase* D)
 //-------------------------
 bool InitialStateParticle::consistent() const
 {
-    return DecayingParticle::consistent();
+    bool result(true);
+
+    result &= DecayingParticle::consistent();
+    result &= FourMomenta_.consistent();
+    result &= MeasuredBreakupMomenta_.consistent();
+    result &= HelicityAngles_.consistent();
+
+    return result;
 }
 
 //-------------------------
 bool InitialStateParticle::prepare()
 {
     // check
-    if (!consistent()) {
+    if (!DecayingParticle::consistent()) {
         LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
         return false;
     }
@@ -177,7 +184,7 @@ bool InitialStateParticle::prepare()
         }
     }
 
-    FourMomenta_.findInitialStateParticle();
+    FourMomenta_.prepare();
 
     setDataAcessorIndices();
 

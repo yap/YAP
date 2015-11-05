@@ -45,8 +45,8 @@ public:
     FourMomenta();
 
     /// Find ISP in set and store index location
-    /// \return symmetrization index for ISP (negative if not found)
-    int findInitialStateParticle();
+    /// Fill FinalStateParticleM_ and FinalStateParticleM2_
+    void prepare();
 
     /// check consistency
     bool consistent() const;
@@ -70,13 +70,17 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
     double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return M2_.value(d, symmetrizationIndex(pc)); }
+    { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return M_.value(d, symmetrizationIndex(pc)); }
+    {
+        if (pc->isFinalStateParticle())
+            return FinalStateParticleM_[pc->indices()[0]]->value();
+        return M_.value(d, symmetrizationIndex(pc));
+    }
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
@@ -88,11 +92,11 @@ protected:
     /// Symmetrization index of initial state
     int InitialStateIndex_;
 
-    /// squared mass [GeV^2]
-    RealCachedDataValue M2_;
-
     /// mass [GeV]
     RealCachedDataValue M_;
+
+    /// masses of the final state particles
+    std::vector<std::shared_ptr<RealParameter> > FinalStateParticleM_;
 
 };
 

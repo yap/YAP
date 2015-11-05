@@ -23,6 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "logging.h"
 #include "VariableStatus.h"
 
 #include <complex>
@@ -100,6 +101,10 @@ public:
     void setValue(T val)
     {
         if (ParameterValue_ != val) {
+            if (VariableStatus_ == kFixed) {
+                LOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
+                return;
+            }
             ParameterValue_ = val;
             VariableStatus_ = kChanged;
         }

@@ -11,6 +11,9 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std
 {
     for (ParticleIndex i : indices)
         addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));
+
+    // final state particles have fixed mass
+    this->mass()->setVariableStatus(kFixed);
 }
 
 //-------------------------

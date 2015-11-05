@@ -220,9 +220,6 @@ private:
     /// List of all DecayChannel objects in the InitialsStateParticle and below
     std::vector<DecayChannel*> DecayChannels_;
 
-    /// vector of final state particles
-    std::vector<FinalStateParticle*> FinalStateParticles;
-
     /// four momenta manager
     FourMomenta FourMomenta_;
 
