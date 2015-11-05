@@ -125,6 +125,15 @@ int main( int argc, char** argv)
 
     D->dataSet()[0].printDataSize();
 
+    LOG(INFO) << "Printing data:";
+    for (unsigned d = 0; d < D->dataSet().size(); ++d) {
+        LOG(INFO) << "  DataPoint " << d;
+        for (auto& v : D->dataSet()[d].finalStateFourMomenta()) {
+            v.Print();
+        }
+    }
+
+
     // create data partitions
     D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
 

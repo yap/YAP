@@ -11,7 +11,7 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta() :
     StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
-    InitialStateIndex_(-1),
+    InitialStatePC_(nullptr),
     M_(this)
 {
 }
@@ -28,7 +28,7 @@ void FourMomenta::prepare()
     // look for ISP
     for (auto& kv : symmetrizationIndices())
         if (kv.first->indices().size() == fsp) {
-            InitialStateIndex_ = kv.second;
+            InitialStatePC_ = kv.first;
 
             // set fsp masses
             FinalStateParticleM_.resize(fsp);
@@ -59,9 +59,8 @@ void FourMomenta::prepare()
         }
 
 
-    if (InitialStateIndex_ < 0)
-        LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle index.";
-
+    if (!InitialStatePC_)
+        LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle.";
 }
 
 //-------------------------
@@ -77,7 +76,7 @@ bool FourMomenta::consistent() const
             result = false;
         }
 
-    if (InitialStateIndex_ < 0) {
+    if (!InitialStatePC_) {
         LOG(ERROR) << "FourMomenta::consistent - does not contain initial-state particle combination.";
         result = false;
     }
@@ -104,20 +103,25 @@ void FourMomenta::calculate(DataPoint& d)
         if (M_.calculationStatus(kv.first, kv.second, 0) == kCalculated)
             continue;
 
-        // if final state particle, 4-momentum already set; else
-        if (!kv.first->isFinalStateParticle()) {
-            // reset 4-momentum
-            d.FourMomenta_.at(kv.second).SetXYZT(0, 0, 0, 0);
+        // reset 4-momentum
+        d.FourMomenta_.at(kv.second).SetXYZT(0, 0, 0, 0);
 
-            // add in final-state particle momenta
-            for (unsigned i : kv.first->indices())
-                d.FourMomenta_.at(kv.second) += d.FourMomenta_.at(i);
-        }
+        // add in final-state particle momenta
+        for (unsigned i : kv.first->indices())
+            d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
-        double m2 = d.FourMomenta_.at(kv.second).M2();
-        M_.setValue(sqrt(m2), d, kv.second, 0);
+        M_.setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
     }
 }
+
+//-------------------------
+// std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d) const
+// {
+//     // // calculate |p|
+//     // std::vector<double> p(FinalStateParticleM_.size(), -1);
+//     // for (unsigned i = 0; i < p.size(); ++i)
+//     //     p[i] = ;
+// }
 
 
 }

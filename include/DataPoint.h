@@ -57,7 +57,10 @@ public:
 
     /// @}
 
-    bool setFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
+    const std::vector<TLorentzVector>& finalStateFourMomenta()
+    { return FSPFourMomenta_; }
+
+    bool setFinalStateFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
 
     /// print information about the size of the DataPoint and its members
     void printDataSize();
@@ -77,7 +80,10 @@ protected:
 
     /// @}
 
-    /// Vector of 4-momenta of particles in event
+    /// vector of 4-momenta of final-state particles in event
+    std::vector<TLorentzVector> FSPFourMomenta_;
+
+    /// Vector of 4-momenta of non-final-state particles in event
     std::vector<TLorentzVector> FourMomenta_;
 
     /// Data storage for all DataAccessors

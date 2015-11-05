@@ -14,19 +14,19 @@ namespace yap {
 
 //-------------------------
 DataPoint::DataPoint(const std::vector<TLorentzVector>& P) :
-    FourMomenta_(P)
+    FSPFourMomenta_(P)
 {}
 
 //-------------------------
-bool DataPoint::setFourMomenta(const std::vector<TLorentzVector>& fourMomenta)
+bool DataPoint::setFinalStateFourMomenta(const std::vector<TLorentzVector>& fourMomenta)
 {
-    if (FourMomenta_.size() < fourMomenta.size()) {
+    if (FSPFourMomenta_.size() != fourMomenta.size()) {
         LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
                    << fourMomenta.size() << " > " << FourMomenta_.size();
         return false;
     }
 
-    std::copy(fourMomenta.begin(), fourMomenta.end(), FourMomenta_.begin());
+    FSPFourMomenta_ = fourMomenta;
     return true;
 }
 
@@ -48,7 +48,12 @@ void DataPoint::printDataSize()
 {
     unsigned totSize(0);
 
-    unsigned size = sizeof(FourMomenta_);
+    unsigned size = sizeof(FSPFourMomenta_);
+    size += FSPFourMomenta_.size() * sizeof(TLorentzVector);
+    std::cout << "  Size of FSPFourMomenta_:   " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << FSPFourMomenta_.size() << "\n";
+    totSize += size;
+
+    size = sizeof(FourMomenta_);
     size += FourMomenta_.size() * sizeof(TLorentzVector);
     std::cout << "  Size of FourMomenta_:      " << std::right << std::setw(5) << size << " byte  \tNumber of Indices: " << FourMomenta_.size() << "\n";
     totSize += size;
