@@ -42,7 +42,7 @@ class CachedDataValue;
 /// \ingroup Data
 /// \ingroup Cache
 using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
-using CachedDataValuePcIndex = std::pair<std::shared_ptr<CachedDataValue>, int>;
+using CachedDataValuePcIndex = std::pair<std::shared_ptr<CachedDataValue>, unsigned>;
 using CachedDataValuePcIndexSet = std::set<CachedDataValuePcIndex>;
 
 /// \class CachedDataValue
@@ -60,7 +60,7 @@ public:
     /// \param size Length of cached value (number of real elements)
     /// \param pars set of shared pointers to Parameters cached value depends on
     /// \param vals set of shared pointers to CachedValues cached value depends on
-    CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars = {}, CachedDataValuePcIndexSet vals = {});
+    CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// \name Managing dependencies
     /// @{
@@ -74,20 +74,26 @@ public:
     { ParametersItDependsOn_.insert(dep); }
 
     /// add CachedDataValue's this CachedDataValue depends on
+    void addDependencies(CachedDataValueSet deps)
+    { for (auto& dep : deps) addDependency(dep); }
+
+    /// add CachedDataValue's of a daughter this CachedDataValue depends on
     void addDependencies(CachedDataValuePcIndexSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
-    /// add CachedDataValue's this CachedDataValue depends on
-    void addDependencies(CachedDataValueSet deps)
-    { for (auto& dep : deps) addDependency(std::make_pair(dep, -1)); }
-
     /// add CachedDataValue this CachedDataValue depends on
-    void addDependency(std::shared_ptr<CachedDataValue> dep, int pcDaughterIndex = -1)
-    { CachedDataValuesItDependsOn_.insert(std::make_pair(dep, pcDaughterIndex)); }
-
-    /// add CachedDataValue this CachedDataValue depends on
-    void addDependency(CachedDataValuePcIndex dep)
+    void addDependency(std::shared_ptr<CachedDataValue> dep)
     { CachedDataValuesItDependsOn_.insert(dep); }
+
+    /// add CachedDataValue of a daughter this CachedDataValue depends on
+    /// \param pcDaughterIndex Index of the daughter in the list of ParticleCombination's daughters
+    void addDependency(std::shared_ptr<CachedDataValue> dep, unsigned pcDaughterIndex)
+    { DaughterCachedDataValuesItDependsOn_.insert(std::make_pair(dep, pcDaughterIndex)); }
+
+
+    /// add CachedDataValue of a daughter this CachedDataValue depends on
+    void addDependency(CachedDataValuePcIndex dep)
+    { DaughterCachedDataValuesItDependsOn_.insert(dep); }
 
     /// remove dependency
     void removeDependency(std::shared_ptr<ParameterBase> dep);
@@ -244,7 +250,8 @@ protected:
     unsigned Size_;             ///< Size of cached value (number of real elements)
 
     ParameterSet ParametersItDependsOn_;
-    CachedDataValuePcIndexSet CachedDataValuesItDependsOn_;
+    CachedDataValueSet CachedDataValuesItDependsOn_;
+    CachedDataValuePcIndexSet DaughterCachedDataValuesItDependsOn_;
 
     /// CalculationStatus'es for the current DataPoint
     /// first index is for data partion
@@ -280,7 +287,7 @@ public:
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
     /// \param vals set of shared pointers to CachedValues cached value depends on
-    RealCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValuePcIndexSet vals = {})
+    RealCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
         : CachedDataValue(owner, 1, pars, vals)
     {}
 
@@ -315,7 +322,7 @@ public:
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
     /// \param vals set of shared pointers to CachedValues cached value depends on
-    ComplexCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValuePcIndexSet vals = {})
+    ComplexCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
         : CachedDataValue(owner, 2, pars, vals)
     {}
 

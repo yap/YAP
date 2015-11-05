@@ -6,7 +6,7 @@
 namespace yap {
 
 //-------------------------
-CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars, CachedDataValuePcIndexSet vals) :
+CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars, CachedDataValueSet vals) :
     Owner_(owner),
     Position_(-1),
     Size_(size),
@@ -63,16 +63,34 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
 
     for (auto& c : CachedDataValuesItDependsOn_) {
 
-        const std::shared_ptr<const ParticleCombination>& cPc = (c.second < 0) ? pc : pc->daughters()[c.second];
+        // if the owner does not have the symIndex, there is nothing to check
+        if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
+            continue;
+
+
+        DEBUG(" updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+        c->updateGlobalCalculationStatus(pc);
+        DEBUG(" done updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+
+        if (c->globalCalculationStatus(pc) == kUncalculated) {
+            GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
+            DEBUG("kUncalculated (globalCalculationStatus is kUncalculated)");
+            return;
+        }
+    }
+
+    for (auto& c : DaughterCachedDataValuesItDependsOn_) {
+
+        const std::shared_ptr<const ParticleCombination>& cPc = pc->daughters()[c.second];
 
         // if the owner does not have the symIndex, there is nothing to check
         if (c.first->owner() != Owner_ and not c.first->owner()->hasSymmetrizationIndex(cPc))
             continue;
 
 
-        DEBUG(" updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+        DEBUG(" updateGlobalCalculationStatus of DaughterCachedDataValueItDependsOn");
         c.first->updateGlobalCalculationStatus(cPc);
-        DEBUG(" done updateGlobalCalculationStatus of CachedDataValueItDependsOn");
+        DEBUG(" done updateGlobalCalculationStatus of DaughterCachedDataValueItDependsOn");
 
         if (c.first->globalCalculationStatus(cPc) == kUncalculated) {
             GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
