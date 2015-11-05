@@ -50,7 +50,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 
 
     // set symmetrization indices
-    std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
+    std::vector<ParticleCombinationVector> PCs;
     for (std::shared_ptr<Particle> d : Daughters_) {
         if (std::dynamic_pointer_cast<DataAccessor>(d))
             PCs.push_back(std::dynamic_pointer_cast<DataAccessor>(d)->particleCombinations());
@@ -287,10 +287,10 @@ void DecayChannel::clearSymmetrizationIndices()
 //-------------------------
 void DecayChannel::setSymmetrizationIndexParents()
 {
-    std::vector<std::shared_ptr<const ParticleCombination> > chPCs = particleCombinations();
+    ParticleCombinationVector chPCs = particleCombinations();
 
     // clean up PCs without parents
-    std::vector<std::shared_ptr<const ParticleCombination> > chPCsParents = particleCombinations();
+    ParticleCombinationVector chPCsParents = particleCombinations();
     auto it = chPCsParents.begin();
     while (it != chPCsParents.end()) {
         if (not (*it)->parent()) {

@@ -56,7 +56,7 @@ void FinalStateParticle::addSymmetrizationIndex(std::shared_ptr<const ParticleCo
 //-------------------------
 void FinalStateParticle::setSymmetrizationIndexParents()
 {
-    std::vector<std::shared_ptr<const ParticleCombination> > PCs = SymmetrizationIndices_;
+    ParticleCombinationVector PCs = SymmetrizationIndices_;
 
     // check if already set
     if (PCs[0]->parent() != nullptr)

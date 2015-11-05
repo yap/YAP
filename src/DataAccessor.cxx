@@ -38,9 +38,9 @@ int DataAccessor::maxSymmetrizationIndex() const
 }
 
 //-------------------------
-std::vector<std::shared_ptr<const ParticleCombination> > DataAccessor::particleCombinations() const
+ParticleCombinationVector DataAccessor::particleCombinations() const
 {
-    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations;
+    ParticleCombinationVector particleCombinations;
     particleCombinations.reserve(SymmetrizationIndices_.size());
 
     for (auto& kv : SymmetrizationIndices_)

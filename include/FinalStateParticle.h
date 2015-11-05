@@ -62,7 +62,7 @@ public:
     virtual bool consistent() const override;
 
     /// \return list of all ParticleCombinations
-    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations() const
+    ParticleCombinationVector particleCombinations() const
     { return SymmetrizationIndices_; }
 
     // for internal use only
@@ -73,7 +73,7 @@ private:
     /// add symmetrizationIndex to SymmetrizationIndices_
     void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
-    std::vector<std::shared_ptr<const ParticleCombination> > SymmetrizationIndices_;
+    ParticleCombinationVector SymmetrizationIndices_;
 
 };
 

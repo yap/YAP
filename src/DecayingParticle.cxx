@@ -118,7 +118,7 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
         std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this) );
 
         bool notZero(false);
-        std::vector<std::shared_ptr<const ParticleCombination>> PCs;
+        ParticleCombinationVector PCs;
 
         for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
             for (auto& pc : chan->particleCombinations()) {

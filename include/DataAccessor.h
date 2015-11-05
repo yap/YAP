@@ -87,7 +87,7 @@ public:
     int maxSymmetrizationIndex() const;
 
     /// \return list of all ParticleCombinations
-    std::vector<std::shared_ptr<const ParticleCombination> > particleCombinations() const;
+    ParticleCombinationVector particleCombinations() const;
 
     /// @}
 
