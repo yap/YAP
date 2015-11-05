@@ -110,7 +110,7 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "create dataPoints";
 
-    for (unsigned int iEvt = 0; iEvt < 256; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 4; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -140,7 +140,7 @@ int main( int argc, char** argv)
     //CALLGRIND_START_INSTRUMENTATION
 
     // do several loops over all dataPartitions
-    for (unsigned i = 0; i < 32; ++i) {
+    for (unsigned i = 0; i < 2; ++i) {
 
         // change amplitudes
         for (auto& a : freeAmps)

@@ -49,9 +49,6 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     }
 
 
-
-
-
     // set symmetrization indices
     std::vector<std::vector<std::shared_ptr<const ParticleCombination> > > PCs;
     for (std::shared_ptr<Particle> d : Daughters_) {
@@ -122,50 +119,6 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
     DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex));
     return FreeAmplitude_->value() * FixedAmplitude_->value(d, symIndex);
-}
-
-
-//-------------------------
-/*CalculationStatus DecayChannel::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
-{
-    // must not check free amplitude
-    //if (DataAccessor::calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated)
-    //    return kUncalculated;
-
-    if (FixedAmplitude_->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
-        DEBUG("DecayChannel::calculationStatus of FixedAmplitude_ is kUncalculated - " << std::string(*this));
-        return kUncalculated;
-    }
-
-    // check daughters
-    // \todo if daughters are the same objects, check only once
-    for (unsigned i = 0; i < Daughters_.size(); ++i) {
-        auto& pcDaugh = pc->daughters()[i];
-
-        if (pcDaugh->isFinalStateParticle())
-            continue;
-
-        // if it's not a finalStateParticle, it must be a decayingParticle
-        std::shared_ptr<DecayingParticle> daugh = std::static_pointer_cast<DecayingParticle>(Daughters_[i]);
-
-        if (daugh->calculationStatus(pcDaugh, daugh->symmetrizationIndex(pcDaugh), dataPartitionIndex) == kUncalculated) {
-            DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << daugh->name() << ") is kUncalculated - " << std::string(*this));
-            return kUncalculated;
-        }
-        DEBUG("DecayChannel::calculationStatus of daughter " << i << " (" << dynamic_cast<DataAccessor*>(Daughters_[i].get()) << ", " << daugh->name() << ") is kCalculated - " << std::string(*this));
-    }
-
-    DEBUG("DecayChannel::calculationStatus kCalculated - " << std::string(*this));
-    return kCalculated;
-}*/
-
-//-------------------------
-void DecayChannel::updateGlobalCalculationStatuses()
-{
-    for (auto& kv : symmetrizationIndices()) {
-        DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << std::string(*kv.first));
-        FixedAmplitude_->updateGlobalCalculationStatus(kv.first, kv.second);
-    }
 }
 
 //-------------------------
