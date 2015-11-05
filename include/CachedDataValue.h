@@ -42,8 +42,16 @@ class CachedDataValue;
 /// \ingroup Data
 /// \ingroup Cache
 using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
-using CachedDataValuePcIndex = std::pair<std::shared_ptr<CachedDataValue>, unsigned>;
-using CachedDataValuePcIndexSet = std::set<CachedDataValuePcIndex>;
+
+/// \typedef CachedDataValueDaughterIndexPair
+/// \ingroup Data
+/// \ingroup Cache
+using CachedDataValueDaughterIndexPair = std::pair<std::shared_ptr<CachedDataValue>, unsigned>;
+
+/// \typedef CachedDataValueDaughterIndexPairSet
+/// \ingroup Data
+/// \ingroup Cache
+using CachedDataValueDaughterIndexPairSet = std::set<CachedDataValueDaughterIndexPair>;
 
 /// \class CachedDataValue
 /// \brief Class for managing cached values inside a #DataPoint
@@ -78,7 +86,7 @@ public:
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue's of a daughter this CachedDataValue depends on
-    void addDependencies(CachedDataValuePcIndexSet deps)
+    void addDependencies(CachedDataValueDaughterIndexPairSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue this CachedDataValue depends on
@@ -90,9 +98,8 @@ public:
     void addDependency(std::shared_ptr<CachedDataValue> dep, unsigned pcDaughterIndex)
     { DaughterCachedDataValuesItDependsOn_.insert(std::make_pair(dep, pcDaughterIndex)); }
 
-
     /// add CachedDataValue of a daughter this CachedDataValue depends on
-    void addDependency(CachedDataValuePcIndex dep)
+    void addDependency(CachedDataValueDaughterIndexPair dep)
     { DaughterCachedDataValuesItDependsOn_.insert(dep); }
 
     /// remove dependency
@@ -251,7 +258,7 @@ protected:
 
     ParameterSet ParametersItDependsOn_;
     CachedDataValueSet CachedDataValuesItDependsOn_;
-    CachedDataValuePcIndexSet DaughterCachedDataValuesItDependsOn_;
+    CachedDataValueDaughterIndexPairSet DaughterCachedDataValuesItDependsOn_;
 
     /// CalculationStatus'es for the current DataPoint
     /// first index is for data partion
