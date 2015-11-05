@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "-std=c++11" )
 include(CommonMacros)
 
 # setup ROOT includes and libraries
-find_package(ROOT 6)
+find_package(ROOT)
 
 #BAT
 # find_program(BAT_CONFIG_EXECUTABLE bat-config)
