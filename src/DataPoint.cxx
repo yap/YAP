@@ -7,6 +7,7 @@
 #include "MeasuredBreakupMomenta.h"
 
 #include <assert.h>
+#include <iomanip>
 #include <iostream>
 
 namespace yap {
