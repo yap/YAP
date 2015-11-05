@@ -83,15 +83,15 @@ public:
 
 private:
 
-    dFunctionCached () { }
+    dFunctionCached();
     ~dFunctionCached();
-    dFunctionCached (const dFunctionCached&);
+    dFunctionCached(const dFunctionCached&);
     dFunctionCached& operator =(const dFunctionCached&);
 
     static dFunctionCached _instance; ///< singleton instance
     static bool _useCache; ///< if set to true, cache is used
 
-    static const unsigned int _maxJ = 41; ///< maximum allowed angular momentum * 2 + 1
+    static const unsigned int _maxJ = 21; ///< maximum allowed angular momentum * 2 + 1
     static cacheEntryType* _cache[_maxJ][_maxJ + 1][_maxJ + 1]; ///< cache for intermediate terms [two_j][two_m][two_n]
 };
 

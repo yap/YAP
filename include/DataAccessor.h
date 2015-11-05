@@ -22,7 +22,6 @@
 #define yap_DataAccessor_h
 
 #include "CalculationStatus.h"
-#include "CalculationStatusHolder.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "ParticleCombination.h"
@@ -42,7 +41,7 @@ class InitialStateParticle;
 /// \brief Base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DataAccessor : public virtual CalculationStatusHolder
+class DataAccessor
 {
 public:
 
@@ -151,11 +150,6 @@ public:
 
     /// \name calculation statuses
     /// @{
-
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc shared pointer to #ParticleCombination to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override;
 
     /// Update global calculation statuses of all CachedDataValues
     virtual void updateGlobalCalculationStatuses();

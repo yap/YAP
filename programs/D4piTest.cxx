@@ -18,6 +18,8 @@
 #include <iostream>
 #include <string>
 
+//#include <callgrind.h>
+
 #include "logging.h"
 INITIALIZE_EASYLOGGINGPP
 
@@ -108,7 +110,7 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "create dataPoints";
 
-    for (unsigned int iEvt = 0; iEvt < 10000; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 4; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -125,38 +127,50 @@ int main( int argc, char** argv)
     D->dataSet()[0].printDataSize();
 
     // create data partitions
-    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 4));
+    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
+
+    LOG(INFO) << freeAmps.size() << " free amplitudes";
+
     for (auto& a : freeAmps)
         a->setValue(yap::Complex_1);
 
+    //CALLGRIND_START_INSTRUMENTATION
+
     // do several loops over all dataPartitions
-    for (unsigned i = 0; i < 300; ++i) {
+    for (unsigned i = 0; i < 2; ++i) {
 
         // change amplitudes
         for (auto& a : freeAmps)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
 
-        double logA = D->sumOfLogsOfSquaredAmplitudes();
+        double logA(0);
 
-        // // update global calculationStatuses before looping over partitions
-        // D->updateGlobalCalculationStatuses();
+        if (false) {
+            // multi threaded
+            logA = D->sumOfLogsOfSquaredAmplitudes();
+        }
+        else {
+            // update global calculationStatuses before looping over partitions
+            D->updateGlobalCalculationStatuses();
 
-        // // loop over partitions
-        // for (yap::DataPartitionBase* partition : D->dataPartitions()) {
-        //     DEBUG("calculate logA for partition " << partition << " ---------------------------------------------------------------------------");
-        //     // D->logLikelihood(partition);
-        //     logA += D->partialSumOfLogsOfSquaredAmplitudes(partition);
-        // }
+            // loop over partitions
+            for (yap::DataPartitionBase* partition : D->dataPartitions()) {
+                DEBUG("calculate logA for partition " << partition->index() << " ---------------------------------------------------------------------------");
+                logA += D->partialSumOfLogsOfSquaredAmplitudes(partition);
+            }
+
+            // set parameter flags to unchanged after looping over all partitions
+            D->setParameterFlagsToUnchanged();
+        }
 
         LOG(INFO) << "logA = " << logA;
-
-        // set parameter flags to unchanged after looping over all partitions
-        // D->setParameterFlagsToUnchanged();
     }
+
+    //CALLGRIND_STOP_INSTRUMENTATION
 
     /*
         for (auto& a : freeAmps)

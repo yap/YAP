@@ -145,20 +145,6 @@ void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
 }
 
 //-------------------------
-CalculationStatus DataAccessor::calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
-{
-    for (CachedDataValue* d : CachedDataValues_) {
-        if (d->calculationStatus(pc, symmetrizationIndex, dataPartitionIndex) == kUncalculated) {
-            DEBUG(" DataAccessor::calculationStatus " << kUncalculated);
-            return kUncalculated;
-        }
-    }
-
-    DEBUG(" DataAccessor::calculationStatus " << kCalculated);
-    return kCalculated;
-}
-
-//-------------------------
 void DataAccessor::updateGlobalCalculationStatuses()
 {
     for (CachedDataValue* c : CachedDataValues_) {

@@ -67,11 +67,32 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
         if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
             continue;
 
+
         DEBUG(" updateGlobalCalculationStatus of CachedDataValueItDependsOn");
         c->updateGlobalCalculationStatus(pc);
         DEBUG(" done updateGlobalCalculationStatus of CachedDataValueItDependsOn");
 
         if (c->globalCalculationStatus(pc) == kUncalculated) {
+            GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
+            DEBUG("kUncalculated (globalCalculationStatus is kUncalculated)");
+            return;
+        }
+    }
+
+    for (auto& c : DaughterCachedDataValuesItDependsOn_) {
+
+        const std::shared_ptr<const ParticleCombination>& cPc = pc->daughters()[c.second];
+
+        // if the owner does not have the symIndex, there is nothing to check
+        if (c.first->owner() != Owner_ and not c.first->owner()->hasSymmetrizationIndex(cPc))
+            continue;
+
+
+        DEBUG(" updateGlobalCalculationStatus of DaughterCachedDataValueItDependsOn");
+        c.first->updateGlobalCalculationStatus(cPc);
+        DEBUG(" done updateGlobalCalculationStatus of DaughterCachedDataValueItDependsOn");
+
+        if (c.first->globalCalculationStatus(cPc) == kUncalculated) {
             GlobalCalculationStatus_[symmetrizationIndex] = kUncalculated;
             DEBUG("kUncalculated (globalCalculationStatus is kUncalculated)");
             return;

@@ -42,6 +42,8 @@ class CachedDataValue;
 /// \ingroup Data
 /// \ingroup Cache
 using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
+using CachedDataValuePcIndex = std::pair<std::shared_ptr<CachedDataValue>, unsigned>;
+using CachedDataValuePcIndexSet = std::set<CachedDataValuePcIndex>;
 
 /// \class CachedDataValue
 /// \brief Class for managing cached values inside a #DataPoint
@@ -49,7 +51,7 @@ using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
 /// \ingroup Data
 /// \ingroup Cache
 
-class CachedDataValue : public CalculationStatusHolder
+class CachedDataValue
 {
 public:
 
@@ -75,9 +77,23 @@ public:
     void addDependencies(CachedDataValueSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
+    /// add CachedDataValue's of a daughter this CachedDataValue depends on
+    void addDependencies(CachedDataValuePcIndexSet deps)
+    { for (auto& dep : deps) addDependency(dep); }
+
     /// add CachedDataValue this CachedDataValue depends on
     void addDependency(std::shared_ptr<CachedDataValue> dep)
     { CachedDataValuesItDependsOn_.insert(dep); }
+
+    /// add CachedDataValue of a daughter this CachedDataValue depends on
+    /// \param pcDaughterIndex Index of the daughter in the list of ParticleCombination's daughters
+    void addDependency(std::shared_ptr<CachedDataValue> dep, unsigned pcDaughterIndex)
+    { DaughterCachedDataValuesItDependsOn_.insert(std::make_pair(dep, pcDaughterIndex)); }
+
+
+    /// add CachedDataValue of a daughter this CachedDataValue depends on
+    void addDependency(CachedDataValuePcIndex dep)
+    { DaughterCachedDataValuesItDependsOn_.insert(dep); }
 
     /// remove dependency
     void removeDependency(std::shared_ptr<ParameterBase> dep);
@@ -98,7 +114,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const override
+    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     { return CalculationStatus_[dataPartitionIndex][symmetrizationIndex]; }
 #else
@@ -235,6 +251,7 @@ protected:
 
     ParameterSet ParametersItDependsOn_;
     CachedDataValueSet CachedDataValuesItDependsOn_;
+    CachedDataValuePcIndexSet DaughterCachedDataValuesItDependsOn_;
 
     /// CalculationStatus'es for the current DataPoint
     /// first index is for data partion
