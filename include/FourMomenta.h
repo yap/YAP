@@ -67,13 +67,13 @@ public:
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     {
         if (pc->isFinalStateParticle())
             return FinalStateParticleM_[pc->indices()[0]]->value();
@@ -89,12 +89,24 @@ public:
     /// with the following convention for three-momenta:\n
     /// p1 defines +z direction
     /// p1 x p2 defines +y direction
-    // std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
+    std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
 
 protected:
 
     /// Symmetrization index of initial state
     std::shared_ptr<const ParticleCombination> InitialStatePC_;
+
+    /// \todo Perhaps find better way than storing FinalStatePC, RecoilPC, and PairPC.
+
+    /// Final-state particle PCs
+    ParticleCombinationVector FinalStatePC_;
+
+    /// Symmetrization indices for recoil against each final-state particle,
+    /// index in vector is FSP index
+    ParticleCombinationVector RecoilPC_;
+
+    /// Symmetrization indices for pairs of particles
+    std::vector<ParticleCombinationVector> PairPC_;
 
     /// mass [GeV]
     RealCachedDataValue M_;

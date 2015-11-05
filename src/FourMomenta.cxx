@@ -26,41 +26,55 @@ void FourMomenta::prepare()
             fsp = pc->indices().size();
 
     // look for ISP
+    InitialStatePC_ = nullptr;
     for (auto& kv : symmetrizationIndices())
         if (kv.first->indices().size() == fsp) {
             InitialStatePC_ = kv.first;
-
-            // set fsp masses
-            FinalStateParticleM_.resize(fsp);
-
-            for (ParticleIndex i : kv.first->indices()) {
-                for (auto& fsp : initialStateParticle()->finalStateParticles()) {
-                    bool found(false);
-                    for (auto& pc : fsp->particleCombinations()) {
-                        ParticleIndex ii = pc->indices().at(0);
-
-                        if (i == ii) {
-                            FinalStateParticleM_[i] = fsp->mass();
-
-                            //DEBUG("set mass for fsp " << unsigned(i) << " to " << m);
-
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (found)
-                        break;
-                }
-            }
-            // done setting fsp masses
-
             break;
         }
 
-
     if (!InitialStatePC_)
         LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle.";
+
+    // set FSP masses, and FSP PCs
+    FinalStateParticleM_.assign(fsp, nullptr);
+    FinalStatePC_.assign(fsp, nullptr);
+    for (ParticleIndex i = 0; i < fsp; ++i) {
+        FinalStatePC_[i] = ParticleCombination::uniqueSharedPtr(i);
+        // set FSP mass
+        for (auto& fsp : initialStateParticle()->finalStateParticles()) {
+            for (auto& pc : fsp->particleCombinations()) {
+                if (i == pc->indices()[0]) {
+                    FinalStateParticleM_[i] = fsp->mass();
+                    //DEBUG("set mass for fsp " << unsigned(i) << " to " << m);
+                    break;
+                }
+            }
+            if (FinalStateParticleM_[i])
+                break;
+        }
+    }
+
+    // Set recoil PC's & pair PC's
+    RecoilPC_.assign(fsp, nullptr);
+    PairPC_.assign(fsp, ParticleCombinationVector(fsp, nullptr));
+    for (ParticleIndex i = 0; (unsigned)i < fsp; ++i) {
+        std::shared_ptr<const ParticleCombination> i_pc = ParticleCombination::uniqueSharedPtr(i);
+        // build vector of other final state particles
+        ParticleCombinationVector rec_pcs;
+        for (ParticleIndex j = 0; (unsigned)j < fsp; ++j) {
+            if (j == i)
+                continue;
+            std::shared_ptr<const ParticleCombination> j_pc = ParticleCombination::uniqueSharedPtr(j);
+            rec_pcs.push_back(j_pc);
+            // set pair pc and add to object
+            PairPC_[i][j] = ParticleCombination::uniqueSharedPtr({i_pc, j_pc});
+            addSymmetrizationIndex(PairPC_[i][j]);
+        }
+        // set recoil pc and add to object
+        RecoilPC_[i] = ParticleCombination::uniqueSharedPtr(rec_pcs);
+        addSymmetrizationIndex(RecoilPC_[i]);
+    }
 }
 
 //-------------------------
@@ -115,13 +129,37 @@ void FourMomenta::calculate(DataPoint& d)
 }
 
 //-------------------------
-// std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d) const
-// {
-//     // // calculate |p|
-//     // std::vector<double> p(FinalStateParticleM_.size(), -1);
-//     // for (unsigned i = 0; i < p.size(); ++i)
-//     //     p[i] = ;
-// }
+std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d) const
+{
+    double M2 = m2(d, InitialStatePC_);
+
+    std::vector<TLorentzVector> P(FinalStateParticleM_.size());
+    // calculate |p|, setting each vector in z direction initially
+    for (unsigned i = 0; i < P.size(); ++i) {
+        double fsp_m = m(d, FinalStatePC_[i]);
+        double recoil_mass = m(d, RecoilPC_[i]);
+        double p = sqrt((M2 - pow(fsp_m + recoil_mass, 2)) * (M2 - pow(fsp_m - recoil_mass, 2)) / 4 / M2);
+        P[i].SetXYZM(0, 0, p, fsp_m);
+    }
+
+    // calculate angles
+    std::vector<std::vector<double> > angle(P.size(), std::vector<double>(P.size(), 0));
+    for (unsigned i = 0; i < P.size(); ++i) {
+        for (unsigned j = i + 1; j < P.size(); ++j) {
+            angle[i][j] = acos(P[i].E() * P[j].E() + 0.5 * (pow(m(d, FinalStatePC_[i]), 2) + pow(m(d, FinalStatePC_[j]), 2) - m2(d, PairPC_[i][j])));
+            angle[j][i] = angle[i][j];
+        }
+    }
+
+    // leave P[0] aligned with z axis
+    // rotate remaining by relative angles around y axis
+    /// \todo Make work for 4 or more particles
+    for (unsigned i = 1; i < P.size(); ++i) {
+        P[i].RotateY(angle[i][i - 1]);
+    }
+
+    return P;
+}
 
 
 }
