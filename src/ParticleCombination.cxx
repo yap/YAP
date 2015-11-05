@@ -23,7 +23,7 @@ ParticleCombination::ParticleCombination(ParticleIndex index, char twoLambda) :
 }
 
 //-------------------------
-ParticleCombination::ParticleCombination(std::vector<std::shared_ptr<const ParticleCombination> > c, char twoLambda) :
+ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLambda) :
     Parent_(nullptr),
     TwoLambda_(twoLambda)
 {
@@ -207,7 +207,7 @@ bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 /////////////////////////
 // Static stuff:
 
-std::set<std::shared_ptr<const ParticleCombination> > ParticleCombination::ParticleCombinationSet_;
+ParticleCombinationSet ParticleCombination::ParticleCombinationSet_;
 
 //-------------------------
 std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<const ParticleCombination> pc)
@@ -227,7 +227,7 @@ std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(
 }
 
 //-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<std::shared_ptr<const ParticleCombination> > c)
+std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleCombinationVector c)
 {
     return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
 }
