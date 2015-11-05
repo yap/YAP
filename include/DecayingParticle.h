@@ -41,6 +41,12 @@ class ParticleCombination;
 /// \brief Class for a particle that will decay
 /// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
+///
+/// The amplitude function returns a sum over the amplitudes of all
+/// #DecayChannel's for the decay of the particle (denoted P, with
+/// daughters in channel c denoted D1, D2; and amplitude A_c):\n
+/// A_c = a_c * Blatt-Weisskopf(P->D1+D2) * SpinAmplitude(P->D1+D2) * A(D1->xx) * A(D2->xx)\n
+/// with free amplitude a_c.
 
 class DecayingParticle : public Particle, public DataAccessor
 {
