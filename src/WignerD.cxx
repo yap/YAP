@@ -5,6 +5,8 @@
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
 
+INITIALIZE_EASYLOGGINGPP
+
 #include <cmath>
 #include <math.h>
 

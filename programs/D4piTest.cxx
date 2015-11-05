@@ -21,7 +21,7 @@
 //#include <callgrind.h>
 
 #include "logging.h"
-INITIALIZE_EASYLOGGINGPP
+//INITIALIZE_EASYLOGGINGPP
 
 int main( int argc, char** argv)
 {
