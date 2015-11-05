@@ -235,7 +235,7 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 {
     DataPartitions_ = std::move(partitions);
 
-    for (unsigned i=0; i<DataPartitions_.size(); ++i) {
+    for (unsigned i = 0; i < DataPartitions_.size(); ++i) {
         DataPartitions_[i]->setIndex(i);
     }
 

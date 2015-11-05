@@ -79,7 +79,7 @@ public:
     /// \param D Pointer to a #DataPartitionBase
     /// \param s Double to store sum of log of squared amplitudes in
     void storeSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, double& s)
-        { s = partialSumOfLogsOfSquaredAmplitudes(D); }
+    { s = partialSumOfLogsOfSquaredAmplitudes(D); }
 
     /// @}
 

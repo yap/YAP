@@ -152,8 +152,7 @@ int main( int argc, char** argv)
         if (false) {
             // multi threaded
             logA = D->sumOfLogsOfSquaredAmplitudes();
-        }
-        else {
+        } else {
             // update global calculationStatuses before looping over partitions
             D->updateGlobalCalculationStatuses();
 

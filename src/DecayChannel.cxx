@@ -39,7 +39,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharing SpinAmplitudes
 
     // daughter dependencies
-    for (int i=0; i<int(Daughters_.size()); ++i) {
+    for (int i = 0; i < int(Daughters_.size()); ++i) {
         auto daugh = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]);
         if (!daugh)
             continue;

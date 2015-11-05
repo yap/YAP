@@ -65,9 +65,9 @@ dFunctionCached::dFunctionCached()
 
     int maxJ(_maxJ);
 
-    for (int two_j=0; two_j<maxJ; ++two_j)
-        for (int two_m=0; two_m<=maxJ; ++two_m)
-            for (int two_n=0; two_n<=maxJ; ++two_n) {
+    for (int two_j = 0; two_j < maxJ; ++two_j)
+        for (int two_m = 0; two_m <= maxJ; ++two_m)
+            for (int two_n = 0; two_n <= maxJ; ++two_n) {
                 if ((abs(two_m) > two_j) or (abs(two_n) > two_j))
                     continue;
                 operator ()(two_j, two_m, two_n, 1.);
