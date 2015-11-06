@@ -42,7 +42,7 @@ void FourMomenta::prepare()
                         if (i == ii) {
                             FinalStateParticleM_[i] = fsp->mass();
 
-                            //DEBUG("set mass for fsp " << unsigned(i) << " to " << m);
+                            DEBUG("set mass for fsp " << unsigned(i) << " to " << fsp->mass()->value());
 
                             found = true;
                             break;
