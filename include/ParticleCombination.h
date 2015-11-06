@@ -29,6 +29,14 @@
 
 namespace yap {
 
+class ParticleCombination;
+
+/// \typedef ParticleCombinationSet
+using ParticleCombinationSet = std::set<std::shared_ptr<const ParticleCombination> >;
+
+/// \typedef ParticleCombinationVector
+using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
+
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types
 /// \author Johannes Rauch, Daniel Greenwald
@@ -44,7 +52,7 @@ public:
     ParticleCombination(ParticleIndex index, char twoLambda = 0);
 
     /// Resonance particle constructor
-    ParticleCombination(std::vector<std::shared_ptr<const ParticleCombination> > c, char twoLambda = 0);
+    ParticleCombination(ParticleCombinationVector c, char twoLambda = 0);
 
     /// \name Getters
     /// @{
@@ -54,11 +62,11 @@ public:
     { return Indices_; }
 
     /// Get vector of daughters
-    const std::vector<std::shared_ptr<const ParticleCombination> >& daughters() const
+    const ParticleCombinationVector& daughters() const
     { return Daughters_; }
 
     /// Get vector of daughters (const)
-    //std::vector<std::shared_ptr<const ParticleCombination> > daughters() const;
+    //ParticleCombinationVector daughters() const;
 
     /// get parent
     const ParticleCombination* parent() const
@@ -124,7 +132,7 @@ protected:
 
     /// Parent of the particle combination.
     ParticleCombination* Parent_;
-    std::vector<std::shared_ptr<const ParticleCombination> > Daughters_;
+    ParticleCombinationVector Daughters_;
     std::vector<ParticleIndex> Indices_;
     /// 2 * Helicity
     char TwoLambda_;
@@ -148,10 +156,10 @@ public:
 
     /// return existing shared_ptr for ParticleCombination, if exists; otherwise creates and returns
     /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
-    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(std::vector<std::shared_ptr<const ParticleCombination> > c);
+    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleCombinationVector c);
 
     /// return the particleCombination set
-    static const std::set<std::shared_ptr<const ParticleCombination> >& particleCombinationSet()
+    static const ParticleCombinationSet& particleCombinationSet()
     { return ParticleCombinationSet_; }
 
     /// make a new particle combination set with parents set
@@ -162,7 +170,7 @@ public:
 private:
 
     /// Static set of all particle combinations created throughout code
-    static std::set<std::shared_ptr<const ParticleCombination> > ParticleCombinationSet_;
+    static ParticleCombinationSet ParticleCombinationSet_;
 
 /// @}
 

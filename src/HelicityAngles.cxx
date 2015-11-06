@@ -37,18 +37,12 @@ void HelicityAngles::calculate(DataPoint& d)
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)
         LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
 
-    // final state 4-momenta
-    std::vector<TLorentzVector> finalStatesLab;
-    for (unsigned i = 0; i < initialStateParticle()->particleCombinations()[0]->indices().size(); ++i) {
-        finalStatesLab.push_back(initialStateParticle()->fourMomenta().p(d, i));
-    }
-
     // initial helicity frame.
     //const TLorentzRotation trans = hfTransform(initialStateLab); // ??
     // boost into RF of initialState
     TLorentzRotation boost;
     boost.Boost(-initialStateParticle()->fourMomenta().initialStateMomentum(d).BoostVector());
-    std::vector<TLorentzVector> finalStatesHf = finalStatesLab;
+    std::vector<TLorentzVector> finalStatesHf = d.finalStateFourMomenta();
     for (TLorentzVector& lv : finalStatesHf)
         lv.Transform(boost);
 

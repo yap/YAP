@@ -54,28 +54,26 @@ public:
     /// Fill 4-momenta
     void calculate(DataPoint& d);
 
-    /// Access 4-momentum (const)
-    /// \param d DataPoint to get data from
-    /// \param i Symmetrization index to access
-    const TLorentzVector& p(const DataPoint& d, unsigned i) const
-    { return d.FourMomenta_.at(i); }
-
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
     const TLorentzVector& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    { return p(d, symmetrizationIndex(pc)); }
+    {
+        if (pc->isFinalStateParticle())
+            return d.FSPFourMomenta_[pc->indices()[0]];
+        return d.FourMomenta_[symmetrizationIndex(pc)];
+    }
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     {
         if (pc->isFinalStateParticle())
             return FinalStateParticleM_[pc->indices()[0]]->value();
@@ -85,12 +83,30 @@ public:
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
     const TLorentzVector& initialStateMomentum(const DataPoint& d)
-    { return p(d, InitialStateIndex_); }
+    { return p(d, InitialStatePC_); }
+
+    /// calculate four-momenta from squared invariant masses
+    /// with the following convention for three-momenta:\n
+    /// p1 defines +z direction
+    /// p1 x p2 defines +y direction
+    std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
 
 protected:
 
     /// Symmetrization index of initial state
-    int InitialStateIndex_;
+    std::shared_ptr<const ParticleCombination> InitialStatePC_;
+
+    /// \todo Perhaps find better way than storing FinalStatePC, RecoilPC, and PairPC.
+
+    /// Final-state particle PCs
+    ParticleCombinationVector FinalStatePC_;
+
+    /// Symmetrization indices for recoil against each final-state particle,
+    /// index in vector is FSP index
+    ParticleCombinationVector RecoilPC_;
+
+    /// Symmetrization indices for pairs of particles
+    std::vector<ParticleCombinationVector> PairPC_;
 
     /// mass [GeV]
     RealCachedDataValue M_;

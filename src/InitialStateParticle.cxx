@@ -168,25 +168,13 @@ bool InitialStateParticle::prepare()
     setSymmetrizationIndexParents();
     optimizeSpinAmplitudeSharing();
 
-    // make sure that final state particles get the correct indices
-    for (unsigned i = 0; i < particleCombinations()[0]->indices().size(); ++i) {
-        std::shared_ptr<ParticleCombination> index = std::make_shared<ParticleCombination>(i);
-        for (auto& pc : ParticleCombination::particleCombinationSet()) {
-            if (ParticleCombination::equivByOrderlessContent(index, pc)) {
-                FourMomenta_.addSymmetrizationIndex(pc);
-                continue;
-            }
-        }
-    }
-
-    // add particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        if (pc->isFinalStateParticle())
+            continue;
         FourMomenta_.addSymmetrizationIndex(pc);
-
-        if (pc->indices().size() > 1) {
-            HelicityAngles_.addSymmetrizationIndex(pc);
-            MeasuredBreakupMomenta_.addSymmetrizationIndex(pc);
-        }
+        HelicityAngles_.addSymmetrizationIndex(pc);
+        MeasuredBreakupMomenta_.addSymmetrizationIndex(pc);
     }
 
     // set FinalStateParticles
@@ -274,7 +262,7 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
 
     DataPoint& d = DataSet_.back();
 
-    if (! d.setFourMomenta(fourMomenta))
+    if (! d.setFinalStateFourMomenta(fourMomenta))
         return false;
 
     FourMomenta_.calculate(d);
