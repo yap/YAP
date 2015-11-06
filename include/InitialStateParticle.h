@@ -121,6 +121,9 @@ public:
     const HelicityAngles& helicityAngles() const
     { return HelicityAngles_; }
 
+    const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
+    { return FinalStateParticles_; }
+
     bool prepared() const
     {return Prepared_; }
 
@@ -219,6 +222,9 @@ private:
 
     /// List of all DecayChannel objects in the InitialsStateParticle and below
     std::vector<DecayChannel*> DecayChannels_;
+
+    /// vector of final state particles
+    std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;
 
     /// four momenta manager
     FourMomenta FourMomenta_;

@@ -125,6 +125,11 @@ bool InitialStateParticle::consistent() const
     result &= MeasuredBreakupMomenta_.consistent();
     result &= HelicityAngles_.consistent();
 
+    if (FinalStateParticles_ != DecayingParticle::finalStateParticles()) {
+        LOG(ERROR) << "InitialStateParticle::consistent() - FinalStateParticles_ are not set correctly.";
+        result = false;
+    }
+
     return result;
 }
 
@@ -184,8 +189,12 @@ bool InitialStateParticle::prepare()
         }
     }
 
+    // set FinalStateParticles
+    FinalStateParticles_ = DecayingParticle::finalStateParticles();
+    // prepare FourMomenta. Needs FinalStateParticles_
     FourMomenta_.prepare();
 
+    // set consecutive indices for DataAccessors_
     setDataAcessorIndices();
 
     // fill DecayChannels_
@@ -328,7 +337,7 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
             std::cout << " \t";
 
             for (auto& pc : d->particleCombinations())
-                std::cout << std::string(*pc) << ";  ";
+                std::cout << std::string(*pc) << ":" << d->symmetrizationIndex(pc) << ";  ";
         }
 
         std::cout << "\n";
