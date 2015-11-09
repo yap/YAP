@@ -22,6 +22,7 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
+#include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
 
 #include <TLorentzVector.h>
@@ -90,6 +91,10 @@ public:
     /// p1 defines +z direction
     /// p1 x p2 defines +y direction
     std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
+
+    /// calculate all masses from a complete set of masses
+    /// \return if successful
+    bool calculateMissingMasses(DataPoint& d);
 
 protected:
 

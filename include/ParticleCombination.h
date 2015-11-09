@@ -79,6 +79,10 @@ public:
     const char twoLambda() const
     { return TwoLambda_; }
 
+    /// get all possible 2-particle subsets
+    /// e.g. if this is 123, result would be [12, 13, 23]
+    ParticleCombinationSet pairSubset() const;
+
     /// @}
 
     /// \name Get info on type

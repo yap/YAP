@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "MathUtilities.h"
 #include "ParticleCombination.h"
 
 namespace yap {
@@ -100,6 +101,16 @@ bool FourMomenta::consistent() const
         result = false;
     }
 
+    /// check size of PairPC_
+    unsigned nPairs;
+    for (auto& pcV : PairPC_)
+        nPairs += pcV.size();
+
+    if (nPairs != factorial(InitialStatePC_->indices().size())) {
+        LOG(ERROR) << "FourMomenta::consistent - number of pair particle combinations and number of indices in initial state particle are inconsistent.";
+        result = false;
+    }
+
     result &= DataAccessor::consistent();
 
     return result;
@@ -161,5 +172,85 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     return P;
 }
 
+//-------------------------
+bool FourMomenta::calculateMissingMasses(DataPoint& d)
+{
+    /// for n finalStateParticles
+    /// m_{1..n}^2 = (2-n) \sum_{k=0}^n m_k^2 + \sum_{k=0}^n \sum_{l=k+1}^n m_{kl}^2
+
+    double M2 = m2(d, InitialStatePC_);
+    unsigned n = InitialStatePC_->indices().size();
+
+    ParticleCombinationVector pairPCs;
+    pairPCs.reserve(factorial(n));
+    for (auto& v : PairPC_) {
+        pairPCs.insert(pairPCs.end(), v.begin(), v.end());
+    }
+
+    // check if we have enough masses to calculate the rest
+    unsigned nUnset(0);
+    unsigned iUnset(0);
+    for (unsigned i=0; i<pairPCs.size(); ++i) {
+        if (m(d, pairPCs[i]) <= 0.) {
+            nUnset++;
+            iUnset = i;
+        }
+    }
+
+    if (nUnset > 1) {
+        LOG(ERROR) << "Cannot calculate masses, not enough masses set.";
+        return false;
+    }
+
+
+    /// calculate unset pair mass
+    double m2_ab(0);
+    for (auto& pc : FinalStatePC_) {
+        m2_ab += m2(d, pc);
+    }
+    m2_ab *= 2 - n;
+    m2_ab = M2 - m2_ab;
+
+    for (unsigned i=0; i<pairPCs.size(); ++i) {
+        if (i == iUnset)
+            continue;
+        m2_ab -= m2(d, pairPCs[i]);
+    }
+
+    if (m2_ab <= 0) {
+        LOG(ERROR) << "Resulting m2 is <= 0.";
+        return false;
+    }
+
+    M_.setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
+
+
+    /// for a 3 particle system, we are done
+    if (n < 4)
+        return true;
+
+
+    /// calculate recoil masses
+    for (auto& pc : RecoilPC_) {
+        double m2_recoil(0);
+        for (auto& i : pc->indices()) {
+            m2_ab += pow(FinalStateParticleM_.at(i)->value(), 2);
+        }
+
+        for (auto& pcPair : pc->pairSubset()) {
+            m2_ab += m2(d, pcPair);
+        }
+
+        if (m2_recoil <= 0) {
+            LOG(ERROR) << "Resulting m2 is <= 0.";
+            return false;
+        }
+
+        M_.setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
+    }
+
+
+    return true;
+}
 
 }

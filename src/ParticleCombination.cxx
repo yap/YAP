@@ -1,6 +1,7 @@
 #include "ParticleCombination.h"
 
 #include "logging.h"
+#include "MathUtilities.h"
 #include "SpinUtilities.h"
 
 #include <algorithm>
@@ -45,6 +46,29 @@ const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedPare
     LOG(WARNING) << "ParticleCombination::parent() - could not find parent in ParticleCombinationSet_.";
 
     return std::shared_ptr<const ParticleCombination>(Parent_);
+}
+
+//-------------------------
+ParticleCombinationSet ParticleCombination::pairSubset() const
+{
+    ParticleCombinationSet pairSet;
+
+    for (ParticleIndex i : indices())
+        for (ParticleIndex j : indices()) {
+            if (j < i)
+                continue;
+
+            auto pc = std::make_shared<ParticleCombination>();
+            pc->Indices_ = {i, j};
+
+            pairSet.insert(pc);
+        }
+
+    if (pairSet.size() != factorial(indices().size())) {
+        LOG(ERROR) << "ParticleCombination::pairSubset() - something went wrong.";
+    }
+
+    return pairSet;
 }
 
 //-------------------------
