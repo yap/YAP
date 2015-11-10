@@ -101,24 +101,6 @@ bool FourMomenta::consistent() const
         result = false;
     }
 
-    /// check size of PairPC_
-    /*unsigned nPairs(0);
-    for (auto& pcV : PairPC_)
-        for (auto& pc : pcV)
-            if (pc)
-                ++nPairs;
-
-    if (nPairs != factorial(InitialStatePC_->indices().size())) {
-        LOG(ERROR) << "FourMomenta::consistent - number of pair particle combinations " << nPairs << " and number of indices in initial state particle " << InitialStatePC_->indices().size() << " are inconsistent.";
-
-        for (auto& pcV : PairPC_)
-            for (auto& pc : pcV)
-                if (pc)
-                    std::cout << std::string(*pc) << "\n";
-
-        result = false;
-    }*/
-
     result &= DataAccessor::consistent();
 
     return result;
@@ -215,18 +197,13 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     }
 
     if (nUnset > 1) {
-        LOG(ERROR) << "Cannot calculate masses, not enough masses set.";
+        LOG(ERROR) << "Cannot calculate masses, not enough two-particle invariant masses set.";
         return false;
     }
 
     ///
     /// calculate unset pair mass
     ///
-
-    // debug output
-    for (auto& pc : pairPCs)
-        std::cout << std::string(*pc) << "\n";
-
 
     double m2_ab(0);
     for (auto& pc : FinalStatePC_) {
@@ -242,7 +219,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     }
 
     if (m2_ab <= 0) {
-        LOG(ERROR) << "Resulting m2 is <= 0.";
+        LOG(ERROR) << "Resulting two-particle m2 is <= 0.";
         return false;
     }
 
@@ -267,7 +244,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         }
 
         if (m2_recoil <= 0) {
-            LOG(ERROR) << "Resulting m2 is <= 0.";
+            LOG(ERROR) << "Resulting recoil m2 is <= 0.";
             return false;
         }
 
