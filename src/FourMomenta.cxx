@@ -102,14 +102,22 @@ bool FourMomenta::consistent() const
     }
 
     /// check size of PairPC_
-    unsigned nPairs;
+    /*unsigned nPairs(0);
     for (auto& pcV : PairPC_)
-        nPairs += pcV.size();
+        for (auto& pc : pcV)
+            if (pc)
+                ++nPairs;
 
     if (nPairs != factorial(InitialStatePC_->indices().size())) {
-        LOG(ERROR) << "FourMomenta::consistent - number of pair particle combinations and number of indices in initial state particle are inconsistent.";
+        LOG(ERROR) << "FourMomenta::consistent - number of pair particle combinations " << nPairs << " and number of indices in initial state particle " << InitialStatePC_->indices().size() << " are inconsistent.";
+
+        for (auto& pcV : PairPC_)
+            for (auto& pc : pcV)
+                if (pc)
+                    std::cout << std::string(*pc) << "\n";
+
         result = false;
-    }
+    }*/
 
     result &= DataAccessor::consistent();
 
@@ -178,13 +186,22 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     /// for n finalStateParticles
     /// m_{1..n}^2 = (2-n) \sum_{k=0}^n m_k^2 + \sum_{k=0}^n \sum_{l=k+1}^n m_{kl}^2
 
+    // set initial State particle m
+    M_.setValue(initialStateParticle()->mass()->value(), d, symmetrizationIndex(InitialStatePC_), 0u);
     double M2 = m2(d, InitialStatePC_);
     unsigned n = InitialStatePC_->indices().size();
 
     ParticleCombinationVector pairPCs;
-    pairPCs.reserve(factorial(n));
+    unsigned i(0);
     for (auto& v : PairPC_) {
-        pairPCs.insert(pairPCs.end(), v.begin(), v.end());
+        for (unsigned j=i++; j<v.size(); ++j)
+            if (v[j])
+                pairPCs.push_back(v[j]);
+    }
+
+    if (pairPCs.size() != n*(n-1)/2) {
+        LOG(ERROR) << "Wrong number of pair PCs.";
+        return false;
     }
 
     // check if we have enough masses to calculate the rest
@@ -202,13 +219,20 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         return false;
     }
 
-
+    ///
     /// calculate unset pair mass
+    ///
+
+    // debug output
+    for (auto& pc : pairPCs)
+        std::cout << std::string(*pc) << "\n";
+
+
     double m2_ab(0);
     for (auto& pc : FinalStatePC_) {
         m2_ab += m2(d, pc);
     }
-    m2_ab *= 2 - n;
+    m2_ab *= 2 - int(n);
     m2_ab = M2 - m2_ab;
 
     for (unsigned i=0; i<pairPCs.size(); ++i) {
@@ -234,11 +258,12 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     for (auto& pc : RecoilPC_) {
         double m2_recoil(0);
         for (auto& i : pc->indices()) {
-            m2_ab += pow(FinalStateParticleM_.at(i)->value(), 2);
+            m2_recoil += pow(FinalStateParticleM_.at(i)->value(), 2);
         }
 
-        for (auto& pcPair : pc->pairSubset()) {
-            m2_ab += m2(d, pcPair);
+        for (auto& pcPair : pairPCs) {
+            if (pc->isSubset(pcPair))
+                m2_recoil += m2(d, pcPair);
         }
 
         if (m2_recoil <= 0) {

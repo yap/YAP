@@ -96,7 +96,8 @@ public:
     /// \return if successful
     bool calculateMissingMasses(DataPoint& d);
 
-protected:
+/// \todo this is just for testing with GeneratorTest. Make protected again!
+//protected:
 
     /// Symmetrization index of initial state
     std::shared_ptr<const ParticleCombination> InitialStatePC_;

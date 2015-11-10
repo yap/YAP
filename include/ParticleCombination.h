@@ -79,10 +79,6 @@ public:
     const char twoLambda() const
     { return TwoLambda_; }
 
-    /// get all possible 2-particle subsets
-    /// e.g. if this is 123, result would be [12, 13, 23]
-    ParticleCombinationSet pairSubset() const;
-
     /// @}
 
     /// \name Get info on type
@@ -107,6 +103,10 @@ public:
 
     /// check if this and B share one or more ParticleIndex's
     bool sharesIndices(std::shared_ptr<const ParticleCombination> B) const;
+
+    /// check if B is a subset of this
+    /// Checks indices, but not parents or daughters
+    bool isSubset(std::shared_ptr<const ParticleCombination> B) const;
 
     /// create new daughters with this PC as parent
     void setParents();

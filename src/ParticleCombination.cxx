@@ -49,29 +49,6 @@ const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedPare
 }
 
 //-------------------------
-ParticleCombinationSet ParticleCombination::pairSubset() const
-{
-    ParticleCombinationSet pairSet;
-
-    for (ParticleIndex i : indices())
-        for (ParticleIndex j : indices()) {
-            if (j < i)
-                continue;
-
-            auto pc = std::make_shared<ParticleCombination>();
-            pc->Indices_ = {i, j};
-
-            pairSet.insert(pc);
-        }
-
-    if (pairSet.size() != factorial(indices().size())) {
-        LOG(ERROR) << "ParticleCombination::pairSubset() - something went wrong.";
-    }
-
-    return pairSet;
-}
-
-//-------------------------
 bool ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
 {
     if (daughter->indices().empty()) {
@@ -198,6 +175,24 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<const ParticleCombinatio
                 return true;
 
     return false;
+}
+
+//-------------------------
+bool ParticleCombination::isSubset(std::shared_ptr<const ParticleCombination> B) const
+{
+    for (ParticleIndex b : B->indices()) {
+        bool found(false);
+        for (ParticleIndex a : Indices_) {
+            if (a == b) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            return false;
+    }
+
+    return true;
 }
 
 //-------------------------
