@@ -87,7 +87,7 @@ public:
     void updateGlobalCalculationStatuses();
 
     /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    virtual void calculate(DataPoint& d) override;
+    void calculate(DataPoint& d);
 
     /// loop over a DataPartition
     /// \todo remove/rename/rework!
