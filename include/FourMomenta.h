@@ -108,7 +108,7 @@ protected:
     /// Symmetrization indices for pairs of particles
     std::vector<ParticleCombinationVector> PairPC_;
 
-    /// mass [GeV]
+    /// invariant mass of particle combinations [GeV]
     RealCachedDataValue M_;
 
     /// masses of the final state particles
