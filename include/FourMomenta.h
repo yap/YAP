@@ -53,7 +53,7 @@ public:
     bool consistent() const;
 
     /// Fill 4-momenta
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from

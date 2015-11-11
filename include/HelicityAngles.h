@@ -41,7 +41,7 @@ public:
     HelicityAngles();
 
     /// Calculate helicity angles for all possible symmetrization indices
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// add symmetrizationIndex to SymmetrizationIndices_
     virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);

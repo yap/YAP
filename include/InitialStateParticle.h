@@ -86,6 +86,9 @@ public:
     /// call before looping over all DataPartitions
     void updateGlobalCalculationStatuses();
 
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    void calculate(DataPoint& d);
+
     /// loop over a DataPartition
     /// \todo remove/rename/rework!
     double logLikelihood(DataPartitionBase* D);

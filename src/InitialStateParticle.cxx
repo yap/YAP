@@ -265,9 +265,8 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
     if (! d.setFinalStateFourMomenta(fourMomenta))
         return false;
 
-    FourMomenta_.calculate(d);
-    MeasuredBreakupMomenta_.calculate(d);
-    HelicityAngles_.calculate(d);
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    calculate(d);
 
     if (!DataSet_.consistent(d))
         return false;
@@ -285,9 +284,8 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
 
-    FourMomenta_.calculate(d);
-    MeasuredBreakupMomenta_.calculate(d);
-    HelicityAngles_.calculate(d);
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    calculate(d);
 
     if (!DataSet_.consistent(d))
         return false;
@@ -392,6 +390,14 @@ void InitialStateParticle::updateGlobalCalculationStatuses()
             continue;
         d->updateGlobalCalculationStatuses();
     }
+}
+
+//-------------------------
+void InitialStateParticle::calculate(DataPoint& d)
+{
+    FourMomenta_.calculate(d);
+    MeasuredBreakupMomenta_.calculate(d);
+    HelicityAngles_.calculate(d);
 }
 
 //-------------------------

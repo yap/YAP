@@ -39,7 +39,7 @@ public:
     MeasuredBreakupMomenta();
 
     /// Calculate breakup momenta for all possible symmetrization indices
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
