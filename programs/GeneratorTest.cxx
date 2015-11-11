@@ -101,7 +101,7 @@ int main( int argc, char** argv)
 
 
 
-    // create pseudo data
+    // create random dataPoint
     TLorentzVector P(0., 0., 0., D->mass()->value());
     Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(),
                            piPlus->mass()->value(), piMinus->mass()->value()
@@ -117,82 +117,46 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 4; ++i)
         momenta.push_back(*event.GetDecay(i));
 
-    // Dalitz coordinates: m^2_{12}, m^2_{13}, m^2_{14}, m^2_{23}, m^2_{24}
     D->addDataPoint(momenta);
-
     yap::DataPoint& d = D->dataSet()[0];
 
-    LOG(INFO) << "inv masses [GeV]";
-    LOG(INFO) << std::string(*D->fourMomenta().InitialStatePC_) << ": " << D->fourMomenta().m(d, D->fourMomenta().InitialStatePC_);
-    for (auto& pc : D->fourMomenta().FinalStatePC_)
-        LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m(d, pc);
-    for (auto& pcV : D->fourMomenta().PairPC_)
-        for (auto& pc : pcV)
-            if (pc)
-                LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m(d, pc);
 
-    LOG(INFO) << "inv mass squares [GeV^2]";
-    LOG(INFO) << std::string(*D->fourMomenta().InitialStatePC_) << ": " << D->fourMomenta().m2(d, D->fourMomenta().InitialStatePC_);
-    for (auto& pc : D->fourMomenta().FinalStatePC_)
-        LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m2(d, pc);
-    for (auto& pcV : D->fourMomenta().PairPC_)
-        for (auto& pc : pcV)
-            if (pc)
-                LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m2(d, pc);
+    //
+    // preparation
+    //
 
-    // test formula
-    double epsilon = D->fourMomenta().m2(d, D->fourMomenta().InitialStatePC_);
-    for (auto& pc : D->fourMomenta().FinalStatePC_)
-        epsilon -= (2.-4.) * D->fourMomenta().m2(d, pc);
+    // calculate once
+    D->logOfSquaredAmplitude(d, 0);
 
-    yap::ParticleCombinationVector pairPCs;
-    unsigned i(0);
-    for (auto& v : D->fourMomenta().PairPC_) {
-        for (unsigned j=i++; j<v.size(); ++j)
-            if (v[j])
-                pairPCs.push_back(v[j]);
+    // change masses and update calculation Statuses
+    std::map<std::shared_ptr<const yap::ParticleCombination>, double> pairMassSquares = D->fourMomenta().pairMassSquares(d);
+    pairMassSquares.erase(pairMassSquares.begin());
+
+    assert(D->fourMomenta().setMassSquares(d, pairMassSquares));
+    D->updateGlobalCalculationStatuses();
+
+
+
+    // Dalitz coordinates: m^2_{12}, m^2_{13}, m^2_{14}, m^2_{23}, m^2_{24}
+
+    //
+    // generate
+    //
+
+    for (unsigned i = 0; i<10; ++i) {
+
+        pairMassSquares.begin()->second -= 0.0001;
+
+        if (! D->fourMomenta().setMasses(d, pairMassSquares))
+            continue;
+        D->calculate(d);
+
+        double logA = D->logOfSquaredAmplitude(d, 0u);
+
+        std::cout << logA << " \n";
     }
 
-    for (auto& pc : pairPCs)
-        epsilon -= D->fourMomenta().m2(d, pc);
-
-    LOG(INFO) << "epsilon = " << epsilon;
-
-    // test
-    unsigned symInd = D->fourMomenta().symmetrizationIndex(D->fourMomenta().PairPC_.at(0).at(1));
-    LOG(INFO) << "symInd " << symInd;
-    LOG(INFO) << "set value " << D->fourMomenta().M_.value(d, symInd);
-    D->fourMomenta().M_.setValue(-1, d, symInd, 0u);
-
-    for (auto& pc : D->fourMomenta().RecoilPC_)
-        D->fourMomenta().M_.setValue(-1, d, D->fourMomenta().symmetrizationIndex(pc), 0u);
 
 
-    // DO THE MAGIC
-    D->fourMomenta().calculateMissingMasses(d);
-
-
-
-    // result
-    LOG(INFO) << "result:";
-
-    LOG(INFO) << "inv mass squares [GeV^2]";
-    LOG(INFO) << std::string(*D->fourMomenta().InitialStatePC_) << ": " << D->fourMomenta().m2(d, D->fourMomenta().InitialStatePC_);
-    for (auto& pc : D->fourMomenta().FinalStatePC_)
-        LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m2(d, pc);
-    for (auto& pcV : D->fourMomenta().PairPC_)
-        for (auto& pc : pcV)
-            if (pc)
-                LOG(INFO) << std::string(*pc) << ": " << D->fourMomenta().m2(d, pc);
-
-    epsilon = D->fourMomenta().m2(d, D->fourMomenta().InitialStatePC_);
-    for (auto& pc : D->fourMomenta().FinalStatePC_)
-        epsilon -= (2.-4.) * D->fourMomenta().m2(d, pc);
-    for (auto& pc : pairPCs)
-        epsilon -= D->fourMomenta().m2(d, pc);
-
-    LOG(INFO) << "epsilon = " << epsilon;
-
-
-    std::cout << "awlright! \n";
+    std::cout << "alright! \n";
 }

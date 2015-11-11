@@ -107,8 +107,7 @@ public:
 
     /// @}
 
-/// \todo this is just for testing with GeneratorTest. Make protected again!
-//protected:
+protected:
 
     /// set all masses to -1 (except FinalStateParticleM_)
     void resetMasses(DataPoint& d);

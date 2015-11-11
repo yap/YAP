@@ -65,14 +65,18 @@ public:
     std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
-    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
-    { return log(norm(amplitude(d, dataPartitionIndex))); }
+    /// calls resetCalculationStatuses before calculation
+    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
+    {
+        resetCalculationStatuses(dataPartitionIndex);
+        return log(norm(amplitude(d, dataPartitionIndex)));
+    }
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D Pointer to a #DataPartitionBase object
     double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
 
-    /// Stores the sum of the logs of the squared amplitudes evaluated over all partitions
+    /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
     double sumOfLogsOfSquaredAmplitudes();
 
     /// Stores the sum of the lqogs of the squared amplitudes evaluated over the data partition
@@ -88,10 +92,6 @@ public:
 
     /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     void calculate(DataPoint& d);
-
-    /// loop over a DataPartition
-    /// \todo remove/rename/rework!
-    double logLikelihood(DataPartitionBase* D);
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over ALL DataPartitions
