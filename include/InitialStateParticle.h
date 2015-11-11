@@ -65,14 +65,18 @@ public:
     std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
-    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex) const
-    { return log(norm(amplitude(d, dataPartitionIndex))); }
+    /// calls resetCalculationStatuses before calculation
+    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
+    {
+        resetCalculationStatuses(dataPartitionIndex);
+        return log(norm(amplitude(d, dataPartitionIndex)));
+    }
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D Pointer to a #DataPartitionBase object
     double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
 
-    /// Stores the sum of the logs of the squared amplitudes evaluated over all partitions
+    /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
     double sumOfLogsOfSquaredAmplitudes();
 
     /// Stores the sum of the lqogs of the squared amplitudes evaluated over the data partition
@@ -86,9 +90,8 @@ public:
     /// call before looping over all DataPartitions
     void updateGlobalCalculationStatuses();
 
-    /// loop over a DataPartition
-    /// \todo remove/rename/rework!
-    double logLikelihood(DataPartitionBase* D);
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    void calculate(DataPoint& d);
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over ALL DataPartitions
@@ -124,6 +127,7 @@ public:
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
+    /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const
     {return Prepared_; }
 

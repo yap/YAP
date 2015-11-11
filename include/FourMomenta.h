@@ -22,6 +22,7 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
+#include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
 
 #include <TLorentzVector.h>
@@ -52,7 +53,7 @@ public:
     bool consistent() const;
 
     /// Fill 4-momenta
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
@@ -77,7 +78,7 @@ public:
     {
         if (pc->isFinalStateParticle())
             return FinalStateParticleM_[pc->indices()[0]]->value();
-        return M_.value(d, symmetrizationIndex(pc));
+        return M_->value(d, symmetrizationIndex(pc));
     }
 
     /// Access initial-state 4-momentum (const)
@@ -85,13 +86,47 @@ public:
     const TLorentzVector& initialStateMomentum(const DataPoint& d)
     { return p(d, InitialStatePC_); }
 
+    /// \name Dalitz coordinate stuff
+    /// @{
+
+    /// get pair masses
+    std::map<std::shared_ptr<const ParticleCombination>, double> pairMasses(const DataPoint& d) const;
+
+    /// get pair masses squared
+    std::map<std::shared_ptr<const ParticleCombination>, double> pairMassSquares(const DataPoint& d) const;
+
+    /// set masses
+    /// also calculate remaining masses and final-state 4-momenta
+    /// \return if masses form a complete set and are in phase space
+    bool setMasses(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m);
+
+    /// set masses squared
+    /// also calculate remaining masses and final-state 4-momenta
+    /// \return if masses form a complete set and are in phase space
+    bool setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2);
+
+    /// @}
+
+    std::shared_ptr<RealCachedDataValue> masses()
+    { return M_; }
+
+protected:
+
+    /// set all masses to -1 (except FinalStateParticleM_)
+    void resetMasses(DataPoint& d);
+
+    /// calculate all masses from a complete set of masses
+    /// \return if successful
+    bool calculateMissingMasses(DataPoint& d);
+
     /// calculate four-momenta from squared invariant masses
     /// with the following convention for three-momenta:\n
     /// p1 defines +z direction
     /// p1 x p2 defines +y direction
     std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
 
-protected:
+    /// \return set of all pair particle combinations, without duplicates
+    ParticleCombinationVector pairParticleCombinations() const;
 
     /// Symmetrization index of initial state
     std::shared_ptr<const ParticleCombination> InitialStatePC_;
@@ -109,7 +144,7 @@ protected:
     std::vector<ParticleCombinationVector> PairPC_;
 
     /// invariant mass of particle combinations [GeV]
-    RealCachedDataValue M_;
+    std::shared_ptr<RealCachedDataValue> M_;
 
     /// masses of the final state particles
     std::vector<std::shared_ptr<RealParameter> > FinalStateParticleM_;

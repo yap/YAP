@@ -15,6 +15,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
     SpinAmplitude(initial, final1, final2, twoL),
     SpinAmplitude_(new ComplexCachedDataValue(this))
 {
+    // SpinAmplitude_ dependency on helicity angles is set in setInitialStateParticle
 }
 
 //-------------------------
@@ -129,6 +130,15 @@ double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<
 
     return ssClebsch * lsClebsch;
 
+}
+
+//-------------------------
+void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
+{
+    SpinAmplitude::setInitialStateParticle(isp);
+
+    if (initialStateParticle())
+        SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().helicityAngles());
 }
 
 //-------------------------

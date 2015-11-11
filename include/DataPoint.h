@@ -53,7 +53,7 @@ public:
     DataPoint(const std::vector<TLorentzVector>& P);
 
     // /// Invariant mass constructor
-    // DataPoint(const std::vector<double>& S);
+    //DataPoint(const std::map<std::shared_ptr<ParticleCombination>, double>& m2);
 
     /// @}
 

@@ -54,11 +54,10 @@ double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBa
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
         DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
 
-        // reset calculation flags
-        resetCalculationStatuses(D->index());
-
         L += logOfSquaredAmplitude(*d, D->index());
     }
+
+    setCachedDataValueFlagsToUnchanged(D->index());
 
     return L;
 }
@@ -82,37 +81,6 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
     setParameterFlagsToUnchanged();
 
     return sum;
-}
-
-//-------------------------
-double InitialStateParticle::logLikelihood(DataPartitionBase* D)
-{
-    if (!hasDataPartition(D))
-        return 0;
-
-    /// \todo implement
-    DEBUG("InitialStateParticle::logLikelihood()");
-
-    // loop over DataPoints
-    /// \todo investigate what needs to be done to use 'for (X : Y)'
-    for (DataIterator d = D->begin(); d != D->end(); ++d) {
-        DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-
-        // reset calculation flags
-        resetCalculationStatuses(D->index());
-
-        // calculate amplitudes
-        std::complex<double> a = Complex_0;
-        for (auto& pc : particleCombinations())
-            a += amplitude(*d, pc, D->index());
-
-        DEBUG("InitialStateParticle amplitude = " << a);
-    }
-
-
-    setCachedDataValueFlagsToUnchanged(D->index());
-
-    return 0;
 }
 
 //-------------------------
@@ -265,9 +233,8 @@ bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourM
     if (! d.setFinalStateFourMomenta(fourMomenta))
         return false;
 
-    FourMomenta_.calculate(d);
-    MeasuredBreakupMomenta_.calculate(d);
-    HelicityAngles_.calculate(d);
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    calculate(d);
 
     if (!DataSet_.consistent(d))
         return false;
@@ -285,9 +252,8 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
 
-    FourMomenta_.calculate(d);
-    MeasuredBreakupMomenta_.calculate(d);
-    HelicityAngles_.calculate(d);
+    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    calculate(d);
 
     if (!DataSet_.consistent(d))
         return false;
@@ -392,6 +358,14 @@ void InitialStateParticle::updateGlobalCalculationStatuses()
             continue;
         d->updateGlobalCalculationStatuses();
     }
+}
+
+//-------------------------
+void InitialStateParticle::calculate(DataPoint& d)
+{
+    FourMomenta_.calculate(d);
+    MeasuredBreakupMomenta_.calculate(d);
+    HelicityAngles_.calculate(d);
 }
 
 //-------------------------

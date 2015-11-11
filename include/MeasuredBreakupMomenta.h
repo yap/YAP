@@ -39,13 +39,13 @@ public:
     MeasuredBreakupMomenta();
 
     /// Calculate breakup momenta for all possible symmetrization indices
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
     double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    { return Q2_.value(d, symmetrizationIndex(pc)); }
+    { return Q2_->value(d, symmetrizationIndex(pc)); }
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from
@@ -56,10 +56,13 @@ public:
     /// Calculate breakup momentum from parent and daughter masses
     static double calcQ2(double m2_R, double m_a, double m_b);
 
+    std::shared_ptr<RealCachedDataValue> breakupMomenta()
+    { return Q2_; }
+
 protected:
 
     /// squared breakup momentum [GeV^2]
-    RealCachedDataValue Q2_;
+    std::shared_ptr<RealCachedDataValue> Q2_;
 
 };
 

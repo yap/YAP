@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "MathUtilities.h"
 #include "ParticleCombination.h"
 
 namespace yap {
@@ -12,7 +13,7 @@ namespace yap {
 FourMomenta::FourMomenta() :
     StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
     InitialStatePC_(nullptr),
-    M_(this)
+    M_(new RealCachedDataValue (this))
 {
 }
 
@@ -109,12 +110,12 @@ bool FourMomenta::consistent() const
 void FourMomenta::calculate(DataPoint& d)
 {
     // use a default dataPartitionIndex of 0
-    M_.setCalculationStatus(kUncalculated, 0);
+    M_->setCalculationStatus(kUncalculated, 0);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (M_.calculationStatus(kv.first, kv.second, 0) == kCalculated)
+        if (M_->calculationStatus(kv.first, kv.second, 0) == kCalculated)
             continue;
 
         // reset 4-momentum
@@ -124,7 +125,7 @@ void FourMomenta::calculate(DataPoint& d)
         for (unsigned i : kv.first->indices())
             d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
-        M_.setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
+        M_->setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
     }
 }
 
@@ -179,5 +180,163 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     return P;
 }
 
+//-------------------------
+bool FourMomenta::calculateMissingMasses(DataPoint& d)
+{
+    /// for n finalStateParticles
+    /// m_{1..n}^2 = (2-n) \sum_{k=0}^n m_k^2 + \sum_{k=0}^n \sum_{l=k+1}^n m_{kl}^2
+
+    // set initial State particle m
+    M_->setValue(initialStateParticle()->mass()->value(), d, symmetrizationIndex(InitialStatePC_), 0u);
+    double M2 = m2(d, InitialStatePC_);
+    unsigned n = InitialStatePC_->indices().size();
+
+    ParticleCombinationVector pairPCs = pairParticleCombinations();
+
+    if (pairPCs.size() != n*(n-1)/2) {
+        LOG(ERROR) << "Wrong number of pair PCs.";
+        return false;
+    }
+
+    // check if we have enough masses to calculate the rest
+    unsigned nUnset(0);
+    unsigned iUnset(0);
+    for (unsigned i=0; i<pairPCs.size(); ++i) {
+        if (m(d, pairPCs[i]) <= 0.) {
+            nUnset++;
+            iUnset = i;
+        }
+    }
+
+    if (nUnset > 1) {
+        LOG(ERROR) << "Cannot calculate masses, not enough two-particle invariant masses set.";
+        return false;
+    }
+
+    ///
+    /// calculate unset pair mass
+    ///
+
+    double m2_ab(0);
+    for (auto& pc : FinalStatePC_) {
+        m2_ab += m2(d, pc);
+    }
+    m2_ab *= 2 - int(n);
+    m2_ab = M2 - m2_ab;
+
+    for (unsigned i=0; i<pairPCs.size(); ++i) {
+        if (i == iUnset)
+            continue;
+        m2_ab -= m2(d, pairPCs[i]);
+    }
+
+    if (m2_ab <= 0) {
+        LOG(ERROR) << "Resulting two-particle m2 is <= 0.";
+        return false;
+    }
+
+    M_->setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
+
+
+    /// for a 3 particle system, we are done
+    if (n < 4)
+        return true;
+
+
+    /// calculate recoil masses
+    for (auto& pc : RecoilPC_) {
+        double m2_recoil(0);
+        for (auto& i : pc->indices()) {
+            m2_recoil += pow(FinalStateParticleM_.at(i)->value(), 2);
+        }
+
+        for (auto& pcPair : pairPCs) {
+            if (pc->isSubset(pcPair))
+                m2_recoil += m2(d, pcPair);
+        }
+
+        if (m2_recoil <= 0) {
+            LOG(ERROR) << "Resulting recoil m2 is <= 0.";
+            return false;
+        }
+
+        M_->setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
+    }
+
+
+    return true;
+}
+
+//-------------------------
+std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMasses(const DataPoint& d) const
+{
+    std::map<std::shared_ptr<const ParticleCombination>, double> result;
+
+    for (auto& pc : pairParticleCombinations())
+        result[pc] = m(d, pc);
+
+    return result;
+}
+
+//-------------------------
+std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMassSquares(const DataPoint& d) const
+{
+    std::map<std::shared_ptr<const ParticleCombination>, double> result;
+
+    for (auto& pc : pairParticleCombinations())
+        result[pc] = m2(d, pc);
+
+    return result;
+}
+
+//-------------------------
+bool FourMomenta::setMasses(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m)
+{
+    resetMasses(d);
+
+    for (auto& kv : m) {
+        M_->setValue(kv.second, d, symmetrizationIndex(kv.first), 0u);
+    }
+
+    // recalculate stuff
+    if (!calculateMissingMasses(d)) {
+        // not enough masses set or not in phasespace
+        resetMasses(d);
+        return false;
+    }
+
+    return d.setFinalStateFourMomenta(calculateFourMomenta(d));
+}
+
+//-------------------------
+bool FourMomenta::setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2)
+{
+    for (auto& kv : m2) {
+        kv.second = sqrt(kv.second);
+    }
+
+    return setMasses(d, m2);
+}
+
+//-------------------------
+void FourMomenta::resetMasses(DataPoint& d)
+{
+    for (int i=0; i<=maxSymmetrizationIndex(); ++i)
+        M_->setValue(-1, d, unsigned(i), 0u);
+}
+
+//-------------------------
+ParticleCombinationVector FourMomenta::pairParticleCombinations() const
+{
+    ParticleCombinationVector pairPCs;
+    unsigned i(0);
+    for (auto& v : PairPC_) {
+        for (unsigned j=i++; j<v.size(); ++j)
+            if (v[j])
+                pairPCs.push_back(v[j]);
+    }
+
+    return pairPCs;
+}
 
 }

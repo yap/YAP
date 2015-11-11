@@ -42,6 +42,9 @@ public:
     virtual void updateGlobalCalculationStatuses() override
     { }
 
+    /// calculate cachedDataValues and store to DataPoint
+    virtual void calculate(DataPoint& d) = 0;
+
 };
 
 }

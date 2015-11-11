@@ -104,6 +104,10 @@ public:
     /// check if this and B share one or more ParticleIndex's
     bool sharesIndices(std::shared_ptr<const ParticleCombination> B) const;
 
+    /// check if B is a subset of this
+    /// Checks indices, but not parents or daughters
+    bool isSubset(std::shared_ptr<const ParticleCombination> B) const;
+
     /// create new daughters with this PC as parent
     void setParents();
 

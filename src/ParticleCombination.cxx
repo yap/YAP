@@ -1,6 +1,7 @@
 #include "ParticleCombination.h"
 
 #include "logging.h"
+#include "MathUtilities.h"
 #include "SpinUtilities.h"
 
 #include <algorithm>
@@ -174,6 +175,24 @@ bool ParticleCombination::sharesIndices(std::shared_ptr<const ParticleCombinatio
                 return true;
 
     return false;
+}
+
+//-------------------------
+bool ParticleCombination::isSubset(std::shared_ptr<const ParticleCombination> B) const
+{
+    for (ParticleIndex b : B->indices()) {
+        bool found(false);
+        for (ParticleIndex a : Indices_) {
+            if (a == b) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            return false;
+    }
+
+    return true;
 }
 
 //-------------------------
