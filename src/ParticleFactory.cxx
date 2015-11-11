@@ -67,7 +67,7 @@ std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radi
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);
     massShape->setParameters(p);
-    return std::make_shared<Resonance>(p, p.Mass_, p.Name_, radialSize, massShape);
+    return std::make_shared<Resonance>(p, p.Mass_, p.Name_, radialSize, std::move(massShape));
 }
 
 //-------------------------
@@ -96,6 +96,18 @@ bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
     //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG_, entry));
 
     return true;
+}
+
+//-------------------------
+int ParticleFactory::pdgCode(std::string name) const
+{
+    auto it = std::find_if(particleTable_.begin(), particleTable_.end(),
+                           [&](const std::map<int, ParticleTableEntry>::value_type& p) {return p.second.Name_ == name;});
+    if (it == particleTable_.end()) {
+        LOG(ERROR) << "ParticleFactory::pdgCode - particle with name \"" << name << "\" not found.";
+        return 0;
+    }
+    return it->first;
 }
 
 //-------------------------
