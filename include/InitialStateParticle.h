@@ -40,7 +40,7 @@ class DataPartitionBase;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle
+class InitialStateParticle : public DecayingParticle, public StaticDataAccessor
 {
 public:
 
@@ -87,7 +87,7 @@ public:
     void updateGlobalCalculationStatuses();
 
     /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    void calculate(DataPoint& d);
+    virtual void calculate(DataPoint& d) override;
 
     /// loop over a DataPartition
     /// \todo remove/rename/rework!
