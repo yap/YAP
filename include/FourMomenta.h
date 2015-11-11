@@ -86,18 +86,45 @@ public:
     const TLorentzVector& initialStateMomentum(const DataPoint& d)
     { return p(d, InitialStatePC_); }
 
+    /// \name Dalitz coordinate stuff
+    /// @{
+
+    /// get pair masses
+    std::map<std::shared_ptr<const ParticleCombination>, double> pairMasses(const DataPoint& d) const;
+
+    /// get pair masses squared
+    std::map<std::shared_ptr<const ParticleCombination>, double> pairMassSquares(const DataPoint& d) const;
+
+    /// set masses
+    /// also calculate remaining masses and final-state 4-momenta
+    /// \return if masses form a complete set and are in phase space
+    bool setMasses(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m);
+
+    /// set masses squared
+    /// also calculate remaining masses and final-state 4-momenta
+    /// \return if masses form a complete set and are in phase space
+    bool setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2);
+
+    /// @}
+
+/// \todo this is just for testing with GeneratorTest. Make protected again!
+//protected:
+
+    /// set all masses to -1 (except FinalStateParticleM_)
+    void resetMasses(DataPoint& d);
+
+    /// calculate all masses from a complete set of masses
+    /// \return if successful
+    bool calculateMissingMasses(DataPoint& d);
+
     /// calculate four-momenta from squared invariant masses
     /// with the following convention for three-momenta:\n
     /// p1 defines +z direction
     /// p1 x p2 defines +y direction
     std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
 
-    /// calculate all masses from a complete set of masses
-    /// \return if successful
-    bool calculateMissingMasses(DataPoint& d);
-
-/// \todo this is just for testing with GeneratorTest. Make protected again!
-//protected:
+    /// \return set of all pair particle combinations, without duplicates
+    ParticleCombinationVector pairParticleCombinations() const;
 
     /// Symmetrization index of initial state
     std::shared_ptr<const ParticleCombination> InitialStatePC_;

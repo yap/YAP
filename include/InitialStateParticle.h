@@ -40,7 +40,7 @@ class DataPartitionBase;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle, public StaticDataAccessor
+class InitialStateParticle : public DecayingParticle
 {
 public:
 
@@ -127,6 +127,7 @@ public:
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
+    /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const
     {return Prepared_; }
 
