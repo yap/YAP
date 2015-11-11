@@ -63,6 +63,9 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
+    /// Set pointer to initial state particle
+    virtual void setInitialStateParticle(InitialStateParticle* isp) override;
+
 private:
 
     /// DecayChannel this BlattWeisskopf belongs to

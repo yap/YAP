@@ -78,7 +78,7 @@ public:
     {
         if (pc->isFinalStateParticle())
             return FinalStateParticleM_[pc->indices()[0]]->value();
-        return M_.value(d, symmetrizationIndex(pc));
+        return M_->value(d, symmetrizationIndex(pc));
     }
 
     /// Access initial-state 4-momentum (const)
@@ -106,6 +106,9 @@ public:
     bool setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2);
 
     /// @}
+
+    std::shared_ptr<RealCachedDataValue> masses()
+    { return M_; }
 
 protected:
 
@@ -141,7 +144,7 @@ protected:
     std::vector<ParticleCombinationVector> PairPC_;
 
     /// mass [GeV]
-    RealCachedDataValue M_;
+    std::shared_ptr<RealCachedDataValue> M_;
 
     /// masses of the final state particles
     std::vector<std::shared_ptr<RealParameter> > FinalStateParticleM_;

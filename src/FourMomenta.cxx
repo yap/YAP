@@ -13,7 +13,7 @@ namespace yap {
 FourMomenta::FourMomenta() :
     StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
     InitialStatePC_(nullptr),
-    M_(this)
+    M_(new RealCachedDataValue (this))
 {
 }
 
@@ -110,12 +110,12 @@ bool FourMomenta::consistent() const
 void FourMomenta::calculate(DataPoint& d)
 {
     // use a default dataPartitionIndex of 0
-    M_.setCalculationStatus(kUncalculated, 0);
+    M_->setCalculationStatus(kUncalculated, 0);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (M_.calculationStatus(kv.first, kv.second, 0) == kCalculated)
+        if (M_->calculationStatus(kv.first, kv.second, 0) == kCalculated)
             continue;
 
         // reset 4-momentum
@@ -125,7 +125,7 @@ void FourMomenta::calculate(DataPoint& d)
         for (unsigned i : kv.first->indices())
             d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
-        M_.setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
+        M_->setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
     }
 }
 
@@ -169,7 +169,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     /// m_{1..n}^2 = (2-n) \sum_{k=0}^n m_k^2 + \sum_{k=0}^n \sum_{l=k+1}^n m_{kl}^2
 
     // set initial State particle m
-    M_.setValue(initialStateParticle()->mass()->value(), d, symmetrizationIndex(InitialStatePC_), 0u);
+    M_->setValue(initialStateParticle()->mass()->value(), d, symmetrizationIndex(InitialStatePC_), 0u);
     double M2 = m2(d, InitialStatePC_);
     unsigned n = InitialStatePC_->indices().size();
 
@@ -217,7 +217,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         return false;
     }
 
-    M_.setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
+    M_->setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
 
 
     /// for a 3 particle system, we are done
@@ -242,7 +242,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
             return false;
         }
 
-        M_.setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
+        M_->setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
     }
 
 
@@ -277,7 +277,7 @@ bool FourMomenta::setMasses(DataPoint& d, std::map<std::shared_ptr<const Particl
     resetMasses(d);
 
     for (auto& kv : m) {
-        M_.setValue(kv.second, d, symmetrizationIndex(kv.first), 0u);
+        M_->setValue(kv.second, d, symmetrizationIndex(kv.first), 0u);
     }
 
     // recalculate stuff
@@ -304,7 +304,7 @@ bool FourMomenta::setMassSquares(DataPoint& d, std::map<std::shared_ptr<const Pa
 void FourMomenta::resetMasses(DataPoint& d)
 {
     for (int i=0; i<=maxSymmetrizationIndex(); ++i)
-        M_.setValue(-1, d, unsigned(i), 0u);
+        M_->setValue(-1, d, unsigned(i), 0u);
 }
 
 //-------------------------

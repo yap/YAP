@@ -50,13 +50,16 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
     double phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    { return HelicityAngles_.value(0, d, symmetrizationIndex(pc)); }
+    { return HelicityAngles_->value(0, d, symmetrizationIndex(pc)); }
 
     /// Access helicity angles (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return helicity angles of
     double theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    { return HelicityAngles_.value(1, d, symmetrizationIndex(pc)); }
+    { return HelicityAngles_->value(1, d, symmetrizationIndex(pc)); }
+
+    std::shared_ptr<CachedDataValue> helicityAngles()
+    { return HelicityAngles_; }
 
 protected:
 
@@ -68,7 +71,7 @@ protected:
     void transformDaughters(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, std::vector<TLorentzVector> finalStatesHf);
 
     /// Helicity angles phi and theta
-    CachedDataValue HelicityAngles_;
+    std::shared_ptr<CachedDataValue> HelicityAngles_;
 
 };
 

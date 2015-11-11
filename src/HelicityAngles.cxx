@@ -12,7 +12,7 @@ namespace yap {
 //-------------------------
 HelicityAngles::HelicityAngles() :
     StaticDataAccessor(&ParticleCombination::equivUpAndDownButLambda),
-    HelicityAngles_(this, 2)
+    HelicityAngles_(new CachedDataValue(this, 2))
 {
 }
 
@@ -32,7 +32,7 @@ void HelicityAngles::calculate(DataPoint& d)
 {
     // use a default dataPartitionIndex of 0
 
-    HelicityAngles_.setCalculationStatus(kUncalculated, 0);
+    HelicityAngles_->setCalculationStatus(kUncalculated, 0);
 
     if (initialStateParticle()->quantumNumbers().twoJ() != 0)
         LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
@@ -93,10 +93,10 @@ void HelicityAngles::transformDaughters(DataPoint& d,
 
         double phi = daughter.Phi();
         double theta = daughter.Theta();
-        HelicityAngles_.setValue(0, phi,   d, symmetrizationIndex(daugh));
-        HelicityAngles_.setValue(1, theta, d, symmetrizationIndex(daugh));
+        HelicityAngles_->setValue(0, phi,   d, symmetrizationIndex(daugh));
+        HelicityAngles_->setValue(1, theta, d, symmetrizationIndex(daugh));
 
-        HelicityAngles_.setCalculationStatus(kCalculated, symmetrizationIndex(daugh), 0);
+        HelicityAngles_->setCalculationStatus(kCalculated, symmetrizationIndex(daugh), 0);
 
         // next helicity frame
         const TLorentzRotation transDaugh = hfTransform(daughter);

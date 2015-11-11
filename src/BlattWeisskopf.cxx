@@ -23,7 +23,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 
     Fq_ab->addDependency(DecayChannel_->parent()->radialSize());
 
-    /// measured breakup momenta and four momenta never change, so no need to add them here
+    /// measured breakup momenta and four momenta dependencies are set in setInitialStateParticle
 }
 
 //-------------------------
@@ -92,6 +92,17 @@ double BlattWeisskopf::F2(int twoL, double R2, double q2)
             LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                        << spinToString(twoL) << ". returning 0." << std::endl;
             return 0;
+    }
+}
+
+//-------------------------
+void BlattWeisskopf::setInitialStateParticle(InitialStateParticle* isp)
+{
+    DataAccessor::setInitialStateParticle(isp);
+
+    if (initialStateParticle()) {
+        Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
+        Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
     }
 }
 
