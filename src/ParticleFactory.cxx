@@ -102,7 +102,7 @@ bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
 int ParticleFactory::pdgCode(std::string name) const
 {
     auto it = std::find_if(particleTable_.begin(), particleTable_.end(),
-                           [&](const std::map<int, ParticleTableEntry>::value_type& p) {return p.second.Name_ == name;});
+    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.Name_ == name;});
     if (it == particleTable_.end()) {
         LOG(ERROR) << "ParticleFactory::pdgCode - particle with name \"" << name << "\" not found.";
         return 0;

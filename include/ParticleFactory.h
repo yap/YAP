@@ -91,18 +91,18 @@ public:
     /// get ParticleTableEntry from #particleTable_ with safety checks
     /// \param name Name of particle in table
     const ParticleTableEntry& particleTableEntry(std::string name) const
-        { return particleTableEntry(pdgCode(name)); }
+    { return particleTableEntry(pdgCode(name)); }
 
     /// get #QuantumNumbers from #particleTable_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     const QuantumNumbers& quantumNumbers(int PDG) const
-        { return static_cast<const QuantumNumbers&>(particleTableEntry(PDG)); }
+    { return static_cast<const QuantumNumbers&>(particleTableEntry(PDG)); }
 
     /// get #QuantumNumbers from #particleTable_ with safety checks
     /// \param name Name of particle in table
     const QuantumNumbers& quantumNumbers(std::string name) const
-        { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
-    
+    { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
+
 
     /// add ParticleTableEntry to #particleTable_
     /// \param entry ParticleTableEntry to add to #particleTable_

@@ -156,7 +156,7 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     for (unsigned i = 0; i < P.size(); ++i)
         for (unsigned j = 0; j < 3; ++j)
             cosAngle[i][j] = (P[i].E() * P[j].E() - 0.5 * (m2(d, PairPC_[i][j]) - P[i].Mag2() + P[j].Mag2())) / P[i].P() / P[j].P();
-    
+
     // leave P[0] aligned with z axis
 
     // rotate P[1] around Y axis
@@ -171,7 +171,7 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
         TVector3 vi((cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                   0, cosAngle[i][0]);
+                    0, cosAngle[i][0]);
         vi.SetY((v2.Mag() * cosAngle[i][2] - vi.Dot(v2)) / v2.Y());
         vi.SetMag(P[i].Vect().Mag());
         P[i].SetVectM(vi, P[i].M());
@@ -193,7 +193,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 
     ParticleCombinationVector pairPCs = pairParticleCombinations();
 
-    if (pairPCs.size() != n*(n-1)/2) {
+    if (pairPCs.size() != n * (n - 1) / 2) {
         LOG(ERROR) << "Wrong number of pair PCs.";
         return false;
     }
@@ -201,7 +201,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     // check if we have enough masses to calculate the rest
     unsigned nUnset(0);
     unsigned iUnset(0);
-    for (unsigned i=0; i<pairPCs.size(); ++i) {
+    for (unsigned i = 0; i < pairPCs.size(); ++i) {
         if (m(d, pairPCs[i]) <= 0.) {
             nUnset++;
             iUnset = i;
@@ -224,7 +224,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     m2_ab *= 2 - int(n);
     m2_ab = M2 - m2_ab;
 
-    for (unsigned i=0; i<pairPCs.size(); ++i) {
+    for (unsigned i = 0; i < pairPCs.size(); ++i) {
         if (i == iUnset)
             continue;
         m2_ab -= m2(d, pairPCs[i]);
@@ -321,7 +321,7 @@ bool FourMomenta::setMassSquares(DataPoint& d, std::map<std::shared_ptr<const Pa
 //-------------------------
 void FourMomenta::resetMasses(DataPoint& d)
 {
-    for (int i=0; i<=maxSymmetrizationIndex(); ++i)
+    for (int i = 0; i <= maxSymmetrizationIndex(); ++i)
         M_->setValue(-1, d, unsigned(i), 0u);
 }
 
@@ -331,7 +331,7 @@ ParticleCombinationVector FourMomenta::pairParticleCombinations() const
     ParticleCombinationVector pairPCs;
     unsigned i(0);
     for (auto& v : PairPC_) {
-        for (unsigned j=i++; j<v.size(); ++j)
+        for (unsigned j = i++; j < v.size(); ++j)
             if (v[j])
                 pairPCs.push_back(v[j]);
     }

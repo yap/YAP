@@ -143,7 +143,7 @@ int main( int argc, char** argv)
     // generate
     //
 
-    for (unsigned i = 0; i<10; ++i) {
+    for (unsigned i = 0; i < 10; ++i) {
 
         pairMassSquares.begin()->second -= 0.0001;
 

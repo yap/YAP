@@ -16,7 +16,7 @@ int main( int argc, char** argv)
 {
 
     yap::plainLogs(el::Level::Debug);
-    
+
     yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
     // final state particles
@@ -38,7 +38,7 @@ int main( int argc, char** argv)
     auto f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
     f_2->addChannels(piPlus, piMinus, max2L);
-    
+
     // f_0(980)
     auto f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
@@ -61,7 +61,7 @@ int main( int argc, char** argv)
 
     // initial state particle
     auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
-    
+
     // Add channels to D
     D->addChannels(rho,      piPlus, max2L);
     D->addChannels(f_2,      piPlus, max2L);
@@ -69,7 +69,7 @@ int main( int argc, char** argv)
     D->addChannels(f_0_1370, piPlus, max2L);
     D->addChannels(f_0_1500, piPlus, max2L);
     D->addChannels(sigma,    piPlus, max2L);
-    
+
     // consistency and optimizations
     assert(D->prepare());
     std::cout << "consistent! \n";
