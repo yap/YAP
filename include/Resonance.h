@@ -46,7 +46,7 @@ class Resonance : public DecayingParticle
 public:
 
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>& massShape);
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>&& massShape);
 
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
@@ -59,6 +59,10 @@ public:
     /// @{
 
     /// access MassShape
+    MassShape& massShape()
+    { return *(MassShape_.get()); }
+
+    /// const'ly access MassShape
     const MassShape& massShape() const
     { return *(MassShape_.get()); }
 

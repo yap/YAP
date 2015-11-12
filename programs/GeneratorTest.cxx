@@ -132,6 +132,10 @@ int main( int argc, char** argv)
     std::map<std::shared_ptr<const yap::ParticleCombination>, double> pairMassSquares = D->fourMomenta().pairMassSquares(d);
     pairMassSquares.erase(pairMassSquares.begin());
 
+    for (auto& kv : pairMassSquares) {
+        std::cout << std::string(*kv.first) << ": " << kv.second << " GeV\n";
+    }
+
     assert(D->fourMomenta().setMassSquares(d, pairMassSquares));
     D->updateGlobalCalculationStatuses();
 
@@ -146,7 +150,7 @@ int main( int argc, char** argv)
     // generate
     //
 
-    for (unsigned i = 0; i<10; ++i) {
+    for (unsigned i = 0; i < 10; ++i) {
 
         pairMassSquares.begin()->second += 0.001;
 

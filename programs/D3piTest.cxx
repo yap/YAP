@@ -1,116 +1,93 @@
 #include "logging.h"
-INITIALIZE_EASYLOGGINGPP
+#include "BreitWigner.h"
+#include "FinalStateParticle.h"
+#include "InitialStateParticle.h"
+#include "make_unique.h"
+#include "ParticleFactory.h"
+#include "Resonance.h"
 
-#include "ParticleCombination.h"
-#include "ParticleIndex.h"
+#include "TGenPhaseSpace.h"
+#include "TLorentzVector.h"
 
-#include <iostream>
+#include <assert.h>
 #include <memory>
-#include <set>
-#include <vector>
-
 
 int main( int argc, char** argv)
 {
 
-    // FSP's
-    std::shared_ptr<yap::ParticleCombination> a = yap::ParticleCombination::uniqueSharedPtr(0);
-    std::shared_ptr<yap::ParticleCombination> b = yap::ParticleCombination::uniqueSharedPtr(1);
-    std::shared_ptr<yap::ParticleCombination> c = yap::ParticleCombination::uniqueSharedPtr(2);
-    std::shared_ptr<yap::ParticleCombination> d = yap::ParticleCombination::uniqueSharedPtr(3);
+    yap::plainLogs(el::Level::Debug);
 
-    std::shared_ptr<yap::ParticleCombination> a_b = yap::ParticleCombination::uniqueSharedPtr({a, b});
+    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
-    std::shared_ptr<yap::ParticleCombination> b2 = yap::ParticleCombination::uniqueSharedPtr(1);
+    // final state particles
+    auto piPlus = factory.createFinalStateParticle(211, {0, 2});
+    auto piMinus = factory.createFinalStateParticle(-211, {1});
 
-    std::shared_ptr<yap::ParticleCombination> a_b2 = yap::ParticleCombination::uniqueSharedPtr({a, b2});
+    // use common radial size for all resonances
+    double radialSize = 3.; // [GeV^-1]
 
-    std::cout << "b  = " << b << "\nb2 = " << b2 << std::endl;
-    std::cout << "a_b  = " << a_b << "\na_b2 = " << a_b2 << std::endl;
+    // use only L up to 4
+    unsigned max2L(2 * 4);
 
-    for (auto d : yap::ParticleCombination::particleCombinationSet()) {
-        for (yap::ParticleIndex i : d->indices())
-            std::cout << static_cast<unsigned>(i) << std::flush;
-        std::cout << std::endl;
-    }
+    // rho
+    auto rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.149);
+    rho->addChannels(piPlus, piMinus, max2L);
 
-    // ab->addDaughter(b);
+    // f_2(1270)
+    auto f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
+    f_2->addChannels(piPlus, piMinus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> c_d = std::make_shared<yap::ParticleCombination>();
-    // cd->addDaughter(c);
-    // cd->addDaughter(d);
+    // f_0(980)
+    auto f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
+    f_0_980->addChannels(piPlus, piMinus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> a_d = std::make_shared<yap::ParticleCombination>();
-    // ad->addDaughter(a);
-    // ad->addDaughter(d);
+    // f_0(1370)
+    auto f_0_1370 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
+    f_0_1370->addChannels(piPlus, piMinus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> c_b = std::make_shared<yap::ParticleCombination>();
-    // cb->addDaughter(c);
-    // cb->addDaughter(b);
+    // f_0(1500)
+    auto f_0_1500 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
+    f_0_1500->addChannels(piPlus, piMinus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> abc = std::make_shared<yap::ParticleCombination>();
-    // abc->addDaughter(ab);
-    // abc->addDaughter(c);
+    // sigma a.k.a. f_0(500)
+    auto sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
+    sigma->addChannels(piPlus, piMinus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> ab_cd = std::make_shared<yap::ParticleCombination>();
-    // ab_cd->addDaughter(ab);
-    // ab_cd->addDaughter(cd);
+    // initial state particle
+    auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
 
-    // std::shared_ptr<yap::ParticleCombination> cd_ab = std::make_shared<yap::ParticleCombination>();
-    // cd_ab->addDaughter(cd);
-    // cd_ab->addDaughter(ab);
+    // Add channels to D
+    D->addChannels(rho,      piPlus, max2L);
+    D->addChannels(f_2,      piPlus, max2L);
+    D->addChannels(f_0_980,  piPlus, max2L);
+    D->addChannels(f_0_1370, piPlus, max2L);
+    D->addChannels(f_0_1500, piPlus, max2L);
+    D->addChannels(sigma,    piPlus, max2L);
 
-    // std::shared_ptr<yap::ParticleCombination> abc_d = std::make_shared<yap::ParticleCombination>();
-    // abc_d->addDaughter(abc);
-    // abc_d->addDaughter(d);
+    // consistency and optimizations
+    assert(D->prepare());
+    std::cout << "consistent! \n";
 
-    // std::shared_ptr<yap::ParticleCombination> ab_ad = std::make_shared<yap::ParticleCombination>();
-    // ab_ad->addDaughter(ab);
-    // ab_ad->addDaughter(ad);
+    // print stuff
+    //yap::ParticleCombination::printParticleCombinationSet();
 
-    // std::cout << "ab_cd = " << std::flush;
-    // for (unsigned i = 0; i < ab_cd->indices().size(); ++i)
-    //     std::cout << static_cast<unsigned>(ab_cd->indices()[i]) << std::flush;
-    // std::cout << std::endl;
+    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
-    // std::cout << "cd_ab = " << std::flush;
-    // for (unsigned i = 0; i < cd_ab->indices().size(); ++i)
-    //     std::cout << static_cast<unsigned>(cd_ab->indices()[i]) << std::flush;
-    // std::cout << std::endl;
+    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
 
-    // std::cout << "ab_ad = " << std::flush;
-    // for (unsigned i = 0; i < ab_ad->indices().size(); ++i)
-    //     std::cout << static_cast<unsigned>(ab_ad->indices()[i]) << std::flush;
-    // std::cout << std::endl;
+    std::cout << "\nHelicity angle symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
 
-    // std::cout << (abc_d == ab_cd) << std::endl;
+    D->printDecayChain();
+    std::cout << "\n";
 
-    // std::cout << "ab_ad::consistent() = " << ab_ad->consistent() << std::endl;
+    D->printSpinAmplitudes();
+    D->printDataAccessors(false);
 
-    // for (unsigned i = 0; i < D1->daughters().size(); ++i) {
-    //     std::cout << i << std::flush;
-    //     std::shared_ptr<yap::ParticleCombination> d = D1->daughters()[i].lock();
-    //     for (unsigned j = 0; j < d->indices().size(); ++j)
-    //         std::cout << "\t" << static_cast<unsigned>(d->indices()[j]) << std::flush;
-    //     std::cout << std::endl;
-    // }
-
-    // std::vector<TLorentzVector> P;
-    // P.push_back(TLorentzVector(0, 1, 2, 3));
-    // P.push_back(TLorentzVector(1, 2, 3, 0));
-    // P.push_back(TLorentzVector(2, 3, 0, 1));
-    // P.push_back(TLorentzVector(3, 0, 1, 2));
-
-    // yap::DataSet DS;
-    // DS.addDataPoint(yap::DataPoint(P)); // move
-
-    // yap::DataPoint D(P);
-    // DS.addDataPoint(D);         // copy and move
-    // DS.addDataPoint(std::move(D)); // move
-
-    // P.pop_back();
-    // DS.addDataPoint(yap::DataPoint(P)); // fail
-
-
-
+    std::cout << "alright! \n";
 }

@@ -143,20 +143,38 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
         P[i].SetXYZM(0, 0, p, fsp_m);
     }
 
-    // calculate angles
-    std::vector<std::vector<double> > angle(P.size(), std::vector<double>(P.size(), 0));
-    for (unsigned i = 0; i < P.size(); ++i) {
-        for (unsigned j = i + 1; j < P.size(); ++j) {
-            angle[i][j] = acos(P[i].E() * P[j].E() + 0.5 * (pow(m(d, FinalStatePC_[i]), 2) + pow(m(d, FinalStatePC_[j]), 2) - m2(d, PairPC_[i][j])));
-            angle[j][i] = angle[i][j];
-        }
-    }
+    // if only particle (should not happen)
+    if (P.size() < 2)
+        return P;
+
+    // if only two particles (should not happen)
+    if (P.size() < 3)
+        P[1].Vect().SetZ(-P[1].Vect().Z());
+
+    // store angles between particle i and particles 0, 1, 2
+    std::vector<std::vector<double> > cosAngle(P.size(), std::vector<double>(3, 0));
+    for (unsigned i = 0; i < P.size(); ++i)
+        for (unsigned j = 0; j < 3; ++j)
+            cosAngle[i][j] = (P[i].E() * P[j].E() - 0.5 * (m2(d, PairPC_[i][j]) - P[i].Mag2() + P[j].Mag2())) / P[i].P() / P[j].P();
 
     // leave P[0] aligned with z axis
-    // rotate remaining by relative angles around y axis
-    /// \todo Make work for 4 or more particles
-    for (unsigned i = 1; i < P.size(); ++i) {
-        P[i].RotateY(angle[i][i - 1]);
+
+    // rotate P[1] around Y axis
+    P[1].RotateY(acos(cosAngle[0][1]));
+
+    // define P[2] to be in +Y direction
+    TVector3 v2((cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
+                0, cosAngle[2][0]);
+    v2.SetMag(P[2].Vect().Mag());
+    P[2].SetVectM(v2, P[2].M());
+
+    // define remaining 4-momenta
+    for (unsigned i = 3; i < P.size(); ++i) {
+        TVector3 vi((cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
+                    0, cosAngle[i][0]);
+        vi.SetY((v2.Mag() * cosAngle[i][2] - vi.Dot(v2)) / v2.Y());
+        vi.SetMag(P[i].Vect().Mag());
+        P[i].SetVectM(vi, P[i].M());
     }
 
     return P;
@@ -175,7 +193,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 
     ParticleCombinationVector pairPCs = pairParticleCombinations();
 
-    if (pairPCs.size() != n*(n-1)/2) {
+    if (pairPCs.size() != n * (n - 1) / 2) {
         LOG(ERROR) << "Wrong number of pair PCs.";
         return false;
     }
@@ -183,7 +201,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     // check if we have enough masses to calculate the rest
     unsigned nUnset(0);
     unsigned iUnset(0);
-    for (unsigned i=0; i<pairPCs.size(); ++i) {
+    for (unsigned i = 0; i < pairPCs.size(); ++i) {
         if (m(d, pairPCs[i]) < 0.) {
             nUnset++;
             iUnset = i;
@@ -206,7 +224,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     m2_ab *= 2 - int(n);
     m2_ab = M2 - m2_ab;
 
-    for (unsigned i=0; i<pairPCs.size(); ++i) {
+    for (unsigned i = 0; i < pairPCs.size(); ++i) {
         if (i == iUnset)
             continue;
         m2_ab -= m2(d, pairPCs[i]);
@@ -324,9 +342,10 @@ void FourMomenta::printMasses(const DataPoint& d) const
 //-------------------------
 void FourMomenta::resetMasses(DataPoint& d)
 {
-    for (int i=0; i<=maxSymmetrizationIndex(); ++i) {
+    for (int i = 0; i <= maxSymmetrizationIndex(); ++i) {
         if (i == int(symmetrizationIndex(InitialStatePC_)))
             continue;
+
         M_->setValue(-1, d, unsigned(i), 0u);
     }
 }
@@ -337,7 +356,7 @@ ParticleCombinationVector FourMomenta::pairParticleCombinations() const
     ParticleCombinationVector pairPCs;
     unsigned i(0);
     for (auto& v : PairPC_) {
-        for (unsigned j=i++; j<v.size(); ++j)
+        for (unsigned j = i++; j < v.size(); ++j)
             if (v[j])
                 pairPCs.push_back(v[j]);
     }

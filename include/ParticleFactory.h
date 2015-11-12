@@ -88,10 +88,31 @@ public:
     /// \param PDG pdg code labeling particle table entry
     const ParticleTableEntry& particleTableEntry(int PDG) const;
 
+    /// get ParticleTableEntry from #particleTable_ with safety checks
+    /// \param name Name of particle in table
+    const ParticleTableEntry& particleTableEntry(std::string name) const
+    { return particleTableEntry(pdgCode(name)); }
+
+    /// get #QuantumNumbers from #particleTable_ with safety checks
+    /// \param PDG pdg code labeling particle table entry
+    const QuantumNumbers& quantumNumbers(int PDG) const
+    { return static_cast<const QuantumNumbers&>(particleTableEntry(PDG)); }
+
+    /// get #QuantumNumbers from #particleTable_ with safety checks
+    /// \param name Name of particle in table
+    const QuantumNumbers& quantumNumbers(std::string name) const
+    { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
+
+
     /// add ParticleTableEntry to #particleTable_
     /// \param entry ParticleTableEntry to add to #particleTable_
     /// \return Success of action
     bool addParticleTableEntry(ParticleTableEntry entry);
+
+    // find PDG number by particle name
+    // \return PDG code number
+    // \param name Particle name as listed in particle table
+    int pdgCode(std::string name) const;
 
     /// @}
 
