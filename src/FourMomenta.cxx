@@ -184,7 +184,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     unsigned nUnset(0);
     unsigned iUnset(0);
     for (unsigned i=0; i<pairPCs.size(); ++i) {
-        if (m(d, pairPCs[i]) <= 0.) {
+        if (m(d, pairPCs[i]) < 0.) {
             nUnset++;
             iUnset = i;
         }
@@ -212,8 +212,8 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         m2_ab -= m2(d, pairPCs[i]);
     }
 
-    if (m2_ab <= 0) {
-        LOG(ERROR) << "Resulting two-particle m2 is <= 0.";
+    if (m2_ab < 0) {
+        LOG(ERROR) << "Resulting two-particle m2 is < 0.";
         return false;
     }
 
@@ -237,8 +237,8 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
                 m2_recoil += m2(d, pcPair);
         }
 
-        if (m2_recoil <= 0) {
-            LOG(ERROR) << "Resulting recoil m2 is <= 0.";
+        if (m2_recoil < 0) {
+            LOG(ERROR) << "Resulting recoil m2 is < 0.";
             return false;
         }
 
@@ -301,10 +301,34 @@ bool FourMomenta::setMassSquares(DataPoint& d, std::map<std::shared_ptr<const Pa
 }
 
 //-------------------------
+void FourMomenta::printMasses(const DataPoint& d) const
+{
+    std::cout << "Invariant masses:\n";
+    std::cout << "  " << std::string(*InitialStatePC_) << ": \t" << m(d, InitialStatePC_) << " GeV\n";
+
+    if (InitialStatePC_->indices().size() > 3)
+        for (auto& pc : RecoilPC_)
+            std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+
+    for (auto& pc : pairParticleCombinations())
+        std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+
+    for (auto& pc : FinalStatePC_)
+        std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+
+    for (int i=0; i<=maxSymmetrizationIndex(); ++i) {
+        std::cout << "  symIndex " << i << ": " << M_->value(d, i) << " GeV\n";
+    }
+}
+
+//-------------------------
 void FourMomenta::resetMasses(DataPoint& d)
 {
-    for (int i=0; i<=maxSymmetrizationIndex(); ++i)
+    for (int i=0; i<=maxSymmetrizationIndex(); ++i) {
+        if (i == int(symmetrizationIndex(InitialStatePC_)))
+            continue;
         M_->setValue(-1, d, unsigned(i), 0u);
+    }
 }
 
 //-------------------------

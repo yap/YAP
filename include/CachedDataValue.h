@@ -157,7 +157,12 @@ public:
     /// \param symmetrizationIndex index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
     double value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const
+#ifdef ELPP_DISABLE_DEBUG_LOGS
     { return d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index];}
+#else
+    { return d.Data_.at(Owner_->index()).at(symmetrizationIndex).at(Position_ + index);}
+#endif
+
 
     /// \return Size of cached value (number of real elements)
     virtual unsigned size() const

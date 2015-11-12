@@ -110,6 +110,9 @@ public:
     std::shared_ptr<RealCachedDataValue> masses()
     { return M_; }
 
+    /// print all masses
+    void printMasses(const DataPoint& d) const;
+
 protected:
 
     /// set all masses to -1 (except FinalStateParticleM_)

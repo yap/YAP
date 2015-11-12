@@ -24,6 +24,9 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSe
         // increase owner's storage to accommodate cached value
         Owner_->increaseSize(Size_);
     }
+    else {
+        LOG(ERROR) << "CachedDataValue::CachedDataValue - No Owner given!";
+    }
 }
 
 //-------------------------

@@ -35,10 +35,15 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
 
     if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
-        double m2_R = DecayChannel_->parent()->mass()->value();
+        double m2_R = pow(DecayChannel_->parent()->mass()->value(), 2);
         double m_a = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(0));
         double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
+
+        DEBUG(std::string(*pc->daughters().at(0)) << " " << std::string(*pc->daughters().at(1)));
+        //DEBUG(initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(0)) <<
+        //        " " << initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(1)));
+        DEBUG(m_a << " " << m_b);
 
         double R = DecayChannel_->parent()->radialSize()->value();
         double f = sqrt(F2(DecayChannel_->spinAmplitude()->twoL(), R * R, q2));

@@ -136,6 +136,9 @@ int main( int argc, char** argv)
     D->updateGlobalCalculationStatuses();
 
 
+    D->fourMomenta().printMasses(d);
+
+
 
     // Dalitz coordinates: m^2_{12}, m^2_{13}, m^2_{14}, m^2_{23}, m^2_{24}
 
@@ -145,11 +148,23 @@ int main( int argc, char** argv)
 
     for (unsigned i = 0; i<10; ++i) {
 
-        pairMassSquares.begin()->second -= 0.0001;
+        pairMassSquares.begin()->second += 0.001;
 
-        if (! D->fourMomenta().setMasses(d, pairMassSquares))
+        for (auto& kv : pairMassSquares) {
+            std::cout << std::string(*kv.first) << ": \t" << kv.second << " GeV^2\n";
+        }
+
+        if (! D->fourMomenta().setMassSquares(d, pairMassSquares)) {
             continue;
+        }
+
+        std::cout << "meh nr " << i << "\n";
+        D->fourMomenta().printMasses(d);
+
         D->calculate(d);
+
+        std::cout << "meh nr " << i << " after calculate\n";
+        D->fourMomenta().printMasses(d);
 
         double logA = D->logOfSquaredAmplitude(d, 0u);
 
