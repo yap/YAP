@@ -3,9 +3,11 @@
 #include "Constants.h"
 #include "DataPartition.h"
 #include "DataSet.h"
+#include "FinalStateParticle.h"
 #include "logging.h"
 
-#include <TLorentzRotation.h>
+#include "TGenPhaseSpace.h"
+#include "TLorentzVector.h"
 
 #include <assert.h>
 #include <future>
@@ -266,6 +268,49 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
 bool InitialStateParticle::addDataPoint(const DataPoint& d)
 {
     return addDataPoint(DataPoint(d));
+}
+
+//-------------------------
+bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
+{
+    bool result = true;
+
+    /// \todo Use empty data points
+    /// @{
+    // create data points
+
+    // initial state 4-momentum (for TGenPhaseSpace)
+    TLorentzVector P(0., 0., 0., mass()->value());
+    
+    // final state masses (for TGenPhaseSpace)
+    std::vector<double> masses(finalStateParticles().size(), -1);
+    for (unsigned i = 0; i < finalStateParticles().size(); ++i)
+        masses[i] = finalStateParticles()[i]->mass()->value();
+
+    TGenPhaseSpace event;
+    event.SetDecay(P, masses.size(), &masses[0]);
+
+    std::vector<TLorentzVector> momenta(masses.size(), TLorentzVector());
+
+    // Generate events
+    for (unsigned i = 0; i < n; ++i) {
+        event.Generate();
+        for (unsigned i = 0; i < masses.size(); ++i)
+            momenta[i] = *event.GetDecay(i);
+        result &= addDataPoint(momenta);
+    }
+    /// @}
+
+    // set data partitions (1 for each data point)
+    setDataPartitions(createDataPartitionsBlockBySize(DataSet_, 1));
+
+    /// \todo Only calculate data-independent values
+    /// @{
+    // do one initial calculation
+    result &= std::isfinite(sumOfLogsOfSquaredAmplitudes());
+    /// @}
+
+    return result;
 }
 
 //-------------------------

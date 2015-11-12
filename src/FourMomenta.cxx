@@ -155,7 +155,8 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     std::vector<std::vector<double> > cosAngle(P.size(), std::vector<double>(3, 0));
     for (unsigned i = 0; i < P.size(); ++i)
         for (unsigned j = 0; j < 3; ++j)
-            cosAngle[i][j] = (P[i].E() * P[j].E() - 0.5 * (m2(d, PairPC_[i][j]) - P[i].Mag2() + P[j].Mag2())) / P[i].P() / P[j].P();
+            if (j != i)
+                cosAngle[i][j] = (P[i].E() * P[j].E() - 0.5 * (m2(d, PairPC_[i][j]) - P[i].Mag2() + P[j].Mag2())) / P[i].P() / P[j].P();
 
     // leave P[0] aligned with z axis
 
@@ -231,7 +232,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
     }
 
     if (m2_ab < 0) {
-        LOG(ERROR) << "Resulting two-particle m2 is < 0.";
+        LOG(ERROR) << "FourMomenta::calculateMissingMasses : Resulting two-particle m2 is < 0.";
         return false;
     }
 
@@ -268,9 +269,37 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 }
 
 //-------------------------
-std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMasses(const DataPoint& d) const
+ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<ParticleIndex> > pcs) const
 {
-    std::map<std::shared_ptr<const ParticleCombination>, double> result;
+    ParticleCombinationVector M;
+
+    ParticleCombinationVector PCV = particleCombinations();
+
+    for (std::vector<ParticleIndex> pc : pcs) {
+        std::shared_ptr<const ParticleCombination> A = ParticleCombination::uniqueSharedPtr(pc);
+        for (auto& B : PCV) {
+            if (ParticleCombination::equivByOrderlessContent(A, B)) {
+                M.push_back(B);
+                break;
+            }
+        }
+    }
+
+    // Check if all combinations found
+    if (M.size() != pcs.size()) {
+        LOG(ERROR) << "FourMomenta::getDalitzAxes : did not find all requested combinations.";
+        for (auto& m : M)
+            DEBUG(std::string(*m));
+        M.clear();
+    }
+
+    return M;
+}
+
+//-------------------------
+ParticleCombinationMap<double> FourMomenta::pairMasses(const DataPoint& d) const
+{
+    ParticleCombinationMap<double> result;
 
     for (auto& pc : pairParticleCombinations())
         result[pc] = m(d, pc);
@@ -279,9 +308,9 @@ std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMa
 }
 
 //-------------------------
-std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMassSquares(const DataPoint& d) const
+ParticleCombinationMap<double> FourMomenta::pairMassSquares(const DataPoint& d) const
 {
-    std::map<std::shared_ptr<const ParticleCombination>, double> result;
+    ParticleCombinationMap<double> result;
 
     for (auto& pc : pairParticleCombinations())
         result[pc] = m2(d, pc);
@@ -290,7 +319,41 @@ std::map<std::shared_ptr<const ParticleCombination>, double> FourMomenta::pairMa
 }
 
 //-------------------------
-bool FourMomenta::setMasses(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m)
+bool FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses)
+{
+    if (axes.size() != masses.size()) {
+        LOG(ERROR) << "FourMomenta::setMasses - axes and masses vectors do not match in size.";
+        return false;
+    }
+
+    // reset all masses to -1
+    resetMasses(d);
+    
+    // set independent masses according to axes
+    for (unsigned i = 0; i < axes.size(); ++i)
+        M_->setValue(masses[i], d, symmetrizationIndex(axes[i]), 0u);
+
+    // recalculate dependent masses
+    if (!calculateMissingMasses(d)) {
+        // not enough masses set or not in phasespace
+        resetMasses(d);
+        return false;
+    }
+
+    // recalculate final state masses and return success of action
+    return d.setFinalStateFourMomenta(calculateFourMomenta(d));
+}
+
+//-------------------------
+bool FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses)
+{
+    std::vector<double> masses(squaredMasses.size(), 0);
+    std::transform(squaredMasses.begin(), squaredMasses.end(), masses.begin(), sqrt);
+    return setMasses(d, axes, masses);
+}
+
+//-------------------------
+bool FourMomenta::setMasses(DataPoint& d, ParticleCombinationMap<double> m)
 {
     resetMasses(d);
 
@@ -309,7 +372,7 @@ bool FourMomenta::setMasses(DataPoint& d, std::map<std::shared_ptr<const Particl
 }
 
 //-------------------------
-bool FourMomenta::setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2)
+bool FourMomenta::setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2)
 {
     for (auto& kv : m2) {
         kv.second = sqrt(kv.second);
@@ -334,7 +397,7 @@ void FourMomenta::printMasses(const DataPoint& d) const
     for (auto& pc : FinalStatePC_)
         std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
 
-    for (int i=0; i<=maxSymmetrizationIndex(); ++i) {
+    for (int i = 0; i <= maxSymmetrizationIndex(); ++i) {
         std::cout << "  symIndex " << i << ": " << M_->value(d, i) << " GeV\n";
     }
 }

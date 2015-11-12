@@ -89,21 +89,38 @@ public:
     /// \name Dalitz coordinate stuff
     /// @{
 
+    /// get ParticleCombinationVector for requested combinations
+    ParticleCombinationVector getDalitzAxes(std::vector<std::vector<ParticleIndex> > pcs) const;
+
     /// get pair masses
-    std::map<std::shared_ptr<const ParticleCombination>, double> pairMasses(const DataPoint& d) const;
+    ParticleCombinationMap<double> pairMasses(const DataPoint& d) const;
 
     /// get pair masses squared
-    std::map<std::shared_ptr<const ParticleCombination>, double> pairMassSquares(const DataPoint& d) const;
+    ParticleCombinationMap<double> pairMassSquares(const DataPoint& d) const;
+
+    /// set masses of particle combinations in axes to those in masses
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param masses vector of masses to be set to
+    /// \return success of action
+    bool setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses);
+
+    /// set masses of particle combinations in axes to those in masses
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param masses vector of masses to be set to
+    /// \return success of action
+    bool setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses);
 
     /// set masses
     /// also calculate remaining masses and final-state 4-momenta
     /// \return if masses form a complete set and are in phase space
-    bool setMasses(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m);
+    bool setMasses(DataPoint& d, ParticleCombinationMap<double> m);
 
     /// set masses squared
     /// also calculate remaining masses and final-state 4-momenta
     /// \return if masses form a complete set and are in phase space
-    bool setMassSquares(DataPoint& d, std::map<std::shared_ptr<const ParticleCombination>, double> m2);
+    bool setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2);
 
     /// @}
 
@@ -119,7 +136,7 @@ protected:
     void resetMasses(DataPoint& d);
 
     /// calculate all masses from a complete set of masses
-    /// \return if successful
+    /// \return success of action
     bool calculateMissingMasses(DataPoint& d);
 
     /// calculate four-momenta from squared invariant masses

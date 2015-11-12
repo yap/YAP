@@ -171,6 +171,15 @@ public:
 
     /// @}
 
+    /// \name Monte Carlo Generation
+    /// @{
+    
+    /// Initialize DataSet for MC Generation
+    /// \param n Number of simultaneous streams for MC generation
+    bool initializeForMonteCarloGeneration(unsigned n);
+
+    /// @}
+
     void printDataAccessors(bool printParticleCombinations = true);
 
 private:

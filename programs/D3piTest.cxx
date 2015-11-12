@@ -3,6 +3,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "make_unique.h"
+#include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
@@ -11,6 +12,7 @@
 
 #include <assert.h>
 #include <memory>
+#include <vector>
 
 int main( int argc, char** argv)
 {
@@ -88,6 +90,22 @@ int main( int argc, char** argv)
 
     D->printSpinAmplitudes();
     D->printDataAccessors(false);
+
+    // initialize for 5 streams
+    D->initializeForMonteCarloGeneration(5);
+
+    // choose Dalitz coordinates m^2_12 and m^2_23
+    yap::ParticleCombinationVector DalitzAxes = D->fourMomenta().getDalitzAxes({{0,1}, {1,2}});
+
+    std::vector<double> m2(DalitzAxes.size(), 1);
+
+    DEBUG("BEFORE");
+    D->fourMomenta().printMasses(D->dataSet()[0]);
+
+    D->fourMomenta().setSquaredMasses(D->dataSet()[0], DalitzAxes, m2);
+
+    DEBUG("AFTER");
+    D->fourMomenta().printMasses(D->dataSet()[0]);
 
     std::cout << "alright! \n";
 }

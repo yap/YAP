@@ -79,7 +79,8 @@ public:
     { return SymmetrizationIndices_.at(c); }
 
     /// \return SymmetrizationIndices_
-    const std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > >& symmetrizationIndices() const
+    const ParticleCombinationMap<unsigned>& symmetrizationIndices() const
+    // const std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > >& symmetrizationIndices() const
     { return SymmetrizationIndices_; }
 
     /// \return maximum index of SymmetrizationIndices_
@@ -178,7 +179,8 @@ private:
     ParticleCombination::Equiv* Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
-    std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
+    ParticleCombinationMap<unsigned> SymmetrizationIndices_;
+    // std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
     std::set<CachedDataValue*> CachedDataValues_;
