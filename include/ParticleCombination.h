@@ -23,6 +23,7 @@
 
 #include "ParticleIndex.h"
 
+#include <map>
 #include <memory>
 #include <set>
 #include <vector>
@@ -36,6 +37,12 @@ using ParticleCombinationSet = std::set<std::shared_ptr<const ParticleCombinatio
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
+
+/// \typedef ParticleCombinationMap
+template<typename T>
+using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>,
+                                        T,
+                                        std::owner_less<std::shared_ptr<const ParticleCombination> > >;
 
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types
@@ -158,6 +165,10 @@ public:
     /// \param i ParticleIndex for FSP
     static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleIndex i);
 
+    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
+    /// \param i ParticleIndex for FSP
+    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(std::vector<ParticleIndex> I);
+
     /// return existing shared_ptr for ParticleCombination, if exists; otherwise creates and returns
     /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
     static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleCombinationVector c);
@@ -173,6 +184,7 @@ public:
 
 private:
 
+    /// \todo Move to ISP, make no longer static
     /// Static set of all particle combinations created throughout code
     static ParticleCombinationSet ParticleCombinationSet_;
 

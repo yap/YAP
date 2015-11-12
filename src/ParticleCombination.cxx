@@ -246,6 +246,15 @@ std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(
 }
 
 //-------------------------
+std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<ParticleIndex> I)
+{
+    ParticleCombinationVector V;
+    for (ParticleIndex i : I)
+        V.push_back(uniqueSharedPtr(i));
+    return uniqueSharedPtr(V);
+}
+
+//-------------------------
 std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleCombinationVector c)
 {
     return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
