@@ -281,7 +281,7 @@ bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 
     // initial state 4-momentum (for TGenPhaseSpace)
     TLorentzVector P(0., 0., 0., mass()->value());
-    
+
     // final state masses (for TGenPhaseSpace)
     std::vector<double> masses(finalStateParticles().size(), -1);
     for (unsigned i = 0; i < finalStateParticles().size(); ++i)

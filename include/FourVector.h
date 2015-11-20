@@ -34,7 +34,7 @@ using FourVector = std::array<T, 4>;
 
 /// add two #FourVector's
 template <typename T>
-T operator+(const FourVector<T>& A, const FourVector<T>&B)
+T operator+(const FourVector<T>& A, const FourVector<T>& B)
 {
     FourVector<T> res;
     std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator+);
@@ -43,7 +43,7 @@ T operator+(const FourVector<T>& A, const FourVector<T>&B)
 
 /// subtract #FourVector from another
 template <typename T>
-T operator-(const FourVector<T>& A, const FourVector<T>&B)
+T operator-(const FourVector<T>& A, const FourVector<T>& B)
 {
     FourVector<T> res;
     std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator-);

@@ -32,7 +32,7 @@ using ThreeVector = std::array<T, 3>;
 
 /// add two #ThreeVector's
 template <typename T>
-T operator+(const ThreeVector<T>& A, const ThreeVector<T>&B)
+T operator+(const ThreeVector<T>& A, const ThreeVector<T>& B)
 {
     ThreeVector<T> res;
     std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator+);
@@ -41,7 +41,7 @@ T operator+(const ThreeVector<T>& A, const ThreeVector<T>&B)
 
 /// subtract #ThreeVector from another
 template <typename T>
-T operator-(const ThreeVector<T>& A, const ThreeVector<T>&B)
+T operator-(const ThreeVector<T>& A, const ThreeVector<T>& B)
 {
     ThreeVector<T> res;
     std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator-);
@@ -98,18 +98,18 @@ using ThreeVectorRotation = std::pair<ThreeVector<T>, double>;
 
 /// apply a rotation to a ThreeVector
 template <typename T>
-ThreeVector<T> & operator*(const ThreeVectorRotation<T>& R, const ThreeVector<T>& V)
+ThreeVector<T>& operator*(const ThreeVectorRotation<T>& R, const ThreeVector<T>& V)
 {
     auto P = ParallelPerpendicular(V, R.first);
     ThreeVector<T> normal = cross(R.first, P.second);
     return cos(R.second) * P.second
-        + sin(R.second) * sqrt(P.second * P.second / normal * normal) * normal
-        + P.first;
+           + sin(R.second) * sqrt(P.second * P.second / normal * normal) * normal
+           + P.first;
 }
 
 /// (assignment) apply a rotation to a ThreeVector
 template <typename T>
-ThreeVector<T> & operator*=(ThreeVector<T>& V, const ThreeVectorRotation<T>& R)
+ThreeVector<T>& operator*=(ThreeVector<T>& V, const ThreeVectorRotation<T>& R)
 {
     V = R * V;
     return V;

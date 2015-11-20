@@ -166,7 +166,8 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
 
     // define P[2] to be in +Y direction
     ThreeVector<double> v2 = {(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                              0, cosAngle[2][0]};
+                              0, cosAngle[2][0]
+                             };
     v2[2] = sqrt(v2 * v2);
     v2 *= P[2].Vect().Mag();
     P[2].SetXYZM(v2[0], v2[1], v2[2], P[2].M());
@@ -174,7 +175,8 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
         ThreeVector<double> vi = {(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                          0, cosAngle[i][0]};
+                                  0, cosAngle[i][0]
+                                 };
         vi[2] = (sqrt(v2 * v2) * cosAngle[i][2] - vi * v2) / v2[0];
         vi *= P[i].Vect().Mag();
         P[i].SetXYZM(vi[0], vi[1], vi[2], P[i].M());
@@ -330,7 +332,7 @@ bool FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
 
     // reset all masses to -1
     resetMasses(d);
-    
+
     // set independent masses according to axes
     for (unsigned i = 0; i < axes.size(); ++i)
         M_->setValue(masses[i], d, symmetrizationIndex(axes[i]), 0u);

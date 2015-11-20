@@ -95,7 +95,7 @@ int main( int argc, char** argv)
     D->initializeForMonteCarloGeneration(5);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    yap::ParticleCombinationVector DalitzAxes = D->fourMomenta().getDalitzAxes({{0,1}, {1,2}});
+    yap::ParticleCombinationVector DalitzAxes = D->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
 
     std::vector<double> m2(DalitzAxes.size(), 1);
 
