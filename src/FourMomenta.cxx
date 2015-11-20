@@ -6,6 +6,7 @@
 #include "logging.h"
 #include "MathUtilities.h"
 #include "ParticleCombination.h"
+#include "ThreeVector.h"
 
 namespace yap {
 
@@ -164,18 +165,19 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     P[1].RotateY(acos(cosAngle[0][1]));
 
     // define P[2] to be in +Y direction
-    TVector3 v2((cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                0, cosAngle[2][0]);
-    v2.SetMag(P[2].Vect().Mag());
-    P[2].SetVectM(v2, P[2].M());
+    ThreeVector<double> v2 = {(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
+                              0, cosAngle[2][0]};
+    v2[2] = sqrt(v2 * v2);
+    v2 *= P[2].Vect().Mag();
+    P[2].SetXYZM(v2[0], v2[1], v2[2], P[2].M());
 
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
-        TVector3 vi((cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                    0, cosAngle[i][0]);
-        vi.SetY((v2.Mag() * cosAngle[i][2] - vi.Dot(v2)) / v2.Y());
-        vi.SetMag(P[i].Vect().Mag());
-        P[i].SetVectM(vi, P[i].M());
+        ThreeVector<double> vi = {(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
+                          0, cosAngle[i][0]};
+        vi[2] = (sqrt(v2 * v2) * cosAngle[i][2] - vi * v2) / v2[0];
+        vi *= P[i].Vect().Mag();
+        P[i].SetXYZM(vi[0], vi[1], vi[2], P[i].M());
     }
 
     return P;
