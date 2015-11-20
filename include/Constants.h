@@ -21,6 +21,8 @@
 #ifndef yap_Constants_h
 #define yap_Constants_h
 
+#include "ThreeVector.h"
+
 #include <complex>
 
 namespace yap {
@@ -39,6 +41,15 @@ extern const double PI;
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
 extern const double DEGTORAD;
+
+/// X axis
+extern const ThreeVector<double> Axis_X;
+
+/// Y axis
+extern const ThreeVector<double> Axis_Y;
+
+/// Z axis
+extern const ThreeVector<double> Axis_Z;
 
 }
 
