@@ -21,6 +21,9 @@
 #ifndef yap_FourVector_h
 #define yap_FourVector_h
 
+#include "ThreeVector.g"
+
+#include <algorithm>
 #include <array>
 
 namespace yap {
