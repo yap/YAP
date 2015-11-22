@@ -44,9 +44,9 @@ public:
     /// constructor
     FourVector(const T& E = 0, const NVector<T, 3> P = Vect3_0) : FourVector( {E, P[0], P[1], P[2]}) {}
 
-    /// dot product
-    FourVector<T>& operator*(const FourVector<T> B) const
-    { return *this[0] * B[0] - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
+    /// inner (dot) product
+    T operator*(const NVector<T, 4>& B) const override
+    { return (*this)[0] * B[0] - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
 
 };
 
