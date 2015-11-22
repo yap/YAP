@@ -2,6 +2,7 @@
 
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
+#include "FourVector.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "MathUtilities.h"
@@ -135,54 +136,65 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
 {
     double M2 = m2(d, InitialStatePC_);
 
-    std::vector<TLorentzVector> P(FinalStateParticleM_.size());
-    // calculate |p|, setting each vector in z direction initially
+    std::vector<FourVector<double> > P(FinalStateParticleM_.size());
+    std::vector<double> fsp_m2(P.size(), 0);
+    // calculate E and |p| for each initial state particle, storing in Z-aligned FourVector
     for (unsigned i = 0; i < P.size(); ++i) {
-        double fsp_m = m(d, FinalStatePC_[i]);
-        double recoil_mass = m(d, RecoilPC_[i]);
-        double p = sqrt((M2 - pow(fsp_m + recoil_mass, 2)) * (M2 - pow(fsp_m - recoil_mass, 2)) / 4 / M2);
-        P[i].SetXYZM(0, 0, p, fsp_m);
+        fsp_m2[i] = m2(d, FinalStatePC_[i]);
+        double E = (M2 - m2(d, RecoilPC_[i]) + fsp_m2[i]) / 2 / sqrt(M2);
+        P[i] = {E, 0, 0, sqrt(pow(E, 2) - fsp_m2[i])};
     }
 
+    std::vector<TLorentzVector> LV;
+
     // if only particle (should not happen)
-    if (P.size() < 2)
-        return P;
+    if (P.size() < 2) {
+        /// \todo REMOVE (and instances below)
+        std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
+        return LV;
+        // return P;
+    }
 
     // if only two particles (should not happen)
-    if (P.size() < 3)
-        P[1].Vect().SetZ(-P[1].Vect().Z());
+    if (P.size() < 3) {
+        P[1][3] *= -1;
+        // REMOVE
+        std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
+        return LV;
+        // return P;
+    }
 
     // store angles between particle i and particles 0, 1, 2
     std::vector<std::vector<double> > cosAngle(P.size(), std::vector<double>(3, 0));
     for (unsigned i = 0; i < P.size(); ++i)
         for (unsigned j = 0; j < 3; ++j)
             if (j != i)
-                cosAngle[i][j] = (P[i].E() * P[j].E() - 0.5 * (m2(d, PairPC_[i][j]) - P[i].Mag2() + P[j].Mag2())) / P[i].P() / P[j].P();
+                // cos(theta_ij) = (E_i * E_j - 1/2 (m^2_ij - m2_i - m2_j)) / |p_i| / |p_j|
+                cosAngle[i][j] = (P[i][0] * P[j][0] - 0.5 * (m2(d, PairPC_[i][j]) - fsp_m2[i] - fsp_m2[j])) / P[i][3] / P[j][3];
 
-    // leave P[0] aligned with z axis
+    double sin01 = sqrt(1 - pow(cosAngle[0][1], 2));
 
-    // rotate P[1] around Y axis
-    P[1].RotateY(acos(cosAngle[0][1]));
+    // P[0] defined parallel to z
+
+    // P[1] defined to be in the x-z plane
+    P[1] = {P[1][0], P[1][3]* sin01, 0, P[1][3]* cosAngle[0][1]};
 
     // define P[2] to be in +Y direction
-    ThreeVector<double> v2 = {(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                              0, cosAngle[2][0]
-                             };
-    v2[2] = sqrt(v2 * v2);
-    v2 *= P[2].Vect().Mag();
-    P[2].SetXYZM(v2[0], v2[1], v2[2], P[2].M());
+    ThreeVector<double> v2 = {{(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sin01, 0, cosAngle[2][0]}};
+    v2[2] = sqrt(1 - (v2 * v2));
+    P[2] = {P[2][0], v2* P[2][3]};
 
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
-        ThreeVector<double> vi = {(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sqrt(1 - cosAngle[0][1] * cosAngle[0][1]),
-                                  0, cosAngle[i][0]
-                                 };
+        ThreeVector<double> vi = {{(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sin01, 0, cosAngle[i][0]}};
         vi[2] = (sqrt(v2 * v2) * cosAngle[i][2] - vi * v2) / v2[0];
-        vi *= P[i].Vect().Mag();
-        P[i].SetXYZM(vi[0], vi[1], vi[2], P[i].M());
+        P[i] = {P[i][0], P[i][3]* vi};
     }
 
-    return P;
+    // REMOVE
+    std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
+    return LV;
+    // return P;
 }
 
 //-------------------------
@@ -292,8 +304,9 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     // Check if all combinations found
     if (M.size() != pcs.size()) {
         LOG(ERROR) << "FourMomenta::getDalitzAxes : did not find all requested combinations.";
-        for (auto& m : M)
+        for (auto& m : M) {
             DEBUG(std::string(*m));
+        }
         M.clear();
     }
 

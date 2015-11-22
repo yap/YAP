@@ -21,11 +21,15 @@
 #ifndef yap_Constants_h
 #define yap_Constants_h
 
+#include "SquareMatrix.h"
 #include "ThreeVector.h"
 
 #include <complex>
 
 namespace yap {
+
+/* template <typename T> */
+/*     typedef FourVector; */
 
 /// complex zero
 extern const std::complex<double> Complex_0;
@@ -50,6 +54,15 @@ extern const ThreeVector<double> Axis_Y;
 
 /// Z axis
 extern const ThreeVector<double> Axis_Z;
+
+/// 0 as ThreeVector;
+extern const ThreeVector<double> Vect3_0;
+
+/* /// 0 as FourVector; */
+/* extern const FourVector<double> Vect4_0; */
+
+/// 3x3 Unit Matrix
+extern const SquareMatrix<double, 3> Unit3x3;
 
 }
 

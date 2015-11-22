@@ -21,70 +21,55 @@
 #ifndef yap_FourVector_h
 #define yap_FourVector_h
 
-#include "ThreeVector.g"
+#include "ThreeVector.h"
+#include "ThreeVectorRotation.h"
 
 #include <algorithm>
 #include <array>
 
 namespace yap {
 
-/// \typedef FourVector
-template <typename T>
-using FourVector = std::array<T, 4>;
 
-/// add two #FourVector's
+/// \class FourVector
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup VectorAlgebra
 template <typename T>
-T operator+(const FourVector<T>& A, const FourVector<T>& B)
+class FourVector : public NVector<T, 4>
 {
-    FourVector<T> res;
-    std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator+);
-    return res;
-}
+public:
 
-/// subtract #FourVector from another
-template <typename T>
-T operator-(const FourVector<T>& A, const FourVector<T>& B)
-{
-    FourVector<T> res;
-    std::transform(A.begin(), A.end(), B.begin(), res.begin(), std::operator-);
-    return res;
-}
+    /// Constructor
+    FourVector(std::initializer_list<T> list) : NVector<T, 4>(list) {}
 
-/// inner (dot) product of #FourVector's
-template <typename T>
-T operator*(const FourVector<T>& A, const FourVector<T>& B )
-{ return A.front() * B.front() - std::inner_product(A.begin()+1, A.end(), B.begin()+1, 0); }
+    /// constructor
+    FourVector(const T& E = 0, const NVector<T, 3> P = Vect3_0) : FourVector( {E, P[0], P[1], P[2]}) {}
 
-/// multiply a #FourVector by a single element
-template <typename T>
-FourVector<T> operator*(const T& c, const FourVector<T>& V)
-{
-    FourVector<T> res;
-    std::transform(V.begin(), V.end(), res.begin(), [&](const T& v){return c * v;});
-    return res;
-}
+    /// dot product
+    FourVector<T>& operator*(const FourVector<T> B) const
+    { return *this[0] * B[0] - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
 
-/// multiply a #FourVector by a single element
-template <typename T>
-FourVector<T> operator*(const FourVector<T>& V, const T& c)
-{ return c * V; }
+};
 
-/// (assignment) multiply a #FourVector by a single element
-template <typename T>
-FourVector<T>& operator*=(FourVector<T>& V, const T& c)
-{
-    std::transform(V.begin(), V.end(), V.begin(), [&](const T& v){return c * v;});
-    return V;
-}
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
 ThreeVector<T> vect(const FourVector<T>& V)
 { return {V[1], V[2], V[3]}; }
 
+/// \return boost vector of this #FourVector
 template <typename T>
 ThreeVector<T> boost(const FourVector<T>& V)
-{ return (T(1) / V[0]) * vect(V); }
+{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : Vect3_0; }
+
+/// inner (dot) product of #FourVector's
+template <typename T>
+T operator*(const FourVector<T>& A, const FourVector<T>& B )
+{ return A.front() * B.front() - std::inner_product(A.begin() + 1, A.end(), B.begin() + 1, 0); }
+
+/// apply a three-rotation to a FourVector (rotating only the spatial components)
+template <typename T>
+FourVector<T>& operator*(const ThreeVectorRotation<T>& R, const FourVector<T>& V)
+{ return FourVector<T>(V[0], R * vect(V)); }
 
 }
 #endif
