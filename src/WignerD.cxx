@@ -101,7 +101,7 @@ double dFunctionCached::operator ()(const int two_j, const int two_m, const int 
     int _n = two_n;
     double thetaHalf = theta / 2;
     if (theta < 0) {
-        thetaHalf = abs(thetaHalf);
+        thetaHalf = fabs(thetaHalf);
         std::swap(_m, _n);
     }
 
