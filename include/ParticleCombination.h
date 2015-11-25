@@ -41,8 +41,8 @@ using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleComb
 /// \typedef ParticleCombinationMap
 template<typename T>
 using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>,
-                                        T,
-                                        std::owner_less<std::shared_ptr<const ParticleCombination> > >;
+      T,
+      std::owner_less<std::shared_ptr<const ParticleCombination> > >;
 
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types

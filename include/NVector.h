@@ -42,21 +42,21 @@ public:
 
     /// Constructor
     NVector(std::initializer_list<T> list) : NVector<T, N>()
-        {
-            assert(list.size() == N);
-            std::copy(list.begin(), list.begin() + N, this->begin());
-        }
+    {
+        assert(list.size() == N);
+        std::copy(list.begin(), list.begin() + N, this->begin());
+    }
 };
 
 /// addition assignment
 template <typename T, size_t N>
 NVector<T, N>& operator+=(NVector<T, N>& A, const NVector<T, N>& B)
-{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T& a, const T& b){return a + b;}); return A; }
+{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a + b;}); return A; }
 
 /// subtraction assignment
 template <typename T, size_t N>
 NVector<T, N>& operator-=(NVector<T, N>& A, const NVector<T, N>& B)
-{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T& a, const T& b){return a - b;}); return A; }
+{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a - b;}); return A; }
 
 /// (assignment) multiplication by a single element
 template <typename T, size_t N>
@@ -95,7 +95,7 @@ operator*(const T& c, const NVector<T, N>& A)
 /// unary minus
 template <typename T, size_t N>
 NVector<T, N> operator-(const NVector<T, N>& A)
-{ NVector<T, N> res = A; std::transform(res.begin(), res.end(), res.begin(), [](const T& t){return -t;}); return res; }
+{ NVector<T, N> res = A; std::transform(res.begin(), res.end(), res.begin(), [](const T & t) {return -t;}); return res; }
 
 }
 #endif

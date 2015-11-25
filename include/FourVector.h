@@ -41,7 +41,7 @@ using FourVector = typename std::enable_if<std::is_arithmetic<T>::value, NVector
 /// \param P #ThreeVector component
 template <typename T>
 FourVector<T> fourVector(const T& E, const ThreeVector<T>& P)
-{ return FourVector<T>{E, P[0], P[1], P[2]}; }
+{ return FourVector<T> {E, P[0], P[1], P[2]}; }
 
 /// \return inner (dot) product for 4-vectors
 template <typename T>
@@ -51,17 +51,17 @@ T operator*(const FourVector<T>& A, const FourVector<T>& B)
 /// unary minus for 4-vector
 template <typename T>
 FourVector<T> operator-(const FourVector<T>& A)
-{ FourVector<T> res = A; std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T& t){return -t;}); return res; }
+{ FourVector<T> res = A; std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T & t) {return -t;}); return res; }
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
 ThreeVector<T> vect(const FourVector<T>& V)
-{ return ThreeVector<T>{V[1], V[2], V[3]}; }
+{ return ThreeVector<T> {V[1], V[2], V[3]}; }
 
 /// \return boost vector of this #FourVector
 template <typename T>
 ThreeVector<T> boost(const FourVector<T>& V)
-{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T>{0, 0, 0}; }
+{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T> {0, 0, 0}; }
 
 /// apply a three-rotation to a FourVector (rotating only the spatial components)
 template <typename T>

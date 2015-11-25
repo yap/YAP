@@ -86,7 +86,7 @@ FourMatrix<double> HelicityAngles::hfTransform(const FourVector<double>& daughte
 
     // Rotate to put hfY parallel to Y, and hfZ in the X--Z plane
     ThreeMatrix<double> R1 = rotation<double>(Axis_X, atan2(sqrt(pow(hfY[0], 2) + pow(hfY[1], 2)), hfY[2]) - PI / 2)
-        * rotation<double>(Axis_Y, PI / 2 - atan2(hfY[1], hfY[0]));
+                             * rotation<double>(Axis_Y, PI / 2 - atan2(hfY[1], hfY[0]));
 
     // rotate daughter by R1
     ThreeVector<double> rD = R1 * D;

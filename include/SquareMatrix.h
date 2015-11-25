@@ -49,7 +49,7 @@ SquareMatrix<T, N> unitMatrix()
     SquareMatrix<T, N> u;
     for (size_t i = 0; i < N; ++i)
         for (size_t j = 0; j < N; ++j)
-            u[i][j] = (T)(i==j);
+            u[i][j] = (T)(i == j);
     return u;
 }
 

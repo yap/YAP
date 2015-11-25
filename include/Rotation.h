@@ -34,15 +34,15 @@ template <typename T>
 ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
 {
     T v = sqrt(V * V);
-    
+
     if (v == 0 || theta == 0)
         return unitMatrix<T, 3>();
     else {
         // normalize direction vector
         ThreeVector<T> U = V * (T(1) / v);
-        
+
         T cosTheta = cos(theta);
-        
+
         return (1 - cosTheta) * outer(U, U) + cosTheta * unitMatrix<T, 3>() + (T)sin(theta) * skewSymmetric(U);
     }
 }
