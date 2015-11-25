@@ -44,7 +44,7 @@ template <typename T>
 FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 {
     FourVector<T> B = (T(1) / V[0]) * V;
-    T gamma = T(1) / sqrt(B * B);
+    T gamma = T(1) / abs(B);
     B[0] = -(gamma + 1);
 
     FourMatrix<T> L = unitMatrix<T, 4>() + outer(B, B) * (gamma / (gamma + 1));

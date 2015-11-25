@@ -21,7 +21,7 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include <TLorentzVector.h>
+#include <FourVector.h>
 
 #include <complex>
 #include <memory>
@@ -50,17 +50,17 @@ public:
     /// @{
 
     /// 4-momenta constructor
-    DataPoint(const std::vector<TLorentzVector>& P);
+    DataPoint(const std::vector<FourVector<double> >& P);
 
     // /// Invariant mass constructor
     //DataPoint(const std::map<std::shared_ptr<ParticleCombination>, double>& m2);
 
     /// @}
 
-    const std::vector<TLorentzVector>& finalStateFourMomenta()
+    const std::vector<FourVector<double> >& finalStateFourMomenta()
     { return FSPFourMomenta_; }
 
-    bool setFinalStateFourMomenta(const std::vector<TLorentzVector>& fourMomenta);
+    bool setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
 
     /// print information about the size of the DataPoint and its members
     void printDataSize();
@@ -81,10 +81,10 @@ protected:
     /// @}
 
     /// vector of 4-momenta of final-state particles in event
-    std::vector<TLorentzVector> FSPFourMomenta_;
+    std::vector<FourVector<double> > FSPFourMomenta_;
 
     /// Vector of 4-momenta of non-final-state particles in event
-    std::vector<TLorentzVector> FourMomenta_;
+    std::vector<FourVector<double> > FourMomenta_;
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor

@@ -7,9 +7,6 @@
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
-#include "TGenPhaseSpace.h"
-#include "TLorentzVector.h"
-
 #include <assert.h>
 #include <memory>
 #include <vector>

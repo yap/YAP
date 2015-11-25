@@ -26,8 +26,6 @@
 #include "LorentzTransformation.h"
 #include "StaticDataAccessor.h"
 
-#include <TLorentzVector.h>
-
 namespace yap {
 
 /// \class HelicityAngles
@@ -66,14 +64,11 @@ public:
 protected:
 
     /// Caclulate Lorentz-transformation for helicity frame
-    TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
-
-    /// Caclulate Lorentz-transformation for helicity frame
     FourMatrix<double> hfTransform(const FourVector<double>& daughter);
 
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
-    void transformDaughters(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, std::vector<TLorentzVector> finalStatesHf);
+    void transformDaughters(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, std::vector<FourVector<double> > finalStatesHf);
 
     /// Helicity angles phi and theta
     std::shared_ptr<CachedDataValue> HelicityAngles_;

@@ -121,18 +121,18 @@ void FourMomenta::calculate(DataPoint& d)
             continue;
 
         // reset 4-momentum
-        d.FourMomenta_.at(kv.second).SetXYZT(0, 0, 0, 0);
+        d.FourMomenta_.at(kv.second) = {0, 0, 0, 0};
 
         // add in final-state particle momenta
         for (unsigned i : kv.first->indices())
             d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
-        M_->setValue(d.FourMomenta_.at(kv.second).M(), d, kv.second, 0);
+        M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, 0);
     }
 }
 
 //-------------------------
-std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d) const
+std::vector<FourVector<double> > FourMomenta::calculateFourMomenta(const DataPoint& d) const
 {
     double M2 = m2(d, InitialStatePC_);
 
@@ -145,23 +145,14 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
         P[i] = {E, 0, 0, sqrt(pow(E, 2) - fsp_m2[i])};
     }
 
-    std::vector<TLorentzVector> LV;
-
     // if only particle (should not happen)
-    if (P.size() < 2) {
-        /// \todo REMOVE (and instances below)
-        std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
-        return LV;
-        // return P;
-    }
+    if (P.size() < 2)
+        return P;
 
     // if only two particles (should not happen)
     if (P.size() < 3) {
         P[1][3] *= -1;
-        // REMOVE
-        std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
-        return LV;
-        // return P;
+        return P;
     }
 
     // store angles between particle i and particles 0, 1, 2
@@ -191,10 +182,7 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
         P[i] = fourVector(P[i][0], P[i][3] * vi);
     }
 
-    // REMOVE
-    std::for_each(P.begin(), P.end(), [&](const FourVector<double>& p) {LV.push_back(TLorentzVector(p[0], p[1], p[2], p[3]));});
-    return LV;
-    // return P;
+    return P;
 }
 
 //-------------------------

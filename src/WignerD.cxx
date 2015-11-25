@@ -68,7 +68,7 @@ dFunctionCached::dFunctionCached()
     for (int two_j = 0; two_j < maxJ; ++two_j)
         for (int two_m = 0; two_m <= maxJ; ++two_m)
             for (int two_n = 0; two_n <= maxJ; ++two_n) {
-                if ((abs(two_m) > two_j) or (abs(two_n) > two_j))
+                if ((std::abs(two_m) > two_j) or (std::abs(two_n) > two_j))
                     continue;
                 operator ()(two_j, two_m, two_n, 1.);
             }
@@ -85,7 +85,7 @@ double dFunctionCached::operator ()(const int two_j, const int two_m, const int 
                    << spinToString(_maxJ - 1) << ". Aborting...";
         throw;
     }
-    if ((two_j < 0) or (abs(two_m) > two_j) or (abs(two_n) > two_j)) {
+    if ((two_j < 0) or (std::abs(two_m) > two_j) or (std::abs(two_n) > two_j)) {
         LOG(ERROR) << "illegal argument for Wigner d^{J = " << spinToString(two_j) << "}"
                    << "_{M = " << spinToString(two_m) << ", M' = " << spinToString(two_n) << "}"
                    << "(theta = " << (theta) << "). Aborting...";
@@ -101,7 +101,7 @@ double dFunctionCached::operator ()(const int two_j, const int two_m, const int 
     int _n = two_n;
     double thetaHalf = theta / 2;
     if (theta < 0) {
-        thetaHalf = fabs(thetaHalf);
+        thetaHalf = std::abs(thetaHalf);
         std::swap(_m, _n);
     }
 

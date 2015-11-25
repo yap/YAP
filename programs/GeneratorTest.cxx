@@ -11,8 +11,8 @@
 #include "SpinUtilities.h"
 #include "WignerD.h"
 
-#include "TGenPhaseSpace.h"
-#include "TLorentzVector.h"
+#include <TGenPhaseSpace.h>
+#include <TLorentzVector.h>
 
 #include <assert.h>
 #include <iostream>

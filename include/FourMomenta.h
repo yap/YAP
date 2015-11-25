@@ -22,10 +22,9 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
+#include "FourMomenta.h"
 #include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
-
-#include <TLorentzVector.h>
 
 namespace yap {
 
@@ -58,7 +57,7 @@ public:
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const TLorentzVector& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
     {
         if (pc->isFinalStateParticle())
             return d.FSPFourMomenta_[pc->indices()[0]];
@@ -83,7 +82,7 @@ public:
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
-    const TLorentzVector& initialStateMomentum(const DataPoint& d)
+    const FourVector<double>& initialStateMomentum(const DataPoint& d)
     { return p(d, InitialStatePC_); }
 
     /// \name Dalitz coordinate stuff
@@ -143,7 +142,7 @@ protected:
     /// with the following convention for three-momenta:\n
     /// p1 defines +z direction
     /// p1 x p2 defines +y direction
-    std::vector<TLorentzVector> calculateFourMomenta(const DataPoint& d) const;
+    std::vector<FourVector<double> > calculateFourMomenta(const DataPoint& d) const;
 
     /// \return set of all pair particle combinations, without duplicates
     ParticleCombinationVector pairParticleCombinations() const;

@@ -2,6 +2,7 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
+#include "FourVector.h"
 #include "InitialStateParticle.h"
 #include "make_unique.h"
 #include "Particle.h"
@@ -11,8 +12,8 @@
 #include "SpinUtilities.h"
 #include "WignerD.h"
 
-#include "TGenPhaseSpace.h"
-#include "TLorentzVector.h"
+#include <TGenPhaseSpace.h>
+#include <TLorentzVector.h>
 
 #include <assert.h>
 #include <iostream>
@@ -114,9 +115,11 @@ int main( int argc, char** argv)
         event.SetDecay(P, 4, masses);
         event.Generate();
 
-        std::vector<TLorentzVector> momenta;
-        for (unsigned i = 0; i < 4; ++i)
-            momenta.push_back(*event.GetDecay(i));
+        std::vector<yap::FourVector<double> > momenta;
+        for (unsigned i = 0; i < 4; ++i) {
+            TLorentzVector p = *event.GetDecay(i);
+            momenta.push_back({p.T(), p.X(), p.Y(), p.Z()});
+        }
 
         assert(D->addDataPoint(momenta));
     }
@@ -129,7 +132,7 @@ int main( int argc, char** argv)
     for (unsigned d = 0; d < D->dataSet().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
         for (auto& v : D->dataSet()[d].finalStateFourMomenta()) {
-            v.Print();
+            LOG(INFO) << v[0] << "; " << v[1] << ", " << v[2] << ", " << v[3];
         }
     }
 

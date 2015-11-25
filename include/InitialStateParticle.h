@@ -24,6 +24,7 @@
 #include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
+#include "FourVector.h"
 #include "HelicityAngles.h"
 #include "MeasuredBreakupMomenta.h"
 
@@ -157,7 +158,7 @@ public:
     /// Add data point via four-momenta
     /// This method is faster since it avoids unneccessary copying of objects
     /// and resizing of the DataPoint's storage
-    bool addDataPoint(const std::vector<TLorentzVector>& fourMomenta);
+    bool addDataPoint(const std::vector<FourVector<double> >& fourMomenta);
 
     /// Add data point via move
     /// \param d DataPoint to move into DataSet

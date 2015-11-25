@@ -55,8 +55,8 @@ bool SpinAmplitude::angularMomentumConserved(const QuantumNumbers& initial,
     // check if
     // \vect{s_P} = \vect{l} + \vect{s_A} + \vect{s_B}
     bool ok = false;
-    for (int twoL_AB = abs(twoJ_A - twoJ_B); twoL_AB <= abs(twoJ_A + twoJ_B); twoL_AB += 2) {
-        for (int rhs = abs(twoL - twoL_AB); rhs <= abs(twoL + twoL_AB); rhs += 2) {
+    for (int twoL_AB = std::abs(twoJ_A - twoJ_B); twoL_AB <= std::abs(twoJ_A + twoJ_B); twoL_AB += 2) {
+        for (int rhs = std::abs(twoL - twoL_AB); rhs <= std::abs(twoL + twoL_AB); rhs += 2) {
             if (twoJ_P == rhs) {
                 ok = true;
                 break;

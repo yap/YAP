@@ -4,8 +4,6 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 
-#include <TLorentzVector.h>
-
 #include <set>
 
 namespace yap {

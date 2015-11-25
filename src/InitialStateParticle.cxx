@@ -6,8 +6,8 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 
-#include "TGenPhaseSpace.h"
-#include "TLorentzVector.h"
+#include <TGenPhaseSpace.h>
+#include <TLorentzVector.h>
 
 #include <assert.h>
 #include <future>
@@ -217,7 +217,7 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 }
 
 //-------------------------
-bool InitialStateParticle::addDataPoint(const std::vector<TLorentzVector>& fourMomenta)
+bool InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
     if (!Prepared_) {
         LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
@@ -276,6 +276,7 @@ bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
     bool result = true;
 
     /// \todo Use empty data points
+    /// \todo remove ROOT objects
     /// @{
     // create data points
 
@@ -290,13 +291,15 @@ bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
     TGenPhaseSpace event;
     event.SetDecay(P, masses.size(), &masses[0]);
 
-    std::vector<TLorentzVector> momenta(masses.size(), TLorentzVector());
+    std::vector<FourVector<double> > momenta(masses.size());
 
     // Generate events
     for (unsigned i = 0; i < n; ++i) {
         event.Generate();
-        for (unsigned i = 0; i < masses.size(); ++i)
-            momenta[i] = *event.GetDecay(i);
+        for (unsigned i = 0; i < masses.size(); ++i) {
+            TLorentzVector p = *event.GetDecay(i);
+            momenta[i] = {p.T(), p.X(), p.Y(), p.Z()};
+        }
         result &= addDataPoint(momenta);
     }
     /// @}

@@ -35,5 +35,15 @@ template <typename T>
 ThreeVector<T> cross(const ThreeVector<T>& A, const ThreeVector<T>& B)
 { return {A[2]* B[3] - A[3]* B[2], A[3]* B[1] - A[1]* B[3], A[1]* B[2] - A[2]* B[1]}; }
 
+/// \return phi := atan2(Y / X)
+template <typename T>
+T phi(const ThreeVector<T>& A)
+{ return atan2(A[1], A[0]); }
+
+/// \return theta := atan2(sqrt(X^2 + Y^2) / Z)
+template <typename T>
+T theta(const ThreeVector<T>& A)
+{ return atan2(sqrt(A[0] * A[0] + A[1] * A[1]), A[2]); }
+
 }
 #endif

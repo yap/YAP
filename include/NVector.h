@@ -74,11 +74,23 @@ template <typename T, size_t N>
 NVector<T, N> operator-(const NVector<T, N>& A, const NVector<T, N>& B)
 { NVector<T, N> res = A; A -= B; return res; }
 
-/// inner (dot) product of #NVector's
+/// \return inner (dot) product of #NVector's
 template <typename T, size_t N>
 typename std::enable_if<std::is_arithmetic<T>::value, T>::type
 operator*(const NVector<T, N>& A, const NVector<T, N>& B)
 { return std::inner_product(A.begin(), A.end(), B.begin(), T(0)); }
+
+/// \return squared magnitude of #NVector (using associated inner product)
+template <typename T, size_t N>
+typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+norm(const NVector<T, N>& A)
+{ return A * A; }
+
+/// \return magnitude of #NVector (using associated inner product)
+template <typename T, size_t N>
+typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+abs(const NVector<T, N>& A)
+{ return sqrt(norm(A)); }
 
 /// multiplication: #NVector<T> * T
 template <typename T, size_t N>
