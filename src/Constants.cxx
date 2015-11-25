@@ -19,12 +19,13 @@ extern const double DEGTORAD = PI / 180.;
 extern const ThreeVector<double> Axis_X = {1, 0, 0};
 extern const ThreeVector<double> Axis_Y = {0, 1, 0};
 extern const ThreeVector<double> Axis_Z = {0, 0, 1};
-extern const ThreeVector<double> Vect3_0 = {0, 0, 0};
+extern const ThreeVector<double> ThreeVector_0 = {0, 0, 0};
 
-// // Four vector
-// extern const FourVector<double> Vect4_0(0, Vect3_0);
-
-// matrices
-extern const SquareMatrix<double, 3> Unit3x3 = {Axis_X, Axis_Y, Axis_Z};
+// Four vector
+extern const FourVector<double> FourAxis_T = {1, 0, 0, 0};
+extern const FourVector<double> FourAxis_X = {0, 1, 0, 0};
+extern const FourVector<double> FourAxis_Y = {0, 0, 1, 0};
+extern const FourVector<double> FourAxis_Z = {0, 0, 0, 1};
+extern const FourVector<double> FourVector_0 = {0, 0, 0, 0};
 
 }

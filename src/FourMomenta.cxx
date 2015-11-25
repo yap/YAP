@@ -165,9 +165,9 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     }
 
     // store angles between particle i and particles 0, 1, 2
-    std::vector<std::vector<double> > cosAngle(P.size(), std::vector<double>(3, 0));
-    for (unsigned i = 0; i < P.size(); ++i)
-        for (unsigned j = 0; j < 3; ++j)
+    std::vector<std::array<double, 3>> cosAngle(P.size(), {0, 0, 0});
+    for (size_t i = 0; i < P.size(); ++i)
+        for (size_t j = 0; j < 3; ++j)
             if (j != i)
                 // cos(theta_ij) = (E_i * E_j - 1/2 (m^2_ij - m2_i - m2_j)) / |p_i| / |p_j|
                 cosAngle[i][j] = (P[i][0] * P[j][0] - 0.5 * (m2(d, PairPC_[i][j]) - fsp_m2[i] - fsp_m2[j])) / P[i][3] / P[j][3];
@@ -180,15 +180,15 @@ std::vector<TLorentzVector> FourMomenta::calculateFourMomenta(const DataPoint& d
     P[1] = {P[1][0], P[1][3]* sin01, 0, P[1][3]* cosAngle[0][1]};
 
     // define P[2] to be in +Y direction
-    ThreeVector<double> v2 = {{(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sin01, 0, cosAngle[2][0]}};
-    v2[2] = sqrt(1 - (v2 * v2));
-    P[2] = {P[2][0], v2* P[2][3]};
+    ThreeVector<double> v2 = {(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sin01, 0, cosAngle[2][0]};
+    v2[2] = sqrt(1 - v2 * v2);
+    P[2] = fourVector(P[2][0], v2 * P[2][3]);
 
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
         ThreeVector<double> vi = {{(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sin01, 0, cosAngle[i][0]}};
         vi[2] = (sqrt(v2 * v2) * cosAngle[i][2] - vi * v2) / v2[0];
-        P[i] = {P[i][0], P[i][3]* vi};
+        P[i] = fourVector(P[i][0], P[i][3] * vi);
     }
 
     // REMOVE

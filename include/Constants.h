@@ -21,6 +21,7 @@
 #ifndef yap_Constants_h
 #define yap_Constants_h
 
+#include "FourVector.h"
 #include "SquareMatrix.h"
 #include "ThreeVector.h"
 
@@ -28,9 +29,8 @@
 
 namespace yap {
 
-/* template <typename T> */
-/*     typedef FourVector; */
-
+/// \name Complex constants
+/// @{
 /// complex zero
 extern const std::complex<double> Complex_0;
 
@@ -39,6 +39,10 @@ extern const std::complex<double> Complex_1;
 
 /// complex i
 extern const std::complex<double> Complex_i;
+/// @}
+
+/// \name real constants
+/// @{
 
 /// pi (11 digits)
 extern const double PI;
@@ -46,23 +50,41 @@ extern const double PI;
 /// convert deg to rad by multiplying by; rad to deg by dividing by
 extern const double DEGTORAD;
 
-/// X axis
+/// @}
+
+/// \name #ThreeVector constants
+/// @{
+
+/// X axis (ThreeVector)
 extern const ThreeVector<double> Axis_X;
 
-/// Y axis
+/// Y axis (ThreeVector)
 extern const ThreeVector<double> Axis_Y;
 
-/// Z axis
+/// Z axis (ThreeVector)
 extern const ThreeVector<double> Axis_Z;
 
 /// 0 as ThreeVector;
-extern const ThreeVector<double> Vect3_0;
+extern const ThreeVector<double> ThreeVector_0;
 
-/* /// 0 as FourVector; */
-/* extern const FourVector<double> Vect4_0; */
+/// @}
 
-/// 3x3 Unit Matrix
-extern const SquareMatrix<double, 3> Unit3x3;
+/// \name #FourVector constants
+/// @{
+
+/// X axis (FourVector)
+extern const FourVector<double> FourAxis_X;
+
+/// Y axis (FourVector)
+extern const FourVector<double> FourAxis_Y;
+
+/// Z axis (FourVector)
+extern const FourVector<double> FourAxis_Z;
+
+/// 0 as FourVector;
+extern const FourVector<double> FourVector_0;
+
+/// @}
 
 }
 

@@ -23,7 +23,9 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <numeric>
+#include <type_traits>
 
 namespace yap {
 
@@ -35,62 +37,65 @@ template <typename T, size_t N>
 class NVector : public std::array<T, N>
 {
 public:
-
     /// Default Constructor
     NVector() : std::array<T, N>() {}
 
     /// Constructor
-    NVector(std::initializer_list<T> list) : std::array<T, N>()
-    { std::copy(list.begin(), list.begin() + N, this->begin()); }
-
-    /// Destructor
-    virtual ~NVector() {}
-
-    /// addition assignment
-    NVector<T, N>& operator+=(const NVector<T, N>& B)
-    { std::transform(this->begin(), this->end(), B.begin(), this->begin(), std::operator+); return *this; }
-
-    /// subtraction assignment
-    NVector<T, N>& operator-=(const NVector<T, N>& B)
-    { std::transform(this->begin(), this->end(), B.begin(), this->begin(), std::operator-); return *this; }
-
-    /// (assignment) multiplication by a single element
-    NVector<T, N>& operator*=(const T& B)
-    { std::transform(this->begin(), this->end(), this->begin(), [&](const T & v) {return B * v;}); return *this; }
-
-    /// addition
-    NVector<T, N> operator+(const NVector<T, N>& B) const
-    {
-        NVector<T, N> res;
-        std::transform(this->begin(), this-> end(), B.begin(), res.begin(), std::operator+);
-        return res;
-    }
-
-    /// subtraction
-    NVector<T, N> operator-(const NVector<T, N>& B) const
-    {
-        NVector<T, N> res;
-        std::transform(this->begin(), this->end(), B.begin(), res.begin(), std::operator-);
-        return res;
-    }
-
-    /// inner (dot) product of #NVector's
-    virtual T operator*(const NVector<T, N>& B) const
-    { return std::inner_product(this->begin(), this->end(), B.begin(), 0); }
-
-    /// multiplication: #NVector<T> * T
-    NVector<T, N> operator*(const T& c) const
-    {
-        NVector<T, N> res;
-        std::transform(this->begin(), this->end(), res.begin(), [&](const T & t) {return t * c;});
-        return res;
-    }
+    NVector(std::initializer_list<T> list) : NVector<T, N>()
+        {
+            assert(list.size() == N);
+            std::copy(list.begin(), list.begin() + N, this->begin());
+        }
 };
+
+/// addition assignment
+template <typename T, size_t N>
+NVector<T, N>& operator+=(NVector<T, N>& A, const NVector<T, N>& B)
+{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T& a, const T& b){return a + b;}); return A; }
+
+/// subtraction assignment
+template <typename T, size_t N>
+NVector<T, N>& operator-=(NVector<T, N>& A, const NVector<T, N>& B)
+{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T& a, const T& b){return a - b;}); return A; }
+
+/// (assignment) multiplication by a single element
+template <typename T, size_t N>
+typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, N>& >::type
+operator*=(NVector<T, N>& A, const T& B)
+{ std::transform(A.begin(), A.end(), A.begin(), [&](const T & v) {return B * v;}); return A; }
+
+/// addition
+template <typename T, size_t N>
+NVector<T, N> operator+(const NVector<T, N>& A, const NVector<T, N>& B)
+{ NVector<T, N> res = A; res += B; return res; }
+
+/// subtraction
+template <typename T, size_t N>
+NVector<T, N> operator-(const NVector<T, N>& A, const NVector<T, N>& B)
+{ NVector<T, N> res = A; A -= B; return res; }
+
+/// inner (dot) product of #NVector's
+template <typename T, size_t N>
+typename std::enable_if<std::is_arithmetic<T>::value, T>::type
+operator*(const NVector<T, N>& A, const NVector<T, N>& B)
+{ return std::inner_product(A.begin(), A.end(), B.begin(), T(0)); }
+
+/// multiplication: #NVector<T> * T
+template <typename T, size_t N>
+typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, N> >::type
+operator*(const NVector<T, N>& A, const T& c)
+{ NVector<T, N> res = A; res *= c; return res; }
 
 /// multiplication: T * #NVector<T>
 template <typename T, size_t N>
-NVector<T, N> operator*(const T& c, const NVector<T, N>& V)
-{ return V * c; }
+typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, N> >::type
+operator*(const T& c, const NVector<T, N>& A)
+{ return operator*<T, N>(A, c); }
+
+/// unary minus
+template <typename T, size_t N>
+NVector<T, N> operator-(const NVector<T, N>& A)
+{ NVector<T, N> res = A; std::transform(res.begin(), res.end(), res.begin(), [](const T& t){return -t;}); return res; }
 
 }
 #endif

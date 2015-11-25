@@ -21,55 +21,52 @@
 #ifndef yap_FourVector_h
 #define yap_FourVector_h
 
+#include "SquareMatrix.h"
 #include "ThreeVector.h"
-#include "ThreeVectorRotation.h"
 
 #include <algorithm>
-#include <array>
+#include <type_traits>
 
 namespace yap {
 
-
-/// \class FourVector
+/// \typedef FourVector
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup VectorAlgebra
 template <typename T>
-class FourVector : public NVector<T, 4>
-{
-public:
+using FourVector = typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, 4> >::type;
+// using FourVector = NVector<T, 4>;
 
-    /// Constructor
-    FourVector(std::initializer_list<T> list) : NVector<T, 4>(list) {}
+/// \return #FourVector
+/// \param E 0th component
+/// \param P #ThreeVector component
+template <typename T>
+FourVector<T> fourVector(const T& E, const ThreeVector<T>& P)
+{ return FourVector<T>{E, P[0], P[1], P[2]}; }
 
-    /// constructor
-    FourVector(const T& E = 0, const NVector<T, 3> P = Vect3_0) : FourVector( {E, P[0], P[1], P[2]}) {}
+/// \return inner (dot) product for 4-vectors
+template <typename T>
+T operator*(const FourVector<T>& A, const FourVector<T>& B)
+{ return A.front() * B.front() - std::inner_product(A.begin() + 1, A.end(), B.begin() + 1, 0); }
 
-    /// inner (dot) product of FourVectors
-    T operator*(const NVector<T, 4>& B) const override
-    { return (*this)[0] * B[0] - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
-
-};
-
+/// unary minus for 4-vector
+template <typename T>
+FourVector<T> operator-(const FourVector<T>& A)
+{ FourVector<T> res = A; std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T& t){return -t;}); return res; }
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
 ThreeVector<T> vect(const FourVector<T>& V)
-{ return {V[1], V[2], V[3]}; }
+{ return ThreeVector<T>{V[1], V[2], V[3]}; }
 
 /// \return boost vector of this #FourVector
 template <typename T>
 ThreeVector<T> boost(const FourVector<T>& V)
-{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : Vect3_0; }
-
-/// inner (dot) product of #FourVector's
-template <typename T>
-T operator*(const FourVector<T>& A, const FourVector<T>& B )
-{ return A.front() * B.front() - std::inner_product(A.begin() + 1, A.end(), B.begin() + 1, 0); }
+{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T>{0, 0, 0}; }
 
 /// apply a three-rotation to a FourVector (rotating only the spatial components)
 template <typename T>
-FourVector<T>& operator*(const ThreeVectorRotation<T>& R, const FourVector<T>& V)
-{ return FourVector<T>(V[0], R * vect(V)); }
+FourVector<T>& operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
+{ return fourVector<T>(V[0], R * vect(V)); }
 
 }
 #endif

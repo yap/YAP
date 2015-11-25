@@ -29,55 +29,58 @@ namespace yap {
 
 /// \typedef SquareMatrix
 /// \ingroup VectorAlgebra
-template <typename T, unsigned N>
-using SquareMatrix = std::array<NVector<T, N>, N>;
+template <typename T, size_t N>
+using SquareMatrix = NVector<NVector<T, N>, N>;
 
-/// addition
-template <typename T, unsigned N>
-SquareMatrix<T, N> operator+(const SquareMatrix<T, N>& A, const SquareMatrix<T, N>& B)
+/// \typedef ThreeMatrix
+/// \ingroup VectorAlgebra
+template <typename T>
+using ThreeMatrix = SquareMatrix<T, 3>;
+
+/// \typedef FourMatrix
+/// \ingroup VectorAlgebra
+template <typename T>
+using FourMatrix = SquareMatrix<T, 4>;
+
+/// unit matrix
+template <typename T, size_t N>
+SquareMatrix<T, N> unitMatrix()
 {
-    SquareMatrix<T, N> res;
-    std::transform(A.begin(), A.end(), B.begin(), res.begin(), operator+);
-    return res;
+    SquareMatrix<T, N> u;
+    for (size_t i = 0; i < N; ++i)
+        for (size_t j = 0; j < N; ++j)
+            u[i][j] = (T)(i==j);
+    return u;
 }
 
-/// subtraction
-template <typename T, unsigned N>
-SquareMatrix<T, N> operator-(const SquareMatrix<T, N>& A, const SquareMatrix<T, N>& B)
-{
-    SquareMatrix<T, N> res;
-    std::transform(A.begin(), A.end(), B.begin(), res.begin(), operator-);
-    return res;
-}
-
-/// multiplication
-template <typename T, unsigned N>
+/// matrix multiplication
+template <typename T, size_t N>
 SquareMatrix<T, N> operator*(const SquareMatrix<T, N> A, const SquareMatrix<T, N> B)
 {
     SquareMatrix<T, N> res;
-    for (unsigned i = 0; i < N; ++i)
-        for (unsigned j = 0; j < N; ++j)
-            for (unsigned n = 0; n < N; ++n)
+    for (size_t i = 0; i < N; ++i)
+        for (size_t j = 0; j < N; ++j)
+            for (size_t n = 0; n < N; ++n)
                 res[i][j] += A[i][n] * B[n][j];
     return res;
 }
 
 /// multiplication by a single element
-template <typename T, unsigned N>
+template <typename T, size_t N>
 SquareMatrix<T, N> operator*(const T& c, const SquareMatrix<T, N>& M)
 {
-    SquareMatrix<T, N> res;
-    std::transform(M.begin(), M.end(), res.begin(), [&](const NVector<T, N>& r) {return c * r;});
+    SquareMatrix<T, N> res = M;
+    std::transform(res.begin(), res.end(), res.begin(), [&](const NVector<T, N>& r) {return c * r;});
     return res;
 }
 
 /// multiplication by a single element
-template <typename T, unsigned N>
+template <typename T, size_t N>
 SquareMatrix<T, N> operator*(const SquareMatrix<T, N>& M, const T& c)
 { return c * M; }
 
 /// multiplication: SquareMatrix * NVector
-template <typename T, unsigned N>
+template <typename T, size_t N>
 NVector<T, N> operator*(const SquareMatrix<T, N>& M, const NVector<T, N>& V)
 {
     NVector<T, N> res;
@@ -86,12 +89,12 @@ NVector<T, N> operator*(const SquareMatrix<T, N>& M, const NVector<T, N>& V)
 }
 
 /// outer product of two #NVector's
-template<typename T, unsigned N>
+template<typename T, size_t N>
 SquareMatrix<T, N> outer(const NVector<T, N>& A, const NVector<T, N>& B)
 {
     SquareMatrix<T, N> res;
-    for (unsigned i = 0; i < N; ++i)
-        for (unsigned j = 0; j < N; ++j)
+    for (size_t i = 0; i < N; ++i)
+        for (size_t j = 0; j < N; ++j)
             res[i][j] = A[i] * B[j];
     return res;
 }
