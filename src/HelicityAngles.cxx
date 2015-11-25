@@ -3,7 +3,9 @@
 #include "Constants.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "LorentzTransformation.h"
 #include "MathUtilities.h"
+#include "Rotation.h"
 
 #include <TLorentzRotation.h>
 
@@ -73,6 +75,28 @@ TLorentzRotation HelicityAngles::hfTransform(const TLorentzVector& daughterLv)
     TLorentzRotation hfTransform(rot1);
     hfTransform.Boost(-daughter.BoostVector());
     return hfTransform;
+}
+
+//-------------------------
+FourMatrix<double> HelicityAngles::hfTransform(const FourVector<double>& daughter)
+{
+    // the Y axis of the helicity frame
+    ThreeVector<double> D = vect<double>(daughter);
+    ThreeVector<double> hfY = cross(Axis_Z, D);
+
+    // Rotate to put hfY parallel to Y, and hfZ in the X--Z plane
+    ThreeMatrix<double> R1 = rotation<double>(Axis_X, atan2(sqrt(pow(hfY[0], 2) + pow(hfY[1], 2)), hfY[2]) - PI / 2)
+        * rotation<double>(Axis_Y, PI / 2 - atan2(hfY[1], hfY[0]));
+
+    // rotate daughter by R1
+    ThreeVector<double> rD = R1 * D;
+
+    // Rotate about hfY (now Y) to put daughter momentum along Z
+    ThreeMatrix<double> R2 = rotation<double>(Axis_Y, -signum(rD[0]) * atan2(sqrt(pow(rD[0], 2) + pow(rD[1], 2)), rD[2]));
+
+    // use daughter rotated by R2 for boost
+    // to fom helicity frame transformation
+    return lorentzTransformation<double>(R2 * R1, -(R2 * rD));
 }
 
 //-------------------------

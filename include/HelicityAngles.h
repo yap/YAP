@@ -22,6 +22,8 @@
 #define yap_HelicityAngles_h
 
 #include "CachedDataValue.h"
+#include "FourVector.h"
+#include "LorentzTransformation.h"
 #include "StaticDataAccessor.h"
 
 #include <TLorentzVector.h>
@@ -65,6 +67,9 @@ protected:
 
     /// Caclulate Lorentz-transformation for helicity frame
     TLorentzRotation hfTransform(const TLorentzVector& daughterLv);
+
+    /// Caclulate Lorentz-transformation for helicity frame
+    FourMatrix<double> hfTransform(const FourVector<double>& daughter);
 
     /// Transform daughters to helicity frame and calculate helicity angles
     /// Calls this funciton recursively
