@@ -9,6 +9,7 @@
 #include <BAT/BCAux.h>
 
 #include "d3pi.h"
+#include "dkkpi.h"
 
 int main()
 {
@@ -18,8 +19,8 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    // create new d3pi object
     d3pi m("D3PI");
+    // dkkpi m("DKKPI");
 
      // set precision
     m.MCMCSetPrecision(BCEngineMCMC::kMedium);

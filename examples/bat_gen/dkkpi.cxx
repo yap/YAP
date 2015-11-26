@@ -4,7 +4,7 @@
 // BAT can be downloaded from http://mpp.mpg.de/bat
 // ***************************************************************
 
-#include "d3pi.h"
+#include "dkkpi.h"
 
 #include <BAT/BCMath.h>
 
@@ -21,7 +21,7 @@
 #include <complex>
 
 // ---------------------------------------------------------
-d3pi::d3pi(std::string name)
+dkkpi::dkkpi(std::string name)
     : BCModel(name)
 {
     yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
@@ -32,56 +32,27 @@ d3pi::d3pi(std::string name)
     unsigned max2L(2 * 4);
 
     // final state particles
-    auto piPlus = factory.createFinalStateParticle(211);
-    auto piMinus = factory.createFinalStateParticle(-211);
+    auto kPlus  = factory.createFinalStateParticle(+321);
+    auto kMinus = factory.createFinalStateParticle(-321);
+    auto piPlus = factory.createFinalStateParticle(+211);
 
     // initial state particle
     D_ = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
-    D_->setFinalStateParticles({piPlus, piMinus, piPlus});
+    D_->setFinalStateParticles({kPlus, kMinus, piPlus});
 
-    // rho
-    auto rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.149);
-    rho->addChannels(piPlus, piMinus, max2L);
+    // phi
+    auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(40e-3);
+    phi->addChannels(kPlus, kMinus, max2L);
 
-    // // f_2(1270)
-    auto f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
-    f_2->addChannels(piPlus, piMinus, max2L);
-
-    // f_0(980)
-    auto f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
-    f_0_980->addChannels(piPlus, piMinus, max2L);
-
-    // f_0(1370)
-    auto f_0_1370 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
-    f_0_1370->addChannels(piPlus, piMinus, max2L);
-
-    // f_0(1500)
-    auto f_0_1500 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
-    f_0_1500->addChannels(piPlus, piMinus, max2L);
-
-    // sigma a.k.a. f_0(500)
-    auto sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
-    sigma->addChannels(piPlus, piMinus, max2L);
-
-    // f_0(500+100i)
-    auto f_0_500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), .500, "f_0_500_100", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_500_100->massShape()).width()->setValue(0.100);
-    f_0_500_100->addChannels(piPlus, piMinus, max2L);
-
-    // f_0(1500+100i)
-    auto f_0_1500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1500_100->massShape()).width()->setValue(0.100);
-    f_0_1500_100->addChannels(piPlus, piMinus, max2L);
-    
+    // phi
+    auto X_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.2, "X_2", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(X_2->massShape()).width()->setValue(80e-3);
+    X_2->addChannels(piPlus, kMinus, max2L);
 
     // Add channels to D
-    D_->addChannels(rho,      piPlus, max2L);
+    D_->addChannels(phi,      piPlus, max2L);
+    // D_->addChannels(X_2,      kPlus,  max2L);
     // D_->addChannels(f_2,      piPlus, max2L);
     // D_->addChannels(f_0_980,  piPlus, max2L);
     // D_->addChannels(f_0_1370, piPlus, max2L);
@@ -95,7 +66,6 @@ d3pi::d3pi(std::string name)
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
     // unsigned i = 0;
-    // freeAmps[i++]->setValue(yap::Complex_1);
     // freeAmps[i++]->setValue(yap::Complex_1);
     // freeAmps[i++]->setValue(yap::Complex_i);
 
@@ -118,9 +88,6 @@ d3pi::d3pi(std::string name)
             axis_label += std::to_string(d->indices()[0]);
         std::pair<double, double> mrange = D_->getMassRange(pc);
         AddParameter(axis_label, pow(mrange.first, 2), pow(mrange.second, 2));
-        std::cout << "Added parameter " << axis_label
-                  << " with range = [" << pow(mrange.first, 2) << ", " << pow(mrange.second, 2) << "]"
-                  << std::endl;
     }
 
     m2_P = pow(D_->mass()->value(), 2);
@@ -135,13 +102,13 @@ d3pi::d3pi(std::string name)
 }
 
 // ---------------------------------------------------------
-d3pi::~d3pi()
+dkkpi::~dkkpi()
 {
     // destructor
 }
 
 // ---------------------------------------------------------
-double d3pi::LogLikelihood(const std::vector<double>& parameters)
+double dkkpi::LogLikelihood(const std::vector<double>& parameters)
 {
     // if (!std::isfinite(LogAPrioriProbability(parameters)))
     //     return -std::numeric_limits<double>::infinity();
@@ -161,7 +128,7 @@ double d3pi::LogLikelihood(const std::vector<double>& parameters)
 }
 
 // ---------------------------------------------------------
-double d3pi::LogAPrioriProbability(const std::vector<double> & parameters)
+double dkkpi::LogAPrioriProbability(const std::vector<double> & parameters)
 {
     double m2_ab = parameters[0];
     double m2_bc = parameters[1];
