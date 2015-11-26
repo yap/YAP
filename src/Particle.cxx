@@ -5,9 +5,9 @@
 namespace yap {
 
 //-------------------------
-Particle::Particle(const QuantumNumbers& q, double mass, std::string name) :
+Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
     QuantumNumbers_(q),
-    Mass_(new RealParameter(mass)),
+    Mass_(new RealParameter(m)),
     Name_(name)
 {}
 

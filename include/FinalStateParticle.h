@@ -24,6 +24,7 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "DataPoint.h"
+#include "InitialStateParticle.h"
 #include "Particle.h"
 #include "ParticleIndex.h"
 
@@ -48,8 +49,10 @@ public:
     /// @{
 
     /// Constructor
-    /// \param indices index or indices (if there are identical final state particles) that this particle has in the DataPoint
-    FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, std::vector<ParticleIndex>& indices);
+    /// \param q Quantum numbers of particle
+    /// \param m Mass of particle
+    /// \param name Name of particle
+    FinalStateParticle(const QuantumNumbers& q, double m, std::string name);
 
     /// @}
 
@@ -67,6 +70,14 @@ public:
 
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;
+
+    /// \name Friends
+    /// @{
+
+    /// Grant ISP friendship to set FSP's indices
+    friend bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
+
+    /// @}
 
 private:
 

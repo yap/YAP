@@ -35,6 +35,7 @@
 namespace yap {
 
 class DataPartitionBase;
+class FinalStateParticle;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
@@ -128,12 +129,26 @@ public:
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
+    std::pair<double, double> getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const;
+
     /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const
     {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
     std::vector<std::shared_ptr<ComplexParameter> > freeAmplitudes() const;
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+
+    /// Set final-state particle content. The order in which particles
+    /// are given dictates the order in which four-momenta must be
+    /// given in data points
+    /// \param FSP list of shared pointers to final-state particles
+    /// \return Success of action
+    bool setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
     /// @}
 

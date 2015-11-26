@@ -6,14 +6,11 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double mass, std::string name, std::vector<ParticleIndex>& indices)
-    : Particle(q, mass, name)
+FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
+    : Particle(q, m, name)
 {
-    for (ParticleIndex i : indices)
-        addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(i));
-
     // final state particles have fixed mass
-    this->mass()->setVariableStatus(kFixed);
+    mass()->setVariableStatus(kFixed);
 }
 
 //-------------------------

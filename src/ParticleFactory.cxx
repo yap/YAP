@@ -42,11 +42,11 @@ ParticleFactory::ParticleFactory(const std::string pdlFile)
 }
 
 //-------------------------
-std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices)
+std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG)
 {
     const ParticleTableEntry& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_, indices);
+    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_);
 }
 
 //-------------------------

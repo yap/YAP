@@ -147,8 +147,6 @@ bool InitialStateParticle::prepare()
         MeasuredBreakupMomenta_.addSymmetrizationIndex(pc);
     }
 
-    // set FinalStateParticles
-    FinalStateParticles_ = DecayingParticle::finalStateParticles();
     // prepare FourMomenta. Needs FinalStateParticles_
     FourMomenta_.prepare();
 
@@ -172,6 +170,52 @@ bool InitialStateParticle::prepare()
     Prepared_ = true;
 
     return true;
+}
+
+//-------------------------
+bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+{
+    // check that FinalStateParticles_ is empty
+    if (!FinalStateParticles_.empty()) {
+        FLOG(ERROR) << "final-state particles have already been set.";
+        return false;
+    }
+
+    // check that none of the FSP's has yet been used
+    bool all_unused = true;
+    for (auto& fsp : FSP)
+        if (!fsp->particleCombinations().empty()) {
+            FLOG(ERROR) << "final-state particle already has indices assigned: " << (std::string)*fsp;
+            all_unused = false;
+        }
+    if (!all_unused)
+        return false;
+
+    FinalStateParticles_.reserve(FSP.size());
+
+    // set indices by order in vector
+    for (auto& fsp : FSP) {
+        fsp->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(FinalStateParticles_.size()));
+        FinalStateParticles_.push_back(fsp);
+    }
+
+    return true;
+}
+
+//-------------------------
+std::pair<double, double> InitialStateParticle::getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const
+{
+    std::pair<double, double> m(0, mass()->value());
+
+    for (size_t i = 0; i < FinalStateParticles_.size(); ++i) {
+        if (std::find(pc->indices().begin(), pc->indices().end(), i) != pc->indices().end())
+            // add mass to low end
+            m.first += FinalStateParticles_[i]->mass()->value();
+        else
+            // subtract mass from high end
+            m.second -= FinalStateParticles_[i]->mass()->value();
+    }
+    return m;
 }
 
 //-------------------------

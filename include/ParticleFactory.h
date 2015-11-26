@@ -65,8 +65,8 @@ public:
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
-    /// \return HelicityStates object for new final state particle
-    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG, std::vector<ParticleIndex> indices);
+    /// \return shared pointer to new final state particle
+    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create

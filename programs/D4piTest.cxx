@@ -38,8 +38,11 @@ int main( int argc, char** argv)
     auto D = factory.createInitialStateParticle(421, radialSize);
 
     // final state particles
-    auto piPlus = factory.createFinalStateParticle(211, {0, 2});
-    auto piMinus = factory.createFinalStateParticle(-211, {1, 3});
+    auto piPlus = factory.createFinalStateParticle(211);
+    auto piMinus = factory.createFinalStateParticle(-211);
+
+    // Set final-state particles
+    D->setFinalStateParticles({piPlus, piMinus, piPlus, piMinus});
 
     // rho rho
     auto rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());

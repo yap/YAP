@@ -25,6 +25,8 @@
 #include "Parameter.h"
 #include "QuantumNumbers.h"
 
+#include <string>
+
 namespace yap {
 
 class ParticleCombination;
@@ -40,17 +42,26 @@ class Particle : public virtual AmplitudeComponent
 public:
 
     /// Constructor
-    Particle(const QuantumNumbers& q, double mass, std::string name);
+    /// \param q Quantum numbers of particle
+    /// \param m Mass of particle
+    /// \param name Name of particle
+    Particle(const QuantumNumbers& q, double m, std::string name);
 
     /// Check consitency of object
     virtual bool consistent() const override;
 
-    /// Access QuantumNumbers object
+    /// const access QuantumNumbers object
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
+    /// \todo Do we need non-const access to the quantum numbers?
+    /// \return quantum numbers
     QuantumNumbers& quantumNumbers()
     { return QuantumNumbers_; }
+
+    /// explicitly cast to string
+    explicit operator std::string()
+    { return Name_ + "(" + (std::string)QuantumNumbers_ + "), mass = " + std::to_string(Mass_->value()); }
 
     /// \name Getters
     /// @{
@@ -59,8 +70,12 @@ public:
     std::shared_ptr<RealParameter> mass() const
     { return Mass_; }
 
+    /// Get name (const)
+    const std::string& name() const
+    { return Name_; }
+
     /// Get name
-    std::string name() const
+    std::string& name()
     { return Name_; }
 
     /// @}

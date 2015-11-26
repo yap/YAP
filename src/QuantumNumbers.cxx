@@ -56,11 +56,10 @@ bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 //-------------------------
 std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj)
 {
+    os << "JP";
     if (obj.C() != 0)
-        os << "JPC = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-") << (obj.C() > 0 ? "+" : "-");
-    else
-        os << "JP = " << (int)obj.J() << (obj.P() > 0 ? "+" : "-");
-
+        os << "C";
+    os << " = " << (std::string)obj;
     return os;
 }
 

@@ -16,17 +16,22 @@ int main( int argc, char** argv)
 
     yap::plainLogs(el::Level::Debug);
 
-    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
-
-    // final state particles
-    auto piPlus = factory.createFinalStateParticle(211, {0, 2});
-    auto piMinus = factory.createFinalStateParticle(-211, {1});
-
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
-
     // use only L up to 4
     unsigned max2L(2 * 4);
+
+    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
+
+    // initial state particle
+    auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
+
+    // final state particles
+    auto piPlus = factory.createFinalStateParticle(211);
+    auto piMinus = factory.createFinalStateParticle(-211);
+
+    // set final state
+    D->setFinalStateParticles({piPlus, piMinus, piPlus});
 
     // rho
     auto rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
@@ -57,9 +62,6 @@ int main( int argc, char** argv)
     auto sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
     sigma->addChannels(piPlus, piMinus, max2L);
-
-    // initial state particle
-    auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
 
     // Add channels to D
     D->addChannels(rho,      piPlus, max2L);

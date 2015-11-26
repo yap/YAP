@@ -54,6 +54,10 @@ public:
     /// check consistency
     virtual bool consistent() const;
 
+    /// cast to std::string (for output)
+    explicit operator std::string() const
+    { return std::to_string(J()) + (P_ > 0 ? "+" : "-") + (C_ == 0 ? "" : (C_ > 0 ? "+" : "-")); }
+
     /// \name Getters
     /// @{
 

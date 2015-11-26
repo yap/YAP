@@ -1,6 +1,8 @@
 #ifndef yap_logging_h
 #define yap_logging_h
 
+/// \file
+
 #include "easylogging++.h"
 
 namespace yap {
@@ -53,11 +55,17 @@ inline void plainLogs(el::Level lvl)
     el::Loggers::reconfigureLogger("default", defaultConf);
 }
 
+/// \def DEBUG(x)
+/// Provides way to have debug output ignored by the compiler.
 #ifdef ELPP_DISABLE_DEBUG_LOGS
 #define DEBUG(x)
 #else
 #define DEBUG(x) LOG(DEBUG) << x;
 #endif
+
+/// \def FLOG(x)
+/// Pretty logging output: prepends function name to x
+#define FLOG(x) LOG( x ) << std::string(ELPP_FUNC) + ": "
 
 }
 
