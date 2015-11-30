@@ -34,7 +34,6 @@ namespace yap {
 /// \ingroup VectorAlgebra
 template <typename T>
 using FourVector = typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, 4> >::type;
-// using FourVector = NVector<T, 4>;
 
 /// \return #FourVector
 /// \param E 0th component
