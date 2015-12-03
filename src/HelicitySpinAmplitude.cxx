@@ -37,7 +37,6 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
         // DFunction == 1  for  J == 0
         if (J != 0) {
             const int Lambda  = pc->twoLambda();
-            const int P       = InitialQuantumNumbers_.P();
 
             const int lambda1 = pc->daughters()[0]->twoLambda();
             const int lambda2 = pc->daughters()[1]->twoLambda();
@@ -46,7 +45,7 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
             const double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
             const double theta = initialStateParticle()->helicityAngles().theta(d, pc);
 
-            a *= DFunctionConj(J, Lambda, lambda, P, phi, theta);
+            a *= DFunctionConj(J, Lambda, lambda, phi, theta, 0);
         }
 
         SpinAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
