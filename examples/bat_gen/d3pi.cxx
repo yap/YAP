@@ -82,7 +82,7 @@ d3pi::d3pi(std::string name)
 
     // Add channels to D
     D_->addChannels(rho,      piPlus, max2L);
-    // D_->addChannels(f_2,      piPlus, max2L);
+    D_->addChannels(f_2,      piPlus, max2L);
     // D_->addChannels(f_0_980,  piPlus, max2L);
     // D_->addChannels(f_0_1370, piPlus, max2L);
     // D_->addChannels(f_0_1500, piPlus, max2L);
@@ -94,9 +94,9 @@ d3pi::d3pi(std::string name)
     D_->prepare();
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
-    // unsigned i = 0;
-    // freeAmps[i++]->setValue(yap::Complex_1);
-    // freeAmps[i++]->setValue(yap::Complex_1);
+    unsigned i = 0;
+    freeAmps[i++]->setValue(yap::Complex_1);
+    freeAmps[i++]->setValue(yap::Complex_1);
     // freeAmps[i++]->setValue(yap::Complex_i);
 
     // freeAmps[i++]->setValue(std::polar(1.,     0.)); // rho

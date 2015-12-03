@@ -21,6 +21,7 @@
 #ifndef yap_InitialStateParticle_h
 #define yap_InitialStateParticle_h
 
+#include "CoordinateSystem.h"
 #include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
@@ -108,28 +109,45 @@ public:
     /// \name Getters
     /// @{
 
+    /// \return coordinate system
+    CoordinateSystem<double, 3>& coordinateSystem()
+        { return CoordinateSystem_; }
+
+    /// \return coordinate system (const)
+    const CoordinateSystem<double, 3>& coordinateSystem() const
+        { return CoordinateSystem_; }
+
+    /// \return FourMomenta accessor
     FourMomenta& fourMomenta()
     { return FourMomenta_; }
 
+    /// \return FourMomenta accessor (const)
     const FourMomenta& fourMomenta() const
     { return FourMomenta_; }
 
+    /// \return MeasuredBreakupMomenta accessor
     MeasuredBreakupMomenta& measuredBreakupMomenta()
     { return MeasuredBreakupMomenta_; }
 
+    /// \return MeasuredBreakupMomenta accessor (const)
     const MeasuredBreakupMomenta& measuredBreakupMomenta() const
     { return MeasuredBreakupMomenta_; }
 
+    /// \return HelicityAngles accessor
     HelicityAngles& helicityAngles()
     { return HelicityAngles_; }
 
+    /// \return HelicityAngles accessor (const)
     const HelicityAngles& helicityAngles() const
     { return HelicityAngles_; }
 
+    /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
-    std::pair<double, double> getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const;
+    /// \return (min, max) array[2] of mass range for particle combination
+    /// \param pc shared pointer to ParticleCombination to get mass range of
+    std::array<double, 2> getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const
@@ -155,6 +173,7 @@ public:
     /// \name Data set and partitions
     /// @{
 
+    /// \return DataSet
     DataSet& dataSet()
     { return DataSet_; }
 
@@ -196,6 +215,7 @@ public:
 
     /// @}
 
+    /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);
 
 private:
@@ -241,7 +261,11 @@ private:
 
     void setDataAcessorIndices();
 
+    /// Stores whether prepare() has been called
     bool Prepared_;
+
+    /// Lab coordinate system to use in calculating helicity angles
+    CoordinateSystem<double, 3> CoordinateSystem_;
 
     /// List of all DataAccessor objects in the InitialsStateParticle and below
     std::set<DataAccessor*> DataAccessors_;

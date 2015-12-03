@@ -21,6 +21,7 @@
 #ifndef yap_FourVector_h
 #define yap_FourVector_h
 
+#include "CoordinateSystem.h"
 #include "SquareMatrix.h"
 #include "ThreeVector.h"
 
@@ -66,6 +67,15 @@ ThreeVector<T> boost(const FourVector<T>& V)
 template <typename T>
 FourVector<T>& operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
 { return fourVector<T>(V[0], R * vect(V)); }
+
+/// Calculate helicity frame of V transformed from C,
+/// with z = unit(V), y = C.z X z, x = y X z
+/// \param V Fourector defining new Z direction
+/// \param C CoordinateSystem aiding in defining new Y direction
+template <typename T>
+typename std::enable_if<std::is_arithmetic<T>::value, CoordinateSystem<T, 3> >::type
+helicityFrame(const FourVector<T>& V, const CoordinateSystem<T, 3>& C)
+{ return helicityFrame(vect<T>(V), C); }
 
 }
 #endif

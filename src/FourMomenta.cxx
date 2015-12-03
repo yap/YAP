@@ -22,22 +22,22 @@ FourMomenta::FourMomenta() :
 //-------------------------
 void FourMomenta::prepare()
 {
+    ParticleCombinationVector PCs = particleCombinations();
+    
     // count FSP particles
     unsigned fsp = 0;
-    for (auto& pc : particleCombinations())
+    for (auto& pc : PCs)
         if (pc->indices().size() > fsp)
             fsp = pc->indices().size();
-
+    
     // look for ISP
-    InitialStatePC_ = nullptr;
-    for (auto& kv : symmetrizationIndices())
-        if (kv.first->indices().size() == fsp) {
-            InitialStatePC_ = kv.first;
-            break;
-        }
-
-    if (!InitialStatePC_)
+    auto it = std::find_if(PCs.begin(), PCs.end(),
+                           [&](const ParticleCombinationVector::value_type& a){return a->indices().size() == fsp;});
+    
+    if (it == PCs.end())
         LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle.";
+
+    InitialStatePC_ = *it;
 
     // set FSP masses, and FSP PCs
     FinalStateParticleM_.assign(fsp, nullptr);

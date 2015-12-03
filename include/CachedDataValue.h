@@ -315,7 +315,7 @@ public:
     /// \param d #DataPoint to get value from
     /// \param symmetrizationIndex index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(const DataPoint& d, unsigned  symmetrizationIndex) const
+    double value(const DataPoint& d, unsigned symmetrizationIndex) const
     { return CachedDataValue::value(0, d, symmetrizationIndex); }
 
 };

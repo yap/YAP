@@ -40,9 +40,8 @@ using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleComb
 
 /// \typedef ParticleCombinationMap
 template<typename T>
-using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>,
-      T,
-      std::owner_less<std::shared_ptr<const ParticleCombination> > >;
+using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>, T,
+                                        std::owner_less<std::shared_ptr<const ParticleCombination> > >;
 
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types
@@ -198,7 +197,7 @@ public:
     /// \struct Equiv
     /// \brief base class for equivalence (with functor), compares shared_ptr's only
     struct Equiv {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
         { return A == B; }
     };
 
@@ -206,7 +205,7 @@ public:
     /// \brief Checks objects referenced by shared pointers, check indices only
     /// Does NOT compare helicity
     struct EquivByOrderedContent : Equiv {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDownButLambda
@@ -214,7 +213,7 @@ public:
     /// check self and all daughters (down the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivDownButLambda : EquivByOrderedContent {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDown
@@ -222,24 +221,23 @@ public:
     /// check self and all daughters (down the decay tree) for equality
     /// Also compares helicity
     struct EquivDown : EquivByOrderedContent {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
-
 
     /// \struct EquivUpButLambda
     /// \brief Check objects referenced by shared pointers,
-    /// check self, all daughters (down-), and parent (up the decay tree) for equality
+    /// check self, and parents (up the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivUpButLambda : EquivByOrderedContent {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivUpAndDownButLambda
     /// \brief Check objects referenced by shared pointers,
-    /// check self, all daughters (down-), and parent (up the decay tree) for equality
+    /// check self, all daughters (down-), and parents (up the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivUpAndDownButLambda : EquivDownButLambda {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivUpAndDown
@@ -247,7 +245,7 @@ public:
     /// check self, all daughters (down-), and parent (up the decay tree) for equality
     /// Also compares helicity
     struct EquivUpAndDown : EquivDown {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivByOrderlessContent
@@ -255,7 +253,7 @@ public:
     /// check indices only, disregarding order
     /// Does NOT compare helicity
     struct EquivByOrderlessContent : Equiv {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDownByOrderlessContent
@@ -264,7 +262,15 @@ public:
     /// Does NOT compare helicity
     /// Use e.g. for breakup momenta
     struct EquivDownByOrderlessContent : EquivByOrderlessContent {
-        virtual bool operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+    };
+
+    /// \struct EquivByReferenceFrame
+    /// \brief Check objects referenced by shared pointers,
+    /// Checks parents (and up) for orderless content
+    /// Does NOT compare helicity. Returns equivalent for content sitting in same reference frame.
+    struct EquivByReferenceFrame : EquivByOrderlessContent {
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \name Static Comparison objects
@@ -277,6 +283,7 @@ public:
     static EquivByOrderedContent equivByOrderedContent;
     static EquivByOrderlessContent equivByOrderlessContent;
     static EquivDownByOrderlessContent equivDownByOrderlessContent;
+    static EquivByReferenceFrame equivByReferenceFrame;
 
 /// @}
 

@@ -56,13 +56,16 @@ extern const double DEGTORAD;
 /// @{
 
 /// X axis (ThreeVector)
-extern const ThreeVector<double> Axis_X;
+extern const ThreeVector<double> ThreeAxis_X;
 
 /// Y axis (ThreeVector)
-extern const ThreeVector<double> Axis_Y;
+extern const ThreeVector<double> ThreeAxis_Y;
 
 /// Z axis (ThreeVector)
-extern const ThreeVector<double> Axis_Z;
+extern const ThreeVector<double> ThreeAxis_Z;
+
+/// Standard 3D coordinate system
+extern const CoordinateSystem<double, 3> ThreeAxes;
 
 /// 0 as ThreeVector;
 extern const ThreeVector<double> ThreeVector_0;
@@ -80,6 +83,9 @@ extern const FourVector<double> FourAxis_Y;
 
 /// Z axis (FourVector)
 extern const FourVector<double> FourAxis_Z;
+
+/// Standard 4D coordinate system
+extern const CoordinateSystem<double, 4> FourAxes;
 
 /// 0 as FourVector;
 extern const FourVector<double> FourVector_0;

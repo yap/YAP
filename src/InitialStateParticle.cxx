@@ -18,6 +18,7 @@ namespace yap {
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
+    CoordinateSystem_(ThreeAxes),
     FourMomenta_(),
     MeasuredBreakupMomenta_(),
     HelicityAngles_()
@@ -108,7 +109,14 @@ bool InitialStateParticle::prepare()
 {
     // check
     if (!DecayingParticle::consistent()) {
-        LOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
+        FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
+        return false;
+    }
+
+    // check coordinate system
+    CoordinateSystem_ = unit(CoordinateSystem_);
+    if (!isRightHanded(CoordinateSystem_)) {
+        FLOG(ERROR) << "Coordinate system is not right-handed.";
         return false;
     }
 
@@ -203,17 +211,17 @@ bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 }
 
 //-------------------------
-std::pair<double, double> InitialStateParticle::getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const
+std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const
 {
-    std::pair<double, double> m(0, mass()->value());
+    std::array<double, 2> m = {0, mass()->value()};
 
     for (size_t i = 0; i < FinalStateParticles_.size(); ++i) {
         if (std::find(pc->indices().begin(), pc->indices().end(), i) != pc->indices().end())
             // add mass to low end
-            m.first += FinalStateParticles_[i]->mass()->value();
+            m[0] += FinalStateParticles_[i]->mass()->value();
         else
             // subtract mass from high end
-            m.second -= FinalStateParticles_[i]->mass()->value();
+            m[1] -= FinalStateParticles_[i]->mass()->value();
     }
     return m;
 }

@@ -1,6 +1,8 @@
 #include "HelicityAngles.h"
 
 #include "Constants.h"
+#include "CoordinateSystem.h"
+#include "FourVector.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "LorentzTransformation.h"
@@ -13,7 +15,8 @@ namespace yap {
 //-------------------------
 HelicityAngles::HelicityAngles() :
     StaticDataAccessor(&ParticleCombination::equivUpAndDownButLambda),
-    HelicityAngles_(new CachedDataValue(this, 2))
+    Phi_(new RealCachedDataValue(this)),
+    Theta_(new RealCachedDataValue(this))
 {
 }
 
@@ -33,77 +36,45 @@ void HelicityAngles::calculate(DataPoint& d)
 {
     // use a default dataPartitionIndex of 0
 
-    HelicityAngles_->setCalculationStatus(kUncalculated, 0);
+    Phi_->setCalculationStatus(kUncalculated, 0);
+    Theta_->setCalculationStatus(kUncalculated, 0);
 
-    if (initialStateParticle()->quantumNumbers().twoJ() != 0)
-        LOG(ERROR) << "Helicity angles are at the moment only implemented for initial state particles with spin 0.";
+    // calculate initial coordinate system
+    CoordinateSystem<double, 3> cISP = helicityFrame<double>(initialStateParticle()->fourMomenta().initialStateMomentum(d),
+                                                             initialStateParticle()->coordinateSystem());
 
-    // initial helicity frame.
-    // const FourMatrix<double> trans = hfTransform(initialStateLab); // ??
-    // boost into RF of initialState
     FourMatrix<double> boost = lorentzTransformation<double>(-initialStateParticle()->fourMomenta().initialStateMomentum(d));
-    std::vector<FourVector<double> > finalStatesHf = d.finalStateFourMomenta();
-    for (FourVector<double>& v : finalStatesHf)
-        v = boost * v;
 
-    for (auto& pc : initialStateParticle()->particleCombinations()) {
-        transformDaughters(d, pc, finalStatesHf);
-    }
-
+    for (auto& pc : initialStateParticle()->particleCombinations())
+        calculateAngles(d, pc, cISP, boost);
 }
 
 //-------------------------
-FourMatrix<double> HelicityAngles::hfTransform(const FourVector<double>& daughter)
+void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts)
 {
-    // the Y axis of the helicity frame
-    ThreeVector<double> D = vect<double>(daughter);
-    ThreeVector<double> hfY = cross(Axis_Z, D);
+    // calculate boost to put all daughters into pc rest frame
+    FourMatrix<double> b = lorentzTransformation<double>(-initialStateParticle()->fourMomenta().p(d, pc)) * boosts;
+    
+    for (auto& daughter : pc->daughters()) {
 
-    // Rotate to put hfY parallel to Y, and hfZ in the X--Z plane
-    ThreeMatrix<double> R1 = rotation(Axis_X, yap::theta(hfY) - PI / 2) * rotation(Axis_Y, PI / 2 - yap::phi(hfY));
+        unsigned symIndex = symmetrizationIndex(daughter);
+        
+        // boost daughter momentum into pc rest frame
+        FourVector<double> P = b * initialStateParticle()->fourMomenta().p(d, daughter);
 
-    // rotate daughter by R1
-    ThreeVector<double> rD = R1 * D;
+        // set angles if unset
+        if (Phi_->calculationStatus(daughter, symIndex, 0) == kUncalculated or
+            Theta_->calculationStatus(daughter, symIndex, 0) == kUncalculated ) {
 
-    // Rotate about hfY (now Y) to put daughter momentum along Z
-    ThreeMatrix<double> R2 = rotation(Axis_Y, -signum(rD[0]) * yap::theta(rD));
+            auto phi_theta = angles<double>(vect<double>(P), C);
+            Phi_->setValue(phi_theta[0], d, symIndex, 0);
+            Theta_->setValue(phi_theta[1], d, symIndex, 0);
+        }
 
-    // use daughter rotated by R2 for boost
-    // to fom helicity frame transformation
-    return lorentzTransformation(R2 * R1, -(R2 * rD));
-}
-
-//-------------------------
-void HelicityAngles::transformDaughters(DataPoint& d,
-                                        const std::shared_ptr<const ParticleCombination>& pc,
-                                        std::vector<FourVector<double> > finalStatesHf)
-{
-    // loop over daughters
-    for (auto& daugh : pc->daughters()) {
-
-        if (daugh->daughters().empty())
-            continue;
-
-        // construct 4-vector of daughter
-        FourVector<double> daughter = FourVector_0;
-        for (ParticleIndex i : daugh->indices())
-            daughter += finalStatesHf.at(i);
-
-        ThreeVector<double> d3 = vect<double>(daughter);
-
-        HelicityAngles_->setValue(0, yap::phi(d3),   d, symmetrizationIndex(daugh));
-        HelicityAngles_->setValue(1, yap::theta(d3), d, symmetrizationIndex(daugh));
-
-        HelicityAngles_->setCalculationStatus(kCalculated, symmetrizationIndex(daugh), 0);
-
-        // next helicity frame
-        const FourMatrix<double> transDaugh = hfTransform(daughter);
-        for (ParticleIndex i : daugh->indices())
-            finalStatesHf[i] = transDaugh * finalStatesHf[i];
-
-        transformDaughters(d, daugh, finalStatesHf);
+        // if particle is not FSP, call recursively
+        if (!pc->isFinalStateParticle())
+            calculateAngles(d, pc, helicityFrame<double>(P, C), b);
     }
 }
-
 
 }

@@ -314,7 +314,7 @@ ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderle
 ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
 
 //-------------------------
-bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -331,7 +331,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(std::shared_ptr<cons
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -353,7 +353,7 @@ bool ParticleCombination::EquivDownButLambda::operator()(std::shared_ptr<const P
 }
 
 //-------------------------
-bool ParticleCombination::EquivDown::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -379,7 +379,7 @@ bool ParticleCombination::EquivDown::operator()(std::shared_ptr<const ParticleCo
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -397,7 +397,7 @@ bool ParticleCombination::EquivUpButLambda::operator()(std::shared_ptr<const Par
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -415,7 +415,7 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(std::shared_ptr<co
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -433,7 +433,7 @@ bool ParticleCombination::EquivUpAndDown::operator()(std::shared_ptr<const Parti
 }
 
 //-------------------------
-bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -453,7 +453,7 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(std::shared_ptr<co
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownByOrderlessContent::operator()(std::shared_ptr<const ParticleCombination> A, std::shared_ptr<const ParticleCombination> B) const
+bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // compare shared_ptr addresses
     if (A == B)
@@ -480,6 +480,24 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(std::shared_pt
         return true;
 
     return false;
+}
+
+//-------------------------
+bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+{
+    // compare shared_ptr addresses
+    // if both are nullptr, also return true
+    if (A == B)
+        return true;
+    
+    // if one is null_ptr return false
+    if (A == nullptr or B == nullptr)
+        return false;
+
+    if (!ParticleCombination::equivByOrderlessContent(A->sharedParent(), B->sharedParent()))
+        return false;
+    
+    return operator()(A->sharedParent(), B->sharedParent());
 }
 
 }
