@@ -21,7 +21,7 @@ int main( int argc, char** argv)
     // use only L up to 4
     unsigned max2L(2 * 4);
 
-    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
+    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // initial state particle
     auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
