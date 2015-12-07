@@ -79,11 +79,15 @@ bool DecayingParticle::consistent() const
 
     // check if all channels lead to same final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = finalStateParticles(0);
-    for (unsigned i = 1; i < nChannels(); ++i)
-        if (finalStateParticles(i) != fsps0) {
+    std::sort(fsps0.begin(), fsps0.end());
+    for (unsigned i = 1; i < nChannels(); ++i) {
+        std::vector<std::shared_ptr<FinalStateParticle> > fsps = finalStateParticles(i);
+        std::sort(fsps.begin(), fsps.end());
+        if (fsps != fsps0) {
             LOG(ERROR) << "DecayingParticle::consistent() - final state of channel " << i << " does not match.";
             result = false;
         }
+    }
 
     return result;
 }
