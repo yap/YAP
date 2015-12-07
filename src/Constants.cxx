@@ -19,7 +19,7 @@ extern const double DEGTORAD = PI / 180.;
 extern const ThreeVector<double> ThreeAxis_X = {1, 0, 0};
 extern const ThreeVector<double> ThreeAxis_Y = {0, 1, 0};
 extern const ThreeVector<double> ThreeAxis_Z = {0, 0, 1};
-extern const CoordinateSystem<double, 3> ThreeAxes = {{ThreeAxis_X, ThreeAxis_Y, ThreeAxis_Z}};
+extern const CoordinateSystem<double, 3> ThreeAxes = {ThreeAxis_X, ThreeAxis_Y, ThreeAxis_Z};
 extern const ThreeVector<double> ThreeVector_0 = {0, 0, 0};
 
 // Four vector
@@ -27,7 +27,7 @@ extern const FourVector<double> FourAxis_T = {1, 0, 0, 0};
 extern const FourVector<double> FourAxis_X = {0, 1, 0, 0};
 extern const FourVector<double> FourAxis_Y = {0, 0, 1, 0};
 extern const FourVector<double> FourAxis_Z = {0, 0, 0, 1};
-extern const CoordinateSystem<double, 4> FourAxes = {{FourAxis_T, FourAxis_X, FourAxis_Y, FourAxis_Z}};
+extern const CoordinateSystem<double, 4> FourAxes = {FourAxis_T, FourAxis_X, FourAxis_Y, FourAxis_Z};
 extern const FourVector<double> FourVector_0 = {0, 0, 0, 0};
 
 }
