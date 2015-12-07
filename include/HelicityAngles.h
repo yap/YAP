@@ -61,13 +61,13 @@ public:
     /// Calculate helicity angles for all possible symmetrization indices
     virtual void calculate(DataPoint& d) override;
 
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+    // /// add symmetrizationIndex to SymmetrizationIndices_
+    // virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     /// get azimuthal angle
     double phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     { return Phi_->value(d, symmetrizationIndex(pc)); }
-        
+
     /// access azimuthal angle
     std::shared_ptr<RealCachedDataValue>& phi()
     { return Phi_; }
@@ -92,13 +92,13 @@ protected:
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts);
-    
+
     /// Azimuthal angle
     std::shared_ptr<RealCachedDataValue> Phi_;
 
     /// Polar angle
     std::shared_ptr<RealCachedDataValue> Theta_;
-    
+
 };
 
 }
