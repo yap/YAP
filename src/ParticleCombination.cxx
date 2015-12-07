@@ -33,6 +33,17 @@ ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLa
 }
 
 //-------------------------
+std::string to_string(const ParticleCombination& pc)
+{
+    std::string s = "(";
+    std::for_each(pc.indices().begin(), pc.indices().end(), [&](const ParticleIndex & i) {s += std::to_string(i) + ", ";});
+    if (!pc.indices().empty())
+        s.erase(s.size() - 2, 2);
+    s += ")";
+    return s;
+}
+
+//-------------------------
 const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedParent() const
 {
     if (! Parent_) {
@@ -489,14 +500,14 @@ bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_pt
     // if both are nullptr, also return true
     if (A == B)
         return true;
-    
+
     // if one is null_ptr return false
     if (A == nullptr or B == nullptr)
         return false;
 
     if (!ParticleCombination::equivByOrderlessContent(A->sharedParent(), B->sharedParent()))
         return false;
-    
+
     return operator()(A->sharedParent(), B->sharedParent());
 }
 
