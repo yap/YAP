@@ -23,17 +23,17 @@ FourMomenta::FourMomenta() :
 void FourMomenta::prepare()
 {
     ParticleCombinationVector PCs = particleCombinations();
-    
+
     // count FSP particles
     unsigned fsp = 0;
     for (auto& pc : PCs)
         if (pc->indices().size() > fsp)
             fsp = pc->indices().size();
-    
+
     // look for ISP
     auto it = std::find_if(PCs.begin(), PCs.end(),
-                           [&](const ParticleCombinationVector::value_type& a){return a->indices().size() == fsp;});
-    
+    [&](const ParticleCombinationVector::value_type & a) {return a->indices().size() == fsp;});
+
     if (it == PCs.end())
         LOG(ERROR) << "FourMomenta::findInitialStateParticle() - could not find InitialStateParticle.";
 
