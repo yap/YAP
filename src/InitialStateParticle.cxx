@@ -96,10 +96,18 @@ bool InitialStateParticle::consistent() const
     result &= MeasuredBreakupMomenta_.consistent();
     result &= HelicityAngles_.consistent();
 
-    if (FinalStateParticles_ != DecayingParticle::finalStateParticles()) {
-        LOG(ERROR) << "InitialStateParticle::consistent() - FinalStateParticles_ are not set correctly.";
+    /// \todo: is this necessary to check?
+    /// @{
+    std::vector<std::shared_ptr<FinalStateParticle> > A = FinalStateParticles_;
+    sort(A.begin(), A.end());
+    std::vector<std::shared_ptr<FinalStateParticle> > B = DecayingParticle::finalStateParticles();
+    sort(B.begin(), B.end());
+
+    if (A != B) {
+        FLOG(ERROR) << "FinalStateParticles_ are not set correctly.";
         result = false;
     }
+    /// @}
 
     return result;
 }

@@ -111,11 +111,11 @@ public:
 
     /// \return coordinate system
     CoordinateSystem<double, 3>& coordinateSystem()
-        { return CoordinateSystem_; }
+    { return CoordinateSystem_; }
 
     /// \return coordinate system (const)
     const CoordinateSystem<double, 3>& coordinateSystem() const
-        { return CoordinateSystem_; }
+    { return CoordinateSystem_; }
 
     /// \return FourMomenta accessor
     FourMomenta& fourMomenta()
