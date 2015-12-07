@@ -19,10 +19,10 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    d3pi m("D3PI");
-    // dkkpi m("DKKPI");
+    // d3pi m("D3PI");
+    dkkpi m("DKKPI");
 
-     // set precision
+    // set precision
     m.MCMCSetPrecision(BCEngineMCMC::kMedium);
     m.MCMCSetNChains(3);
     m.MCMCSetNIterationsPreRunCheck(1000);

@@ -45,14 +45,14 @@ dkkpi::dkkpi(std::string name)
     static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(40e-3);
     phi->addChannels(kPlus, kMinus, max2L);
 
-    // phi
+    // X_2
     auto X_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.2, "X_2", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(X_2->massShape()).width()->setValue(80e-3);
     X_2->addChannels(piPlus, kMinus, max2L);
 
     // Add channels to D
     D_->addChannels(phi,      piPlus, max2L);
-    // D_->addChannels(X_2,      kPlus,  max2L);
+    D_->addChannels(X_2,      kPlus,  max2L);
     // D_->addChannels(f_2,      piPlus, max2L);
     // D_->addChannels(f_0_980,  piPlus, max2L);
     // D_->addChannels(f_0_1370, piPlus, max2L);
@@ -65,6 +65,9 @@ dkkpi::dkkpi(std::string name)
     D_->prepare();
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
+    for (unsigned i = 0; i < freeAmps.size(); ++i)
+        freeAmps[i]->setValue(yap::Complex_1);
+
     // unsigned i = 0;
     // freeAmps[i++]->setValue(yap::Complex_1);
     // freeAmps[i++]->setValue(yap::Complex_i);
@@ -80,14 +83,17 @@ dkkpi::dkkpi(std::string name)
     std::cout << "success = " << b << std::endl;
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 
-    DalitzAxes_ = D_->fourMomenta().getDalitzAxes({{0,1}, {1,2}});
+    DalitzAxes_ = D_->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
 
     for (auto& pc : DalitzAxes_) {
         std::string axis_label = "m2_";
         for (auto& d : pc->daughters())
             axis_label += std::to_string(d->indices()[0]);
-        std::pair<double, double> mrange = D_->getMassRange(pc);
-        AddParameter(axis_label, pow(mrange.first, 2), pow(mrange.second, 2));
+        auto mrange = D_->getMassRange(pc);
+        AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
+        std::cout << "Added parameter " << axis_label
+                  << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
+                  << std::endl;
     }
 
     m2_P = pow(D_->mass()->value(), 2);
@@ -128,11 +134,11 @@ double dkkpi::LogLikelihood(const std::vector<double>& parameters)
 }
 
 // ---------------------------------------------------------
-double dkkpi::LogAPrioriProbability(const std::vector<double> & parameters)
+double dkkpi::LogAPrioriProbability(const std::vector<double>& parameters)
 {
     double m2_ab = parameters[0];
     double m2_bc = parameters[1];
-    
+
     if (m2_ab < 0 or m2_bc < 0)
         return 0;
 

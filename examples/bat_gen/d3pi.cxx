@@ -78,7 +78,7 @@ d3pi::d3pi(std::string name)
     auto f_0_1500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_0_1500_100->massShape()).width()->setValue(0.100);
     f_0_1500_100->addChannels(piPlus, piMinus, max2L);
-    
+
 
     // Add channels to D
     D_->addChannels(rho,      piPlus, max2L);
@@ -94,11 +94,10 @@ d3pi::d3pi(std::string name)
     D_->prepare();
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
-    unsigned i = 0;
-    freeAmps[i++]->setValue(yap::Complex_1);
-    freeAmps[i++]->setValue(yap::Complex_1);
-    // freeAmps[i++]->setValue(yap::Complex_i);
+    for (unsigned i = 0; i < freeAmps.size(); ++i)
+        freeAmps[i]->setValue(yap::Complex_1);
 
+    // unsigned i = 0;
     // freeAmps[i++]->setValue(std::polar(1.,     0.)); // rho
     // freeAmps[i++]->setValue(std::polar(2.1, -123. * TMath::Pi() / 180.)); // f_2
     // freeAmps[i++]->setValue(std::polar(1.4,   12. * TMath::Pi() / 180.)); // f_0_980
@@ -110,16 +109,16 @@ d3pi::d3pi(std::string name)
     std::cout << "success = " << b << std::endl;
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 
-    DalitzAxes_ = D_->fourMomenta().getDalitzAxes({{0,1}, {1,2}});
+    DalitzAxes_ = D_->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
 
     for (auto& pc : DalitzAxes_) {
         std::string axis_label = "m2_";
         for (auto& d : pc->daughters())
             axis_label += std::to_string(d->indices()[0]);
-        std::pair<double, double> mrange = D_->getMassRange(pc);
-        AddParameter(axis_label, pow(mrange.first, 2), pow(mrange.second, 2));
+        auto mrange = D_->getMassRange(pc);
+        AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
         std::cout << "Added parameter " << axis_label
-                  << " with range = [" << pow(mrange.first, 2) << ", " << pow(mrange.second, 2) << "]"
+                  << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
                   << std::endl;
     }
 
@@ -161,11 +160,11 @@ double d3pi::LogLikelihood(const std::vector<double>& parameters)
 }
 
 // ---------------------------------------------------------
-double d3pi::LogAPrioriProbability(const std::vector<double> & parameters)
+double d3pi::LogAPrioriProbability(const std::vector<double>& parameters)
 {
     double m2_ab = parameters[0];
     double m2_bc = parameters[1];
-    
+
     if (m2_ab < 0 or m2_bc < 0)
         return 0;
 
