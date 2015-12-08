@@ -21,6 +21,8 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
+#include "SpinUtilities.h"
+
 #include <cmath>
 #include <ostream>
 
@@ -56,7 +58,7 @@ public:
 
     /// cast to std::string (for output)
     explicit operator std::string() const
-    { return std::to_string(J()) + (P_ > 0 ? "+" : "-") + (C_ == 0 ? "" : (C_ > 0 ? "+" : "-")); }
+    { return spinToString(TwoJ_) + (P_ > 0 ? "+" : "-") + (C_ == 0 ? "" : (C_ > 0 ? "+" : "-")); }
 
     /// \name Getters
     /// @{
