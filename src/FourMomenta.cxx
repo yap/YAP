@@ -173,13 +173,13 @@ std::vector<FourVector<double> > FourMomenta::calculateFourMomenta(const DataPoi
     // define P[2] to be in +Y direction
     ThreeVector<double> v2 = {(cosAngle[2][1] - cosAngle[2][0] * cosAngle[0][1]) / sin01, 0, cosAngle[2][0]};
     v2[2] = sqrt(1 - yap::norm(v2));
-    P[2] = fourVector(P[2][0], v2 * P[2][3]);
+    P[2] = FourVector<double>(P[2][0], v2 * P[2][3]);
 
     // define remaining 4-momenta
     for (unsigned i = 3; i < P.size(); ++i) {
         ThreeVector<double> vi = {{(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sin01, 0, cosAngle[i][0]}};
         vi[2] = (yap::abs(v2) * cosAngle[i][2] - vi * v2) / v2[0];
-        P[i] = fourVector(P[i][0], P[i][3] * vi);
+        P[i] = FourVector<double>(P[i][0], P[i][3] * vi);
     }
 
     return P;

@@ -30,28 +30,42 @@
 
 namespace yap {
 
-/// \typedef FourVector
+/// \class FourVector
+/// \brief Four-Vector handling
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup VectorAlgebra
 template <typename T>
-using FourVector = typename std::enable_if<std::is_arithmetic<T>::value, NVector<T, 4> >::type;
+class FourVector : public NVector<T, 4>
+{
+public:
+    /// Default constructor
+    FourVector() : NVector<T, 4> () {}
 
-/// \return #FourVector
-/// \param E 0th component
-/// \param P #ThreeVector component
-template <typename T>
-FourVector<T> fourVector(const T& E, const ThreeVector<T>& P)
-{ return FourVector<T> {E, P[0], P[1], P[2]}; }
+    /// intializer_list constructor
+    FourVector(std::initializer_list<T> l) : NVector<T, 4>(l) {}
 
-/// \return inner (dot) product for 4-vectors
-template <typename T>
-T operator*(const FourVector<T>& A, const FourVector<T>& B)
-{ return A.front() * B.front() - std::inner_product(A.begin() + 1, A.end(), B.begin() + 1, 0); }
+    /// energy + ThreeVector constructor
+    /// \param E 0th component
+    /// \param P #ThreeVector component
+    FourVector(const T& E, const ThreeVector<T>& P) : NVector<T, 4>( {E, P[0], P[1], P[2]}) {}
 
-/// unary minus for 4-vector
-template <typename T>
-FourVector<T> operator-(const FourVector<T>& A)
-{ FourVector<T> res = A; std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T & t) {return -t;}); return res; }
+    /// NVector<T, 4> constructor
+    FourVector(const NVector<T, 4>&& V) : NVector<T, 4>(V) {}
+
+    /// \return inner (dot) product for 4-vectors
+    T operator*(const FourVector<T>& B) const
+    { return this->front() * B.front() - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
+
+    /// unary minus for 4-vector,
+    /// does not change sign of zero'th component
+    FourVector<T> operator-() const
+    {
+        FourVector<T> res = *this;
+        std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T & t) {return -t;});
+        return res;
+    }
+
+};
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
@@ -63,10 +77,15 @@ template <typename T>
 ThreeVector<T> boost(const FourVector<T>& V)
 { return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T> {0, 0, 0}; }
 
+/// multiply a 4x4 matrix times a FourVector
+template <typename T>
+FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V)
+{ return FourVector<T>(R * static_cast<NVector<T, 4> >(V)); }
+
 /// apply a three-rotation to a FourVector (rotating only the spatial components)
 template <typename T>
-FourVector<T>& operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
-{ return fourVector<T>(V[0], R * vect(V)); }
+FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
+{ return FourVector<T>(V[0], R * vect(V)); }
 
 /// Calculate helicity frame of V transformed from C,
 /// with z = unit(V), y = C.z X z, x = y X z
