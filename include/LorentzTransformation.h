@@ -56,7 +56,7 @@ FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 /// \param V #ThreeVector defining boost
 template <typename T>
 FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V)
-{ return lorentzTransformation<T>(fourVector<T>(T(1), V)); }
+{ return lorentzTransformation<T>(FourVector<T>(T(1), V)); }
 
 /// \return a 4D Lorentz-transformation matrix for a rotation followed by a boost
 /// \param R #ThreeMatrix defining rotation
