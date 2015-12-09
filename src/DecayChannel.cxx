@@ -102,14 +102,14 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     if (FixedAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
 
-        if (a != Complex_0) {
+        //if (a != Complex_0) {
             auto& pcDaughters = pc->daughters();
             for (unsigned i = 0; i < Daughters_.size(); ++i) {
                 a *= Daughters_[i]->amplitude(d, pcDaughters.at(i), dataPartitionIndex);
-                if (a == Complex_0)
-                    break;
+                //if (a == Complex_0)
+                    //break;
             }
-        }
+        //}
 
         FixedAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 

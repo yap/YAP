@@ -35,8 +35,8 @@ LDFLAGS   = -g -O2  -fopenmp
 # available in $PATH. If BAT is not installed in the standard system
 # directories, update $PATH accordingly.
 
-CXXFLAGS += `bat-config --cflags` -I$(YAPDIR)/include
-LIBS := `bat-config --libs` $(YAPDIR)/build/src/libYAP.a
+CXXFLAGS += `bat-config --cflags` -I$(YAPDIR)/include -I$(ROOTSYS)/include
+LIBS := `bat-config --libs` $(YAPDIR)/build/src/libYAP.a $(ROOTSYS)/lib/libPhysics.so
 
 # ----------------------------------------------------------------------
 # don't change lines below unless you know what you're doing

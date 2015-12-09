@@ -129,6 +129,12 @@ public:
     /// print all masses
     void printMasses(const DataPoint& d) const;
 
+    /// calculate four-momenta from squared invariant masses
+    /// with the following convention for three-momenta:\n
+    /// p1 defines +z direction
+    /// p1 x p2 defines +y direction
+    std::vector<FourVector<double> > calculateFourMomenta(const DataPoint& d) const;
+
 protected:
 
     /// set all masses to -1 (except FinalStateParticleM_)
@@ -137,12 +143,6 @@ protected:
     /// calculate all masses from a complete set of masses
     /// \return success of action
     bool calculateMissingMasses(DataPoint& d);
-
-    /// calculate four-momenta from squared invariant masses
-    /// with the following convention for three-momenta:\n
-    /// p1 defines +z direction
-    /// p1 x p2 defines +y direction
-    std::vector<FourVector<double> > calculateFourMomenta(const DataPoint& d) const;
 
     /// \return set of all pair particle combinations, without duplicates
     ParticleCombinationVector pairParticleCombinations() const;

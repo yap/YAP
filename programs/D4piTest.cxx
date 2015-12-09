@@ -84,17 +84,17 @@ int main( int argc, char** argv)
     //yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
-    /*for (auto& pc : D->particleCombinations())
+    for (auto& pc : D->particleCombinations())
         std::cout << std::string(*pc) << "\n";
-    std::cout << "\n";*/
+    std::cout << "\n";
 
     std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
-    /*for (auto& pc : D->fourMomenta().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";*/
+    for (auto& pc : D->fourMomenta().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
 
     std::cout << "\nHelicity angles symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
-    /*for (auto& pc : D->helicityAngles().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";*/
+    for (auto& pc : D->helicityAngles().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
 
     D->printDecayChain();
     std::cout << "\n";
@@ -122,9 +122,17 @@ int main( int argc, char** argv)
         for (unsigned i = 0; i < 4; ++i) {
             TLorentzVector p = *event.GetDecay(i);
             momenta.push_back({p.T(), p.X(), p.Y(), p.Z()});
+
+            DEBUG(yap::to_string(momenta.back()));
         }
 
         assert(D->addDataPoint(momenta));
+
+        // test 4 momenta calculation
+        DEBUG("calculated 4 momenta from invariant masses:");
+        auto fourVecs = D->fourMomenta().calculateFourMomenta(D->dataSet().back());
+        for (auto v : fourVecs)
+            DEBUG(yap::to_string(v));
     }
 
     LOG(INFO) << "done creating dataPoints";

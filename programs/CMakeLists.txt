@@ -1,3 +1,6 @@
+# setup ROOT includes and libraries
+find_package(ROOT)
+
 #include_directories(${BellePWA_SOURCE_DIR}/include ${ROOT_INCLUDE_DIR} ${BAT_INCLUDE_DIR})
 include_directories(${YAP_SOURCE_DIR}/include ${ROOT_INCLUDE_DIR})
 

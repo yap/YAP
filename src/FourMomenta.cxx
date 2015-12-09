@@ -128,6 +128,9 @@ void FourMomenta::calculate(DataPoint& d)
             d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
         M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, 0);
+
+        DEBUG("FourMomenta::calculate - 4-momentum " << std::string(*kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
+        DEBUG("FourMomenta::calculate - Set mass for " << std::string(*kv.first) << " to " << M_->value(d, kv.second));
     }
 }
 
@@ -143,6 +146,12 @@ std::vector<FourVector<double> > FourMomenta::calculateFourMomenta(const DataPoi
         fsp_m2[i] = m2(d, FinalStatePC_[i]);
         double E = (M2 - m2(d, RecoilPC_[i]) + fsp_m2[i]) / 2 / sqrt(M2);
         P[i] = {E, 0, 0, sqrt(pow(E, 2) - fsp_m2[i])};
+    }
+
+    // debug
+    DEBUG("E:");
+    for (auto p : P) {
+        DEBUG(to_string(p));
     }
 
     // if only particle (should not happen)
@@ -180,6 +189,13 @@ std::vector<FourVector<double> > FourMomenta::calculateFourMomenta(const DataPoi
         ThreeVector<double> vi = {{(cosAngle[i][1] - cosAngle[i][0] * cosAngle[0][1]) / sin01, 0, cosAngle[i][0]}};
         vi[2] = (yap::abs(v2) * cosAngle[i][2] - vi * v2) / v2[0];
         P[i] = fourVector(P[i][0], P[i][3] * vi);
+    }
+
+
+    // debug
+    DEBUG("final:");
+    for (auto p : P) {
+        DEBUG(to_string(p));
     }
 
     return P;
@@ -242,10 +258,19 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 
     M_->setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
 
+    DEBUG("calculated missing mass for " << std::string(*pairPCs[iUnset]) << " = " << M_->value(d, symmetrizationIndex(pairPCs[iUnset])));
+
 
     /// for a 3 particle system, we are done
-    if (n < 4)
+    if (n < 4) {
+        //debug
+        for (auto& pc : RecoilPC_) {
+            DEBUG("recoil mass for " << std::string(*pc) << " = " << M_->value(d, symmetrizationIndex(pc)));
+        }
+
+
         return true;
+    }
 
 
     /// calculate recoil masses
@@ -266,6 +291,8 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         }
 
         M_->setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
+
+        DEBUG("calculated missing recoil mass for " << std::string(*pc) << " = " << M_->value(d, symmetrizationIndex(pc)));
     }
 
 
@@ -353,7 +380,17 @@ bool FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
 bool FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses)
 {
     std::vector<double> masses(squaredMasses.size(), 0);
+
+    std::cout << "mass squares \n";
+    for (auto v : squaredMasses)
+        std::cout << "  " << v << "\n";
+
     std::transform(squaredMasses.begin(), squaredMasses.end(), masses.begin(), sqrt);
+
+    std::cout << "masses \n";
+    for (auto v : masses)
+        std::cout << "  " << v << "\n";
+
     return setMasses(d, axes, masses);
 }
 

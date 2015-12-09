@@ -24,7 +24,7 @@ int main()
 
     // set precision
     m.MCMCSetPrecision(BCEngineMCMC::kMedium);
-    m.MCMCSetNChains(3);
+    m.MCMCSetNChains(1);
     m.MCMCSetNIterationsPreRunCheck(1000);
     m.MCMCSetPreRunCheckClear(0);
     m.MCMCSetNIterationsPreRunMax(100000);

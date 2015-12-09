@@ -6,9 +6,6 @@ set(CMAKE_CXX_FLAGS "-std=c++11" )
 
 include(CommonMacros)
 
-# setup ROOT includes and libraries
-find_package(ROOT)
-
 #BAT
 # find_program(BAT_CONFIG_EXECUTABLE bat-config)
 # if (BAT_CONFIG_EXECUTABLE)
@@ -41,8 +38,8 @@ message(${CMAKE_CXX_COMPILER})
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Werror=overloaded-virtual -pthread" )
 
-#set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g2" )
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g2" )
+#set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
 
 add_subdirectory(src)
 add_subdirectory(programs)

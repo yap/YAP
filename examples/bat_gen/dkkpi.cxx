@@ -18,12 +18,17 @@
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
+#include "TGenPhaseSpace.h"
+#include "TLorentzVector.h"
+
 #include <complex>
 
 // ---------------------------------------------------------
 dkkpi::dkkpi(std::string name)
     : BCModel(name)
 {
+    yap::plainLogs(el::Level::Debug);
+
     yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
     // use common radial size for all resonances
@@ -42,6 +47,7 @@ dkkpi::dkkpi(std::string name)
 
     // phi
     auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
+    //auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1310.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(40e-3);
     phi->addChannels(kPlus, kMinus, max2L);
 
@@ -51,7 +57,7 @@ dkkpi::dkkpi(std::string name)
     X_2->addChannels(piPlus, kMinus, max2L);
 
     // Add channels to D
-    D_->addChannels(phi,      piPlus, max2L);
+    //D_->addChannels(phi,      piPlus, max2L);
     D_->addChannels(X_2,      kPlus,  max2L);
     // D_->addChannels(f_2,      piPlus, max2L);
     // D_->addChannels(f_0_980,  piPlus, max2L);
@@ -63,6 +69,28 @@ dkkpi::dkkpi(std::string name)
     // D_->addChannels(f_0_1500_100, piPlus, max2L);
 
     D_->prepare();
+
+
+    std::cout << "\n" << D_->particleCombinations().size() << " D symmetrizations \n";
+    for (auto& pc : D_->particleCombinations())
+        std::cout << std::string(*pc) << "\n";
+    std::cout << "\n";
+
+    std::cout << "\nFour momenta symmetrizations with " << D_->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : D_->fourMomenta().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D_->fourMomenta().symmetrizationIndex(pc) << "\n";
+
+    std::cout << "\nHelicity angles symmetrizations with " << D_->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : D_->helicityAngles().particleCombinations())
+        std::cout << std::string(*pc) << ": " << D_->helicityAngles().symmetrizationIndex(pc) << "\n";
+
+    D_->printDecayChain();
+    std::cout << "\n";
+
+    D_->printSpinAmplitudes();
+    D_->printDataAccessors(false);
+
+
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
@@ -79,9 +107,29 @@ dkkpi::dkkpi(std::string name)
     // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
     // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
 
-    bool b = D_->initializeForMonteCarloGeneration(3);
+    bool b = D_->initializeForMonteCarloGeneration(MCMCGetNChains());
     std::cout << "success = " << b << std::endl;
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
+
+    // initialize with random point in phasespace
+    TLorentzVector P(0., 0., 0., D_->mass()->value());
+    std::vector<double> masses(D_->finalStateParticles().size(), -1);
+    for (unsigned i = 0; i < masses.size(); ++i)
+        masses[i] = D_->finalStateParticles()[i]->mass()->value();
+    TGenPhaseSpace event;
+    event.SetDecay(P, masses.size(), &masses[0]);
+    std::vector<yap::FourVector<double> > momenta(masses.size());
+    // Generate events
+    for (unsigned i = 0; i < MCMCGetNChains(); ++i) {
+        event.Generate();
+        for (unsigned i = 0; i < masses.size(); ++i) {
+            TLorentzVector p = *event.GetDecay(i);
+            momenta[i] = {p.T(), p.X(), p.Y(), p.Z()};
+        }
+        D_->dataSet()[i].setFinalStateFourMomenta(momenta);
+        D_->fourMomenta().calculate(D_->dataSet()[i]);
+    }
+
 
     DalitzAxes_ = D_->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
 
@@ -121,7 +169,14 @@ double dkkpi::LogLikelihood(const std::vector<double>& parameters)
 
     unsigned c = MCMCGetCurrentChain();
 
-    D_->fourMomenta().setSquaredMasses(D_->dataSet()[c], DalitzAxes_, parameters);
+    DEBUG("Set mass squares to " << parameters[0] << ", " << parameters[1]);
+
+    if (! D_->fourMomenta().setSquaredMasses(D_->dataSet()[c], DalitzAxes_, parameters)) {
+        return -std::numeric_limits<double>::infinity();
+    }
+
+    DEBUG("call calculate");
+    D_->calculate(D_->dataSet()[c]);
 
     // D_->updateGlobalCalculationStatuses();
 
@@ -129,6 +184,8 @@ double dkkpi::LogLikelihood(const std::vector<double>& parameters)
     // double L = D_->partialSumOfLogsOfSquaredAmplitudes(D_->dataPartitions()[c]);
 
     // D_->setParameterFlagsToUnchanged();
+
+    DEBUG("dkkpi::LogLikelihood = " << L);
 
     return L;
 }

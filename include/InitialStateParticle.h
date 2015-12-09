@@ -72,7 +72,12 @@ public:
     double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
     {
         resetCalculationStatuses(dataPartitionIndex);
-        return log(norm(amplitude(d, dataPartitionIndex)));
+        std::complex<double> a = amplitude(d, dataPartitionIndex);
+
+        if (isnan(a.real() or isnan(a.imag())))
+            return -std::numeric_limits<double>::infinity();
+
+        return log(norm(a));
     }
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition

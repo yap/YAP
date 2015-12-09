@@ -6,9 +6,6 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 
-#include <TGenPhaseSpace.h>
-#include <TLorentzVector.h>
-
 #include <assert.h>
 #include <future>
 
@@ -42,6 +39,9 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
     std::complex<double> a = Complex_0;
     for (auto& pc : particleCombinations())
         a += amplitude(d, pc, dataPartitionIndex);
+
+    DEBUG ("InitialStateParticle::amplitude = " << a);
+
     return a;
 }
 
@@ -335,43 +335,19 @@ bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 {
     bool result = true;
 
-    /// \todo Use empty data points
-    /// \todo remove ROOT objects
-    /// @{
-    // create data points
+    // initialize with 0
+    std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), {0.,0.,0.,0.});
 
-    // initial state 4-momentum (for TGenPhaseSpace)
-    TLorentzVector P(0., 0., 0., mass()->value());
-
-    // final state masses (for TGenPhaseSpace)
-    std::vector<double> masses(finalStateParticles().size(), -1);
-    for (unsigned i = 0; i < finalStateParticles().size(); ++i)
-        masses[i] = finalStateParticles()[i]->mass()->value();
-
-    TGenPhaseSpace event;
-    event.SetDecay(P, masses.size(), &masses[0]);
-
-    std::vector<FourVector<double> > momenta(masses.size());
-
-    // Generate events
-    for (unsigned i = 0; i < n; ++i) {
-        event.Generate();
-        for (unsigned i = 0; i < masses.size(); ++i) {
-            TLorentzVector p = *event.GetDecay(i);
-            momenta[i] = {p.T(), p.X(), p.Y(), p.Z()};
-        }
+    // add n (empty) data points
+    for (unsigned i = 0; i < n; ++i)
         result &= addDataPoint(momenta);
-    }
-    /// @}
 
     // set data partitions (1 for each data point)
     setDataPartitions(createDataPartitionsBlockBySize(DataSet_, 1));
 
-    /// \todo Only calculate data-independent values
-    /// @{
     // do one initial calculation
+    /// \todo Only calculate data-independent values
     result &= std::isfinite(sumOfLogsOfSquaredAmplitudes());
-    /// @}
 
     return result;
 }
