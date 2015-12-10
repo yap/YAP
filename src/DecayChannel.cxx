@@ -96,16 +96,16 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 {
     DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << std::string(*pc));
 
-    /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
     if (FixedAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
 
+        /// \todo remove this check---no zeroes should be encountered, if all is consistent.
         if (a != Complex_0) {
-            auto& pcDaughters = pc->daughters();
+            // multiplies the amplitude by each Daughter's amplitude, for the appropriate daughter particle combination
             for (unsigned i = 0; i < Daughters_.size(); ++i) {
-                a *= Daughters_[i]->amplitude(d, pcDaughters.at(i), dataPartitionIndex);
+                a *= Daughters_[i]->amplitude(d, pc->daughters()[i], dataPartitionIndex);
                 if (a == Complex_0)
                     break;
             }

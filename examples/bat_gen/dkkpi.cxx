@@ -64,6 +64,8 @@ dkkpi::dkkpi(std::string name)
 
     D_->prepare();
 
+    D_->printDecayChain();
+
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
         freeAmps[i]->setValue(yap::Complex_1);

@@ -6,6 +6,11 @@ set(CMAKE_CXX_FLAGS "-std=c++11" )
 
 include(CommonMacros)
 
+# Includes Catch in the project:
+add_subdirectory(external/catch)
+include_directories(${CATCH_INCLUDE_DIR} ${COMMON_INCLUDES})
+enable_testing(true)  # Enables unit-testing.
+
 # setup ROOT includes and libraries
 find_package(ROOT)
 
@@ -45,5 +50,6 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Werror=
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
 
 add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(programs)
 

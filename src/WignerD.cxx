@@ -1,6 +1,5 @@
 #include "WignerD.h"
 
-#include "Constants.h"
 #include "logging.h"
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
@@ -9,184 +8,159 @@ INITIALIZE_EASYLOGGINGPP
 
 #include <cmath>
 #include <math.h>
+#include <vector>
 
 namespace yap {
 
-dFunctionCached dFunctionCached::_instance;
-bool dFunctionCached::_useCache = true;
+namespace dMatrix {
 
-dFunctionCached::cacheEntryType*
-dFunctionCached::_cache[_maxJ][_maxJ + 1][_maxJ + 1];
+// index is Kappa, in [0, min(J - M, J + N)]
+using KappaFactorVector = std::vector<double>;
 
-//-------------------------
-double dFunction(const int two_j, const int two_m, const int two_n, const double theta)
-{
-    const double dFuncVal = dFunctionCached::instance()(two_j, two_m, two_n, theta);
-    DEBUG("Wigner d^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
-          << "M' = " << spinToString(two_n) << "}(theta = " << (theta) << ") = " << dFuncVal);
-    return dFuncVal;
+// first index is for J + M, in [0, twoJ]
+// second index is for J + N, in [0, min(J + M, floor(J))]
+using dMatrix = std::vector<std::vector<KappaFactorVector> >;
+
+// Cache of d-matrix kappa term factors
+// index is for twoJ = twice the spin of the representation
+static std::vector<dMatrix> CachedMatrices_;
+
+// // Fill cache at initialization of code
+// LOG(INFO) << "filling d-Matrix cache ...";
+// for (unsigned char twoJ = 0; twoJ <= 4; ++twoJ)
+//     cacheMatrix(twoJ);
+// LOG(INFO) << "... done filling d-Matrix cache, size = " << cacheSize() << " for " << 4 << " cached matrices.";
+
 }
 
 //-------------------------
-std::complex<double> sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi)
+std::complex<double> DFunction(unsigned char twoJ, char twoM, char twoN, double alpha, double beta, double gamma)
 {
-    // crude implementation using Wigner d-function
-    const std::complex<double> YVal = sqrt((two_l + 1) / (4.*PI)) * std::exp(Complex_i * phi * (double)two_m / 2.) * dFunction(two_l, two_m, 0, theta);
-    DEBUG("spherical harmonic Y_{l = " << spinToString(two_l) << "}^{m = " << spinToString(two_m)
-          << "}" << "(phi = " << (phi) << ", theta = " << (theta) << ") = " << YVal);
-    return YVal;
+    return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta);
 }
 
 //-------------------------
-std::complex<double> DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma)
+double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
 {
-    const double arg = ((double)two_m / 2) * alpha + ((double)two_n / 2) * gamma;
-    const std::complex<double> DFuncVal = std::exp(-Complex_i * arg) * dFunction(two_j, two_m, two_n, beta);
-    DEBUG("Wigner D^{J = " << spinToString(two_j) << "}_{M = " << spinToString(two_m) << ", "
-          << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
-          << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
-    return DFuncVal;
-}
+    // d^J_MN(-beta) = dJ_NM(beta)
+    if (beta < 0)
+        return dFunction(twoJ, twoN, twoM, -beta);
+    // beta is now positive
 
-//-------------------------
-std::complex<double> DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma)
-{
-    const std::complex<double> DFuncVal = std::conj(DFunction(two_j, two_m, two_n, alpha, beta, gamma));
-    DEBUG("Wigner D^{J = " << spinToString(two_j) << "}*_{M = " << spinToString(two_m) << ", "
-          << "M' = " << spinToString(two_n) << "}(alpha = " << (alpha)
-          << ", beta = " << (beta) << ", gamma = " << (gamma) << ") = " << DFuncVal);
-    return DFuncVal;
-}
+    // d^J_MN = (-)^(M-N) * d^J_NM
+    if (twoN > twoM)
+        return powMinusOne((twoM - twoN) / 2) * dFunction(twoJ, twoN, twoM, beta);
+    // N <= M now
 
-//-------------------------
-dFunctionCached::dFunctionCached()
-{
-    LOG(INFO) << "dFunctionCached - fill cache";
+    // d^J_MN = (-)^(M-N) * d^J_(-M)(-N)
+    if (twoN > 0)
+        return powMinusOne((twoM - twoN) / 2) * dFunction(twoJ, -twoM, -twoN, beta);
+    // N <= 0 now
 
-    int maxJ(_maxJ);
-
-    for (int two_j = 0; two_j < maxJ; ++two_j)
-        for (int two_m = 0; two_m <= maxJ; ++two_m)
-            for (int two_n = 0; two_n <= maxJ; ++two_n) {
-                if ((std::abs(two_m) > two_j) or (std::abs(two_n) > two_j))
-                    continue;
-                operator ()(two_j, two_m, two_n, 1.);
-            }
-
-    LOG(INFO) << "dFunctionCached - done filling cache, size = " << cacheSize();
-}
-
-//-------------------------
-double dFunctionCached::operator ()(const int two_j, const int two_m, const int two_n, const double theta)
-{
-    // check input parameters
-    if (two_j >= (int)_maxJ) {
-        LOG(ERROR) << "J = " << spinToString(two_j) << " is too large. maximum allowed J is "
-                   << spinToString(_maxJ - 1) << ". Aborting...";
-        throw;
+    // check M
+    if (isOdd(twoM) != isOdd(twoJ)) {
+        FLOG(ERROR) << "helicity M = " << spinToString(twoM) << " invalid for spin J = " << spinToString(twoJ);
+        throw std::invalid_argument("twoM");
     }
-    if ((two_j < 0) or (std::abs(two_m) > two_j) or (std::abs(two_n) > two_j)) {
-        LOG(ERROR) << "illegal argument for Wigner d^{J = " << spinToString(two_j) << "}"
-                   << "_{M = " << spinToString(two_m) << ", M' = " << spinToString(two_n) << "}"
-                   << "(theta = " << (theta) << "). Aborting...";
-        throw;
+    if (std::abs(twoM) > twoJ) {
+        FLOG(WARNING) << "helicity M = " << spinToString(twoM) << " is larger than spin J = " << spinToString(twoJ) << "; matrix element is zero";
+        return 0;
     }
 
-    // trivial case
-    if (two_j == 0)
+    // check N
+    if (isOdd(twoN) != isOdd(twoJ)) {
+        FLOG(ERROR) << "helicity N = " << spinToString(twoN) << " invalid for spin J = " << spinToString(twoJ);
+        throw std::invalid_argument("twoN");
+    }
+    if (std::abs(twoN) > twoJ) {
+        FLOG(WARNING) << "helicity N = " << spinToString(twoN) << " is larger than spin J = " << spinToString(twoJ) << "; matrix element is zero";
+        return 0;
+    }
+
+    // trivial case of J = 0
+    if (twoJ == 0)
         return 1;
 
-    // swap spin projections for negative angle
-    int _m = two_m;
-    int _n = two_n;
-    double thetaHalf = theta / 2;
-    if (theta < 0) {
-        thetaHalf = std::abs(thetaHalf);
-        std::swap(_m, _n);
+    // cache dMatrix for J if necessary
+    dMatrix::cache(twoJ);
+    // if problem with caching (should not happen!)
+    if (twoJ >= dMatrix::CachedMatrices_.size()) {
+        FLOG(ERROR) << "d matrix could not be cached for spin J = " << spinToString(twoJ);
+        FLOG(ERROR) << "CachedMatrices_.size() = " << dMatrix::CachedMatrices_.size();
+        throw;
     }
 
-    const double cosThetaHalf = cos(thetaHalf);
-    const double sinThetaHalf = sin(thetaHalf);
+    const dMatrix::KappaFactorVector& KF = dMatrix::CachedMatrices_[twoJ][(twoJ + twoM) / 2][(twoJ + twoN) / 2];
 
-    double dFuncVal = 0;
-    cacheEntryType*& cacheEntry = _cache[two_j][(two_j + _m) / 2][(two_j + _n) / 2];
-    if (_useCache and cacheEntry) {
-        // calculate function value using cache
-        double sumTerm = 0;
-        for (unsigned int i = 0; i < cacheEntry->factor.size(); ++i) {
-            sumTerm += pow(cosThetaHalf, cacheEntry->kmn1[i])
-                       * pow(sinThetaHalf, cacheEntry->jmnk[i]) / cacheEntry->factor[i];
-        }
-        dFuncVal = cacheEntry->constTerm * sumTerm;
-    } else {
-        // calculate function value and put intermediate values into cache
-        if (_useCache)
-            cacheEntry = new cacheEntryType();
-        const int jpm = (two_j + _m) / 2;
-        const int jpn = (two_j + _n) / 2;
-        const int jmm = (two_j - _m) / 2;
-        const int jmn = (two_j - _n) / 2;
-        const double kk =   factorial(jpm)
-                            * factorial(jmm)
-                            * factorial(jpn)
-                            * factorial(jmn);
-        const double constTerm = powMinusOne(jpm) * sqrt(kk);
-        if (cacheEntry)
-            cacheEntry->constTerm = constTerm;
+    unsigned MminusN = (twoM - twoN) / 2;
 
-        double sumTerm = 0;
-        const int mpn = (_m + _n) / 2;
-        const int kMin = std::max(0, mpn);
-        const int kMax = std::min(jpm, jpn);
-        for (int k = kMin; k <= kMax; ++k) {
-            const int kmn1 = 2 * k - (_m + _n) / 2;
-            const int jmnk = two_j + (_m + _n) / 2 - 2 * k;
-            const int jmk = (two_j + _m) / 2 - k;
-            const int jnk = (two_j + _n) / 2 - k;
-            const int kmn2 = k - (_m + _n) / 2;
-            const double factor = ( factorial(k )
-                                    * factorial(jmk )
-                                    * factorial(jnk )
-                                    * factorial(kmn2)) / powMinusOne(k);
-            if (cacheEntry) {
-                cacheEntry->kmn1.push_back (kmn1);
-                cacheEntry->jmnk.push_back (jmnk);
-                cacheEntry->factor.push_back(factor);
-            }
-            // using the 1 / factor here so that function value is the same as in PWA2000
-            sumTerm += pow(cosThetaHalf, kmn1) * pow(sinThetaHalf, jmnk) / factor;
-        }
-        dFuncVal = constTerm * sumTerm;
-    }
+    // sum over powers of cosine and sine of beta / 2 and multiply by factor
+    double cosHalfBeta = cos(beta / 2); // power for cos is [2J - (M - N) - 2K]
+    double sinHalfBeta = sin(beta / 2); // power for sin is [(M - N) + 2K]
+    double dMatrixElement = 0;
+    for (unsigned K = 0; K < KF.size(); ++K)
+        dMatrixElement += KF[K] * pow(cosHalfBeta, twoJ - MminusN - 2 * K) * pow(sinHalfBeta, MminusN + 2 * K);
 
-    return dFuncVal;
+    return dMatrixElement;
 }
 
 //-------------------------
-unsigned int dFunctionCached::cacheSize() ///< returns cache size in bytes
+void dMatrix::cache(unsigned char twoJ)
 {
-    unsigned int size = _maxJ * (_maxJ + 1) * (_maxJ + 1) * sizeof(_cache[0][0][0]);
-    for (int two_j = 0; two_j < (int)_maxJ; ++two_j)
-        for (int two_m = -two_j; two_m <= two_j; two_m += 2)
-            for (int two_n = -two_j; two_n <= two_j; two_n += 2) {
-                cacheEntryType*& cacheEntry = _cache[two_j][(two_j + two_m) / 2][(two_j + two_n) / 2];
-                if (cacheEntry) {
-                    size += sizeof(*cacheEntry);
-                    size += cacheEntry->kmn1.capacity () * sizeof(int);
-                    size += cacheEntry->jmnk.capacity () * sizeof(int);
-                    size += cacheEntry->factor.capacity() * sizeof(double);
-                }
-            }
-    return size;
+    /// d-matrix has already been cached for this spin
+    if (twoJ < CachedMatrices_.size() or CachedMatrices_.empty() or !CachedMatrices_[twoJ].empty())
+        return;
+
+    /// resize d-matrix vector to hold up to spin J
+    if (twoJ >= CachedMatrices_.size())
+        CachedMatrices_.resize(twoJ + 1);
+
+    double J = (double)twoJ / 2;
+
+    dMatrix dJ((unsigned)std::floor(J) + 1);
+
+    for (unsigned JplusM = 0; JplusM <= twoJ; ++JplusM) {
+
+        unsigned JminusM = twoJ - JplusM;
+
+        // = sqrt( (J + M)! * (J - M)! )
+        double JMFactor = sqrt(std::tgamma(JplusM + 1) * std::tgamma(JminusM + 1));
+
+        dJ[JplusM].resize(std::min(JplusM, (unsigned)std::floor(J)) + 1);
+
+        for (unsigned JplusN = 0; JplusN < dJ[JplusM].size(); ++JplusN) {
+
+            unsigned JminusN = twoJ - JplusN;
+            unsigned MminusN = JplusM - JplusN;
+
+            // = sqrt( (J + N)! * (J - N)! )
+            double JNFactor = sqrt(std::tgamma(JplusN + 1) * std::tgamma(JminusN + 1));
+
+            dJ[JplusM][JplusN].resize(std::min(JminusM, JplusN));
+
+            // minK is 0, by choice that N <= M
+            for (unsigned K = 0; K <= dJ[JplusM][JplusN].size(); ++K)
+                dJ[JplusM][JplusN][K] = powMinusOne(K + MminusN) * JMFactor * JNFactor
+                                        / std::tgamma(JminusM - K + 1) / std::tgamma(JplusN - K + 1) / std::tgamma(K + MminusN) / std::tgamma(K + 1);
+        }
+    }
+    CachedMatrices_[twoJ] = dJ;
 }
 
 //-------------------------
-dFunctionCached::~dFunctionCached()
+unsigned int dMatrix::cacheSize()
 {
-    for (int two_j = 0; two_j < (int)_maxJ; ++two_j)
-        for (int two_m = -two_j; two_m <= two_j; two_m += 2)
-            for (int two_n = -two_j; two_n <= two_j; two_n += 2)
-                delete _cache[two_j][(two_j + two_m) / 2][(two_j + two_n) / 2];
+    unsigned totSize = sizeof(CachedMatrices_);
+    for (const auto& dJ : CachedMatrices_) {
+        totSize += sizeof(dJ);
+        for (const auto& dJrow : dJ) {
+            totSize += sizeof(dJrow);
+            for (const auto& dJelt : dJrow) {
+                totSize += sizeof(dJelt) + dJelt.size() * sizeof(KappaFactorVector::value_type);
+            }
+        }
+    }
+    return totSize;
 }
 
 }

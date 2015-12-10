@@ -40,6 +40,7 @@ InitialStateParticle::~InitialStateParticle()
 std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
 {
     std::complex<double> a = Complex_0;
+    // sum up DecayingParticle::amplitude over each particle combination
     for (auto& pc : particleCombinations())
         a += amplitude(d, pc, dataPartitionIndex);
     return a;

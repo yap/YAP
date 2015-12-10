@@ -71,7 +71,10 @@ private:
     /// DecayChannel this BlattWeisskopf belongs to
     DecayChannel* DecayChannel_;
 
+    /// Blatt-Weisskopf factor at nominal mass
     std::shared_ptr<RealCachedDataValue> Fq_r;
+
+    /// Blatt-Weisskopf factor at data mass
     std::shared_ptr<RealCachedDataValue> Fq_ab;
 };
 

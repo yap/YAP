@@ -143,7 +143,10 @@ protected:
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
+    /// Independent amplitude for channel's contribution to full model
     std::shared_ptr<ComplexParameter> FreeAmplitude_;
+
+    /// amplitude from spin dynamics, mass shapes, etc.
     std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
 
 };

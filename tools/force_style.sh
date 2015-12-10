@@ -5,4 +5,5 @@ astyle --options=tools/astylerc --formatted \
     src/*.cxx \
     programs/*.cxx \
     examples/*/*.cxx \
-    examples/*/*.h
+    examples/*/*.h \
+    test/*.cxx

@@ -26,13 +26,15 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 //-------------------------
 std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
-    // \todo check
     unsigned symIndex = symmetrizationIndex(pc);
 
     if (Amplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 
+        /// \todo Is this the best way to do it? (loop over pc's then channels. or channels then pc's?)
+
+        // sum up DecayChannel::amplitude over each channel
         for (auto& c : channels()) {
             if (c->hasSymmetrizationIndex(pc))
                 a += c->amplitude(d, pc, dataPartitionIndex);
