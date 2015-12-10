@@ -3,11 +3,12 @@ project(YAP)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakeModules)
 set(CMAKE_CXX_FLAGS "-std=c++11" )
+set(EXT_PROJECTS_DIR "external")
 
 include(CommonMacros)
 
 # Includes Catch in the project:
-add_subdirectory(external/catch)
+add_subdirectory(${EXT_PROJECTS_DIR}/catch)
 include_directories(${CATCH_INCLUDE_DIR} ${COMMON_INCLUDES})
 enable_testing(true)  # Enables unit-testing.
 
