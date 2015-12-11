@@ -65,7 +65,7 @@ namespace dMatrix {
 void cache(unsigned char twoJ);
 
 /// \return cache size in bytes
-unsigned int cacheSize();
+unsigned cacheSize();
 
 }
 

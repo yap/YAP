@@ -22,7 +22,7 @@ using KappaFactorVector = std::vector<double>;
 using dMatrix = std::vector<std::vector<KappaFactorVector> >;
 
 // Cache of d-matrix kappa term factors
-// index is for twoJ = twice the spin of the representation
+// index is for (2J - 1), since J = 0 requires no cache
 static std::vector<dMatrix> CachedMatrices_;
 
 // // Fill cache at initialization of code
@@ -84,7 +84,7 @@ double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
     // cache dMatrix for J if necessary
     dMatrix::cache(twoJ);
     // if problem with caching (should not happen!)
-    if (twoJ >= dMatrix::CachedMatrices_.size()) {
+    if (twoJ > dMatrix::CachedMatrices_.size()) {
         FLOG(ERROR) << "d matrix could not be cached for spin J = " << spinToString(twoJ);
         FLOG(ERROR) << "CachedMatrices_.size() = " << dMatrix::CachedMatrices_.size();
         throw;
@@ -108,16 +108,16 @@ double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
 void dMatrix::cache(unsigned char twoJ)
 {
     /// d-matrix has already been cached for this spin
-    if (twoJ < CachedMatrices_.size() or CachedMatrices_.empty() or !CachedMatrices_[twoJ].empty())
+    if (twoJ == 0 or (twoJ <= CachedMatrices_.size() and !CachedMatrices_[twoJ - 1].empty()))
         return;
 
     /// resize d-matrix vector to hold up to spin J
-    if (twoJ >= CachedMatrices_.size())
-        CachedMatrices_.resize(twoJ + 1);
+    if (twoJ > CachedMatrices_.size())
+        CachedMatrices_.resize(twoJ);
 
     double J = (double)twoJ / 2;
 
-    dMatrix dJ((unsigned)std::floor(J) + 1);
+    dMatrix dJ(twoJ + 1);
 
     for (unsigned JplusM = 0; JplusM <= twoJ; ++JplusM) {
 
@@ -136,7 +136,7 @@ void dMatrix::cache(unsigned char twoJ)
             // = sqrt( (J + N)! * (J - N)! )
             double JNFactor = sqrt(std::tgamma(JplusN + 1) * std::tgamma(JminusN + 1));
 
-            dJ[JplusM][JplusN].resize(std::min(JminusM, JplusN));
+            dJ[JplusM][JplusN].resize(std::min(JminusM, JplusN) + 1);
 
             // minK is 0, by choice that N <= M
             for (unsigned K = 0; K <= dJ[JplusM][JplusN].size(); ++K)
@@ -144,11 +144,11 @@ void dMatrix::cache(unsigned char twoJ)
                                         / std::tgamma(JminusM - K + 1) / std::tgamma(JplusN - K + 1) / std::tgamma(K + MminusN) / std::tgamma(K + 1);
         }
     }
-    CachedMatrices_[twoJ] = dJ;
+    CachedMatrices_[twoJ - 1] = dJ;
 }
 
 //-------------------------
-unsigned int dMatrix::cacheSize()
+unsigned dMatrix::cacheSize()
 {
     unsigned totSize = sizeof(CachedMatrices_);
     for (const auto& dJ : CachedMatrices_) {
@@ -160,6 +160,17 @@ unsigned int dMatrix::cacheSize()
             }
         }
     }
+    for (unsigned twoJm1 = 0; twoJm1 < CachedMatrices_.size(); ++twoJm1)
+        for (unsigned JpM = 0; JpM < CachedMatrices_[twoJm1].size(); ++JpM)
+            for (unsigned JpN = 0; JpN < CachedMatrices_[twoJm1][JpM].size(); ++JpN) {
+                std::string line = "2J-1 = " + std::to_string(twoJm1)
+                                   + " J+M = " + std::to_string(JpM)
+                                   + " J+N = " + std::to_string(JpN)
+                                   + " -> K = ";
+                for (unsigned k = 0; k < CachedMatrices_[twoJm1][JpM][JpN].size(); ++ k)
+                    line += " " + std::to_string(CachedMatrices_[twoJm1][JpM][JpN][k]);
+                FLOG(INFO) << line;
+            }
     return totSize;
 }
 

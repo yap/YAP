@@ -1,6 +1,7 @@
 #include <catch.hpp>
 
 #include <Constants.h>
+#include <logging.h>
 #include <WignerD.h>
 
 #include <cmath>
@@ -15,6 +16,9 @@ TEST_CASE( "WignerD" )
         REQUIRE_NOTHROW( yap::dMatrix::cache(0) );
         REQUIRE_NOTHROW( yap::dMatrix::cache(2) );
         REQUIRE_NOTHROW( yap::dMatrix::cache(1) );
+
+        unsigned s = yap::dMatrix::cacheSize();
+        FLOG(INFO) << "cache size = " << s;
     }
 
     SECTION( "J = 0") {
@@ -43,7 +47,6 @@ TEST_CASE( "WignerD" )
             REQUIRE( yap::dFunction(1, 0, 3, beta) == 0 );
 
             // check vals
-            REQUIRE( Approx(yap::dFunction(1, -1, -1, beta)) == +cos(beta / 2) );
             REQUIRE( Approx(yap::dFunction(1, -1, -1, beta)) == +cos(beta / 2) );
             REQUIRE( Approx(yap::dFunction(1, -1, +1, beta)) == -sin(beta / 2) );
             REQUIRE( Approx(yap::dFunction(1, +1, -1, beta)) == +sin(beta / 2) );
