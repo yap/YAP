@@ -43,8 +43,8 @@ std::complex<double> DFunction(unsigned char twoJ, char twoM, char twoN, double 
 double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
 {
     // d^J_MN(-beta) = dJ_NM(beta)
-    if (beta < 0)
-        return dFunction(twoJ, twoN, twoM, -beta);
+    // if (beta < 0)
+    //     return dFunction(twoJ, twoN, twoM, -beta);
     // beta is now positive
 
     // d^J_MN = (-)^(M-N) * d^J_NM
@@ -90,15 +90,15 @@ double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
         throw;
     }
 
-    const dMatrix::KappaFactorVector& KF = dMatrix::CachedMatrices_[twoJ][(twoJ + twoM) / 2][(twoJ + twoN) / 2];
+    const dMatrix::KappaFactorVector& KF = dMatrix::CachedMatrices_[twoJ - 1][(twoJ + twoM) / 2][(twoJ + twoN) / 2];
 
-    unsigned MminusN = (twoM - twoN) / 2;
+    unsigned char MminusN = (twoM - twoN) / 2;
 
     // sum over powers of cosine and sine of beta / 2 and multiply by factor
     double cosHalfBeta = cos(beta / 2); // power for cos is [2J - (M - N) - 2K]
     double sinHalfBeta = sin(beta / 2); // power for sin is [(M - N) + 2K]
     double dMatrixElement = 0;
-    for (unsigned K = 0; K < KF.size(); ++K)
+    for (unsigned char K = 0; K < KF.size(); ++K)
         dMatrixElement += KF[K] * pow(cosHalfBeta, twoJ - MminusN - 2 * K) * pow(sinHalfBeta, MminusN + 2 * K);
 
     return dMatrixElement;
@@ -119,19 +119,19 @@ void dMatrix::cache(unsigned char twoJ)
 
     dMatrix dJ(twoJ + 1);
 
-    for (unsigned JplusM = 0; JplusM <= twoJ; ++JplusM) {
+    for (unsigned char JplusM = 0; JplusM <= twoJ; ++JplusM) {
 
-        unsigned JminusM = twoJ - JplusM;
+        unsigned char JminusM = twoJ - JplusM;
 
         // = sqrt( (J + M)! * (J - M)! )
         double JMFactor = sqrt(std::tgamma(JplusM + 1) * std::tgamma(JminusM + 1));
 
-        dJ[JplusM].resize(std::min(JplusM, (unsigned)std::floor(J)) + 1);
+        dJ[JplusM].resize(std::min(JplusM, (unsigned char)std::floor(J)) + 1);
 
-        for (unsigned JplusN = 0; JplusN < dJ[JplusM].size(); ++JplusN) {
+        for (unsigned char JplusN = 0; JplusN < dJ[JplusM].size(); ++JplusN) {
 
-            unsigned JminusN = twoJ - JplusN;
-            unsigned MminusN = JplusM - JplusN;
+            unsigned char JminusN = twoJ - JplusN;
+            unsigned char MminusN = JplusM - JplusN;
 
             // = sqrt( (J + N)! * (J - N)! )
             double JNFactor = sqrt(std::tgamma(JplusN + 1) * std::tgamma(JminusN + 1));
@@ -139,9 +139,9 @@ void dMatrix::cache(unsigned char twoJ)
             dJ[JplusM][JplusN].resize(std::min(JminusM, JplusN) + 1);
 
             // minK is 0, by choice that N <= M
-            for (unsigned K = 0; K <= dJ[JplusM][JplusN].size(); ++K)
+            for (unsigned K = 0; K < dJ[JplusM][JplusN].size(); ++K)
                 dJ[JplusM][JplusN][K] = powMinusOne(K + MminusN) * JMFactor * JNFactor
-                                        / std::tgamma(JminusM - K + 1) / std::tgamma(JplusN - K + 1) / std::tgamma(K + MminusN) / std::tgamma(K + 1);
+                                        / std::tgamma(JminusM - K + 1) / std::tgamma(JplusN - K + 1) / std::tgamma(K + MminusN + 1) / std::tgamma(K + 1);
         }
     }
     CachedMatrices_[twoJ - 1] = dJ;
@@ -160,17 +160,6 @@ unsigned dMatrix::cacheSize()
             }
         }
     }
-    for (unsigned twoJm1 = 0; twoJm1 < CachedMatrices_.size(); ++twoJm1)
-        for (unsigned JpM = 0; JpM < CachedMatrices_[twoJm1].size(); ++JpM)
-            for (unsigned JpN = 0; JpN < CachedMatrices_[twoJm1][JpM].size(); ++JpN) {
-                std::string line = "2J-1 = " + std::to_string(twoJm1)
-                                   + " J+M = " + std::to_string(JpM)
-                                   + " J+N = " + std::to_string(JpN)
-                                   + " -> K = ";
-                for (unsigned k = 0; k < CachedMatrices_[twoJm1][JpM][JpN].size(); ++ k)
-                    line += " " + std::to_string(CachedMatrices_[twoJm1][JpM][JpN][k]);
-                FLOG(INFO) << line;
-            }
     return totSize;
 }
 
