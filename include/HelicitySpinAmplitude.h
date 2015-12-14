@@ -85,7 +85,7 @@ private:
 
     /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
     /// \todo make this a Parameter???
-    std::map<std::shared_ptr<const ParticleCombination>, double> ClebschGordanCoefficients_;
+    ParticleCombinationMap<double> ClebschGordanCoefficients_;
 
     std::shared_ptr<ComplexCachedDataValue> SpinAmplitude_;
 

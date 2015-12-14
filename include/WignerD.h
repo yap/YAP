@@ -17,84 +17,57 @@
  */
 
 /// \file
+/// \brief Functions for caching and calculating Wigner d and D functions
+/// \author Daniel Greenwald, Johannes Rauch
+///
+/// Calculation is based on M. E. Rose's _Elementary Theory of Angular Momentum_ (1957):
+///
+/// \f$ D^{J}_{MN}(\alpha, \beta, \gamma) \equiv \exp(-iM\alpha) d^{J}_{MN}(\beta) \exp(-iN\gamma)\f$
+///
+/// \f$ d^{J}_{MN}(\beta) \equiv \sum_{K} A (-)^{K+M-N} B_{K} (\cos\frac{\beta}{2})^{2J+N-M-2K} (\sin\frac{\beta}{2})^{M-N+2K} \f$
+///
+/// with \f$ A \equiv (J+N)!(J-N)!(J+M)!(J-M)!\f$
+/// and \f$ B_{K} \equiv (J-M-K)!((J+N-K)!(K+M-N)!K!\f$.
+///
+/// The limits on K are governed by the factorials,
+/// since \f$ (1 / X!) = 0 \f$ if \f$ X < 0\f$.
+///
+/// We only cache matrix elements with M in [-J, J] and N in [-J, min(0, m)].
+/// This amounts to the lower triangle and the diagonal without the bottom right corner.
+/// The uncached matrix elements are given by the by the symmetries
+///   - \f$ d^{J}_{MN}(\beta) = (-)^(M-N) d^{J}_{NM}(\beta)\f$
+///   - \f$ d^{J}_{MN}(\beta) = (-)^{M-N) d^{J}_{-N-M}(\beta)\f$
 
 #ifndef yap_WignerD_h
 #define yap_WignerD_h
 
+#include "Constants.h"
+
 #include <complex>
-#include <vector>
 
 namespace yap {
 
-/// Wigner d-function d^j_{two_m two_n}(theta)
-double dFunction(const int two_j, const int two_m, const int two_n, const double theta);
+/// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
+std::complex<double> DFunction(unsigned char twoJ, char twoM, char twoN, double alpha, double beta, double gamma);
 
-/// spherical harmonics Y_l^{two_m}(theta, phi)
-std::complex<double> sphericalHarmonic(const int two_l, const int two_m, const double theta, const double phi);
-
-/// Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-std::complex<double> DFunction(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
-
-/// complex conjugate of Wigner D-function D^j_{two_m two_n}(alpha, beta, gamma)
-std::complex<double> DFunctionConj(const int two_j, const int two_m, const int two_n, const double alpha, const double beta, const double gamma);
+/// \return Wigner d-function \f$ d^{J}_{M N}(\beta) \f$
+/// \param twoJ twice the total spin of system
+/// \param twoM twice the first spin projection
+/// \param twoN twice the second spin projection
+/// \param beta rotation angle
+double dFunction(unsigned char twoJ, char twoM, char twoN, double beta);
 
 
-/// \class dFunctionCached
-/// \brief cached Wigner d and D functions
-/// \author Daniel Greenwald, Johannes Rauch
-/// This class has been copied from rootpwa and modified
-class dFunctionCached
-{
+namespace dMatrix {
 
-public:
+/// Cache d-matrix elements for representation of spin J
+/// \param twoJ twice the spin of the representation
+void cache(unsigned char twoJ);
 
-    struct cacheEntryType {
-        cacheEntryType()
-            : constTerm(0)
-        { }
+/// \return cache size in bytes
+unsigned cacheSize();
 
-        double constTerm;
-        std::vector<int> kmn1;
-        std::vector<int> jmnk;
-        std::vector<double> factor;
-    };
-
-    typedef std::vector<std::vector<std::vector<cacheEntryType> > > cacheType;
-
-
-    /// get singleton instance
-    static dFunctionCached& instance()
-    { return _instance; }
-
-    /// \return d^j_{two_m two_n}(theta)
-    double operator ()(const int two_j, const int two_m, const int two_n, const double theta);
-
-    /// \return caching flag
-    static bool useCache()
-    { return _useCache; }
-
-    /// sets caching flag
-    static void setUseCache(const bool useCache = true)
-    { _useCache = useCache; }
-
-    /// \return cache size in bytes
-    static unsigned int cacheSize();
-
-
-private:
-
-    dFunctionCached();
-    ~dFunctionCached();
-    dFunctionCached(const dFunctionCached&);
-    dFunctionCached& operator =(const dFunctionCached&);
-
-    static dFunctionCached _instance; ///< singleton instance
-    static bool _useCache; ///< if set to true, cache is used
-
-    static const unsigned int _maxJ = 21; ///< maximum allowed angular momentum * 2 + 1
-    static cacheEntryType* _cache[_maxJ][_maxJ + 1][_maxJ + 1]; ///< cache for intermediate terms [two_j][two_m][two_n]
-};
-
+}
 
 }
 

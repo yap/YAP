@@ -140,6 +140,7 @@ std::vector<FourVector<double> > FourMomenta::calculateFourMomenta(const DataPoi
     double M2 = m2(d, InitialStatePC_);
 
     std::vector<FourVector<double> > P(FinalStateParticleM_.size());
+    assert(FinalStateParticleM_.size() == FinalStatePC_.size());
     std::vector<double> fsp_m2(P.size(), 0);
     // calculate E and |p| for each initial state particle, storing in Z-aligned FourVector
     for (unsigned i = 0; i < P.size(); ++i) {

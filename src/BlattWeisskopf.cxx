@@ -29,7 +29,6 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 //-------------------------
 std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
-    /// \todo check
     unsigned symIndex = symmetrizationIndex(pc);
     bool calc(false); // for debugging
 
@@ -94,6 +93,7 @@ double BlattWeisskopf::F2(int twoL, double R2, double q2)
         case 4:  // L = 2
             return 9. + 3.*z + z * z;
         default:
+            /// \todo put in generic formula for L > 2
             LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
                        << spinToString(twoL) << ". returning 0." << std::endl;
             return 0;

@@ -30,7 +30,7 @@ namespace yap {
 
 /// return n!
 inline double factorial(int n)
-{ return std::tgamma(n + 1.); }
+{ return std::tgamma(n + 1); }
 
 /// returns whether val is an odd number
 inline bool isOdd(int val)
@@ -41,14 +41,10 @@ inline bool isEven(int val)
 { return not isOdd(val); }
 
 /// extracts sign from value
-inline int signum(int val)
-{
-    if (val < 0)
-        return -1;
-    if (val > 0)
-        return +1;
-    return 0;
-}
+template <typename T>
+typename std::enable_if<std::is_signed<T>::value, int>::type
+signum(const T& val)
+{ return (T(0) < val) - (val < T(0)); }
 
 /// optimized function for (-1)^n
 inline int powMinusOne(const int exponent)

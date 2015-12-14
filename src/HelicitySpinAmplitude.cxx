@@ -33,20 +33,18 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
 
         // \todo angular normalization factor??? sqrt(2*L + 1)
 
-        const int J = InitialQuantumNumbers_.twoJ();
-        // DFunction == 1  for  J == 0
-        // if (J != 0) {
-        const int Lambda  = pc->twoLambda();
+        unsigned char twoJ = InitialQuantumNumbers_.twoJ();
 
-        const int lambda1 = pc->daughters()[0]->twoLambda();
-        const int lambda2 = pc->daughters()[1]->twoLambda();
-        const int lambda  = lambda1 - lambda2;
+        char twoM = pc->twoLambda();
 
-        const double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
-        const double theta = initialStateParticle()->helicityAngles().theta(d, pc);
+        char twoLambda1 = pc->daughters()[0]->twoLambda();
+        char twoLambda2 = pc->daughters()[1]->twoLambda();
+        char twoLambda  = twoLambda1 - twoLambda2;
 
-        a *= DFunctionConj(J, Lambda, lambda, phi, theta, 0);
-        // }
+        double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
+        double theta = initialStateParticle()->helicityAngles().theta(d, pc);
+
+        a *= std::conj(DFunction(twoJ, twoM, twoLambda, phi, theta, 0));
 
         SpinAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 
