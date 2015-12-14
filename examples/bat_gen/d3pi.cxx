@@ -145,7 +145,7 @@ double d3pi::LogLikelihood(const std::vector<double>& parameters)
     // if (!std::isfinite(LogAPrioriProbability(parameters)))
     //     return -std::numeric_limits<double>::infinity();
 
-    unsigned c = MCMCGetCurrentChain();
+    unsigned c = GetCurrentChain();
 
     D_->fourMomenta().setSquaredMasses(D_->dataSet()[c], DalitzAxes_, parameters);
 

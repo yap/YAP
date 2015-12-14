@@ -106,7 +106,7 @@ dkkpi::dkkpi(std::string name)
     // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
     // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
 
-    bool b = D_->initializeForMonteCarloGeneration(MCMCGetNChains());
+    bool b = D_->initializeForMonteCarloGeneration(GetNChains());
     std::cout << "success = " << b << std::endl;
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 
@@ -119,7 +119,7 @@ dkkpi::dkkpi(std::string name)
     event.SetDecay(P, masses.size(), &masses[0]);
     std::vector<yap::FourVector<double> > momenta(masses.size());
     // Generate events
-    for (unsigned i = 0; i < MCMCGetNChains(); ++i) {
+    for (unsigned i = 0; i < GetNChains(); ++i) {
         event.Generate();
         for (unsigned i = 0; i < masses.size(); ++i) {
             TLorentzVector p = *event.GetDecay(i);
@@ -166,7 +166,7 @@ double dkkpi::LogLikelihood(const std::vector<double>& parameters)
     // if (!std::isfinite(LogAPrioriProbability(parameters)))
     //     return -std::numeric_limits<double>::infinity();
 
-    unsigned c = MCMCGetCurrentChain();
+    unsigned c = GetCurrentChain();
 
     DEBUG("Set mass squares to " << parameters[0] << ", " << parameters[1]);
 

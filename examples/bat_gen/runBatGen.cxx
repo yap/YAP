@@ -23,26 +23,30 @@ int main()
     dkkpi m("DKKPI");
 
     // set precision
-    m.MCMCSetPrecision(BCEngineMCMC::kMedium);
-    m.MCMCSetNChains(1);
-    m.MCMCSetNIterationsPreRunCheck(1000);
-    m.MCMCSetPreRunCheckClear(0);
-    m.MCMCSetNIterationsPreRunMax(100000);
-    m.MCMCSetNIterationsPreRunMin(5000);
-    m.MCMCSetNIterationsRun(1000000);
-    m.MCMCSetMultivariateProposalFunctionCovarianceUpdatesMinimum(10);
+    m.SetPrecision(BCEngineMCMC::kMedium);
+    m.SetNChains(1);
+    m.SetNIterationsPreRunCheck(1000);
+    m.SetPreRunCheckClear(0);
+    m.SetNIterationsPreRunMax(100000);
+    m.SetNIterationsPreRunMin(5000);
+    m.SetNIterationsRun(1000000);
+    // \todo has been renamed in latest BAT version
+    // m.SetMultivariateProposalFunctionCovarianceUpdatesMinimum(10);
 
     m.GetObservables().FillHistograms(true, true);
 
-    m.MCMCSetFlagInitialPosition(BCEngineMCMC::kMCMCInitRandomUniform);
+    // \todo has been renamed in latest BAT version
+    //m.SetFlagInitialPosition(BCEngineMCMC::kMCMCInitRandomUniform);
 
-    m.MCMCSetMultivariateProposalFunction(true);
-    m.MCMCSetMultivariateProposalFunctionCovarianceUpdateLambda(0.5);
-    m.MCMCSetMinimumEfficiency(0.15);
-    m.MCMCSetMaximumEfficiency(0.35);
-    m.MCMCSetRValueParametersCriterion(1.25);
+    // \todo has been renamed in latest BAT version
+    //m.SetMultivariateProposalFunction(true);
+    // \todo has been renamed in latest BAT version
+    //m.SetMultivariateProposalFunctionCovarianceUpdateLambda(0.5);
+    m.SetMinimumEfficiency(0.15);
+    m.SetMaximumEfficiency(0.35);
+    m.SetRValueParametersCriterion(1.25);
 
-    m.MCMCSetCorrectRValueForSamplingVariability(true);
+    m.SetCorrectRValueForSamplingVariability(true);
 
     BCLog::OutSummary("Test model created");
 
