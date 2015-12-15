@@ -24,29 +24,11 @@ int main()
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
-    m.SetNChains(1);
-    m.SetNIterationsPreRunCheck(1000);
-    m.SetPreRunCheckClear(0);
-    m.SetNIterationsPreRunMax(100000);
-    m.SetNIterationsPreRunMin(5000);
-    m.SetNIterationsRun(1000000);
-    // \todo has been renamed in latest BAT version
-    // m.SetMultivariateProposalFunctionCovarianceUpdatesMinimum(10);
+
+    // generate 4e6 samples in total
+    m.SetNIterationsRun(static_cast<int>(4e6 / m.GetNChains()));
 
     m.GetObservables().FillHistograms(true, true);
-
-    // \todo has been renamed in latest BAT version
-    //m.SetFlagInitialPosition(BCEngineMCMC::kMCMCInitRandomUniform);
-
-    // \todo has been renamed in latest BAT version
-    //m.SetMultivariateProposalFunction(true);
-    // \todo has been renamed in latest BAT version
-    //m.SetMultivariateProposalFunctionCovarianceUpdateLambda(0.5);
-    m.SetMinimumEfficiency(0.15);
-    m.SetMaximumEfficiency(0.35);
-    m.SetRValueParametersCriterion(1.25);
-
-    m.SetCorrectRValueForSamplingVariability(true);
 
     BCLog::OutSummary("Test model created");
 
