@@ -121,7 +121,7 @@ int main( int argc, char** argv)
         std::vector<yap::FourVector<double> > momenta;
         for (unsigned i = 0; i < 4; ++i) {
             TLorentzVector p = *event.GetDecay(i);
-            momenta.push_back({p.T(), p.X(), p.Y(), p.Z()});
+            momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
 
             DEBUG(yap::to_string(momenta.back()));
         }

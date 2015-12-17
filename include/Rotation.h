@@ -22,7 +22,7 @@
 #define yap_Rotation_h
 
 #include "Constants.h"
-#include "SquareMatrix.h"
+#include "Matrix.h"
 #include "ThreeVector.h"
 
 namespace yap {

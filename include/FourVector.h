@@ -22,8 +22,9 @@
 #define yap_FourVector_h
 
 #include "CoordinateSystem.h"
-#include "SquareMatrix.h"
+#include "Matrix.h"
 #include "ThreeVector.h"
+#include "Vector.h"
 
 #include <algorithm>
 #include <type_traits>
@@ -35,56 +36,57 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup VectorAlgebra
 template <typename T>
-class FourVector : public NVector<T, 4>
+class FourVector : public Vector<T, 4>
 {
 public:
     /// Default constructor
-    FourVector() : NVector<T, 4> () {}
+    constexpr FourVector() noexcept : Vector<T, 4> () {}
 
     /// intializer_list constructor
-    FourVector(std::initializer_list<T> l) : NVector<T, 4>(l) {}
+    constexpr FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
+
+    // /// initializer with individual elements
+    // constexpr FourVector(const T& E, const T& P0, const T& P1, const T& P2) : FourVector({E, P0, P1, P2}) {}
 
     /// energy + ThreeVector constructor
     /// \param E 0th component
     /// \param P #ThreeVector component
-    FourVector(const T& E, const ThreeVector<T>& P) : NVector<T, 4>( {E, P[0], P[1], P[2]}) {}
+    constexpr FourVector(const T& E, const ThreeVector<T>& P) noexcept : Vector<T, 4>( {E, P[0], P[1], P[2]}) {}
 
-    /// NVector<T, 4> constructor
-    FourVector(const NVector<T, 4>&& V) : NVector<T, 4>(V) {}
+    // /// Vector<T, 4> constructor
+    // constexpr FourVector(const Vector<T, 4>&& V) : Vector<T, 4>(V) {}
+
+    /// using assignment with rhs = brace-enclosed list
+    using Vector<T, 4>::operator=;
 
     /// \return inner (dot) product for 4-vectors
-    T operator*(const FourVector<T>& B) const
-    { return this->front() * B.front() - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, 0); }
+    constexpr T operator*(const Vector<T, 4>& B) const override
+    { return this->front() * B.front() - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, (T)0); }
 
     /// unary minus for 4-vector,
     /// does not change sign of zero'th component
-    FourVector<T> operator-() const
-    {
-        FourVector<T> res = *this;
-        std::transform(res.begin() + 1, res.end(), res.begin() + 1, [](const T & t) {return -t;});
-        return res;
-    }
-
+    constexpr Vector<T, 4> operator-() const override
+    { return FourVector<T>((*this)[0], -vect(*this)); }
 };
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
-ThreeVector<T> vect(const FourVector<T>& V)
-{ return ThreeVector<T> {V[1], V[2], V[3]}; }
+constexpr ThreeVector<T> vect(const FourVector<T>& V) noexcept
+{ return ThreeVector<T>({V[1], V[2], V[3]}); }
 
 /// \return boost vector of this #FourVector
 template <typename T>
-ThreeVector<T> boost(const FourVector<T>& V)
-{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T> {0, 0, 0}; }
+constexpr ThreeVector<T> boost(const FourVector<T>& V)
+{ return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T>({0, 0, 0}); }
 
 /// multiply a 4x4 matrix times a FourVector
 template <typename T>
-FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V)
-{ return FourVector<T>(R * static_cast<NVector<T, 4> >(V)); }
+constexpr FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V)
+{ return FourVector<T>(R * static_cast<Vector<T, 4> >(V)); }
 
 /// apply a three-rotation to a FourVector (rotating only the spatial components)
 template <typename T>
-FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
+constexpr FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
 { return FourVector<T>(V[0], R * vect(V)); }
 
 /// Calculate helicity frame of V transformed from C,

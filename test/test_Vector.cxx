@@ -3,8 +3,6 @@
 #include <Constants.h>
 #include <FourVector.h>
 #include <logging.h>
-#include <NVector.h>
-#include <ThreeVector.h>
 
 #include <cmath>
 
@@ -16,31 +14,31 @@ TEST_CASE( "Vector" )
 
     SECTION( "FourVector" ) {
 
-        yap::FourVector<double> v1{4, 3, 2, 1};
-        yap::FourVector<double> v2{8, 7, 6, 5};
+        auto v1 = yap::FourVector<double>({4, 3, 2, 1});
+        auto v2 = yap::FourVector<double>({8, 7, 6, 5});
 
         SECTION( "addition-assignment" ) {
             v1 += v2;
-            REQUIRE( v1 == yap::FourVector<double>(12, 10, 8, 6) );
+            REQUIRE( v1 == yap::FourVector<double>({12, 10, 8, 6}) );
         }
 
         SECTION( "subtraction-assignment" ) {
             v1 -= v2;
-            REQUIRE( v1 == yap::FourVector<double>(-4, -4, -4, -4) );
+            REQUIRE( v1 == yap::FourVector<double>({ -4, -4, -4, -4}) );
         }
 
         SECTION( "multiplication-assignment" ) {
             v1 *= 2.;
-            REQUIRE( v1 == yap::FourVector<double>(8, 6, 4, 2) );
+            REQUIRE( v1 == yap::FourVector<double>({8, 6, 4, 2}) );
         }
 
         SECTION( "arithmetic operations" ) {
-            
+
             // +
-            REQUIRE( v1 + v2 == yap::FourVector<double>(12, 10, 8, 6) );
+            REQUIRE( v1 + v2 == yap::FourVector<double>({12, 10, 8, 6}) );
 
             // -
-            REQUIRE( v1 - v2 == yap::FourVector<double>(-4, -4, -4, -4) );
+            REQUIRE( v1 - v2 == yap::FourVector<double>({ -4, -4, -4, -4}) );
 
             // * (four-vector inner product)
             REQUIRE( v1 * v2 == -6 );
@@ -51,8 +49,8 @@ TEST_CASE( "Vector" )
 
             // abs
             REQUIRE( abs(v1) == sqrt(2) );
-            REQUIRE( abs(yap::FourVector<double>(1, 0, 0, 0)) == 1 );
-            REQUIRE( abs(yap::FourVector<double>(1, 1, 0, 0)) == 0 );
+            REQUIRE( abs(yap::FourVector<double>({1, 0, 0, 0})) == 1 );
+            REQUIRE( abs(yap::FourVector<double>({1, 1, 0, 0})) == 0 );
 
         }
 

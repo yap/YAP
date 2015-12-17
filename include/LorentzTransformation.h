@@ -22,7 +22,7 @@
 #define yap_LorentzTransformation_h
 
 #include "Constants.h"
-#include "SquareMatrix.h"
+#include "Matrix.h"
 #include "ThreeVector.h"
 
 namespace yap {
@@ -55,35 +55,35 @@ FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 /// \return a 4D Lorentz-transformation matrix for a pure boost
 /// \param V #ThreeVector defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V)
+constexpr FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V)
 { return lorentzTransformation<T>(FourVector<T>(T(1), V)); }
 
 /// \return a 4D Lorentz-transformation matrix for a rotation followed by a boost
 /// \param R #ThreeMatrix defining rotation
 /// \param V #FourVector defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R, const FourVector<T>& V)
+constexpr FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R, const FourVector<T>& V)
 { return lorentzTransformation<T>(V) * lorentzTransformation<T>(R); }
 
 /// \return a 4D Lorentz-transformation matrix for a rotation followed by a boost
 /// \param R #ThreeMatrix defining rotation
 /// \param V #ThreeVector defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R, const ThreeVector<T>& V)
+constexpr FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R, const ThreeVector<T>& V)
 { return lorentzTransformation<T>(V) * lorentzTransformation<T>(R); }
 
 /// \return a 4D Lorentz-transformation matrix for a boost followed by a rotation
 /// \param R #ThreeMatrix defining rotation
 /// \param V #FourVector defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const FourVector<T>& V, const ThreeMatrix<T> R)
+constexpr FourMatrix<T> lorentzTransformation(const FourVector<T>& V, const ThreeMatrix<T> R)
 { return lorentzTransformation<T>(R) * lorentzTransformation<T>(V); }
 
 /// \return a 4D Lorentz-transformation matrix for a boost followed by a rotation
 /// \param R #ThreeMatrix defining rotation
 /// \param V #ThreeVector defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V, const ThreeMatrix<T>& R)
+constexpr FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V, const ThreeMatrix<T>& R)
 { return lorentzTransformation<T>(R) * lorentzTransformation<T>(V); }
 
 }

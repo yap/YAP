@@ -21,8 +21,10 @@
 #ifndef yap_CoordinateSystem_h
 #define yap_CoordinateSystem_h
 
-#include "NVector.h"
-#include "SquareMatrix.h"
+#include "cpp14_type_traits.h"
+#include "Vector.h"
+#include "Matrix.h"
+#include "ThreeVector.h"
 
 #include <algorithm>
 #include <string>
@@ -35,46 +37,26 @@ namespace yap {
 /// \typedef CoordinateSystem
 /// \ingroup VectorAlgebra
 template <typename T, size_t N>
-using CoordinateSystem = std::array<NVector<T, N>, N>;
+using CoordinateSystem = std::array<Vector<T, N>, N>;
 
 /// \return string
 template <typename T, size_t N>
-typename std::enable_if<std::is_arithmetic<T>::value, std::string >::type
-to_string(const CoordinateSystem<T, N>& C)
+std::string to_string(const CoordinateSystem<T, N>& C)
 {
     std::string s = "(";
-    std::for_each(C.begin(), C.end(), [&](const NVector<T, N>& v) {s += to_string(v) + ", ";});
+    std::for_each(C.begin(), C.end(), [&](const Vector<T, N>& v) {s += to_string(v) + ", ";});
     s.erase(s.size() - 2, 2);
     s += ")";
     return s;
 }
 
-/// \return Whether 3D CoordinateSystem is right handed
-/// \param C 3D CoordinateSystem to check
-template <typename T>
-bool isRightHanded(const CoordinateSystem<T, 3>& C)
-{
-    // +[2] is proportional to [0] cross [1]
-    return (norm(unit(C[2]) - unit(cross(C[0], C[1]))) < VECTOREPSILON);
-}
-
-/// \return Whether 3D CoordinateSystem is left handed
-/// \param C 3D CoordinateSystem to check
-template <typename T>
-bool isLeftHanded(const CoordinateSystem<T, 3>& C)
-{
-    // -[2] is proportional to [0] cross [1]
-    return (norm(unit(C[2]) + unit(cross(C[0], C[1]))) < VECTOREPSILON);
-}
-
 /// \return CoordinateSystem with vectors of unit norm
 /// \param C CoordinateSystem to base on
 template <typename T, size_t N>
-typename std::enable_if<std::is_arithmetic<T>::value, CoordinateSystem<T, N> >::type
-unit(const CoordinateSystem<T, N>& C)
+CoordinateSystem<T, N> unit(const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> uC;
-    std::transform(C.begin(), C.end(), uC.begin(), [](const NVector<T, N>& c) {return yap::unit<T, N>(c);});
+    std::transform(C.begin(), C.end(), uC.begin(), [](const Vector<T, N>& c) {return yap::unit<T, N>(c);});
     return uC;
 }
 
@@ -84,27 +66,43 @@ template <typename T, size_t N>
 CoordinateSystem<T, N> operator*(const SquareMatrix<T, N>& M, const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> MC;
-    std::transform(C.begin(), C.end(), MC.begin(), [&](const NVector<T, N>& c) {return M * c; });
+    std::transform(C.begin(), C.end(), MC.begin(), [&](const Vector<T, N>& c) {return M * c; });
     return MC;
 }
 
 /// \name Specifically for 3D systems
 /// @{
 
+/// \return Whether 3D CoordinateSystem is right handed
+/// \param C 3D CoordinateSystem to check
+template <typename T>
+constexpr bool isRightHanded(const CoordinateSystem<T, 3>& C)
+{
+    // +[2] is proportional to [0] cross [1]
+    return (norm(unit(C[2]) - unit(cross(C[0], C[1]))) < VECTOREPSILON);
+}
+
+/// \return Whether 3D CoordinateSystem is left handed
+/// \param C 3D CoordinateSystem to check
+template <typename T>
+constexpr bool isLeftHanded(const CoordinateSystem<T, 3>& C)
+{
+    // -[2] is proportional to [0] cross [1]
+    return (norm(unit(C[2]) + unit(cross(C[0], C[1]))) < VECTOREPSILON);
+}
+
 /// \return azimuthal angle of V in coordinate system C, in [-pi, pi]
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, T>::type
-phi(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
+constexpr T phi(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return angle(V, C[2]) * (((V * C[1]) >= 0) ? T(1) : T(-1)); }
 
 /// \return polar angle of V in coordinate system C, in [0, pi]
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, T>::type
-theta(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
+constexpr T theta(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return acos(V * C[0] / abs(V) / abs(C[0]) / sin(theta(V, C))); }
 
 /// This is the fastest to use if calculating both angles
@@ -112,10 +110,9 @@ theta(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, std::array<T, 2> >::type
-angles(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
+std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 {
-    NVector<T, 3> uV = unit(V);
+    Vector<T, 3> uV = unit(V);
     T cosPhi = uV * unit(C[2]);
     T s = ((uV * C[1]) >= 0) ? T(1) : T(-1);
     return std::array<T, 2> { s * acos(cosPhi), uV * unit(C[0]) / sqrt(1 - cosPhi * cosPhi) };
@@ -126,8 +123,7 @@ angles(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
 /// \param V ThreeVector defining new Z direction
 /// \param C CoordinateSystem aiding in defining new Y direction
 template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, CoordinateSystem<T, 3> >::type
-helicityFrame(const NVector<T, 3>& V, const CoordinateSystem<T, 3>& C)
+CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 {
     // if V is 0, return C
     if (norm(V) == 0)

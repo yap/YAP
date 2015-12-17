@@ -8,7 +8,6 @@ set(YAP_SOURCES
 	BreitWigner.cxx
 	CachedDataValue.cxx
 	CachedValue.cxx
-	Constants.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx

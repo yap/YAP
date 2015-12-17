@@ -337,7 +337,7 @@ bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
     bool result = true;
 
     // initialize with 0
-    std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), {0., 0., 0., 0.});
+    std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), FourVector_0);
 
     // add n (empty) data points
     for (unsigned i = 0; i < n; ++i)

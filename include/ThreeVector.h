@@ -21,17 +21,36 @@
 #ifndef yap_ThreeVector_h
 #define yap_ThreeVector_h
 
-#include "CoordinateSystem.h"
-#include "NVector.h"
-
-#include <type_traits>
+#include "Matrix.h"
+#include "Vector.h"
 
 namespace yap {
 
 /// \typedef ThreeVector
 /// \ingroup VectorAlgebra
 template <typename T>
-using ThreeVector = NVector<T, 3>;
+using ThreeVector = Vector<T, 3>;
+
+/// \return cross product
+template <typename T>
+constexpr ThreeVector<T> cross(const ThreeVector<T>& A, const ThreeVector<T>& B) noexcept
+{ return ThreeVector<T>({A[1]* B[2] - A[2]* B[1], A[2]* B[0] - A[0]* B[2], A[0]* B[1] - A[1]* B[0]}); }
+
+/// \return angle between two 3D vectors
+template <typename T>
+constexpr T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
+{ return acos(A * B / abs(A) / abs(B)); }
+
+/// skew symmetric matrix formed from a 3 vector
+template<typename T>
+constexpr SquareMatrix<T, 3> skewSymmetric(const ThreeVector<T> V) noexcept
+{
+    return {
+        {    0., -V[2],  V[1] },
+        {  V[2],    0., -V[0] },
+        { -V[1],  V[0],    0. }
+    };
+}
 
 }
 #endif

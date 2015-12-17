@@ -22,7 +22,7 @@
 #define yap_Constants_h
 
 #include "FourVector.h"
-#include "SquareMatrix.h"
+#include "Matrix.h"
 #include "ThreeVector.h"
 
 #include <complex>
@@ -32,23 +32,23 @@ namespace yap {
 /// \name Complex constants
 /// @{
 /// complex zero
-extern const std::complex<double> Complex_0;
+constexpr auto Complex_0 = std::complex<double>(0, 0);
 
 /// complex one
-extern const std::complex<double> Complex_1;
+constexpr auto Complex_1 = std::complex<double>(1, 0);
 
 /// complex i
-extern const std::complex<double> Complex_i;
+constexpr auto Complex_i = std::complex<double>(0, 1);
 /// @}
 
 /// \name real constants
 /// @{
 
 /// pi (11 digits)
-extern const double PI;
+constexpr auto PI = 3.14159226535;
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
-extern const double DEGTORAD;
+constexpr auto DEGTORAD = PI / 180.;
 
 /// @}
 
@@ -56,39 +56,42 @@ extern const double DEGTORAD;
 /// @{
 
 /// X axis (ThreeVector)
-extern const ThreeVector<double> ThreeAxis_X;
+constexpr auto ThreeAxis_X = ThreeVector<double>({1, 0, 0});
 
 /// Y axis (ThreeVector)
-extern const ThreeVector<double> ThreeAxis_Y;
+constexpr auto ThreeAxis_Y = ThreeVector<double>({0, 1, 0});
 
 /// Z axis (ThreeVector)
-extern const ThreeVector<double> ThreeAxis_Z;
+constexpr auto ThreeAxis_Z = ThreeVector<double>({0, 1, 0});
 
 /// Standard 3D coordinate system
-extern const CoordinateSystem<double, 3> ThreeAxes;
+constexpr auto ThreeAxes = CoordinateSystem<double, 3> {ThreeAxis_X, ThreeAxis_Y, ThreeAxis_Z};
 
 /// 0 as ThreeVector;
-extern const ThreeVector<double> ThreeVector_0;
+constexpr auto ThreeVector_0 = ThreeVector<double>({0, 0, 0});
 
 /// @}
 
 /// \name #FourVector constants
 /// @{
 
+/// T axis (FourVector)
+constexpr auto FourAxis_T = FourVector<double>({1, 0, 0, 0});
+
 /// X axis (FourVector)
-extern const FourVector<double> FourAxis_X;
+constexpr auto FourAxis_X = FourVector<double>({0, 1, 0, 0});
 
 /// Y axis (FourVector)
-extern const FourVector<double> FourAxis_Y;
+constexpr auto FourAxis_Y = FourVector<double>({0, 0, 1, 0});
 
 /// Z axis (FourVector)
-extern const FourVector<double> FourAxis_Z;
+constexpr auto FourAxis_Z = FourVector<double>({0, 0, 0, 1});
 
 /// Standard 4D coordinate system
-extern const CoordinateSystem<double, 4> FourAxes;
+constexpr auto FourAxes = CoordinateSystem<double, 4>({FourAxis_T, FourAxis_X, FourAxis_Y, FourAxis_Z});
 
 /// 0 as FourVector;
-extern const FourVector<double> FourVector_0;
+constexpr auto FourVector_0 = FourVector<double>({0, 0, 0, 0});
 
 /// @}
 
