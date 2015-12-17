@@ -83,10 +83,10 @@ TEST_CASE( "WignerD" )
             REQUIRE( Approx(yap::dFunction(2, -2, -2, beta)) == (1 + cos(beta)) / 2 );
 
             // check symmetries
-            REQUIRE( yap::dFunction(2, +2,  0, beta) + yap::dFunction(1, -2,  0, beta) == 0);
-            REQUIRE( yap::dFunction(2, +2,  0, beta) - yap::dFunction(1,  0, +2, beta) == 0);
-            REQUIRE( yap::dFunction(2, +2, -2, beta) - yap::dFunction(1, -2, +2, -beta) == 0);
-            REQUIRE( yap::dFunction(2,  0, +2, beta) - yap::dFunction(1, +2,  0, -beta) == 0);
+            REQUIRE( yap::dFunction(2, +2,  0, beta) + yap::dFunction(2, -2,  0, beta) == 0);
+            REQUIRE( yap::dFunction(2, +2,  0, beta) + yap::dFunction(2,  0, +2, beta) == 0);
+            REQUIRE( yap::dFunction(2, +2, -2, beta) - yap::dFunction(2, -2, +2, -beta) == 0);
+            REQUIRE( yap::dFunction(2,  0, +2, beta) - yap::dFunction(2, +2,  0, -beta) == 0);
         }
     }
 }
