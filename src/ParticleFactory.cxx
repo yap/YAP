@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "make_unique.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 
@@ -42,32 +43,32 @@ ParticleFactory::ParticleFactory(const std::string pdlFile)
 }
 
 //-------------------------
-std::shared_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG)
+std::unique_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG)
 {
-    const ParticleTableEntry& p = particleTableEntry(PDG);
+    const auto& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.Mass_, p.Name_);
+    return std::make_unique<FinalStateParticle>(p, p.Mass_, p.Name_);
 }
 
 //-------------------------
-std::shared_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
+std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
 {
-    const ParticleTableEntry& p = particleTableEntry(PDG);
+    const auto& p = particleTableEntry(PDG);
 
     if (p.twoJ() != 0)
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_shared<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
+    return std::make_unique<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
+std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
 {
-    const ParticleTableEntry& p = particleTableEntry(PDG);
+    const auto& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);
     massShape->setParameters(p);
-    return std::make_shared<Resonance>(p, p.Mass_, p.Name_, radialSize, std::move(massShape));
+    return std::make_unique<Resonance>(p, p.Mass_, p.Name_, radialSize, std::move(massShape));
 }
 
 //-------------------------

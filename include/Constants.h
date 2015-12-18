@@ -62,7 +62,7 @@ constexpr auto ThreeAxis_X = ThreeVector<double>({1, 0, 0});
 constexpr auto ThreeAxis_Y = ThreeVector<double>({0, 1, 0});
 
 /// Z axis (ThreeVector)
-constexpr auto ThreeAxis_Z = ThreeVector<double>({0, 1, 0});
+constexpr auto ThreeAxis_Z = ThreeVector<double>({0, 0, 1});
 
 /// Standard 3D coordinate system
 constexpr auto ThreeAxes = CoordinateSystem<double, 3> {ThreeAxis_X, ThreeAxis_Y, ThreeAxis_Z};

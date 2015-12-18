@@ -24,12 +24,12 @@ int main( int argc, char** argv)
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // create final state particles
-    auto kPlus  = factory.createFinalStateParticle(+321);
-    auto kMinus = factory.createFinalStateParticle(-321);
-    auto piPlus = factory.createFinalStateParticle(+211);
+    std::shared_ptr<yap::FinalStateParticle> kPlus  = factory.createFinalStateParticle(+321);
+    std::shared_ptr<yap::FinalStateParticle> kMinus = factory.createFinalStateParticle(-321);
+    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(+211);
 
     // create initial state particle and set final state
-    auto D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
     D->setFinalStateParticles({kPlus, kMinus, piPlus});
 
     // create a phi

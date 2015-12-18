@@ -39,24 +39,18 @@ template <typename T>
 class FourVector : public Vector<T, 4>
 {
 public:
-    /// Default constructor
-    constexpr FourVector() noexcept : Vector<T, 4> () {}
-
     /// intializer_list constructor
     constexpr FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
-
-    // /// initializer with individual elements
-    // constexpr FourVector(const T& E, const T& P0, const T& P1, const T& P2) : FourVector({E, P0, P1, P2}) {}
 
     /// energy + ThreeVector constructor
     /// \param E 0th component
     /// \param P #ThreeVector component
     constexpr FourVector(const T& E, const ThreeVector<T>& P) noexcept : Vector<T, 4>( {E, P[0], P[1], P[2]}) {}
 
-    // /// Vector<T, 4> constructor
-    // constexpr FourVector(const Vector<T, 4>&& V) : Vector<T, 4>(V) {}
+    /// Default constructor
+    FourVector() = default;
 
-    /// using assignment with rhs = brace-enclosed list
+    /// Use std::array's assignment operators
     using Vector<T, 4>::operator=;
 
     /// \return inner (dot) product for 4-vectors

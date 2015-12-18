@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <memory>
 #include <string>
 
 //#include <callgrind.h>
@@ -35,23 +36,23 @@ int main( int argc, char** argv)
 
     // initial state particle
     double radialSize = 1.;
-    auto D = factory.createInitialStateParticle(421, radialSize);
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
 
     // final state particles
-    auto piPlus = factory.createFinalStateParticle(211);
-    auto piMinus = factory.createFinalStateParticle(-211);
+    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
+    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211);
 
     // Set final-state particles
     D->setFinalStateParticles({piPlus, piMinus, piPlus, piMinus});
 
     // rho rho
-    auto rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());
     rho->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(rho, rho, max2L);
 
     // omega omega
-    auto omega = factory.createResonance(223, radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> omega = factory.createResonance(223, radialSize, std::make_unique<yap::BreitWigner>());
     omega->addChannels(piPlus, piMinus, max2L);
 
     D->addChannels(omega, omega, max2L);
@@ -60,10 +61,10 @@ int main( int argc, char** argv)
     D->addChannels(rho, omega, max2L);
 
     // a_1 channels
-    auto sigma = factory.createResonance(9000221, radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> sigma = factory.createResonance(9000221, radialSize, std::make_unique<yap::BreitWigner>());
     sigma->addChannels(piPlus, piMinus, max2L);
 
-    auto a_1 = factory.createResonance(20213, radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> a_1 = factory.createResonance(20213, radialSize, std::make_unique<yap::BreitWigner>());
     a_1->addChannels(sigma, piPlus, max2L);
 
     a_1->addChannels(rho, piPlus, max2L);

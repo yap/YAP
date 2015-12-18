@@ -29,6 +29,7 @@
 #include <cassert>
 #include <cmath>
 #include <numeric>
+#include <ostream>
 #include <stdexcept>
 #include <string>
 
@@ -42,18 +43,18 @@ template <typename T, size_t N>
 class Vector : public std::array<T, N>
 {
 public:
-    /// Default Constructor
-    constexpr Vector() noexcept : std::array<T, N>() {}
-
     /// Constructor
-    constexpr Vector(const std::array<T, N>& list) noexcept : std::array<T, N>(list) {}
+    constexpr Vector(const std::array<T, N>& v) noexcept : std::array<T, N>(v) {}
+
+    /// Default constructor
+    Vector() = default;
+
+    /// Use std::array's assignment operators
+    using std::array<T, N>::operator=;
 
     /// inner (dot) product of #Vector's
     virtual constexpr T operator*(const Vector<T, N>& B) const
     { return std::inner_product(this->begin(), this->end(), B.begin(), T(0)); }
-
-    /// using assignment with rhs = brace-enclosed list
-    using std::array<T, N>::operator=;
 
     /// unary minus
     constexpr virtual Vector<T, N> operator-() const
@@ -72,6 +73,10 @@ std::string to_string(const Vector<T, N>& V)
     s += ")";
     return s;
 }
+
+template <typename T, size_t N>
+std::ostream& operator<<(std::ostream& os, const Vector<T, N>& V)
+{ os << to_string(V); return os; }
 
 /// addition assignment
 template <typename T, size_t N>

@@ -65,21 +65,21 @@ public:
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
-    /// \return shared pointer to new final state particle
-    std::shared_ptr<FinalStateParticle> createFinalStateParticle(int PDG);
+    /// \return unique pointer to new final state particle
+    std::unique_ptr<FinalStateParticle> createFinalStateParticle(int PDG);
 
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
-    /// \return pointer to new InitialStateParticle object
-    std::shared_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize);
+    /// \return unique pointer to new InitialStateParticle object
+    std::unique_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
-    /// \return pointer to new Resonance object
-    std::shared_ptr<Resonance> createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape);
+    /// \return unique pointer to new Resonance object
+    std::unique_ptr<Resonance> createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape);
 
     /// \name Particle table access
     /// @{

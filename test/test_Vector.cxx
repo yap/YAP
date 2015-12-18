@@ -2,6 +2,7 @@
 
 #include <Constants.h>
 #include <FourVector.h>
+#include <ThreeVector.h>
 #include <logging.h>
 
 #include <cmath>
@@ -11,6 +12,62 @@ TEST_CASE( "Vector" )
 
     // disable logs in text
     yap::disableLogs(el::Level::Global);
+
+    SECTION( "ThreeVector" ) {
+
+        auto v1 = yap::ThreeVector<double>({1, 2, 3});
+        auto v2 = yap::ThreeVector<double>({4, 5, 6});
+
+        SECTION( "addition-assignment" ) {
+            v1 += v2;
+            REQUIRE( v1 == yap::ThreeVector<double>({5, 7, 9}) );
+        }
+
+        SECTION( "subtraction-assignment" ) {
+            v1 -= v2;
+            REQUIRE( v1 == yap::ThreeVector<double>({ -3, -3, -3}) );
+        }
+
+        SECTION( "multiplication-assignment" ) {
+            v1 *= 3.;
+            REQUIRE( v1 == yap::ThreeVector<double>({3, 6, 9}) );
+        }
+
+        SECTION( "arithmetic operations" ) {
+
+            // +
+            REQUIRE( v1 + v2 == yap::ThreeVector<double>({5, 7, 9}) );
+
+            // -
+            REQUIRE( v1 - v2 == yap::ThreeVector<double>({ -3, -3, -3}) );
+
+            // inner product
+            REQUIRE( v1 * v2 == 32 );
+
+            // norm
+            REQUIRE( norm(v1) == 14 );
+            REQUIRE( norm(v2) == 77 );
+
+            // abs
+            REQUIRE( abs(v1) == sqrt(14) );
+            REQUIRE( abs(v2) == sqrt(77) );
+
+            // cross product
+            auto x = yap::ThreeVector<double>({1, 0, 0});
+            auto y = yap::ThreeVector<double>({0, 1, 0});
+            auto z = yap::ThreeVector<double>({0, 0, 1});
+            REQUIRE( cross(x, y) == z );
+
+        }
+
+        SECTION( "constants" ) {
+
+            // axes:
+            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Y) == yap::ThreeAxis_Z );
+            REQUIRE( isRightHanded(yap::ThreeAxes) );
+        }
+
+    }
 
     SECTION( "FourVector" ) {
 
