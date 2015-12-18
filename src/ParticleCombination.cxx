@@ -35,6 +35,8 @@ ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLa
 //-------------------------
 std::string to_string(const ParticleCombination& pc)
 {
+    if (pc.indices().empty())
+        return "(empty)";
     std::string s = "(";
     std::for_each(pc.indices().begin(), pc.indices().end(), [&](const ParticleIndex & i) {s += std::to_string(i) + ", ";});
     if (!pc.indices().empty())
@@ -44,108 +46,84 @@ std::string to_string(const ParticleCombination& pc)
 }
 
 //-------------------------
-const std::shared_ptr<const ParticleCombination> ParticleCombination::sharedParent() const
-{
-    if (! Parent_) {
-        return std::shared_ptr<ParticleCombination>(Parent_);
-    }
-
-    for (auto& pc : ParticleCombinationSet_)
-        if (Parent_ == pc.get())
-            return pc;
-
-    LOG(WARNING) << "ParticleCombination::parent() - could not find parent in ParticleCombinationSet_.";
-
-    return std::shared_ptr<const ParticleCombination>(Parent_);
-}
-
-//-------------------------
-bool ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
+void ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
 {
     if (daughter->indices().empty()) {
-        LOG(ERROR) << "ParticleCombination::addDaughter - daughter contains no indices.";
-        return false;
+        FLOG(ERROR) << "daughter contains no indices.";
+        throw std::invalid_argument("daughter");
     }
 
     /// Check that new daughter does not share content with other daughters?
-    for (unsigned indexP : Indices_)
-        for (unsigned indexD : daughter->indices())
-            if (indexP == indexD) {
-                LOG(ERROR) << "ParticleCombination::addDaughter - daughter contains indices that are already in parent.";
-                return false;
-            }
+    if (overlap(daughter->indices(), Indices_)) {
+        FLOG(ERROR) << "daughter contains indices that are already in parent.";
+        throw std::invalid_argument("daughter");
+    }
 
     // add daughter to vector
     Daughters_.push_back(daughter);
 
     // copy daughter's indices into Indices_
     Indices_.insert(Indices_.end(), daughter->indices().begin(), daughter->indices().end());
-
-    return true;
 }
 
 //-------------------------
 bool ParticleCombination::consistent() const
 {
+    bool C = true;
+
     // should have no daughters or 2 or more daughters:
     if (Daughters_.size() == 1) {
-        LOG(ERROR) << "ParticleCombination::consistent() - has only one daughter.";
-        return false;
+        FLOG(ERROR) << "has only one daughter.";
+        C &= false;
     }
 
-    // if empty, return inconsistent
     if (Indices_.empty()) {
-        LOG(ERROR) << "ParticleCombination::consistent() - has no indices.";
-        return false;
+        FLOG(ERROR) << "has no indices.";
+        C &= false;
     }
 
     // if Daugthers_ empty, should have one and only index
     if (Daughters_.empty()) {
         if (Indices_.size() != 1) {
-            LOG(ERROR) << "ParticleCombination::consistent() - contains wrong number of indices for final-state particle (" << Indices_.size() << " != 1)";
-            return false;
+            FLOG(ERROR) << "contains wrong number of indices for final-state particle (" << Indices_.size() << " != 1)";
+            C &= false;
         } else
             // don't need to check indices below
             return true;
-    }
+    } else {
 
-    // Check indices & and then daughters
-    bool result = true;
-
-    // create unique_copy of Indices_ (as set)
-    std::set<ParticleIndex> U(Indices_.begin(), Indices_.end());
-    // check unique_copy-object's size == this object's size
-    if (U.size() != Indices_.size()) {
-        LOG(ERROR) << "ParticleCombination::consistent - index vector contains duplicate entries (" << U.size() << " != " << Indices_.size() << ").";
-        result = false;
-    }
-
-    // check if in ParticleCombinationSet_
-    bool found(false);
-    for (auto& pc : ParticleCombination::particleCombinationSet()) {
-        if (pc.get() == this) {
-            found = true;
-            break;
+        // Check Indices_ doesn't have duplicates
+        // create unique_copy of Indices_ (as set)
+        std::set<ParticleIndex> U(Indices_.begin(), Indices_.end());
+        // check unique_copy-object's size == this object's size
+        if (U.size() != Indices_.size()) {
+            FLOG(ERROR) << "index vector contains duplicate entries (" << U.size() << " != " << Indices_.size() << ").";
+            C &= false;
         }
-    }
-    if (!found) {
-        if (parent())
-            LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this) << " from decay " << std::string(*parent());
-        else
-            LOG(ERROR) << "ParticleCombination::consistent - ParticleCombination is not in ParticleCombinationSet: " << std::string(*this) << " (no parent)";
-        result = false;
-    }
 
-    // check daughters
-    for (auto& d : Daughters_) {
-        if (d->parent() and  d->parent() != this) {
-            LOG(ERROR) << "ParticleCombination::consistent - daughter's parent is not this ParticleCombination.";
-            result = false;
+        // check if in ParticleCombinationCache_
+        /// \todo make check_cached function
+        if (std::find_if(ParticleCombinationCache_.begin(), ParticleCombinationCache_.end(),
+                         [&](const ParticleCombinationCache::key_type& pc){return pc.lock().get() == this;}) == ParticleCombinationCache_.end()) {
+            FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << std::string(*this)
+                        << ((parent()) ? std::string(" from decay ") + std::string(*parent()) : " (no parent)");
+            C & = false;
         }
-        result &= d->consistent();
-    }
 
-    return result;
+        // count number of daughters with parent not set to this
+        auto n = std::count_if(Daughters_.begin(), Daughters_.end(),
+                               [&](const ParticleCombinationVector::value_type& d){return d->parent().get() != this;});
+        if (n != 0) {
+            FLOG(ERROR) << n << " daughters' parent not set to this ParticleCombination.";
+            C &= false;
+        }
+
+        // check consistency of daughters
+        std::for_each(Daughers_.begin(), Daughters.end(),
+                      [&](const ParticleCombinationVector::value_type& d){C &= d->consistent();});
+    }
+    
+    return C;
 }
 
 //-------------------------
@@ -220,12 +198,6 @@ void ParticleCombination::setParents()
         std::shared_ptr<const ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
         daughter.swap(uniqueCopy);
     }
-}
-
-//-------------------------
-void ParticleCombination::setParent(ParticleCombination* parent)
-{
-    Parent_ = parent;
 }
 
 //-------------------------
@@ -505,10 +477,10 @@ bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_pt
     if (A == nullptr or B == nullptr)
         return false;
 
-    if (!ParticleCombination::equivByOrderlessContent(A->sharedParent(), B->sharedParent()))
+    if (!ParticleCombination::equivByOrderlessContent(A->parent(), B->parent()))
         return false;
 
-    return operator()(A->sharedParent(), B->sharedParent());
+    return operator()(A->parent(), B->parent());
 }
 
 }

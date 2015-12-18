@@ -30,10 +30,18 @@
 
 namespace yap {
 
+/// helper function checking for overlap of two vectors
+template <T>
+bool overlap(const std::vector<T>& A, const std::vector<T>& B)
+{
+    return std::any_of(A.begin(), A.end(),
+                       [&](const T& a){return std::any_of(B.begin(), B.end(), [&](const T& b){return a == b;});});
+}
+
 class ParticleCombination;
 
-/// \typedef ParticleCombinationSet
-using ParticleCombinationSet = std::set<std::shared_ptr<const ParticleCombination> >;
+/// \typedef ParticleCombinationCache
+using ParticleCombinationCache = std::set<std::weak_ptr<const ParticleCombination> >;
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
@@ -75,11 +83,8 @@ public:
     //ParticleCombinationVector daughters() const;
 
     /// get parent
-    const ParticleCombination* parent() const
-    { return Parent_; }
-
-    /// get parent share_ptr
-    const std::shared_ptr<const ParticleCombination> sharedParent() const;
+    std::shared_ptr<const ParticleCombination> parent() const
+        { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
 
     /// get 2 * helicity
     const char twoLambda() const
@@ -97,8 +102,7 @@ public:
 
     /// Add daughter ParticleCombination
     /// \param daughter Shared pointer to ParticleCombination object representing a daughter
-    /// \return Success of action
-    bool addDaughter(std::shared_ptr<const ParticleCombination> daughter);
+    void addDaughter(std::shared_ptr<const ParticleCombination> daughter);
 
     /// Checks consistency of combination
     /// by checking for absence of duplicate entries
@@ -117,14 +121,15 @@ public:
     /// create new daughters with this PC as parent
     void setParents();
 
+    /// \todo make private?
     /// add a particle combination as parent
     /// do not use. This function is used by makeParticleCombinationSetWithParents().
-    void setParent(ParticleCombination* parent);
+    void setParent(std::shared_ptr<ParticleCombination> parent)
+        { Parent_ = parent; }
 
     /// set 2 * helicity
     void setTwoLambda(char twoLambda)
     { TwoLambda_ = twoLambda; }
-
 
     /// \name ParticleCombination friends
     /// @{
@@ -141,7 +146,7 @@ public:
 protected:
 
     /// Parent of the particle combination.
-    ParticleCombination* Parent_;
+    std::weak_ptr<ParticleCombination> Parent_;
     ParticleCombinationVector Daughters_;
     std::vector<ParticleIndex> Indices_;
     /// 2 * Helicity
@@ -172,20 +177,20 @@ public:
     /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
     static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleCombinationVector c);
 
-    /// return the particleCombination set
-    static const ParticleCombinationSet& particleCombinationSet()
-    { return ParticleCombinationSet_; }
+    /// return the particleCombinationCache
+    static const ParticleCombinationCache& particleCombinationCache()
+    { return ParticleCombinationCache_; }
 
     /// make a new particle combination set with parents set
-    static void makeParticleCombinationSetWithParents(std::vector<std::shared_ptr<ParticleCombination> > initialStateParticleCombinations);
+    static void makeParticleCombinationCacheWithParents(std::vector<std::shared_ptr<ParticleCombination> > ispPCs);
 
-    static void printParticleCombinationSet();
+    static void printParticleCombinationCache();
 
 private:
 
     /// \todo Move to ISP, make no longer static
     /// Static set of all particle combinations created throughout code
-    static ParticleCombinationSet ParticleCombinationSet_;
+    static ParticleCombinationCache ParticleCombinationCache_;
 
 /// @}
 
