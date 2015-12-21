@@ -16,7 +16,6 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta() :
     StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
-    InitialStatePC_(nullptr),
     M_(new RealCachedDataValue (this))
 {
 }

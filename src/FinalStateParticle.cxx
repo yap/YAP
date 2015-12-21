@@ -41,17 +41,6 @@ bool FinalStateParticle::consistent() const
 }
 
 //-------------------------
-void FinalStateParticle::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
-{
-    // check if not yet there
-    if (std::find(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), c) == SymmetrizationIndices_.end()) {
-        SymmetrizationIndices_.push_back(c);
-    } else {
-        LOG(WARNING) << "FinalStateParticle::addSymmetrizationIndex() - Index already existing!";
-    }
-}
-
-//-------------------------
 void FinalStateParticle::setSymmetrizationIndexParents()
 {
     ParticleCombinationVector PCs = SymmetrizationIndices_;

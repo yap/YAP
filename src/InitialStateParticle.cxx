@@ -9,11 +9,13 @@
 
 #include <assert.h>
 #include <future>
+#include <stdexcept>
 
 namespace yap {
 
 //-------------------------
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+    enable_shared_from_this(),
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
@@ -21,17 +23,10 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     MeasuredBreakupMomenta_(),
     HelicityAngles_()
 {
-    FourMomenta_.setInitialStateParticle(this);
-    MeasuredBreakupMomenta_.setInitialStateParticle(this);
-    HelicityAngles_.setInitialStateParticle(this);
-
     setInitialStateParticle(this);
-}
-
-//-------------------------
-InitialStateParticle::~InitialStateParticle()
-{
-    DataAccessors_.clear();
+    addDataAccessor(std::shared_ptr(&FourMomenta_));
+    addDataAccessor(std::shared_ptr(&MeasuredBreakupMomenta_));
+    addDataAccessor(std::shared_ptr(&HelicityAngles_))
 }
 
 //-------------------------
@@ -117,6 +112,9 @@ bool InitialStateParticle::consistent() const
 //-------------------------
 bool InitialStateParticle::prepare()
 {
+    // add self to DataAccessors_
+    addDataAccessor(shared_from_this());
+
     // check
     if (!DecayingParticle::consistent()) {
         FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
@@ -197,12 +195,12 @@ bool InitialStateParticle::prepare()
 }
 
 //-------------------------
-bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
 {
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty()) {
         FLOG(ERROR) << "final-state particles have already been set.";
-        return false;
+        throw std::runtime_error("cannot add final-state particles twice");
     }
 
     // check that none of the FSP's has yet been used
@@ -213,13 +211,13 @@ bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
             all_unused = false;
         }
     if (!all_unused)
-        return false;
+        throw std::runtime_error("cannot re-use final-state particles");
 
     FinalStateParticles_.reserve(FSP.size());
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->addSymmetrizationIndex(ParticleCombination::cache[FinalStateParticles_.size()]);
+        fsp->SymmetrizationIndices_.push_back(particleCombinationCache[FinalStateParticles_.size()]);
         FinalStateParticles_.push_back(fsp);
     }
 
@@ -509,30 +507,27 @@ void InitialStateParticle::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-void InitialStateParticle::addDataAccessor(DataAccessor* d)
+void InitialStateParticle::addDataAccessor(std::shared_ptr<DataAccessor> d)
 {
-    DataAccessors_.insert(d);
     if (prepared()) {
-        LOG(ERROR) << "InitialStateParticle has already been prepared. "
-                   << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
-                   << "otherwise it will become inconsistent!";
+        FLOG(ERROR) << "InitialStateParticle has already been prepared. "
+                    << "Adding a data accessor is no longer permitted.";
+        std::throw std::runtime_error("initial-state particle cannot be modified after prepare() has been called.");
     }
+    DataAccessors_.insert(d);
+    d->setInitialStateParticle(this);
 }
 
 
 //-------------------------
 void InitialStateParticle::removeDataAccessor(DataAccessor* d)
 {
-    if (! DataAccessors_.empty()) {
-
-        DataAccessors_.erase(d);
-
-        if (prepared()) {
-            LOG(ERROR) << "InitialStateParticle has already been prepared. "
-                       << "Do NOT modify/add DecayChannels etc. after calling InitialStateParticle::prepare(), "
-                       << "otherwise it will become inconsistent!";
-        }
+    if (prepared()) {
+        FLOG(ERROR) << "InitialStateParticle has already been prepared. "
+                    << "Removing a data accessor is no longer permitted.";
+        std::throw std::runtime_error("initial-state particle cannot be modified after prepare() has been called.");
     }
+    DataAccessors_.erase(d);
 }
 
 //-------------------------

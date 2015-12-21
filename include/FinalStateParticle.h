@@ -75,14 +75,11 @@ public:
     /// @{
 
     /// Grant ISP friendship to set FSP's indices
-    friend bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
+    friend void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
 
     /// @}
 
 private:
-
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
 
     ParticleCombinationVector SymmetrizationIndices_;
 

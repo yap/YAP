@@ -255,13 +255,17 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
 {
     DataAccessor::setInitialStateParticle(isp);
-    SpinAmplitude_->setInitialStateParticle(initialStateParticle());
-    BlattWeisskopf_->setInitialStateParticle(initialStateParticle());
+    if (!SpinAmplitude_)
+        std::throw std::runtime_error("SpinAmplitude not set.");
+    SpinAmplitude_->setInitialStateParticle(isp);
+    if (!BlattWeisskopf)
+        std::throw std::runtime_error("BlattWeiskopf not set.");
+    BlattWeisskopf_->setInitialStateParticle(isp);
 
     // hand ISP to daughters
     for (auto d : Daughters_)
         if (std::dynamic_pointer_cast<DecayingParticle>(d))
-            std::static_pointer_cast<DecayingParticle>(d)->setInitialStateParticle(initialStateParticle());
+            std::static_pointer_cast<DecayingParticle>(d)->setInitialStateParticle(isp);
 }
 
 //-------------------------

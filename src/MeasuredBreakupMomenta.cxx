@@ -5,6 +5,7 @@
 #include "logging.h"
 
 #include <set>
+#include <stdexcept>
 
 namespace yap {
 

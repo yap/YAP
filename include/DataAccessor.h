@@ -54,12 +54,17 @@ public:
 
     /// Copy constructor is deleted, since we don't need it and implementing it for all deriving classes would be too complicated
     DataAccessor(const DataAccessor& other) = delete;
+    /// Copy operator is deleted
+    DataAccessor& operator=(const DataAccessor& other) = delete;
 
     /// Destructor
     virtual ~DataAccessor();
 
     // Defaulted move constructor
+    DataAccessor(DataAccessor&& other) = default;
+
     // Defaulted move assignment operator
+    DataAccessor& operator=(DataAccessor&& other) = default;
 
     /// @}
 
@@ -135,7 +140,7 @@ public:
     { return d.Data_.at(Index_).at(i); }
 #endif
 
-    /// Get pointer to the initial state particle
+    /// Get raw pointer to the initial state particle
     InitialStateParticle* initialStateParticle() const
     { return InitialStateParticle_; }
 
@@ -144,8 +149,9 @@ public:
     /// \name Setters
     /// @{
 
-    /// Set pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp);
+    /// Set raw pointer to initial state particle
+    virtual void setInitialStateParticle(InitialStateParticle* isp)
+    { InitialStateParticle_ = isp; }
 
     /// @}
 

@@ -70,7 +70,7 @@ public:
     /// Calculate Clebsch-Gordan coefficients for all particleCombinations
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
-    /// Set pointer to initial state particle
+    /// Set raw pointer to initial state particle
     virtual void setInitialStateParticle(InitialStateParticle* isp) override;
 
     // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;

@@ -105,9 +105,9 @@ void BlattWeisskopf::setInitialStateParticle(InitialStateParticle* isp)
 {
     DataAccessor::setInitialStateParticle(isp);
 
-    if (initialStateParticle()) {
-        Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
-        Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
+    if (isp) {
+        Fq_r->addDependency(isp->fourMomenta().masses());
+        Fq_ab->addDependency(isp->measuredBreakupMomenta().breakupMomenta());
     }
 }
 

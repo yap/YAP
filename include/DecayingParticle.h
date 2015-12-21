@@ -104,7 +104,7 @@ public:
     /// \name Setters
     /// @{
 
-    /// Set pointer to initial state particle
+    /// Set raw pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
 
     /// @}

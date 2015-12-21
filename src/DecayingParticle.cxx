@@ -10,6 +10,7 @@
 
 #include <iomanip>
 #include <memory>
+#include <stdexcept>
 
 namespace yap {
 
@@ -168,7 +169,7 @@ void DecayingParticle::setInitialStateParticle(InitialStateParticle* isp)
     DataAccessor::setInitialStateParticle(isp);
     // hand ISP to channels
     for (auto& c : Channels_)
-        c->setInitialStateParticle(initialStateParticle());
+        c->setInitialStateParticle(isp);
 }
 
 //-------------------------

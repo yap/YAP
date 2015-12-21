@@ -8,7 +8,6 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
-    InitialStateParticle_(nullptr),
     Equiv_(equiv),
     Size_(0),
     Index_(0)
@@ -20,6 +19,7 @@ DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
 //-------------------------
 DataAccessor::~DataAccessor()
 {
+    /// \todo: remove?
     if (InitialStateParticle_)
         InitialStateParticle_->removeDataAccessor(this);
 }
@@ -134,14 +134,6 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
         d.Data_[Index_].resize(i + 1);
 
     return d.Data_[Index_][i];
-}
-
-//-------------------------
-void DataAccessor::setInitialStateParticle(InitialStateParticle* isp)
-{
-    InitialStateParticle_ = isp;
-    if (InitialStateParticle_)
-        InitialStateParticle_->addDataAccessor(this);
 }
 
 //-------------------------

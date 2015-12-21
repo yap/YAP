@@ -134,9 +134,9 @@ void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
 {
     SpinAmplitude::setInitialStateParticle(isp);
 
-    if (initialStateParticle()) {
-        SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
-        SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
+    if (isp) {
+        SpinAmplitude_->addDependency(isp->helicityAngles().phi());
+        SpinAmplitude_->addDependency(isp->helicityAngles().theta());
     }
 }
 

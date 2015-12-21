@@ -31,7 +31,6 @@
 namespace yap {
 
 class ParticleCombination;
-class ParticleCombinationCache;
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
@@ -99,12 +98,8 @@ public:
     void setTwoLambda(char twoLambda)
     { TwoLambda_ = twoLambda; }
 
-    /// Static set of all particle combinations created throughout code
-    /// \todo Move to ISP, make no longer static
-    static ParticleCombinationCache cache;
-
     /// grant friend access for setting lineage
-    friend ParticleCombinationCache;
+    friend class ParticleCombinationCache;
 
 protected:
 

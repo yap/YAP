@@ -37,13 +37,14 @@ namespace yap {
 
 class DataPartitionBase;
 class FinalStateParticle;
+class ParticleCombinationCache;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle
+class InitialStateParticle : public enable_shared_from_this, public DecayingParticle
 {
 public:
 
@@ -52,9 +53,6 @@ public:
 
     /// Constructor
     InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
-
-    /// Destructor
-    ~InitialStateParticle();
 
     /// @}
 
@@ -170,8 +168,7 @@ public:
     /// are given dictates the order in which four-momenta must be
     /// given in data points
     /// \param FSP list of shared pointers to final-state particles
-    /// \return Success of action
-    bool setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+    void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
     /// @}
 
@@ -210,6 +207,9 @@ public:
     bool addDataPoint(const DataPoint& d);
 
     /// @}
+
+    /// ParticleCombination cache
+    ParticleCombinationCache::particleCombinationCache;
 
     /// \name Monte Carlo Generation
     /// @{
@@ -252,7 +252,7 @@ private:
     void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// add DataAccessor to set
-    void addDataAccessor(DataAccessor* d);
+    void addDataAccessor(std::shared_ptr<DataAccessor> d);
 
     /// remove DataAccessor from set
     void removeDataAccessor(DataAccessor* d);
