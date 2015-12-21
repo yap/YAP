@@ -383,7 +383,7 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
             std::cout << " \t";
 
             for (auto& pc : d->particleCombinations())
-                std::cout << std::string(*pc) << ":" << d->symmetrizationIndex(pc) << ";  ";
+                std::cout << *pc << ":" << d->symmetrizationIndex(pc) << ";  ";
         }
 
         std::cout << "\n";

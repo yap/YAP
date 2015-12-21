@@ -96,7 +96,7 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
 //-------------------------
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
-    DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << std::string(*pc));
+    DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << *pc);
 
     unsigned symIndex = symmetrizationIndex(pc);
 
@@ -109,11 +109,11 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         FixedAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
 
-        DEBUG("DecayChannel::amplitude - calculated fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << a);
+        DEBUG("DecayChannel::amplitude - calculated fixed amplitude for " << std::string(*this) << " " << *pc << " = " << a);
         return FreeAmplitude_->value() * a;
     }
 
-    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex));
+    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << *pc << " = " << FixedAmplitude_->value(d, symIndex));
     return FreeAmplitude_->value() * FixedAmplitude_->value(d, symIndex);
 }
 

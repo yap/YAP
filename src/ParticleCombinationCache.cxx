@@ -1,5 +1,6 @@
 #include "ParticleCombinationCache.h"
 
+#include <algorithm>
 #include <cassert>
 
 namespace yap {
@@ -107,7 +108,7 @@ std::string to_string(const ParticleCombinationCache& C)
     std::string s;
     for (auto wpc : C) {
         auto pc = wpc.lock();
-        s += std::string(*pc);
+        s += to_string(*pc);
         auto pt = pc->parent();
         if (pt) {
             s += " in decay chain ";

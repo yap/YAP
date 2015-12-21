@@ -41,7 +41,7 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
 //-------------------------
 void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex)
 {
-    DEBUG("CachedDataValue::updateGlobalCalculationStatus - symIndex for " << std::string(*pc) << " = " << symmetrizationIndex);
+    DEBUG("CachedDataValue::updateGlobalCalculationStatus - symIndex for " << *pc << " = " << symmetrizationIndex);
 
     // if CachedDataValue is uncalculated for any of the DataPartitions, set to uncalculated
     // to make sure it will be calculated during the first iteration

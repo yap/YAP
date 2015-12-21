@@ -117,7 +117,7 @@ protected:
 std::string to_string(const ParticleCombinationCache& C);
 
 /// streamer
-std::ostream& operator<<(std::ostream& os, const ParticleCombinationCache& C)
+inline std::ostream& operator<<(std::ostream& os, const ParticleCombinationCache& C)
 { os << to_string(C); return os; }
 
 }

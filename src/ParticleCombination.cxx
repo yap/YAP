@@ -39,9 +39,9 @@ std::string to_string(const ParticleCombination& pc)
 
     for (auto& d : pc.daughters()) {
         if (d->daughters().empty() or (d->daughters().size() == 2 and d->indices().size() == 2))
-            s += std::string(*d) + ", ";
+            s += to_string(*d) + ", ";
         else
-            s += "[" + std::string(*d) + "], ";
+            s += "[" + to_string(*d) + "], ";
     }
     s.erase(s.size() - 2, 2);
     return s;
@@ -105,8 +105,8 @@ bool ParticleCombination::consistent() const
 
         // check if this is in cache
         if (cache.find(this).expired()) {
-            FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << std::string(*this)
-                        << ((parent()) ? std::string(" from decay ") + std::string(*parent()) : " (no parent)");
+            FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << *this
+                        << ((parent()) ? std::string(" from decay ") + to_string(*parent()) : " (no parent)");
             C &= false;
         }
 

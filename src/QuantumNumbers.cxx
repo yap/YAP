@@ -44,23 +44,8 @@ bool QuantumNumbers::consistent() const
 //-------------------------
 bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 {
-    //std::cout << lhs << " == " << rhs << "?\n";
-    return (lhs.TwoJ_ == rhs.TwoJ_
-            && lhs.P_ == rhs.P_
-            && lhs.C_ == rhs.C_
-            && lhs.TwoI_ == rhs.TwoI_
-            && lhs.G_ == rhs.G_
-            && lhs.Q_ == rhs.Q_);
-}
-
-//-------------------------
-std::ostream& operator<< (std::ostream& os, const QuantumNumbers& obj)
-{
-    os << "JP";
-    if (obj.C() != 0)
-        os << "C";
-    os << " = " << (std::string)obj;
-    return os;
+    return (lhs.twoJ() == rhs.twoJ() and lhs.P() == rhs.P() and lhs.C() == rhs.C() and
+            lhs.twoI() == rhs.twoI() and lhs.G() == rhs.G() and lhs.Q() == rhs.Q());
 }
 
 }

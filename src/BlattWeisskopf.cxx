@@ -39,7 +39,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
-        DEBUG(std::string(*pc->daughters().at(0)) << " " << std::string(*pc->daughters().at(1)));
+        DEBUG(*(pc->daughters()[0]) << " " << * (pc->daughters()[1]));
         //DEBUG(initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(0)) <<
         //        " " << initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(1)));
         DEBUG(m_a << " " << m_b);

@@ -149,7 +149,7 @@ void DataAccessor::updateGlobalCalculationStatuses()
 {
     for (CachedDataValue* c : CachedDataValues_) {
         for (auto& kv : SymmetrizationIndices_) {
-            DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << std::string(*kv.first));
+            DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << * (kv.first));
             c->updateGlobalCalculationStatus(kv.first, kv.second);
         }
     }

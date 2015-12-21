@@ -25,6 +25,7 @@
 
 #include <map>
 #include <memory>
+#include <ostream>
 #include <vector>
 
 namespace yap {
@@ -93,9 +94,6 @@ public:
     /// Checks consistency of combination
     /// by checking for absence of duplicate entries
     bool consistent() const;
-
-    /// cast into string
-    operator std::string() const;
 
     /// set 2 * helicity
     void setTwoLambda(char twoLambda)
@@ -223,15 +221,19 @@ public:
 };
 
 /// equality operator
-bool operator==(const ParticleCombination& A, const ParticleCombination& B)
+inline bool operator==(const ParticleCombination& A, const ParticleCombination& B)
 { return ParticleCombination::equivUpAndDown(std::make_shared<ParticleCombination>(A), std::make_shared<ParticleCombination>(B)); }
 
 /// inequality operator
-bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
+inline bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
 { return !(A == B); }
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);
+
+/// streamer
+inline std::ostream& operator<<(std::ostream& os, const ParticleCombination& PC)
+{ os << to_string(PC); return os; }
 
 }
 

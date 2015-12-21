@@ -131,8 +131,8 @@ void FourMomenta::calculate(DataPoint& d)
 
         M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, 0);
 
-        DEBUG("FourMomenta::calculate - 4-momentum " << std::string(*kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
-        DEBUG("FourMomenta::calculate - Set mass for " << std::string(*kv.first) << " to " << M_->value(d, kv.second));
+        DEBUG("FourMomenta::calculate - 4-momentum " << * (kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
+        DEBUG("FourMomenta::calculate - Set mass for " << * (kv.first) << " to " << M_->value(d, kv.second));
     }
 }
 
@@ -261,14 +261,14 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 
     M_->setValue(sqrt(m2_ab), d, symmetrizationIndex(pairPCs[iUnset]), 0u);
 
-    DEBUG("calculated missing mass for " << std::string(*pairPCs[iUnset]) << " = " << M_->value(d, symmetrizationIndex(pairPCs[iUnset])));
+    DEBUG("calculated missing mass for " << *pairPCs[iUnset] << " = " << M_->value(d, symmetrizationIndex(pairPCs[iUnset])));
 
 
     /// for a 3 particle system, we are done
     if (n < 4) {
         //debug
         for (auto& pc : RecoilPC_) {
-            DEBUG("recoil mass for " << std::string(*pc) << " = " << M_->value(d, symmetrizationIndex(pc)));
+            DEBUG("recoil mass for " << *pc << " = " << M_->value(d, symmetrizationIndex(pc)));
         }
 
 
@@ -295,7 +295,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
 
         M_->setValue(sqrt(m2_recoil), d, symmetrizationIndex(pc), 0u);
 
-        DEBUG("calculated missing recoil mass for " << std::string(*pc) << " = " << M_->value(d, symmetrizationIndex(pc)));
+        DEBUG("calculated missing recoil mass for " << *pc << " = " << M_->value(d, symmetrizationIndex(pc)));
     }
 
 
@@ -323,7 +323,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     if (M.size() != pcs.size()) {
         LOG(ERROR) << "FourMomenta::getDalitzAxes : did not find all requested combinations.";
         for (auto& m : M) {
-            DEBUG(std::string(*m));
+            DEBUG(*m);
         }
         M.clear();
     }
@@ -430,17 +430,17 @@ bool FourMomenta::setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2
 void FourMomenta::printMasses(const DataPoint& d) const
 {
     std::cout << "Invariant masses:\n";
-    std::cout << "  " << std::string(*InitialStatePC_) << ": \t" << m(d, InitialStatePC_) << " GeV\n";
+    std::cout << "  " << *InitialStatePC_ << ": \t" << m(d, InitialStatePC_) << " GeV\n";
 
     if (InitialStatePC_->indices().size() > 3)
         for (auto& pc : RecoilPC_)
-            std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+            std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
 
     for (auto& pc : pairParticleCombinations())
-        std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+        std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
 
     for (auto& pc : FinalStatePC_)
-        std::cout << "  " << std::string(*pc) << ": \t" << m(d, pc) << " GeV\n";
+        std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
 
     for (int i = 0; i <= maxSymmetrizationIndex(); ++i) {
         std::cout << "  symIndex " << i << ": " << M_->value(d, i) << " GeV\n";

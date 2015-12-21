@@ -61,7 +61,7 @@ public:
 
     /// explicitly cast to string
     explicit operator std::string()
-    { return Name_ + "(" + (std::string)QuantumNumbers_ + "), mass = " + std::to_string(Mass_->value()); }
+    { return Name_ + "(" + to_string(QuantumNumbers_) + "), mass = " + to_string(Mass_->value()); }
 
     /// \name Getters
     /// @{

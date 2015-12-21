@@ -48,17 +48,12 @@ public:
 
     /// Default constructor
     /// is inconsistent
-    QuantumNumbers()
-        : QuantumNumbers(0, 0, 0, 0) {}
+    QuantumNumbers() : QuantumNumbers(0, 0, 0, 0) {}
 
     /// @}
 
     /// check consistency
     virtual bool consistent() const;
-
-    /// cast to std::string (for output)
-    explicit operator std::string() const
-    { return spinToString(TwoJ_) + (P_ > 0 ? "+" : "-") + (C_ == 0 ? "" : (C_ > 0 ? "+" : "-")); }
 
     /// \name Getters
     /// @{
@@ -110,13 +105,6 @@ public:
 
     /// @}
 
-    /// equality operator
-    friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
-
-    /// returns NOT ==
-    friend bool operator!= (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
-    { return !(lhs == rhs); }
-
 private:
 
     /// Spin * 2
@@ -139,8 +127,20 @@ private:
 
 };
 
+/// equality operator
+bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs);
+
+/// returns NOT ==
+inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+{ return !(lhs == rhs); }
+
+/// convert to string
+inline std::string to_string(const QuantumNumbers& Q)
+{ return spinToString(Q.twoJ()) + (Q.P() > 0 ? "+" : "-") + (Q.C() == 0 ? "" : (Q.C() > 0 ? "+" : "-")); }
+
 /// Overload << operator
-std::ostream& operator<< (std::ostream&, const QuantumNumbers&);
+inline std::ostream& operator<< (std::ostream& os, const QuantumNumbers& Q)
+{ os << "JP" << ((Q.C() == 0) ? "" : "C") << " = " << to_string(Q); return os; }
 
 }
 
