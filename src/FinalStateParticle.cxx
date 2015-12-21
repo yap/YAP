@@ -2,6 +2,7 @@
 
 #include "logging.h"
 #include "ParticleCombination.h"
+#include "ParticleCombinationCache.h"
 
 namespace yap {
 
@@ -56,19 +57,15 @@ void FinalStateParticle::setSymmetrizationIndexParents()
     ParticleCombinationVector PCs = SymmetrizationIndices_;
 
     // check if already set
-    if (PCs[0]->parent() != nullptr)
+    if (PCs[0]->parent())
         return;
 
     SymmetrizationIndices_.clear();
 
-    for (auto& PC : PCs) {
-        for (auto& pc : ParticleCombination::particleCombinationSet()) {
-            if (ParticleCombination::equivDown(PC, pc)) {
-                SymmetrizationIndices_.push_back(pc);
-            }
-        }
-    }
-
+    for (auto& PC : PCs)
+        for (auto& pc : ParticleCombination::cache)
+            if (ParticleCombination::equivDown(PC, pc.lock()))
+                SymmetrizationIndices_.push_back(pc.lock());
 }
 
 }

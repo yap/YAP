@@ -5,6 +5,7 @@
 #include "DataSet.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
+#include "ParticleCombinationCache.h"
 
 #include <assert.h>
 #include <future>
@@ -134,18 +135,21 @@ bool InitialStateParticle::prepare()
     for (auto& pc : particleCombinations()) {
         PCs.push_back(std::make_shared<ParticleCombination>(*pc));
     }
-    ParticleCombination::makeParticleCombinationSetWithParents(PCs);
+    ParticleCombination::cache = ParticleCombinationCache(PCs);
     clearSymmetrizationIndices();
     for (auto& pc : PCs)
         addSymmetrizationIndex(pc);
 
     // check
-    for (auto& pc : ParticleCombination::particleCombinationSet()) {
-        if (not pc->consistent()) {
-            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationSet is not consistent.";
+    for (auto& wpc : ParticleCombination::cache) {
+        if (!wpc.lock())
+            continue;
+        auto pc = wpc.lock();
+        if (!pc->consistent()) {
+            LOG(ERROR) << "Cannot prepare InitialStateParticle, ParticleCombination::cache is not consistent.";
             return false;
         }
-        if (pc->indices().size() < particleCombinations()[0]->indices().size() and not pc->parent()) {
+        if (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent()) {
             LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombination is not consistent.";
             return false;
         }
@@ -156,7 +160,10 @@ bool InitialStateParticle::prepare()
     optimizeSpinAmplitudeSharing();
 
     // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+    for (auto& wpc : ParticleCombination::cache) {
+        if (wpc.expired())
+            continue;
+        auto pc = wpc.lock();
         if (pc->isFinalStateParticle())
             continue;
         FourMomenta_.addSymmetrizationIndex(pc);
@@ -212,7 +219,7 @@ bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(FinalStateParticles_.size()));
+        fsp->addSymmetrizationIndex(ParticleCombination::cache[FinalStateParticles_.size()]);
         FinalStateParticles_.push_back(fsp);
     }
 
@@ -393,11 +400,14 @@ void InitialStateParticle::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     // get initial state PCs from set and add them
-    for (auto& pc : ParticleCombination::particleCombinationSet()) {
+    for (auto& wpc : ParticleCombination::cache) {
+        if (wpc.expired())
+            continue;
+        auto pc = wpc.lock();
         if (pc->indices().size() < size)
             continue;
 
-        if (pc->daughters()[0]->parent() == nullptr)
+        if (!pc->daughters()[0]->parent())
             continue;
 
         addSymmetrizationIndex(pc);

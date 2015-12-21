@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "ParticleCombinationCache.h"
 
 namespace yap {
 
@@ -50,7 +51,7 @@ void Resonance::setInitialStateParticle(InitialStateParticle* isp)
 void Resonance::addChannel(std::unique_ptr<DecayChannel>& c)
 {
     for (auto& pc : c->particleCombinations())
-        MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
+        MassShape_->addSymmetrizationIndex(ParticleCombination::cache[pc]);
 
     DecayingParticle::addChannel(c);
 }

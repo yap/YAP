@@ -1,31 +1,21 @@
 #include "ParticleCombination.h"
 
+#include "container_utils.h"
 #include "logging.h"
 #include "MathUtilities.h"
+#include "ParticleCombinationCache.h"
 #include "SpinUtilities.h"
 
 #include <algorithm>
 #include <assert.h>
+#include <set>
 
 namespace yap {
 
-//-------------------------
-ParticleCombination::ParticleCombination() :
-    Parent_(nullptr)
-{
-}
-
-//-------------------------
-ParticleCombination::ParticleCombination(ParticleIndex index, char twoLambda) :
-    Parent_(nullptr),
-    Indices_(1, index),
-    TwoLambda_(twoLambda)
-{
-}
+ParticleCombinationCache ParticleCombination::cache;
 
 //-------------------------
 ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLambda) :
-    Parent_(nullptr),
     TwoLambda_(twoLambda)
 {
     for (auto& d : c)
@@ -38,10 +28,22 @@ std::string to_string(const ParticleCombination& pc)
     if (pc.indices().empty())
         return "(empty)";
     std::string s = "(";
-    std::for_each(pc.indices().begin(), pc.indices().end(), [&](const ParticleIndex & i) {s += std::to_string(i) + ", ";});
-    if (!pc.indices().empty())
-        s.erase(s.size() - 2, 2);
-    s += ")";
+    for (auto i : pc.indices())
+        s += to_string(i);
+    s += ", λ = " + spinToString(pc.twoLambda()) + ")";
+
+    if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
+        return s;
+
+    s += " -> ";
+
+    for (auto& d : pc.daughters()) {
+        if (d->daughters().empty() or (d->daughters().size() == 2 and d->indices().size() == 2))
+            s += std::string(*d) + ", ";
+        else
+            s += "[" + std::string(*d) + "], ";
+    }
+    s.erase(s.size() - 2, 2);
     return s;
 }
 
@@ -101,186 +103,27 @@ bool ParticleCombination::consistent() const
             C &= false;
         }
 
-        // check if in ParticleCombinationCache_
-        /// \todo make check_cached function
-        if (std::find_if(ParticleCombinationCache_.begin(), ParticleCombinationCache_.end(),
-                         [&](const ParticleCombinationCache::key_type& pc){return pc.lock().get() == this;}) == ParticleCombinationCache_.end()) {
+        // check if this is in cache
+        if (cache.find(this).expired()) {
             FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << std::string(*this)
                         << ((parent()) ? std::string(" from decay ") + std::string(*parent()) : " (no parent)");
-            C & = false;
+            C &= false;
         }
 
         // count number of daughters with parent not set to this
         auto n = std::count_if(Daughters_.begin(), Daughters_.end(),
-                               [&](const ParticleCombinationVector::value_type& d){return d->parent().get() != this;});
+        [&](const ParticleCombinationVector::value_type & d) {return d->parent().get() != this;});
         if (n != 0) {
             FLOG(ERROR) << n << " daughters' parent not set to this ParticleCombination.";
             C &= false;
         }
 
         // check consistency of daughters
-        std::for_each(Daughers_.begin(), Daughters.end(),
-                      [&](const ParticleCombinationVector::value_type& d){C &= d->consistent();});
+        std::for_each(Daughters_.begin(), Daughters_.end(),
+        [&](const ParticleCombinationVector::value_type & d) {C &= d->consistent();});
     }
-    
+
     return C;
-}
-
-//-------------------------
-ParticleCombination::operator std::string() const
-{
-    std::string result = "(";
-    for (ParticleIndex i : Indices_)
-        result += std::to_string(static_cast<unsigned>(i));
-    /*std::ostringstream address;
-    address << ", " << Parent_ << "->" << this;
-    result += address.str();*/
-    result += " λ=" + spinToString(TwoLambda_);
-    result += ")";
-
-    if (Daughters_.empty() || (Daughters_.size() == 2 and Indices_.size() == 2))
-        return result;
-
-    result += " -> ";
-
-    for (auto& d : Daughters_) {
-        if (d->daughters().empty() || (d->daughters().size() == 2 and d->indices().size() == 2))
-            result += std::string(*d);
-        else
-            result += "[" + std::string(*d) + "]";
-
-    }
-
-
-    return result;
-}
-
-//-------------------------
-bool ParticleCombination::sharesIndices(std::shared_ptr<const ParticleCombination> B) const
-{
-    for (ParticleIndex a : Indices_)
-        for (ParticleIndex b : B->indices())
-            if (a == b)
-                return true;
-
-    return false;
-}
-
-//-------------------------
-bool ParticleCombination::isSubset(std::shared_ptr<const ParticleCombination> B) const
-{
-    for (ParticleIndex b : B->indices()) {
-        bool found(false);
-        for (ParticleIndex a : Indices_) {
-            if (a == b) {
-                found = true;
-                break;
-            }
-        }
-        if (!found)
-            return false;
-    }
-
-    return true;
-}
-
-//-------------------------
-void ParticleCombination::setParents()
-{
-    for (auto& daughter : Daughters_) {
-        // make copy, set this as parent and get unique shared_ptr
-        std::shared_ptr<ParticleCombination> copy(new ParticleCombination(*daughter));
-        copy->Parent_ = this;
-
-        // call recursively
-        copy->setParents();
-
-        std::shared_ptr<const ParticleCombination> uniqueCopy = uniqueSharedPtr(copy);
-        daughter.swap(uniqueCopy);
-    }
-}
-
-//-------------------------
-bool operator==(const ParticleCombination& A, const ParticleCombination& B)
-{
-    return ParticleCombination::equivUpAndDown(std::make_shared<ParticleCombination>(A), std::make_shared<ParticleCombination>(B));
-}
-
-/////////////////////////
-// Static stuff:
-
-ParticleCombinationSet ParticleCombination::ParticleCombinationSet_;
-
-//-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::shared_ptr<const ParticleCombination> pc)
-{
-    for (auto& d : ParticleCombinationSet_)
-        if (ParticleCombination::equivUpAndDown(pc, d))
-            return d;
-
-    ParticleCombinationSet_.insert(pc);
-    return pc;
-}
-
-//-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleIndex i)
-{
-    return uniqueSharedPtr(std::make_shared<ParticleCombination>(i));
-}
-
-//-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(std::vector<ParticleIndex> I)
-{
-    ParticleCombinationVector V;
-    for (ParticleIndex i : I)
-        V.push_back(uniqueSharedPtr(i));
-    return uniqueSharedPtr(V);
-}
-
-//-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombination::uniqueSharedPtr(ParticleCombinationVector c)
-{
-    return uniqueSharedPtr(std::make_shared<yap::ParticleCombination>(c));
-}
-
-//-------------------------
-void ParticleCombination::makeParticleCombinationSetWithParents(std::vector<std::shared_ptr<ParticleCombination> > initialStateParticleCombinations)
-{
-    ParticleCombinationSet_.clear();
-
-    for (auto& pc : initialStateParticleCombinations) {
-        pc->setParents();
-    }
-
-    for (auto& pc : initialStateParticleCombinations)
-        ParticleCombinationSet_.insert(pc);
-
-    // check consistency
-    for (auto& pc : ParticleCombinationSet_) {
-        assert(pc->consistent());
-    }
-}
-
-//-------------------------
-void ParticleCombination::printParticleCombinationSet()
-{
-    std::cout << "ParticleCombination set:\n";
-    for (auto pc : ParticleCombinationSet_) {
-        std::cout << "  " << std::string(*pc);
-        if (pc->parent()) {
-            std::cout << "   \t in decay chain ";
-            const ParticleCombination* parent = pc->parent();
-            while (true) {
-                if (parent->parent())
-                    parent = parent->parent();
-                else
-                    break;
-            }
-            std::cout << std::string(*parent);
-        }
-        std::cout << "\n";
-    }
-    std::cout << std::endl;
 }
 
 //-------------------------
@@ -372,7 +215,7 @@ bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<con
         return false;
 
     // check parent
-    if (! ParticleCombination::equivUpButLambda(A->sharedParent(), B->sharedParent()))
+    if (! ParticleCombination::equivUpButLambda(A->parent(), B->parent()))
         return false;
 
     // a match!
@@ -390,7 +233,7 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_
         return false;
 
     // check parent
-    if (! ParticleCombination::equivUpButLambda(A->sharedParent(), B->sharedParent()))
+    if (! ParticleCombination::equivUpButLambda(A->parent(), B->parent()))
         return false;
 
     // a match!

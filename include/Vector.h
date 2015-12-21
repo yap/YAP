@@ -53,11 +53,11 @@ public:
     using std::array<T, N>::operator=;
 
     /// inner (dot) product of #Vector's
-    virtual constexpr T operator*(const Vector<T, N>& B) const
+    virtual T operator*(const Vector<T, N>& B) const
     { return std::inner_product(this->begin(), this->end(), B.begin(), T(0)); }
 
     /// unary minus
-    constexpr virtual Vector<T, N> operator-() const
+    virtual Vector<T, N> operator-() const
     { return T(-1) * *(this); }
 };
 
@@ -74,6 +74,7 @@ std::string to_string(const Vector<T, N>& V)
     return s;
 }
 
+/// streamer
 template <typename T, size_t N>
 std::ostream& operator<<(std::ostream& os, const Vector<T, N>& V)
 { os << to_string(V); return os; }

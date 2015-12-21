@@ -1,10 +1,12 @@
 #include "DecayChannel.h"
 
+#include "container_utils.h"
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "Particle.h"
+#include "ParticleCombinationCache.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 
@@ -74,8 +76,8 @@ DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, st
     // hard-coded for two
     for (std::shared_ptr<const ParticleCombination> PCA : PCs[0])
         for (std::shared_ptr<const ParticleCombination> PCB : PCs[1])
-            if (!PCA->sharesIndices(PCB)) {
-                std::shared_ptr<const ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
+            if (disjoint(PCA->indices(), PCB->indices())) {
+                std::shared_ptr<const ParticleCombination> a_b = ParticleCombination::cache[ {PCA, PCB}];
 
                 bool can_has_symmetrization = true;
                 if (Daughters_[0] == Daughters_[1]) {
@@ -300,7 +302,10 @@ void DecayChannel::setSymmetrizationIndexParents()
 
 
     for (auto& chPC : chPCs) {
-        for (auto& pc : ParticleCombination::particleCombinationSet()) {
+        for (auto& wpc : ParticleCombination::cache) {
+            if (wpc.expired())
+                continue;
+            auto pc = wpc.lock();
             if (ParticleCombination::equivDown(chPC, pc)) {
 
                 addSymmetrizationIndex(pc);

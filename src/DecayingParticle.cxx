@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "ParticleCombinationCache.h"
 #include "QuantumNumbers.h"
 #include "SpinUtilities.h"
 
@@ -132,7 +133,7 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
                 pcHel -> setTwoLambda(twoLambda);
 
                 if (std::static_pointer_cast<HelicitySpinAmplitude>(chan->spinAmplitude())->calculateClebschGordanCoefficient(pcHel) != 0) {
-                    PCs.push_back(ParticleCombination::uniqueSharedPtr(pcHel));
+                    PCs.push_back(ParticleCombination::cache[pcHel]);;
                     notZero = true;
 
                 }

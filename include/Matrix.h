@@ -22,6 +22,7 @@
 #define yap_Matrix_h
 
 #include <array>
+#include <string>
 
 namespace yap {
 
@@ -57,7 +58,7 @@ std::string to_string(const Matrix<T, R, C>& M)
     for (const auto& row : M) {
         s += "(";
         for (const auto& elt : row)
-            s += std::to_string(elt) + ", ";
+            s += to_string(elt) + ", ";
         s.erase(s.size() - 2, 2);
         s += "), ";
     }

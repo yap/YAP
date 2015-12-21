@@ -25,23 +25,12 @@
 
 #include <map>
 #include <memory>
-#include <set>
 #include <vector>
 
 namespace yap {
 
-/// helper function checking for overlap of two vectors
-template <T>
-bool overlap(const std::vector<T>& A, const std::vector<T>& B)
-{
-    return std::any_of(A.begin(), A.end(),
-                       [&](const T& a){return std::any_of(B.begin(), B.end(), [&](const T& b){return a == b;});});
-}
-
 class ParticleCombination;
-
-/// \typedef ParticleCombinationCache
-using ParticleCombinationCache = std::set<std::weak_ptr<const ParticleCombination> >;
+class ParticleCombinationCache;
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
@@ -55,15 +44,15 @@ using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombinatio
 /// \brief Stores combinations of ParticleIndex types
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ParticleCombination
+class ParticleCombination // : public std::enable_shared_from_this<ParticleCombination>
 {
 public:
 
     /// Default constructor
-    ParticleCombination();
+    ParticleCombination() = default;
 
     /// Final-state-particle constructor
-    ParticleCombination(ParticleIndex index, char twoLambda = 0);
+    ParticleCombination(ParticleIndex index, char twoLambda = 0) : Indices_(1, index), TwoLambda_(twoLambda) {}
 
     /// Resonance particle constructor
     ParticleCombination(ParticleCombinationVector c, char twoLambda = 0);
@@ -79,12 +68,9 @@ public:
     const ParticleCombinationVector& daughters() const
     { return Daughters_; }
 
-    /// Get vector of daughters (const)
-    //ParticleCombinationVector daughters() const;
-
     /// get parent
     std::shared_ptr<const ParticleCombination> parent() const
-        { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
+    { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
 
     /// get 2 * helicity
     const char twoLambda() const
@@ -111,91 +97,33 @@ public:
     /// cast into string
     operator std::string() const;
 
-    /// check if this and B share one or more ParticleIndex's
-    bool sharesIndices(std::shared_ptr<const ParticleCombination> B) const;
-
-    /// check if B is a subset of this
-    /// Checks indices, but not parents or daughters
-    bool isSubset(std::shared_ptr<const ParticleCombination> B) const;
-
-    /// create new daughters with this PC as parent
-    void setParents();
-
-    /// \todo make private?
-    /// add a particle combination as parent
-    /// do not use. This function is used by makeParticleCombinationSetWithParents().
-    void setParent(std::shared_ptr<ParticleCombination> parent)
-        { Parent_ = parent; }
-
     /// set 2 * helicity
     void setTwoLambda(char twoLambda)
     { TwoLambda_ = twoLambda; }
 
-    /// \name ParticleCombination friends
-    /// @{
+    /// Static set of all particle combinations created throughout code
+    /// \todo Move to ISP, make no longer static
+    static ParticleCombinationCache cache;
 
-    /// equality operator
-    friend bool operator==(const ParticleCombination& A, const ParticleCombination& B);
-
-    /// inequality operator
-    friend bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
-    { return !(A == B); }
-
-    /// @}
+    /// grant friend access for setting lineage
+    friend ParticleCombinationCache;
 
 protected:
 
     /// Parent of the particle combination.
     std::weak_ptr<ParticleCombination> Parent_;
+
+    /// vector of daughters
     ParticleCombinationVector Daughters_;
+
+    /// vector indices of daughters
     std::vector<ParticleIndex> Indices_;
+
     /// 2 * Helicity
     char TwoLambda_;
 
-
-/// \name Static methods for creating/retrieving ParticleCombination's
-/// @{
-
-// Following code is for managing unique shared pointers for particle
-// combinations across all of YAP
-
-public:
-
-    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
-    /// \param i ParticleIndex for FSP
-    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(std::shared_ptr<const ParticleCombination> pc);
-
-    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
-    /// \param i ParticleIndex for FSP
-    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleIndex i);
-
-    /// return existing shared_ptr for final-state-particle ParticleCombination, if exists; otherwise creates and returns
-    /// \param i ParticleIndex for FSP
-    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(std::vector<ParticleIndex> I);
-
-    /// return existing shared_ptr for ParticleCombination, if exists; otherwise creates and returns
-    /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
-    static std::shared_ptr<const ParticleCombination> uniqueSharedPtr(ParticleCombinationVector c);
-
-    /// return the particleCombinationCache
-    static const ParticleCombinationCache& particleCombinationCache()
-    { return ParticleCombinationCache_; }
-
-    /// make a new particle combination set with parents set
-    static void makeParticleCombinationCacheWithParents(std::vector<std::shared_ptr<ParticleCombination> > ispPCs);
-
-    static void printParticleCombinationCache();
-
-private:
-
-    /// \todo Move to ISP, make no longer static
-    /// Static set of all particle combinations created throughout code
-    static ParticleCombinationCache ParticleCombinationCache_;
-
-/// @}
-
-/// \name Comparison structs
-/// @{
+    /// \name Equivalence-checking structs
+    /// @{
 
 public:
 
@@ -293,6 +221,14 @@ public:
 /// @}
 
 };
+
+/// equality operator
+bool operator==(const ParticleCombination& A, const ParticleCombination& B)
+{ return ParticleCombination::equivUpAndDown(std::make_shared<ParticleCombination>(A), std::make_shared<ParticleCombination>(B)); }
+
+/// inequality operator
+bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
+{ return !(A == B); }
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);

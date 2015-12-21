@@ -21,6 +21,7 @@ set(YAP_SOURCES
 	InitialStateParticle.cxx
 	MeasuredBreakupMomenta.cxx
 	ParticleCombination.cxx
+  ParticleCombinationCache.cxx
 	Particle.cxx
 	ParticleFactory.cxx
 	QuantumNumbers.cxx

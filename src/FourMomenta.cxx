@@ -1,5 +1,6 @@
 #include "FourMomenta.h"
 
+#include "container_utils.h"
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "FourVector.h"
@@ -7,6 +8,7 @@
 #include "logging.h"
 #include "MathUtilities.h"
 #include "ParticleCombination.h"
+#include "ParticleCombinationCache.h"
 #include "ThreeVector.h"
 
 namespace yap {
@@ -43,7 +45,7 @@ void FourMomenta::prepare()
     FinalStateParticleM_.assign(fsp, nullptr);
     FinalStatePC_.assign(fsp, nullptr);
     for (ParticleIndex i = 0; i < fsp; ++i) {
-        FinalStatePC_[i] = ParticleCombination::uniqueSharedPtr(i);
+        FinalStatePC_[i] = ParticleCombination::cache[i];
         // set FSP mass
         for (auto& fsp : initialStateParticle()->finalStateParticles()) {
             for (auto& pc : fsp->particleCombinations()) {
@@ -62,20 +64,20 @@ void FourMomenta::prepare()
     RecoilPC_.assign(fsp, nullptr);
     PairPC_.assign(fsp, ParticleCombinationVector(fsp, nullptr));
     for (ParticleIndex i = 0; (unsigned)i < fsp; ++i) {
-        std::shared_ptr<const ParticleCombination> i_pc = ParticleCombination::uniqueSharedPtr(i);
+        std::shared_ptr<const ParticleCombination> i_pc = ParticleCombination::cache[i];
         // build vector of other final state particles
         ParticleCombinationVector rec_pcs;
         for (ParticleIndex j = 0; (unsigned)j < fsp; ++j) {
             if (j == i)
                 continue;
-            std::shared_ptr<const ParticleCombination> j_pc = ParticleCombination::uniqueSharedPtr(j);
+            std::shared_ptr<const ParticleCombination> j_pc = ParticleCombination::cache[j];
             rec_pcs.push_back(j_pc);
             // set pair pc and add to object
-            PairPC_[i][j] = ParticleCombination::uniqueSharedPtr({i_pc, j_pc});
+            PairPC_[i][j] = ParticleCombination::cache[ {i_pc, j_pc}];
             addSymmetrizationIndex(PairPC_[i][j]);
         }
         // set recoil pc and add to object
-        RecoilPC_[i] = ParticleCombination::uniqueSharedPtr(rec_pcs);
+        RecoilPC_[i] = ParticleCombination::cache[rec_pcs];
         addSymmetrizationIndex(RecoilPC_[i]);
     }
 }
@@ -282,7 +284,7 @@ bool FourMomenta::calculateMissingMasses(DataPoint& d)
         }
 
         for (auto& pcPair : pairPCs) {
-            if (pc->isSubset(pcPair))
+            if (contains(pc->indices(), pcPair->indices()))
                 m2_recoil += m2(d, pcPair);
         }
 
@@ -308,7 +310,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     ParticleCombinationVector PCV = particleCombinations();
 
     for (std::vector<ParticleIndex> pc : pcs) {
-        std::shared_ptr<const ParticleCombination> A = ParticleCombination::uniqueSharedPtr(pc);
+        std::shared_ptr<const ParticleCombination> A = ParticleCombination::cache[pc];
         for (auto& B : PCV) {
             if (ParticleCombination::equivByOrderlessContent(A, B)) {
                 M.push_back(B);
