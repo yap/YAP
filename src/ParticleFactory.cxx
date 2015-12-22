@@ -63,7 +63,7 @@ std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
 }
 
 //-------------------------
-std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
+std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape> massShape)
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);

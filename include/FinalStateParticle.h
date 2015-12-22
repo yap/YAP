@@ -65,7 +65,7 @@ public:
     virtual bool consistent() const override;
 
     /// \return list of all ParticleCombinations
-    ParticleCombinationVector particleCombinations() const
+    ParticleCombinationVector particleCombinations() const override
     { return SymmetrizationIndices_; }
 
     // for internal use only

@@ -9,17 +9,17 @@
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>&& massShape) :
+Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape) :
     DecayingParticle(q, mass, name, radialSize),
     MassShape_(nullptr)
 {
-    setMassShape(massShape);
+    setMassShape(std::move(massShape));
 }
 
 //-------------------------
-void Resonance::setMassShape(std::unique_ptr<MassShape>& massShape)
+void Resonance::setMassShape(std::unique_ptr<MassShape> massShape)
 {
-    MassShape_.swap(massShape);
+    MassShape_ = std::move(massShape);
     MassShape_->borrowParametersFromResonance(this);
 }
 

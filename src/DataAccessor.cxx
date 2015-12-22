@@ -8,6 +8,7 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
+    BelongsToInitialStateParticle(),
     Equiv_(equiv),
     Size_(0),
     Index_(0)

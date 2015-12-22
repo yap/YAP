@@ -46,7 +46,7 @@ class Resonance : public DecayingParticle
 public:
 
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>&& massShape);
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
@@ -72,7 +72,7 @@ public:
     /// @{
 
     /// set MassShape
-    void setMassShape(std::unique_ptr<MassShape>& massShape);
+    void setMassShape(std::unique_ptr<MassShape> massShape);
 
     /// Set pointer to initial state particle
     void setInitialStateParticle(InitialStateParticle* isp) override;
@@ -81,7 +81,7 @@ public:
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c DecayingParticle takes ownership of c
-    void addChannel(std::unique_ptr<DecayChannel>& c) override;
+    void addChannel(std::unique_ptr<DecayChannel> c) override;
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to MassShape_

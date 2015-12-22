@@ -12,8 +12,6 @@
 
 namespace yap {
 
-ParticleCombinationCache ParticleCombination::cache;
-
 //-------------------------
 ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLambda) :
     TwoLambda_(twoLambda)
@@ -84,29 +82,27 @@ bool ParticleCombination::consistent() const
         C &= false;
     }
 
-    // if Daugthers_ empty, should have one and only index
-    if (Daughters_.empty()) {
-        if (Indices_.size() != 1) {
-            FLOG(ERROR) << "contains wrong number of indices for final-state particle (" << Indices_.size() << " != 1)";
-            C &= false;
-        } else
-            // don't need to check indices below
-            return true;
-    } else {
+    // check if Cache_ is set
+    if (!Cache_) {
+        FLOG(ERROR) << "ParticleCombinationCache is not set";
+        C &= false;
 
+    }
+    // check if this is in Cache_
+    else if (Cache_.find(this).expired()) {
+        FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << *this
+                    << ((parent()) ? std::string(" from decay ") + to_string(*parent()) : " (no parent)");
+        C &= false;
+    }
+
+    // if has daughters
+    if (!Daughters_.empty()) {
         // Check Indices_ doesn't have duplicates
         // create unique_copy of Indices_ (as set)
         std::set<ParticleIndex> U(Indices_.begin(), Indices_.end());
         // check unique_copy-object's size == this object's size
         if (U.size() != Indices_.size()) {
             FLOG(ERROR) << "index vector contains duplicate entries (" << U.size() << " != " << Indices_.size() << ").";
-            C &= false;
-        }
-
-        // check if this is in cache
-        if (cache.find(this).expired()) {
-            FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << *this
-                        << ((parent()) ? std::string(" from decay ") + to_string(*parent()) : " (no parent)");
             C &= false;
         }
 
@@ -121,6 +117,11 @@ bool ParticleCombination::consistent() const
         // check consistency of daughters
         std::for_each(Daughters_.begin(), Daughters_.end(),
         [&](const ParticleCombinationVector::value_type & d) {C &= d->consistent();});
+    }
+    // if Daugthers_ empty, should have one and only index (as FSP)
+    else if (Indices_.size() != 1) {
+        FLOG(ERROR) << "contains wrong number of indices for final-state particle (" << Indices_.size() << " != 1)";
+        C &= false;
     }
 
     return C;

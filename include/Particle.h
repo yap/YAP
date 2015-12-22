@@ -37,7 +37,7 @@ class ParticleCombination;
 /// \defgroup Particle Particle-related classes
 
 // keyword virtual is needed to solve diamond problem in DecayingParticle
-class Particle : public virtual AmplitudeComponent
+class Particle : public virtual AmplitudeComponent, public virtual BelongsToInitialStateParticle
 {
 public:
 

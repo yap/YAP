@@ -21,6 +21,7 @@
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
+#include "BelongsToInitialStateParticle.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
@@ -41,7 +42,7 @@ class InitialStateParticle;
 /// \brief Base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DataAccessor
+class DataAccessor : public virtual BelongsToInitialStateParticle
 {
 public:
 
@@ -92,8 +93,8 @@ public:
     /// -1 means empty
     int maxSymmetrizationIndex() const;
 
-    /// \return list of all ParticleCombinations
-    ParticleCombinationVector particleCombinations() const;
+    /// \return vector of ParticleCombination's
+    ParticleCombinationVector particleCombinations() const override;
 
     /// @}
 
@@ -140,19 +141,6 @@ public:
     { return d.Data_.at(Index_).at(i); }
 #endif
 
-    /// Get raw pointer to the initial state particle
-    InitialStateParticle* initialStateParticle() const
-    { return InitialStateParticle_; }
-
-    /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set raw pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp)
-    { InitialStateParticle_ = isp; }
-
     /// @}
 
     /// \name calculation statuses
@@ -178,15 +166,11 @@ protected:
 
 private:
 
-    /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
-    InitialStateParticle* InitialStateParticle_;
-
     /// Object to check equality of symmetrizations for determining storage indices
     ParticleCombination::Equiv* Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
-    // std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
     std::set<CachedDataValue*> CachedDataValues_;

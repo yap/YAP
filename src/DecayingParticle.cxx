@@ -97,10 +97,9 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
-void DecayingParticle::addChannel(std::unique_ptr<DecayChannel>& c)
+void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 {
-    Channels_.push_back(std::unique_ptr<yap::DecayChannel>(nullptr));
-    Channels_.back().swap(c);
+    Channels_.emplace_back(std::move(c));
     Channels_.back()->setInitialStateParticle(initialStateParticle());
 
     if (Channels_.back()->particleCombinations().empty())
@@ -123,7 +122,8 @@ void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
-        std::unique_ptr<DecayChannel> chan( new DecayChannel(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this) );
+        // construct provisional channel
+        auto chan = std::unique_ptr<DecayChannel>(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this);
 
         bool notZero(false);
         ParticleCombinationVector PCs;

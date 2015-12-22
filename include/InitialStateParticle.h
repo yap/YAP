@@ -28,6 +28,7 @@
 #include "FourVector.h"
 #include "HelicityAngles.h"
 #include "MeasuredBreakupMomenta.h"
+#include "ParticleCombinationCache.h"
 
 #include <complex>
 #include <memory>
@@ -37,14 +38,13 @@ namespace yap {
 
 class DataPartitionBase;
 class FinalStateParticle;
-class ParticleCombinationCache;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public enable_shared_from_this, public DecayingParticle
+class InitialStateParticle : public std::enable_shared_from_this<InitialStateParticle>, public DecayingParticle
 {
 public:
 
@@ -209,7 +209,7 @@ public:
     /// @}
 
     /// ParticleCombination cache
-    ParticleCombinationCache::particleCombinationCache;
+    ParticleCombinationCache particleCombinationCache;
 
     /// \name Monte Carlo Generation
     /// @{

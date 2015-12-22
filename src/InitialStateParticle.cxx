@@ -15,7 +15,7 @@ namespace yap {
 
 //-------------------------
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-    enable_shared_from_this(),
+    std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
@@ -204,24 +204,31 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
     }
 
     // check that none of the FSP's has yet been used
-    bool all_unused = true;
-    for (auto& fsp : FSP)
+    // and that FinalStateParticles don't have ISP set to another ISP
+    // (in principle ISP's should be set to nullptr)
+    bool all_good = true;
+    for (auto& fsp : FSP) {
         if (!fsp->particleCombinations().empty()) {
             FLOG(ERROR) << "final-state particle already has indices assigned: " << (std::string)*fsp;
-            all_unused = false;
+            all_good = false;
         }
-    if (!all_unused)
-        throw std::runtime_error("cannot re-use final-state particles");
+        if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
+            FLOG(ERROR) << "final-state particle already has ISP assigned: " << (std::string)*fsp;
+            all_good = false;
+        }
+    }
+    if (!all_good)
+        throw std::runtime_error("invalid final-state particles provided");
+
 
     FinalStateParticles_.reserve(FSP.size());
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
         fsp->SymmetrizationIndices_.push_back(particleCombinationCache[FinalStateParticles_.size()]);
+        fsp->setInitialStateParticle(this);
         FinalStateParticles_.push_back(fsp);
     }
-
-    return true;
 }
 
 //-------------------------

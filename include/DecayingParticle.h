@@ -62,8 +62,8 @@ public:
     virtual bool consistent() const override;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
-    virtual void addChannel(std::unique_ptr<DecayChannel>& c);
+    /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
     /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
     /// \param A daughter particle in all possible helicity states

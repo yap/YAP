@@ -66,6 +66,8 @@ std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](
 
     // else add weak pointer to Cache_
     Cache_.emplace(pc);
+    // link the pc back to the this cache
+    pc->Cache_ = this;
     // and return original shared pointer
     return pc;
 }

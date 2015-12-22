@@ -115,6 +115,10 @@ protected:
     /// 2 * Helicity
     char TwoLambda_;
 
+    /// raw pointer to ParticleCombinationCache managing this object
+    /// \todo Do we need this? Do we really need to check if the PC is in the cache during consistency checking?
+    ParticleCombinationCache Cache_(nullptr);
+
     /// \name Equivalence-checking structs
     /// @{
 
