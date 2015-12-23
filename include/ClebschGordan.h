@@ -16,40 +16,52 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef yap_SpinUtilities_h
-#define yap_SpinUtilities_h
+#ifndef yap_ClebschGordan_h
+#define yap_ClebschGordan_h
 
-#include <string>
+#include "MathUtilities.h"
 
 namespace yap {
 
-/// \brief Clebsch Gordan coefficients and related functions
+/// \namespace ClebschGordan
+/// \brief Clebsch Gordan coefficients and related spin-checking functions
 /// \author Johannes Rauch, Daniel Greenwald
-/// This code has been taken from rootpwa and modified
+namespace ClebschGordan {
 
 /// \return Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M)
+/// Implemented from Eq. (16) from G. Racah, "Theory of Complex Spectra. II", Phys. Rev. 62, 438 (1942)
 /// \param two_j1 2*spin of first particle
 /// \param two_m1 2*spin-projection of first particle
 /// \param two_j2 2*spin of second particle
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
 /// \param two_M  2*spin-projection of composite system
-double clebschGordan(int two_j1, int two_m1, int two_j2, int two_m2, int two_J, int two_M);
+double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
+
+/// \return Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M), with M = m1 + m2
+/// \param two_j1 2*spin of first particle
+/// \param two_m1 2*spin-projection of first particle
+/// \param two_j2 2*spin of second particle
+/// \param two_m2 2*spin-projection of second particle
+/// \param two_J  2*spin of composite system
+double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
+{ return coefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_m1 + two_m2); }
 
 /// \return consistency of spin and spin projection
 /// \param two_J 2*spin
 /// \param two_M 2*spin-projection
-bool spinAndProjAreCompatible(int two_J, int two_M);
+constexpr bool consistent(unsigned two_J, int two_M)
+{ return (std::abs(two_M) <= twoJ) and isEven(two_J - two_M); }
 
 /// \returns whether j1 and j2 can couple to J
 /// \param two_j1 2*spin of first particle
 /// \param two_j2 2*spin of second particle
 /// \param two_J  2*spin of composite system
-bool spinStatesCanCouple(int two_j1, int two_j2, int two_J);
+constexpr bool couple(unsigned two_j1, unsigned two_j2, unsigned two_J)
+{ return (two_J <= (two_j1 + two_j2)) and (two_J >= std::abs(two_j1 - two_j2)) and is_even(two_J - two_j1 - two_j2); }
+        
+} // ClebschGordon namespace
 
-/// convert 2*J to string (e.g. 1/2, 1, 3/2, etc.)
-std::string spinToString(int twoJ);
-
-}
+} // yap namespace
 
 #endif

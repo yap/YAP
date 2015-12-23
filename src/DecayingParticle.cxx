@@ -5,8 +5,6 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "ParticleCombinationCache.h"
-#include "QuantumNumbers.h"
-#include "SpinUtilities.h"
 
 #include <iomanip>
 #include <memory>
@@ -115,19 +113,23 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL)
+void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned char maxTwoL)
 {
     // loop over possible l
-    for (unsigned twoL = 0; twoL < maxTwoL; ++twoL) {
+    for (unsigned char twoL = 0; twoL < maxTwoL; ++twoL) {
+        
+        // skip unallowed l
         if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
             continue;
 
         // construct provisional channel
-        auto chan = std::unique_ptr<DecayChannel>(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this);
+        // auto chan = std::make_unique<DecayChannel>(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this);
+        auto dc = std::make_unique<DecayChannel<HelicitySpinAmplitude> >(A, B, twoL, this);
 
         bool notZero(false);
         ParticleCombinationVector PCs;
 
+        // loop over -J to J
         for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
             for (auto& pc : chan->particleCombinations()) {
                 std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));

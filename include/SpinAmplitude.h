@@ -23,12 +23,9 @@
 
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "logging.h"
-#include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 
 #include <array>
-#include <complex>
 #include <memory>
 
 namespace yap {

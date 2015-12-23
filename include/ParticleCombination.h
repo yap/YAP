@@ -73,8 +73,8 @@ public:
     { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
 
     /// get 2 * helicity
-    const char twoLambda() const
-    { return TwoLambda_; }
+    char twoLambda() const
+        { return TwoLambda_; }
 
     /// @}
 

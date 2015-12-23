@@ -1,13 +1,16 @@
 #include "BlattWeisskopf.h"
 
+#include "CalculationStatus.h"
 #include "Constants.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "QuantumNumbers.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
-#include "SpinUtilities.h"
+
+#include <stdexcept>
 
 namespace yap {
 
@@ -18,6 +21,9 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     Fq_r(new RealCachedDataValue(this)),
     Fq_ab(new RealCachedDataValue(this))
 {
+    if (!DecayChannel_)
+        throw std::runtime_error("DecayChannel not set");
+
     Fq_r->addDependency(DecayChannel_->parent()->mass());
     Fq_r->addDependency(DecayChannel_->parent()->radialSize());
 
@@ -49,7 +55,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << spin_to_string(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_r->value(d, symIndex));
     }
 
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
@@ -61,15 +67,15 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << spin_to_string(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_ab->value(d, symIndex));
     }
 
     double Fq_rOFq_ab = Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
 
     if (calc) {
-        DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
+        DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spin_to_string(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
     } else {
-        DEBUG("BlattWeisskopf::amplitude - using cached values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spinToString(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
+        DEBUG("BlattWeisskopf::amplitude - using cached values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spin_to_string(DecayChannel_->spinAmplitude()->twoL()) << ") = " << Fq_rOFq_ab);
     }
 
     return std::complex<double>(Fq_rOFq_ab);
@@ -95,7 +101,7 @@ double BlattWeisskopf::F2(int twoL, double R2, double q2)
         default:
             /// \todo put in generic formula for L > 2
             LOG(ERROR) << "calculation of Blatt-Weisskopf barrier factor is not (yet) implemented for L = "
-                       << spinToString(twoL) << ". returning 0." << std::endl;
+                       << spin_to_string(twoL) << ". returning 0." << std::endl;
             return 0;
     }
 }

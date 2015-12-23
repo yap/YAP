@@ -53,8 +53,14 @@ public:
     DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
 
     /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent)
+    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent)
         : DecayChannel( {daughterA, daughterB}, spinAmplitude, parent) {}
+
+    /// 2-particle Constructor that constructs SpinAmplitude
+    template <class T>
+    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned char twoL, DecayingParticle* parent)
+        : DecayChannel(daughters, std::make_shared<T>(parent->quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), parent)
+        {}
 
     /// @}
 
@@ -151,6 +157,8 @@ protected:
     std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
 
 };
+
+std::string to_string(const DecayChannel& dc);
 
 }
 

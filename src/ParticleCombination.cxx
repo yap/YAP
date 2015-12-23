@@ -4,7 +4,7 @@
 #include "logging.h"
 #include "MathUtilities.h"
 #include "ParticleCombinationCache.h"
-#include "SpinUtilities.h"
+#include "QuantumNumbers.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -28,7 +28,7 @@ std::string to_string(const ParticleCombination& pc)
     std::string s = "(";
     for (auto i : pc.indices())
         s += to_string(i);
-    s += ", λ = " + spinToString(pc.twoLambda()) + ")";
+    s += ", λ = " + spin_to_string(pc.twoLambda()) + ")";
 
     if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
         return s;

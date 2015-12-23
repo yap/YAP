@@ -8,7 +8,6 @@
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
-#include "SpinUtilities.h"
 #include "WignerD.h"
 
 #include <TGenPhaseSpace.h>

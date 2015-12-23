@@ -1,7 +1,6 @@
 #include "SpinAmplitude.h"
 
 #include "logging.h"
-#include "SpinUtilities.h"
 
 namespace yap {
 
@@ -11,7 +10,7 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
     : DataAccessor(),
       InitialQuantumNumbers_(initial),
       FinalQuantumNumbers_( {{final1, final2}}),
-TwoL_(twoL)
+      TwoL_(twoL)
 {
 }
 

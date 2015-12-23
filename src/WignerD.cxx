@@ -4,10 +4,10 @@
 #include "MathUtilities.h"
 #include "SpinUtilities.h"
 
+/// \todo Find better place for this
 INITIALIZE_EASYLOGGINGPP
 
 #include <cmath>
-#include <math.h>
 #include <vector>
 
 namespace yap {
@@ -25,55 +25,38 @@ using dMatrix = std::vector<std::vector<KappaFactorVector> >;
 // index is for (2J - 1), since J = 0 requires no cache
 static std::vector<dMatrix> CachedMatrices_;
 
-// // Fill cache at initialization of code
-// LOG(INFO) << "filling d-Matrix cache ...";
-// for (unsigned char twoJ = 0; twoJ <= 4; ++twoJ)
-//     cacheMatrix(twoJ);
-// LOG(INFO) << "... done filling d-Matrix cache, size = " << cacheSize() << " for " << 4 << " cached matrices.";
-
 }
 
 //-------------------------
-std::complex<double> DFunction(unsigned char twoJ, char twoM, char twoN, double alpha, double beta, double gamma)
+double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
 {
-    return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta);
-}
-
-//-------------------------
-double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
-{
-    // d^J_MN(-beta) = dJ_NM(beta)
-    // if (beta < 0)
-    //     return dFunction(twoJ, twoN, twoM, -beta);
-    // beta is now positive
-
     // d^J_MN = (-)^(M-N) * d^J_NM
     if (twoN > twoM)
-        return powMinusOne((twoM - twoN) / 2) * dFunction(twoJ, twoN, twoM, beta);
+        return pow_negative_one((twoM - twoN) / 2) * dFunction(twoJ, twoN, twoM, beta);
     // N <= M now
 
     // d^J_MN = (-)^(M-N) * d^J_(-M)(-N)
     if (twoN > 0)
-        return powMinusOne((twoM - twoN) / 2) * dFunction(twoJ, -twoM, -twoN, beta);
+        return pow_negative_one((twoM - twoN) / 2) * dFunction(twoJ, -twoM, -twoN, beta);
     // N <= 0 now
 
     // check M
-    if (isOdd(twoM) != isOdd(twoJ)) {
-        FLOG(ERROR) << "helicity M = " << spinToString(twoM) << " invalid for spin J = " << spinToString(twoJ);
+    if (is_odd(twoM) != is_odd(twoJ)) {
+        FLOG(ERROR) << "helicity M = " << spin_to_string(twoM) << " invalid for spin J = " << spin_to_string(twoJ);
         throw std::invalid_argument("twoM");
     }
     if (std::abs(twoM) > twoJ) {
-        FLOG(WARNING) << "helicity M = " << spinToString(twoM) << " is larger than spin J = " << spinToString(twoJ) << "; matrix element is zero";
+        FLOG(WARNING) << "helicity M = " << spin_to_string(twoM) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
         return 0;
     }
 
     // check N
-    if (isOdd(twoN) != isOdd(twoJ)) {
-        FLOG(ERROR) << "helicity N = " << spinToString(twoN) << " invalid for spin J = " << spinToString(twoJ);
+    if (is_odd(twoN) != is_odd(twoJ)) {
+        FLOG(ERROR) << "helicity N = " << spin_to_string(twoN) << " invalid for spin J = " << spin_to_string(twoJ);
         throw std::invalid_argument("twoN");
     }
     if (std::abs(twoN) > twoJ) {
-        FLOG(WARNING) << "helicity N = " << spinToString(twoN) << " is larger than spin J = " << spinToString(twoJ) << "; matrix element is zero";
+        FLOG(WARNING) << "helicity N = " << spin_to_string(twoN) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
         return 0;
     }
 
@@ -85,27 +68,27 @@ double dFunction(unsigned char twoJ, char twoM, char twoN, double beta)
     dMatrix::cache(twoJ);
     // if problem with caching (should not happen!)
     if (twoJ > dMatrix::CachedMatrices_.size()) {
-        FLOG(ERROR) << "d matrix could not be cached for spin J = " << spinToString(twoJ);
+        FLOG(ERROR) << "d matrix could not be cached for spin J = " << spin_to_string(twoJ);
         FLOG(ERROR) << "CachedMatrices_.size() = " << dMatrix::CachedMatrices_.size();
         throw;
     }
 
     const dMatrix::KappaFactorVector& KF = dMatrix::CachedMatrices_[twoJ - 1][(twoJ + twoM) / 2][(twoJ + twoN) / 2];
 
-    unsigned char MminusN = (twoM - twoN) / 2;
+    unsigned MminusN = (twoM - twoN) / 2;
 
     // sum over powers of cosine and sine of beta / 2 and multiply by factor
     double cosHalfBeta = cos(beta / 2); // power for cos is [2J - (M - N) - 2K]
     double sinHalfBeta = sin(beta / 2); // power for sin is [(M - N) + 2K]
     double dMatrixElement = 0;
-    for (unsigned char K = 0; K < KF.size(); ++K)
+    for (unsigned K = 0; K < KF.size(); ++K)
         dMatrixElement += KF[K] * pow(cosHalfBeta, twoJ - MminusN - 2 * K) * pow(sinHalfBeta, MminusN + 2 * K);
 
     return dMatrixElement;
 }
 
 //-------------------------
-void dMatrix::cache(unsigned char twoJ)
+void dMatrix::cache(unsigned twoJ)
 {
     /// d-matrix has already been cached for this spin
     if (twoJ == 0 or (twoJ <= CachedMatrices_.size() and !CachedMatrices_[twoJ - 1].empty()))
@@ -119,19 +102,19 @@ void dMatrix::cache(unsigned char twoJ)
 
     dMatrix dJ(twoJ + 1);
 
-    for (unsigned char JplusM = 0; JplusM <= twoJ; ++JplusM) {
+    for (unsigned JplusM = 0; JplusM <= twoJ; ++JplusM) {
 
-        unsigned char JminusM = twoJ - JplusM;
+        unsigned JminusM = twoJ - JplusM;
 
         // = sqrt( (J + M)! * (J - M)! )
         double JMFactor = sqrt(std::tgamma(JplusM + 1) * std::tgamma(JminusM + 1));
 
-        dJ[JplusM].resize(std::min(JplusM, (unsigned char)std::floor(J)) + 1);
+        dJ[JplusM].resize(std::min(JplusM, (unsigned)std::floor(J)) + 1);
 
-        for (unsigned char JplusN = 0; JplusN < dJ[JplusM].size(); ++JplusN) {
+        for (unsigned JplusN = 0; JplusN < dJ[JplusM].size(); ++JplusN) {
 
-            unsigned char JminusN = twoJ - JplusN;
-            unsigned char MminusN = JplusM - JplusN;
+            unsigned JminusN = twoJ - JplusN;
+            unsigned MminusN = JplusM - JplusN;
 
             // = sqrt( (J + N)! * (J - N)! )
             double JNFactor = sqrt(std::tgamma(JplusN + 1) * std::tgamma(JminusN + 1));
@@ -140,7 +123,7 @@ void dMatrix::cache(unsigned char twoJ)
 
             // minK is 0, by choice that N <= M
             for (unsigned K = 0; K < dJ[JplusM][JplusN].size(); ++K)
-                dJ[JplusM][JplusN][K] = powMinusOne(K + MminusN) * JMFactor * JNFactor
+                dJ[JplusM][JplusN][K] = pow_negative_one(K + MminusN) * JMFactor * JNFactor
                                         / std::tgamma(JminusM - K + 1) / std::tgamma(JplusN - K + 1) / std::tgamma(K + MminusN + 1) / std::tgamma(K + 1);
         }
     }

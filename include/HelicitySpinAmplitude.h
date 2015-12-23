@@ -23,6 +23,7 @@
 
 #include "DataPoint.h"
 #include "ParticleCombination.h"
+#include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 
 #include <complex>
@@ -67,7 +68,10 @@ public:
     /// cast into string
     operator std::string() const override;
 
-    /// Calculate Clebsch-Gordan coefficients for all particleCombinations
+    /// Calculate Clebsch-Gordan coefficient for coupling to two helicity projecttions
+    double calculateClebschGordanCoefficient(char lambda1, char lambda2) const;
+
+    /// Calculate Clebsch-Gordan coefficients for a particleCombination
     double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
 
     /// Set raw pointer to initial state particle

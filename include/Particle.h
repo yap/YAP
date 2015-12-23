@@ -30,6 +30,7 @@
 namespace yap {
 
 class ParticleCombination;
+class FinalStateParticle;
 
 /// \class Particle
 /// \brief Abstract Particle base class.

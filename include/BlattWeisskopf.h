@@ -23,7 +23,6 @@
 
 #include "AmplitudeComponent.h"
 #include "CachedDataValue.h"
-#include "CalculationStatus.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
 
