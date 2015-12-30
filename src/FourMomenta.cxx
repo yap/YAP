@@ -2,6 +2,7 @@
 
 #include "container_utils.h"
 #include "DataPoint.h"
+#include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "FourVector.h"
 #include "InitialStateParticle.h"
@@ -14,10 +15,12 @@
 namespace yap {
 
 //-------------------------
-FourMomenta::FourMomenta() :
-    StaticDataAccessor(&ParticleCombination::equivByOrderlessContent),
-    M_(new RealCachedDataValue (this))
+FourMomenta::FourMomenta(InitialStateParticle* isp) :
+    StaticDataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
+    M_(std::make_shared<RealCachedDataValue>(this))
 {
+    if (!initialStateParticle())
+        throw exceptions::InitialStateParticleUnset();
 }
 
 //-------------------------
@@ -44,7 +47,7 @@ void FourMomenta::prepare()
     FinalStateParticleM_.assign(fsp, nullptr);
     FinalStatePC_.assign(fsp, nullptr);
     for (ParticleIndex i = 0; i < fsp; ++i) {
-        FinalStatePC_[i] = ParticleCombination::cache[i];
+        FinalStatePC_[i] = initialStateParticle()->particleCombinationCache[i];
         // set FSP mass
         for (auto& fsp : initialStateParticle()->finalStateParticles()) {
             for (auto& pc : fsp->particleCombinations()) {
@@ -63,20 +66,20 @@ void FourMomenta::prepare()
     RecoilPC_.assign(fsp, nullptr);
     PairPC_.assign(fsp, ParticleCombinationVector(fsp, nullptr));
     for (ParticleIndex i = 0; (unsigned)i < fsp; ++i) {
-        std::shared_ptr<const ParticleCombination> i_pc = ParticleCombination::cache[i];
+        auto i_pc = initialStateParticle()->particleCombinationCache[i];
         // build vector of other final state particles
         ParticleCombinationVector rec_pcs;
         for (ParticleIndex j = 0; (unsigned)j < fsp; ++j) {
             if (j == i)
                 continue;
-            std::shared_ptr<const ParticleCombination> j_pc = ParticleCombination::cache[j];
+            auto j_pc = initialStateParticle()->particleCombinationCache[j];
             rec_pcs.push_back(j_pc);
             // set pair pc and add to object
-            PairPC_[i][j] = ParticleCombination::cache[ {i_pc, j_pc}];
+            PairPC_[i][j] = initialStateParticle()->particleCombinationCache[ {i_pc, j_pc}];
             addSymmetrizationIndex(PairPC_[i][j]);
         }
         // set recoil pc and add to object
-        RecoilPC_[i] = ParticleCombination::cache[rec_pcs];
+        RecoilPC_[i] = initialStateParticle()->particleCombinationCache[rec_pcs];
         addSymmetrizationIndex(RecoilPC_[i]);
     }
 }
@@ -84,29 +87,27 @@ void FourMomenta::prepare()
 //-------------------------
 bool FourMomenta::consistent() const
 {
-    bool result = true;
+    bool C = StaticDataAccessor::consistent();
 
     // check that the first indices in the SymmetrizationIndices_ are the final state particles in order
     for (auto& kv : symmetrizationIndices())
         if (kv.first->isFinalStateParticle() and kv.first->indices()[0] != kv.second) {
-            LOG(ERROR) << "FourMomenta::consistent - final-state particle id does not match index ("
-                       << kv.first->indices()[0] << " != " << kv.second << ")";
-            result = false;
+            FLOG(ERROR) << "final-state particle id does not match index ("
+                        << kv.first->indices()[0] << " != " << kv.second << ")";
+            C &= false;
         }
 
     if (!InitialStatePC_) {
-        LOG(ERROR) << "FourMomenta::consistent - does not contain initial-state particle combination.";
-        result = false;
+        FLOG(ERROR) << "does not contain initial-state particle combination.";
+        C &= false;
     }
 
     if (FinalStateParticleM_.empty()) {
-        LOG(ERROR) << "FourMomenta::consistent - FinalStateParticleM_ and FinalStateParticleM2_ have not been filled.";
-        result = false;
+        FLOG(ERROR) << "FinalStateParticleM_ and FinalStateParticleM2_ have not been filled.";
+        C &= false;
     }
 
-    result &= DataAccessor::consistent();
-
-    return result;
+    return C;
 }
 
 //-------------------------
@@ -308,24 +309,20 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
 
     ParticleCombinationVector PCV = particleCombinations();
 
-    for (std::vector<ParticleIndex> pc : pcs) {
-        std::shared_ptr<const ParticleCombination> A = ParticleCombination::cache[pc];
-        for (auto& B : PCV) {
-            if (ParticleCombination::equivByOrderlessContent(A, B)) {
+    for (auto& v : pcs) {
+        auto A = initialStateParticle()->particleCombinationCache.find(v);
+        if (A.expired())
+            throw exceptions::ParticleCombinationNotFound();
+        for (auto& B : PCV)
+            if (ParticleCombination::equivByOrderlessContent(A.lock(), B)) {
                 M.push_back(B);
                 break;
             }
-        }
     }
 
     // Check if all combinations found
-    if (M.size() != pcs.size()) {
-        LOG(ERROR) << "FourMomenta::getDalitzAxes : did not find all requested combinations.";
-        for (auto& m : M) {
-            DEBUG(*m);
-        }
-        M.clear();
-    }
+    if (M.size() != pcs.size())
+        throw exceptions::ParticleCombinationNotFound();
 
     return M;
 }

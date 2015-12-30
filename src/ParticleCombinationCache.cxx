@@ -1,7 +1,8 @@
 #include "ParticleCombinationCache.h"
 
+#include "Exceptions.h"
+
 #include <algorithm>
-#include <cassert>
 
 namespace yap {
 
@@ -18,7 +19,8 @@ ParticleCombinationCache::ParticleCombinationCache(std::vector<std::shared_ptr<P
         setLineage(pc);
 
     // check consistency
-    assert(consistent());
+    if (!consistent())
+        throw exceptions::InconsistentParticleCombinationCache();
 
     // remove expired cache entries
     removeExpired();
@@ -42,17 +44,34 @@ void ParticleCombinationCache::setLineage(std::shared_ptr<ParticleCombination> p
 }
 
 //-------------------------
-ParticleCombinationCache::cache_type::key_type ParticleCombinationCache::find(const ParticleCombination* pc) const
+ParticleCombinationCache::cache_type::key_type ParticleCombinationCache::find(std::shared_ptr<const ParticleCombination> pc) const
 {
-    if (pc == nullptr)
+    if (!pc)
         return cache_type::key_type();
 
-    auto it = std::find_if(Cache_.begin(), Cache_.end(), [&](const cache_type::key_type & wpc) {return wpc.lock().get() == pc;});
+    // search for equivalent to pc
+    auto it = std::find_if(Cache_.begin(), Cache_.end(),
+                           [&](const cache_type::key_type & wpc)
+    {return ParticleCombination::equivUpAndDown(wpc.lock(), pc);});
 
     if (it == Cache_.end())
         return cache_type::key_type();
 
     return *it;
+}
+
+//-------------------------
+ParticleCombinationCache::cache_type::key_type ParticleCombinationCache::find(const std::vector<ParticleIndex>& I) const
+{
+    ParticleCombinationVector V;
+    V.reserve(I.size());
+    for (auto& i : I) {
+        auto a = find(std::make_shared<const ParticleCombination>(i));
+        if (a.expired())
+            throw exceptions::ParticleCombinationNotFound();
+        V.push_back(a.lock());
+    }
+    return find(std::make_shared<const ParticleCombination>(V));
 }
 
 //-------------------------
@@ -67,13 +86,13 @@ std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](
     // else add weak pointer to Cache_
     Cache_.emplace(pc);
     // link the pc back to the this cache
-    pc->Cache_ = this;
+    // pc->Cache_ = this;
     // and return original shared pointer
     return pc;
 }
 
 //-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](std::vector<ParticleIndex> I)
+std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](const std::vector<ParticleIndex>& I)
 {
     ParticleCombinationVector V;
     for (ParticleIndex i : I)

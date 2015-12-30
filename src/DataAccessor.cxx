@@ -20,9 +20,6 @@ DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
 //-------------------------
 DataAccessor::~DataAccessor()
 {
-    /// \todo: remove?
-    if (InitialStateParticle_)
-        InitialStateParticle_->removeDataAccessor(this);
 }
 
 //-------------------------

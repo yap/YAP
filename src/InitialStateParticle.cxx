@@ -19,14 +19,16 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
-    FourMomenta_(),
-    MeasuredBreakupMomenta_(),
-    HelicityAngles_()
+    FourMomenta_(this),
+    MeasuredBreakupMomenta_(this),
+    HelicityAngles_(this)
 {
-    setInitialStateParticle(this);
-    addDataAccessor(std::shared_ptr(&FourMomenta_));
-    addDataAccessor(std::shared_ptr(&MeasuredBreakupMomenta_));
-    addDataAccessor(std::shared_ptr(&HelicityAngles_))
+    // addDataAccessor(std::shared_ptr<DataAccessor>(&FourMomenta_));
+    // addDataAccessor(std::shared_ptr<DataAccessor>(&MeasuredBreakupMomenta_));
+    // addDataAccessor(std::shared_ptr<DataAccessor>(&HelicityAngles_));
+    addDataAccessor(&FourMomenta_);
+    addDataAccessor(&MeasuredBreakupMomenta_);
+    addDataAccessor(&HelicityAngles_);
 }
 
 //-------------------------
@@ -113,7 +115,7 @@ bool InitialStateParticle::consistent() const
 bool InitialStateParticle::prepare()
 {
     // add self to DataAccessors_
-    addDataAccessor(shared_from_this());
+    addDataAccessor(this);//shared_from_this());
 
     // check
     if (!DecayingParticle::consistent()) {
@@ -133,18 +135,18 @@ bool InitialStateParticle::prepare()
     for (auto& pc : particleCombinations()) {
         PCs.push_back(std::make_shared<ParticleCombination>(*pc));
     }
-    ParticleCombination::cache = ParticleCombinationCache(PCs);
+    particleCombinationCache = ParticleCombinationCache(PCs);
     clearSymmetrizationIndices();
     for (auto& pc : PCs)
         addSymmetrizationIndex(pc);
 
     // check
-    for (auto& wpc : ParticleCombination::cache) {
+    for (auto& wpc : particleCombinationCache) {
         if (!wpc.lock())
             continue;
         auto pc = wpc.lock();
         if (!pc->consistent()) {
-            LOG(ERROR) << "Cannot prepare InitialStateParticle, ParticleCombination::cache is not consistent.";
+            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
             return false;
         }
         if (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent()) {
@@ -158,7 +160,7 @@ bool InitialStateParticle::prepare()
     optimizeSpinAmplitudeSharing();
 
     // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    for (auto& wpc : ParticleCombination::cache) {
+    for (auto& wpc : particleCombinationCache) {
         if (wpc.expired())
             continue;
         auto pc = wpc.lock();
@@ -251,16 +253,16 @@ std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<c
 std::vector<std::shared_ptr<ComplexParameter> > InitialStateParticle::freeAmplitudes() const
 {
     std::vector<std::shared_ptr<ComplexParameter> > amps;
+
+    if (DecayChannels_.size() <= 1)
+        return amps;
+
+    // if there is only one channel, its amplitude is 1
+    // no need to change/fit it
     amps.reserve(DecayChannels_.size());
 
-    for (DecayChannel* ch : DecayChannels_) {
-        // if there is only one channel, its amplitude is 1
-        // no need to change/fit it
-        if (ch->parent()->nChannels() == 1)
-            continue;
-
+    for (DecayChannel* ch : DecayChannels_)
         amps.push_back(ch->freeAmplitude());
-    }
 
     return amps;
 }
@@ -373,16 +375,17 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
               << "index \tnSymIndices \taddress  \tname";
     if (printParticleCombinations)
         std::cout << "\t\tparticleCombinations";
-    std::cout << "\n";
+    std::cout << std::endl;
 
-    for (DataAccessor* d : DataAccessors_) {
-        std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1
+    for (auto& d : DataAccessors_) {
+        std::cout << d->index()
+                  << "  \t" << d->maxSymmetrizationIndex() + 1
                   << "  \t\t" << d
                   << "  \t(" << typeid(*d).name() << ")  \t";
         if (dynamic_cast<Particle*>(d))
             std::cout << dynamic_cast<Particle*>(d)->name();
         else if (dynamic_cast<DecayChannel*>(d))
-            std::cout << std::string(*dynamic_cast<DecayChannel*>(d));
+            std::cout << *dynamic_cast<DecayChannel*>(d);
 
         if (printParticleCombinations) {
             std::cout << " \t";
@@ -391,7 +394,7 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
                 std::cout << *pc << ":" << d->symmetrizationIndex(pc) << ";  ";
         }
 
-        std::cout << "\n";
+        std::cout << std::endl;
     }
     std::cout << std::endl;
 }
@@ -400,15 +403,20 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 void InitialStateParticle::setSymmetrizationIndexParents()
 {
     unsigned size = particleCombinations()[0]->indices().size();
-    assert(size > 1);
+
+    if (size <= 1)
+        throw exceptions::FewerThanTwoDaughters();
 
     clearSymmetrizationIndices();
 
     // get initial state PCs from set and add them
-    for (auto& wpc : ParticleCombination::cache) {
+    for (auto& wpc : particleCombinationCache) {
+
         if (wpc.expired())
             continue;
+
         auto pc = wpc.lock();
+
         if (pc->indices().size() < size)
             continue;
 
@@ -514,15 +522,14 @@ void InitialStateParticle::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-void InitialStateParticle::addDataAccessor(std::shared_ptr<DataAccessor> d)
+void InitialStateParticle::addDataAccessor(DataAccessor* d)
 {
     if (prepared()) {
         FLOG(ERROR) << "InitialStateParticle has already been prepared. "
                     << "Adding a data accessor is no longer permitted.";
-        std::throw std::runtime_error("initial-state particle cannot be modified after prepare() has been called.");
+        throw exceptions::InitialStateParticleAlreadyPrepared();
     }
     DataAccessors_.insert(d);
-    d->setInitialStateParticle(this);
 }
 
 
@@ -532,7 +539,7 @@ void InitialStateParticle::removeDataAccessor(DataAccessor* d)
     if (prepared()) {
         FLOG(ERROR) << "InitialStateParticle has already been prepared. "
                     << "Removing a data accessor is no longer permitted.";
-        std::throw std::runtime_error("initial-state particle cannot be modified after prepare() has been called.");
+        throw exceptions::InitialStateParticleAlreadyPrepared();
     }
     DataAccessors_.erase(d);
 }

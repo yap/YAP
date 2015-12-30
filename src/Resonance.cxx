@@ -1,6 +1,7 @@
 #include "Resonance.h"
 
 #include "DecayChannel.h"
+#include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
@@ -11,49 +12,41 @@ namespace yap {
 //-------------------------
 Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape) :
     DecayingParticle(q, mass, name, radialSize),
-    MassShape_(nullptr)
+    MassShape_(std::move(massShape))
 {
-    setMassShape(std::move(massShape));
-}
+    if (!MassShape_)
+        throw exceptions::MissingMassShape();
 
-//-------------------------
-void Resonance::setMassShape(std::unique_ptr<MassShape> massShape)
-{
-    MassShape_ = std::move(massShape);
-    MassShape_->borrowParametersFromResonance(this);
+    MassShape_->setResonance(this);
 }
-
 
 //-------------------------
 bool Resonance::consistent() const
 {
-    bool consistent = true;
+    bool C = DecayingParticle::consistent();
 
-    consistent &= DecayingParticle::consistent();
-    consistent &= MassShape_->consistent();
-
-    if (! consistent) {
-        LOG(ERROR) << "Resonance is not consistent:  " << this->name() << "\n";
+    if (!MassShape_->consistent()) {
+        FLOG(ERROR) << "MassShape not consistent";
+        C &= false;
+    }
+    if (MassShape_->resonance() != this) {
+        FLOG(ERROR) << "MassShape's resonance is not this";
+        C &= false;
     }
 
-    return consistent;
+    return C;
 }
 
 //-------------------------
-void Resonance::setInitialStateParticle(InitialStateParticle* isp)
+void Resonance::addChannel(std::unique_ptr<DecayChannel> c)
 {
-    DecayingParticle::setInitialStateParticle(isp);
-    // hand ISP to mass shape
-    MassShape_->setInitialStateParticle(initialStateParticle());
-}
+    if (!initialStateParticle())
+        throw exceptions::InitialStateParticleUnset();
 
-//-------------------------
-void Resonance::addChannel(std::unique_ptr<DecayChannel>& c)
-{
     for (auto& pc : c->particleCombinations())
-        MassShape_->addSymmetrizationIndex(ParticleCombination::cache[pc]);
+        MassShape_->addSymmetrizationIndex(initialStateParticle()->particleCombinationCache[pc]);
 
-    DecayingParticle::addChannel(c);
+    DecayingParticle::addChannel(std::move(c));
 }
 
 //-------------------------

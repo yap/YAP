@@ -38,10 +38,7 @@ class BelongsToInitialStateParticle
 public:
 
     /// Default constructor
-    BelongsToInitialStateParticle() : InitialStateParticle_(nullptr) {}
-
-    /// constructor
-    BelongsToInitialStateParticle(InitialStateParticle* isp) : InitialStateParticle_(isp) {}
+    BelongsToInitialStateParticle() {}
 
     /// virtual destructor
     virtual ~BelongsToInitialStateParticle() = default;
@@ -58,21 +55,15 @@ public:
     /// default move assignment operator
     BelongsToInitialStateParticle& operator=(BelongsToInitialStateParticle&& rhs) = default;
 
-    /// set raw pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp)
-    { InitialStateParticle_ = isp; }
-
     /// get raw pointer to initial state particle
-    InitialStateParticle* initialStateParticle() const
-    { return InitialStateParticle_; }
+    virtual InitialStateParticle* initialStateParticle() = 0;
+
+    /// get raw pointer to initial state particle (const)
+    const InitialStateParticle* initialStateParticle() const
+    { return const_cast<BelongsToInitialStateParticle*>(this)->initialStateParticle(); }
 
     /// \return vector of ParticleCombination's
     virtual ParticleCombinationVector particleCombinations() const = 0;
-
-private:
-
-    /// raw pointer to initial state particle
-    InitialStateParticle* InitialStateParticle_;
 
 };
 }

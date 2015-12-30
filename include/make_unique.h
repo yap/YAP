@@ -21,6 +21,8 @@
 #ifndef yap_make_unique_h
 #define yap_make_unique_h
 
+#include <memory>
+
 /// c++14 implements make_unique
 /// for c++11 we have to define it ourselves
 #if __cplusplus <= 201103L

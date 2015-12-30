@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// \file
+
 #ifndef yap_DecayChannel_h
 #define yap_DecayChannel_h
 
@@ -23,6 +25,8 @@
 #include "BlattWeisskopf.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
+#include "Particle.h"
+#include "QuantumNumbers.h"
 
 #include <complex>
 #include <memory>
@@ -34,14 +38,12 @@ namespace yap {
 class DecayingParticle;
 class FinalStateParticle;
 class InitialStateParticle;
-class Particle;
 class ParticleCombination;
 class SpinAmplitude;
 
 /// \class InitialStateParticle
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
-
 class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
@@ -49,18 +51,15 @@ public:
     /// \name Constructors
     /// @{
 
-    /// N-particle Constructor [at the moment only valid for 2 particles]
-    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent);
+    /// N-particle Constructor [at the moment only valid for 2 particles].
+    /// DecayChannel inherits ISP from daughters.
+    /// \param daughters Vector of shared_ptr's to daughter Particle's
+    /// \param spinAmplitude shared_ptr to SpinAmplitude object
+    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent)
-        : DecayChannel( {daughterA, daughterB}, spinAmplitude, parent) {}
-
-    /// 2-particle Constructor that constructs SpinAmplitude
-    template <class T>
-    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned char twoL, DecayingParticle* parent)
-        : DecayChannel(daughters, std::make_shared<T>(parent->quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), parent)
-        {}
+    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, std::shared_ptr<SpinAmplitude> spinAmplitude)
+        : DecayChannel( {A, B}, spinAmplitude) {}
 
     /// @}
 
@@ -69,9 +68,6 @@ public:
 
     /// check consistency of object
     virtual bool consistent() const override;
-
-    /// cast into string
-    operator std::string() const;
 
     /// \return vector of shared_ptr's to final-state particles of channel (recursively checked)
     std::vector<std::shared_ptr<FinalStateParticle> > finalStateParticles() const;
@@ -91,44 +87,10 @@ public:
     const SpinAmplitude* spinAmplitude() const
     { return SpinAmplitude_.get(); }
 
-    /// Get parent particle
-    DecayingParticle* parent()
-    { return Parent_; }
-
-    /// Get parent particle
-    const DecayingParticle* parent() const
-    { return Parent_; }
-
     std::shared_ptr<ComplexParameter> freeAmplitude() const
     { return FreeAmplitude_; }
 
     /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    /// @}
-
-    /// \name SymmetrizationIndex related
-    /// @{
-
-    /// add symmetrizationIndex to SymmetrizationIndices_,
-    /// also add to BlattWeisskopf_ and SpinAmplitude_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
-
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices() override;
-
-    // for internal use only
-    void setSymmetrizationIndexParents();
-
-    /// @}
-
-    // for internal use only
-    void addSpinAmplitudeDependencies();
 
     virtual ParameterSet ParametersItDependsOn() override
     { return {FreeAmplitude_}; }
@@ -136,10 +98,38 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {FixedAmplitude_}; }
 
+    /// \return raw pointer to initial state particle through first daughter
+    InitialStateParticle* initialStateParticle() override
+    { return Daughters_[0]->initialStateParticle(); }
+
+    /// \return raw pointer to owning DecayingParticle
+    DecayingParticle* decayingParticle() const
+    { return DecayingParticle_; }
+
+    /// Grant friend status to DecayingParticle to set itself as owner
+    friend DecayingParticle;
+
+    /// Grant friend status to InitialStateParticle to call setSymmetrizationParents
+    friend class InitialStateParticle;
+
 protected:
 
-    /// DecayingParticle this DecayChannel belongs to
-    DecayingParticle* Parent_;
+    /// set raw pointer to owning DecayingParticle
+    void setDecayingParticle(DecayingParticle* dp);
+
+    /// clear SymmetrizationIndices_
+    virtual void clearSymmetrizationIndices() override;
+
+    /// add symmetrizationIndex to SymmetrizationIndices_,
+    /// also add to BlattWeisskopf_ and SpinAmplitude_
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
+
+    // sets symmetrization index parents
+    void setSymmetrizationIndexParents();
+
+    // called by DecayingParticle to add SpinAmplitude dependencies
+    void addSpinAmplitudeDependencies();
+
 
     /// 2 daughters of the decay
     std::vector<std::shared_ptr<Particle> > Daughters_;
@@ -156,9 +146,21 @@ protected:
     /// amplitude from spin dynamics, mass shapes, etc.
     std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
 
+private:
+
+    /// raw pointer owning DecayingParticle
+    DecayingParticle* DecayingParticle_;
+
 };
 
+/// convert to string
 std::string to_string(const DecayChannel& dc);
+
+/// << operator
+inline std::ostream& operator<< (std::ostream& os, const DecayChannel& dc)
+{ os << to_string(dc); return os; }
+
+
 
 }
 

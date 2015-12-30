@@ -46,6 +46,10 @@ class Resonance : public DecayingParticle
 public:
 
     /// Constructor
+    /// \param q QuantumNumbers of resonance
+    /// \param mass mass of resonance
+    /// \param radialSize radial size of resonance
+    /// \param massShape unique_ptr to MassShape of resonance
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
@@ -62,7 +66,7 @@ public:
     MassShape& massShape()
     { return *(MassShape_.get()); }
 
-    /// const'ly access MassShape
+    /// access MassShape (const)
     const MassShape& massShape() const
     { return *(MassShape_.get()); }
 
@@ -73,9 +77,6 @@ public:
 
     /// set MassShape
     void setMassShape(std::unique_ptr<MassShape> massShape);
-
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override;
 
     using DecayingParticle::addChannel;
 

@@ -4,12 +4,10 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
-#include "make_unique.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 
 #include <fstream>
-#include <iostream>
 
 namespace yap {
 
@@ -63,7 +61,7 @@ std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
 }
 
 //-------------------------
-std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape> massShape)
+std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);

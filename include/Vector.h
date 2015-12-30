@@ -21,7 +21,6 @@
 #ifndef yap_Vector_h
 #define yap_Vector_h
 
-#include "cpp14_type_traits.h"
 #include "Matrix.h"
 
 #include <algorithm>

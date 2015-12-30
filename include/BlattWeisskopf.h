@@ -51,19 +51,32 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
-    /// Return DecayChannel this BlattWeisskopf belongs to
-    DecayChannel* decayChannel() const {return DecayChannel_;}
-
     /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
-    static double F2(int twoL, double R2, double q2);
+    /// \param l orbital angular momentum
+    /// \param r2 square of radial size
+    /// \param q2 square of breakup momentum
+    static double F2(unsigned l, double r2, double q2);
 
     //virtual ParameterSet ParametersItDependsOn() override;
 
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
-    /// Set raw pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp) override;
+    /// \return raw pointer to owning DecayChannel
+    DecayChannel* decayChannel() const
+    { return DecayChannel_; }
+
+    /// include const access to ISP
+    using BelongsToInitialStateParticle::initialStateParticle;
+
+    /// \return raw pointer to InitialStateParticle through owning DecayChannel
+    InitialStateParticle* initialStateParticle() override;
+
+    /// set dependencies from InitialStateParticle
+    void setDependencies();
+
+    /// Give friend status to DecayChannel so it can set dependencies
+    friend DecayChannel;
 
 private:
 

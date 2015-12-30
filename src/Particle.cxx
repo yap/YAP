@@ -16,8 +16,8 @@ Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
 //-------------------------
 bool Particle::consistent() const
 {
-    if (Mass_->value() <= 0.) {
-        LOG(ERROR) << "Particle::consistent() - mass not positive.";
+    if (Mass_->value() < 0.) {
+        FLOG(ERROR) << "mass is negative";
         return false;
     }
 

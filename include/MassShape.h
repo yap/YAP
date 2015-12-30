@@ -43,37 +43,46 @@ class MassShape : public AmplitudeComponent, public DataAccessor
 public:
 
     /// Constructor
-    MassShape() : DataAccessor(&ParticleCombination::equivByOrderlessContent)
+    MassShape() : DataAccessor(&ParticleCombination::equivByOrderlessContent), Resonance_(nullptr)
     {}
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
     /// \param entry ParticleTableEntry containing information to create mass shape object
-    /// \return Success of action
-    virtual bool setParameters(const ParticleTableEntry& entry)
-    { return false; }
-
-    /// \name Bookkeeping related
-    /// @{
+    virtual void setParameters(const ParticleTableEntry& entry)
+    { }
 
     /// Check consistency of object
-    virtual bool consistent() const override
-    { return DataAccessor::consistent(); }
+    virtual bool consistent() const override;
 
-    /// @}
+    /// get raw pointer to owning resonance
+    Resonance* resonance() const
+    { return Resonance_; }
+
+    /// include const access to ISP
+    using BelongsToInitialStateParticle::initialStateParticle;
+
+    /// get raw pointer to initial state particle through resonance
+    InitialStateParticle* initialStateParticle() override;
 
 protected:
 
-    /// \name Friends
-    /// @{
-
+    /// Grant Resonance friendship, so it can set itself as owner
     friend class Resonance;
 
-    /// @}
+    /// Set raw pointer to owning Resonance.
+    /// Calls borrowParametersFromResonance()
+    void setResonance(Resonance* r)
+    { Resonance_ = r; if (Resonance_) borrowParametersFromResonance(); }
 
-    /// override in inheriting classes to borrow parameters from Resonance
-    virtual void borrowParametersFromResonance(Resonance* R)
+    /// override in inheriting classes to borrow parameters from owning resonance
+    virtual void borrowParametersFromResonance()
     {}
+
+private:
+
+    /// raw pointer to resonance that owns this mass shape
+    Resonance* Resonance_;
 
 };
 

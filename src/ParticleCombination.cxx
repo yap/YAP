@@ -2,18 +2,15 @@
 
 #include "container_utils.h"
 #include "logging.h"
-#include "MathUtilities.h"
-#include "ParticleCombinationCache.h"
 #include "QuantumNumbers.h"
 
 #include <algorithm>
-#include <assert.h>
 #include <set>
 
 namespace yap {
 
 //-------------------------
-ParticleCombination::ParticleCombination(ParticleCombinationVector c, char twoLambda) :
+ParticleCombination::ParticleCombination(ParticleCombinationVector c, int twoLambda) :
     TwoLambda_(twoLambda)
 {
     for (auto& d : c)
@@ -79,19 +76,6 @@ bool ParticleCombination::consistent() const
 
     if (Indices_.empty()) {
         FLOG(ERROR) << "has no indices.";
-        C &= false;
-    }
-
-    // check if Cache_ is set
-    if (!Cache_) {
-        FLOG(ERROR) << "ParticleCombinationCache is not set";
-        C &= false;
-
-    }
-    // check if this is in Cache_
-    else if (Cache_.find(this).expired()) {
-        FLOG(ERROR) << "ParticleCombination is not in ParticleCombinationSet: " << *this
-                    << ((parent()) ? std::string(" from decay ") + to_string(*parent()) : " (no parent)");
         C &= false;
     }
 

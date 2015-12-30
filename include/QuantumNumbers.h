@@ -21,7 +21,8 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
-#include <cmath>
+#include "MathUtilities.h"
+
 #include <ostream>
 
 namespace yap {
@@ -39,7 +40,7 @@ public:
 
     /// Constructor
     constexpr QuantumNumbers(unsigned twoJ, int P, int C, unsigned twoI, int G, int Q)
-        : TwoJ_(twoJ), P_(P), C_(C), twoI_(twoI), G_(G), Q_(Q) {}
+        : TwoJ_(twoJ), P_(P), C_(C), TwoI_(twoI), G_(G), Q_(Q) {}
 
     /// IJPQ(lambda) constructor
     constexpr QuantumNumbers(unsigned twoI, unsigned twoJ, int P, int Q)
@@ -97,7 +98,7 @@ public:
 
     /// Set Spin
     void setJ(double J)
-    { TwoJ_ = std::round(2.*J); }
+    { TwoJ_ = 2 * J; }
 
     /// Set 2 * Spin
     void setTwoJ(unsigned J)
@@ -136,7 +137,7 @@ inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 
 /// convert 2*J to string (e.g. 1/2, 1, 3/2, etc.)
 inline std::string spin_to_string(int twoJ)
-{ return is_even(twoJ) ? to_string(twoJ / 2) : to_string(twoJ) + "/2"; }
+{ return is_even(twoJ) ? std::to_string(twoJ / 2) : std::to_string(twoJ) + "/2"; }
 
 /// convert to string
 inline std::string to_string(const QuantumNumbers& Q)

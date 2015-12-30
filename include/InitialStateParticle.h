@@ -166,7 +166,8 @@ public:
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
-    /// given in data points
+    /// given in data points. The FinalStateParticle's have their
+    /// InitialStateParticle_ pointer set to this
     /// \param FSP list of shared pointers to final-state particles
     void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
@@ -223,6 +224,10 @@ public:
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);
 
+    /// \return raw pointer to initial state particle through first DecayChannel
+    InitialStateParticle* initialStateParticle() override
+    { return this; }
+
 private:
 
     /// \name InitialStateParticle friends
@@ -252,7 +257,7 @@ private:
     void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// add DataAccessor to set
-    void addDataAccessor(std::shared_ptr<DataAccessor> d);
+    void addDataAccessor(DataAccessor* d);
 
     /// remove DataAccessor from set
     void removeDataAccessor(DataAccessor* d);

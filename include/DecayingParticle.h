@@ -24,6 +24,9 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "DecayChannel.h"
+#include "Exceptions.h"
+#include "HelicitySpinAmplitude.h"
+#include "make_unique.h"
 #include "Particle.h"
 #include "QuantumNumbers.h"
 
@@ -65,11 +68,29 @@ public:
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
     virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
-    /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \tparam spin_amplitude Class for constructing the SpinAmplitude with
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
-    /// \param L maximum relative angular momentum between A and B * 2
-    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned char maxTwoL);
+    /// \param l orbital angular momentum between A and B
+    template <class spin_amplitude = HelicitySpinAmplitude>
+    void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned l)
+    { addChannel(std::make_unique<DecayChannel>(A, B, std::make_shared<spin_amplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), l))); }
+
+    /// Add all possible two-body DecayChannels up to a maximum relative angular momentum
+    /// \tparam spin_amplitude Class for constructing the SpinAmplitude with
+    /// \param A daughter particle in all possible helicity states
+    /// \param B daughter particle in all possible helicity states
+    /// \param max_L maximum relative angular momentum between A and B
+    template <class spin_amplitude = HelicitySpinAmplitude>
+    void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l)
+    {
+        for (unsigned l = 0; l <= max_l; ++l) {
+            try { addChannel<spin_amplitude>(A, B, l); }
+            catch (const exceptions::AngularMomentumNotConserved&) {/* ignore */}
+            catch (const exceptions::ParticleCombinationsEmpty&) {/* ignore */ }
+        }
+    }
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -101,14 +122,6 @@ public:
 
     /// @}
 
-    /// \name Setters
-    /// @{
-
-    /// Set raw pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    /// @}
-
     /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
     /// Check if this is the case, and share SpinAmplitudes
     void optimizeSpinAmplitudeSharing();
@@ -128,12 +141,16 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Amplitude_}; }
 
+    /// \return raw pointer to initial state particle through first DecayChannel
+    InitialStateParticle* initialStateParticle() override
+    { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
+
 protected:
 
     void printDecayChainLevel(int level) const;
 
     /// vector of decay channel objects
-    std::vector< std::unique_ptr<DecayChannel> > Channels_;
+    std::vector<std::unique_ptr<DecayChannel> > Channels_;
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;

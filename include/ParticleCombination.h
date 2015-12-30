@@ -52,10 +52,10 @@ public:
     ParticleCombination() = default;
 
     /// Final-state-particle constructor
-    ParticleCombination(ParticleIndex index, char twoLambda = 0) : Indices_(1, index), TwoLambda_(twoLambda) {}
+    ParticleCombination(ParticleIndex index, int twoLambda = 0) : Indices_(1, index), TwoLambda_(twoLambda) {}
 
     /// Resonance particle constructor
-    ParticleCombination(ParticleCombinationVector c, char twoLambda = 0);
+    ParticleCombination(ParticleCombinationVector c, int twoLambda = 0);
 
     /// \name Getters
     /// @{
@@ -73,8 +73,8 @@ public:
     { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
 
     /// get 2 * helicity
-    char twoLambda() const
-        { return TwoLambda_; }
+    int twoLambda() const
+    { return TwoLambda_; }
 
     /// @}
 
@@ -95,7 +95,7 @@ public:
     bool consistent() const;
 
     /// set 2 * helicity
-    void setTwoLambda(char twoLambda)
+    void setTwoLambda(int twoLambda)
     { TwoLambda_ = twoLambda; }
 
     /// grant friend access for setting lineage
@@ -113,11 +113,7 @@ protected:
     std::vector<ParticleIndex> Indices_;
 
     /// 2 * Helicity
-    char TwoLambda_;
-
-    /// raw pointer to ParticleCombinationCache managing this object
-    /// \todo Do we need this? Do we really need to check if the PC is in the cache during consistency checking?
-    ParticleCombinationCache Cache_(nullptr);
+    int TwoLambda_;
 
     /// \name Equivalence-checking structs
     /// @{

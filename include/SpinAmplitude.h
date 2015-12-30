@@ -24,8 +24,10 @@
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 #include "QuantumNumbers.h"
+#include "DecayChannel.h"
 
 #include <array>
+#include <cstdlib>
 #include <memory>
 
 namespace yap {
@@ -34,21 +36,34 @@ namespace yap {
 /// \brief Abstract base class implementing a spin amplitude.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup SpinAmplitude Spin Amplitudes
-
 class SpinAmplitude : public AmplitudeComponent, public DataAccessor
 {
 public:
 
+    /// \return Whether angular momentum is conserved in J -> j1 + j2 with orbital angular momentum l
+    /// \param two_J 2 * spin of initial state
+    /// \param two_j1 2 * spin of first daughter
+    /// \param two_j2 2 * spin of second daughter
+    /// \param l orbital angular momentum
+    static constexpr bool conserves(unsigned two_J, unsigned two_j1, unsigned two_j2, int l)
+    {
+        // check that the spins are consistent, and that the triangle requirements for (Jlj) and (j1j2j) can be met simultaneously
+        return is_even(two_J + two_j1 + two_j2)
+               and (std::min(two_j1 + two_j2, two_J + 2 * l) >= std::max(std::abs<int>(two_j1 - two_j2), std::abs<int>(two_J - 2 * l)));
+    }
+
     /// Constructor
-    SpinAmplitude(const QuantumNumbers& initial,
-                  const QuantumNumbers& final1, const QuantumNumbers& final2,
-                  unsigned char twoL);
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param orbital angular momentum
+    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l);
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// cast into string
-    virtual operator std::string() const = 0;
+    virtual operator std::string() const;
 
     /// \name Getters
     /// @{
@@ -61,36 +76,40 @@ public:
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
 
-    /// Get relative angular momentum between daughters * 2
-    unsigned char twoL() const
-    { return TwoL_; }
+    /// Get orbital angular momentum
+    unsigned l() const
+    { return L_; }
 
-    /// Get relative angular momentum between daughters
-    double L() const
-    { return 0.5 * TwoL_; }
+    /// include const access to ISP
+    using BelongsToInitialStateParticle::initialStateParticle;
 
-    /// @}
-
-
-    /// \name SpinAmplitude friends
-    /// @{
-
-    /// Compare SpinAmplitude objects
-    friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
-    { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
+    /// Get raw pointer to InitialStateParticle through owning DecayChannel
+    InitialStateParticle* initialStateParticle() override
+    { return (DecayChannel_) ? DecayChannel_->initialStateParticle() : nullptr; }
 
     /// @}
 
-    /// check if angular momentum is conserved with the given quantum numbers
-    static bool angularMomentumConserved(
-        const QuantumNumbers& initial,
-        const QuantumNumbers& final1, const QuantumNumbers& final2,
-        unsigned char twoL);
+    /// Add symmetrization indices for ParticleCombination.
+    /// Must be overloaded in derived classes to both conditionally add ParticleCombination's
+    /// and to alter and multiply them (to accomodate helicity, for example)
+    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc) = 0;
+
+    /// grant friend access to DecayChannel for setting itself owner
+    friend DecayChannel;
 
 protected:
 
-    /// Check if SpinAmplitudes are equal
-    virtual bool equals(const SpinAmplitude& rhs) const;
+    /// set raw pointer to owning DecayChannel
+    virtual void setDecayChannel(DecayChannel* dc)
+    { DecayChannel_ = dc; }
+
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const;
+
+private:
+
+    /// raw pointer to owning DecayChannel
+    DecayChannel* DecayChannel_;
 
     /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;
@@ -98,15 +117,27 @@ protected:
     /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
-    /// relative angular momentum between daughters * 2
-    unsigned char TwoL_;
+    /// orbital angular momentum
+    unsigned L_;
+
+    /// equality operator
+    friend bool operator==(const SpinAmplitude& A, const SpinAmplitude& B)
+    { return typeid(A) == typeid(B) and A.equals(B); }
 
 };
+
+/// convert to string
+inline std::string to_string(const SpinAmplitude& sa)
+{ return (std::string)sa; }
+
+/// << operator
+inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
+{ os << to_string(sa); return os; }
 
 struct SharedSpinAmplitudeComparator {
 /// Compare SpinAmplitude shared_ptr's
     bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
-    { return lhs.get() == rhs.get() || *lhs == *rhs; }
+    { return lhs.get() == rhs.get() or * lhs == *rhs; }
 
 };
 

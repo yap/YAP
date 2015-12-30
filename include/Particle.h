@@ -51,6 +51,13 @@ public:
     /// Check consitency of object
     virtual bool consistent() const override;
 
+    /// explicitly cast to string
+    explicit operator std::string()
+    { return Name_ + "(" + to_string(QuantumNumbers_) + "), mass = " + to_string(Mass_->value()); }
+
+    /// \name Getters
+    /// @{
+
     /// const access QuantumNumbers object
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
@@ -59,13 +66,6 @@ public:
     /// \return quantum numbers
     QuantumNumbers& quantumNumbers()
     { return QuantumNumbers_; }
-
-    /// explicitly cast to string
-    explicit operator std::string()
-    { return Name_ + "(" + to_string(QuantumNumbers_) + "), mass = " + to_string(Mass_->value()); }
-
-    /// \name Getters
-    /// @{
 
     /// Get mass [GeV]
     std::shared_ptr<RealParameter> mass() const

@@ -2,7 +2,7 @@
 
 #include "logging.h"
 #include "MathUtilities.h"
-#include "SpinUtilities.h"
+#include "QuantumNumbers.h"
 
 /// \todo Find better place for this
 INITIALIZE_EASYLOGGINGPP

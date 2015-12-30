@@ -8,6 +8,7 @@ set(YAP_SOURCES
 	BreitWigner.cxx
 	CachedDataValue.cxx
 	CachedValue.cxx
+  ClebschGordan.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
@@ -19,6 +20,7 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicitySpinAmplitude.cxx
 	InitialStateParticle.cxx
+  MassShape.cxx
 	MeasuredBreakupMomenta.cxx
 	ParticleCombination.cxx
   ParticleCombinationCache.cxx
@@ -27,7 +29,6 @@ set(YAP_SOURCES
 	QuantumNumbers.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
-	SpinUtilities.cxx
 	WignerD.cxx
 )
 

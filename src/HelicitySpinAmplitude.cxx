@@ -1,5 +1,6 @@
 #include "HelicitySpinAmplitude.h"
 
+#include "ClebschGordan.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
 #include "InitialStateParticle.h"
@@ -10,8 +11,8 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
-        const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL) :
-    SpinAmplitude(initial, final1, final2, twoL),
+        const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l) :
+    SpinAmplitude(initial, final1, final2, l),
     SpinAmplitude_(new ComplexCachedDataValue(this))
 {
     // SpinAmplitude_ dependency on helicity angles is set in setInitialStateParticle
@@ -27,18 +28,17 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
 
         /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
         /// implemented in rootPWA by C. Bicker
-
         std::complex<double> a = ClebschGordanCoefficients_.at(pc);
 
         // \todo angular normalization factor??? sqrt(2*L + 1)
 
-        unsigned char twoJ = InitialQuantumNumbers_.twoJ();
+        unsigned twoJ = initialQuantumNumbers().twoJ();
 
-        char twoM = pc->twoLambda();
+        int twoM = pc->twoLambda();
 
-        char twoLambda1 = pc->daughters()[0]->twoLambda();
-        char twoLambda2 = pc->daughters()[1]->twoLambda();
-        char twoLambda  = twoLambda1 - twoLambda2;
+        int twoLambda1 = pc->daughters()[0]->twoLambda();
+        int twoLambda2 = pc->daughters()[1]->twoLambda();
+        int twoLambda  = twoLambda1 - twoLambda2;
 
         double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
         double theta = initialStateParticle()->helicityAngles().theta(d, pc);
@@ -58,21 +58,49 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
 //-------------------------
 bool HelicitySpinAmplitude::consistent() const
 {
-    bool consistent = SpinAmplitude::consistent();
+    bool C = SpinAmplitude::consistent();
 
     if (ClebschGordanCoefficients_.size() != particleCombinations().size()) {
-        LOG(ERROR) << "HelicitySpinAmplitude::consistent() - ClebschGordanCoefficients have wrong size.";
-        consistent =  false;
+        FLOG(ERROR) << "ClebschGordanCoefficients have wrong size.";
+        C &= false;
     }
 
-    return consistent;
+    return C;
 }
 
 //-------------------------
-void HelicitySpinAmplitude::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+ParticleCombinationVector HelicitySpinAmplitude::addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc)
 {
-    ClebschGordanCoefficients_[c] = calculateClebschGordanCoefficient(c);
-    SpinAmplitude::addSymmetrizationIndex(c);
+    if (!initialStateParticle())
+        throw exceptions::InitialStateParticleUnset();
+
+    ParticleCombinationVector PCs;
+
+    // if C-G coefficient vanishes, return empty vector
+    if (!ClebschGordan::nonzeroCoupling(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
+                                        finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
+                                        l(), two_s(), initialQuantumNumbers().twoJ()))
+        return PCs;
+
+    // add all spin projections from -J to J
+    for (int two_lambda = -initialQuantumNumbers().twoJ(); two_lambda <= initialQuantumNumbers().twoJ(); two_lambda += 2) {
+        auto pc_lambda = std::make_shared<ParticleCombination>(*pc);
+        pc_lambda->setTwoLambda(two_lambda);
+        PCs.push_back(initialStateParticle()->particleCombinationCache[pc_lambda]);
+        addSymmetrizationIndex(PCs.back());
+    }
+
+    return PCs;
+}
+
+
+//-------------------------
+void HelicitySpinAmplitude::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> pc)
+{
+    SpinAmplitude::addSymmetrizationIndex(pc);
+    ClebschGordanCoefficients_[pc] = ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
+                                     finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
+                                     l(), two_s(), initialQuantumNumbers().twoJ());
 }
 
 //-------------------------
@@ -83,60 +111,20 @@ void HelicitySpinAmplitude::clearSymmetrizationIndices()
 }
 
 //-------------------------
-HelicitySpinAmplitude::operator std::string() const
+bool HelicitySpinAmplitude::equals(const SpinAmplitude& other) const
 {
-    std::string result = "(l=" + spin_to_string(TwoL_) + ")";
-
-    return result;
+    return SpinAmplitude::equals(other)
+           and dynamic_cast<const HelicitySpinAmplitude*>(&other)
+           and ClebschGordanCoefficients_ == dynamic_cast<const HelicitySpinAmplitude*>(&other)->ClebschGordanCoefficients_;
 }
 
-//-------------------------
-double HelicitySpinAmplitude::calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const
-{
-    unsigned char two_j1 = FinalQuantumNumbers_[0].twoJ();
-    unsigned char two_j2 = FinalQuantumNumbers_[1].twoJ();
-    unsigned char two_S = two_j1 + two_j2;
-
-    char two_lambda1 = c->daughters()[0]->twoLambda();
-    char two_lambda2 = c->daughters()[1]->twoLambda();
-    char two_lambda = two_lambda1 - two_lambda2;
- 
-    // calculate Clebsch-Gordan coefficient for L-S coupling
-    double lsClebsch = clebschGordan(TwoL_, 0, two_S, two_lambda, InitialQuantumNumbers_.twoJ(), two_lambda);
-    if (lsClebsch == 0)
-        return 0;
-    
-    // calculate Clebsch-Gordan coefficient for S-S coupling
-    double ssClebsch = clebschGordan(two_j1, two_lambda1, two_j2, -two_lambda2, two_S, two_lambda);
-    if (ssClebsch == 0)
-        return 0;
-
-    /*DEBUG("Clebsch-Gordan coefficient for λ_1, λ_2 = (" << spin_to_string(lambda1)
-          << "," << spin_to_string(lambda2) << "): " << ssClebsch << " * " << lsClebsch
-          << " = " << ssClebsch * lsClebsch);*/
-
-    return ssClebsch * lsClebsch;
-}
 
 //-------------------------
-void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
+void HelicitySpinAmplitude::setDecayChannel(DecayChannel* dc)
 {
-    SpinAmplitude::setInitialStateParticle(isp);
-
-    if (isp) {
-        SpinAmplitude_->addDependency(isp->helicityAngles().phi());
-        SpinAmplitude_->addDependency(isp->helicityAngles().theta());
-    }
-}
-
-//-------------------------
-bool HelicitySpinAmplitude::equals(const SpinAmplitude& rhs) const
-{
-    const HelicitySpinAmplitude* cSA = dynamic_cast<const HelicitySpinAmplitude*>(&rhs);
-    if (!cSA) return false;
-
-    return (ClebschGordanCoefficients_ == cSA->ClebschGordanCoefficients_
-            and SpinAmplitude::equals(rhs) );
+    SpinAmplitude::setDecayChannel(dc);
+    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
+    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
 }
 
 }

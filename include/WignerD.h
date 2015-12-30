@@ -41,13 +41,11 @@
 #ifndef yap_WignerD_h
 #define yap_WignerD_h
 
+#include "Constants.h"
+
 #include <complex>
 
 namespace yap {
-
-/// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
-inline std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
-{ return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
 
 /// \return Wigner d-function \f$ d^{J}_{M N}(\beta) \f$
 /// \param twoJ twice the total spin of system
@@ -56,6 +54,9 @@ inline std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double 
 /// \param beta rotation angle
 double dFunction(unsigned twoJ, int twoM, int twoN, double beta);
 
+/// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
+inline std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
+{ return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
 
 namespace dMatrix {
 

@@ -39,7 +39,6 @@ class ParticleCombination;
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-
 class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
@@ -48,8 +47,11 @@ public:
     /// @{
 
     /// Constructor
-    HelicitySpinAmplitude(const QuantumNumbers& initial,
-                          const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param orbital angular momentum
+    HelicitySpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l);
 
     /// @}
 
@@ -59,36 +61,42 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// check if Clebsch-Gordan coefficient is nonzero before adding pc,
+    /// also add all helicity states of the parent
+    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc) override;
+
     /// also calculates ClebschGordan coefficient
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> pc);
 
     /// also clears ClebschGordanCoefficients_
     virtual void clearSymmetrizationIndices();
 
     /// cast into string
-    operator std::string() const override;
-
-    /// Calculate Clebsch-Gordan coefficient for coupling to two helicity projecttions
-    double calculateClebschGordanCoefficient(char lambda1, char lambda2) const;
-
-    /// Calculate Clebsch-Gordan coefficients for a particleCombination
-    double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
-
-    /// Set raw pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp) override;
+    operator std::string() const override
+    { return SpinAmplitude::operator std::string() + " in helicity formalism"; }
 
     // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
 
+    /// \return set of CachedDataValues
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {SpinAmplitude_}; }
 
-private:
+protected:
 
-    /// Check if SpinAmplitudes are equal
-    bool equals(const SpinAmplitude& rhs) const override;
+    /// set raw pointer to owning DecayChannel;
+    /// adds isp's helicity angles as dependencies to SpinAmplitude_
+    virtual void setDecayChannel(DecayChannel* dc) override;
+
+private:
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const override;
+
+    /// spin for l-s coupling.
+    /// \todo Why is j1 + j2?
+    unsigned two_s()
+    { return finalQuantumNumbers()[0].twoJ() + finalQuantumNumbers()[1].twoJ(); }
 
     /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
-    /// \todo make this a Parameter???
     ParticleCombinationMap<double> ClebschGordanCoefficients_;
 
     std::shared_ptr<ComplexCachedDataValue> SpinAmplitude_;

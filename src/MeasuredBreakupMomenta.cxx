@@ -10,9 +10,9 @@
 namespace yap {
 
 //-------------------------
-MeasuredBreakupMomenta::MeasuredBreakupMomenta() :
-    StaticDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
-    Q2_(new RealCachedDataValue(this))
+MeasuredBreakupMomenta::MeasuredBreakupMomenta(InitialStateParticle* isp) :
+    StaticDataAccessor(isp, &ParticleCombination::equivDownByOrderlessContent),
+    Q2_(std::make_shared<RealCachedDataValue>(this))
 {
 }
 

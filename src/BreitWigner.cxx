@@ -12,31 +12,32 @@ namespace yap {
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
     MassShape(),
-    Mass_(new RealParameter(mass)),
-    Width_(new RealParameter(width)),
-    T_(new ComplexCachedDataValue(this, {Mass_, Width_}))
+    Mass_(std::make_shared<RealParameter>(mass)),
+    Width_(std::make_shared<RealParameter>(width)),
+    T_(std::make_shared<ComplexCachedDataValue>(this, ParameterSet{Mass_, Width_}))
 {
 }
 
 //-------------------------
-bool BreitWigner::setParameters(const ParticleTableEntry& entry)
+void BreitWigner::setParameters(const ParticleTableEntry& entry)
 {
     Mass_->setValue(entry.Mass_);
 
-    if (entry.MassShapeParameters_.size() < 1)
-        return false;
+    if (entry.MassShapeParameters_.empty())
+        throw std::runtime_error("entry's MassShapeParameters_ is empty");
 
     Width_->setValue(entry.MassShapeParameters_[0]);
-    return true;
 }
 
 //-------------------------
-void BreitWigner::borrowParametersFromResonance(Resonance* R)
+void BreitWigner::borrowParametersFromResonance()
 {
     // Remove existing mass parameter from M2iMG_
     T_->removeDependency(Mass_);
+
     // borrow mass from Owner_
-    Mass_ = R->mass();
+    Mass_ = resonance()->mass();
+
     // add new mass parameter into M2iMG_
     T_->addDependency(Mass_);
 }

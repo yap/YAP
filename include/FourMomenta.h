@@ -42,7 +42,7 @@ class FourMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    FourMomenta();
+    FourMomenta(InitialStateParticle* isp);
 
     /// Find ISP in set and store index location
     /// Fill FinalStateParticleM_ and FinalStateParticleM2_
@@ -74,11 +74,7 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    {
-        if (pc->isFinalStateParticle())
-            return FinalStateParticleM_[pc->indices()[0]]->value();
-        return M_->value(d, symmetrizationIndex(pc));
-    }
+    { return pc->isFinalStateParticle() ? FinalStateParticleM_[pc->indices()[0]]->value() : M_->value(d, symmetrizationIndex(pc)); }
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
@@ -123,7 +119,12 @@ public:
 
     /// @}
 
+    /// \return masses
     std::shared_ptr<RealCachedDataValue> masses()
+    { return M_; }
+
+    /// \return masses (const)
+    std::shared_ptr<RealCachedDataValue> masses() const
     { return M_; }
 
     /// print all masses
@@ -146,6 +147,8 @@ protected:
 
     /// \return set of all pair particle combinations, without duplicates
     ParticleCombinationVector pairParticleCombinations() const;
+
+private:
 
     /// Symmetrization index of initial state
     std::shared_ptr<const ParticleCombination> InitialStatePC_;

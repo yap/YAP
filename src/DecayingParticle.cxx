@@ -17,10 +17,9 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
     AmplitudeComponent(),
     Particle(q, mass, name),
     DataAccessor(),
-    RadialSize_(new RealParameter(radialSize)),
-    Amplitude_(new ComplexCachedDataValue(this))
+    RadialSize_(std::make_shared<RealParameter>(radialSize)),
+    Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
-    // dependencies are added in addChannel()
 }
 
 //-------------------------
@@ -53,33 +52,34 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 //-------------------------
 bool DecayingParticle::consistent() const
 {
-    bool result = true;
-
-    result &= DataAccessor::consistent();
-    result &= Particle::consistent();
+    bool C = DataAccessor::consistent();
+    C &= Particle::consistent();
 
     if (RadialSize_->value() <= 0.) {
-        LOG(ERROR) << "DecayingParticle::consistent() - Radial size not positive.";
-        result = false;
+        FLOG(ERROR) << "Radial size not positive.";
+        C &= false;
     }
 
     if (Channels_.empty()) {
-        LOG(ERROR) << "DecayingParticle::consistent() - no channels specified.";
+        FLOG(ERROR) << "no channels specified.";
         return false; // further checks require at least one channel
     }
 
-    for (auto& c : Channels_) {
-        if (!c) {
-            LOG(ERROR) << "DecayingParticle::consistent() - DecayChannels contains null pointer.";
-            result = false;
-        } else if (this != c->parent()) {
-            LOG(ERROR) << "DecayingParticle::consistent() - DecayChannels does not point back to this DecayingParticle.";
-            result = false; // channel consistency check requires correct pointer
-        }
-        result &= c->consistent();
+    // check no channel is empty
+    if (std::any_of(Channels_.begin(), Channels_.end(), [](const std::unique_ptr<DecayChannel>& dc) {return !dc;})) {
+        FLOG(ERROR) << "DecayChannel vector contains nullptr";
+        C &= false;
     }
+    // check all channels' parents point to this
+    if (std::any_of(Channels_.begin(), Channels_.end(), [&](const std::unique_ptr<DecayChannel>& dc) {return dc and dc->decayingParticle() != this;})) {
+        FLOG(ERROR) << "DecayChannel vector contains channel not pointing back to this";
+        C &= false;
+    }
+    // check consistency of all channels
+    std::for_each(Channels_.begin(), Channels_.end(), [&](const std::unique_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
 
     // check if all channels lead to same final state particles
+    /// \todo This isn't necessary, we should think how to change this. Example: D -> KKpipi, with f0->KK and f0->pipi
     std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = finalStateParticles(0);
     std::sort(fsps0.begin(), fsps0.end());
     for (unsigned i = 1; i < nChannels(); ++i) {
@@ -87,21 +87,28 @@ bool DecayingParticle::consistent() const
         std::sort(fsps.begin(), fsps.end());
         if (fsps != fsps0) {
             LOG(ERROR) << "DecayingParticle::consistent() - final state of channel " << i << " does not match.";
-            result = false;
+            C &= false;
         }
     }
 
-    return result;
+    return C;
 }
 
 //-------------------------
 void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 {
-    Channels_.emplace_back(std::move(c));
-    Channels_.back()->setInitialStateParticle(initialStateParticle());
+    if (!c)
+        throw exceptions::DecayChannelEmpty();
 
-    if (Channels_.back()->particleCombinations().empty())
-        LOG(ERROR) << "DecayingParticle::addChannel(c) - c->particleCombinations().empty()";
+    if (c->particleCombinations().empty())
+        throw exceptions::ParticleCombinationsEmpty();
+
+    // check ISP
+    if (initialStateParticle() and c->initialStateParticle() != initialStateParticle())
+        throw exceptions::InitialStateParticleMismatch();
+
+    Channels_.emplace_back(std::move(c));
+    Channels_.back()->setDecayingParticle(this);
 
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations())
@@ -113,65 +120,11 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned char maxTwoL)
-{
-    // loop over possible l
-    for (unsigned char twoL = 0; twoL < maxTwoL; ++twoL) {
-        
-        // skip unallowed l
-        if (!SpinAmplitude::angularMomentumConserved(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL))
-            continue;
-
-        // construct provisional channel
-        // auto chan = std::make_unique<DecayChannel>(A, B, std::make_shared<HelicitySpinAmplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), twoL), this);
-        auto dc = std::make_unique<DecayChannel<HelicitySpinAmplitude> >(A, B, twoL, this);
-
-        bool notZero(false);
-        ParticleCombinationVector PCs;
-
-        // loop over -J to J
-        for (char twoLambda = -quantumNumbers().twoJ(); twoLambda <= quantumNumbers().twoJ(); twoLambda += 2) {
-            for (auto& pc : chan->particleCombinations()) {
-                std::shared_ptr<ParticleCombination> pcHel(new ParticleCombination(*pc));
-                pcHel -> setTwoLambda(twoLambda);
-
-                if (std::static_pointer_cast<HelicitySpinAmplitude>(chan->spinAmplitude())->calculateClebschGordanCoefficient(pcHel) != 0) {
-                    PCs.push_back(ParticleCombination::cache[pcHel]);;
-                    notZero = true;
-
-                }
-            }
-        }
-
-        if (notZero) {
-            DEBUG("add channel " << std::string(*chan) << " to " << name());
-            chan->clearSymmetrizationIndices();
-            for (auto& pc : PCs) {
-                chan->addSymmetrizationIndex(pc);
-            }
-
-            addChannel(chan);
-        }
-    }
-
-}
-
-
-//-------------------------
 std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
 {
     if (!Channels_.at(i))
         return std::vector<std::shared_ptr<FinalStateParticle>>();
     return Channels_[i]->finalStateParticles();
-}
-
-//-------------------------
-void DecayingParticle::setInitialStateParticle(InitialStateParticle* isp)
-{
-    DataAccessor::setInitialStateParticle(isp);
-    // hand ISP to channels
-    for (auto& c : Channels_)
-        c->setInitialStateParticle(isp);
 }
 
 //-------------------------

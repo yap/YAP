@@ -14,10 +14,10 @@
 namespace yap {
 
 //-------------------------
-HelicityAngles::HelicityAngles() :
-    StaticDataAccessor(&ParticleCombination::equivUpAndDownButLambda),
-    Phi_(new RealCachedDataValue(this)),
-    Theta_(new RealCachedDataValue(this))
+HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
+    StaticDataAccessor(isp, &ParticleCombination::equivUpAndDownButLambda),
+    Phi_(std::make_shared<RealCachedDataValue>(this)),
+    Theta_(std::make_shared<RealCachedDataValue>(this))
 {
 }
 

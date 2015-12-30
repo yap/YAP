@@ -28,6 +28,8 @@
 
 namespace yap {
 
+class InitialStateParticle;
+
 /// \class HelicityAngles
 /// \brief Calculates, stores and gives access to helicity angles
 /// \author Johannes Rauch, Daniel Greenwald
@@ -50,13 +52,13 @@ namespace yap {
 ///   - \f$ \hat{x} \equiv \hat{x}_0 \f$
 /// with the 0th coordinate system given by the user for the inital state,
 /// and defaulting to standard Cartesian system as defined in #Constants.h
-
 class HelicityAngles : public StaticDataAccessor
 {
 public:
 
     /// Constructor
-    HelicityAngles();
+    /// \param isp Raw pointer to owning InitialStateParticle
+    HelicityAngles(InitialStateParticle* isp);
 
     /// Calculate helicity angles for all possible symmetrization indices
     virtual void calculate(DataPoint& d) override;

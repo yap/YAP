@@ -27,6 +27,7 @@
 #include "MassShape.h"
 
 #include <complex>
+#include <memory>
 
 namespace yap {
 
@@ -51,8 +52,7 @@ public:
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
-    /// \return Success of action
-    virtual bool setParameters(const ParticleTableEntry& entry);
+    virtual void setParameters(const ParticleTableEntry& entry) override;
 
     /// \name Getters
     /// @{
@@ -77,7 +77,7 @@ public:
 protected:
 
     /// set owning resonance, borrow mass from owner
-    virtual void borrowParametersFromResonance(Resonance* R) override;
+    virtual void borrowParametersFromResonance() override;
 
     std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
     std::shared_ptr<RealParameter> Width_; ///< [GeV]

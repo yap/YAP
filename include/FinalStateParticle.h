@@ -68,8 +68,9 @@ public:
     ParticleCombinationVector particleCombinations() const override
     { return SymmetrizationIndices_; }
 
-    // for internal use only
-    virtual void setSymmetrizationIndexParents() override;
+    /// \return owning InitialStateParticle
+    InitialStateParticle* initialStateParticle() override
+    { return InitialStateParticle_; }
 
     /// \name Friends
     /// @{
@@ -79,7 +80,19 @@ public:
 
     /// @}
 
+protected:
+
+    /// set raw pointer to owning InitialStateParticle
+    void setInitialStateParticle(InitialStateParticle* isp)
+    { InitialStateParticle_ = isp; }
+
+    // set parents of symmetrization indices
+    virtual void setSymmetrizationIndexParents() override;
+
 private:
+
+    /// raw pointer to initial state particle decaying to this final state particle
+    InitialStateParticle* InitialStateParticle_;
 
     ParticleCombinationVector SymmetrizationIndices_;
 

@@ -109,6 +109,14 @@ public:
     void removeDependencies(ParameterSet deps)
     { for (auto& dep : deps) removeDependency(dep); }
 
+    /// check for dependency
+    bool dependsOn(std::shared_ptr<ParameterBase> dep) const
+    { return ParametersItDependsOn_.find(dep) != ParametersItDependsOn_.end(); }
+
+    /// check for dependency
+    bool dependsOn(std::shared_ptr<CachedDataValue> dep) const
+    { return CachedDataValuesItDependsOn_.find(dep) != CachedDataValuesItDependsOn_.end(); }
+
     /// @}
 
     /// \name Getters
@@ -140,7 +148,6 @@ public:
     CalculationStatus globalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
     { return GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)]; }
 
-
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
@@ -162,7 +169,6 @@ public:
 #else
     { return d.Data_.at(Owner_->index()).at(symmetrizationIndex).at(Position_ + index);}
 #endif
-
 
     /// \return Size of cached value (number of real elements)
     virtual unsigned size() const

@@ -47,12 +47,22 @@ public:
     /// Construct cache from vector of ISP ParticleCombination's
     ParticleCombinationCache(std::vector<std::shared_ptr<ParticleCombination> > ispPCs);
 
-    /// check if cache contains element
-    cache_type::key_type find(std::shared_ptr<const ParticleCombination> pc) const
-    { return find(pc.get()); }
+    /// check if cache contains element equating to pc
+    /// \param pc shared_ptr to ParticleCombination to search for equivalent to
+    cache_type::key_type find(std::shared_ptr<const ParticleCombination> pc) const;
 
-    /// check if cache contains element
-    cache_type::key_type find(const ParticleCombination* pc) const;
+    /// check if cache contains element equating to pc
+    /// \param pc Pointer to ParticleCombination to search for equivalent to
+    cache_type::key_type find(const ParticleCombination* pc) const
+    { return find(std::shared_ptr<const ParticleCombination>(pc)); }
+
+    /// check if cache contains element equating to pc
+    /// \param pc ParticleCombination to search for equivalent to
+    cache_type::key_type find(const ParticleCombination& pc) const;
+
+    /// check if cache contains element equating to pc
+    /// \param pc vector of ParticleIndex's to build ParticleCombination frrom for checking equivalence
+    cache_type::key_type find(const std::vector<ParticleIndex>& I) const;
 
     /// \return shared_ptr to ParticleCombination from Cache, if it exists, otherwise adds it to cache.
     /// \param i ParticleIndex for FSP
@@ -67,7 +77,7 @@ public:
     /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
     /// constructs PC from decay to final state particles in vector.
     /// \param I vector of ParticleIndex for FSP
-    std::shared_ptr<const ParticleCombination> operator[](std::vector<ParticleIndex> I);
+    std::shared_ptr<const ParticleCombination> operator[](const std::vector<ParticleIndex>& I);
 
     /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
     /// Constructs from ParticleCombinations for daughters

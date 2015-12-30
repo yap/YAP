@@ -17,32 +17,28 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::s
 //-------------------------
 bool FinalStateParticle::consistent() const
 {
-    bool consistent = true;
-
-    consistent &= Particle::consistent();
+    bool C = Particle::consistent();
 
     if (SymmetrizationIndices_.empty()) {
-        LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ are empty!";
-        return false;
+        FLOG(ERROR) << "SymmetrizationIndices_ are empty!";
+        C &= false;
     }
 
-    for (auto i : SymmetrizationIndices_) {
-        if (i->indices().size() != 1) {
-            LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ don't have size 1!";
-            return false;
+    for (auto& pc : SymmetrizationIndices_)
+        if (pc->indices().size() != 1) {
+            FLOG(ERROR) << "ParticleCombination doesn't have size 1!";
+            C &= false;
         }
-        if (i->daughters().size() != 0) {
-            LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ have daughters!";
-            return false;
-        }
-    }
 
-    return consistent;
+    return C;
 }
 
 //-------------------------
 void FinalStateParticle::setSymmetrizationIndexParents()
 {
+    if (!initialStateParticle())
+        throw exceptions::InitialStateParticleUnset();
+
     ParticleCombinationVector PCs = SymmetrizationIndices_;
 
     // check if already set
@@ -52,7 +48,7 @@ void FinalStateParticle::setSymmetrizationIndexParents()
     SymmetrizationIndices_.clear();
 
     for (auto& PC : PCs)
-        for (auto& pc : ParticleCombination::cache)
+        for (auto& pc : initialStateParticle()->particleCombinationCache)
             if (ParticleCombination::equivDown(PC, pc.lock()))
                 SymmetrizationIndices_.push_back(pc.lock());
 }

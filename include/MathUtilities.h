@@ -19,8 +19,7 @@
 #ifndef yap_MathUtilities_h
 #define yap_MathUtilities_h
 
-#include <cmath>
-#include <math.h>
+#include <type_traits>
 
 namespace yap {
 
