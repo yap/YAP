@@ -8,6 +8,7 @@ namespace yap {
 
 //-------------------------
 SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l) :
+    InitialStateParticle_(nullptr),
     InitialQuantumNumbers_(initial),
     FinalQuantumNumbers_( {final1, final2}),
                       L_(l)

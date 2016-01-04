@@ -7,7 +7,6 @@
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
-#include <assert.h>
 #include <memory>
 #include <vector>
 
@@ -19,7 +18,7 @@ int main( int argc, char** argv)
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
     // use only L up to 4
-    unsigned max2L(2 * 4);
+    unsigned maxL(24);
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
@@ -33,46 +32,50 @@ int main( int argc, char** argv)
     // set final state
     D->setFinalStateParticles({piPlus, piMinus, piPlus});
 
+    LOG(INFO) << "Creating rho ... ";
     // rho
     std::shared_ptr<yap::Resonance> rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
+    LOG(INFO) << "... 1";
     static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.149);
-    rho->addChannels(piPlus, piMinus, max2L);
+    LOG(INFO) << "... 2";
+    rho->addChannels(piPlus, piMinus, maxL);
+    LOG(INFO) << "... rho created";
 
     // f_2(1270)
     std::shared_ptr<yap::Resonance> f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
-    f_2->addChannels(piPlus, piMinus, max2L);
+    f_2->addChannels(piPlus, piMinus, maxL);
 
     // f_0(980)
     std::shared_ptr<yap::Resonance> f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
-    f_0_980->addChannels(piPlus, piMinus, max2L);
+    f_0_980->addChannels(piPlus, piMinus, maxL);
 
     // f_0(1370)
     std::shared_ptr<yap::Resonance> f_0_1370 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
-    f_0_1370->addChannels(piPlus, piMinus, max2L);
+    f_0_1370->addChannels(piPlus, piMinus, maxL);
 
     // f_0(1500)
     std::shared_ptr<yap::Resonance> f_0_1500 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
-    f_0_1500->addChannels(piPlus, piMinus, max2L);
+    f_0_1500->addChannels(piPlus, piMinus, maxL);
 
     // sigma a.k.a. f_0(500)
     std::shared_ptr<yap::Resonance> sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
-    sigma->addChannels(piPlus, piMinus, max2L);
+    sigma->addChannels(piPlus, piMinus, maxL);
 
     // Add channels to D
-    D->addChannels(rho,      piPlus, max2L);
-    D->addChannels(f_2,      piPlus, max2L);
-    D->addChannels(f_0_980,  piPlus, max2L);
-    D->addChannels(f_0_1370, piPlus, max2L);
-    D->addChannels(f_0_1500, piPlus, max2L);
-    D->addChannels(sigma,    piPlus, max2L);
+    D->addChannels(rho,      piPlus, maxL);
+    D->addChannels(f_2,      piPlus, maxL);
+    D->addChannels(f_0_980,  piPlus, maxL);
+    D->addChannels(f_0_1370, piPlus, maxL);
+    D->addChannels(f_0_1500, piPlus, maxL);
+    D->addChannels(sigma,    piPlus, maxL);
 
     // consistency and optimizations
-    assert(D->prepare());
+    D->prepare();
     std::cout << "consistent! \n";
 
     // print stuff

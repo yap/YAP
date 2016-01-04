@@ -53,6 +53,35 @@ bool contains(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, 
     return std::all_of(first2, last2, [&](const T2 & b) { return std::any_of(first1, last1, [&](const T1 & a) {return p(a, b);}); });
 }
 
+/// useful for removing duplicates from an unsorted vector (preserving order of first occurance)
+/// \tparam InputIt iterator type
+// \tparam Compare less-than comparitor
+// \tparam BinaryPredicate equality comparitor
+template <class InputIt/*, class Compare, class BinaryPredicate*/>
+InputIt ordered_unique(InputIt first, InputIt last/*, Compare lt, BinaryPredicate eq*/)
+{
+    // make vector of iterators
+    std::vector<InputIt> v;
+    v.reserve(std::distance(first, last));
+    for (InputIt i = first; i != last; ++i)
+        v.push_back(i);
+    // sort it
+    std::sort(v.begin(), v.end(), [](const InputIt & A, const InputIt & B) {return /*lt(*A, *B)*/ *A < *B;});
+    // apply unique to it
+    v.erase(std::unique(v.begin(), v.end(), [](const InputIt & A, const InputIt & B) {return /*eq(*A, *B)*/ *A == *B;}), v.end());
+    std::sort(v.begin(), v.end());
+
+    size_t j = 0;
+    for (InputIt i = first; i != last && j != v.size(); ++i)
+        if (i == v[j]) {
+            std::iter_swap(i, first);
+            ++j;
+            ++first;
+        }
+
+    return first;
+}
+
 /// \todo allow passing of binary predicate with defaulting to lambda
 
 /// check if two vectors overlap

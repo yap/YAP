@@ -21,15 +21,13 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
     Fq_r(new RealCachedDataValue(this)),
     Fq_ab(new RealCachedDataValue(this))
 {
-    if (!DecayChannel_)
+    if (!DecayChannel_) {
+        FLOG(ERROR) << "DecayChannel unset";
         throw exceptions::MissingDecayChannel();
-
-    Fq_r->addDependency(DecayChannel_->decayingParticle()->mass());
-    Fq_r->addDependency(DecayChannel_->decayingParticle()->radialSize());
-
-    Fq_ab->addDependency(DecayChannel_->decayingParticle()->radialSize());
-
-    /// measured breakup momenta and four momenta dependencies are set in setInitialStateParticle
+    }
+    /// measured breakup momenta and four momenta dependencies are set
+    /// in setDependencies, called by DecayChannel when
+    /// DecayingParticle set itself owner
 }
 
 //-------------------------
@@ -133,11 +131,23 @@ InitialStateParticle* BlattWeisskopf::initialStateParticle()
 //-------------------------
 void BlattWeisskopf::setDependencies()
 {
-    if (!initialStateParticle())
+    if (!initialStateParticle()) {
+        FLOG(ERROR) << "Initial-state particle unset";
         throw exceptions::InitialStateParticleUnset();
+    }
+
+    if (!DecayChannel_->decayingParticle()) {
+        FLOG(ERROR) << "DecayingParticle not set";
+        throw exceptions::DecayingParticleUnset();
+    }
 
     Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
+    Fq_r->addDependency(DecayChannel_->decayingParticle()->mass());
+    Fq_r->addDependency(DecayChannel_->decayingParticle()->radialSize());
+
     Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
+    Fq_ab->addDependency(DecayChannel_->decayingParticle()->radialSize());
+
 }
 
 }

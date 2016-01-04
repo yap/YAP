@@ -72,7 +72,7 @@ public:
     /// \return raw pointer to InitialStateParticle through owning DecayChannel
     InitialStateParticle* initialStateParticle() override;
 
-    /// set dependencies from InitialStateParticle
+    /// set dependencies from InitialStateParticle and DecayingParticle
     void setDependencies();
 
     /// Give friend status to DecayChannel so it can set dependencies

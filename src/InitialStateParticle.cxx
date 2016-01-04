@@ -19,16 +19,10 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
-    FourMomenta_(this),
-    MeasuredBreakupMomenta_(this),
-    HelicityAngles_(this)
+    FourMomenta_(std::make_shared<FourMomenta>(this)),
+    MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
+    HelicityAngles_(std::make_shared<HelicityAngles>(this))
 {
-    // addDataAccessor(std::shared_ptr<DataAccessor>(&FourMomenta_));
-    // addDataAccessor(std::shared_ptr<DataAccessor>(&MeasuredBreakupMomenta_));
-    // addDataAccessor(std::shared_ptr<DataAccessor>(&HelicityAngles_));
-    addDataAccessor(&FourMomenta_);
-    addDataAccessor(&MeasuredBreakupMomenta_);
-    addDataAccessor(&HelicityAngles_);
 }
 
 //-------------------------
@@ -88,12 +82,10 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
 //-------------------------
 bool InitialStateParticle::consistent() const
 {
-    bool result(true);
-
-    result &= DecayingParticle::consistent();
-    result &= FourMomenta_.consistent();
-    result &= MeasuredBreakupMomenta_.consistent();
-    result &= HelicityAngles_.consistent();
+    bool C = DecayingParticle::consistent();
+    C &= FourMomenta_->consistent();
+    C &= MeasuredBreakupMomenta_->consistent();
+    C &= HelicityAngles_->consistent();
 
     /// \todo: is this necessary to check?
     /// @{
@@ -104,30 +96,27 @@ bool InitialStateParticle::consistent() const
 
     if (A != B) {
         FLOG(ERROR) << "FinalStateParticles_ are not set correctly.";
-        result = false;
+        C &= false;
     }
     /// @}
 
-    return result;
+    return C;
 }
 
 //-------------------------
-bool InitialStateParticle::prepare()
+void InitialStateParticle::prepare()
 {
-    // add self to DataAccessors_
-    addDataAccessor(this);//shared_from_this());
-
     // check
     if (!DecayingParticle::consistent()) {
         FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
-        return false;
+        throw exceptions::Inconsistent();
     }
 
     // check coordinate system
     CoordinateSystem_ = unit(CoordinateSystem_);
     if (!isRightHanded(CoordinateSystem_)) {
         FLOG(ERROR) << "Coordinate system is not right-handed.";
-        return false;
+        throw exceptions::CoordinateSystemNotRightHanded();
     }
 
     // particle combinations
@@ -146,18 +135,17 @@ bool InitialStateParticle::prepare()
             continue;
         auto pc = wpc.lock();
         if (!pc->consistent()) {
-            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
-            return false;
+            FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
+            throw exceptions::InconsistentParticleCombination();
         }
         if (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent()) {
-            LOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombination is not consistent.";
-            return false;
+            FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombination is not consistent.";
+            throw exceptions::InconsistentParticleCombination();
         }
     }
 
     //
     setSymmetrizationIndexParents();
-    optimizeSpinAmplitudeSharing();
 
     // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     for (auto& wpc : particleCombinationCache) {
@@ -166,34 +154,30 @@ bool InitialStateParticle::prepare()
         auto pc = wpc.lock();
         if (pc->isFinalStateParticle())
             continue;
-        FourMomenta_.addSymmetrizationIndex(pc);
-        HelicityAngles_.addSymmetrizationIndex(pc);
-        MeasuredBreakupMomenta_.addSymmetrizationIndex(pc);
+        FourMomenta_->addSymmetrizationIndex(pc);
+        HelicityAngles_->addSymmetrizationIndex(pc);
+        MeasuredBreakupMomenta_->addSymmetrizationIndex(pc);
     }
 
     // prepare FourMomenta. Needs FinalStateParticles_
-    FourMomenta_.prepare();
+    FourMomenta_->prepare();
 
-    // set consecutive indices for DataAccessors_
-    setDataAcessorIndices();
-
-    // fill DecayChannels_
-    DecayChannels_.clear();
-    for (DataAccessor* d : DataAccessors_) {
-        DecayChannel* ch = dynamic_cast<DecayChannel*>(d);
-        if (ch)
-            DecayChannels_.push_back(ch);
-    }
+    // set DataAccessors_
+    DataAccessors_ = dataAccessors();
+    // add this (commented out because ISP has no need for data access at moment)
+    // DataAccessors_.push_back(shared_from_this());
+    // set unique indices to all DataAccessors
+    unsigned i = 0;
+    for (auto da : DataAccessors_)
+        da->setIndex(i++);
 
     // check
     if (!consistent()) {
-        LOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent anymore.";
-        return false;
+        FLOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent anymore.";
+        throw exceptions::Inconsistent();
     }
 
     Prepared_ = true;
-
-    return true;
 }
 
 //-------------------------
@@ -202,26 +186,26 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty()) {
         FLOG(ERROR) << "final-state particles have already been set.";
-        throw std::runtime_error("cannot add final-state particles twice");
+        throw exceptions::FinalStateParticlesAlreadySet();
     }
 
     // check that none of the FSP's has yet been used
     // and that FinalStateParticles don't have ISP set to another ISP
     // (in principle ISP's should be set to nullptr)
-    bool all_good = true;
     for (auto& fsp : FSP) {
+        if (!fsp) {
+            FLOG(ERROR) << "final-state particle empty";
+            throw exceptions::FinalStateParticleEmpty();
+        }
         if (!fsp->particleCombinations().empty()) {
             FLOG(ERROR) << "final-state particle already has indices assigned: " << (std::string)*fsp;
-            all_good = false;
+            throw exceptions::FinalStateParticleAlreadyUsed();
         }
         if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
             FLOG(ERROR) << "final-state particle already has ISP assigned: " << (std::string)*fsp;
-            all_good = false;
+            throw exceptions::InitialStateParticleAlreadySet();
         }
     }
-    if (!all_good)
-        throw std::runtime_error("invalid final-state particles provided");
-
 
     FinalStateParticles_.reserve(FSP.size());
 
@@ -250,21 +234,15 @@ std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<c
 }
 
 //-------------------------
-std::vector<std::shared_ptr<ComplexParameter> > InitialStateParticle::freeAmplitudes() const
+ComplexParameterVector InitialStateParticle::freeAmplitudes() const
 {
-    std::vector<std::shared_ptr<ComplexParameter> > amps;
+    ComplexParameterVector V = DecayingParticle::freeAmplitudes();
 
-    if (DecayChannels_.size() <= 1)
-        return amps;
+    // if only one free amplitude, treat as fixed and return empty vector
+    if (V.size() == 1)
+        V.clear();
 
-    // if there is only one channel, its amplitude is 1
-    // no need to change/fit it
-    amps.reserve(DecayChannels_.size());
-
-    for (DecayChannel* ch : DecayChannels_)
-        amps.push_back(ch->freeAmplitude());
-
-    return amps;
+    return V;
 }
 
 //-------------------------
@@ -284,47 +262,44 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 {
     DataPartitions_ = std::move(partitions);
 
-    for (unsigned i = 0; i < DataPartitions_.size(); ++i) {
+    for (unsigned i = 0; i < DataPartitions_.size(); ++i)
         DataPartitions_[i]->setIndex(i);
-    }
 
     setNumberOfDataPartitions(DataPartitions_.size());
 }
 
 //-------------------------
-bool InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
+void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
     if (!Prepared_) {
-        LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        return false;
+        FLOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
+        throw exceptions::InitialStateParticleNotPrepared();
     }
 
     if (DataSet_.empty()) {
-        return addDataPoint(DataPoint(fourMomenta));
+        addDataPoint(std::move(DataPoint(fourMomenta)));
+        return;
     }
 
     DataSet_.push_back(DataPoint(DataSet_[0]));
 
     DataPoint& d = DataSet_.back();
 
-    if (! d.setFinalStateFourMomenta(fourMomenta))
-        return false;
+    d.setFinalStateFourMomenta(fourMomenta);
 
     /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        return false;
-
-    return true;
+        throw exceptions::InconsistentDataPoint();
 }
 
 //-------------------------
-bool InitialStateParticle::addDataPoint(DataPoint&& d)
+void InitialStateParticle::addDataPoint(DataPoint&& d)
 {
     if (!Prepared_) {
         LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        return false;
+        return throw exceptions::InitialStateParticleNotPrepared();
     }
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
@@ -333,59 +308,49 @@ bool InitialStateParticle::addDataPoint(DataPoint&& d)
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        return false;
+        throw exceptions::InconsistentDataPoint();
 
     DataSet_.push_back(d);
-    return true;
 }
 
 //-------------------------
-bool InitialStateParticle::addDataPoint(const DataPoint& d)
-{
-    return addDataPoint(DataPoint(d));
-}
+void InitialStateParticle::addDataPoint(const DataPoint& d)
+{ addDataPoint(std::move(DataPoint(d))); }
 
 //-------------------------
-bool InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
+void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 {
-    bool result = true;
-
     // initialize with 0
     std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), FourVector_0);
 
     // add n (empty) data points
     for (unsigned i = 0; i < n; ++i)
-        result &= addDataPoint(momenta);
+        addDataPoint(momenta);
 
     // set data partitions (1 for each data point)
     setDataPartitions(createDataPartitionsBlockBySize(DataSet_, 1));
 
     // do one initial calculation
     /// \todo Only calculate data-independent values
-    result &= std::isfinite(sumOfLogsOfSquaredAmplitudes());
-
-    return result;
+    if (!std::isfinite(sumOfLogsOfSquaredAmplitudes()))
+        throw exceptions::NonfiniteResult();
 }
 
 //-------------------------
 void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 {
     // header
-    std::cout << "DataAccessors of " << name() << "\n"
-              << "index \tnSymIndices \taddress  \tname";
+    std::cout << "DataAccessors of " << name() << "\n" << "index \tnSymIndices \taddress  \tname";
     if (printParticleCombinations)
         std::cout << "\t\tparticleCombinations";
     std::cout << std::endl;
 
     for (auto& d : DataAccessors_) {
-        std::cout << d->index()
-                  << "  \t" << d->maxSymmetrizationIndex() + 1
-                  << "  \t\t" << d
-                  << "  \t(" << typeid(*d).name() << ")  \t";
-        if (dynamic_cast<Particle*>(d))
-            std::cout << dynamic_cast<Particle*>(d)->name();
-        else if (dynamic_cast<DecayChannel*>(d))
-            std::cout << *dynamic_cast<DecayChannel*>(d);
+        std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1 << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+        if (std::dynamic_pointer_cast<Particle>(d))
+            std::cout << std::dynamic_pointer_cast<Particle>(d)->name();
+        else if (std::dynamic_pointer_cast<DecayChannel>(d))
+            std::cout << *std::dynamic_pointer_cast<DecayChannel>(d);
 
         if (printParticleCombinations) {
             std::cout << " \t";
@@ -440,117 +405,85 @@ bool InitialStateParticle::hasDataPartition(DataPartitionBase* d)
             return true;
     }
 
-    LOG(ERROR) << "InitialStateParticle::hasDataPartition - trying to calculate for a DataPartition, which is not stored in this InitialStateParticle.";
+    FLOG(ERROR) << "trying to calculate for a DataPartition, which is not stored in this InitialStateParticle.";
     return false;
-}
-
-//-------------------------
-void InitialStateParticle::setNumberOfDataPartitions(unsigned n)
-{
-    for (DataAccessor* d : DataAccessors_) {
-        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
-            continue;
-
-        for (CachedDataValue* c : d->CachedDataValues_) {
-            c->setNumberOfDataPartitions(n);
-        }
-    }
-}
-
-//-------------------------
-void InitialStateParticle::updateGlobalCalculationStatuses()
-{
-    for (DataAccessor* d : DataAccessors_) {
-        /// \todo Think hard about a less stupid solution
-        if (d == this)
-            continue;
-        d->updateGlobalCalculationStatuses();
-    }
 }
 
 //-------------------------
 void InitialStateParticle::calculate(DataPoint& d)
 {
-    FourMomenta_.calculate(d);
-    MeasuredBreakupMomenta_.calculate(d);
-    HelicityAngles_.calculate(d);
+    FourMomenta_->calculate(d);
+    MeasuredBreakupMomenta_->calculate(d);
+    HelicityAngles_->calculate(d);
+}
+
+//-------------------------
+void InitialStateParticle::setNumberOfDataPartitions(unsigned n)
+{
+    // call on this object
+    DataAccessor::setNumberOfDataPartitions(n);
+    // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
+    for (auto& d : DataAccessors_)
+        if (d.get() != this)
+            d->setNumberOfDataPartitions(n);
+}
+
+//-------------------------
+void InitialStateParticle::updateGlobalCalculationStatuses()
+{
+    // call on this
+    DataAccessor::updateGlobalCalculationStatuses();
+    // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
+    for (auto& d : DataAccessors_)
+        if (d.get() != this)
+            d->updateGlobalCalculationStatuses();
 }
 
 //-------------------------
 void InitialStateParticle::resetCalculationStatuses(unsigned dataPartitionIndex)
 {
-    for (DataAccessor* d : DataAccessors_) {
-        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
-            continue;
-
-        //DEBUG("resetCalculationStatus for " << typeid(*d).name() << "  " << d);
-
-        for (CachedDataValue* c : d->CachedDataValues_) {
-            c->resetCalculationStatus(dataPartitionIndex);
-        }
-    }
+    // call on this
+    DataAccessor::resetCalculationStatuses(dataPartitionIndex);
+    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
+    for (auto& d : DataAccessors_)
+        if (d.get() != this)
+            d->resetCalculationStatuses(dataPartitionIndex);
 }
 
 //-------------------------
 void InitialStateParticle::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
 {
-    for (DataAccessor* d : DataAccessors_) {
-        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
-            continue;
-
-        for (CachedDataValue* c : d->CachedDataValues_) {
-            c->setVariableStatus(kUnchanged, dataPartitionIndex);
-        }
-    }
+    // call on this
+    DataAccessor::setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
+    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
+    for (auto& d : DataAccessors_)
+        if (d.get() != this)
+            d->setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
 }
 
 //-------------------------
 void InitialStateParticle::setParameterFlagsToUnchanged()
 {
-    for (DataAccessor* d : DataAccessors_) {
-        if (d == &FourMomenta_ or d == &MeasuredBreakupMomenta_  or d == &HelicityAngles_)
-            continue;
-
-        for (CachedDataValue* c : d->CachedDataValues_) {
-            for (auto& p : c->ParametersItDependsOn_) {
-                if (p->variableStatus() == kChanged) {
-                    p->setVariableStatus(kUnchanged);
-                }
-            }
-        }
-    }
+    // call on this
+    DataAccessor::setParameterFlagsToUnchanged();
+    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
+    for (auto& d : DataAccessors_)
+        if (d.get() != this)
+            d->setParameterFlagsToUnchanged();
 }
 
 //-------------------------
-void InitialStateParticle::addDataAccessor(DataAccessor* d)
+DataAccessorSet InitialStateParticle::dataAccessors()
 {
-    if (prepared()) {
-        FLOG(ERROR) << "InitialStateParticle has already been prepared. "
-                    << "Adding a data accessor is no longer permitted.";
-        throw exceptions::InitialStateParticleAlreadyPrepared();
-    }
-    DataAccessors_.insert(d);
+    // call DecayingParticle's function
+    DataAccessorSet V = DecayingParticle::dataAccessors();
+
+    // add
+    V.emplace(FourMomenta_);
+    V.emplace(MeasuredBreakupMomenta_);
+    V.emplace(HelicityAngles_);
+
+    return V;
 }
-
-
-//-------------------------
-void InitialStateParticle::removeDataAccessor(DataAccessor* d)
-{
-    if (prepared()) {
-        FLOG(ERROR) << "InitialStateParticle has already been prepared. "
-                    << "Removing a data accessor is no longer permitted.";
-        throw exceptions::InitialStateParticleAlreadyPrepared();
-    }
-    DataAccessors_.erase(d);
-}
-
-//-------------------------
-void InitialStateParticle::setDataAcessorIndices()
-{
-    unsigned i(0);
-    for (DataAccessor* d : DataAccessors_)
-        d->setIndex(i++);
-}
-
 
 }

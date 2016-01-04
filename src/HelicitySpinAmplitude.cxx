@@ -15,7 +15,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
     SpinAmplitude(initial, final1, final2, l),
     SpinAmplitude_(new ComplexCachedDataValue(this))
 {
-    // SpinAmplitude_ dependency on helicity angles is set in setInitialStateParticle
+    FLOG(INFO) << "in";
 }
 
 //-------------------------
@@ -120,9 +120,11 @@ bool HelicitySpinAmplitude::equals(const SpinAmplitude& other) const
 
 
 //-------------------------
-void HelicitySpinAmplitude::setDecayChannel(DecayChannel* dc)
+void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
 {
-    SpinAmplitude::setDecayChannel(dc);
+    SpinAmplitude::setInitialStateParticle(isp);
+    if (!initialStateParticle())
+        throw exceptions::InitialStateParticleUnset();
     SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
     SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
 }

@@ -23,19 +23,18 @@
 
 #include "BelongsToInitialStateParticle.h"
 #include "CalculationStatus.h"
-#include "DataPartition.h"
-#include "DataPoint.h"
 #include "ParticleCombination.h"
 
 #include "logging.h"
 
-#include <complex>
-#include <map>
+#include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
 
 class CachedDataValue;
+class DataPoint;
 class InitialStateParticle;
 
 /// \name DataAccessor
@@ -73,7 +72,7 @@ public:
     /// @{
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
-    unsigned index() const
+    size_t index() const
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
@@ -86,7 +85,6 @@ public:
 
     /// \return SymmetrizationIndices_
     const ParticleCombinationMap<unsigned>& symmetrizationIndices() const
-    // const std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > >& symmetrizationIndices() const
     { return SymmetrizationIndices_; }
 
     /// \return maximum index of SymmetrizationIndices_
@@ -131,38 +129,35 @@ public:
     /// Access a data point's data (by friendship)
     std::vector<double>& data(DataPoint& d, unsigned i) const;
 
-#ifdef ELPP_DISABLE_DEBUG_LOGS
     /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const
-    { return d.Data_[Index_][i]; }
-#else
-    /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const
-    { return d.Data_.at(Index_).at(i); }
-#endif
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const;
 
     /// @}
 
-    /// \name calculation statuses
-    /// @{
+    /// grant friend status to InitialStateParticle
+    friend class InitialStateParticle;
+
+protected:
+
+    /// set storage index used in DataPoint. Must be unique.
+    void setIndex(size_t i)
+    { Index_ = i; }
+
+    /// set number of data partitions into all members of CachedDataValues_
+    virtual void setNumberOfDataPartitions(unsigned n);
 
     /// Update global calculation statuses of all CachedDataValues
     virtual void updateGlobalCalculationStatuses();
 
-    /// @}
+    /// resets CalculationStatus'es for all CachedDataValues_
+    virtual void resetCalculationStatuses(unsigned dataPartitionIndex);
 
-protected:
+    /// set all VariableStatus flags to kUnchanged (or leave at kFixed) for CachedDataValues_
+    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
 
-    /// \name Data accessor friends
-    /// @{
-
-    friend class InitialStateParticle;
-
-    /// @}
-
-    /// set storage index used in DataPoint. Must be unique.
-    void setIndex(unsigned i)
-    { Index_ = i; }
+    /// set all VariableStatus flags to kUnchanged (or leave at
+    /// kFixed) for all Parameters that CachedDataValues_ depend on
+    virtual void setParameterFlagsToUnchanged();
 
 private:
 
@@ -179,9 +174,12 @@ private:
     unsigned Size_;
 
     /// storage index used in DataPoint. Must be unique.
-    unsigned Index_;
+    size_t Index_;
 
 };
+
+/// \typedef DataAccessorSet
+using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
 
 }
 

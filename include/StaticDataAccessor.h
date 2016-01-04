@@ -41,10 +41,8 @@ public:
         : DataAccessor(equiv), InitialStateParticle_(isp)
     { if (!initialStateParticle()) throw exceptions::InitialStateParticleUnset(); }
 
-    /// Update global calculation statuses of all CachedDataValues
-    /// [Does nothing since data is never to be updated!]
-    virtual void updateGlobalCalculationStatuses() override
-    { }
+    /// does nothing since StaticDataAccessor's never update
+    virtual void updateGlobalCalculationStatuses() override {}
 
     /// calculate cachedDataValues and store to DataPoint
     virtual void calculate(DataPoint& d) = 0;
@@ -55,6 +53,20 @@ public:
     /// \return Raw pointer to owning InitialStateParticle
     InitialStateParticle* initialStateParticle() override
     { return InitialStateParticle_; }
+
+protected:
+
+    /// does nothing, since StaticDataAccessor's ignore partitions
+    virtual void setNumberOfDataPartitions(unsigned n) override {}
+
+    /// does nothing, since StaticDataAccessor's never update
+    virtual void resetCalculationStatuses(unsigned dataPartitionIndex) override {}
+
+    /// does nothing, since StaticDataAccessor's never change
+    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex) override {}
+
+    /// does nothing, since StaticDataAccessor's never change
+    virtual void setParameterFlagsToUnchanged() override {}
 
 private:
 

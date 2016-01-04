@@ -24,7 +24,7 @@ std::string to_string(const ParticleCombination& pc)
         return "(empty)";
     std::string s = "(";
     for (auto i : pc.indices())
-        s += to_string(i);
+        s += std::to_string(i);
     s += ", λ = " + spin_to_string(pc.twoLambda()) + ")";
 
     if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))

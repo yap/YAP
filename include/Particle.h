@@ -81,7 +81,12 @@ public:
 
     /// @}
 
-    /// for internal use only
+    /// give friend status to DecayChannel to call setSymmetrizationIndexParents
+    friend class DecayChannel;
+
+protected:
+
+    /// set symmetrization index parents
     virtual void setSymmetrizationIndexParents() = 0;
 
 private:
@@ -97,6 +102,9 @@ private:
     std::string Name_;
 
 };
+
+/// \typedef ParticleVecgtor
+using ParticleVector = std::vector<std::shared_ptr<Particle> >;
 
 }
 

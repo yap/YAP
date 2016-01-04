@@ -21,17 +21,16 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
+#include <DataAccessor.h>
 #include <FourVector.h>
 
 #include <complex>
 #include <memory>
-#include <set>
 #include <vector>
 
 namespace yap {
 
 class CachedDataValue;
-class DataAccessor;
 class FourMomenta;
 class HelicityAngles;
 class MeasuredBreakupMomenta;
@@ -57,16 +56,18 @@ public:
 
     /// @}
 
+    /// get four momenta of data point
     const std::vector<FourVector<double> >& finalStateFourMomenta()
     { return FSPFourMomenta_; }
 
-    bool setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
+    /// set four momenta into data point
+    void setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
 
     /// print information about the size of the DataPoint and its members
     void printDataSize();
 
     /// reserve space in Data_
-    void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
+    void allocateStorage(std::shared_ptr<FourMomenta> fourMom, const DataAccessorSet& dataAccessors);
 
 protected:
 

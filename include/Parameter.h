@@ -124,6 +124,14 @@ using ComplexParameter = Parameter<std::complex<double> >;
 /// \ingroup Parameters
 using RealParameter = Parameter<double>;
 
+/// \typedef ComplexParameterVector
+/// \ingroup Parameters
+using ComplexParameterVector = std::vector<std::shared_ptr<ComplexParameter> >;
+
+/// \typedef RealParameterVector
+/// \ingroup Parameters
+using RealParameterVector = std::vector<std::shared_ptr<RealParameter> >;
+
 }
 
 #endif

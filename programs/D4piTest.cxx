@@ -14,7 +14,6 @@
 #include <TGenPhaseSpace.h>
 #include <TLorentzVector.h>
 
-#include <assert.h>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -77,7 +76,7 @@ int main( int argc, char** argv)
 
 
     // consistency and optimizations
-    assert(D->prepare());
+    D->prepare();
     std::cout << "consistent! \n";
 
     // print stuff
@@ -126,7 +125,7 @@ int main( int argc, char** argv)
             DEBUG(yap::to_string(momenta.back()));
         }
 
-        assert(D->addDataPoint(momenta));
+        D->addDataPoint(momenta);
 
         // test 4 momenta calculation
         DEBUG("calculated 4 momenta from invariant masses:");
@@ -171,22 +170,7 @@ int main( int argc, char** argv)
 
         double logA(0);
 
-        if (false) {
-            // multi threaded
-            logA = D->sumOfLogsOfSquaredAmplitudes();
-        } else {
-            // update global calculationStatuses before looping over partitions
-            D->updateGlobalCalculationStatuses();
-
-            // loop over partitions
-            for (yap::DataPartitionBase* partition : D->dataPartitions()) {
-                DEBUG("calculate logA for partition " << partition->index() << " ---------------------------------------------------------------------------");
-                logA += D->partialSumOfLogsOfSquaredAmplitudes(partition);
-            }
-
-            // set parameter flags to unchanged after looping over all partitions
-            D->setParameterFlagsToUnchanged();
-        }
+        logA = D->sumOfLogsOfSquaredAmplitudes();
 
         LOG(INFO) << "logA = " << logA;
     }

@@ -23,6 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "DataAccessor.h"
 #include "DataPoint.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
@@ -86,7 +87,7 @@ protected:
     void setInitialStateParticle(InitialStateParticle* isp)
     { InitialStateParticle_ = isp; }
 
-    // set parents of symmetrization indices
+    /// set parents of symmetrization indices
     virtual void setSymmetrizationIndexParents() override;
 
 private:

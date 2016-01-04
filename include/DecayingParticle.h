@@ -29,6 +29,7 @@
 #include "make_unique.h"
 #include "Particle.h"
 #include "QuantumNumbers.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
@@ -86,6 +87,7 @@ public:
     void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l)
     {
         for (unsigned l = 0; l <= max_l; ++l) {
+            FLOG(INFO) << "l = " << l;
             try { addChannel<spin_amplitude>(A, B, l); }
             catch (const exceptions::AngularMomentumNotConserved&) {/* ignore */}
             catch (const exceptions::ParticleCombinationsEmpty&) {/* ignore */ }
@@ -101,7 +103,7 @@ public:
     /// @{
 
     /// return channels
-    const std::vector< std::unique_ptr<yap::DecayChannel> >& channels() const
+    const DecayChannelVector& channels() const
     { return Channels_;}
 
     /// \return Number of decay channels for this object
@@ -122,10 +124,6 @@ public:
 
     /// @}
 
-    /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
-    /// Check if this is the case, and share SpinAmplitudes
-    void optimizeSpinAmplitudeSharing();
-
     /// Print complete decay chain
     void printDecayChain() const
     { printDecayChainLevel(0); }
@@ -145,12 +143,23 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
 
+    /// grant friend status to DecayChannel to get dataAccessors
+    friend DecayChannel;
+
 protected:
 
     void printDecayChainLevel(int level) const;
 
+    /// \return set of shared_ptr's of DataAccessor's
+    virtual DataAccessorSet dataAccessors();
+
+    /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
+    virtual ComplexParameterVector freeAmplitudes() const;
+
+private:
+
     /// vector of decay channel objects
-    std::vector<std::unique_ptr<DecayChannel> > Channels_;
+    DecayChannelVector Channels_;
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;

@@ -61,11 +61,11 @@ public:
     cache_type::key_type find(const ParticleCombination& pc) const;
 
     /// check if cache contains element equating to pc
-    /// \param pc vector of ParticleIndex's to build ParticleCombination frrom for checking equivalence
+    /// \param I vector of ParticleIndex's to build ParticleCombination from for checking equivalence
     cache_type::key_type find(const std::vector<ParticleIndex>& I) const;
 
     /// \return shared_ptr to ParticleCombination from Cache, if it exists, otherwise adds it to cache.
-    /// \param i ParticleIndex for FSP
+    /// \param pc shared pointer to ParticleCombination to retrieve from cache
     std::shared_ptr<const ParticleCombination> operator[](std::shared_ptr<const ParticleCombination> pc);
 
     /// \return shared_ptr to FSP ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache
@@ -89,7 +89,6 @@ public:
     void removeExpired();
 
     /// Check consistency of cache.
-    /// Calls removeExpired()
     bool consistent() const;
 
     /// \name access to cache
@@ -118,6 +117,8 @@ protected:
     /// set lineage: copy each daughter, add pc as parent to copy,
     /// swap copy for daughter, and call setLineage on each daughter.
     void setLineage(std::shared_ptr<ParticleCombination> pc);
+
+private:
 
     /// set of weak pointers to ParticleCombination's
     cache_type Cache_;

@@ -98,24 +98,21 @@ public:
     /// \param axes vector of ParticleCombination's to set masses of
     /// \param masses vector of masses to be set to
     /// \return success of action
-    bool setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses);
+    void setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses);
 
     /// set masses of particle combinations in axes to those in masses
     /// \param d DataPoint to set into
     /// \param axes vector of ParticleCombination's to set masses of
     /// \param masses vector of masses to be set to
-    /// \return success of action
-    bool setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses);
+    void setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses);
 
     /// set masses
     /// also calculate remaining masses and final-state 4-momenta
-    /// \return if masses form a complete set and are in phase space
-    bool setMasses(DataPoint& d, ParticleCombinationMap<double> m);
+    void setMasses(DataPoint& d, ParticleCombinationMap<double> m);
 
     /// set masses squared
     /// also calculate remaining masses and final-state 4-momenta
-    /// \return if masses form a complete set and are in phase space
-    bool setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2);
+    void setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2);
 
     /// @}
 

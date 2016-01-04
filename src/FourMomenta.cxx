@@ -350,11 +350,11 @@ ParticleCombinationMap<double> FourMomenta::pairMassSquares(const DataPoint& d) 
 }
 
 //-------------------------
-bool FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses)
+void FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses)
 {
     if (axes.size() != masses.size()) {
-        LOG(ERROR) << "FourMomenta::setMasses - axes and masses vectors do not match in size.";
-        return false;
+        FLOG(ERROR) << "axes and masses vectors do not match in size.";
+        throw exceptions::MassesMismatch();
     }
 
     // reset all masses to -1
@@ -368,15 +368,15 @@ bool FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
     if (!calculateMissingMasses(d)) {
         // not enough masses set or not in phasespace
         resetMasses(d);
-        return false;
+        throw exceptions::MassInformationInsufficient();
     }
 
-    // recalculate final state masses and return success of action
-    return d.setFinalStateFourMomenta(calculateFourMomenta(d));
+    // recalculate final state masses
+    d.setFinalStateFourMomenta(calculateFourMomenta(d));
 }
 
 //-------------------------
-bool FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses)
+void FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses)
 {
     std::vector<double> masses(squaredMasses.size(), 0);
 
@@ -390,36 +390,34 @@ bool FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector
     for (auto v : masses)
         std::cout << "  " << v << "\n";
 
-    return setMasses(d, axes, masses);
+    setMasses(d, axes, masses);
 }
 
 //-------------------------
-bool FourMomenta::setMasses(DataPoint& d, ParticleCombinationMap<double> m)
+void FourMomenta::setMasses(DataPoint& d, ParticleCombinationMap<double> m)
 {
     resetMasses(d);
 
-    for (auto& kv : m) {
+    for (auto& kv : m)
         M_->setValue(kv.second, d, symmetrizationIndex(kv.first), 0u);
-    }
 
     // recalculate stuff
     if (!calculateMissingMasses(d)) {
         // not enough masses set or not in phasespace
         resetMasses(d);
-        return false;
+        throw exceptions::MassInformationInsufficient();
     }
 
-    return d.setFinalStateFourMomenta(calculateFourMomenta(d));
+    d.setFinalStateFourMomenta(calculateFourMomenta(d));
 }
 
 //-------------------------
-bool FourMomenta::setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2)
+void FourMomenta::setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2)
 {
-    for (auto& kv : m2) {
+    for (auto& kv : m2)
         kv.second = sqrt(kv.second);
-    }
 
-    return setMasses(d, m2);
+    setMasses(d, m2);
 }
 
 //-------------------------

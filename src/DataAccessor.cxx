@@ -135,6 +135,17 @@ std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 }
 
 //-------------------------
+const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
+{
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+    return d.Data_[Index_][i];
+#else
+    return d.Data_.at(Index_).at(i);
+#endif
+}
+
+
+//-------------------------
 void DataAccessor::updateGlobalCalculationStatuses()
 {
     for (CachedDataValue* c : CachedDataValues_) {
@@ -143,6 +154,36 @@ void DataAccessor::updateGlobalCalculationStatuses()
             c->updateGlobalCalculationStatus(kv.first, kv.second);
         }
     }
+}
+
+//-------------------------
+void DataAccessor::setNumberOfDataPartitions(unsigned n)
+{
+    for (auto& c : CachedDataValues_)
+        c->setNumberOfDataPartitions(n);
+}
+
+//-------------------------
+void DataAccessor::resetCalculationStatuses(unsigned dataPartitionIndex)
+{
+    for (auto& c : CachedDataValues_)
+        c->resetCalculationStatus(dataPartitionIndex);
+}
+
+//-------------------------
+void DataAccessor::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
+{
+    for (auto& c : CachedDataValues_)
+        c->setVariableStatus(kUnchanged, dataPartitionIndex);
+}
+
+//-------------------------
+void DataAccessor::setParameterFlagsToUnchanged()
+{
+    for (auto& c : CachedDataValues_)
+        for (auto& p : c->ParametersItDependsOn_)
+            if (p->variableStatus() == kChanged)
+                p->setVariableStatus(kUnchanged);
 }
 
 }

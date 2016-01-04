@@ -55,7 +55,7 @@ public:
     /// DecayChannel inherits ISP from daughters.
     /// \param daughters Vector of shared_ptr's to daughter Particle's
     /// \param spinAmplitude shared_ptr to SpinAmplitude object
-    DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
 
     /// 2-particle Constructor
     DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, std::shared_ptr<SpinAmplitude> spinAmplitude)
@@ -76,7 +76,7 @@ public:
     /// @{
 
     /// Get Daughters
-    const std::vector<std::shared_ptr<Particle> >& daughters() const
+    const ParticleVector& daughters() const
     { return Daughters_; }
 
     /// Get SpinAmplitude object
@@ -109,7 +109,7 @@ public:
     /// Grant friend status to DecayingParticle to set itself as owner
     friend DecayingParticle;
 
-    /// Grant friend status to InitialStateParticle to call setSymmetrizationParents
+    /// Grant friend status to InitialStateParticle
     friend class InitialStateParticle;
 
 protected:
@@ -127,15 +127,16 @@ protected:
     // sets symmetrization index parents
     void setSymmetrizationIndexParents();
 
-    // called by DecayingParticle to add SpinAmplitude dependencies
-    void addSpinAmplitudeDependencies();
+    /// \return set of DataAccessors
+    virtual DataAccessorSet dataAccessors();
 
+private:
 
-    /// 2 daughters of the decay
-    std::vector<std::shared_ptr<Particle> > Daughters_;
+    /// daughters of the decay
+    ParticleVector Daughters_;
 
     /// Blatt-Weisskopf calculator
-    std::unique_ptr<BlattWeisskopf> BlattWeisskopf_;
+    std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
 
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
@@ -145,8 +146,6 @@ protected:
 
     /// amplitude from spin dynamics, mass shapes, etc.
     std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
-
-private:
 
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;
@@ -160,7 +159,8 @@ std::string to_string(const DecayChannel& dc);
 inline std::ostream& operator<< (std::ostream& os, const DecayChannel& dc)
 { os << to_string(dc); return os; }
 
-
+/// \typedef DecayChannelVector
+using DecayChannelVector = std::vector<std::shared_ptr<DecayChannel> >;
 
 }
 

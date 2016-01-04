@@ -63,5 +63,16 @@ void Resonance::clearSymmetrizationIndices()
     MassShape_->clearSymmetrizationIndices();
 }
 
+//-------------------------
+DataAccessorSet Resonance::dataAccessors()
+{
+    // call DecayingParticle's function
+    DataAccessorSet V = DecayingParticle::dataAccessors();
+
+    // add mass shape
+    V.emplace(MassShape_);
+
+    return V;
+}
 
 }

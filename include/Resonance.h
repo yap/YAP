@@ -93,10 +93,15 @@ public:
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
 
+protected:
+
+    /// \return set of shared_ptr's to DataAccessor's
+    virtual DataAccessorSet dataAccessors() override;
+
 private:
 
     /// MassShape object
-    std::unique_ptr<MassShape> MassShape_;
+    std::shared_ptr<MassShape> MassShape_;
 
 };
 

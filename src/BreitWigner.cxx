@@ -21,12 +21,12 @@ BreitWigner::BreitWigner(double mass, double width) :
 //-------------------------
 void BreitWigner::setParameters(const ParticleTableEntry& entry)
 {
-    Mass_->setValue(entry.Mass_);
+    Mass_->setValue(entry.Mass);
 
-    if (entry.MassShapeParameters_.empty())
-        throw std::runtime_error("entry's MassShapeParameters_ is empty");
+    if (entry.MassShapeParameters.empty())
+        throw exceptions::MassShapeParametersMismatch();
 
-    Width_->setValue(entry.MassShapeParameters_[0]);
+    Width_->setValue(entry.MassShapeParameters[0]);
 }
 
 //-------------------------

@@ -8,7 +8,8 @@ namespace yap {
 
 //-------------------------
 FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
-    : Particle(q, m, name)
+    : Particle(q, m, name),
+      InitialStateParticle_(nullptr)
 {
     // final state particles have fixed mass
     mass()->setVariableStatus(kFixed);

@@ -14,24 +14,24 @@ namespace yap {
 //-------------------------
 ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
     QuantumNumbers(q),
-    PDG_(pdg),
-    Name_(name),
-    Mass_(mass),
-    MassShapeParameters_(parameters)
+    PDG(pdg),
+    Name(name),
+    Mass(mass),
+    MassShapeParameters(parameters)
 {
 }
 
 //-------------------------
 bool ParticleTableEntry::consistent() const
 {
-    bool result = QuantumNumbers::consistent();
+    bool C = QuantumNumbers::consistent();
 
-    if (Name_.empty()) {
-        LOG(ERROR) << "ParticleTableEntry::consistent : No name specified.";
-        result = false;
+    if (Name.empty()) {
+        FLOG(ERROR) << "No name specified.";
+        C &= false;
     }
 
-    return result;
+    return C;
 }
 
 //-------------------------
@@ -44,8 +44,8 @@ ParticleFactory::ParticleFactory(const std::string pdlFile)
 std::unique_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(int PDG)
 {
     const auto& p = particleTableEntry(PDG);
-    DEBUG("make FinalStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_unique<FinalStateParticle>(p, p.Mass_, p.Name_);
+    DEBUG("make FinalStateParticle " << p.Name << " with quantum numbers " << p);
+    return std::make_unique<FinalStateParticle>(p, p.Mass, p.Name);
 }
 
 //-------------------------
@@ -56,17 +56,17 @@ std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
     if (p.twoJ() != 0)
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
-    DEBUG("make InitialStateParticle " << p.Name_ << " with quantum numbers " << p);
-    return std::make_unique<InitialStateParticle>(p, p.Mass_, p.Name_, radialSize);
+    DEBUG("make InitialStateParticle " << p.Name << " with quantum numbers " << p);
+    return std::make_unique<InitialStateParticle>(p, p.Mass, p.Name, radialSize);
 }
 
 //-------------------------
 std::unique_ptr<Resonance> ParticleFactory::createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape)
 {
     const auto& p = particleTableEntry(PDG);
-    DEBUG("make Resonance " << p.Name_ << " with quantum numbers " << p);
+    DEBUG("make Resonance " << p.Name << " with quantum numbers " << p);
     massShape->setParameters(p);
-    return std::make_unique<Resonance>(p, p.Mass_, p.Name_, radialSize, std::move(massShape));
+    return std::make_unique<Resonance>(p, p.Mass, p.Name, radialSize, std::move(massShape));
 }
 
 //-------------------------
@@ -82,17 +82,17 @@ const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
 {
     if (!entry.consistent()) {
-        LOG(ERROR) << "ParticleFactory::addParticleTableEntry : entry with PDG code " << entry.PDG_ << " inconsistent";
+        LOG(ERROR) << "ParticleFactory::addParticleTableEntry : entry with PDG code " << entry.PDG << " inconsistent";
         return false;
     }
 
-    if (particleTable_.count(entry.PDG_) != 0) {
-        LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG_ << " already exists. Overwriting entry.";
+    if (particleTable_.count(entry.PDG) != 0) {
+        LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG << " already exists. Overwriting entry.";
     }
 
-    particleTable_[entry.PDG_] = entry;
+    particleTable_[entry.PDG] = entry;
     // } else
-    //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG_, entry));
+    //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG, entry));
 
     return true;
 }
@@ -101,7 +101,7 @@ bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
 int ParticleFactory::pdgCode(std::string name) const
 {
     auto it = std::find_if(particleTable_.begin(), particleTable_.end(),
-    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.Name_ == name;});
+    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.Name == name;});
     if (it == particleTable_.end()) {
         LOG(ERROR) << "ParticleFactory::pdgCode - particle with name \"" << name << "\" not found.";
         return 0;

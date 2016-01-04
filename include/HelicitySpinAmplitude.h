@@ -83,9 +83,9 @@ public:
 
 protected:
 
-    /// set raw pointer to owning DecayChannel;
-    /// adds isp's helicity angles as dependencies to SpinAmplitude_
-    virtual void setDecayChannel(DecayChannel* dc) override;
+    /// set raw pointer to owning InitialStateParticle
+    /// adds isp's helicity angles as dependencies
+    virtual void setInitialStateParticle(InitialStateParticle* isp);
 
 private:
     /// check equality

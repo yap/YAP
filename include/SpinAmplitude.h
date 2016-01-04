@@ -83,9 +83,9 @@ public:
     /// include const access to ISP
     using BelongsToInitialStateParticle::initialStateParticle;
 
-    /// Get raw pointer to InitialStateParticle through owning DecayChannel
+    /// Get raw pointer to InitialStateParticle
     InitialStateParticle* initialStateParticle() override
-    { return (DecayChannel_) ? DecayChannel_->initialStateParticle() : nullptr; }
+    { return InitialStateParticle_; }
 
     /// @}
 
@@ -94,22 +94,22 @@ public:
     /// and to alter and multiply them (to accomodate helicity, for example)
     virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc) = 0;
 
-    /// grant friend access to DecayChannel for setting itself owner
+    /// grant friend access to DecayChannel to set InitialStateParticle
     friend DecayChannel;
 
 protected:
 
-    /// set raw pointer to owning DecayChannel
-    virtual void setDecayChannel(DecayChannel* dc)
-    { DecayChannel_ = dc; }
+    /// set raw pointer to owning InitialStateParticle
+    virtual void setInitialStateParticle(InitialStateParticle* isp)
+    { InitialStateParticle_ = isp; }
 
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const;
 
 private:
 
-    /// raw pointer to owning DecayChannel
-    DecayChannel* DecayChannel_;
+    /// raw pointer to owning InitialStateParticle
+    InitialStateParticle* InitialStateParticle_;
 
     /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;

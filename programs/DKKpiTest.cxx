@@ -7,7 +7,6 @@
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
-#include <assert.h>
 #include <memory>
 #include <vector>
 
@@ -41,7 +40,7 @@ int main( int argc, char** argv)
     D->addChannels(phi, piPlus, max2L);
 
     // consistency and optimizations
-    assert(D->prepare());
+    D->prepare();
     std::cout << "consistent! \n";
 
     // print stuff

@@ -79,6 +79,14 @@ class InitialStateParticleMismatch : public std::exception {};
 /// \ingroup Exceptions
 class InitialStateParticleUnset : public std::exception {};
 
+/// \class InitialStateParticleAlreadySet
+/// \ingroup Exceptions
+class InitialStateParticleAlreadySet : public std::exception {};
+
+/// \class DecayingParticleUnset
+/// \ingroup Exceptions
+class DecayingParticleUnset : public std::exception {};
+
 /// \class DecayChannelEmpty
 /// \ingroup Exceptions
 class DecayChannelEmpty : public std::exception {};
@@ -95,9 +103,9 @@ class ParticleCombinationsEmpty : public std::exception {};
 /// \ingroup Exceptions
 class ParticleCombinationNotFound : public std::exception {};
 
-/// \class InitialStateParticleAlreadyPrepared
+/// \class ParticleCombinationHasNoIndices
 /// \ingroup Exceptions
-class InitialStateParticleAlreadyPrepared : public std::exception {};
+class ParticleCombinationHasNoIndices : public std::exception {};
 
 /// \class Inconsistent
 /// \ingroup Exceptions
@@ -107,9 +115,57 @@ class Inconsistent : public std::exception {};
 /// \ingroup Exceptions
 class InconsistentSpinProjection : public Inconsistent {};
 
+/// \class InconsistentParticleCombination
+/// \ingroup Exceptions
+class InconsistentParticleCombination : public Inconsistent {};
+
 /// \class InconsistentParticleCombinationCache
 /// \ingroup Exceptions
 class InconsistentParticleCombinationCache : public Inconsistent {};
+
+/// \class InconsistentDataPoint
+/// \ingroup Exceptions
+class InconsistentDataPoint : public Inconsistent {};
+
+/// \class CoordinateSystemNotRightHanded
+/// \ingroup Exceptions
+class CoordinateSystemNotRightHanded : public std::exception {};
+
+/// \class FinalStateParticleAlreadyUsed
+/// \ingroup Exceptions
+class FinalStateParticleAlreadyUsed : public std::exception {};
+
+/// \class FinalStateParticlesAlreadySet
+/// \ingroup Exceptions
+class FinalStateParticlesAlreadySet : public std::exception {};
+
+/// \class FinalStateParticleEmpty
+/// \ingroup Exceptions
+class FinalStateParticleEmpty : public std::exception {};
+
+/// \class InitalStateParticleNotPrepared
+/// \ingroup Exceptions
+class InitialStateParticleNotPrepared : public std::exception {};
+
+/// \class FourMomentaMismatch
+/// \ingroup Exceptions
+class FourMomentaMismatch : public std::exception {};
+
+/// \class NonfiniteResult
+/// \ingroup Exceptions
+class NonfiniteResult : public std::exception {};
+
+/// \class MassesMismatch
+/// \ingroup Exceptions
+class MassesMismatch : public std::exception {};
+
+/// \class MassInformationInsufficient
+/// \ingroup Exceptions
+class MassInformationInsufficient : public std::exception {};
+
+/// \class MassShapeParametersMismatch
+/// \ingroup Exceptions
+class MassShapeParametersMismatch : public std::exception {};
 
 }
 
