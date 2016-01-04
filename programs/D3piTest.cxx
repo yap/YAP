@@ -18,7 +18,7 @@ int main( int argc, char** argv)
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
     // use only L up to 4
-    unsigned maxL(24);
+    unsigned maxL(2);
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
@@ -32,14 +32,10 @@ int main( int argc, char** argv)
     // set final state
     D->setFinalStateParticles({piPlus, piMinus, piPlus});
 
-    LOG(INFO) << "Creating rho ... ";
     // rho
     std::shared_ptr<yap::Resonance> rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
-    LOG(INFO) << "... 1";
     static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.149);
-    LOG(INFO) << "... 2";
     rho->addChannels(piPlus, piMinus, maxL);
-    LOG(INFO) << "... rho created";
 
     // f_2(1270)
     std::shared_ptr<yap::Resonance> f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());

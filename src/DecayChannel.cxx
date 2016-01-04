@@ -26,40 +26,38 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
     FixedAmplitude_(std::make_shared<ComplexCachedDataValue>(this)),
     DecayingParticle_(nullptr)
 {
-    FLOG(INFO) << "in";
-
     // check daughter size
     if (Daughters_.empty())
-        throw exceptions::NoDaughters();
+        throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
     if (Daughters_.size() == 1)
-        throw exceptions::OnlyOneDaughter();
+        throw exceptions::Exception("Only one daughter", "DecayChannel::DecayChannel");
     if (Daughters_.size() > 2)
-        throw exceptions::MoreThanTwoDaughters();
+        throw exceptions::Exception("More than two daughters", "DecayChannel::DecayChannel");
 
     // check no Daughters_ are empty
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;}))
-    throw exceptions::EmptyDaughter();
+    throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
 
     // check that first daughter's ISP is not nullptr
     if (Daughters_[0]->initialStateParticle() == nullptr)
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
     // and that all have same ISP (trivially checks 0th against itself)
     for (auto& d : Daughters_)
         if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
-            throw exceptions::InitialStateParticleMismatch();
+            throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
     // get spin amplitude from cache
     SpinAmplitude_ = initialStateParticle()->spinAmplitudeCache[spinAmplitude];
 
     // check SpinAmplitude
     if (!SpinAmplitude_)
-        throw exceptions::MissingSpinAmplitude();
+        throw exceptions::Exception("SpinAmplitude unset", "DecayChannel::DecayChannel");
     // set SpinAmplitude's ISP if not set
     if (!SpinAmplitude_->initialStateParticle())
         SpinAmplitude_->setInitialStateParticle(initialStateParticle());
     // check for match of ISP
     if (SpinAmplitude_->initialStateParticle() != initialStateParticle())
-        throw exceptions::InitialStateParticleMismatch();
+        throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
     /// set dependencies
     FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
@@ -79,45 +77,31 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
         PCs.push_back(d->particleCombinations());
         for (auto pc : PCs.back())
             if (pc->indices().empty())
-                throw exceptions::ParticleCombinationHasNoIndices();
+                throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
     }
-
-    FLOG(INFO) << "4";
 
     /// \todo remove hardcoding for two daughters so applies to n daughters
     for (auto& PCA : PCs[0]) {
         for (auto& PCB : PCs[1]) {
 
-            FLOG(INFO) << "4.1 " << *PCA << " " << *PCB;
-
             // check that PCA and PCB don't overlap in FSP content
             if (overlap(PCA->indices(), PCB->indices()))
                 continue;
 
-            FLOG(INFO) << "4.2";
-
             // for identical particles, check if swapped particle combination is already added
             if (Daughters_[0] == Daughters_[1]) {
-                FLOG(INFO) << "4.2.in";
                 // get (B,A) combination from cache
                 auto b_a = initialStateParticle()->particleCombinationCache.find(new ParticleCombination({PCB, PCA}));
-                FLOG(INFO) << "4.2.1";
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
                 if (!b_a.expired() and hasSymmetrizationIndex(b_a.lock()))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
-                FLOG(INFO) << "4.2.out";
             }
-
-            FLOG(INFO) << "4.3";
 
             // add (A,B)
             addSymmetrizationIndex(initialStateParticle()->particleCombinationCache[ {PCA, PCB}]);
-            FLOG(INFO) << "4.out";
         }
     }
-
-    FLOG(INFO) << "out";
 }
 
 //-------------------------
@@ -265,7 +249,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 
         } else {
             FLOG(ERROR) << "Daughter is neither a FinalStateParticle nor a DecayingParticle. DecayChannel is inconsistent.";
-            throw exceptions::InvalidDaughter();
+            throw exceptions::Exception("Invalid daughter", "DecayChannel::DecayChannel");
         }
     }
 
@@ -275,15 +259,13 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 //-------------------------
 void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
 {
-    FLOG(INFO) << "in";
+    // may throw, and be caught DecayChannel::DecayChannel, in which
+    // case SpinAmplitude::addSymmetrizationIndices
     ParticleCombinationVector PCs = SpinAmplitude_->addSymmetrizationIndices(c);
-    FLOG(INFO) << "1";
     for (auto& pc : PCs) {
-        FLOG(INFO) << *pc;
         DataAccessor::addSymmetrizationIndex(pc);
         BlattWeisskopf_->addSymmetrizationIndex(pc);
     }
-    FLOG(INFO) << "out";
 }
 
 //-------------------------
@@ -306,7 +288,7 @@ void DecayChannel::clearSymmetrizationIndices()
 void DecayChannel::setSymmetrizationIndexParents()
 {
     if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
 
     ParticleCombinationVector chPCs = particleCombinations();
 

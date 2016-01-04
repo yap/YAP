@@ -87,7 +87,7 @@ bool DecayingParticle::consistent() const
         std::vector<std::shared_ptr<FinalStateParticle> > fsps = finalStateParticles(i);
         std::sort(fsps.begin(), fsps.end());
         if (fsps != fsps0) {
-            LOG(ERROR) << "DecayingParticle::consistent() - final state of channel " << i << " does not match.";
+            FLOG(ERROR) << "final state of channel " << i << " does not match.";
             C &= false;
         }
     }
@@ -99,14 +99,14 @@ bool DecayingParticle::consistent() const
 void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 {
     if (!c)
-        throw exceptions::DecayChannelEmpty();
+        throw exceptions::Exception("DecayChannel empty", "DecayingParticle::addChannel");
 
     if (c->particleCombinations().empty())
         throw exceptions::ParticleCombinationsEmpty();
 
     // check ISP
     if (initialStateParticle() and c->initialStateParticle() != initialStateParticle())
-        throw exceptions::InitialStateParticleMismatch();
+        throw exceptions::Exception("InitialStateParticle mismath", "DecayingParticle::addChannel");
 
     Channels_.emplace_back(std::move(c));
     Channels_.back()->setDecayingParticle(this);
@@ -118,6 +118,8 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     // add dependencies
     Amplitude_->addDependencies(Channels_.back()->ParametersItDependsOn());
     Amplitude_->addDependencies(Channels_.back()->CachedDataValuesItDependsOn());
+
+    FLOG(INFO) << *Channels_.back() << " with N = " << Channels_.back()->particleCombinations().size();
 }
 
 //-------------------------

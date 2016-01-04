@@ -54,8 +54,13 @@ public:
     /// Final-state-particle constructor
     ParticleCombination(ParticleIndex index, int twoLambda = 0) : Indices_(1, index), TwoLambda_(twoLambda) {}
 
-    /// Resonance particle constructor
+    /// Resonance particle constructor, elements of c are copied into
+    /// new ParticleCombinations, with parent set to this
     ParticleCombination(ParticleCombinationVector c, int twoLambda = 0);
+
+    /// Copy with new lambda
+    ParticleCombination(const ParticleCombination& c, int twoLambda) : ParticleCombination(c)
+    { TwoLambda_ = twoLambda; }
 
     /// \name Getters
     /// @{
@@ -104,7 +109,7 @@ public:
 protected:
 
     /// Parent of the particle combination.
-    std::weak_ptr<ParticleCombination> Parent_;
+    std::weak_ptr<const ParticleCombination> Parent_;
 
     /// vector of daughters
     ParticleCombinationVector Daughters_;

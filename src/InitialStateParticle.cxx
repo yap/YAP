@@ -108,21 +108,21 @@ void InitialStateParticle::prepare()
 {
     // check
     if (!DecayingParticle::consistent()) {
-        FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent.";
-        throw exceptions::Inconsistent();
+        FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent as DecayingParticle.";
+        throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
     }
 
     // check coordinate system
     CoordinateSystem_ = unit(CoordinateSystem_);
     if (!isRightHanded(CoordinateSystem_)) {
         FLOG(ERROR) << "Coordinate system is not right-handed.";
-        throw exceptions::CoordinateSystemNotRightHanded();
+        throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::prepare");
     }
 
     // particle combinations
-    std::vector<std::shared_ptr<ParticleCombination> > PCs;
+    std::vector<std::shared_ptr<const ParticleCombination> > PCs;
     for (auto& pc : particleCombinations()) {
-        PCs.push_back(std::make_shared<ParticleCombination>(*pc));
+        PCs.push_back(std::make_shared<const ParticleCombination>(*pc));
     }
     particleCombinationCache = ParticleCombinationCache(PCs);
     clearSymmetrizationIndices();
@@ -134,13 +134,10 @@ void InitialStateParticle::prepare()
         if (!wpc.lock())
             continue;
         auto pc = wpc.lock();
-        if (!pc->consistent()) {
+        if (!pc->consistent()
+                or (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent())) {
             FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
-            throw exceptions::InconsistentParticleCombination();
-        }
-        if (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent()) {
-            FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombination is not consistent.";
-            throw exceptions::InconsistentParticleCombination();
+            throw exceptions::Exception("ParticleCombination inconsistent", "InitialStateParticle::prepare");
         }
     }
 
@@ -174,7 +171,7 @@ void InitialStateParticle::prepare()
     // check
     if (!consistent()) {
         FLOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent anymore.";
-        throw exceptions::Inconsistent();
+        throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
     }
 
     Prepared_ = true;
@@ -186,7 +183,7 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty()) {
         FLOG(ERROR) << "final-state particles have already been set.";
-        throw exceptions::FinalStateParticlesAlreadySet();
+        throw exceptions::Exception("Final-state particles already set", "InitialStateParticle::setFinalStateParticles");
     }
 
     // check that none of the FSP's has yet been used
@@ -195,15 +192,15 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
     for (auto& fsp : FSP) {
         if (!fsp) {
             FLOG(ERROR) << "final-state particle empty";
-            throw exceptions::FinalStateParticleEmpty();
+            throw exceptions::Exception("FinalStateParticle empty", "InitialStateParticle::setFinalStateParticles");
         }
         if (!fsp->particleCombinations().empty()) {
             FLOG(ERROR) << "final-state particle already has indices assigned: " << (std::string)*fsp;
-            throw exceptions::FinalStateParticleAlreadyUsed();
+            throw exceptions::Exception("FinalStateParticle already used", "InitialStateParticle::setFinalStateParticles");
         }
         if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
             FLOG(ERROR) << "final-state particle already has ISP assigned: " << (std::string)*fsp;
-            throw exceptions::InitialStateParticleAlreadySet();
+            throw exceptions::Exception("FinalStateParticle already has ISP set", "InitialStateParticle::setFinalStateParticles");
         }
     }
 
@@ -273,7 +270,7 @@ void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& 
 {
     if (!Prepared_) {
         FLOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        throw exceptions::InitialStateParticleNotPrepared();
+        throw exceptions::Exception("InitialStateParticle not prepared", "InitialStateParticle::addDataPoint");
     }
 
     if (DataSet_.empty()) {
@@ -291,7 +288,7 @@ void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& 
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        throw exceptions::InconsistentDataPoint();
+        throw exceptions::Exception("DataPoint inconsistent", "InitialStateParticle::addDataPoint");
 }
 
 //-------------------------
@@ -299,7 +296,7 @@ void InitialStateParticle::addDataPoint(DataPoint&& d)
 {
     if (!Prepared_) {
         LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        return throw exceptions::InitialStateParticleNotPrepared();
+        throw exceptions::Exception("InitialStateParticle not prepared", "InitialStateParticle::addDataPoint");
     }
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
@@ -308,7 +305,7 @@ void InitialStateParticle::addDataPoint(DataPoint&& d)
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        throw exceptions::InconsistentDataPoint();
+        throw exceptions::Exception("DataPoint inconsistent", "InitialStateParticle::addDataPoint");
 
     DataSet_.push_back(d);
 }
@@ -370,7 +367,7 @@ void InitialStateParticle::setSymmetrizationIndexParents()
     unsigned size = particleCombinations()[0]->indices().size();
 
     if (size <= 1)
-        throw exceptions::FewerThanTwoDaughters();
+        throw exceptions::Exception("Fewer than two daughters", "InitialStateParticle::setSymmetrizationIndexParents");
 
     clearSymmetrizationIndices();
 

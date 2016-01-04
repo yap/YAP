@@ -127,6 +127,10 @@ ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownB
 //-------------------------
 bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -144,6 +148,10 @@ bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_pt
 //-------------------------
 bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -166,6 +174,10 @@ bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<c
 //-------------------------
 bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -192,6 +204,10 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<const Part
 //-------------------------
 bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -210,6 +226,10 @@ bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<con
 //-------------------------
 bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -228,6 +248,10 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_
 //-------------------------
 bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -246,6 +270,10 @@ bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<const
 //-------------------------
 bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -266,6 +294,10 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_
 //-------------------------
 bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     if (A == B)
         return true;
@@ -296,6 +328,10 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::sha
 //-------------------------
 bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
+    // check if either empty
+    if (!A or !B)
+        return false;
+
     // compare shared_ptr addresses
     // if both are nullptr, also return true
     if (A == B)

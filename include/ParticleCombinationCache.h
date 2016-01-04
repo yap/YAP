@@ -23,6 +23,7 @@
 
 #include "ParticleCombination.h"
 #include "ParticleIndex.h"
+#include "WeakPtrCache.h"
 
 #include <memory>
 #include <set>
@@ -34,94 +35,62 @@ namespace yap {
 /// \brief Caches list of ParticleCombination's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ParticleCombinationCache
+class ParticleCombinationCache : public WeakPtrCache<const ParticleCombination>
 {
 public:
 
-    /// cache storage type
-    using cache_type = std::set<std::weak_ptr<const ParticleCombination>, std::owner_less<std::weak_ptr<const ParticleCombination> > >;
+    /// implements equivalence checking
+    bool equiv(const shared_ptr_type& A, const shared_ptr_type& B) const override
+    { return ParticleCombination::equivUpAndDown(A, B); }
 
     /// Default constructor
     ParticleCombinationCache() = default;
 
-    /// Construct cache from vector of ISP ParticleCombination's
-    ParticleCombinationCache(std::vector<std::shared_ptr<ParticleCombination> > ispPCs);
+    /// Construct cache from vector of ISP's ParticleCombination's
+    ParticleCombinationCache(std::vector<shared_ptr_type> V);
 
-    /// check if cache contains element equating to pc
-    /// \param pc shared_ptr to ParticleCombination to search for equivalent to
-    cache_type::key_type find(std::shared_ptr<const ParticleCombination> pc) const;
+    using WeakPtrCache::find;
 
     /// check if cache contains element equating to pc
     /// \param pc Pointer to ParticleCombination to search for equivalent to
-    cache_type::key_type find(const ParticleCombination* pc) const
-    { return find(std::shared_ptr<const ParticleCombination>(pc)); }
-
-    /// check if cache contains element equating to pc
-    /// \param pc ParticleCombination to search for equivalent to
-    cache_type::key_type find(const ParticleCombination& pc) const;
+    weak_ptr_type find(ParticleCombination* pc) const
+    { return find(shared_ptr_type(pc)); }
 
     /// check if cache contains element equating to pc
     /// \param I vector of ParticleIndex's to build ParticleCombination from for checking equivalence
-    cache_type::key_type find(const std::vector<ParticleIndex>& I) const;
+    weak_ptr_type find(const std::vector<ParticleIndex>& I) const;
 
-    /// \return shared_ptr to ParticleCombination from Cache, if it exists, otherwise adds it to cache.
-    /// \param pc shared pointer to ParticleCombination to retrieve from cache
-    std::shared_ptr<const ParticleCombination> operator[](std::shared_ptr<const ParticleCombination> pc);
+    using WeakPtrCache::operator[];
 
     /// \return shared_ptr to FSP ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache
     /// Constructs ParticleCombination from index.
     /// \param i ParticleIndex for FSP
-    std::shared_ptr<const ParticleCombination> operator[](ParticleIndex i)
-    { return operator[](std::make_shared<ParticleCombination>(i)); }
+    shared_ptr_type operator[](ParticleIndex i)
+    { return operator[](std::make_shared<type>(i)); }
 
     /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
     /// constructs PC from decay to final state particles in vector.
     /// \param I vector of ParticleIndex for FSP
-    std::shared_ptr<const ParticleCombination> operator[](const std::vector<ParticleIndex>& I);
+    shared_ptr_type operator[](const std::vector<ParticleIndex>& I);
 
     /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
     /// Constructs from ParticleCombinations for daughters
     /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
-    std::shared_ptr<const ParticleCombination> operator[](ParticleCombinationVector c)
-    { return operator[](std::make_shared<ParticleCombination>(c)); }
-
-    /// remove expired Cache_ elements
-    void removeExpired();
+    shared_ptr_type operator[](ParticleCombinationVector c)
+    { return operator[](std::make_shared<type>(c)); }
 
     /// Check consistency of cache.
     bool consistent() const;
-
-    /// \name access to cache
-    /// @{
-
-    /// \return iterator to begin
-    cache_type::iterator begin()
-    { return Cache_.begin(); }
-
-    /// \return const_iterator to begin
-    cache_type::const_iterator begin() const
-    { return Cache_.begin(); }
-
-    /// \return iterator to end
-    cache_type::iterator end()
-    { return Cache_.end(); }
-
-    /// \return const_iterator to end
-    cache_type::const_iterator end() const
-    { return Cache_.end(); }
-
-    /// @}
 
 protected:
 
     /// set lineage: copy each daughter, add pc as parent to copy,
     /// swap copy for daughter, and call setLineage on each daughter.
-    void setLineage(std::shared_ptr<ParticleCombination> pc);
+    void setLineage(shared_ptr_type pc);
 
-private:
+    /// add to cache
+    void addToCache(shared_ptr_type pc) override;
 
-    /// set of weak pointers to ParticleCombination's
-    cache_type Cache_;
 };
 
 /// convert to string

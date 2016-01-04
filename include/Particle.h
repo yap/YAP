@@ -52,7 +52,7 @@ public:
     virtual bool consistent() const override;
 
     /// explicitly cast to string
-    explicit operator std::string()
+    virtual explicit operator std::string()
     { return Name_ + "(" + to_string(QuantumNumbers_) + "), mass = " + to_string(Mass_->value()); }
 
     /// \name Getters

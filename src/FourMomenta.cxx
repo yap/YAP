@@ -20,7 +20,7 @@ FourMomenta::FourMomenta(InitialStateParticle* isp) :
     M_(std::make_shared<RealCachedDataValue>(this))
 {
     if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "FourMomenta::FourMomenta");
 }
 
 //-------------------------
@@ -312,7 +312,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     for (auto& v : pcs) {
         auto A = initialStateParticle()->particleCombinationCache.find(v);
         if (A.expired())
-            throw exceptions::ParticleCombinationNotFound();
+            throw exceptions::Exception("ParticleCombination not found", "FourMomenta::getDalitzAxes");
         for (auto& B : PCV)
             if (ParticleCombination::equivByOrderlessContent(A.lock(), B)) {
                 M.push_back(B);
@@ -322,7 +322,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
 
     // Check if all combinations found
     if (M.size() != pcs.size())
-        throw exceptions::ParticleCombinationNotFound();
+        throw exceptions::Exception("ParticleCombination not found", "FourMomenta::getDalitzAxes");
 
     return M;
 }
@@ -354,7 +354,7 @@ void FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
 {
     if (axes.size() != masses.size()) {
         FLOG(ERROR) << "axes and masses vectors do not match in size.";
-        throw exceptions::MassesMismatch();
+        throw exceptions::Exception("Masses do not match Dalitz axes", "FourMomenta::setMasses");
     }
 
     // reset all masses to -1
@@ -368,7 +368,8 @@ void FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
     if (!calculateMissingMasses(d)) {
         // not enough masses set or not in phasespace
         resetMasses(d);
-        throw exceptions::MassInformationInsufficient();
+        /// \todo replace with specific class for outside-of-phase-space exception if that's the case
+        throw exceptions::Exception("Failed to calculate missing masses", "FourMomenta::setMasses");
     }
 
     // recalculate final state masses
@@ -405,7 +406,8 @@ void FourMomenta::setMasses(DataPoint& d, ParticleCombinationMap<double> m)
     if (!calculateMissingMasses(d)) {
         // not enough masses set or not in phasespace
         resetMasses(d);
-        throw exceptions::MassInformationInsufficient();
+        /// \todo replace with specific class for outside-of-phase-space exception if that's the case
+        throw exceptions::Exception("Failed to calculate missing masses", "FourMomenta::setMasses");
     }
 
     d.setFinalStateFourMomenta(calculateFourMomenta(d));

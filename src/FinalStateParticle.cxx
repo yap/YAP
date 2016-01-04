@@ -38,7 +38,7 @@ bool FinalStateParticle::consistent() const
 void FinalStateParticle::setSymmetrizationIndexParents()
 {
     if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "FinalStateParticle::setSymmetrizationIndexParents");
 
     ParticleCombinationVector PCs = SymmetrizationIndices_;
 

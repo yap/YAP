@@ -22,6 +22,7 @@
 #include "MathUtilities.h"
 
 #include <cstdlib>
+#include <string>
 
 namespace yap {
 
@@ -29,6 +30,15 @@ namespace yap {
 /// \brief Clebsch Gordan coefficients and related spin-checking functions
 /// \author Johannes Rauch, Daniel Greenwald
 namespace ClebschGordan {
+
+/// \return Clebsch-Gordan coefficient string
+/// \param two_j1 2*spin of first particle
+/// \param two_m1 2*spin-projection of first particle
+/// \param two_j2 2*spin of second particle
+/// \param two_m2 2*spin-projection of second particle
+/// \param two_J  2*spin of composite system
+/// \param two_M  2*spin-projection of composite system
+std::string to_string(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
 
 /// \return Whether Clebsch-Gordan coefficient is nonzero
 /// \param two_j1 2*spin of first particle
@@ -92,7 +102,7 @@ double couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2
 /// \param two_J 2*spin
 /// \param two_M 2*spin-projection
 inline bool consistent(unsigned two_J, int two_M)
-{ return (std::abs(two_M) <= two_J) and is_even(two_J + two_M); }
+{ return (std::abs(two_M) <= (int)two_J) and is_even(two_J + two_M); }
 
 } // ClebschGordon namespace
 

@@ -87,9 +87,9 @@ public:
     void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l)
     {
         for (unsigned l = 0; l <= max_l; ++l) {
-            FLOG(INFO) << "l = " << l;
-            try { addChannel<spin_amplitude>(A, B, l); }
+            try { addChannel<spin_amplitude>(A, B, l);}
             catch (const exceptions::AngularMomentumNotConserved&) {/* ignore */}
+            catch (const exceptions::InconsistentSpinProjection&) {/* ignore */}
             catch (const exceptions::ParticleCombinationsEmpty&) {/* ignore */ }
         }
     }

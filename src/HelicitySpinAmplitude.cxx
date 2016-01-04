@@ -15,7 +15,6 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
     SpinAmplitude(initial, final1, final2, l),
     SpinAmplitude_(new ComplexCachedDataValue(this))
 {
-    FLOG(INFO) << "in";
 }
 
 //-------------------------
@@ -72,35 +71,71 @@ bool HelicitySpinAmplitude::consistent() const
 ParticleCombinationVector HelicitySpinAmplitude::addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc)
 {
     if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::addSymmetrizationIndices");
 
     ParticleCombinationVector PCs;
 
-    // if C-G coefficient vanishes, return empty vector
-    if (!ClebschGordan::nonzeroCoupling(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
-                                        finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
-                                        l(), two_s(), initialQuantumNumbers().twoJ()))
-        return PCs;
+    unsigned two_j1 = finalQuantumNumbers()[0].twoJ();
+    unsigned two_j2 = finalQuantumNumbers()[1].twoJ();
 
-    // add all spin projections from -J to J
-    for (int two_lambda = -initialQuantumNumbers().twoJ(); two_lambda <= initialQuantumNumbers().twoJ(); two_lambda += 2) {
-        auto pc_lambda = std::make_shared<ParticleCombination>(*pc);
-        pc_lambda->setTwoLambda(two_lambda);
-        PCs.push_back(initialStateParticle()->particleCombinationCache[pc_lambda]);
-        addSymmetrizationIndex(PCs.back());
+    auto d1 = pc->daughters()[0];
+    auto d2 = pc->daughters()[1];
+
+    // loop over possible spin projections of d1
+    for (int two_lambda1 = -two_j1; two_lambda1 <= (int)two_j1; two_lambda1 += 2) {
+
+        // copy d1, which has unset lambda, into one with set lambda
+        auto d1_lambda = initialStateParticle()->particleCombinationCache[std::make_shared<ParticleCombination>(*d1, two_lambda1)];
+
+        // loop over possible spin projections of d2
+        for (int two_lambda2 = -two_j2; two_lambda2 <= (int)two_j2; two_lambda2 += 2) {
+
+            // copy d2, which has unset lambda, into one with set lambda
+            auto d2_lambda = initialStateParticle()->particleCombinationCache[std::make_shared<ParticleCombination>(*d2, two_lambda2)];
+
+            try {
+                if (!ClebschGordan::nonzeroCoupling(two_j1, two_lambda1, two_j2, two_lambda2, l(), two_s(), initialQuantumNumbers().twoJ()))
+                    continue;
+                PCs.push_back(initialStateParticle()->particleCombinationCache[ {d1_lambda, d2_lambda}]);
+                addSymmetrizationIndex(PCs.back());
+            } catch (const exceptions::InconsistentSpinProjection&) {/*ignore*/}
+        }
     }
-
     return PCs;
+
+    // // if C-G coefficient vanishes, return empty vector
+    // FLOG(INFO) << spin_to_string(finalQuantumNumbers()[0].twoJ()) << " " << spin_to_string(pc->daughters()[0]->twoLambda())
+    //            << ", "
+    //            << spin_to_string(finalQuantumNumbers()[1].twoJ()) << " " << spin_to_string(pc->daughters()[1]->twoLambda())
+    //            << " with J = " << spin_to_string(initialQuantumNumbers().twoJ())
+    //            << " s = " << spin_to_string(two_s())
+    //            << " l = " << l();
+    // if (!ClebschGordan::nonzeroCoupling(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
+    //                                     finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
+    //                                     l(), two_s(), initialQuantumNumbers().twoJ()))
+    //     return PCs;
+
+    // // add all spin projections from -J to J
+    // for (int two_lambda = -initialQuantumNumbers().twoJ(); two_lambda <= (int)initialQuantumNumbers().twoJ(); two_lambda += 2) {
+    //     auto pc_lambda = std::make_shared<ParticleCombination>(*pc);
+    //     pc_lambda->setTwoLambda(two_lambda);
+    //     PCs.push_back(initialStateParticle()->particleCombinationCache[pc_lambda]);
+    //     addSymmetrizationIndex(PCs.back());
+    // }
+
+    // return PCs;
 }
 
 
 //-------------------------
 void HelicitySpinAmplitude::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> pc)
 {
+    // may throw (and be caught in DecayChannel::DecayChannel), so is called before actually adding pc
+    auto coupling = ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
+                                          finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
+                                          l(), two_s(), initialQuantumNumbers().twoJ());
     SpinAmplitude::addSymmetrizationIndex(pc);
-    ClebschGordanCoefficients_[pc] = ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), pc->daughters()[0]->twoLambda(),
-                                     finalQuantumNumbers()[1].twoJ(), pc->daughters()[1]->twoLambda(),
-                                     l(), two_s(), initialQuantumNumbers().twoJ());
+    ClebschGordanCoefficients_[pc] = coupling;
 }
 
 //-------------------------
@@ -124,7 +159,7 @@ void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
 {
     SpinAmplitude::setInitialStateParticle(isp);
     if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::setInitialStateParticle");
     SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
     SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
 }

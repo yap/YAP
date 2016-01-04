@@ -23,7 +23,7 @@ void DataPoint::setFinalStateFourMomenta(const std::vector<FourVector<double> >&
     if (FSPFourMomenta_.size() != fourMomenta.size()) {
         LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
                    << fourMomenta.size() << " != " << FSPFourMomenta_.size();
-        throw exceptions::FourMomentaMismatch();
+        throw exceptions::Exception("fourMomenta is wrong size", "DataPoint::setFinalStateFourMomenta");
     }
 
     FSPFourMomenta_ = fourMomenta;

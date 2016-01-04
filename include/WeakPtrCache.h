@@ -21,6 +21,7 @@
 #ifndef yap_WeakPtrCache_h
 #define yap_WeakPtrCache_h
 
+#include <algorithm>
 #include <memory>
 #include <set>
 #include <string>
@@ -36,11 +37,25 @@ class WeakPtrCache
 {
 public:
 
+    /// \name helper types
+    /// @{
+
+    /// object_type
+    using type = T;
+
+    /// shared_ptr_type
+    using shared_ptr_type = std::shared_ptr<type>;
+
+    /// weak_ptr_type
+    using weak_ptr_type = std::weak_ptr<type>;
+
     /// cache storage type
-    using cache_type = std::set<std::weak_ptr<T>, std::owner_less<std::weak_ptr<T> > >;
+    using cache_type = std::set<weak_ptr_type, std::owner_less<weak_ptr_type> >;
+
+    /// @}
 
     /// override to implement equivalence checking
-    virtual bool equiv(const std::shared_ptr<T>& A, const std::shared_ptr<T>& B) const = 0;
+    virtual bool equiv(const shared_ptr_type& A, const shared_ptr_type& B) const = 0;
 
     /// \name constructors and assignment operators
     /// @{
@@ -52,43 +67,43 @@ public:
     WeakPtrCache(const WeakPtrCache&) = default;
 
     /// move constructor (defaulted)
-    WeakPtrCache(WeakPtrCache<T>&&) = default;
+    WeakPtrCache(WeakPtrCache&&) = default;
 
     /// Construct cache from vector
-    WeakPtrCache(std::vector<std::shared_ptr<T> > V)
+    WeakPtrCache(std::vector<shared_ptr_type> V)
     { for (auto& v : V) operator[](v); }
 
     /// virtual desctructor (defaulted)
     virtual ~WeakPtrCache() = default;
 
     /// copy assignment operator (defaulted)
-    WeakPtrCache<T>& operator=(const WeakPtrCache<T>&) = default;
+    WeakPtrCache& operator=(const WeakPtrCache&) = default;
 
     /// move assignment operator (defaulted)
-    WeakPtrCache<T>& operator=(WeakPtrCache<T>&&) = default;
+    WeakPtrCache& operator=(WeakPtrCache&&) = default;
 
     /// @}
 
     /// check if cache contains element equating to t
     /// \param t shared_ptr to object to search for equivalent of
-    std::weak_ptr<T> find(std::shared_ptr<T> t) const
+    weak_ptr_type find(shared_ptr_type t) const
     {
         if (!t)
-            return std::weak_ptr<T>();
+            return weak_ptr_type();
 
         // search for equivalent
-        auto it = std::find_if(Cache_.begin(), Cache_.end(), [&](const std::weak_ptr<T>& w) {return equiv(w.lock(), t);});
+        auto it = std::find_if(Cache_.begin(), Cache_.end(), [&](const weak_ptr_type & w) {return !w.expired() and equiv(w.lock(), t);});
 
         if (it == Cache_.end())
             // if not found
-            return std::weak_ptr<T>();
+            return weak_ptr_type();
 
         return *it;
     }
 
     /// \return shared_ptr from Cache, if it exists, otherwise adds it to cache.
     /// \param t Shared ptr to object to retrieve from or add to cache
-    std::shared_ptr<T> operator[](std::shared_ptr<T> t)
+    shared_ptr_type operator[](shared_ptr_type t)
     {
         auto w = find(t);
 
@@ -97,7 +112,7 @@ public:
             return w.lock();
 
         // else add to cache
-        Cache_.emplace(t);
+        addToCache(t);
         return t;
     }
 
@@ -132,6 +147,12 @@ public:
     { return Cache_.end(); }
 
     /// @}
+
+protected:
+
+    /// add element to cache
+    virtual void addToCache(shared_ptr_type t)
+    { Cache_.emplace(t); }
 
 private:
 

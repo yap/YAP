@@ -39,7 +39,10 @@ public:
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     StaticDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
         : DataAccessor(equiv), InitialStateParticle_(isp)
-    { if (!initialStateParticle()) throw exceptions::InitialStateParticleUnset(); }
+    {
+        if (!initialStateParticle())
+            throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
+    }
 
     /// does nothing since StaticDataAccessor's never update
     virtual void updateGlobalCalculationStatuses() override {}

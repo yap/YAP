@@ -45,7 +45,7 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
         FLOG(ERROR) << "helicity M = " << spin_to_string(twoM) << " invalid for spin J = " << spin_to_string(twoJ);
         throw std::invalid_argument("twoM");
     }
-    if (std::abs(twoM) > twoJ) {
+    if (std::abs(twoM) > (int)twoJ) {
         FLOG(WARNING) << "helicity M = " << spin_to_string(twoM) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
         return 0;
     }
@@ -55,7 +55,7 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
         FLOG(ERROR) << "helicity N = " << spin_to_string(twoN) << " invalid for spin J = " << spin_to_string(twoJ);
         throw std::invalid_argument("twoN");
     }
-    if (std::abs(twoN) > twoJ) {
+    if (std::abs(twoN) > (int)twoJ) {
         FLOG(WARNING) << "helicity N = " << spin_to_string(twoN) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
         return 0;
     }

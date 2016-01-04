@@ -1,6 +1,7 @@
 #include "ParticleCombinationCache.h"
 
 #include "Exceptions.h"
+#include "logging.h"
 
 #include <algorithm>
 
@@ -8,114 +9,77 @@ namespace yap {
 
 //-------------------------
 /// \todo Shouldn't this management be done in the creation process?
-ParticleCombinationCache::ParticleCombinationCache(std::vector<std::shared_ptr<ParticleCombination> > ispPCs)
+ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> V)
+    : WeakPtrCache(V)
 {
-    // add particle combinations to cache
-    for (auto& pc : ispPCs)
-        operator[](pc);
-
     // set parents from isp down
-    for (auto& pc : ispPCs)
+    for (auto& pc : V)
         setLineage(pc);
 
     // check consistency
     if (!consistent())
-        throw exceptions::InconsistentParticleCombinationCache();
+        throw exceptions::Exception("Inconsistent ParticleCombinationCache", "ParticleCombinationCache::ParticleCombinationCache");
 
     // remove expired cache entries
     removeExpired();
 }
 
 //-------------------------
-void ParticleCombinationCache::setLineage(std::shared_ptr<ParticleCombination> pc)
+void ParticleCombinationCache::setLineage(shared_ptr_type pc)
 {
     /// \todo why do we need to do this here?
     for (auto& D : pc->Daughters_) {
         // copy D
-        auto d = std::make_shared<ParticleCombination>(*D);
+        auto d = std::make_shared<type>(*D);
         // set copy's parent to pc
-        d->Parent_ = pc;
+        std::const_pointer_cast<ParticleCombination>(d)->Parent_ = pc;
         // call recursively
         setLineage(pc);
         // replace daughter with copy (from cache)
-        // D.swap(operator[](d));
-        D = operator[](d);
+        std::const_pointer_cast<ParticleCombination>(D) = std::const_pointer_cast<ParticleCombination>(operator[](d));
+        // std::const_pointer_cast<ParticleCombination>(D).swap(std::const_pointer_cast<ParticleCombination>(operator[](d)));
     }
 }
 
 //-------------------------
-ParticleCombinationCache::cache_type::key_type ParticleCombinationCache::find(std::shared_ptr<const ParticleCombination> pc) const
+ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::find(const std::vector<ParticleIndex>& I) const
 {
-    if (!pc)
-        return cache_type::key_type();
-
-    // search for equivalent to pc
-    auto it = std::find_if(Cache_.begin(), Cache_.end(),
-                           [&](const cache_type::key_type & wpc)
-    {return ParticleCombination::equivUpAndDown(wpc.lock(), pc);});
-
-    if (it == Cache_.end())
-        return cache_type::key_type();
-
-    return *it;
-}
-
-//-------------------------
-ParticleCombinationCache::cache_type::key_type ParticleCombinationCache::find(const std::vector<ParticleIndex>& I) const
-{
-    ParticleCombinationVector V;
+    std::vector<shared_ptr_type> V;
     V.reserve(I.size());
     for (auto& i : I) {
-        auto a = find(std::make_shared<const ParticleCombination>(i));
+        auto a = find(std::make_shared<type>(i));
         if (a.expired())
-            throw exceptions::ParticleCombinationNotFound();
+            return weak_ptr_type();
         V.push_back(a.lock());
     }
-    return find(std::make_shared<const ParticleCombination>(V));
+    return find(std::make_shared<type>(V));
 }
 
 //-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](std::shared_ptr<const ParticleCombination> pc)
+void ParticleCombinationCache::addToCache(shared_ptr_type pc)
 {
-    auto wpc = find(pc);
-
-    // if wpc is valid
-    if (!wpc.expired())
-        return wpc.lock();
-
-    // else add weak pointer to Cache_
-    Cache_.emplace(pc);
-    // link the pc back to the this cache
-    // pc->Cache_ = this;
-    // and return original shared pointer
-    return pc;
+    // add daughters into cache, too (recursively)
+    for (auto& d : pc->daughters())
+        addToCache(d);
+    // add self into cache
+    WeakPtrCache::addToCache(pc);
+    // setLineage(pc);
 }
 
 //-------------------------
-std::shared_ptr<const ParticleCombination> ParticleCombinationCache::operator[](const std::vector<ParticleIndex>& I)
+ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::operator[](const std::vector<ParticleIndex>& I)
 {
-    ParticleCombinationVector V;
+    std::vector<shared_ptr_type> V;
     for (ParticleIndex i : I)
         V.push_back(operator[](i));
     return operator[](V);
 }
 
 //-------------------------
-void ParticleCombinationCache::removeExpired()
-{
-    for (auto it = Cache_.begin(); it != Cache_.end(); ) {
-        if (it->expired())
-            it = Cache_.erase(it);
-        else
-            it++;
-    }
-}
-
-//-------------------------
 bool ParticleCombinationCache::consistent() const
 {
     bool C = true;
-    for (auto& wpc : Cache_) {
+    for (auto& wpc : *this) {
         if (wpc.expired())
             continue;
         C &= wpc.lock()->consistent();

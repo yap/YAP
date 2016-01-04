@@ -1,6 +1,8 @@
 #include "ClebschGordan.h"
 
 #include "Exceptions.h"
+#include "logging.h"
+#include "QuantumNumbers.h"
 
 #include <algorithm>
 #include <cmath>
@@ -8,21 +10,30 @@
 namespace yap {
 
 //-------------------------
+std::string ClebschGordan::to_string(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
+{
+    return std::string("(") + spin_to_string(two_j1) + " " + spin_to_string(two_m1)
+           + ", " + spin_to_string(two_j2) + " " + spin_to_string(two_m2)
+           + " | " + spin_to_string(two_J) + " " + spin_to_string(two_M) + ")";
+}
+
+//-------------------------
 bool ClebschGordan::nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
 {
-    // check input spin-projection compatibilities
-    if (!consistent(two_j1, two_m1) or !consistent(two_j2, two_m2) or !consistent(two_J,  two_M ))
-        throw exceptions::InconsistentSpinProjection();
     // and that (j1+j2) and J are consistent
     if (is_odd(two_J + two_j1 + two_j2))
         throw exceptions::AngularMomentumNotConserved();
+
+    // check input spin-projection compatibilities
+    if (!consistent(two_j1, two_m1) or !consistent(two_j2, two_m2) or !consistent(two_J,  two_M ))
+        throw exceptions::InconsistentSpinProjection();
 
     // check input spin-projections
     if (two_M != two_m1 + two_m2)
         return false;
 
     // check whether J lies between |j1 - j2| and (j1 + j2)
-    if (two_J < abs((int)two_j1 - (int)two_j2) or two_J > (two_j1 + two_j2))
+    if ((int)two_J < abs(two_j1 - two_j2) or two_J > (two_j1 + two_j2))
         return false;
 
     // when either daughter spin is zero

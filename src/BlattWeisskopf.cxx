@@ -23,7 +23,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 {
     if (!DecayChannel_) {
         FLOG(ERROR) << "DecayChannel unset";
-        throw exceptions::MissingDecayChannel();
+        throw exceptions::Exception("DecayChannel unset", "BlattWeisskopf::BlattWeisskopf");
     }
     /// measured breakup momenta and four momenta dependencies are set
     /// in setDependencies, called by DecayChannel when
@@ -118,7 +118,7 @@ double BlattWeisskopf::F2(unsigned l, double r2, double q2)
             return 9. + 3.*z + z * z;
         default:
             /// \todo put in generic formula for L > 2
-            throw std::logic_error("BlattWeisskopf not yet supported for l > 2");
+            throw exceptions::Exception("BlattWeisskopf does not yet support l > 2", "BlattWeisskopf::F2");
     }
 }
 
@@ -133,12 +133,12 @@ void BlattWeisskopf::setDependencies()
 {
     if (!initialStateParticle()) {
         FLOG(ERROR) << "Initial-state particle unset";
-        throw exceptions::InitialStateParticleUnset();
+        throw exceptions::Exception("InitialStateParticle unset", "BlattWeisskopf::setDependencies");
     }
 
     if (!DecayChannel_->decayingParticle()) {
         FLOG(ERROR) << "DecayingParticle not set";
-        throw exceptions::DecayingParticleUnset();
+        throw exceptions::Exception("DecayChannel's DecayingParticle unset", "BlattWeisskopf::setDependencies");
     }
 
     Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());

@@ -27,145 +27,38 @@ namespace yap {
 
 namespace exceptions {
 
-/// \class AngularMomentumNotConserved
+/// \class Exception
+/// \brief Base class for handling YAP exceptions
 /// \defgroup Exceptions YAP exceptions
-class AngularMomentumNotConserved : public std::exception {};
+///
+/// Use this class for creating exceptions with clarifying text, which
+/// will not be caught by specific type. Use the other exception classes
+/// inheriting from this, when an exception must be caught by specific
+/// type.
+class Exception : public std::runtime_error
+{
+public:
+    Exception(const std::string& what_arg, const std::string& func_name)
+        : std::runtime_error(what_arg + (func_name.empty() ? "" : " (" + func_name + ")")) {}
+protected:
+    Exception() : std::runtime_error("") {}
+};
 
-/// \class MissingSpinAmplitude
+/// \class AngularMomentumNotConserved
 /// \ingroup Exceptions
-class MissingSpinAmplitude : public std::exception {};
-
-/// \class MissingMassShape
-/// \ingroup Exceptions
-class MissingMassShape : public std::exception {};
-
-/// \class MissingDecayChannel
-/// \ingroup Exceptions
-class MissingDecayChannel : public std::exception {};
-
-/// \class IncorrectDaughters
-/// \ingroup Exceptions
-class IncorrectDaughters : public std::exception {};
-
-/// \class NoDaughters
-/// \ingroup Exceptions
-class NoDaughters : public IncorrectDaughters {};
-
-/// \class OnlyOneDaughter
-/// \ingroup Exceptions
-class OnlyOneDaughter : public IncorrectDaughters {};
-
-/// \class FewerThanTwoDaughters
-/// \ingroup Exceptions
-class FewerThanTwoDaughters : public IncorrectDaughters {};
-
-/// \class MoreThanTwoDaughters
-/// \ingroup Exceptions
-class MoreThanTwoDaughters : public IncorrectDaughters {};
-
-/// \class EmptyDaughter
-/// \ingroup Exceptions
-class EmptyDaughter : public IncorrectDaughters {};
-
-/// \class InvalidDaughter
-/// \ingroup Exceptions
-class InvalidDaughter : public std::exception {};
-
-/// \class InitialStateParticleMismatch
-/// \ingroup Exceptions
-class InitialStateParticleMismatch : public std::exception {};
-
-/// \class InitialStateParticleUnset
-/// \ingroup Exceptions
-class InitialStateParticleUnset : public std::exception {};
-
-/// \class InitialStateParticleAlreadySet
-/// \ingroup Exceptions
-class InitialStateParticleAlreadySet : public std::exception {};
-
-/// \class DecayingParticleUnset
-/// \ingroup Exceptions
-class DecayingParticleUnset : public std::exception {};
-
-/// \class DecayChannelEmpty
-/// \ingroup Exceptions
-class DecayChannelEmpty : public std::exception {};
-
-/// \class DecayChannelAlreadySet
-/// \ingroup Exceptions
-class DecayChannelAlreadySet : public std::exception {};
-
-/// \class ParticleCombinationsEmpty
-/// \ingroup Exceptions
-class ParticleCombinationsEmpty : public std::exception {};
-
-/// \class ParticleCombinationNotFound
-/// \ingroup Exceptions
-class ParticleCombinationNotFound : public std::exception {};
-
-/// \class ParticleCombinationHasNoIndices
-/// \ingroup Exceptions
-class ParticleCombinationHasNoIndices : public std::exception {};
-
-/// \class Inconsistent
-/// \ingroup Exceptions
-class Inconsistent : public std::exception {};
+class AngularMomentumNotConserved : public Exception {};
 
 /// \class InconsistentSpinProjection
 /// \ingroup Exceptions
-class InconsistentSpinProjection : public Inconsistent {};
+class InconsistentSpinProjection : public Exception {};
 
-/// \class InconsistentParticleCombination
+/// \class ParticleCombinationsEmpty
 /// \ingroup Exceptions
-class InconsistentParticleCombination : public Inconsistent {};
-
-/// \class InconsistentParticleCombinationCache
-/// \ingroup Exceptions
-class InconsistentParticleCombinationCache : public Inconsistent {};
-
-/// \class InconsistentDataPoint
-/// \ingroup Exceptions
-class InconsistentDataPoint : public Inconsistent {};
-
-/// \class CoordinateSystemNotRightHanded
-/// \ingroup Exceptions
-class CoordinateSystemNotRightHanded : public std::exception {};
-
-/// \class FinalStateParticleAlreadyUsed
-/// \ingroup Exceptions
-class FinalStateParticleAlreadyUsed : public std::exception {};
-
-/// \class FinalStateParticlesAlreadySet
-/// \ingroup Exceptions
-class FinalStateParticlesAlreadySet : public std::exception {};
-
-/// \class FinalStateParticleEmpty
-/// \ingroup Exceptions
-class FinalStateParticleEmpty : public std::exception {};
-
-/// \class InitalStateParticleNotPrepared
-/// \ingroup Exceptions
-class InitialStateParticleNotPrepared : public std::exception {};
-
-/// \class FourMomentaMismatch
-/// \ingroup Exceptions
-class FourMomentaMismatch : public std::exception {};
+class ParticleCombinationsEmpty : public Exception {};
 
 /// \class NonfiniteResult
 /// \ingroup Exceptions
-class NonfiniteResult : public std::exception {};
-
-/// \class MassesMismatch
-/// \ingroup Exceptions
-class MassesMismatch : public std::exception {};
-
-/// \class MassInformationInsufficient
-/// \ingroup Exceptions
-class MassInformationInsufficient : public std::exception {};
-
-/// \class MassShapeParametersMismatch
-/// \ingroup Exceptions
-class MassShapeParametersMismatch : public std::exception {};
+class NonfiniteResult : public Exception {};
 
 }
 

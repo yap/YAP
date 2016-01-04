@@ -24,7 +24,7 @@ void BreitWigner::setParameters(const ParticleTableEntry& entry)
     Mass_->setValue(entry.Mass);
 
     if (entry.MassShapeParameters.empty())
-        throw exceptions::MassShapeParametersMismatch();
+        throw exceptions::Exception("entry.MassShapeParameter is empty", "BreitWigner::setParameters");
 
     Width_->setValue(entry.MassShapeParameters[0]);
 }

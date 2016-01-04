@@ -15,7 +15,7 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
     MassShape_(std::move(massShape))
 {
     if (!MassShape_)
-        throw exceptions::MissingMassShape();
+        throw exceptions::Exception("MassShape unset", "Resonance::Resonance");
 
     MassShape_->setResonance(this);
 }
@@ -40,13 +40,14 @@ bool Resonance::consistent() const
 //-------------------------
 void Resonance::addChannel(std::unique_ptr<DecayChannel> c)
 {
-    if (!initialStateParticle())
-        throw exceptions::InitialStateParticleUnset();
+    DecayingParticle::addChannel(std::move(c));
 
-    for (auto& pc : c->particleCombinations())
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle unset", "Resonance::addChannel");
+
+    for (auto& pc : channels().back()->particleCombinations())
         MassShape_->addSymmetrizationIndex(initialStateParticle()->particleCombinationCache[pc]);
 
-    DecayingParticle::addChannel(std::move(c));
 }
 
 //-------------------------
