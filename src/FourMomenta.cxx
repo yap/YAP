@@ -47,7 +47,7 @@ void FourMomenta::prepare()
     FinalStateParticleM_.assign(fsp, nullptr);
     FinalStatePC_.assign(fsp, nullptr);
     for (ParticleIndex i = 0; i < fsp; ++i) {
-        FinalStatePC_[i] = initialStateParticle()->particleCombinationCache[i];
+        FinalStatePC_[i] = initialStateParticle()->particleCombinationCache.fsp(i);
         // set FSP mass
         for (auto& fsp : initialStateParticle()->finalStateParticles()) {
             for (auto& pc : fsp->particleCombinations()) {
@@ -63,23 +63,23 @@ void FourMomenta::prepare()
     }
 
     // Set recoil PC's & pair PC's
-    RecoilPC_.assign(fsp, nullptr);
-    PairPC_.assign(fsp, ParticleCombinationVector(fsp, nullptr));
+    RecoilPC_.assign(FinalStatePC_.size(), nullptr);
+    PairPC_.assign(FinalStatePC_.size(), ParticleCombinationVector(FinalStatePC_.size(), nullptr));
     for (ParticleIndex i = 0; (unsigned)i < fsp; ++i) {
-        auto i_pc = initialStateParticle()->particleCombinationCache[i];
+        auto i_pc = FinalStatePC_[i];
         // build vector of other final state particles
         ParticleCombinationVector rec_pcs;
         for (ParticleIndex j = 0; (unsigned)j < fsp; ++j) {
             if (j == i)
                 continue;
-            auto j_pc = initialStateParticle()->particleCombinationCache[j];
+            auto j_pc = FinalStatePC_[j];
             rec_pcs.push_back(j_pc);
             // set pair pc and add to object
-            PairPC_[i][j] = initialStateParticle()->particleCombinationCache[ {i_pc, j_pc}];
+            PairPC_[i][j] = initialStateParticle()->particleCombinationCache.composite({i_pc, j_pc});
             addSymmetrizationIndex(PairPC_[i][j]);
         }
         // set recoil pc and add to object
-        RecoilPC_[i] = initialStateParticle()->particleCombinationCache[rec_pcs];
+        RecoilPC_[i] = initialStateParticle()->particleCombinationCache.composite(rec_pcs);
         addSymmetrizationIndex(RecoilPC_[i]);
     }
 }

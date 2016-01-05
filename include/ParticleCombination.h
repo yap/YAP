@@ -43,37 +43,25 @@ using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombinatio
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types
 /// \author Johannes Rauch, Daniel Greenwald
-
-class ParticleCombination // : public std::enable_shared_from_this<ParticleCombination>
+///
+/// Constructors are private. New ParticleCombination objects are
+/// created through the ParticleCombinationCache
+class ParticleCombination : public std::enable_shared_from_this<ParticleCombination>
 {
 public:
-
-    /// Default constructor
-    ParticleCombination() = default;
-
-    /// Final-state-particle constructor
-    ParticleCombination(ParticleIndex index, int twoLambda = 0) : Indices_(1, index), TwoLambda_(twoLambda) {}
-
-    /// Resonance particle constructor, elements of c are copied into
-    /// new ParticleCombinations, with parent set to this
-    ParticleCombination(ParticleCombinationVector c, int twoLambda = 0);
-
-    /// Copy with new lambda
-    ParticleCombination(const ParticleCombination& c, int twoLambda) : ParticleCombination(c)
-    { TwoLambda_ = twoLambda; }
 
     /// \name Getters
     /// @{
 
-    /// Get vector of indices
+    /// Get vector of indices (const)
     const std::vector<ParticleIndex>& indices() const
     { return Indices_; }
 
-    /// Get vector of daughters
+    /// Get vector of daughters (const)
     const ParticleCombinationVector& daughters() const
     { return Daughters_; }
 
-    /// get parent
+    /// get parent (const)
     std::shared_ptr<const ParticleCombination> parent() const
     { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
 
@@ -83,30 +71,22 @@ public:
 
     /// @}
 
-    /// \name Get info on type
-    /// @{
-
     bool isFinalStateParticle() const
     { return Daughters_.empty() and Indices_.size() == 1; }
 
-    /// @}
+    /// Checks consistency of object
+    bool consistent() const;
+
+    /// grant friend access to ParticleCombinationCache for creating ParticleCombination's
+    friend class ParticleCombinationCache;
+
+protected:
 
     /// Add daughter ParticleCombination
     /// \param daughter Shared pointer to ParticleCombination object representing a daughter
     void addDaughter(std::shared_ptr<const ParticleCombination> daughter);
 
-    /// Checks consistency of combination
-    /// by checking for absence of duplicate entries
-    bool consistent() const;
-
-    /// set 2 * helicity
-    void setTwoLambda(int twoLambda)
-    { TwoLambda_ = twoLambda; }
-
-    /// grant friend access for setting lineage
-    friend class ParticleCombinationCache;
-
-protected:
+ private:
 
     /// Parent of the particle combination.
     std::weak_ptr<const ParticleCombination> Parent_;
@@ -120,9 +100,28 @@ protected:
     /// 2 * Helicity
     int TwoLambda_;
 
-    /// \name Equivalence-checking structs
+    /// \name private constructors
+    /// for valid use of shared_from_this()
     /// @{
 
+    /// default constructor
+    ParticleCombination() = default;
+
+    /// copy constructor
+    ParticleCombination(const ParticleCombination&) = default;
+
+    /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
+    ParticleCombination(ParticleIndex index, int twoLambda = 0)
+        : Indices_(1, index), TwoLambda_(twoLambda) {}
+
+    /// see ParticleCombinationCache::composite for details
+    ParticleCombination(ParticleCombinationVector c, int twoLambda = 0);
+
+    /// @}
+
+    /// \name Equivalence-checking structs
+    /// @{
+   
 public:
 
     /// \struct Equiv
@@ -219,14 +218,6 @@ public:
 /// @}
 
 };
-
-/// equality operator
-inline bool operator==(const ParticleCombination& A, const ParticleCombination& B)
-{ return ParticleCombination::equivUpAndDown(std::make_shared<ParticleCombination>(A), std::make_shared<ParticleCombination>(B)); }
-
-/// inequality operator
-inline bool operator!=(const ParticleCombination& A, const ParticleCombination& B)
-{ return !(A == B); }
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);

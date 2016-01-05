@@ -51,10 +51,6 @@ public:
     /// Check consitency of object
     virtual bool consistent() const override;
 
-    /// explicitly cast to string
-    virtual explicit operator std::string()
-    { return Name_ + "(" + to_string(QuantumNumbers_) + "), mass = " + to_string(Mass_->value()); }
-
     /// \name Getters
     /// @{
 
@@ -103,8 +99,17 @@ private:
 
 };
 
-/// \typedef ParticleVecgtor
+/// \typedef ParticleVector
+/// \ingroup Particle
 using ParticleVector = std::vector<std::shared_ptr<Particle> >;
+
+/// convert to string
+std::string to_string(const Particle& p)
+{ return p.name() + "(" + to_string(p.quantumNumbers()) + ")"/*, mass = " + to_string(p.mass()->value())*/; }
+
+/// streamer
+inline std::ostream& operator<<(std::ostream& os, const Particle& p)
+{ os << to_string(p); return os; }
 
 }
 

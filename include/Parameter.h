@@ -102,7 +102,7 @@ public:
     {
         if (ParameterValue_ != val) {
             if (VariableStatus_ == kFixed) {
-                LOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
+                FLOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
                 return;
             }
             ParameterValue_ = val;

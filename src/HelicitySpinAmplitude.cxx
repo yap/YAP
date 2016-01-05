@@ -85,18 +85,18 @@ ParticleCombinationVector HelicitySpinAmplitude::addSymmetrizationIndices(std::s
     for (int two_lambda1 = -two_j1; two_lambda1 <= (int)two_j1; two_lambda1 += 2) {
 
         // copy d1, which has unset lambda, into one with set lambda
-        auto d1_lambda = initialStateParticle()->particleCombinationCache[std::make_shared<ParticleCombination>(*d1, two_lambda1)];
-
+        auto d1_lambda = initialStateParticle()->particleCombinationCache.copy(*d1, two_lambda1);
+        
         // loop over possible spin projections of d2
         for (int two_lambda2 = -two_j2; two_lambda2 <= (int)two_j2; two_lambda2 += 2) {
 
             // copy d2, which has unset lambda, into one with set lambda
-            auto d2_lambda = initialStateParticle()->particleCombinationCache[std::make_shared<ParticleCombination>(*d2, two_lambda2)];
-
+            auto d2_lambda = initialStateParticle()->particleCombinationCache.copy(*d2, two_lambda2);
+            
             try {
                 if (!ClebschGordan::nonzeroCoupling(two_j1, two_lambda1, two_j2, two_lambda2, l(), two_s(), initialQuantumNumbers().twoJ()))
                     continue;
-                PCs.push_back(initialStateParticle()->particleCombinationCache[ {d1_lambda, d2_lambda}]);
+                PCs.push_back(initialStateParticle()->particleCombinationCache.composite({d1_lambda, d2_lambda}));
                 addSymmetrizationIndex(PCs.back());
             } catch (const exceptions::InconsistentSpinProjection&) {/*ignore*/}
         }

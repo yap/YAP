@@ -46,7 +46,7 @@ void Resonance::addChannel(std::unique_ptr<DecayChannel> c)
         throw exceptions::Exception("InitialStateParticle unset", "Resonance::addChannel");
 
     for (auto& pc : channels().back()->particleCombinations())
-        MassShape_->addSymmetrizationIndex(initialStateParticle()->particleCombinationCache[pc]);
+        MassShape_->addSymmetrizationIndex(pc);
 
 }
 

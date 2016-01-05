@@ -1,6 +1,7 @@
 #include "ParticleCombination.h"
 
 #include "container_utils.h"
+#include "Exceptions.h"
 #include "logging.h"
 #include "QuantumNumbers.h"
 
@@ -10,57 +11,36 @@
 namespace yap {
 
 //-------------------------
-ParticleCombination::ParticleCombination(ParticleCombinationVector c, int twoLambda) :
-    TwoLambda_(twoLambda)
-{
-    for (auto& d : c)
-        addDaughter(d);
-}
-
-//-------------------------
-std::string to_string(const ParticleCombination& pc)
-{
-    if (pc.indices().empty())
-        return "(empty)";
-    std::string s = "(";
-    for (auto i : pc.indices())
-        s += std::to_string(i);
-    s += ", λ = " + spin_to_string(pc.twoLambda()) + ")";
-
-    if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
-        return s;
-
-    s += " -> ";
-
-    for (auto& d : pc.daughters()) {
-        if (d->daughters().empty() or (d->daughters().size() == 2 and d->indices().size() == 2))
-            s += to_string(*d) + ", ";
-        else
-            s += "[" + to_string(*d) + "], ";
-    }
-    s.erase(s.size() - 2, 2);
-    return s;
-}
-
-//-------------------------
 void ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
 {
     if (daughter->indices().empty()) {
         FLOG(ERROR) << "daughter contains no indices.";
-        throw std::invalid_argument("daughter");
+        throw exceptions::Exception("daughter contains no indices", "ParticleCombination::addDaughter");
     }
 
     /// Check that new daughter does not share content with other daughters?
     if (overlap(daughter->indices(), Indices_)) {
         FLOG(ERROR) << "daughter contains indices that are already in parent.";
-        throw std::invalid_argument("daughter");
+        throw exceptions::Exception("daughter overlaps with other daughters", "ParticleCombination::addDaughter");
     }
 
+    /// Check that new daughter doesn't already have parent set
+    if (daughter->parent()) {
+        FLOG(ERROR) << "daughter's parent is already set.";
+        throw exceptions::Exception("daughter's parent is already set", "ParticleCombination::addDaughter");
+    }
+
+    // copy daughter
+    auto d = new ParticleCombination(*daughter);
+    
+    // set daughter's parent to shared_from_this
+    d->Parent_ = shared_from_this();
+    
     // add daughter to vector
-    Daughters_.push_back(daughter);
+    Daughters_.emplace_back(d);
 
     // copy daughter's indices into Indices_
-    Indices_.insert(Indices_.end(), daughter->indices().begin(), daughter->indices().end());
+    Indices_.insert(Indices_.end(), Daughters_.back()->indices().begin(), Daughters_.back()->indices().end());
 }
 
 //-------------------------
@@ -109,6 +89,31 @@ bool ParticleCombination::consistent() const
     }
 
     return C;
+}
+
+//-------------------------
+std::string to_string(const ParticleCombination& pc)
+{
+    if (pc.indices().empty())
+        return "(empty)";
+    std::string s = "(";
+    for (auto i : pc.indices())
+        s += std::to_string(i);
+    s += ", λ = " + spin_to_string(pc.twoLambda()) + ")";
+
+    if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
+        return s;
+
+    s += " -> ";
+
+    for (auto& d : pc.daughters()) {
+        if (d->daughters().empty() or (d->daughters().size() == 2 and d->indices().size() == 2))
+            s += to_string(*d) + ", ";
+        else
+            s += "[" + to_string(*d) + "], ";
+    }
+    s.erase(s.size() - 2, 2);
+    return s;
 }
 
 //-------------------------
@@ -336,10 +341,6 @@ bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_pt
     // if both are nullptr, also return true
     if (A == B)
         return true;
-
-    // if one is null_ptr return false
-    if (A == nullptr or B == nullptr)
-        return false;
 
     if (!ParticleCombination::equivByOrderlessContent(A->parent(), B->parent()))
         return false;

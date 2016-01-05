@@ -119,6 +119,7 @@ void InitialStateParticle::prepare()
         throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::prepare");
     }
 
+/*
     // particle combinations
     std::vector<std::shared_ptr<const ParticleCombination> > PCs;
     for (auto& pc : particleCombinations()) {
@@ -128,7 +129,7 @@ void InitialStateParticle::prepare()
     clearSymmetrizationIndices();
     for (auto& pc : PCs)
         addSymmetrizationIndex(pc);
-
+*/
     // check
     for (auto& wpc : particleCombinationCache) {
         if (!wpc.lock())
@@ -195,11 +196,11 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
             throw exceptions::Exception("FinalStateParticle empty", "InitialStateParticle::setFinalStateParticles");
         }
         if (!fsp->particleCombinations().empty()) {
-            FLOG(ERROR) << "final-state particle already has indices assigned: " << (std::string)*fsp;
+            FLOG(ERROR) << "final-state particle already has indices assigned: " << *fsp;
             throw exceptions::Exception("FinalStateParticle already used", "InitialStateParticle::setFinalStateParticles");
         }
         if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
-            FLOG(ERROR) << "final-state particle already has ISP assigned: " << (std::string)*fsp;
+            FLOG(ERROR) << "final-state particle already has ISP assigned: " << *fsp;
             throw exceptions::Exception("FinalStateParticle already has ISP set", "InitialStateParticle::setFinalStateParticles");
         }
     }
@@ -208,7 +209,7 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->SymmetrizationIndices_.push_back(particleCombinationCache[FinalStateParticles_.size()]);
+        fsp->SymmetrizationIndices_.push_back(particleCombinationCache.fsp(FinalStateParticles_.size()));
         fsp->setInitialStateParticle(this);
         FinalStateParticles_.push_back(fsp);
     }

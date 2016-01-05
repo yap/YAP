@@ -49,35 +49,52 @@ public:
     /// Construct cache from vector of ISP's ParticleCombination's
     ParticleCombinationCache(std::vector<shared_ptr_type> V);
 
+    /// retrieve or create final-state particle ParticleCombination
+    /// \param index Index of particle
+    /// \param two_lambda Spin projection of particle
+    shared_ptr_type fsp(ParticleIndex index, int two_lambda = 0)
+    { return operator[](create_fsp(index, two_lambda)); }
+
+    /// retrieve or create copy of ParticleCombination with new spin projection
+    /// \param other ParticleCombination to copy
+    /// \param two_lambda new spin projection of particle
+    shared_ptr_type copy(const ParticleCombination& other, int two_lambda)
+    { return operator[](create_copy(other, two_lambda)); }
+    
+    /// retrieve or create composite particle from daughters.
+    /// copies daughters into composite, setting copies' parents = shared_from_this()
+    /// \param D ParticleCombinationVector of daughters to create composite from
+    /// \param two_lambda spin projection of particle
+    shared_ptr_type composite(const ParticleCombinationVector& D, int two_lambda = 0)
+    { return operator[](create_composite(D, two_lambda)); }
+
     using WeakPtrCache::find;
 
-    /// check if cache contains element equating to pc
-    /// \param pc Pointer to ParticleCombination to search for equivalent to
-    weak_ptr_type find(ParticleCombination* pc) const
-    { return find(shared_ptr_type(pc)); }
+    /// retrieve final-state particle ParticleCombination
+    /// Does not add to the cache if ParticleCombination is not found.
+    /// \param index Index of particle
+    /// \param two_lambda Spin projection of particle
+    weak_ptr_type find(ParticleIndex index, int two_lambda = 0)
+    { return find(create_fsp(index, two_lambda)); }
+
+    /// retrieve copy of ParticleCombination with new spin projection
+    /// Does not add to the cache if ParticleCombination is not found.
+    /// \param other ParticleCombination to copy
+    /// \param two_lambda new spin projection of particle
+    weak_ptr_type find(const ParticleCombination& other, int two_lambda)
+    { return find(create_copy(other, two_lambda)); }
+
+    /// retrieve composite particle ParticleCombination from cache.
+    /// Does not add to the cache if ParticleCombination is not found.
+    /// \param D vector of daughters to construct ParticleCombination from
+    /// \param two_lambda Spin projection of ParticleCombinatin to create
+    /// \return weak_ptr to ParticleCombination; is empty if not found.
+    weak_ptr_type find(const ParticleCombinationVector& D, int two_lambda = 0)
+    { return find(create_composite(D, two_lambda)); }
 
     /// check if cache contains element equating to pc
     /// \param I vector of ParticleIndex's to build ParticleCombination from for checking equivalence
     weak_ptr_type find(const std::vector<ParticleIndex>& I) const;
-
-    using WeakPtrCache::operator[];
-
-    /// \return shared_ptr to FSP ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache
-    /// Constructs ParticleCombination from index.
-    /// \param i ParticleIndex for FSP
-    shared_ptr_type operator[](ParticleIndex i)
-    { return operator[](std::make_shared<type>(i)); }
-
-    /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
-    /// constructs PC from decay to final state particles in vector.
-    /// \param I vector of ParticleIndex for FSP
-    shared_ptr_type operator[](const std::vector<ParticleIndex>& I);
-
-    /// \return shared_ptr to composite ParticleCombination from Cache, if it exists, otherwise constructs and adds it to cache.
-    /// Constructs from ParticleCombinations for daughters
-    /// \param c vector of shared_ptr's to ParticleCombination objects describing new ParticleCombination
-    shared_ptr_type operator[](ParticleCombinationVector c)
-    { return operator[](std::make_shared<type>(c)); }
 
     /// Check consistency of cache.
     bool consistent() const;
@@ -88,8 +105,20 @@ protected:
     /// swap copy for daughter, and call setLineage on each daughter.
     void setLineage(shared_ptr_type pc);
 
+private:
+
     /// add to cache
     void addToCache(shared_ptr_type pc) override;
+
+    /// create final-state particle
+    shared_ptr_type create_fsp(ParticleIndex index, int two_lambda = 0) const
+    { return shared_ptr_type(new ParticleCombination(index, two_lambda)); }
+
+    /// create copy
+    shared_ptr_type create_copy(const ParticleCombination& other, int two_lambda) const;
+
+    /// create composite ParticleCombination
+    shared_ptr_type create_composite(const ParticleCombinationVector& D, int two_lambda) const;
 
 };
 

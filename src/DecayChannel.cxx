@@ -46,7 +46,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
         if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
             throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
-    // get spin amplitude from cache
+    // get spin amplitude from or set it into cache
     SpinAmplitude_ = initialStateParticle()->spinAmplitudeCache[spinAmplitude];
 
     // check SpinAmplitude
@@ -71,7 +71,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             for (auto& c : d->CachedDataValuesItDependsOn())
                 FixedAmplitude_->addDependency(c, i);
 
-    // set symmetrization indices
+    // collect and check ParticleCombination's of daughters
     std::vector<ParticleCombinationVector> PCs;
     for (std::shared_ptr<Particle> d : Daughters_) {
         PCs.push_back(d->particleCombinations());
@@ -80,6 +80,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
                 throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
     }
 
+    // create ParticleCombnation's of parent
     /// \todo remove hardcoding for two daughters so applies to n daughters
     for (auto& PCA : PCs[0]) {
         for (auto& PCB : PCs[1]) {
@@ -91,7 +92,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             // for identical particles, check if swapped particle combination is already added
             if (Daughters_[0] == Daughters_[1]) {
                 // get (B,A) combination from cache
-                auto b_a = initialStateParticle()->particleCombinationCache.find(new ParticleCombination({PCB, PCA}));
+                auto b_a = initialStateParticle()->particleCombinationCache.find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
                 if (!b_a.expired() and hasSymmetrizationIndex(b_a.lock()))
                     // if (B,A) already added, don't proceed to adding (A,B)
@@ -99,8 +100,18 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             }
 
             // add (A,B)
-            addSymmetrizationIndex(initialStateParticle()->particleCombinationCache[ {PCA, PCB}]);
+            addSymmetrizationIndex(initialStateParticle()->particleCombinationCache.composite({PCA, PCB}));
         }
+    }
+}
+
+//-------------------------
+void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+{
+    ParticleCombinationVector PCs = SpinAmplitude_->addSymmetrizationIndices(c);
+    for (auto& pc : PCs) {
+        DataAccessor::addSymmetrizationIndex(pc);
+        BlattWeisskopf_->addSymmetrizationIndex(pc);
     }
 }
 
@@ -254,18 +265,6 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
     }
 
     return fsps;
-}
-
-//-------------------------
-void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
-{
-    // may throw, and be caught DecayChannel::DecayChannel, in which
-    // case SpinAmplitude::addSymmetrizationIndices
-    ParticleCombinationVector PCs = SpinAmplitude_->addSymmetrizationIndices(c);
-    for (auto& pc : PCs) {
-        DataAccessor::addSymmetrizationIndex(pc);
-        BlattWeisskopf_->addSymmetrizationIndex(pc);
-    }
 }
 
 //-------------------------

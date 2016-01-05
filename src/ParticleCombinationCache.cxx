@@ -25,6 +25,24 @@ ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> 
 }
 
 //-------------------------
+ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other, int two_lambda) const
+{
+    auto pc = shared_ptr_type(new ParticleCombination(other));
+    pc->TwoLambda_ = two_lambda;
+    return pc;
+}
+
+//-------------------------
+ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_composite(const ParticleCombinationVector& D, int two_lambda) const
+{
+    auto pc = shared_ptr_type(new ParticleCombination());
+    for (auto& d : D)
+        pc->addDaughter(d);
+    pc->TwoLambda_ = two_lambda;
+    return pc;
+}
+
+//-------------------------
 void ParticleCombinationCache::setLineage(shared_ptr_type pc)
 {
     /// \todo why do we need to do this here?
@@ -64,15 +82,6 @@ void ParticleCombinationCache::addToCache(shared_ptr_type pc)
     // add self into cache
     WeakPtrCache::addToCache(pc);
     // setLineage(pc);
-}
-
-//-------------------------
-ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::operator[](const std::vector<ParticleIndex>& I)
-{
-    std::vector<shared_ptr_type> V;
-    for (ParticleIndex i : I)
-        V.push_back(operator[](i));
-    return operator[](V);
 }
 
 //-------------------------
