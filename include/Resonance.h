@@ -53,7 +53,7 @@ public:
     Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override
     { return DecayingParticle::amplitude(d, pc, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex); }
 
     /// Check consistency of object
@@ -86,7 +86,7 @@ public:
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to MassShape_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
 
     /// @}
 

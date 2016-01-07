@@ -57,7 +57,7 @@ public:
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
+    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc)
     {
         if (pc->isFinalStateParticle())
             return d.FSPFourMomenta_[pc->indices()[0]];
@@ -67,13 +67,13 @@ public:
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double m2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return pc->isFinalStateParticle() ? FinalStateParticleM_[pc->indices()[0]]->value() : M_->value(d, symmetrizationIndex(pc)); }
 
     /// Access initial-state 4-momentum (const)
@@ -148,7 +148,7 @@ protected:
 private:
 
     /// Symmetrization index of initial state
-    std::shared_ptr<const ParticleCombination> InitialStatePC_;
+    std::shared_ptr<ParticleCombination> InitialStatePC_;
 
     /// \todo Perhaps find better way than storing FinalStatePC, RecoilPC, and PairPC.
 

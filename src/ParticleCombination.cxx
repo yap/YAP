@@ -11,33 +11,24 @@
 namespace yap {
 
 //-------------------------
-void ParticleCombination::addDaughter(std::shared_ptr<const ParticleCombination> daughter)
+void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daughter)
 {
-    if (daughter->indices().empty()) {
-        FLOG(ERROR) << "daughter contains no indices.";
+    if (daughter->indices().empty())
         throw exceptions::Exception("daughter contains no indices", "ParticleCombination::addDaughter");
-    }
 
     /// Check that new daughter does not share content with other daughters?
-    if (overlap(daughter->indices(), Indices_)) {
-        FLOG(ERROR) << "daughter contains indices that are already in parent.";
+    if (overlap(daughter->indices(), Indices_))
         throw exceptions::Exception("daughter overlaps with other daughters", "ParticleCombination::addDaughter");
-    }
 
     /// Check that new daughter doesn't already have parent set
-    if (daughter->parent()) {
-        FLOG(ERROR) << "daughter's parent is already set.";
+    if (daughter->parent())
         throw exceptions::Exception("daughter's parent is already set", "ParticleCombination::addDaughter");
-    }
 
-    // copy daughter
-    auto d = new ParticleCombination(*daughter);
-    
     // set daughter's parent to shared_from_this
-    d->Parent_ = shared_from_this();
-    
+    std::const_pointer_cast<ParticleCombination>(daughter)->Parent_ = shared_from_this();
+
     // add daughter to vector
-    Daughters_.emplace_back(d);
+    Daughters_.push_back(daughter);
 
     // copy daughter's indices into Indices_
     Indices_.insert(Indices_.end(), Daughters_.back()->indices().begin(), Daughters_.back()->indices().end());
@@ -130,7 +121,7 @@ ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderle
 ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
 
 //-------------------------
-bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -151,7 +142,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_pt
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -177,7 +168,7 @@ bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<c
 }
 
 //-------------------------
-bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -207,7 +198,7 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<const Part
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -229,7 +220,7 @@ bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<con
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -251,7 +242,7 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -273,7 +264,7 @@ bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<const
 }
 
 //-------------------------
-bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -297,7 +288,7 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -331,7 +322,7 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::sha
 }
 
 //-------------------------
-bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)

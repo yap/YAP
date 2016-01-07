@@ -1,5 +1,6 @@
 #include "ParticleCombinationCache.h"
 
+#include "container_utils.h"
 #include "Exceptions.h"
 #include "logging.h"
 
@@ -12,9 +13,9 @@ namespace yap {
 ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> V)
     : WeakPtrCache(V)
 {
-    // set parents from isp down
-    for (auto& pc : V)
-        setLineage(pc);
+    // // set parents from isp down
+    // for (auto& pc : V)
+    //     setLineage(pc);
 
     // check consistency
     if (!consistent())
@@ -25,9 +26,27 @@ ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> 
 }
 
 //-------------------------
+ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other) const
+{
+    auto pc = shared_ptr_type(new ParticleCombination());
+    pc->TwoLambda_ = other.TwoLambda_;
+
+    // if copying a final-state particle, just copy indices
+    if (other.isFinalStateParticle())
+        pc->Indices_ = other.Indices_;
+
+    // else copy daughters (recursively) and add them
+    else
+        for (auto& d : other.Daughters_)
+            pc->addDaughter(create_copy(*d));
+
+    return pc;
+}
+
+//-------------------------
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other, int two_lambda) const
 {
-    auto pc = shared_ptr_type(new ParticleCombination(other));
+    auto pc = create_copy(other);
     pc->TwoLambda_ = two_lambda;
     return pc;
 }
@@ -36,41 +55,44 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_composite(const ParticleCombinationVector& D, int two_lambda) const
 {
     auto pc = shared_ptr_type(new ParticleCombination());
-    for (auto& d : D)
-        pc->addDaughter(d);
     pc->TwoLambda_ = two_lambda;
+
+    for (auto& d : D)
+        pc->addDaughter(create_copy(*d));
+
     return pc;
 }
 
 //-------------------------
-void ParticleCombinationCache::setLineage(shared_ptr_type pc)
-{
-    /// \todo why do we need to do this here?
-    for (auto& D : pc->Daughters_) {
-        // copy D
-        auto d = std::make_shared<type>(*D);
-        // set copy's parent to pc
-        std::const_pointer_cast<ParticleCombination>(d)->Parent_ = pc;
-        // call recursively
-        setLineage(pc);
-        // replace daughter with copy (from cache)
-        std::const_pointer_cast<ParticleCombination>(D) = std::const_pointer_cast<ParticleCombination>(operator[](d));
-        // std::const_pointer_cast<ParticleCombination>(D).swap(std::const_pointer_cast<ParticleCombination>(operator[](d)));
-    }
-}
+// void ParticleCombinationCache::setLineage(shared_ptr_type pc)
+// {
+//     /// \todo why do we need to do this here?
+//     for (auto& D : pc->Daughters_) {
+//         // copy D
+//         auto d = std::make_shared<type>(*D);
+//         // set copy's parent to pc
+//         std::const_pointer_cast<ParticleCombination>(d)->Parent_ = pc;
+//         // call recursively
+//         setLineage(pc);
+//         // replace daughter with copy (from cache)
+//         std::const_pointer_cast<ParticleCombination>(D) = std::const_pointer_cast<ParticleCombination>(operator[](d));
+//         // std::const_pointer_cast<ParticleCombination>(D).swap(std::const_pointer_cast<ParticleCombination>(operator[](d)));
+//     }
+// }
 
 //-------------------------
-ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::find(const std::vector<ParticleIndex>& I) const
+ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::findByUnorderedContent(const std::vector<ParticleIndex>& I) const
 {
-    std::vector<shared_ptr_type> V;
-    V.reserve(I.size());
-    for (auto& i : I) {
-        auto a = find(std::make_shared<type>(i));
-        if (a.expired())
-            return weak_ptr_type();
-        V.push_back(a.lock());
-    }
-    return find(std::make_shared<type>(V));
+    // look for entry with same content
+    // by checking if indices() contains I and is the same size
+    auto it = std::find_if(begin(), end(),
+                           [&](const weak_ptr_type & w)
+    {return !w.expired() and I.size() == w.lock()->indices().size() and contains(w.lock()->indices(), I);});
+    if (it == end())
+        // if not found
+        return weak_ptr_type();
+
+    return *it;
 }
 
 //-------------------------

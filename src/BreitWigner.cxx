@@ -43,7 +43,7 @@ void BreitWigner::borrowParametersFromResonance()
 }
 
 //-------------------------
-std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 

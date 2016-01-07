@@ -44,10 +44,10 @@ public:
     using type = T;
 
     /// shared_ptr_type
-    using shared_ptr_type = std::shared_ptr<type>;
+    using shared_ptr_type = std::shared_ptr<T>;
 
     /// weak_ptr_type
-    using weak_ptr_type = std::weak_ptr<type>;
+    using weak_ptr_type = std::weak_ptr<T>;
 
     /// cache storage type
     using cache_type = std::set<weak_ptr_type, std::owner_less<weak_ptr_type> >;

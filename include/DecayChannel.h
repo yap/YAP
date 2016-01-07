@@ -64,7 +64,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -122,7 +122,7 @@ protected:
 
     /// add symmetrizationIndex to SymmetrizationIndices_,
     /// also add to BlattWeisskopf_ and SpinAmplitude_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
 
     // sets symmetrization index parents
     void setSymmetrizationIndexParents();

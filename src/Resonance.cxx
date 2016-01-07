@@ -51,7 +51,7 @@ void Resonance::addChannel(std::unique_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void Resonance::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+void Resonance::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
     DecayingParticle::addSymmetrizationIndex(c);
     MassShape_->addSymmetrizationIndex(c);

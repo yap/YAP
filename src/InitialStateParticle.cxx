@@ -119,17 +119,17 @@ void InitialStateParticle::prepare()
         throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::prepare");
     }
 
-/*
-    // particle combinations
-    std::vector<std::shared_ptr<const ParticleCombination> > PCs;
-    for (auto& pc : particleCombinations()) {
-        PCs.push_back(std::make_shared<const ParticleCombination>(*pc));
-    }
-    particleCombinationCache = ParticleCombinationCache(PCs);
-    clearSymmetrizationIndices();
-    for (auto& pc : PCs)
-        addSymmetrizationIndex(pc);
-*/
+    /*
+        // particle combinations
+        std::vector<std::shared_ptr<ParticleCombination> > PCs;
+        for (auto& pc : particleCombinations()) {
+            PCs.push_back(std::make_shared<const ParticleCombination>(*pc));
+        }
+        particleCombinationCache = ParticleCombinationCache(PCs);
+        clearSymmetrizationIndices();
+        for (auto& pc : PCs)
+            addSymmetrizationIndex(pc);
+    */
     // check
     for (auto& wpc : particleCombinationCache) {
         if (!wpc.lock())
@@ -216,7 +216,7 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 }
 
 //-------------------------
-std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const
+std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<ParticleCombination>& pc) const
 {
     std::array<double, 2> m = {0, mass()->value()};
 

@@ -52,7 +52,7 @@ SpinAmplitude::operator std::string() const
     for (auto& d : FinalQuantumNumbers_)
         s += to_string(d) + " + ";
     s.erase(s.size() - 2, 2);
-    s += "with l = " + to_string(L_);
+    s += "with l = " + std::to_string(L_);
     return s;
 }
 

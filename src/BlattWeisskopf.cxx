@@ -31,7 +31,7 @@ BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
 }
 
 //-------------------------
-std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
     bool calc(false); // for debugging

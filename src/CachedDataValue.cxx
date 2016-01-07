@@ -39,7 +39,7 @@ void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
 }
 
 //-------------------------
-void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex)
+void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc, unsigned symmetrizationIndex)
 {
     DEBUG("CachedDataValue::updateGlobalCalculationStatus - symIndex for " << *pc << " = " << symmetrizationIndex);
 
@@ -83,7 +83,7 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<const 
 
     for (auto& c : DaughterCachedDataValuesItDependsOn_) {
 
-        const std::shared_ptr<const ParticleCombination>& cPc = pc->daughters()[c.second];
+        const std::shared_ptr<ParticleCombination>& cPc = pc->daughters()[c.second];
 
         // if the owner does not have the symIndex, there is nothing to check
         if (c.first->owner() != Owner_ and not c.first->owner()->hasSymmetrizationIndex(cPc))

@@ -24,7 +24,7 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 }
 
 //-------------------------
-std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
@@ -112,8 +112,12 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     Channels_.back()->setDecayingParticle(this);
 
     // add particle combinations
-    for (auto pc : Channels_.back()->particleCombinations())
+    for (auto pc : Channels_.back()->particleCombinations()) {
         addSymmetrizationIndex(pc);
+        // and add pc's daughters to Channels' daughters
+        // for (size_t i = 0; i < pc->daughters().size(); ++i)
+        //     Channels_.back()->Daughters_[i].addSymmetrizationIndex(pc->daughters()[i]);
+    }
 
     // add dependencies
     Amplitude_->addDependencies(Channels_.back()->ParametersItDependsOn());

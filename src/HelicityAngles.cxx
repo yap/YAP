@@ -22,7 +22,7 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 }
 
 //-------------------------
-// void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+// void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 // {
 //     /// dFunctions for J == 0 are 0, so we don't need to calculate and store helicity angles
 //     if (initialStateParticle()->quantumNumbers().twoJ() == 0
@@ -45,7 +45,7 @@ void HelicityAngles::calculate(DataPoint& d)
 }
 
 //-------------------------
-void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
+void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts)
 {
     // terminate recursion

@@ -46,7 +46,7 @@ public:
     BlattWeisskopf(DecayChannel* decayChannel);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// check consistency of object
     virtual bool consistent() const override;

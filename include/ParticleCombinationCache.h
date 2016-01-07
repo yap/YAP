@@ -35,7 +35,7 @@ namespace yap {
 /// \brief Caches list of ParticleCombination's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ParticleCombinationCache : public WeakPtrCache<const ParticleCombination>
+class ParticleCombinationCache : public WeakPtrCache<ParticleCombination>
 {
 public:
 
@@ -60,7 +60,7 @@ public:
     /// \param two_lambda new spin projection of particle
     shared_ptr_type copy(const ParticleCombination& other, int two_lambda)
     { return operator[](create_copy(other, two_lambda)); }
-    
+
     /// retrieve or create composite particle from daughters.
     /// copies daughters into composite, setting copies' parents = shared_from_this()
     /// \param D ParticleCombinationVector of daughters to create composite from
@@ -87,23 +87,25 @@ public:
     /// retrieve composite particle ParticleCombination from cache.
     /// Does not add to the cache if ParticleCombination is not found.
     /// \param D vector of daughters to construct ParticleCombination from
-    /// \param two_lambda Spin projection of ParticleCombinatin to create
+    /// \param two_lambda Spin projection of ParticleCombination to create
     /// \return weak_ptr to ParticleCombination; is empty if not found.
     weak_ptr_type find(const ParticleCombinationVector& D, int two_lambda = 0)
     { return find(create_composite(D, two_lambda)); }
 
-    /// check if cache contains element equating to pc
-    /// \param I vector of ParticleIndex's to build ParticleCombination from for checking equivalence
-    weak_ptr_type find(const std::vector<ParticleIndex>& I) const;
+    /// retrieves first entry matching vector of particle indices by unordered content
+    /// Does not add to the cache if a match is not found.
+    /// \param I vector of ParticleIndex's to look for
+    /// \return weak_ptr to ParticleCombination; is empty if not found.
+    weak_ptr_type findByUnorderedContent(const std::vector<ParticleIndex>& I) const;
 
     /// Check consistency of cache.
     bool consistent() const;
 
 protected:
 
-    /// set lineage: copy each daughter, add pc as parent to copy,
-    /// swap copy for daughter, and call setLineage on each daughter.
-    void setLineage(shared_ptr_type pc);
+    /* /// set lineage: copy each daughter, add pc as parent to copy, */
+    /* /// swap copy for daughter, and call setLineage on each daughter. */
+    /* void setLineage(shared_ptr_type pc); */
 
 private:
 
@@ -114,8 +116,11 @@ private:
     shared_ptr_type create_fsp(ParticleIndex index, int two_lambda = 0) const
     { return shared_ptr_type(new ParticleCombination(index, two_lambda)); }
 
-    /// create copy
+    /// create copy with new spin projection
     shared_ptr_type create_copy(const ParticleCombination& other, int two_lambda) const;
+
+    /// create copy
+    shared_ptr_type create_copy(const ParticleCombination& other) const;
 
     /// create composite ParticleCombination
     shared_ptr_type create_composite(const ParticleCombinationVector& D, int two_lambda) const;

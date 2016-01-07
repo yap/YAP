@@ -59,7 +59,7 @@ public:
     /// \name Amplitude-related
     /// @{
 
-    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
     using DecayingParticle::amplitude;
 
     /// \return amplitude with a sum over all particle combinations
@@ -146,7 +146,7 @@ public:
 
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
-    std::array<double, 2> getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const;
+    std::array<double, 2> getMassRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const

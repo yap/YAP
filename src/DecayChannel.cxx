@@ -71,13 +71,20 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             for (auto& c : d->CachedDataValuesItDependsOn())
                 FixedAmplitude_->addDependency(c, i);
 
-    // collect and check ParticleCombination's of daughters
+    // collect ParticleCombination's of daughters
     std::vector<ParticleCombinationVector> PCs;
-    for (std::shared_ptr<Particle> d : Daughters_) {
-        PCs.push_back(d->particleCombinations());
-        for (auto pc : PCs.back())
+    for (auto d : Daughters_) {
+        ParticleCombinationVector v;
+        ParticleCombinationVector v_d;
+        for (auto pc : v_d) {
+            // check for empty indices
             if (pc->indices().empty())
                 throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
+            // ignore PC's that differ only by parent or lambda from ones already accounted for
+            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDownButLambda(A, pc);}))
+            v.push_back(pc);
+        }
+        PCs.push_back(v);
     }
 
     // create ParticleCombnation's of parent
@@ -99,24 +106,27 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
                     continue;
             }
 
-            // add (A,B)
-            addSymmetrizationIndex(initialStateParticle()->particleCombinationCache.composite({PCA, PCB}));
+            // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
+            // setting the parents of both to the newly created ParticleCombination
+            auto a_b = initialStateParticle()->particleCombinationCache.composite({PCA, PCB});
+            // add it to the spin amplitude, which returns a vector of ParticleCombinations with helicities set
+            ParticleCombinationVector V = SpinAmplitude_->addSymmetrizationIndices(a_b);
+            // add each resulting ParticleCombination to this
+            for (auto v : V)
+                addSymmetrizationIndex(v);
         }
     }
 }
 
 //-------------------------
-void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+void DecayChannel::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> pc)
 {
-    ParticleCombinationVector PCs = SpinAmplitude_->addSymmetrizationIndices(c);
-    for (auto& pc : PCs) {
-        DataAccessor::addSymmetrizationIndex(pc);
-        BlattWeisskopf_->addSymmetrizationIndex(pc);
-    }
+    DataAccessor::addSymmetrizationIndex(pc);
+    BlattWeisskopf_->addSymmetrizationIndex(pc);
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     DEBUG("DecayChannel::amplitude - " << *this << " " << *pc);
 

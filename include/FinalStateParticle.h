@@ -59,7 +59,7 @@ public:
 
     /// Calculate complex amplitude
     /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override
     { return Complex_1; }
 
     /// Check consistency

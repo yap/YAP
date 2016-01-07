@@ -129,7 +129,7 @@ public:
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
     /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
+    virtual CalculationStatus calculationStatus(const std::shared_ptr<ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     { return CalculationStatus_[dataPartitionIndex][symmetrizationIndex]; }
 #else
@@ -145,7 +145,7 @@ public:
     /// get global CalculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
-    CalculationStatus globalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
+    CalculationStatus globalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
     { return GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)]; }
 
     /// \return VariableStatus for symmetrization index and data-partition index
@@ -204,7 +204,7 @@ public:
     /// \param stat VariableStatus to set to
     /// \param ParticleCombination to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex)
+    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex][Owner_->symmetrizationIndex(pc)] = stat; }
 
     /// set all calculation statuses
@@ -223,7 +223,7 @@ public:
     /// set global CalculationStatus for symmetrization index
     /// \param stat VariableStatus to set to
     /// \param ParticleCombination to set status of
-    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<const ParticleCombination>& pc)
+    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc)
     { GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)] = stat; }
 
 
@@ -240,13 +240,13 @@ public:
 
     /// update the global calculation status, depending on everything it depends on
     /// \param pc Shared pointer (const reference) to a Particle combination
-    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc)
+    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
     { updateGlobalCalculationStatus(pc, Owner_->symmetrizationIndex(pc)); }
 
     /// update the global calculation status, depending on everything it depends on
     /// \param pc Shared pointer (const reference) to a Particle combination
     /// \param symmetrizationIndex index of symmetrization to apply to
-    void updateGlobalCalculationStatus(const std::shared_ptr<const ParticleCombination>& pc, unsigned symmetrizationIndex);
+    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc, unsigned symmetrizationIndex);
 
     /// reset the CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
     /// to be called before calculating the amplitude for a new dataPoint

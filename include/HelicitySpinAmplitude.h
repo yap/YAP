@@ -56,17 +56,17 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// check if Clebsch-Gordan coefficient is nonzero before adding pc,
     /// also add all helicity states of the parent
-    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc) override;
+    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<ParticleCombination> pc) override;
 
     /// also calculates ClebschGordan coefficient
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> pc);
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> pc);
 
     /// also clears ClebschGordanCoefficients_
     virtual void clearSymmetrizationIndices();

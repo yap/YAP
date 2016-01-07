@@ -310,7 +310,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     ParticleCombinationVector PCV = particleCombinations();
 
     for (auto& v : pcs) {
-        auto A = initialStateParticle()->particleCombinationCache.find(v);
+        auto A = initialStateParticle()->particleCombinationCache.findByUnorderedContent(v);
         if (A.expired())
             throw exceptions::Exception("ParticleCombination not found", "FourMomenta::getDalitzAxes");
         for (auto& B : PCV)

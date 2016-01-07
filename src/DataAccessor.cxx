@@ -92,7 +92,7 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-void DataAccessor::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 {
     if (hasSymmetrizationIndex(c))
         // c is already in map

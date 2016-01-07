@@ -64,10 +64,10 @@ public:
     virtual void calculate(DataPoint& d) override;
 
     // /// add symmetrizationIndex to SymmetrizationIndices_
-    // virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+    // virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
 
     /// get azimuthal angle
-    double phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return Phi_->value(d, symmetrizationIndex(pc)); }
 
     /// access azimuthal angle
@@ -79,7 +79,7 @@ public:
     { return Phi_; }
 
     /// get polar angle
-    double theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return Theta_->value(d, symmetrizationIndex(pc)); }
 
     /// access polar angle
@@ -93,7 +93,7 @@ public:
 protected:
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
-    void calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts);
+    void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts);
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedDataValue> Phi_;

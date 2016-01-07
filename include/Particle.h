@@ -104,8 +104,8 @@ private:
 using ParticleVector = std::vector<std::shared_ptr<Particle> >;
 
 /// convert to string
-std::string to_string(const Particle& p)
-{ return p.name() + "(" + to_string(p.quantumNumbers()) + ")"/*, mass = " + to_string(p.mass()->value())*/; }
+inline std::string to_string(const Particle& p)
+{ return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value()); }
 
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const Particle& p)

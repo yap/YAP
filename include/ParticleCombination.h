@@ -33,12 +33,13 @@ namespace yap {
 class ParticleCombination;
 
 /// \typedef ParticleCombinationVector
-using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
+using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
 
 /// \typedef ParticleCombinationMap
+/// \tparam T Object to store in map, with shared_ptr to ParticleCombination as key
 template<typename T>
-using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>, T,
-      std::owner_less<std::shared_ptr<const ParticleCombination> > >;
+using ParticleCombinationMap = std::map<std::shared_ptr<ParticleCombination>, T,
+      std::owner_less<std::shared_ptr<ParticleCombination> > >;
 
 /// \class ParticleCombination
 /// \brief Stores combinations of ParticleIndex types
@@ -62,8 +63,8 @@ public:
     { return Daughters_; }
 
     /// get parent (const)
-    std::shared_ptr<const ParticleCombination> parent() const
-    { return std::const_pointer_cast<const ParticleCombination>(Parent_.lock()); }
+    std::shared_ptr<ParticleCombination> parent() const
+    { return Parent_.lock(); }
 
     /// get 2 * helicity
     int twoLambda() const
@@ -84,12 +85,12 @@ protected:
 
     /// Add daughter ParticleCombination
     /// \param daughter Shared pointer to ParticleCombination object representing a daughter
-    void addDaughter(std::shared_ptr<const ParticleCombination> daughter);
+    void addDaughter(std::shared_ptr<ParticleCombination> daughter);
 
- private:
+private:
 
     /// Parent of the particle combination.
-    std::weak_ptr<const ParticleCombination> Parent_;
+    std::weak_ptr<ParticleCombination> Parent_;
 
     /// vector of daughters
     ParticleCombinationVector Daughters_;
@@ -107,27 +108,33 @@ protected:
     /// default constructor
     ParticleCombination() = default;
 
-    /// copy constructor
-    ParticleCombination(const ParticleCombination&) = default;
-
     /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
     ParticleCombination(ParticleIndex index, int twoLambda = 0)
         : Indices_(1, index), TwoLambda_(twoLambda) {}
 
-    /// see ParticleCombinationCache::composite for details
-    ParticleCombination(ParticleCombinationVector c, int twoLambda = 0);
+    /// Copy constructor is deleted
+    ParticleCombination(const ParticleCombination&) = delete;
+
+    /// Move constructor is deleted
+    ParticleCombination(ParticleCombination&&) = delete;
+
+    /// Copy assignment is deleted
+    ParticleCombination& operator=(const ParticleCombination&) = delete;
+
+    /// Move assignment is deleted
+    ParticleCombination& operator=(ParticleCombination&&) = delete;
 
     /// @}
 
     /// \name Equivalence-checking structs
     /// @{
-   
+
 public:
 
     /// \struct Equiv
     /// \brief base class for equivalence (with functor), compares shared_ptr's only
     struct Equiv {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
         { return A == B; }
     };
 
@@ -135,7 +142,7 @@ public:
     /// \brief Checks objects referenced by shared pointers, check indices only
     /// Does NOT compare helicity
     struct EquivByOrderedContent : Equiv {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDownButLambda
@@ -143,7 +150,7 @@ public:
     /// check self and all daughters (down the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivDownButLambda : EquivByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDown
@@ -151,7 +158,7 @@ public:
     /// check self and all daughters (down the decay tree) for equality
     /// Also compares helicity
     struct EquivDown : EquivByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivUpButLambda
@@ -159,7 +166,7 @@ public:
     /// check self, and parents (up the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivUpButLambda : EquivByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivUpAndDownButLambda
@@ -167,7 +174,7 @@ public:
     /// check self, all daughters (down-), and parents (up the decay tree) for equality
     /// Does NOT compare helicity
     struct EquivUpAndDownButLambda : EquivDownButLambda {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivUpAndDown
@@ -175,7 +182,7 @@ public:
     /// check self, all daughters (down-), and parent (up the decay tree) for equality
     /// Also compares helicity
     struct EquivUpAndDown : EquivDown {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivByOrderlessContent
@@ -183,7 +190,7 @@ public:
     /// check indices only, disregarding order
     /// Does NOT compare helicity
     struct EquivByOrderlessContent : Equiv {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivDownByOrderlessContent
@@ -192,7 +199,7 @@ public:
     /// Does NOT compare helicity
     /// Use e.g. for breakup momenta
     struct EquivDownByOrderlessContent : EquivByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \struct EquivByReferenceFrame
@@ -200,7 +207,7 @@ public:
     /// Checks parents (and up) for orderless content
     /// Does NOT compare helicity. Returns equivalent for content sitting in same reference frame.
     struct EquivByReferenceFrame : EquivByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
     /// \name Static Comparison objects

@@ -92,7 +92,7 @@ public:
     /// Add symmetrization indices for ParticleCombination.
     /// Must be overloaded in derived classes to both conditionally add ParticleCombination's
     /// and to alter and multiply them (to accomodate helicity, for example)
-    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<const ParticleCombination> pc) = 0;
+    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<ParticleCombination> pc) = 0;
 
     /// grant friend access to DecayChannel to set InitialStateParticle
     friend DecayChannel;
