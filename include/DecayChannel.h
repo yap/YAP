@@ -27,6 +27,7 @@
 #include "DataPoint.h"
 #include "Particle.h"
 #include "QuantumNumbers.h"
+#include "SpinAmplitude.h"
 
 #include <complex>
 #include <memory>
@@ -39,7 +40,6 @@ class DecayingParticle;
 class FinalStateParticle;
 class InitialStateParticle;
 class ParticleCombination;
-class SpinAmplitude;
 
 /// \class InitialStateParticle
 /// \brief Class implementing a decay channel.
@@ -56,10 +56,6 @@ public:
     /// \param daughters Vector of shared_ptr's to daughter Particle's
     /// \param spinAmplitude shared_ptr to SpinAmplitude object
     DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
-
-    /// 2-particle Constructor
-    DecayChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, std::shared_ptr<SpinAmplitude> spinAmplitude)
-        : DecayChannel( {A, B}, spinAmplitude) {}
 
     /// @}
 
@@ -98,9 +94,9 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {FixedAmplitude_}; }
 
-    /// \return raw pointer to initial state particle through first daughter
+    /// \return raw pointer to initial state particle through SpinAmplitude
     InitialStateParticle* initialStateParticle() override
-    { return Daughters_[0]->initialStateParticle(); }
+    { return SpinAmplitude_->initialStateParticle(); }
 
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const

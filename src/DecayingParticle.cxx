@@ -102,11 +102,12 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
         throw exceptions::Exception("DecayChannel empty", "DecayingParticle::addChannel");
 
     if (c->particleCombinations().empty())
-        throw exceptions::ParticleCombinationsEmpty();
+        throw exceptions::Exception(std::string("DecayChannel has no ParticleCombinations - ") + to_string(*c),
+                                    "DecayingParticle::addChannel");
 
     // check ISP
-    if (initialStateParticle() and c->initialStateParticle() != initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle mismath", "DecayingParticle::addChannel");
+    if (!Channels_.empty() and c->initialStateParticle() != initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle mismatch", "DecayingParticle::addChannel");
 
     Channels_.emplace_back(std::move(c));
     Channels_.back()->setDecayingParticle(this);
@@ -123,7 +124,37 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     Amplitude_->addDependencies(Channels_.back()->ParametersItDependsOn());
     Amplitude_->addDependencies(Channels_.back()->CachedDataValuesItDependsOn());
 
-    FLOG(INFO) << *Channels_.back() << " with N = " << Channels_.back()->particleCombinations().size();
+    FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
+}
+
+//-------------------------
+void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned l)
+{
+    // check isp's are set
+    if (!A->initialStateParticle() or !B->initialStateParticle())
+        throw exceptions::Exception("A daughter has an unset InitialStateParticle", "DecayingParticle::addChannel");
+    // check isp's are the same
+    if (A->initialStateParticle() != B->initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle mismatch among daughters", "DecayingParticle::addChannel");
+    // and check isp of this is either unset or is the same as the daughters
+    if (initialStateParticle() and A->initialStateParticle() != initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle mismatch of daughters", "DecayingParticle::addChannel");
+
+    auto sa = A->initialStateParticle()->spinAmplitudeCache.spinAmplitude(quantumNumbers(),
+              A->quantumNumbers(),
+              B->quantumNumbers(),
+              l);
+    addChannel(std::make_unique<DecayChannel>(ParticleVector{A, B}, sa));
+}
+
+//-------------------------
+void DecayingParticle::addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l)
+{
+    for (unsigned l = 0; l <= max_l; ++l) {
+        try { addChannel(A, B, l);}
+        catch (const exceptions::AngularMomentumNotConserved&) {/* ignore */}
+        catch (const exceptions::InconsistentSpinProjection&) {/* ignore */}
+    }
 }
 
 //-------------------------

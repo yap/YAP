@@ -24,6 +24,8 @@
 #include "AmplitudeComponent.h"
 #include "Parameter.h"
 #include "QuantumNumbers.h"
+#include "ReportsInitialStateParticle.h"
+#include "ReportsParticleCombinations.h"
 
 #include <string>
 
@@ -38,7 +40,10 @@ class FinalStateParticle;
 /// \defgroup Particle Particle-related classes
 
 // keyword virtual is needed to solve diamond problem in DecayingParticle
-class Particle : public virtual AmplitudeComponent, public virtual BelongsToInitialStateParticle
+class Particle :
+    public virtual AmplitudeComponent,
+    public virtual ReportsInitialStateParticle,
+    public virtual ReportsParticleCombinations
 {
 public:
 

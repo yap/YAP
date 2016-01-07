@@ -21,8 +21,9 @@
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
-#include "BelongsToInitialStateParticle.h"
 #include "CalculationStatus.h"
+#include "ReportsInitialStateParticle.h"
+#include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
 #include "logging.h"
@@ -35,13 +36,14 @@ namespace yap {
 
 class CachedDataValue;
 class DataPoint;
-class InitialStateParticle;
 
 /// \name DataAccessor
 /// \brief Base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DataAccessor : public virtual BelongsToInitialStateParticle
+class DataAccessor :
+    public virtual ReportsInitialStateParticle,
+    public virtual ReportsParticleCombinations
 {
 public:
 

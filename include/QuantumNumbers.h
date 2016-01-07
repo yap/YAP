@@ -123,7 +123,7 @@ private:
     /// G-parity
     int G_;
 
-    /// Electric intge
+    /// Electric charge
     int Q_;
 
 };

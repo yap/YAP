@@ -21,10 +21,11 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
-#include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "QuantumNumbers.h"
 #include "DecayChannel.h"
+#include "QuantumNumbers.h"
+#include "ReportsInitialStateParticle.h"
+#include "StaticDataAccessor.h"
 
 #include <array>
 #include <cstdlib>
@@ -32,11 +33,14 @@
 
 namespace yap {
 
+class InitialStateParticle;
+
 /// \class SpinAmplitude
 /// \brief Abstract base class implementing a spin amplitude.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup SpinAmplitude Spin Amplitudes
-class SpinAmplitude : public AmplitudeComponent, public DataAccessor
+
+class SpinAmplitude : public StaticDataAccessor
 {
 public:
 
@@ -51,16 +55,6 @@ public:
         return is_even(two_J + two_j1 + two_j2)
                and (std::min(two_j1 + two_j2, two_J + 2 * l) >= std::max(std::abs<int>(two_j1 - two_j2), std::abs<int>(two_J - 2 * l)));
     }
-
-    /// Constructor
-    /// \param intial quantum numbers of Initial-state
-    /// \param final1 quantum numbers of first daughter
-    /// \param final2 quantum numbers of second daughter
-    /// \param orbital angular momentum
-    SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l);
-
-    /// Check consistency of object
-    virtual bool consistent() const override;
 
     /// cast into string
     virtual operator std::string() const;
@@ -80,36 +74,47 @@ public:
     unsigned l() const
     { return L_; }
 
-    /// include const access to ISP
-    using BelongsToInitialStateParticle::initialStateParticle;
-
-    /// Get raw pointer to InitialStateParticle
-    InitialStateParticle* initialStateParticle() override
-    { return InitialStateParticle_; }
-
     /// @}
+
+    /// \return precalculated complex amplitude
+    std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    { return Amplitude_->value(d, symmetrizationIndex(pc)); }
+
+    /// access cached spin amplitude
+    std::shared_ptr<ComplexCachedDataValue>& amplitude()
+    { return Amplitude_; }
+
+    /// access cached spin amplitude (const)
+    const std::shared_ptr<ComplexCachedDataValue>& amplitude() const
+    { return Amplitude_; }
 
     /// Add symmetrization indices for ParticleCombination.
     /// Must be overloaded in derived classes to both conditionally add ParticleCombination's
     /// and to alter and multiply them (to accomodate helicity, for example)
     virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<ParticleCombination> pc) = 0;
 
-    /// grant friend access to DecayChannel to set InitialStateParticle
-    friend DecayChannel;
+    /// grant friend access to SpinAmplitudeCache to create SpinAmplitude's and set InitialStateParticle
+    template <class spin_amplitude> friend class SpinAmplitudeCache;
 
 protected:
-
-    /// set raw pointer to owning InitialStateParticle
-    virtual void setInitialStateParticle(InitialStateParticle* isp)
-    { InitialStateParticle_ = isp; }
 
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const;
 
-private:
+    /// Constructor
+    /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param l orbital angular momentum
+    /// \param isp InitialStateParticle to which this SpinAmplitude belongs
+    SpinAmplitude(const QuantumNumbers& initial,
+                  const QuantumNumbers& final1,
+                  const QuantumNumbers& final2,
+                  unsigned l,
+                  InitialStateParticle* isp);
 
-    /// raw pointer to owning InitialStateParticle
-    InitialStateParticle* InitialStateParticle_;
+private:
 
     /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;
@@ -119,6 +124,9 @@ private:
 
     /// orbital angular momentum
     unsigned L_;
+
+    /// Cached complex spin amplitude
+    std::shared_ptr<ComplexCachedDataValue> Amplitude_;
 
     /// equality operator
     friend bool operator==(const SpinAmplitude& A, const SpinAmplitude& B)
@@ -133,14 +141,6 @@ inline std::string to_string(const SpinAmplitude& sa)
 /// << operator
 inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
 { os << to_string(sa); return os; }
-
-struct SharedSpinAmplitudeComparator {
-/// Compare SpinAmplitude shared_ptr's
-    bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
-    { return lhs.get() == rhs.get() or * lhs == *rhs; }
-
-};
-
 
 }
 

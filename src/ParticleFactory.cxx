@@ -57,7 +57,7 @@ std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name << " with quantum numbers " << p);
-    return std::make_unique<InitialStateParticle>(p, p.Mass, p.Name, radialSize);
+    return InitialStateParticle::create(p, p.Mass, p.Name, radialSize);
 }
 
 //-------------------------

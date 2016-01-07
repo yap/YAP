@@ -70,29 +70,16 @@ public:
     virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \tparam spin_amplitude Class for constructing the SpinAmplitude with
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
     /// \param l orbital angular momentum between A and B
-    template <class spin_amplitude = HelicitySpinAmplitude>
-    void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned l)
-    { addChannel(std::make_unique<DecayChannel>(A, B, std::make_shared<spin_amplitude>(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), l))); }
+    void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned l);
 
     /// Add all possible two-body DecayChannels up to a maximum relative angular momentum
-    /// \tparam spin_amplitude Class for constructing the SpinAmplitude with
     /// \param A daughter particle in all possible helicity states
     /// \param B daughter particle in all possible helicity states
     /// \param max_L maximum relative angular momentum between A and B
-    template <class spin_amplitude = HelicitySpinAmplitude>
-    void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l)
-    {
-        for (unsigned l = 0; l <= max_l; ++l) {
-            try { addChannel<spin_amplitude>(A, B, l);}
-            catch (const exceptions::AngularMomentumNotConserved&) {/* ignore */}
-            catch (const exceptions::InconsistentSpinProjection&) {/* ignore */}
-            catch (const exceptions::ParticleCombinationsEmpty&) {/* ignore */ }
-        }
-    }
+    void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)

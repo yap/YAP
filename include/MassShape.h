@@ -25,6 +25,7 @@
 #include "DataAccessor.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "ReportsInitialStateParticle.h"
 
 namespace yap {
 
@@ -60,7 +61,7 @@ public:
     { return Resonance_; }
 
     /// include const access to ISP
-    using BelongsToInitialStateParticle::initialStateParticle;
+    using ReportsInitialStateParticle::initialStateParticle;
 
     /// get raw pointer to initial state particle through resonance
     InitialStateParticle* initialStateParticle() override;

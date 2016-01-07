@@ -25,6 +25,7 @@
 #include "CachedDataValue.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
+#include "ReportsInitialStateParticle.h"
 
 #include <complex>
 #include <memory>
@@ -67,7 +68,7 @@ public:
     { return DecayChannel_; }
 
     /// include const access to ISP
-    using BelongsToInitialStateParticle::initialStateParticle;
+    using ReportsInitialStateParticle::initialStateParticle;
 
     /// \return raw pointer to InitialStateParticle through owning DecayChannel
     InitialStateParticle* initialStateParticle() override;

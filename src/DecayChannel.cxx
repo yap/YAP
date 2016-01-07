@@ -21,11 +21,18 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
     DataAccessor(),
     Daughters_(daughters),
     BlattWeisskopf_(std::make_shared<BlattWeisskopf>(this)),
-    SpinAmplitude_(nullptr),
+    SpinAmplitude_(spinAmplitude),
     FreeAmplitude_(std::make_shared<ComplexParameter>(Complex_1)),
     FixedAmplitude_(std::make_shared<ComplexCachedDataValue>(this)),
     DecayingParticle_(nullptr)
 {
+    // check SpinAmplitude
+    if (!SpinAmplitude_)
+        throw exceptions::Exception("SpinAmplitude unset", "DecayChannel::DecayChannel");
+    // check that ISP is set (it's taken over from SpinAmplitude_)
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
+
     // check daughter size
     if (Daughters_.empty())
         throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
@@ -40,30 +47,17 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
 
     // check that first daughter's ISP is not nullptr
     if (Daughters_[0]->initialStateParticle() == nullptr)
-        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
-    // and that all have same ISP (trivially checks 0th against itself)
+        throw exceptions::Exception(std::string("InitialStateParticle unset in ") + to_string(*Daughters_[0]),
+                                    "DecayChannel::DecayChannel");
+    // check that all daughters have ISP equal to this's
     for (auto& d : Daughters_)
-        if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
+        if (d->initialStateParticle() != initialStateParticle())
             throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
-
-    // get spin amplitude from or set it into cache
-    SpinAmplitude_ = initialStateParticle()->spinAmplitudeCache[spinAmplitude];
-
-    // check SpinAmplitude
-    if (!SpinAmplitude_)
-        throw exceptions::Exception("SpinAmplitude unset", "DecayChannel::DecayChannel");
-    // set SpinAmplitude's ISP if not set
-    if (!SpinAmplitude_->initialStateParticle())
-        SpinAmplitude_->setInitialStateParticle(initialStateParticle());
-    // check for match of ISP
-    if (SpinAmplitude_->initialStateParticle() != initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
     /// set dependencies
     FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
     FixedAmplitude_->addDependencies(BlattWeisskopf_->CachedDataValuesItDependsOn());
-    FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
-    FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
+    FixedAmplitude_->addDependency(SpinAmplitude_->amplitude());
 
     // add daughter dependencies to FixedAmplitude_
     for (int i = 0; i < int(Daughters_.size()); ++i)
@@ -75,7 +69,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
     std::vector<ParticleCombinationVector> PCs;
     for (auto d : Daughters_) {
         ParticleCombinationVector v;
-        ParticleCombinationVector v_d;
+        ParticleCombinationVector v_d = d->particleCombinations();
         for (auto pc : v_d) {
             // check for empty indices
             if (pc->indices().empty())
@@ -84,6 +78,10 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDownButLambda(A, pc);}))
             v.push_back(pc);
         }
+        if (v.empty())
+            throw exceptions::Exception(std::string("No ParticleCombinations for daughter ") + to_string(*d)
+                                        + " in DecayChannel " + to_string(*this),
+                                        "DecayChannel::DecayChannel");
         PCs.push_back(v);
     }
 
@@ -133,7 +131,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     unsigned symIndex = symmetrizationIndex(pc);
 
     if (FixedAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
-        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
+        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc);
 
         auto& pcDaughters = pc->daughters();
         for (unsigned i = 0; i < Daughters_.size(); ++i)
@@ -240,14 +238,17 @@ bool DecayChannel::consistent() const
 //-------------------------
 std::string to_string(const DecayChannel& dc)
 {
-    std::string s;
+    std::string s = "(";
     if (dc.decayingParticle())
-        s += dc.decayingParticle()->name() + " ->";
+        s += dc.decayingParticle()->name() + " -> ";
     if (dc.daughters().empty())
-        s += " (nothing)";
-    else
+        s += "[nothing]";
+    else {
         for (auto& d : dc.daughters())
-            s += " " + d->name();
+            s += d->name() + " ";
+        s.erase(s.size() - 1, 1);
+    }
+    s += ")";
     if (dc.spinAmplitude())
         s += " " + to_string(*dc.spinAmplitude());
     return s;

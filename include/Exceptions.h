@@ -35,8 +35,7 @@ namespace exceptions {
 /// will not be caught by specific type. Use the other exception classes
 /// inheriting from this, when an exception must be caught by specific
 /// type.
-class Exception : public std::runtime_error
-{
+struct Exception : public std::runtime_error {
 public:
     Exception(const std::string& what_arg, const std::string& func_name)
         : std::runtime_error(what_arg + (func_name.empty() ? "" : " (" + func_name + ")")) {}
@@ -46,15 +45,13 @@ protected:
 
 /// \class AngularMomentumNotConserved
 /// \ingroup Exceptions
-class AngularMomentumNotConserved : public Exception {};
+class AngularMomentumNotConserved : public Exception
+{
+};
 
 /// \class InconsistentSpinProjection
 /// \ingroup Exceptions
 class InconsistentSpinProjection : public Exception {};
-
-/// \class ParticleCombinationsEmpty
-/// \ingroup Exceptions
-class ParticleCombinationsEmpty : public Exception {};
 
 /// \class NonfiniteResult
 /// \ingroup Exceptions

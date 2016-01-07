@@ -11,27 +11,38 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
-        const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l) :
-    SpinAmplitude(initial, final1, final2, l),
+        const QuantumNumbers& final1,
+        const QuantumNumbers& final2,
+        unsigned l,
+        InitialStateParticle* isp) :
+    SpinAmplitude(initial, final1, final2, l, isp),
     SpinAmplitude_(new ComplexCachedDataValue(this))
 {
+    // set SpinAmplitude_'s dependencies
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::setInitialStateParticle");
+    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
+    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
 }
 
 //-------------------------
-std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
+void HelicitySpinAmplitude::calculate(DataPoint& d)
 {
-    /// \todo check
-    unsigned symIndex = symmetrizationIndex(pc);
+    // use a default dataPartitionIndex of 0
 
-    if (SpinAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    Amplitude_->setCalculationStatus(kUncalculated, 0);
 
-        /// \todo Take a look at momentum-dependent Clebsch-Gordan coefficients by J. Friedrich and S.U. Chung
-        /// implemented in rootPWA by C. Bicker
-        std::complex<double> a = ClebschGordanCoefficients_.at(pc);
+    unsigned twoJ = initialQuantumNumbers().twoJ();
 
-        // \todo angular normalization factor??? sqrt(2*L + 1)
+    // loop over particle combinations
+    auto PCs = particleCombinations();
+    for (auto& pc : PCs) {
 
-        unsigned twoJ = initialQuantumNumbers().twoJ();
+        unsigned symIndex = symmetrizationIndex(pc);
+
+        // if Amplitude is already set, continue
+        if (Amplitude_->calculationStatus(pc, symIndex, 0) != kUncalculated)
+            continue;
 
         int twoM = pc->twoLambda();
 
@@ -42,16 +53,21 @@ std::complex<double> HelicitySpinAmplitude::amplitude(DataPoint& d, const std::s
         double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
         double theta = initialStateParticle()->helicityAngles().theta(d, pc);
 
-        a *= std::conj(DFunction(twoJ, twoM, twoLambda, phi, theta, 0));
+        // calculate D*
+        auto a = std::conj(DFunction(twoJ, twoM, twoLambda, phi, theta, 0));
+        // multiply by Clebsch-Gordan coefficient
+        a *= ClebschGordanCoefficients_.at(pc);
 
-        SpinAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
+        /// \todo angular normalization factor??? sqrt(2*L + 1)
 
+        // and store
+        Amplitude_->setValue(a, d, symIndex, 0);
         DEBUG("HelicitySpinAmplitude::amplitude - calculated amplitude for symIndex " << symIndex << " = " << a);
-        return a;
     }
 
-    DEBUG("HelicitySpinAmplitude::amplitude - using cached amplitude for symIndex " << symIndex << " = " << SpinAmplitude_->value(d, symIndex));
-    return SpinAmplitude_->value(d, symIndex);
+    /// \todo Take a look at momentum-dependent Clebsch-Gordan
+    /// coefficients by J. Friedrich and S.U. Chung implemented in
+    /// rootPWA by C. Bicker
 }
 
 //-------------------------
@@ -151,17 +167,6 @@ bool HelicitySpinAmplitude::equals(const SpinAmplitude& other) const
     return SpinAmplitude::equals(other)
            and dynamic_cast<const HelicitySpinAmplitude*>(&other)
            and ClebschGordanCoefficients_ == dynamic_cast<const HelicitySpinAmplitude*>(&other)->ClebschGordanCoefficients_;
-}
-
-
-//-------------------------
-void HelicitySpinAmplitude::setInitialStateParticle(InitialStateParticle* isp)
-{
-    SpinAmplitude::setInitialStateParticle(isp);
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::setInitialStateParticle");
-    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
-    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
 }
 
 }

@@ -28,8 +28,10 @@
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "HelicityAngles.h"
+#include "HelicitySpinAmplitude.h"
 #include "MeasuredBreakupMomenta.h"
 #include "ParticleCombinationCache.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
@@ -48,13 +50,13 @@ class InitialStateParticle : public std::enable_shared_from_this<InitialStatePar
 {
 public:
 
-    /// \name Constructor, destructor, clone
-    /// @{
-
     /// Constructor
-    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
-
-    /// @}
+    /// \param q QuantumNumbers of ISP
+    /// \param mass Mass of ISP [GeV]
+    /// \param name Name of ISP
+    /// \param r Radial size of ISP [GeV^-1]
+    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r)
+    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r)); }
 
     /// \name Amplitude-related
     /// @{
@@ -210,7 +212,7 @@ public:
     ParticleCombinationCache particleCombinationCache;
 
     /// SpinAmplitude cache
-    SpinAmplitudeCache spinAmplitudeCache;
+    SpinAmplitudeCache<HelicitySpinAmplitude> spinAmplitudeCache;
 
     /// @}
 
@@ -244,6 +246,10 @@ protected:
     virtual DataAccessorSet dataAccessors() override;
 
 private:
+
+    /// constructor, made private since inherits from std::enable_shared_from_this.
+    /// see #create for details
+    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// check if d is in DataPartitions_
     bool hasDataPartition(DataPartitionBase* d);

@@ -22,6 +22,7 @@
 #define yap_StaticDataAccessor_h
 
 #include "Exceptions.h"
+#include "ReportsInitialStateParticle.h"
 
 namespace yap {
 
@@ -44,14 +45,15 @@ public:
             throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
     }
 
+    /// calculate cachedDataValues and store to DataPoint.
+    /// Must be overriden in derived classes.
+    virtual void calculate(DataPoint& d) = 0;
+
     /// does nothing since StaticDataAccessor's never update
     virtual void updateGlobalCalculationStatuses() override {}
 
-    /// calculate cachedDataValues and store to DataPoint
-    virtual void calculate(DataPoint& d) = 0;
-
     /// include const access to ISP
-    using BelongsToInitialStateParticle::initialStateParticle;
+    using ReportsInitialStateParticle::initialStateParticle;
 
     /// \return Raw pointer to owning InitialStateParticle
     InitialStateParticle* initialStateParticle() override

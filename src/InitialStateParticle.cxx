@@ -17,6 +17,7 @@ namespace yap {
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
+    spinAmplitudeCache(this),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
     FourMomenta_(std::make_shared<FourMomenta>(this)),

@@ -32,8 +32,10 @@
 
 namespace yap {
 
-class InitialStateParticle;
 class ParticleCombination;
+
+template <class T>
+class SpinAmplitudeCache;
 
 /// \class HelicitySpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
@@ -43,23 +45,12 @@ class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
-    /// \name Constructors
-    /// @{
-
-    /// Constructor
-    /// \param intial quantum numbers of Initial-state
-    /// \param final1 quantum numbers of first daughter
-    /// \param final2 quantum numbers of second daughter
-    /// \param orbital angular momentum
-    HelicitySpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l);
-
-    /// @}
-
-    /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// Calculate spin amplitude for all possible symmetrization indices
+    virtual void calculate(DataPoint& d) override;
 
     /// Check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const
+    { return true; }
 
     /// check if Clebsch-Gordan coefficient is nonzero before adding pc,
     /// also add all helicity states of the parent
@@ -75,17 +66,22 @@ public:
     operator std::string() const override
     { return SpinAmplitude::operator std::string() + " in helicity formalism"; }
 
-    // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
-
-    /// \return set of CachedDataValues
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
-    { return {SpinAmplitude_}; }
+    /// grant SpinAmplitudeCache friend status to call constructor
+    friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
 
 protected:
 
-    /// set raw pointer to owning InitialStateParticle
-    /// adds isp's helicity angles as dependencies
-    virtual void setInitialStateParticle(InitialStateParticle* isp);
+    /// Constructor
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param orbital angular momentum
+    /// \param isp raw pointer to owning InitialStateParticle
+    HelicitySpinAmplitude(const QuantumNumbers& initial,
+                          const QuantumNumbers& final1,
+                          const QuantumNumbers& final2,
+                          unsigned l,
+                          InitialStateParticle* isp);
 
 private:
     /// check equality

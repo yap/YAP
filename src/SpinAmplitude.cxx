@@ -7,42 +7,27 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial, const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned l) :
-    InitialStateParticle_(nullptr),
+SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
+                             const QuantumNumbers& final1,
+                             const QuantumNumbers& final2,
+                             unsigned l,
+                             InitialStateParticle* isp) :
+    StaticDataAccessor(isp),
     InitialQuantumNumbers_(initial),
     FinalQuantumNumbers_( {final1, final2}),
-                      L_(l)
+                      L_(l),
+                      Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
     if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
         throw exceptions::AngularMomentumNotConserved();
-}
-
-//-------------------------
-bool SpinAmplitude::consistent() const
-{
-    bool C = true;
 
     // check charge conservation
-    if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q()) {
-        FLOG(ERROR) << "charge conservation violated: "
-                    << "(" << InitialQuantumNumbers_.Q() << ") -> "
-                    << "(" << FinalQuantumNumbers_[0].Q() << ") + "
-                    << "(" << FinalQuantumNumbers_[1].Q() << ")";
-        C &= false;
-    }
-
-
-    // check angular momentum conservation
-    if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), L_)) {
-        FLOG(ERROR) << "angular momentum conservation violated: "
-                    << "(" << spin_to_string(InitialQuantumNumbers_.twoJ()) << ") -> "
-                    << "(" << spin_to_string(FinalQuantumNumbers_[0].twoJ()) << ") + "
-                    << "(" << spin_to_string(FinalQuantumNumbers_[1].twoJ()) << ") "
-                    << "with l = " << L_;
-        C &= false;
-    }
-
-    return C;
+    if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
+        throw exceptions::Exception(std::string("charge conservation violated: ")
+                                    + "(" + std::to_string(InitialQuantumNumbers_.Q())  + ") -> "
+                                    + "(" + std::to_string(FinalQuantumNumbers_[0].Q()) + ") + "
+                                    + "(" + std::to_string(FinalQuantumNumbers_[1].Q()) + ")",
+                                    "SpinAmplitude::SpinAmplitude");
 }
 
 //-------------------------

@@ -21,6 +21,7 @@
 #ifndef yap_SpinAmplitudeCache_h
 #define yap_SpinAmplitudeCache_h
 
+#include "ReportsInitialStateParticle.h"
 #include "SpinAmplitude.h"
 #include "WeakPtrCache.h"
 
@@ -28,17 +29,42 @@
 
 namespace yap {
 
+class InitialStateParticle;
+
 /// \class SpinAmplitudeCache
 /// \brief Caches SpinAmplitudes
 /// \author Johannes Rauch, Daniel Greenwald
-
-class SpinAmplitudeCache : public WeakPtrCache<SpinAmplitude>
+///
+/// Templating here insures that all SpinAmplitude's created for an
+/// InitialStateParticle have the same formalism
+///
+/// \tparam spin_amplitude Class for constructing SpinAmplitude's from
+template <class spin_amplitude>
+class SpinAmplitudeCache :
+    public WeakPtrCache<SpinAmplitude>,
+    public ReportsInitialStateParticle
 {
 public:
+
+    /// Constructor
+    /// \param isp raw pointer to InitialStateParticle this cache belongs to
+    SpinAmplitudeCache(InitialStateParticle* isp = nullptr) :
+        WeakPtrCache(), InitialStateParticle_(isp) {}
 
     /// equivalence
     bool equiv(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
     { return (A.get() == B.get()) or (*A == *B); }
+
+    /// retrieve or create SpinAmplitude
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param l orbital angular momentum
+    std::shared_ptr<SpinAmplitude> spinAmplitude(const QuantumNumbers& initial,
+            const QuantumNumbers& final1,
+            const QuantumNumbers& final2,
+            unsigned l)
+    { return operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, initialStateParticle()))); }
 
     /// Check consistency of cache. Skips expired entries.
     bool consistent() const
@@ -49,6 +75,15 @@ public:
                 C &= it->lock()->consistent();
         return C;
     }
+
+    /// \return raw pointer to owning InitialStateParticle
+    InitialStateParticle* initialStateParticle() override
+    { return InitialStateParticle_; }
+
+private:
+
+    /// raw pointer to InitialStateParticle this cache belongs to
+    InitialStateParticle* InitialStateParticle_;
 
 };
 
