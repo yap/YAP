@@ -140,10 +140,7 @@ void DecayingParticle::addChannel(std::shared_ptr<Particle> A, std::shared_ptr<P
     if (initialStateParticle() and A->initialStateParticle() != initialStateParticle())
         throw exceptions::Exception("InitialStateParticle mismatch of daughters", "DecayingParticle::addChannel");
 
-    auto sa = A->initialStateParticle()->spinAmplitudeCache.spinAmplitude(quantumNumbers(),
-              A->quantumNumbers(),
-              B->quantumNumbers(),
-              l);
+    auto sa = A->initialStateParticle()->spinAmplitudeCache().spinAmplitude(quantumNumbers(), A->quantumNumbers(), B->quantumNumbers(), l);
     addChannel(std::make_unique<DecayChannel>(ParticleVector{A, B}, sa));
 }
 

@@ -49,7 +49,7 @@ void FinalStateParticle::setSymmetrizationIndexParents()
     SymmetrizationIndices_.clear();
 
     for (auto& PC : PCs)
-        for (auto& pc : initialStateParticle()->particleCombinationCache)
+        for (auto& pc : initialStateParticle()->particleCombinationCache())
             if (ParticleCombination::equivDown(PC, pc.lock()))
                 SymmetrizationIndices_.push_back(pc.lock());
 }

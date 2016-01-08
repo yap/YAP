@@ -49,8 +49,7 @@ public:
     virtual void calculate(DataPoint& d) override;
 
     /// Check consistency of object
-    virtual bool consistent() const
-    { return true; }
+    virtual bool consistent() const override;
 
     /// check if Clebsch-Gordan coefficient is nonzero before adding pc,
     /// also add all helicity states of the parent

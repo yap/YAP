@@ -17,9 +17,9 @@ namespace yap {
 InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
-    spinAmplitudeCache(this),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
+    SpinAmplitudeCache_(this),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
     HelicityAngles_(std::make_shared<HelicityAngles>(this))
@@ -87,6 +87,8 @@ bool InitialStateParticle::consistent() const
     C &= FourMomenta_->consistent();
     C &= MeasuredBreakupMomenta_->consistent();
     C &= HelicityAngles_->consistent();
+    C &= ParticleCombinationCache_.consistent();
+    C &= SpinAmplitudeCache_.consistent();
 
     /// \todo: is this necessary to check?
     /// @{
@@ -132,7 +134,7 @@ void InitialStateParticle::prepare()
             addSymmetrizationIndex(pc);
     */
     // check
-    for (auto& wpc : particleCombinationCache) {
+    for (auto& wpc : ParticleCombinationCache_) {
         if (!wpc.lock())
             continue;
         auto pc = wpc.lock();
@@ -147,7 +149,7 @@ void InitialStateParticle::prepare()
     setSymmetrizationIndexParents();
 
     // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    for (auto& wpc : particleCombinationCache) {
+    for (auto& wpc : ParticleCombinationCache_) {
         if (wpc.expired())
             continue;
         auto pc = wpc.lock();
@@ -210,7 +212,7 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->SymmetrizationIndices_.push_back(particleCombinationCache.fsp(FinalStateParticles_.size()));
+        fsp->SymmetrizationIndices_.push_back(ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
         fsp->setInitialStateParticle(this);
         FinalStateParticles_.push_back(fsp);
     }
@@ -374,7 +376,7 @@ void InitialStateParticle::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     // get initial state PCs from set and add them
-    for (auto& wpc : particleCombinationCache) {
+    for (auto& wpc : ParticleCombinationCache_) {
 
         if (wpc.expired())
             continue;
@@ -411,9 +413,10 @@ bool InitialStateParticle::hasDataPartition(DataPartitionBase* d)
 //-------------------------
 void InitialStateParticle::calculate(DataPoint& d)
 {
-    FourMomenta_->calculate(d);
-    MeasuredBreakupMomenta_->calculate(d);
-    HelicityAngles_->calculate(d);
+    // call calculate on static data accessors
+    for (auto& sda : DataAccessors_)
+        if (std::dynamic_pointer_cast<StaticDataAccessor>(sda))
+            std::dynamic_pointer_cast<StaticDataAccessor>(sda)->calculate(d);
 }
 
 //-------------------------

@@ -21,10 +21,8 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
-#include "DataAccessor.h"
-#include "DecayChannel.h"
+#include "CachedDataValue.h"
 #include "QuantumNumbers.h"
-#include "ReportsInitialStateParticle.h"
 #include "StaticDataAccessor.h"
 
 #include <array>
@@ -32,8 +30,6 @@
 #include <memory>
 
 namespace yap {
-
-class InitialStateParticle;
 
 /// \class SpinAmplitude
 /// \brief Abstract base class implementing a spin amplitude.
@@ -59,20 +55,28 @@ public:
     /// cast into string
     virtual operator std::string() const;
 
+    /// check consistency of object
+    virtual bool consistent() const
+    { return true; }
+
     /// \name Getters
     /// @{
 
-    /// Get initial QuantumNumbers
+    /// \return initial QuantumNumbers (const)
     const QuantumNumbers& initialQuantumNumbers() const
     { return InitialQuantumNumbers_; }
 
-    /// Get QuantumNumbers of daughters const
+    /// \return array of QuantumNumbers of daughters (const)
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
 
-    /// Get orbital angular momentum
+    /// \return orbital angular momentum
     unsigned l() const
     { return L_; }
+
+    /* /// \return total spin angular momentum */
+    /* unsigned twoS() const */
+    /* { return TwoS_; } */
 
     /// @}
 
@@ -107,11 +111,12 @@ protected:
     /// \param final1 quantum numbers of first daughter
     /// \param final2 quantum numbers of second daughter
     /// \param l orbital angular momentum
+    /* /// \param two_s twice the total spin angular momentum */
     /// \param isp InitialStateParticle to which this SpinAmplitude belongs
     SpinAmplitude(const QuantumNumbers& initial,
                   const QuantumNumbers& final1,
                   const QuantumNumbers& final2,
-                  unsigned l,
+                  unsigned l, /* unsigned two_s,*/
                   InitialStateParticle* isp);
 
 private:
@@ -124,6 +129,9 @@ private:
 
     /// orbital angular momentum
     unsigned L_;
+
+    /* /// twice the total spin angular momentum */
+    /* unsigned TwoS_; */
 
     /// Cached complex spin amplitude
     std::shared_ptr<ComplexCachedDataValue> Amplitude_;

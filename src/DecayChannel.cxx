@@ -97,7 +97,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
             // for identical particles, check if swapped particle combination is already added
             if (Daughters_[0] == Daughters_[1]) {
                 // get (B,A) combination from cache
-                auto b_a = initialStateParticle()->particleCombinationCache.find({PCB, PCA});
+                auto b_a = initialStateParticle()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
                 if (!b_a.expired() and hasSymmetrizationIndex(b_a.lock()))
                     // if (B,A) already added, don't proceed to adding (A,B)
@@ -106,7 +106,7 @@ DecayChannel::DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitu
 
             // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
             // setting the parents of both to the newly created ParticleCombination
-            auto a_b = initialStateParticle()->particleCombinationCache.composite({PCA, PCB});
+            auto a_b = initialStateParticle()->particleCombinationCache().composite({PCA, PCB});
             // add it to the spin amplitude, which returns a vector of ParticleCombinations with helicities set
             ParticleCombinationVector V = SpinAmplitude_->addSymmetrizationIndices(a_b);
             // add each resulting ParticleCombination to this
@@ -318,7 +318,7 @@ void DecayChannel::setSymmetrizationIndexParents()
 
 
     for (auto& chPC : chPCs) {
-        for (auto& wpc : initialStateParticle()->particleCombinationCache) {
+        for (auto& wpc : initialStateParticle()->particleCombinationCache()) {
 
             if (wpc.expired())
                 continue;

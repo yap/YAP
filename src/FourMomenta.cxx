@@ -47,7 +47,7 @@ void FourMomenta::prepare()
     FinalStateParticleM_.assign(fsp, nullptr);
     FinalStatePC_.assign(fsp, nullptr);
     for (ParticleIndex i = 0; i < fsp; ++i) {
-        FinalStatePC_[i] = initialStateParticle()->particleCombinationCache.fsp(i);
+        FinalStatePC_[i] = initialStateParticle()->particleCombinationCache().fsp(i);
         // set FSP mass
         for (auto& fsp : initialStateParticle()->finalStateParticles()) {
             for (auto& pc : fsp->particleCombinations()) {
@@ -75,11 +75,11 @@ void FourMomenta::prepare()
             auto j_pc = FinalStatePC_[j];
             rec_pcs.push_back(j_pc);
             // set pair pc and add to object
-            PairPC_[i][j] = initialStateParticle()->particleCombinationCache.composite({i_pc, j_pc});
+            PairPC_[i][j] = initialStateParticle()->particleCombinationCache().composite({i_pc, j_pc});
             addSymmetrizationIndex(PairPC_[i][j]);
         }
         // set recoil pc and add to object
-        RecoilPC_[i] = initialStateParticle()->particleCombinationCache.composite(rec_pcs);
+        RecoilPC_[i] = initialStateParticle()->particleCombinationCache().composite(rec_pcs);
         addSymmetrizationIndex(RecoilPC_[i]);
     }
 }
@@ -310,7 +310,7 @@ ParticleCombinationVector FourMomenta::getDalitzAxes(std::vector<std::vector<Par
     ParticleCombinationVector PCV = particleCombinations();
 
     for (auto& v : pcs) {
-        auto A = initialStateParticle()->particleCombinationCache.findByUnorderedContent(v);
+        auto A = initialStateParticle()->particleCombinationCache().findByUnorderedContent(v);
         if (A.expired())
             throw exceptions::Exception("ParticleCombination not found", "FourMomenta::getDalitzAxes");
         for (auto& B : PCV)

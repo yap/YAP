@@ -15,14 +15,13 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
         const QuantumNumbers& final2,
         unsigned l,
         InitialStateParticle* isp) :
-    SpinAmplitude(initial, final1, final2, l, isp),
-    SpinAmplitude_(new ComplexCachedDataValue(this))
+    SpinAmplitude(initial, final1, final2, l, isp)
 {
     // set SpinAmplitude_'s dependencies
     if (!initialStateParticle())
         throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::setInitialStateParticle");
-    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().phi());
-    SpinAmplitude_->addDependency(initialStateParticle()->helicityAngles().theta());
+    amplitude()->addDependency(initialStateParticle()->helicityAngles().phi());
+    amplitude()->addDependency(initialStateParticle()->helicityAngles().theta());
 }
 
 //-------------------------
@@ -30,7 +29,7 @@ void HelicitySpinAmplitude::calculate(DataPoint& d)
 {
     // use a default dataPartitionIndex of 0
 
-    Amplitude_->setCalculationStatus(kUncalculated, 0);
+    amplitude()->setCalculationStatus(kUncalculated, 0);
 
     unsigned twoJ = initialQuantumNumbers().twoJ();
 
@@ -41,7 +40,7 @@ void HelicitySpinAmplitude::calculate(DataPoint& d)
         unsigned symIndex = symmetrizationIndex(pc);
 
         // if Amplitude is already set, continue
-        if (Amplitude_->calculationStatus(pc, symIndex, 0) != kUncalculated)
+        if (amplitude()->calculationStatus(pc, symIndex, 0) != kUncalculated)
             continue;
 
         int twoM = pc->twoLambda();
@@ -61,7 +60,7 @@ void HelicitySpinAmplitude::calculate(DataPoint& d)
         /// \todo angular normalization factor??? sqrt(2*L + 1)
 
         // and store
-        Amplitude_->setValue(a, d, symIndex, 0);
+        amplitude()->setValue(a, d, symIndex, 0);
         DEBUG("HelicitySpinAmplitude::amplitude - calculated amplitude for symIndex " << symIndex << " = " << a);
     }
 
@@ -101,18 +100,18 @@ ParticleCombinationVector HelicitySpinAmplitude::addSymmetrizationIndices(std::s
     for (int two_lambda1 = -two_j1; two_lambda1 <= (int)two_j1; two_lambda1 += 2) {
 
         // copy d1, which has unset lambda, into one with set lambda
-        auto d1_lambda = initialStateParticle()->particleCombinationCache.copy(*d1, two_lambda1);
+        auto d1_lambda = initialStateParticle()->particleCombinationCache().copy(*d1, two_lambda1);
 
         // loop over possible spin projections of d2
         for (int two_lambda2 = -two_j2; two_lambda2 <= (int)two_j2; two_lambda2 += 2) {
 
             // copy d2, which has unset lambda, into one with set lambda
-            auto d2_lambda = initialStateParticle()->particleCombinationCache.copy(*d2, two_lambda2);
+            auto d2_lambda = initialStateParticle()->particleCombinationCache().copy(*d2, two_lambda2);
 
             try {
                 if (!ClebschGordan::nonzeroCoupling(two_j1, two_lambda1, two_j2, two_lambda2, l(), two_s(), initialQuantumNumbers().twoJ()))
                     continue;
-                PCs.push_back(initialStateParticle()->particleCombinationCache.composite({d1_lambda, d2_lambda}));
+                PCs.push_back(initialStateParticle()->particleCombinationCache().composite({d1_lambda, d2_lambda}));
                 addSymmetrizationIndex(PCs.back());
             } catch (const exceptions::InconsistentSpinProjection&) {/*ignore*/}
         }

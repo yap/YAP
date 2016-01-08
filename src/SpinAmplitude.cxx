@@ -10,13 +10,14 @@ namespace yap {
 SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              const QuantumNumbers& final1,
                              const QuantumNumbers& final2,
-                             unsigned l,
+                             unsigned l, /* unsigned two_s, */
                              InitialStateParticle* isp) :
     StaticDataAccessor(isp),
     InitialQuantumNumbers_(initial),
-    FinalQuantumNumbers_( {final1, final2}),
-                      L_(l),
-                      Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
+    FinalQuantumNumbers_({final1, final2}),
+    L_(l),
+//    TwoS_(two_s),
+    Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
     if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
         throw exceptions::AngularMomentumNotConserved();

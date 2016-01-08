@@ -142,6 +142,22 @@ public:
     const HelicityAngles& helicityAngles() const
     { return *HelicityAngles_; }
 
+    /// \return ParticleCombinationCache
+    ParticleCombinationCache& particleCombinationCache()
+    { return ParticleCombinationCache_; }
+
+    /// \return ParticleCombinationCache (const)
+    const ParticleCombinationCache& particleCombinationCache() const
+    { return ParticleCombinationCache_; }
+
+    /// \return SpinAmplitudeCache
+    SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache()
+    { return SpinAmplitudeCache_; }
+
+    /// \return SpinAmplitudeCache (const)
+    const SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache() const
+    { return SpinAmplitudeCache_; }
+
     /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
@@ -202,17 +218,6 @@ public:
     /// Add data point via copy
     /// \param d DataPoint to copy into DataSet
     void addDataPoint(const DataPoint& d);
-
-    /// @}
-
-    /// \name Caches
-    /// @{
-
-    /// ParticleCombination cache
-    ParticleCombinationCache particleCombinationCache;
-
-    /// SpinAmplitude cache
-    SpinAmplitudeCache<HelicitySpinAmplitude> spinAmplitudeCache;
 
     /// @}
 
@@ -284,6 +289,12 @@ private:
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
+
+    /// ParticleCombination cache
+    ParticleCombinationCache ParticleCombinationCache_;
+
+    /// SpinAmplitude cache
+    SpinAmplitudeCache<HelicitySpinAmplitude> SpinAmplitudeCache_;
 
     /// Set of all DataAccessor objects in the InitialsStateParticle and below
     DataAccessorSet DataAccessors_;
