@@ -27,19 +27,8 @@ DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double
 DecayChannel::DecayChannel(ParticleVector daughters)
     DataAccessor(),
     Daughters_(daughters),
-    BlattWeisskopf_(std::make_shared<BlattWeisskopf>(this)),
-    SpinAmplitude_(spinAmplitude),
-    FreeAmplitude_(std::make_shared<ComplexParameter>(Complex_1)),
-    FixedAmplitude_(std::make_shared<ComplexCachedDataValue>(this)),
     DecayingParticle_(nullptr)
 {
-    // check SpinAmplitude
-    if (!SpinAmplitude_)
-        throw exceptions::Exception("SpinAmplitude unset", "DecayChannel::DecayChannel");
-    // check that ISP is set (it's taken over from SpinAmplitude_)
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
-
     // check daughter size
     if (Daughters_.empty())
         throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
@@ -61,6 +50,44 @@ DecayChannel::DecayChannel(ParticleVector daughters)
         if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
             throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
+}
+
+//-------------------------
+void DecayChannel::setDecayingParticle(DecayingParticle* dp)
+{
+    DecayingParticle_ = dp;
+    if (!DecayingParticle_)
+        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
+
+    auto iQ = DecayingParticle_->quantumNumbers();
+    auto d1Q = Daughters_[0]->quantumNumbers();
+    auto d2Q = Daughters_[1]->quantumNumbers();
+    
+    // create spin amplitudes
+    // loop over possible S: |j1-j2| <= S <= (j1+j2)
+    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2.twoJ(); two_S += 2) {
+
+        // loop over possible L: |J-s| <= L <= (J+s)
+        for (unsigned L = std::abs<int>(iQ.twoJ() - two_S) / 2; L <= (iQ.twoJ() + two_S) / 2; ++L) {
+
+            // retrieve SpinAmplitude from cache
+            auto sa = initialStateParticle()->spinAmplitudeCache().spinAmplitude(iQ, d1Q, d2Q, L, two_S);
+
+            // add to Amplitudes, recording kv pair in A
+            auto A = *(Amplitudes_.insert(std::make_pair(sa, AmplitudePair(this))).first);
+
+            /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
+            A.second.Fixed->addDependencies(A.first->amplitudeSet());
+            
+            // add daughter dependencies to the fixed amplitude
+            for (int i = 0; i < int(Daughters_.size()); ++i)
+                if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
+                    for (auto& c : d->CachedDataValuesItDependsOn())
+                        A.second.Fixed->addDependency(c, i);
+            
+        }
+    }
+         
     // collect ParticleCombination's of daughters
     std::vector<ParticleCombinationVector> PCs;
     for (auto d : Daughters_) {
@@ -82,7 +109,7 @@ DecayChannel::DecayChannel(ParticleVector daughters)
     }
 
     // create ParticleCombnation's of parent
-    /// \todo remove hardcoding for two daughters so applies to n daughters
+    /// \todo remove hardcoding for two daughters so applies to n daughters?
     for (auto& PCA : PCs[0]) {
         for (auto& PCB : PCs[1]) {
 
@@ -110,47 +137,6 @@ DecayChannel::DecayChannel(ParticleVector daughters)
                 addSymmetrizationIndex(v);
         }
     }
-}
-
-//-------------------------
-void DecayChannel::setDecayingParticle(DecayingParticle* dp)
-{
-    DecayingParticle_ = dp;
-    if (!DecayingParticle_)
-        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
-
-    auto isp = Daughters_[0]->initialStateParticle();
-    auto iQ = DecayingParticle_->quantumNumbers();
-    auto d1Q = Daughters_[0]->quantumNumbers();
-    auto d2Q = Daughters_[1]->quantumNumbers();
-    
-    // create spin amplitudes
-    // loop over possible S: |j1-j2| <= S <= (j1+j2)
-    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2.twoJ(); two_S += 2) {
-
-        // loop over possible L: |J-s| <= L <= (J+s)
-        for (unsigned L = std::abs<int>(iQ.twoJ() - two_S) / 2; L <= (iQ.twoJ() + two_S) / 2; ++L) {
-
-            // retrieve SpinAmplitude from cache
-            auto sa = isp->spinAmplitudeCache().spinAmplitude(iQ, d1Q, d2Q, L, two_S);
-
-            // add to Amplitudes, recording kv pair in A
-            auto A = *(Amplitudes_.insert(std::make_pair(sa, AmplitudePair(this))).first);
-
-            /// add spin amplitude's Amplitude_ as a dependency for the Fixed amplitude
-            A.second.Fixed->addDependency(A.first->amplitude());
-            
-            // add daughter dependencies to the fixed amplitude
-            for (int i = 0; i < int(Daughters_.size()); ++i)
-                if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
-                    for (auto& c : d->CachedDataValuesItDependsOn())
-                        A.second.Fixed->addDependency(c, i);
-            
-        }
-    }
-         
-    
-    
     
     BlattWeisskopf_->setDependencies();
 }

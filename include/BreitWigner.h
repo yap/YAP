@@ -45,9 +45,14 @@ class BreitWigner : public MassShape
 public:
 
     /// Constructor
+    /// \param mass Mass of resonance [GeV]
+    /// \param width Width of resonance [GeV]
     BreitWigner(double mass = -1, double width = -1);
 
     /// Calculate complex amplitude
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// Set parameters from ParticleTableEntry

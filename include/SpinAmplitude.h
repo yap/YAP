@@ -40,6 +40,15 @@ class SpinAmplitude : public StaticDataAccessor
 {
 public:
 
+    /// \typedef AmplitudeStorageKey
+    /// \brief 3-array of twice the parent spin projection, first
+    /// daughter spin projection, second daughter spin projection in
+    /// that order.
+    using AmplitudeStorageKey = std::array<int, 3>;
+
+    /// \typedef AmplitudeStorageType
+    using AmplitudeMap = std::map<AmplitudeStorageKey, std::shared_ptr<ComplexCachedDataValue> >;
+
     /// \return whether three spins fulfill the triangle relationship
     /// \param two_a 2 * spin a
     /// \param two_b 2 * spin b
@@ -89,16 +98,33 @@ public:
     /// @}
 
     /// \return precalculated complex amplitude
-    std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return Amplitude_->value(d, symmetrizationIndex(pc)); }
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                   int two_M, int two_m1, int two_m2) const
+    { return amplitude(two_M, two_m1, two_m2)->value(d, symmetrizationIndex(pc)); }
 
     /// access cached spin amplitude
-    std::shared_ptr<ComplexCachedDataValue>& amplitude()
-    { return Amplitude_; }
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2)
+    { return Amplitudes_.at({two_M, two_m1, two_m2}); }
 
     /// access cached spin amplitude (const)
-    const std::shared_ptr<ComplexCachedDataValue>& amplitude() const
-    { return Amplitude_; }
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    const std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2) const
+    { return Amplitudes_.at({two_M, two_m1, two_m2}); }
+
+    /// \return set of cached spin amplitudes
+    CachedDataValueSet& amplitudeSet();
+
+    /// \return Amplitudes_
+    const AmplitudeMap& amplitudes() const
+    { return Amplitudes_; }
 
     /// Add symmetrization indices for ParticleCombination.
     /// Must be overloaded in derived classes to both conditionally add ParticleCombination's
@@ -114,7 +140,6 @@ protected:
     virtual bool equals(const SpinAmplitude& other) const;
 
     /// Constructor
-    /// \todo Remove L and S and allow also for pure helicity-coupling amplitudes
     /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
     /// \param intial quantum numbers of Initial-state
     /// \param final1 quantum numbers of first daughter
@@ -139,11 +164,11 @@ private:
     /// orbital angular momentum
     unsigned L_;
 
-    /* /// twice the total spin angular momentum */
-    /* unsigned TwoS_; */
+    /// twice the total spin angular momentum
+    unsigned TwoS_;
 
     /// Cached complex spin amplitude
-    std::shared_ptr<ComplexCachedDataValue> Amplitude_;
+    AmplitudeMap Amplitudes_;
 
     /// equality operator
     friend bool operator==(const SpinAmplitude& A, const SpinAmplitude& B)

@@ -19,12 +19,17 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
     TwoS_(two_S),
     Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
-    // inforce JLS triangle
-    if (!triangle(InitialStateParticle_.twoJ(), 2 * l, 
-    
-    if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
+    // check JLS triangle
+    if (!triangle(InitialStateParticle_.twoJ(), 2 * l, two_S))
         throw exceptions::AngularMomentumNotConserved();
-
+            
+    // check j1j2S triangle
+    if (!triangle(FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), two_S))
+        throw exceptions::AngularMomentumNotConserved();
+      
+    // if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
+    //     throw exceptions::AngularMomentumNotConserved();
+    
     // check charge conservation
     if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
         throw exceptions::Exception(std::string("charge conservation violated: ")
@@ -41,17 +46,27 @@ SpinAmplitude::operator std::string() const
     for (auto& d : FinalQuantumNumbers_)
         s += to_string(d) + " + ";
     s.erase(s.size() - 2, 2);
-    s += "with l = " + std::to_string(L_);
+    s += "with L = " + std::to_string(L_);
+    s += " and S = " + spin_to_string(TwoS_);
     return s;
 }
-
+        
 //-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& B) const
 {
     return symmetrizationIndices() == B.symmetrizationIndices()
-           and InitialQuantumNumbers_ == B.InitialQuantumNumbers_
-           and FinalQuantumNumbers_ == B.FinalQuantumNumbers_
-           and L_ == B.L_;
+        and InitialQuantumNumbers_ == B.InitialQuantumNumbers_
+        and FinalQuantumNumbers_ == B.FinalQuantumNumbers_
+        and L_ == B.L_;
+}
+
+//-------------------------
+CachedDataValueSet SpinAmplitude::amplitudeSet()
+{
+    CachedDataValueSet V;
+    for (auto& kv : Amplitudes_)
+        V.insert(kv.second);
+    return V;
 }
 
 }

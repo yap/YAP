@@ -47,6 +47,13 @@ public:
     MassShape() : DataAccessor(&ParticleCombination::equivByOrderlessContent), Resonance_(nullptr)
     {}
 
+    /// Calculate complex amplitude.
+    /// Must be overrided in derived classes.
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
+
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
     /// \param entry ParticleTableEntry containing information to create mass shape object
