@@ -21,6 +21,7 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
+#include "BlattWeisskopf.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "DecayChannel.h"
@@ -32,6 +33,7 @@
 #include "SpinAmplitudeCache.h"
 
 #include <complex>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -130,10 +132,13 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
 
-    /// grant friend status to DecayChannel to get dataAccessors
+    /// grant friend status to DecayChannel to see BlattWeiskopffs_, and get dataAccessors
     friend DecayChannel;
 
 protected:
+
+    /// add symmetrizationIndex to SymmetrizationIndices_ and BlattWeisskopfs_
+    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
 
     void printDecayChainLevel(int level) const;
 
@@ -147,6 +152,9 @@ private:
 
     /// vector of decay channel objects
     DecayChannelVector Channels_;
+
+    /// map of Blatt-Weisskopf barrier factors, key = angular momentum
+    std::map<unsigned, std::shared_ptr<BlattWeisskopf> > BlattWeisskopfs_;
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;

@@ -60,11 +60,12 @@ public:
     /// \param final1 quantum numbers of first daughter
     /// \param final2 quantum numbers of second daughter
     /// \param l orbital angular momentum
+    /// \param two_s 2 * the total spin angular momentum
     std::shared_ptr<SpinAmplitude> spinAmplitude(const QuantumNumbers& initial,
-            const QuantumNumbers& final1,
-            const QuantumNumbers& final2,
-            unsigned l)
-    { return operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, initialStateParticle()))); }
+                                                 const QuantumNumbers& final1,
+                                                 const QuantumNumbers& final2,
+                                                 unsigned l, unsigned two_s)
+    { return operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, two_s, initialStateParticle()))); }
 
     /// Check consistency of cache. Skips expired entries.
     bool consistent() const

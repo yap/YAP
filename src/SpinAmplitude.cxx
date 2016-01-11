@@ -10,15 +10,18 @@ namespace yap {
 SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              const QuantumNumbers& final1,
                              const QuantumNumbers& final2,
-                             unsigned l, /* unsigned two_s, */
+                             unsigned L, unsigned two_S,
                              InitialStateParticle* isp) :
     StaticDataAccessor(isp),
     InitialQuantumNumbers_(initial),
     FinalQuantumNumbers_({final1, final2}),
-    L_(l),
-//    TwoS_(two_s),
+    L_(L),
+    TwoS_(two_S),
     Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
+    // inforce JLS triangle
+    if (!triangle(InitialStateParticle_.twoJ(), 2 * l, 
+    
     if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
         throw exceptions::AngularMomentumNotConserved();
 

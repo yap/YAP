@@ -32,7 +32,7 @@
 
 namespace yap {
 
-class DecayChannel;
+class DecayingParticle;
 class ParticleCombination;
 
 /// \class BlattWeisskopf
@@ -43,47 +43,46 @@ class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
 {
 public:
 
-    /// Constructor
-    BlattWeisskopf(DecayChannel* decayChannel);
+    /// \todo this is the inverse square, no?
+    /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
+    /// \param l orbital angular momentum
+    /// \param z square of (radial size * breakup momentum)
+    static double F2(unsigned l, double z);
 
+    /// Constructor
+    /// \param L angular momentum of Blatt-Weisskopf barrier factor
+    /// \param decayChannel raw pointer to owning DecayingParticle
+    BlattWeisskopf(unsigned L, DecayingParticle* dp);
+
+    /// \return angular momentum
+    unsigned L() const
+    { return L_; }
+    
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const;
 
     /// check consistency of object
     virtual bool consistent() const override;
-
-    /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
-    /// \param l orbital angular momentum
-    /// \param r2 square of radial size
-    /// \param q2 square of breakup momentum
-    static double F2(unsigned l, double r2, double q2);
 
     //virtual ParameterSet ParametersItDependsOn() override;
 
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
-    /// \return raw pointer to owning DecayChannel
-    DecayChannel* decayChannel() const
-    { return DecayChannel_; }
-
     /// include const access to ISP
     using ReportsInitialStateParticle::initialStateParticle;
 
-    /// \return raw pointer to InitialStateParticle through owning DecayChannel
+    /// \return raw pointer to InitialStateParticle through owning DecayingParticle
     InitialStateParticle* initialStateParticle() override;
-
-    /// set dependencies from InitialStateParticle and DecayingParticle
-    void setDependencies();
-
-    /// Give friend status to DecayChannel so it can set dependencies
-    friend DecayChannel;
 
 private:
 
-    /// DecayChannel this BlattWeisskopf belongs to
-    DecayChannel* DecayChannel_;
-
+    /// raw pointer to owning DecayingParticle
+    DecayingParticle* DecayingParticle_;
+    
+    /// angular momentum
+    unsigned L_;
+    
     /// Blatt-Weisskopf factor at nominal mass
     std::shared_ptr<RealCachedDataValue> Fq_r;
 

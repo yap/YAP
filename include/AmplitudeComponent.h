@@ -53,7 +53,7 @@ public:
     /// default move constructor
     AmplitudeComponent(AmplitudeComponent&&) = default;
 
-    /// default virtual destructor
+    /// virtual default destructor
     virtual ~AmplitudeComponent() = default;
 
     /// default copy operator
@@ -65,7 +65,7 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
+    /* virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0; */
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;

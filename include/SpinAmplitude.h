@@ -40,6 +40,14 @@ class SpinAmplitude : public StaticDataAccessor
 {
 public:
 
+    /// \return whether three spins fulfill the triangle relationship
+    /// \param two_a 2 * spin a
+    /// \param two_b 2 * spin b
+    /// \param two_c 2 * spin c
+    /// \return \f$ \Delta(abc) \f$
+    constexpr triangle(unsigned two_a, unsigned two_b, unsigned two_c)
+    { return is_even(two_a + two_b + two_c) and std::abs<int>(two_a - two_b) <= two_c <= (two_a + two_b); }
+    
     /// \return Whether angular momentum is conserved in J -> j1 + j2 with orbital angular momentum l
     /// \param two_J 2 * spin of initial state
     /// \param two_j1 2 * spin of first daughter
@@ -71,12 +79,12 @@ public:
     { return FinalQuantumNumbers_; }
 
     /// \return orbital angular momentum
-    unsigned l() const
+    unsigned L() const
     { return L_; }
 
-    /* /// \return total spin angular momentum */
-    /* unsigned twoS() const */
-    /* { return TwoS_; } */
+    /// \return total spin angular momentum */
+    unsigned twoS() const
+    { return TwoS_; }
 
     /// @}
 
@@ -106,17 +114,18 @@ protected:
     virtual bool equals(const SpinAmplitude& other) const;
 
     /// Constructor
+    /// \todo Remove L and S and allow also for pure helicity-coupling amplitudes
     /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
     /// \param intial quantum numbers of Initial-state
     /// \param final1 quantum numbers of first daughter
     /// \param final2 quantum numbers of second daughter
-    /// \param l orbital angular momentum
-    /* /// \param two_s twice the total spin angular momentum */
+    /// \param L orbital angular momentum
+    /// \param two_S twice the total spin angular momentum
     /// \param isp InitialStateParticle to which this SpinAmplitude belongs
     SpinAmplitude(const QuantumNumbers& initial,
                   const QuantumNumbers& final1,
                   const QuantumNumbers& final2,
-                  unsigned l, /* unsigned two_s,*/
+                  unsigned L, unsigned two_S,
                   InitialStateParticle* isp);
 
 private:
@@ -149,6 +158,15 @@ inline std::string to_string(const SpinAmplitude& sa)
 /// << operator
 inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
 { os << to_string(sa); return os; }
+
+/// \typedef SpinAmplitudeVector
+using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
+
+/// \typedef SpinAmplitudeMap
+/// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key
+template<typename T>
+using SpinAmplitudeMap = std::map<std::shared_ptr<SpinAmplitude>, T,
+    std::owner_less<std::shared_ptr<SpinAmplitude> > >;
 
 }
 

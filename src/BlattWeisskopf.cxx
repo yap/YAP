@@ -15,19 +15,41 @@
 namespace yap {
 
 //-------------------------
-BlattWeisskopf::BlattWeisskopf(DecayChannel* decayChannel) :
+double BlattWeisskopf::F2(unsigned l, double z)
+{
+    switch (l) {
+        case 0:
+            return 1.;
+        case 1:
+            return 1. + z;
+        case 3:
+            return 9. + 3.*z + z * z;
+        default:
+            /// \todo put in generic formula for L > 2
+            throw exceptions::Exception("BlattWeisskopf does not yet support l > 2", "BlattWeisskopf::F2");
+    }
+}
+
+//-------------------------
+BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
-    DecayChannel_(decayChannel),
+    DecayingParticle_(dp),
+    L_(L),
     Fq_r(new RealCachedDataValue(this)),
     Fq_ab(new RealCachedDataValue(this))
 {
-    if (!DecayChannel_) {
-        FLOG(ERROR) << "DecayChannel unset";
-        throw exceptions::Exception("DecayChannel unset", "BlattWeisskopf::BlattWeisskopf");
-    }
-    /// measured breakup momenta and four momenta dependencies are set
-    /// in setDependencies, called by DecayChannel when
-    /// DecayingParticle set itself owner
+    if (!DecayingParticle_)
+        throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");
+
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle unset", "BlattWeisskopf::BlattWeisskopf");
+
+    Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
+    Fq_r->addDependency(DecayingParticle_->mass());
+    Fq_r->addDependency(DecayingParticle_->radialSize());
+
+    Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
+    Fq_ab->addDependency(DecayingParticle_->radialSize());
 }
 
 //-------------------------
@@ -38,7 +60,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
 
     if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
-        double m2_R = pow(DecayChannel_->decayingParticle()->mass()->value(), 2);
+        double m2_R = pow(DecayingParticle_->mass()->value(), 2);
         double m_a = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(0));
         double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
@@ -48,32 +70,32 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         //        " " << initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(1)));
         DEBUG(m_a << " " << m_b);
 
-        double R = DecayChannel_->decayingParticle()->radialSize()->value();
-        double f = sqrt(F2(DecayChannel_->spinAmplitude()->l(), R * R, q2));
+        double R = DecayingParticle_->radialSize()->value();
+        double f = sqrt(F2(L_, R * R * q2));
         Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << spin_to_string(DecayChannel_->spinAmplitude()->l()) << ") = " << Fq_r->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
-
+    
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // measured breakup momentum
         double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d, pc);
 
-        double R = DecayChannel_->decayingParticle()->radialSize()->value();
-        double f = sqrt(F2(DecayChannel_->spinAmplitude()->l(), R * R, q2));
+        double R = DecayingParticle_->radialSize()->value();
+        double f = sqrt(F2(L_, R * R * q2));
         Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << spin_to_string(DecayChannel_->spinAmplitude()->l()) << ") = " << Fq_ab->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
     }
 
     double Fq_rOFq_ab = Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
 
     if (calc) {
-        DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spin_to_string(DecayChannel_->spinAmplitude()->l()) << ") = " << Fq_rOFq_ab);
+        DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << L_ << ") = " << Fq_rOFq_ab);
     } else {
-        DEBUG("BlattWeisskopf::amplitude - using cached values to calculate Blatt-Weisskopf barrier factor ratio (L = " << spin_to_string(DecayChannel_->spinAmplitude()->l()) << ") = " << Fq_rOFq_ab);
+        DEBUG("BlattWeisskopf::amplitude - using cached values to calculate Blatt-Weisskopf barrier factor ratio (L = " << L_ << ") = " << Fq_rOFq_ab);
     }
 
     return std::complex<double>(Fq_rOFq_ab);
@@ -106,48 +128,9 @@ bool BlattWeisskopf::consistent() const
 }
 
 //-------------------------
-double BlattWeisskopf::F2(unsigned l, double r2, double q2)
-{
-    const double z   = q2 * r2;
-    switch (l) {
-        case 0:
-            return 1.;
-        case 1:
-            return 1. + z;
-        case 3:
-            return 9. + 3.*z + z * z;
-        default:
-            /// \todo put in generic formula for L > 2
-            throw exceptions::Exception("BlattWeisskopf does not yet support l > 2", "BlattWeisskopf::F2");
-    }
-}
-
-//-------------------------
 InitialStateParticle* BlattWeisskopf::initialStateParticle()
 {
-    return (DecayChannel_) ? DecayChannel_->initialStateParticle() : nullptr;
-}
-
-//-------------------------
-void BlattWeisskopf::setDependencies()
-{
-    if (!initialStateParticle()) {
-        FLOG(ERROR) << "Initial-state particle unset";
-        throw exceptions::Exception("InitialStateParticle unset", "BlattWeisskopf::setDependencies");
-    }
-
-    if (!DecayChannel_->decayingParticle()) {
-        FLOG(ERROR) << "DecayingParticle not set";
-        throw exceptions::Exception("DecayChannel's DecayingParticle unset", "BlattWeisskopf::setDependencies");
-    }
-
-    Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
-    Fq_r->addDependency(DecayChannel_->decayingParticle()->mass());
-    Fq_r->addDependency(DecayChannel_->decayingParticle()->radialSize());
-
-    Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
-    Fq_ab->addDependency(DecayChannel_->decayingParticle()->radialSize());
-
+    return DecayChannel_->initialStateParticle();
 }
 
 }

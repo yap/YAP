@@ -112,6 +112,19 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     Channels_.emplace_back(std::move(c));
     Channels_.back()->setDecayingParticle(this);
 
+    // insert necessary Blatt-Weisskopf barrier factor
+    // and set dependencies for DecayChannel dependent on it
+    for (auto& sa : Channels_.back()->spinAmplitudes()) {
+
+        // if BW is not already stored for L, add it
+        if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
+            BlattWeisskopfs_.insert(std::make_pair(L, std::make_shared<BlattWeisskopf>(L, this)));
+
+        Channels_.back()->amplitudes(sa).Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->ParametersItDependsOn());
+        Channels_.back()->amplitudes(sa).Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->CachedDataValuesItDependsOn());
+    }
+            
+    
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
         addSymmetrizationIndex(pc);
@@ -125,6 +138,15 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     Amplitude_->addDependencies(Channels_.back()->CachedDataValuesItDependsOn());
 
     FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
+}
+
+//-------------------------
+void DecayingParticle::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> pc)
+{
+    DataAccessor::addSymmetrizationIndex(pc);
+    // add also to all BlattWeiskopf barrier factors
+    for (auto& kv : BlattWeisskopfs_)
+        kv.second->addSymmetrizationIndex(pc);
 }
 
 //-------------------------

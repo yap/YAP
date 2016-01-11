@@ -22,7 +22,7 @@
 #define yap_DecayChannel_h
 
 #include "AmplitudeComponent.h"
-#include "BlattWeisskopf.h"
+#include "Constants.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Particle.h"
@@ -30,6 +30,7 @@
 #include "SpinAmplitude.h"
 
 #include <complex>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -48,14 +49,21 @@ class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
 
+    /// \class AmplitudePair
+    struct AmplitudePair
+    {
+        AmplitudePair(DecayChannel* dc, std::complex<double> free = Complex_1);
+        std::shared_ptr<ComplexCachedDataValue> Fixed;
+        std::shared_ptr<ComplexParameter> Free;
+    };
+    
     /// \name Constructors
     /// @{
 
-    /// N-particle Constructor [at the moment only valid for 2 particles].
+    /// N-particle Constructor (at the moment only valid for 2 particles).
     /// DecayChannel inherits ISP from daughters.
     /// \param daughters Vector of shared_ptr's to daughter Particle's
-    /// \param spinAmplitude shared_ptr to SpinAmplitude object
-    DecayChannel(ParticleVector daughters, std::shared_ptr<SpinAmplitude> spinAmplitude);
+    DecayChannel(ParticleVector daughters);
 
     /// @}
 
@@ -75,14 +83,20 @@ public:
     const ParticleVector& daughters() const
     { return Daughters_; }
 
-    /// Get SpinAmplitude object
-    std::shared_ptr<SpinAmplitude>& spinAmplitude()
-    { return SpinAmplitude_; }
+    /// Get SpinAmplitude objects
+    SpinAmplitudeVector spinAmplitudes();
 
-    /// Get SpinAmplitude object (const)
-    const SpinAmplitude* spinAmplitude() const
-    { return SpinAmplitude_.get(); }
+    /// Get SpinAmplitude objects (const)
+    const SpinAmplitudeVector spinAmplitudes() const
+    { return const_cast<DecayChannel*>(this)->spinAmplitudes(); }
 
+    /// Get AmplitudePair object corresponding to SpinAmplitude
+    AmplitudePair& amplitudes(const std::shared_ptr<SpinAmplitude>& sa);
+
+    /// Get AmplitudePair object corresponding to SpinAmplitude (const)
+    const AmplitudePair& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
+    { return const_cast<DecayChannel*>(this)->amplitudes(sa); }
+        
     std::shared_ptr<ComplexParameter> freeAmplitude() const
     { return FreeAmplitude_; }
 
@@ -94,9 +108,9 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {FixedAmplitude_}; }
 
-    /// \return raw pointer to initial state particle through SpinAmplitude
+    /// \return raw pointer to initial state particle through first Daughter
     InitialStateParticle* initialStateParticle() override
-    { return SpinAmplitude_->initialStateParticle(); }
+    { return Daughters_[0]->initialStateParticle(); }
 
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const
@@ -116,10 +130,6 @@ protected:
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
 
-    /// add symmetrizationIndex to SymmetrizationIndices_,
-    /// also add to BlattWeisskopf_ and SpinAmplitude_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
-
     // sets symmetrization index parents
     void setSymmetrizationIndexParents();
 
@@ -131,9 +141,9 @@ private:
     /// daughters of the decay
     ParticleVector Daughters_;
 
-    /// Blatt-Weisskopf calculator
-    std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
-
+    /// Map of SpinAmplitude's (key; by shared_ptr) to AmplitudePair's (value)
+    SpinAmplitudeMap<AmplitudePair> Amplitudes_;
+    
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
