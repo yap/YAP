@@ -141,8 +141,9 @@ private:
     /// daughters of the decay
     ParticleVector Daughters_;
 
-    /// Map of SpinAmplitude's (key; by shared_ptr) to AmplitudePair's (value)
-    SpinAmplitudeMap<AmplitudePair> Amplitudes_;
+    /// Map of SpinAmplitude's (key; by shared_ptr)  to vector of AmplitudePair's (value),
+    /// with one AmplitudePair per spin projection of parent in SpinAmplitude
+    SpinAmplitudeMap<std::vector<AmplitudePair> > Amplitudes_;
     
     /// SpinAmplitude can be shared between several DecayChannels
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;

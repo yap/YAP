@@ -49,7 +49,6 @@ DecayChannel::DecayChannel(ParticleVector daughters)
     for (auto& d : Daughters_)
         if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
             throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
-
 }
 
 //-------------------------
@@ -73,18 +72,23 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
             // retrieve SpinAmplitude from cache
             auto sa = initialStateParticle()->spinAmplitudeCache().spinAmplitude(iQ, d1Q, d2Q, L, two_S);
 
-            // add to Amplitudes, recording kv pair in A
-            auto A = *(Amplitudes_.insert(std::make_pair(sa, AmplitudePair(this))).first);
-
-            /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
-            A.second.Fixed->addDependencies(A.first->amplitudeSet());
+            // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
+            auto projections = sa->twoM();
+            std::vector<AmplitudePair> apV;
+            apV.reserve(projections.size());
+            for (auto& two_m : projections) {
+                apV.push_back(AmplitudePair(this));
+                /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
+                apV.back().Fixed->addDependencies(sa->amplitudeSet());
+                // add daughter dependencies to the fixed amplitude
+                for (int i = 0; i < int(Daughters_.size()); ++i)
+                    if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
+                        for (auto& c : d->CachedDataValuesItDependsOn())
+                            apV.back().Fixed->addDependency(c, i);
+            }
             
-            // add daughter dependencies to the fixed amplitude
-            for (int i = 0; i < int(Daughters_.size()); ++i)
-                if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
-                    for (auto& c : d->CachedDataValuesItDependsOn())
-                        A.second.Fixed->addDependency(c, i);
-            
+            // add to Amplitudes_
+            Amplitudes_.insert(std::make_pair(sa, std::move(apV)));
         }
     }
          
@@ -137,8 +141,6 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
                 addSymmetrizationIndex(v);
         }
     }
-    
-    BlattWeisskopf_->setDependencies();
 }
 
     

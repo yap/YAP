@@ -41,24 +41,15 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
     // N <= 0 now
 
     // check M
-    if (is_odd(twoM) != is_odd(twoJ)) {
-        FLOG(ERROR) << "helicity M = " << spin_to_string(twoM) << " invalid for spin J = " << spin_to_string(twoJ);
-        throw std::invalid_argument("twoM");
-    }
-    if (std::abs(twoM) > (int)twoJ) {
-        FLOG(WARNING) << "helicity M = " << spin_to_string(twoM) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
-        return 0;
-    }
+    if (!ClebschGordan::consistent(twoJ, twoM))
+        throw exceptions::Exception(std::string("M = ") + spin_to_string(twoM)
+                                    + " is inconsistent for J = " + spin_to_string(twoJ),
+                                    "WignerD::dFunction");
 
-    // check N
-    if (is_odd(twoN) != is_odd(twoJ)) {
-        FLOG(ERROR) << "helicity N = " << spin_to_string(twoN) << " invalid for spin J = " << spin_to_string(twoJ);
-        throw std::invalid_argument("twoN");
-    }
-    if (std::abs(twoN) > (int)twoJ) {
-        FLOG(WARNING) << "helicity N = " << spin_to_string(twoN) << " is larger than spin J = " << spin_to_string(twoJ) << "; matrix element is zero";
-        return 0;
-    }
+    if (!ClebschGordan::consistent(twoJ, twoN))
+        throw exceptions::Exception(std::string("N = ") + spin_to_string(twoN)
+                                    + " is inconsistent for J = " + spin_to_string(twoJ),
+                                    "WignerD::dFunction");
 
     // trivial case of J = 0
     if (twoJ == 0)
@@ -67,11 +58,9 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
     // cache dMatrix for J if necessary
     dMatrix::cache(twoJ);
     // if problem with caching (should not happen!)
-    if (twoJ > dMatrix::CachedMatrices_.size()) {
-        FLOG(ERROR) << "d matrix could not be cached for spin J = " << spin_to_string(twoJ);
-        FLOG(ERROR) << "CachedMatrices_.size() = " << dMatrix::CachedMatrices_.size();
-        throw;
-    }
+    if (twoJ > dMatrix::CachedMatrices_.size())
+        throw exceptions::Exception(std::string("could not cache Wigner d function for J = ") + spin_to_string(twoJ),
+                                    "WignerD::dFunction");
 
     const dMatrix::KappaFactorVector& KF = dMatrix::CachedMatrices_[twoJ - 1][(twoJ + twoM) / 2][(twoJ + twoN) / 2];
 

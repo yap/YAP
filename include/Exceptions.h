@@ -45,9 +45,7 @@ protected:
 
 /// \class AngularMomentumNotConserved
 /// \ingroup Exceptions
-class AngularMomentumNotConserved : public Exception
-{
-};
+class AngularMomentumNotConserved : public Exception {};
 
 /// \class InconsistentSpinProjection
 /// \ingroup Exceptions

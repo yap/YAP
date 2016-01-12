@@ -95,6 +95,9 @@ public:
     unsigned twoS() const
     { return TwoS_; }
 
+    /// \return set of (twice the) spin projections of initial state
+    std::set<int> twoM() const;
+
     /// @}
 
     /// \return precalculated complex amplitude

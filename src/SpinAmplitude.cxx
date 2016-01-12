@@ -50,6 +50,16 @@ SpinAmplitude::operator std::string() const
     s += " and S = " + spin_to_string(TwoS_);
     return s;
 }
+
+//-------------------------
+std::set<int> twoM() const
+{
+    std::set<int> S;
+    // loop over amplitudes, key = 3-array
+    for (auto& kv : Amplitudes_)
+        S.insert(kv.first[0]);  // first entry is (twice) parent spin projection
+    return S;
+}
         
 //-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& B) const
