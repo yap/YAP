@@ -28,7 +28,10 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (Amplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    // get cached amplitude object for spin projection two_m
+    auto A = Amplitudes_[two_m];
+
+    if (A->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 

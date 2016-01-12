@@ -65,6 +65,14 @@ public:
     using DecayingParticle::amplitude;
 
     /// \return amplitude with a sum over all particle combinations
+    /// \param d DataPoint to calculate with
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    std::complex<double> amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const;
+
+    /// \return amplitude with a sum over all particle combinations and spin projections
+    /// \param d DataPoint to calculate with
+    /// \param dataPartitionIndex partition index for parallelization
     std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation

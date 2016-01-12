@@ -27,18 +27,29 @@ InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass,
 }
 
 //-------------------------
+std::complex<double> InitialStateParticle::amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const
+{
+    std::complex<double> a = Complex_0;
+
+    // sum up DecayingParticle::amplitude over each particle combination
+    for (auto& pc : particleCombinations())
+        a += amplitude(d, pc, two_m, dataPartitionIndex);
+
+    return a;
+}
+
+//-------------------------
 std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
 {
     std::complex<double> a = Complex_0;
-    // sum up DecayingParticle::amplitude over each particle combination
-    for (auto& pc : particleCombinations())
-        a += amplitude(d, pc, dataPartitionIndex);
+
+    for (int two_m = quantumNumbers().twoJ(); two_m >= quantumNumbers().twoJ(); two_m += 2)
+        a += amplitude(d, two_m, dataPartitionIndex);
 
     DEBUG ("InitialStateParticle::amplitude = " << a);
 
     return a;
 }
-
 //-------------------------
 double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 {
