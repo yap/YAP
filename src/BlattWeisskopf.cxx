@@ -77,7 +77,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         calc = true;
         DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
-    
+
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // measured breakup momentum
         double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d, pc);
@@ -106,22 +106,13 @@ bool BlattWeisskopf::consistent() const
 {
     bool C = true;
 
-    if (!DecayChannel_) {
-        FLOG(ERROR) << "DecayChannel is unset";
+    if (!Fq_r->dependsOn(initialStateParticle()->fourMomenta().masses())) {
+        FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
         C &= false;
     }
-    if (!initialStateParticle()) {
-        FLOG(ERROR) << "No access to initial state particle";
+    if (!Fq_ab->dependsOn(initialStateParticle()->measuredBreakupMomenta().breakupMomenta())) {
+        FLOG(ERROR) << "Fq_ab doesn't have breakup-momenta dependencies set";
         C &= false;
-    } else {
-        if (!Fq_r->dependsOn(initialStateParticle()->fourMomenta().masses())) {
-            FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
-            C &= false;
-        }
-        if (!Fq_ab->dependsOn(initialStateParticle()->measuredBreakupMomenta().breakupMomenta())) {
-            FLOG(ERROR) << "Fq_ab doesn't have breakup-momenta dependencies set";
-            C &= false;
-        }
     }
 
     return C;
@@ -130,7 +121,7 @@ bool BlattWeisskopf::consistent() const
 //-------------------------
 InitialStateParticle* BlattWeisskopf::initialStateParticle()
 {
-    return DecayChannel_->initialStateParticle();
+    return DecayingParticle_->initialStateParticle();
 }
 
 }

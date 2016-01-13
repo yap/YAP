@@ -40,23 +40,25 @@ class SpinAmplitude : public StaticDataAccessor
 {
 public:
 
-    /// \typedef AmplitudeStorageKey
-    /// \brief 3-array of twice the parent spin projection, first
-    /// daughter spin projection, second daughter spin projection in
-    /// that order.
-    using AmplitudeStorageKey = std::array<int, 3>;
+    /// \typedef SpinProjectionPair
+    using SpinProjectionPair = std::array<int, 2>;
 
-    /// \typedef AmplitudeStorageType
-    using AmplitudeMap = std::map<AmplitudeStorageKey, std::shared_ptr<ComplexCachedDataValue> >;
+    /// \typedef AmplitudeSubmap
+    /// \brief maps SpinProjectionPair to ComplexCachesDataValue
+    using AmplitudeSubmap = std::map<SpinProjectionPair, std::shared_ptr<ComplexCachedDataValue> >;
+
+    /// \typedef AmplitudeMap
+    /// \brief maps parent spin projectin to AmplitudeSubmap
+    using AmplitudeMap = std::map<int, AmplitudeSubmap>;
 
     /// \return whether three spins fulfill the triangle relationship
     /// \param two_a 2 * spin a
     /// \param two_b 2 * spin b
     /// \param two_c 2 * spin c
     /// \return \f$ \Delta(abc) \f$
-    constexpr triangle(unsigned two_a, unsigned two_b, unsigned two_c)
-    { return is_even(two_a + two_b + two_c) and std::abs<int>(two_a - two_b) <= two_c <= (two_a + two_b); }
-    
+    static constexpr bool triangle(unsigned two_a, unsigned two_b, unsigned two_c)
+    { return is_even(two_a + two_b + two_c) and std::abs<int>(two_a - two_b) <= two_c and two_c <= (two_a + two_b); }
+
     /// \return Whether angular momentum is conserved in J -> j1 + j2 with orbital angular momentum l
     /// \param two_J 2 * spin of initial state
     /// \param two_j1 2 * spin of first daughter
@@ -113,19 +115,19 @@ public:
     /// \param two_m1 2 * spin projection of first daughter
     /// \param two_m2 2 * spin projection of second daughter
     std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2)
-    { return Amplitudes_.at({two_M, two_m1, two_m2}); }
+    { return Amplitudes_.at(two_M).at({two_m1, two_m2}); }
 
     /// access cached spin amplitude (const)
     /// \param two_M 2 * spin projection of parent
     /// \param two_m1 2 * spin projection of first daughter
     /// \param two_m2 2 * spin projection of second daughter
     const std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2) const
-    { return Amplitudes_.at({two_M, two_m1, two_m2}); }
+    { return Amplitudes_.at(two_M).at({two_m1, two_m2}); }
 
     /// \return set of cached spin amplitudes
     CachedDataValueSet& amplitudeSet();
 
-    /// \return Amplitudes_
+    /// \return AmplitudeMap Amplitudes_
     const AmplitudeMap& amplitudes() const
     { return Amplitudes_; }
 
@@ -194,7 +196,7 @@ using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
 /// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key
 template<typename T>
 using SpinAmplitudeMap = std::map<std::shared_ptr<SpinAmplitude>, T,
-    std::owner_less<std::shared_ptr<SpinAmplitude> > >;
+      std::owner_less<std::shared_ptr<SpinAmplitude> > >;
 
 }
 

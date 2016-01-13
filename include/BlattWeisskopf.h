@@ -51,13 +51,13 @@ public:
 
     /// Constructor
     /// \param L angular momentum of Blatt-Weisskopf barrier factor
-    /// \param decayChannel raw pointer to owning DecayingParticle
+    /// \param dp raw pointer to owning DecayingParticle
     BlattWeisskopf(unsigned L, DecayingParticle* dp);
 
     /// \return angular momentum
     unsigned L() const
     { return L_; }
-    
+
     /// Calculate complex amplitude
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const;
 
@@ -79,10 +79,10 @@ private:
 
     /// raw pointer to owning DecayingParticle
     DecayingParticle* DecayingParticle_;
-    
+
     /// angular momentum
     unsigned L_;
-    
+
     /// Blatt-Weisskopf factor at nominal mass
     std::shared_ptr<RealCachedDataValue> Fq_r;
 

@@ -14,22 +14,22 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              InitialStateParticle* isp) :
     StaticDataAccessor(isp),
     InitialQuantumNumbers_(initial),
-    FinalQuantumNumbers_({final1, final2}),
-    L_(L),
-    TwoS_(two_S),
-    Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
+    FinalQuantumNumbers_( {final1, final2}),
+                      L_(L),
+                      TwoS_(two_S),
+                      Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
     // check JLS triangle
     if (!triangle(InitialStateParticle_.twoJ(), 2 * l, two_S))
         throw exceptions::AngularMomentumNotConserved();
-            
+
     // check j1j2S triangle
     if (!triangle(FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), two_S))
         throw exceptions::AngularMomentumNotConserved();
-      
+
     // if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
     //     throw exceptions::AngularMomentumNotConserved();
-    
+
     // check charge conservation
     if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
         throw exceptions::Exception(std::string("charge conservation violated: ")
@@ -60,14 +60,17 @@ std::set<int> twoM() const
         S.insert(kv.first[0]);  // first entry is (twice) parent spin projection
     return S;
 }
-        
+
 //-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& B) const
 {
     return symmetrizationIndices() == B.symmetrizationIndices()
-        and InitialQuantumNumbers_ == B.InitialQuantumNumbers_
-        and FinalQuantumNumbers_ == B.FinalQuantumNumbers_
-        and L_ == B.L_;
+           // compare only spin of QuantumNumbers
+           and InitialQuantumNumbers_.twoJ() == B.InitialQuantumNumbers_.twoJ()
+           and FinalQuantumNumbers_[0].twoJ() == B.FinalQuantumNumbers_[0].twoJ()
+           and FinalQuantumNumbers_[1].twoJ() == B.FinalQuantumNumbers_[1].twoJ()
+           and L_ == B.L_
+           and TwoS_ == B.TwoS_;
 }
 
 //-------------------------

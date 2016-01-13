@@ -66,7 +66,8 @@ public:
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
     /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                           int two_m, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -129,8 +130,7 @@ public:
 
     // virtual ParameterSet ParametersItDependsOn() override;
 
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
-    { return {Amplitude_}; }
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to initial state particle through first DecayChannel
     InitialStateParticle* initialStateParticle() override

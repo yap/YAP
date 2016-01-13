@@ -126,8 +126,8 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
         Channels_.back()->amplitudes(sa).Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->ParametersItDependsOn());
         Channels_.back()->amplitudes(sa).Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->CachedDataValuesItDependsOn());
     }
-            
-    
+
+
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
         addSymmetrizationIndex(pc);
@@ -136,9 +136,10 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
         //     Channels_.back()->Daughters_[i].addSymmetrizationIndex(pc->daughters()[i]);
     }
 
-    // add dependencies
-    Amplitude_->addDependencies(Channels_.back()->ParametersItDependsOn());
-    Amplitude_->addDependencies(Channels_.back()->CachedDataValuesItDependsOn());
+    // Add DecayChannel's TotalAmplitude's as dependencies for this object's Amplitudes
+    // by spin projection (key in TotalAmplitudes_)
+    for (auto& kv : Channels_.back()->TotalAmplitudes_)
+        Amplitudes_[kv.first]->addDependency(kv.second);
 
     FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
 }
@@ -300,6 +301,15 @@ void DecayingParticle::setSymmetrizationIndexParents()
     for (auto& ch : channels())
         ch->setSymmetrizationIndexParents();
 
+}
+
+//-------------------------
+CachedDataValueSet DecayingParticle::CachedDataValuesItDependsOn()
+{
+    CachedDataValueSet S;
+    for (auto& kv : Amplitudes_)
+        S.insert(kv.second);
+    return S;
 }
 
 //-------------------------

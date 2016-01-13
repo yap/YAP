@@ -50,13 +50,16 @@ class DecayChannel : public AmplitudeComponent, public DataAccessor
 public:
 
     /// \class AmplitudePair
-    struct AmplitudePair
-    {
+    struct AmplitudePair {
         AmplitudePair(DecayChannel* dc, std::complex<double> free = Complex_1);
         std::shared_ptr<ComplexCachedDataValue> Fixed;
         std::shared_ptr<ComplexParameter> Free;
     };
-    
+
+    /// \typedef AmplitudePairMap
+    /// \brief maps spin projection to AmplitudePair
+    using AmplitudePairMap = std::map<int, AmplitudePair>;
+
     /// \name Constructors
     /// @{
 
@@ -68,7 +71,12 @@ public:
     /// @}
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                           int two_m, unsigned dataPartitionIndex) const;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -90,23 +98,20 @@ public:
     const SpinAmplitudeVector spinAmplitudes() const
     { return const_cast<DecayChannel*>(this)->spinAmplitudes(); }
 
-    /// Get AmplitudePair object corresponding to SpinAmplitude
-    AmplitudePair& amplitudes(const std::shared_ptr<SpinAmplitude>& sa);
+    /// Get AmplitudePairMap object corresponding to SpinAmplitude
+    AmplitudePairMap& amplitudes(const std::shared_ptr<SpinAmplitude>& sa)
+    { return Amplitudes_.at(sa); }
 
-    /// Get AmplitudePair object corresponding to SpinAmplitude (const)
-    const AmplitudePair& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
-    { return const_cast<DecayChannel*>(this)->amplitudes(sa); }
-        
-    std::shared_ptr<ComplexParameter> freeAmplitude() const
-    { return FreeAmplitude_; }
+    /// Get AmplitudePairMap object corresponding to SpinAmplitude (const)
+    const AmplitudePairMap& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
+    { return Amplitudes_.at(sa); }
 
     /// @}
 
-    virtual ParameterSet ParametersItDependsOn() override
-    { return {FreeAmplitude_}; }
+    /* virtual ParameterSet ParametersItDependsOn() override; */
 
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
-    { return {FixedAmplitude_}; }
+    /// \return the set of TotalAmplitudes_ values
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to initial state particle through first Daughter
     InitialStateParticle* initialStateParticle() override
@@ -115,6 +120,9 @@ public:
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const
     { return DecayingParticle_; }
+
+    /// add a spin amplitude
+    void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
 
     /// Grant friend status to DecayingParticle to set itself as owner
     friend DecayingParticle;
@@ -127,8 +135,8 @@ protected:
     /// set raw pointer to owning DecayingParticle
     void setDecayingParticle(DecayingParticle* dp);
 
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices() override;
+    /* /// clear SymmetrizationIndices_ */
+    /* virtual void clearSymmetrizationIndices() override; */
 
     // sets symmetrization index parents
     void setSymmetrizationIndexParents();
@@ -141,21 +149,20 @@ private:
     /// daughters of the decay
     ParticleVector Daughters_;
 
-    /// Map of SpinAmplitude's (key; by shared_ptr)  to vector of AmplitudePair's (value),
-    /// with one AmplitudePair per spin projection of parent in SpinAmplitude
-    SpinAmplitudeMap<std::vector<AmplitudePair> > Amplitudes_;
-    
-    /// SpinAmplitude can be shared between several DecayChannels
-    std::shared_ptr<SpinAmplitude> SpinAmplitude_;
+    /// Map of SpinAmplitude (by shared_ptr) to AmplitudePairMap
+    SpinAmplitudeMap<AmplitudePairMap> Amplitudes_;
 
-    /// Independent amplitude for channel's contribution to full model
-    std::shared_ptr<ComplexParameter> FreeAmplitude_;
-
-    /// amplitude from spin dynamics, mass shapes, etc.
-    std::shared_ptr<ComplexCachedDataValue> FixedAmplitude_;
+    /// Map of spin projection to total amplitude for that spin projection
+    std::map<int, std::shared_ptr<ComplexCachedDataValue> > TotalAmplitudes_;
 
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;
+
+    /// list of Parameters this DecayChannel directly depends on
+    ParameterSet ParametersThisDependsOn_;
+
+    /// list of CachedDataValues this DecayChannel directly depends on
+    CachedDataValueSet CachedDataValuesThisDependsOn_;
 
 };
 
