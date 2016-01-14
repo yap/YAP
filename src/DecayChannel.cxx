@@ -1,6 +1,7 @@
 #include "DecayChannel.h"
 
 #include "container_utils.h"
+#include "CachedDataValue.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
@@ -17,17 +18,17 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double> fixed = Complex_1) :
-    Fixed(std::shared_ptr<ComplexCachedDataValue>(dc)),
-    Free(std::shared_ptr < ComplexParameter(free))
+DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double> free) :
+    Fixed(std::make_shared<ComplexCachedDataValue>(dc)),
+    Free(std::make_shared<ComplexParameter>(free))
 {
 }
 
 //-------------------------
-DecayChannel::DecayChannel(ParticleVector daughters)
-DataAccessor(),
-             Daughters_(daughters),
-             DecayingParticle_(nullptr)
+DecayChannel::DecayChannel(ParticleVector daughters) :
+    DataAccessor(),
+    Daughters_(daughters),
+    DecayingParticle_(nullptr)
 {
     // check daughter size
     if (Daughters_.empty())
@@ -114,7 +115,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
 
     // create spin amplitudes
     // loop over possible S: |j1-j2| <= S <= (j1+j2)
-    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2.twoJ(); two_S += 2)
+    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2Q.twoJ(); two_S += 2)
         // loop over possible L: |J-s| <= L <= (J+s)
         for (unsigned L = std::abs<int>(iQ.twoJ() - two_S) / 2; L <= (iQ.twoJ() + two_S) / 2; ++L)
             // add SpinAmplitude retrieved from cache
@@ -130,7 +131,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 
     // check against daughter quantum numbers
     for (size_t i = 0; i < Daughters_.size(); ++i)
-        if (Daughters_[i].quantumNumbers() != sa->finalQuantumNumbers()[i])
+        if (Daughters_[i]->quantumNumbers() != sa->finalQuantumNumbers()[i])
             throw exceptions::Exception(std::string("QuantumNumbers don't match daughter ") + std::to_string(i),
                                         "DecayChannel::addSpinAmplitude");
 
@@ -140,7 +141,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
             throw exceptions::Exception("QuantumNumbers don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
     } else {
         // else check against previously added SpinAmplitude's initial quantum numbers
-        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->quantumNumbers() != sa->quantumNumbers())
+        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->initialQuantumNumbers() != sa->initialQuantumNumbers())
             throw exceptions::Exception("QuantumNumbers don't match previously added", "DecayChannel::addSpinAmplitude");
     }
 
@@ -158,7 +159,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
             TotalAmplitudes_[two_m] = std::make_shared<ComplexCachedDataValue>(this);
 
         // insert new AmplitudePair into map, retaining the added Amplitude pair
-        auto ap = (apM.insert(std::make_pair(two_m, std::move(AmplitudePair(this))))).first.second;
+        auto ap = (apM.insert(std::make_pair(two_m, std::move(AmplitudePair(this))))).first->second;
 
         /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
         ap.Fixed->addDependencies(sa->amplitudeSet());
@@ -170,8 +171,8 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
                     ap.Fixed->addDependency(c, i);
 
         // add to TotalAmplitudes_[two_m]'s dependencies
-        TotalAmplitudes_[two_m].addDependency(ap.Free);
-        TotalAmplitudes_[two_m].addDependency(ap.Fixed);
+        TotalAmplitudes_[two_m]->addDependency(ap.Free);
+        TotalAmplitudes_[two_m]->addDependency(ap.Fixed);
     }
 
     // add to Amplitudes_
@@ -180,16 +181,16 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 
 //-------------------------
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-        int two_m, unsigned dataPartitionIndex) const
+                                             int two_m, unsigned dataPartitionIndex) const
 {
     DEBUG("DecayChannel::amplitude - " << *this << " " << *pc);
 
     unsigned symIndex = symmetrizationIndex(pc);
 
-    auto& totAmp = TotalAmplitudes_[two_m];
+    auto& totAmp = TotalAmplitudes_.at(two_m);
 
     if (totAmp->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
-        DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << totAmp_->value(d, symIndex));
+        DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << totAmp->value(d, symIndex));
         return totAmp->value(d, symIndex);
     }
 
@@ -199,7 +200,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     std::complex<double> A = Complex_0;
     for (auto& kv : Amplitudes_) {
 
-        auto ap = kv.second[two_m]; // AmplitudePair for spin projection m
+        auto ap = kv.second.at(two_m); // AmplitudePair for spin projection m
 
         // if not yet calculated
         if (ap.Fixed->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
@@ -207,7 +208,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
             auto sa = kv.first; // SpinAmplitude
 
             // get map of SpinProjectionPair's to cached spin amplitudes
-            const auto& m = sa->amplitudes()[two_m];
+            const auto& m = sa->amplitudes().at(two_m);
             auto sa_symIndex = sa->symmetrizationIndex(pc);
 
             // sum over daughter spin projection combinations (m1, m2)
@@ -235,12 +236,12 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
         } else {
             // else Fixed is already calculated, simply retrieve from cache
             A += ap.Free->value() * ap.Fixed->value(d, symIndex);
-            DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << FixedAmplitude_->value(d, symIndex));
+            DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
         }
     }
 
     // store result
-    totAmp.setValue(A, d, symIndex, dataPartitionIndex);
+    totAmp->setValue(A, d, symIndex, dataPartitionIndex);
 
     // and return it
     return A;
@@ -318,12 +319,12 @@ bool DecayChannel::consistent() const
             // check its corresponding BlattWeisskopf
             if (DecayingParticle_) {
                 // look for BlattWeisskopf object with corresponding orbital angular momentum
-                auto it = DecayingParticle_->BlattWeiskopfs_.find(kv.first->L());
-                if (it == DecayingParticle_->BlattWeiskopfs_.end() or !*it) {
+                auto it = DecayingParticle_->BlattWeisskopfs_.find(kv.first->L());
+                if (it == DecayingParticle_->BlattWeisskopfs_.end() or !it->second) {
                     FLOG(ERROR) << "Could not find BlattWeisskopf object with L = " << kv.first->L();
                     C &= false;
                 } else {
-                    C &= it->consistent();
+                    C &= it->second->consistent();
                 }
             }
         }
@@ -373,8 +374,10 @@ std::string to_string(const DecayChannel& dc)
         s.erase(s.size() - 1, 1);
     }
     s += ")";
-    if (dc.spinAmplitude())
-        s += " " + to_string(*dc.spinAmplitude());
+    auto& saV = dc.spinAmplitudes();
+    if (saV.empty())
+        return s;
+    s += " " + to_string(saV);
     return s;
 }
 
@@ -465,7 +468,8 @@ void DecayChannel::setSymmetrizationIndexParents()
 //--------------------------
 DataAccessorSet DecayChannel::dataAccessors()
 {
-    DataAccessorSet V = {BlattWeisskopf_, SpinAmplitude_};
+    auto saV = spinAmplitudes();
+    DataAccessorSet V(saV.begin(), saV.end());
 
     for (auto& d : Daughters_) {
         // add daughter

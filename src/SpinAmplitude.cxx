@@ -20,7 +20,7 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                       Amplitude_(std::make_shared<ComplexCachedDataValue>(this))
 {
     // check JLS triangle
-    if (!triangle(InitialStateParticle_.twoJ(), 2 * l, two_S))
+    if (!triangle(InitialQuantumNumbers_.twoJ(), 2 * l, two_S))
         throw exceptions::AngularMomentumNotConserved();
 
     // check j1j2S triangle
@@ -80,6 +80,26 @@ CachedDataValueSet SpinAmplitude::amplitudeSet()
     for (auto& kv : Amplitudes_)
         V.insert(kv.second);
     return V;
+}
+
+//-------------------------
+std::string to_string(const SpinAmplitudeVector& saV)
+{
+    if (saV.empty())
+        return std::string();
+
+    std::string s = to_string(saV[0].initialQuantumNumbers()) + " -> ";
+    for (auto& d : saV[0].iinalQuantumNumbers())
+        s += to_string(d) + " + ";
+    s.erase(s.size() - 2, 2);
+    s += "with LS =";
+    for (auto& sa : saV)
+        s += " (" + std::string(sa.L()) + ", " + spin_to_string(sa.twoS()) + "),";
+    s.erase(s.size() - 1, 1);
+    if (formalism().empty())
+        return s;
+    s += " in " + formalism();
+    return s;
 }
 
 }

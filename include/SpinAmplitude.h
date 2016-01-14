@@ -157,6 +157,9 @@ protected:
                   const QuantumNumbers& final2,
                   unsigned L, unsigned two_S,
                   InitialStateParticle* isp);
+    
+    /// \return a string naming the formalism used for the SpinAmplitude calculation
+    virtual std::string formalism() const = 0;
 
 private:
 
@@ -191,6 +194,9 @@ inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
 
 /// \typedef SpinAmplitudeVector
 using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
+
+/// convert to string
+std::string to_string(const SpinAmplitudeVector& saV);
 
 /// \typedef SpinAmplitudeMap
 /// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key

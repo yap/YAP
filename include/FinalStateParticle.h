@@ -60,7 +60,7 @@ public:
     /// Calculate complex amplitude.
     /// All parameters are ignored. See particle::amplitude() for info.
     /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, unsigned) override
+    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, unsigned) const override
     { return Complex_1; }
 
     /// Check consistency

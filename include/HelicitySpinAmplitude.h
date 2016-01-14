@@ -61,10 +61,6 @@ public:
     /// also clears ClebschGordanCoefficients_
     virtual void clearSymmetrizationIndices();
 
-    /// cast into string
-    operator std::string() const override
-    { return SpinAmplitude::operator std::string() + " in helicity formalism"; }
-
     /// grant SpinAmplitudeCache friend status to call constructor
     friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
 
@@ -74,13 +70,18 @@ protected:
     /// \param intial quantum numbers of Initial-state
     /// \param final1 quantum numbers of first daughter
     /// \param final2 quantum numbers of second daughter
-    /// \param orbital angular momentum
+    /// \param L orbital angular momentum
+    /// \param two_S twice the total spin angular momentum
     /// \param isp raw pointer to owning InitialStateParticle
     HelicitySpinAmplitude(const QuantumNumbers& initial,
                           const QuantumNumbers& final1,
                           const QuantumNumbers& final2,
-                          unsigned l,
+                          unsigned L, unsigned two_S,
                           InitialStateParticle* isp);
+
+    /// \return "helicity formalism"
+    virtual std::string formalism() const override
+    { return "helicity formalism"; }
 
 private:
     /// check equality

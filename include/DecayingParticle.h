@@ -76,18 +76,6 @@ public:
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
     virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
-    /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param A daughter particle in all possible helicity states
-    /// \param B daughter particle in all possible helicity states
-    /// \param l orbital angular momentum between A and B
-    void addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned l);
-
-    /// Add all possible two-body DecayChannels up to a maximum relative angular momentum
-    /// \param A daughter particle in all possible helicity states
-    /// \param B daughter particle in all possible helicity states
-    /// \param max_L maximum relative angular momentum between A and B
-    void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned max_l);
-
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.

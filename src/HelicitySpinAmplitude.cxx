@@ -11,15 +11,13 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
-        const QuantumNumbers& final1,
-        const QuantumNumbers& final2,
-        unsigned l,
-        InitialStateParticle* isp) :
-    SpinAmplitude(initial, final1, final2, l, isp)
+                                             const QuantumNumbers& final1,
+                                             const QuantumNumbers& final2,
+                                             unsigned L, unsigned two_S,
+                                             InitialStateParticle* isp) :
+    SpinAmplitude(initial, final1, final2, L, two_S, isp)
 {
     // set SpinAmplitude_'s dependencies
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "HelicitySpinAmplitude::setInitialStateParticle");
     amplitude()->addDependency(initialStateParticle()->helicityAngles().phi());
     amplitude()->addDependency(initialStateParticle()->helicityAngles().theta());
 }
