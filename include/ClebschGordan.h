@@ -19,6 +19,7 @@
 #ifndef yap_ClebschGordan_h
 #define yap_ClebschGordan_h
 
+#include "Exceptions.h"
 #include "MathUtilities.h"
 
 #include <cstdlib>
@@ -47,7 +48,7 @@ std::string to_string(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, 
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
 /// \param two_M  2*spin-projection of composite system
-bool nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
+bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
 
 /// \return Whether Clebsch-Gordan coefficient is nonzero, with M := m1 + m2.
 /// \param two_j1 2*spin of first particle
@@ -55,8 +56,8 @@ bool nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned two_j2, int two_
 /// \param two_j2 2*spin of second particle
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
-inline bool nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
-{ return nonzeroClebschGordan(two_j1, two_m1, two_j2, two_m2, two_J, two_m1 + two_m2); }
+inline bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
+{ return nonzeroCoefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_m1 + two_m2); }
 
 /// \return Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M)
 /// Implemented from Eq. (16) from G. Racah, "Theory of Complex Spectra. II", Phys. Rev. 62, 438 (1942)
@@ -86,7 +87,10 @@ inline double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_
 /// \param l orbital angular momentum to couple to
 /// \param two_S 2 * total spin to couple to
 inline bool nonzeroCoupling(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J)
-{ return nonzeroClebschGordan(2 * l, 0, two_s, two_lambda1 - two_lambda2, two_J) and nonzeroClebschGordan(two_j1, two_lambda1, two_j2, -two_lambda2, two_s);}
+{
+    try { return nonzeroCoefficient(2 * l, 0, two_s, two_lambda1 - two_lambda2, two_J) and nonzeroCoefficient(two_j1, two_lambda1, two_j2, -two_lambda2, two_s); }
+    catch (exceptions::InconsistentSpinProjection& E) { E.addFunc("ClebschGordan::nonzeroCoupling"); throw E; }
+}
 
 /// \return coefficieny for coupling helicity state to l-s state: <J lambda1 lambda2 | J l s>,
 /// for two particles of spin j1 and j2
@@ -96,6 +100,7 @@ inline bool nonzeroCoupling(unsigned two_j1, int two_lambda1, unsigned two_j2, i
 /// \param two_lambda2 2 * helicity of second particle
 /// \param l orbital angular momentum to couple to
 /// \param two_S 2 * total spin to couple to
+/// \param two_J 2 * spin of parent
 double couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J);
 
 /// \return consistency of spin and spin projection

@@ -18,15 +18,16 @@ std::string ClebschGordan::to_string(unsigned two_j1, int two_m1, unsigned two_j
 }
 
 //-------------------------
-bool ClebschGordan::nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
+bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
 {
     // and that (j1+j2) and J are consistent
     if (is_odd(two_J + two_j1 + two_j2))
-        throw exceptions::AngularMomentumNotConserved();
+        throw exceptions::AngularMomentumNotConserved("ClebschGordan::nonzeroCoefficient");
 
     // check input spin-projection compatibilities
     if (!consistent(two_j1, two_m1) or !consistent(two_j2, two_m2) or !consistent(two_J,  two_M ))
-        throw exceptions::InconsistentSpinProjection();
+        throw exceptions::InconsistentSpinProjection(to_string(two_j1, two_m1, two_j2, two_m2, two_J, two_M),
+                "ClebschGordan::nonzeroCoefficient");
 
     // check input spin-projections
     if (two_M != two_m1 + two_m2)
@@ -70,7 +71,7 @@ bool ClebschGordan::nonzeroClebschGordan(unsigned two_j1, int two_m1, unsigned t
 //-------------------------
 double ClebschGordan::coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
 {
-    if (!nonzeroClebschGordan(two_j1, two_m1, two_j2, two_m2, two_J, two_M))
+    if (!nonzeroCoefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_M))
         return 0;
 
     // z range dictated by factorials in denominator ( 1/n! = 0 when n < 0)

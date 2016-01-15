@@ -76,6 +76,12 @@ public:
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
     virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param daughters ParticleVector of daughters to create DecayChannel object from
+    virtual void addChannel(const ParticleVector& daughters)
+    { addChannel(std::make_unique<DecayChannel>(daughters)); }
+
+
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.
@@ -109,9 +115,6 @@ public:
     /// Print complete decay chain
     void printDecayChain() const
     { printDecayChainLevel(0); }
-
-    /// Print SpinAmplitudes involved in decay chain
-    void printSpinAmplitudes(int level = 0);
 
     // for internal use only
     virtual void setSymmetrizationIndexParents() override;

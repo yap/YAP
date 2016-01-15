@@ -1,5 +1,7 @@
 #include "WignerD.h"
 
+#include "ClebschGordan.h"
+#include "Exceptions.h"
 #include "logging.h"
 #include "MathUtilities.h"
 #include "QuantumNumbers.h"

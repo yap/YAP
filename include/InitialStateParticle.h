@@ -50,7 +50,7 @@ class InitialStateParticle : public std::enable_shared_from_this<InitialStatePar
 {
 public:
 
-    /// Constructor
+    /// constructing function
     /// \param q QuantumNumbers of ISP
     /// \param mass Mass of ISP [GeV]
     /// \param name Name of ISP

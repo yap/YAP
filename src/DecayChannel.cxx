@@ -25,7 +25,7 @@ DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double
 }
 
 //-------------------------
-DecayChannel::DecayChannel(ParticleVector daughters) :
+DecayChannel::DecayChannel(const ParticleVector& daughters) :
     DataAccessor(),
     Daughters_(daughters),
     DecayingParticle_(nullptr)
@@ -150,9 +150,8 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
         sa -> addSymmetrizationIndex(pc);
 
     // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
-    auto projections = sa->twoM();
     AmplitudePairMap apM;
-    for (auto& two_m : projections) {
+    for (auto& two_m : sa->twoM()) {
 
         // add TotalAmplitude for two_m if needed
         if (TotalAmplitudes_.find(two_m) == TotalAmplitudes_.end())
@@ -180,8 +179,18 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 }
 
 //-------------------------
+ComplexParameterVector DecayChannel::freeAmplitudes()
+{
+    ComplexParameterVector V;
+    for (auto& apM_kv : Amplitudes_)
+        for (auto& ap_kv : apM_kv.second)
+            V.push_back(ap_kv.second.Free);
+    return V;
+}
+
+//-------------------------
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                             int two_m, unsigned dataPartitionIndex) const
+        int two_m, unsigned dataPartitionIndex) const
 {
     DEBUG("DecayChannel::amplitude - " << *this << " " << *pc);
 

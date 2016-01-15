@@ -35,21 +35,45 @@ namespace exceptions {
 /// will not be caught by specific type. Use the other exception classes
 /// inheriting from this, when an exception must be caught by specific
 /// type.
-struct Exception : public std::runtime_error {
+struct Exception : public std::exception {
 public:
-    Exception(const std::string& what_arg, const std::string& func_name)
-        : std::runtime_error(what_arg + (func_name.empty() ? "" : " (" + func_name + ")")) {}
+    /// Constructor
+    /// \param what_arg String descripting exception
+    /// \param func_nam Name of function originating exception
+    Exception(const std::string& what_arg, const std::string& func_name) : std::exception(),
+        What_(what_arg),
+        Func_(func_name)
+    {}
+
+    void addFunc(const std::string& s) noexcept
+    { Func_ += (Func_.empty() ? "" : " < ") + s; }
+
+    const char* what() const noexcept
+    { return (What_ + (What_.empty() or Func_.empty() ? "" : " ") + (Func_.empty() ? "" : std::string("from ") + Func_)).data(); }
+
 protected:
-    Exception() : std::runtime_error("") {}
+    Exception() : std::exception() {}
+    std::string What_;
+    std::string Func_;
 };
 
 /// \class AngularMomentumNotConserved
 /// \ingroup Exceptions
-class AngularMomentumNotConserved : public Exception {};
+class AngularMomentumNotConserved : public Exception
+{
+public:
+    AngularMomentumNotConserved(const std::string& func_name)
+        : Exception("", func_name) {}
+};
 
 /// \class InconsistentSpinProjection
 /// \ingroup Exceptions
-class InconsistentSpinProjection : public Exception {};
+class InconsistentSpinProjection : public Exception
+{
+public:
+    InconsistentSpinProjection(const std::string& what_arg, const std::string& func_name)
+        : Exception(what_arg, func_name) {}
+};
 
 /// \class NonfiniteResult
 /// \ingroup Exceptions

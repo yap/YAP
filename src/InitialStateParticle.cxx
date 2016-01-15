@@ -43,7 +43,7 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 {
     std::complex<double> a = Complex_0;
 
-    for (int two_m = quantumNumbers().twoJ(); two_m >= quantumNumbers().twoJ(); two_m += 2)
+    for (int two_m = -quantumNumbers().twoJ(); two_m <= (int)quantumNumbers().twoJ(); two_m += 2)
         a += amplitude(d, two_m, dataPartitionIndex);
 
     DEBUG ("InitialStateParticle::amplitude = " << a);

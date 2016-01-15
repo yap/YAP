@@ -67,7 +67,7 @@ public:
     /// N-particle Constructor (at the moment only valid for 2 particles).
     /// DecayChannel inherits ISP from daughters.
     /// \param daughters Vector of shared_ptr's to daughter Particle's
-    DecayChannel(ParticleVector daughters);
+    DecayChannel(const ParticleVector& daughters);
 
     /// @}
 
@@ -124,6 +124,9 @@ public:
 
     /// add a spin amplitude
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
+
+    /// \return Vector of free amplitudes
+    ComplexParameterVector freeAmplitudes();
 
     /// Grant friend status to DecayingParticle to set itself as owner
     friend DecayingParticle;

@@ -102,6 +102,21 @@ public:
 
     /// @}
 
+    /// Calculate spin amplitude for caching.
+    /// Must be overrided in derived classes.
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    /// \param d DataPoint to retrieve data from for calculation
+    /// \param pc ParticleCombination to calculate for
+    virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
+                                      const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+
+    /// Loops over particle combinations (pc) and all (M, m1, m2) combinations
+    /// and call calc(M, m1, m2, d, pc) when necessary
+    /// \param d DataPoint to calculate into
+    void calculate(DataPoint& d) override;
+
     /// \return precalculated complex amplitude
     /// \param two_M 2 * spin projection of parent
     /// \param two_m1 2 * spin projection of first daughter
@@ -125,16 +140,14 @@ public:
     { return Amplitudes_.at(two_M).at({two_m1, two_m2}); }
 
     /// \return set of cached spin amplitudes
-    CachedDataValueSet& amplitudeSet();
+    CachedDataValueSet amplitudeSet();
 
     /// \return AmplitudeMap Amplitudes_
     const AmplitudeMap& amplitudes() const
     { return Amplitudes_; }
 
-    /// Add symmetrization indices for ParticleCombination.
-    /// Must be overloaded in derived classes to both conditionally add ParticleCombination's
-    /// and to alter and multiply them (to accomodate helicity, for example)
-    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<ParticleCombination> pc) = 0;
+    /// \return a string naming the formalism used for the SpinAmplitude calculation
+    virtual std::string formalism() const = 0;
 
     /// grant friend access to SpinAmplitudeCache to create SpinAmplitude's and set InitialStateParticle
     template <class spin_amplitude> friend class SpinAmplitudeCache;
@@ -157,9 +170,6 @@ protected:
                   const QuantumNumbers& final2,
                   unsigned L, unsigned two_S,
                   InitialStateParticle* isp);
-    
-    /// \return a string naming the formalism used for the SpinAmplitude calculation
-    virtual std::string formalism() const = 0;
 
 private:
 

@@ -22,7 +22,6 @@
 #define yap_HelicitySpinAmplitude_h
 
 #include "DataPoint.h"
-#include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 
@@ -45,21 +44,18 @@ class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
-    /// Calculate spin amplitude for all possible symmetrization indices
-    virtual void calculate(DataPoint& d) override;
+    /// Calculate spin amplitude for given ParticleCombination and spin projections
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    /// \param d DataPoint to retrieve data from for calculation
+    /// \param pc ParticleCombination to calculate for
+    virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
+                                      const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
-    /// Check consistency of object
-    virtual bool consistent() const override;
-
-    /// check if Clebsch-Gordan coefficient is nonzero before adding pc,
-    /// also add all helicity states of the parent
-    virtual ParticleCombinationVector addSymmetrizationIndices(std::shared_ptr<ParticleCombination> pc) override;
-
-    /// also calculates ClebschGordan coefficient
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> pc);
-
-    /// also clears ClebschGordanCoefficients_
-    virtual void clearSymmetrizationIndices();
+    /// \return "helicity formalism"
+    virtual std::string formalism() const override
+    { return "helicity formalism"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
     friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
@@ -70,32 +66,25 @@ protected:
     /// \param intial quantum numbers of Initial-state
     /// \param final1 quantum numbers of first daughter
     /// \param final2 quantum numbers of second daughter
-    /// \param L orbital angular momentum
-    /// \param two_S twice the total spin angular momentum
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
     /// \param isp raw pointer to owning InitialStateParticle
     HelicitySpinAmplitude(const QuantumNumbers& initial,
                           const QuantumNumbers& final1,
                           const QuantumNumbers& final2,
-                          unsigned L, unsigned two_S,
+                          unsigned l, unsigned two_s,
                           InitialStateParticle* isp);
-
-    /// \return "helicity formalism"
-    virtual std::string formalism() const override
-    { return "helicity formalism"; }
 
 private:
     /// check equality
-    virtual bool equals(const SpinAmplitude& other) const override;
+    virtual bool equals(const SpinAmplitude& other) const override
+    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
-    /// spin for l-s coupling.
-    /// \todo Why is j1 + j2?
-    unsigned two_s()
-    { return finalQuantumNumbers()[0].twoJ() + finalQuantumNumbers()[1].twoJ(); }
-
-    /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
-    ParticleCombinationMap<double> ClebschGordanCoefficients_;
-
-    std::shared_ptr<ComplexCachedDataValue> SpinAmplitude_;
+    /// L-S * S-S coupling coefficients
+    /// first map key is m1;
+    /// second map key is m2;
+    /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
+    std::map<int, std::map<int, double> > Coefficients_;
 
 };
 
