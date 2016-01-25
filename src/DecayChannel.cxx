@@ -60,8 +60,8 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             // check for empty indices
             if (pc->indices().empty())
                 throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
-            // ignore PC's that differ only by parent or lambda from ones already accounted for
-            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDownButLambda(A, pc);}))
+            // ignore PC's that differ only by parent from ones already accounted for
+            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDown(A, pc);}))
             v.push_back(pc);
         }
         if (v.empty())

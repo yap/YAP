@@ -24,29 +24,18 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
     }
 
     // cache coefficients
-    double c = sqrt((2 * L() + 1) / 4 / PI);
+    double c = sqrt((2. * L() + 1) / 4. / PI);
     for (int two_m1 = -finalQuantumNumbers()[0].twoJ(); two_m1 <= (int)finalQuantumNumbers()[0].twoJ(); two_m1 += 2)
-        for (int two_m2 = -finalQuantumNumbers()[1].twoJ(); two_m2 <= (int)finalQuantumNumbers()[1].twoJ(); two_m2 += 2) {
-            double CG = 0;
+        for (int two_m2 = -finalQuantumNumbers()[1].twoJ(); two_m2 <= (int)finalQuantumNumbers()[1].twoJ(); two_m2 += 2)
             try {
-                CG = c * ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), two_m1,
-                                               finalQuantumNumbers()[1].twoJ(), two_m2,
-                                               L(), twoS(), initialQuantumNumbers().twoJ());
-            } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */
-                FLOG(INFO) << ClebschGordan::to_string(2 * L(), 0 , twoS(), two_m1 - two_m2, initialQuantumNumbers().twoJ(), two_m1 - two_m2)
-                           << " "
-                           << ClebschGordan::to_string(finalQuantumNumbers()[0].twoJ(), two_m1, finalQuantumNumbers()[1].twoJ(), -two_m2, twoS(), two_m1 - two_m2)
-                           << " = " << CG;
-            }
 
-            FLOG(INFO) << ClebschGordan::to_string(2 * L(), 0 , twoS(), two_m1 - two_m2, initialQuantumNumbers().twoJ(), two_m1 - two_m2)
-                       << " "
-                       << ClebschGordan::to_string(finalQuantumNumbers()[0].twoJ(), two_m1, finalQuantumNumbers()[1].twoJ(), -two_m2, twoS(), two_m1 - two_m2)
-                       << " = " << CG;
+                double CG = c * ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), two_m1,
+                                                      finalQuantumNumbers()[1].twoJ(), two_m2,
+                                                      L(), twoS(), initialQuantumNumbers().twoJ());
+                if (CG != 0)
+                    Coefficients_[two_m1][two_m2] = c * CG;
 
-            if (CG != 0)
-                Coefficients_[two_m1][two_m2] = c * CG;
-        }
+            } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
 
     if (Coefficients_.empty()) {
         FLOG(ERROR) << "no valid nonzero Clebsch-Gordan coefficients stored in " << *this;

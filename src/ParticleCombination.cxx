@@ -90,7 +90,7 @@ std::string to_string(const ParticleCombination& pc)
     std::string s = "(";
     for (auto i : pc.indices())
         s += std::to_string(i);
-    s += ", λ = " + spin_to_string(pc.twoLambda()) + ")";
+    s += ")";
 
     if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
         return s;
@@ -112,10 +112,8 @@ std::string to_string(const ParticleCombination& pc)
 
 ParticleCombination::Equiv ParticleCombination::equivBySharedPointer;
 ParticleCombination::EquivDown ParticleCombination::equivDown;
-ParticleCombination::EquivDownButLambda ParticleCombination::equivDownButLambda;
+ParticleCombination::EquivUp ParticleCombination::equivUp;
 ParticleCombination::EquivUpAndDown ParticleCombination::equivUpAndDown;
-ParticleCombination::EquivUpButLambda ParticleCombination::equivUpButLambda;
-ParticleCombination::EquivUpAndDownButLambda ParticleCombination::equivUpAndDownButLambda;
 ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
 ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
 ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
@@ -142,32 +140,6 @@ bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_pt
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
-{
-    // check if either empty
-    if (!A or !B)
-        return false;
-
-    // compare shared_ptr addresses
-    if (A == B)
-        return true;
-
-    if (!ParticleCombination::equivByOrderedContent(A, B))
-        return false;
-
-    // Check daughters
-    if (A->daughters().size() != B->daughters().size()) {
-        return false;
-    }
-    for (unsigned i = 0; i < A->daughters().size(); ++i)
-        if (!operator()(A->daughters()[i], B->daughters()[i]))
-            return false;
-
-    // a match!
-    return true;
-}
-
-//-------------------------
 bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
@@ -178,10 +150,6 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
     if (A == B)
         return true;
 
-    /// check lambda
-    if (A->TwoLambda_ != B->TwoLambda_)
-        return false;
-
     if (!ParticleCombination::equivByOrderedContent(A, B))
         return false;
 
@@ -198,7 +166,7 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -212,29 +180,7 @@ bool ParticleCombination::EquivUpButLambda::operator()(const std::shared_ptr<Par
         return false;
 
     // check parent
-    if (! ParticleCombination::equivUpButLambda(A->parent(), B->parent()))
-        return false;
-
-    // a match!
-    return true;
-}
-
-//-------------------------
-bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
-{
-    // check if either empty
-    if (!A or !B)
-        return false;
-
-    // compare shared_ptr addresses
-    if (A == B)
-        return true;
-
-    if (!ParticleCombination::equivDownButLambda(A, B))
-        return false;
-
-    // check parent
-    if (! ParticleCombination::equivUpButLambda(A->parent(), B->parent()))
+    if (! ParticleCombination::equivUp(A->parent(), B->parent()))
         return false;
 
     // a match!
@@ -244,19 +190,11 @@ bool ParticleCombination::EquivUpAndDownButLambda::operator()(const std::shared_
 //-------------------------
 bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
-    // check if either empty
-    if (!A or !B)
-        return false;
-
-    // compare shared_ptr addresses
-    if (A == B)
-        return true;
-
     if (!ParticleCombination::equivDown(A, B))
         return false;
 
     // check parent
-    if (A->parent() != B->parent())
+    if (!ParticleCombination::equivUp(A->parent(), B->parent()))
         return false;
 
     // a match!

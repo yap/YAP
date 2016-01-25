@@ -121,8 +121,8 @@ double ClebschGordan::couple(unsigned two_j1, int two_lambda1, unsigned two_j2, 
     // calculate C-G coefficient for s-s coupling
     double s_s_coupling = coefficient(two_j1, two_lambda1, two_j2, -two_lambda2, two_s);
 
-    // sqrt( (2l + 1) / (2J + 1) ) * l_s_coupling * s_s_coupling
-    return sqrt((2 * l + 1) / (two_J + 1)) * l_s_coupling * s_s_coupling;
+    // l_s_coupling * s_s_coupling
+    return l_s_coupling * s_s_coupling;
 }
 
 }

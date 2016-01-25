@@ -54,7 +54,7 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
 
     // check that neither |M| nor |N| exceeds J
     // this returns 0 rather than throws because it is mathematically sound
-    if (std::abs(twoM) > twoJ or std::abs(twoN) > twoJ)
+    if (std::abs(twoM) > (int)twoJ or std::abs(twoN) > (int)twoJ)
         return 0;
 
     // trivial case of J = 0

@@ -42,7 +42,7 @@ public:
     constexpr QuantumNumbers(unsigned twoJ, int P, int C, unsigned twoI, int G, int Q)
         : TwoJ_(twoJ), P_(P), C_(C), TwoI_(twoI), G_(G), Q_(Q) {}
 
-    /// IJPQ(lambda) constructor
+    /// IJPQ constructor
     constexpr QuantumNumbers(unsigned twoI, unsigned twoJ, int P, int Q)
         : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
 

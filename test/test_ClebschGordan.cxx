@@ -54,7 +54,7 @@ TEST_CASE( "ClebschGordan" )
                 for (int two_m1 = -two_j1; two_m1 <= (int)two_j1; two_m1 += 2) {
                     REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1) == 1 );
                     REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1 + 2, two_m1) == 0 );
-                    if (two_m1 < two_j1)
+                    if (two_m1 < (int)two_j1)
                         REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1 + 2) == 0 );
                 }
         }

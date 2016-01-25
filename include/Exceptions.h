@@ -64,7 +64,7 @@ class AngularMomentumNotConserved : public Exception
 {
 public:
     AngularMomentumNotConserved(const std::string& func_name)
-        : Exception("", func_name) {}
+        : Exception("Angular momentum not conserved", func_name) {}
 };
 
 /// \class InconsistentSpinProjection

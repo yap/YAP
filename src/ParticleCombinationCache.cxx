@@ -29,7 +29,6 @@ ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> 
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other) const
 {
     auto pc = shared_ptr_type(new ParticleCombination());
-    pc->TwoLambda_ = other.TwoLambda_;
 
     // if copying a final-state particle, just copy indices
     if (other.isFinalStateParticle())
@@ -44,18 +43,9 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(
 }
 
 //-------------------------
-ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other, int two_lambda) const
-{
-    auto pc = create_copy(other);
-    pc->TwoLambda_ = two_lambda;
-    return pc;
-}
-
-//-------------------------
-ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_composite(const ParticleCombinationVector& D, int two_lambda) const
+ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_composite(const ParticleCombinationVector& D) const
 {
     auto pc = shared_ptr_type(new ParticleCombination());
-    pc->TwoLambda_ = two_lambda;
 
     for (auto& d : D)
         pc->addDaughter(create_copy(*d));
