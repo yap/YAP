@@ -22,6 +22,7 @@
 #define yap_Exceptions_h
 
 #include <stdexcept>
+#include <string>
 
 namespace yap {
 
@@ -48,7 +49,7 @@ public:
     void addFunc(const std::string& s) noexcept
     { Func_ += (Func_.empty() ? "" : " < ") + s; }
 
-    const char* what() const noexcept
+    const char* what() const noexcept override
     { return (What_ + (What_.empty() or Func_.empty() ? "" : " ") + (Func_.empty() ? "" : std::string("from ") + Func_)).data(); }
 
 protected:

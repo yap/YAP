@@ -51,15 +51,15 @@ bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two
     /// @{
 
     // (3/2 +-1/2, 3/2 +-1/2 | 2 +-1) == 0
-    if (two_j1 == 3 and abs(two_m1) == 1 and two_j2 == two_j1 and two_m2 == two_m1 and two_J == 4)
+    if (two_j1 == 3 and abs(two_m1) == 1 and two_j2 == 3 and two_m2 == two_m1 and two_J == 4)
         return false;
 
     // (2 +-1, 3/2 -+1/2 | 3/2 +-1/2) == 0
-    if (two_j1 == 4 and abs(two_m1) == 2 and two_j2 == 3 and abs(two_m2) == 1 and two_J == 3 and abs(two_M) == 1)
+    if (two_j1 == 4 and abs(two_m1) == 2 and two_j2 == 3 and two_m2 == -two_m1 / 2 and two_J == 3)
         return false;
 
     // (2 +-1, 2 +-1 | 3 +-2) == 0
-    if (two_j1 == 4 and abs(two_m1) == 2 and two_j2 == two_j1 and two_m2 == two_m1 and two_J == 6)
+    if (two_j1 == 4 and abs(two_m1) == 2 and two_j2 == 4 and two_m2 == two_m1 and two_J == 6)
         return false;
 
     /// @}
@@ -74,36 +74,40 @@ double ClebschGordan::coefficient(unsigned two_j1, int two_m1, unsigned two_j2, 
     if (!nonzeroCoefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_M))
         return 0;
 
+    // simple case of spin zero (must be 1 since check above already would have found 0)
+    if (two_j1 == 0 or two_j2 == 0)
+        return 1;
+
     // z range dictated by factorials in denominator ( 1/n! = 0 when n < 0)
-    unsigned z_min = std::max({0, (int)two_j2 - two_m1 - (int)two_J, (int)two_j1 + two_m2 - (int)two_J}) / 2;
-    unsigned z_max = std::min({two_j1 + two_j2 - two_J, two_j1 - two_m1, two_j2 + two_m2}) / 2;
+    unsigned z_min = std::max<int>({0, (int)two_j2 - two_m1 - (int)two_J, (int)two_j1 + two_m2 - (int)two_J}) / 2;
+    unsigned z_max = std::min<int>({(int)two_j1 + (int)two_j2 - (int)two_J, (int)two_j1 - two_m1, (int)two_j2 + two_m2}) / 2;
 
     double z_sum = 0;
     for (unsigned z = z_min; z <= z_max; ++z) {
         // z'th term := (-)^z / z! / (j1+j2-J-z)! / (j1-m1-z)! / (j2+m2-z)! / (J-j2+m1+z)! / (J-j1-m2+z)!
-        z_sum += pow_negative_one(z)
+        z_sum += (double)pow_negative_one(z)
                  / std::tgamma(1 + z)
-                 / std::tgamma(1 + (two_j1 + two_j2 - two_J) / 2 - z)
-                 / std::tgamma(1 + (two_j1 - two_m1) / 2 - z)
-                 / std::tgamma(1 + (two_j2 + two_m2) / 2 - z)
-                 / std::tgamma(1 + (two_J - two_j2 + two_m1) / 2 + z)
-                 / std::tgamma(1 + (two_J - two_j1 - two_m2) / 2 + z);
+                 / std::tgamma(1 + ((int)two_j1 + (int)two_j2 - (int)two_J) / 2 - z)
+                 / std::tgamma(1 + ((int)two_j1 - two_m1) / 2 - z)
+                 / std::tgamma(1 + ((int)two_j2 + two_m2) / 2 - z)
+                 / std::tgamma(1 + ((int)two_J - (int)two_j2 + two_m1) / 2 + z)
+                 / std::tgamma(1 + ((int)two_J - (int)two_j1 - two_m2) / 2 + z);
     }
 
     // C-G coef = sqrt( (2J+1)! (j1+j2-J)! (j1-j2+J)! (j2-j1+J)! / (J+j1+j2+1)! )
     //          * sqrt( (j1+m1)! (j1-m1)! (j2+m2)! (j2-m2)! (J+M)! (J-M)! )
     //          * z_sum
-    return z_sum * sqrt(std::tgamma(1 + two_J + 1)
-                        * std::tgamma(1 + (two_j1 + two_j2 - two_J) / 2)
-                        * std::tgamma(1 + (two_j1 - two_j2 + two_J) / 2)
-                        * std::tgamma(1 + (two_j2 - two_j1 + two_J) / 2)
-                        / std::tgamma(1 + (two_j1 + two_j2 + two_J) / 2 + 1)
-                        * std::tgamma(1 + (two_j1 + two_m1) / 2)
-                        * std::tgamma(1 + (two_j1 - two_m1) / 2)
-                        * std::tgamma(1 + (two_j2 + two_m2) / 2)
-                        * std::tgamma(1 + (two_j2 - two_m2) / 2)
-                        * std::tgamma(1 + (two_J + two_M) / 2)
-                        * std::tgamma(1 + (two_J - two_M) / 2));
+    return z_sum * sqrt((two_J + 1)
+                        * std::tgamma(1 + ((int)two_j1 + (int)two_j2 - (int)two_J) / 2)
+                        * std::tgamma(1 + ((int)two_j1 - (int)two_j2 + (int)two_J) / 2)
+                        * std::tgamma(1 + ((int)two_j2 - (int)two_j1 + (int)two_J) / 2)
+                        / std::tgamma(1 + ((int)two_j1 + (int)two_j2 + (int)two_J) / 2 + 1)
+                        * std::tgamma(1 + ((int)two_j1 + two_m1) / 2)
+                        * std::tgamma(1 + ((int)two_j1 - two_m1) / 2)
+                        * std::tgamma(1 + ((int)two_j2 + two_m2) / 2)
+                        * std::tgamma(1 + ((int)two_j2 - two_m2) / 2)
+                        * std::tgamma(1 + ((int)two_J + two_M) / 2)
+                        * std::tgamma(1 + ((int)two_J - two_M) / 2));
 }
 
 //-------------------------

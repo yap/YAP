@@ -43,15 +43,19 @@ double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
     // N <= 0 now
 
     // check M
-    if (!ClebschGordan::consistent(twoJ, twoM))
+    if (is_odd(twoJ + twoM))
         throw exceptions::Exception(std::string("M = ") + spin_to_string(twoM)
                                     + " is inconsistent for J = " + spin_to_string(twoJ),
                                     "WignerD::dFunction");
-
-    if (!ClebschGordan::consistent(twoJ, twoN))
+    if (is_odd(twoJ + twoM))
         throw exceptions::Exception(std::string("N = ") + spin_to_string(twoN)
                                     + " is inconsistent for J = " + spin_to_string(twoJ),
                                     "WignerD::dFunction");
+
+    // check that neither |M| nor |N| exceeds J
+    // this returns 0 rather than throws because it is mathematically sound
+    if (std::abs(twoM) > twoJ or std::abs(twoN) > twoJ)
+        return 0;
 
     // trivial case of J = 0
     if (twoJ == 0)

@@ -1,6 +1,7 @@
 include_directories(${YAP_SOURCE_DIR}/include ${ROOT_INCLUDE_DIR})
 
 set(YAP_TEST_SOURCES
+  test_ClebschGordan.cxx
   test_Vector.cxx
 	test_WignerD.cxx
 )
