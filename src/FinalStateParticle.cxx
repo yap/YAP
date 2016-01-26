@@ -20,18 +20,27 @@ bool FinalStateParticle::consistent() const
 {
     bool C = Particle::consistent();
 
-    if (SymmetrizationIndices_.empty()) {
-        FLOG(ERROR) << "SymmetrizationIndices_ are empty!";
+    if (ParticleCombinations_.empty()) {
+        FLOG(ERROR) << "ParticleCombinations_ are empty!";
         C &= false;
     }
 
-    for (auto& pc : SymmetrizationIndices_)
-        if (pc->indices().size() != 1) {
-            FLOG(ERROR) << "ParticleCombination doesn't have size 1!";
-            C &= false;
-        }
-
     return C;
+}
+
+//-------------------------
+void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    // pc must be final state particle
+    if (!pc->isFinalStateParticle())
+        throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
+
+    // look for pc in ParticleCombinations_
+    auto it = std::find_if(ParticleCombinations_.begin(), ParticleCombinations_.end(),
+    [&](const std::shared_ptr<ParticleCombination>& p) {return p->indices() == pc->indices();});
+    // if pc already contained, do nothing
+    if (it == ParticleCombinations_.end())
+        ParticleCombinations_.push_back(pc);
 }
 
 //-------------------------
@@ -40,18 +49,18 @@ void FinalStateParticle::setSymmetrizationIndexParents()
     if (!initialStateParticle())
         throw exceptions::Exception("InitialStateParticle unset", "FinalStateParticle::setSymmetrizationIndexParents");
 
-    ParticleCombinationVector PCs = SymmetrizationIndices_;
+    ParticleCombinationVector PCs = ParticleCombinations_;
 
     // check if already set
     if (PCs[0]->parent())
         return;
 
-    SymmetrizationIndices_.clear();
+    ParticleCombinations_.clear();
 
     for (auto& PC : PCs)
         for (auto& pc : initialStateParticle()->particleCombinationCache())
             if (ParticleCombination::equivDown(PC, pc.lock()))
-                SymmetrizationIndices_.push_back(pc.lock());
+                addParticleCombination(pc.lock());
 }
 
 }

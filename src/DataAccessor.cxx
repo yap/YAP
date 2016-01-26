@@ -49,6 +49,16 @@ ParticleCombinationVector DataAccessor::particleCombinations() const
 }
 
 //-------------------------
+bool DataAccessor::hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
+        const ParticleCombination::Equiv& equiv) const
+{
+    auto it = std::find_if(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(),
+                           [&](const ParticleCombinationMap<unsigned>::value_type & kv)
+    { return equiv(kv.first, c); } );
+    return it != SymmetrizationIndices_.end();
+}
+
+//-------------------------
 bool DataAccessor::consistent() const
 {
     if (SymmetrizationIndices_.empty()) {
@@ -93,9 +103,9 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-void DataAccessor::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
+void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    if (hasSymmetrizationIndex(c))
+    if (hasParticleCombination(c))
         // c is already in map
         return;
 

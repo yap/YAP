@@ -76,11 +76,11 @@ void FourMomenta::prepare()
             rec_pcs.push_back(j_pc);
             // set pair pc and add to object
             PairPC_[i][j] = initialStateParticle()->particleCombinationCache().composite({i_pc, j_pc});
-            addSymmetrizationIndex(PairPC_[i][j]);
+            addParticleCombination(PairPC_[i][j]);
         }
         // set recoil pc and add to object
         RecoilPC_[i] = initialStateParticle()->particleCombinationCache().composite(rec_pcs);
-        addSymmetrizationIndex(RecoilPC_[i]);
+        addParticleCombination(RecoilPC_[i]);
     }
 }
 

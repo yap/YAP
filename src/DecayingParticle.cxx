@@ -38,7 +38,7 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 
         // sum up DecayChannel::amplitude over each channel
         for (auto& c : channels()) {
-            if (c->hasSymmetrizationIndex(pc))
+            if (c->hasParticleCombination(pc))
                 a += c->amplitude(d, pc, two_m, dataPartitionIndex);
         }
 
@@ -130,10 +130,9 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
         }
     }
 
-
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
-        addSymmetrizationIndex(pc);
+        addParticleCombination(pc);
         // and add pc's daughters to Channels' daughters
         // for (size_t i = 0; i < pc->daughters().size(); ++i)
         //     Channels_.back()->Daughters_[i].addSymmetrizationIndex(pc->daughters()[i]);
@@ -152,12 +151,21 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void DecayingParticle::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> pc)
+void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    DataAccessor::addSymmetrizationIndex(pc);
+    DataAccessor::addParticleCombination(pc);
+
     // add also to all BlattWeiskopf barrier factors
     for (auto& kv : BlattWeisskopfs_)
-        kv.second->addSymmetrizationIndex(pc);
+        kv.second->addParticleCombination(pc);
+
+    // add to DecayChannels,
+    // if DecayChannel contains particle combination with same content (without checking parent)
+    // this is for the setting of ParticleCombination's with parents
+    for (auto& dc : Channels_) {
+        if (dc->hasParticleCombination(pc, ParticleCombination::equivDown))
+            dc->addParticleCombination(pc);
+    }
 }
 
 //-------------------------
@@ -224,7 +232,7 @@ void DecayingParticle::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     for (auto& pc : PCsParents)
-        addSymmetrizationIndex(pc);
+        addParticleCombination(pc);
 
     // next level
     for (auto& ch : channels())

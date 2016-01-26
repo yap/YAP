@@ -152,6 +152,9 @@ public:
     /// grant friend access to SpinAmplitudeCache to create SpinAmplitude's and set InitialStateParticle
     template <class spin_amplitude> friend class SpinAmplitudeCache;
 
+    /// grant friend access to DecayChannel to call addParticleCombination
+    friend class DecayChannel;
+
 protected:
 
     /// check equality

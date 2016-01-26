@@ -38,23 +38,10 @@ bool Resonance::consistent() const
 }
 
 //-------------------------
-void Resonance::addChannel(std::unique_ptr<DecayChannel> c)
+void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    DecayingParticle::addChannel(std::move(c));
-
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "Resonance::addChannel");
-
-    for (auto& pc : channels().back()->particleCombinations())
-        MassShape_->addSymmetrizationIndex(pc);
-
-}
-
-//-------------------------
-void Resonance::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
-{
-    DecayingParticle::addSymmetrizationIndex(c);
-    MassShape_->addSymmetrizationIndex(c);
+    DecayingParticle::addParticleCombination(c);
+    MassShape_->addParticleCombination(c);
 }
 
 //-------------------------

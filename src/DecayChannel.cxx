@@ -71,7 +71,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         PCs.push_back(v);
     }
 
-    // create ParticleCombnation's of parent
+    // create ParticleCombination's of parent
     /// \todo remove hardcoding for two daughters so applies to n daughters?
     for (auto& PCA : PCs[0]) {
         for (auto& PCB : PCs[1]) {
@@ -85,17 +85,32 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
                 // get (B,A) combination from cache
                 auto b_a = initialStateParticle()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and hasSymmetrizationIndex(b_a.lock()))
+                if (!b_a.expired() and hasParticleCombination(b_a.lock()))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
             }
 
             // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
             // setting the parents of both to the newly created ParticleCombination
-            addSymmetrizationIndex(initialStateParticle()->particleCombinationCache().composite({PCA, PCB}));
+            addParticleCombination(initialStateParticle()->particleCombinationCache().composite({PCA, PCB}));
         }
     }
 
+}
+
+//-------------------------
+void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    DataAccessor::addParticleCombination(pc);
+
+    // add to pc's daughters to daughter particles;
+    // pc's daughters have their parents set correctly.
+    for (size_t i = 0; i < pc->daughters().size(); ++i)
+        Daughters_[i]->addParticleCombination(pc->daughters()[i]);
+
+    // add to SpinAmplitude's (keys of Amplitudes_)
+    for (auto& kv : Amplitudes_)
+        kv.first->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -105,7 +120,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
 
-    // if SpinAmplitude have already been added by hand, don't add automatically
+    // if SpinAmplitude's have already been added by hand, don't add automatically
     if (!Amplitudes_.empty())
         return;
 
@@ -147,7 +162,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 
     // add this' ParticleCombination's to it
     for (auto& pc : particleCombinations())
-        sa -> addSymmetrizationIndex(pc);
+        sa -> addParticleCombination(pc);
 
     // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
     AmplitudePairMap apM;
@@ -442,7 +457,7 @@ void DecayChannel::setSymmetrizationIndexParents()
     clearSymmetrizationIndices();
 
     for (auto& pc : chPCsParents)
-        addSymmetrizationIndex(pc);
+        addParticleCombination(pc);
 
 
     for (auto& chPC : chPCs) {
@@ -456,7 +471,7 @@ void DecayChannel::setSymmetrizationIndexParents()
             if (!ParticleCombination::equivDown(chPC, pc))
                 continue;
 
-            addSymmetrizationIndex(pc);
+            addParticleCombination(pc);
 
             // set PCs for channel's daughters
             for (auto& pcDaughPC : pc->daughters())
@@ -464,7 +479,7 @@ void DecayChannel::setSymmetrizationIndexParents()
                     if (std::dynamic_pointer_cast<DecayingParticle>(chDaugh))
                         for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations())
                             if (ParticleCombination::equivDown(pcDaughPC, chDaughPC))
-                                std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addSymmetrizationIndex(pcDaughPC);
+                                std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addParticleCombination(pcDaughPC);
 
         }
     }

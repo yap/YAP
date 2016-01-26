@@ -76,28 +76,14 @@ public:
 
     /// @}
 
-    /// \name Setters
-    /// @{
-
-    /// set MassShape
-    void setMassShape(std::unique_ptr<MassShape> massShape);
-
-    using DecayingParticle::addChannel;
-
-    /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c
-    void addChannel(std::unique_ptr<DecayChannel> c) override;
-
-    /// add symmetrizationIndex to SymmetrizationIndices_,
-    /// also add to MassShape_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c) override;
-
-    /// @}
-
     /// clear SymmetrizationIndices_
     virtual void clearSymmetrizationIndices() override;
 
 protected:
+
+    /// add ParticleCombination to ParticleCombinations_,
+    /// also add to MassShape_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     /// \return set of shared_ptr's to DataAccessor's
     virtual DataAccessorSet dataAccessors() override;

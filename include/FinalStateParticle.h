@@ -68,7 +68,7 @@ public:
 
     /// \return list of all ParticleCombinations
     ParticleCombinationVector particleCombinations() const override
-    { return SymmetrizationIndices_; }
+    { return ParticleCombinations_; }
 
     /// \return owning InitialStateParticle
     InitialStateParticle* initialStateParticle() override
@@ -88,6 +88,9 @@ protected:
     void setInitialStateParticle(InitialStateParticle* isp)
     { InitialStateParticle_ = isp; }
 
+    /// add ParticleCombination to ParticleCombinations
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
     /// set parents of symmetrization indices
     virtual void setSymmetrizationIndexParents() override;
 
@@ -96,7 +99,7 @@ private:
     /// raw pointer to initial state particle decaying to this final state particle
     InitialStateParticle* InitialStateParticle_;
 
-    ParticleCombinationVector SymmetrizationIndices_;
+    ParticleCombinationVector ParticleCombinations_;
 
 };
 

@@ -66,7 +66,7 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<Partic
     for (auto& c : CachedDataValuesItDependsOn_) {
 
         // if the owner does not have the symIndex, there is nothing to check
-        if (c->owner() != Owner_ and not c->owner()->hasSymmetrizationIndex(pc))
+        if (c->owner() != Owner_ and not c->owner()->hasParticleCombination(pc))
             continue;
 
 
@@ -86,7 +86,7 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<Partic
         const std::shared_ptr<ParticleCombination>& cPc = pc->daughters()[c.second];
 
         // if the owner does not have the symIndex, there is nothing to check
-        if (c.first->owner() != Owner_ and not c.first->owner()->hasSymmetrizationIndex(cPc))
+        if (c.first->owner() != Owner_ and not c.first->owner()->hasParticleCombination(cPc))
             continue;
 
 

@@ -136,6 +136,8 @@ public:
 
 protected:
 
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c);
+
     /// set raw pointer to owning DecayingParticle
     void setDecayingParticle(DecayingParticle* dp);
 

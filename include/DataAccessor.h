@@ -78,10 +78,16 @@ public:
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasSymmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
-    { return SymmetrizationIndices_.count(c); }
+    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const
+    { return SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end(); }
 
-    /// \return index inside row of DataPoint for the requested symmetrization
+    /// \return if the given ParticleCombination is in SymmetrizationIndices_
+    /// \param c ParticleCombination to look for equivalent of
+    /// \param equiv ParticleCombination::Equiv object for checking equivalence
+    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
+                                const ParticleCombination::Equiv& equiv) const;
+
+    /// \return index inside row of DataPoint for the requested ParticleCombination
     unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
 
@@ -113,18 +119,6 @@ public:
     /// add CachedDataValue
     void addCachedDataValue(CachedDataValue* c);
 
-    /// \name Symmetrization functions
-    /// @{
-
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
-
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices()
-    { SymmetrizationIndices_.clear(); }
-
-    /// @}
-
     /// \name Data access
     /// @{
 
@@ -140,6 +134,13 @@ public:
     friend class InitialStateParticle;
 
 protected:
+
+    /// add ParticleCombination to SymmetrizationIndices_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
+    /// clear SymmetrizationIndices_
+    virtual void clearSymmetrizationIndices()
+    { SymmetrizationIndices_.clear(); }
 
     /// set storage index used in DataPoint. Must be unique.
     void setIndex(size_t i)

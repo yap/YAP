@@ -75,6 +75,9 @@ public:
     /// \return raw pointer to InitialStateParticle through owning DecayingParticle
     InitialStateParticle* initialStateParticle() override;
 
+    /// grant friend status to DecayingParticle to call addParticleCombination
+    friend class DecayingParticle;
+
 private:
 
     /// raw pointer to owning DecayingParticle

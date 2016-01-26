@@ -255,6 +255,12 @@ public:
 
 protected:
 
+    /// add ParticleCombination to ParticleCombinations_ if it is for
+    /// an ISP, and to FourMomenta_, HelicityAngles_, and
+    /// MeasuredBreakupMomenta_ (along with it's daughters through
+    /// recursive calling) if it is NOT for a FSP.
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
     /// \return set of data accessors
     virtual DataAccessorSet dataAccessors() override;
 

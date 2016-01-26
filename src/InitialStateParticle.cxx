@@ -159,18 +159,6 @@ void InitialStateParticle::prepare()
     //
     setSymmetrizationIndexParents();
 
-    // add non-final-state particle combinations to FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    for (auto& wpc : ParticleCombinationCache_) {
-        if (wpc.expired())
-            continue;
-        auto pc = wpc.lock();
-        if (pc->isFinalStateParticle())
-            continue;
-        FourMomenta_->addSymmetrizationIndex(pc);
-        HelicityAngles_->addSymmetrizationIndex(pc);
-        MeasuredBreakupMomenta_->addSymmetrizationIndex(pc);
-    }
-
     // prepare FourMomenta. Needs FinalStateParticles_
     FourMomenta_->prepare();
 
@@ -190,6 +178,25 @@ void InitialStateParticle::prepare()
     }
 
     Prepared_ = true;
+}
+
+//-------------------------
+void InitialStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    // if pc is for this initial state particle, call DecayingParticle::addParticleCombination
+    if (pc->indices().size() == FinalStateParticles_.size())
+        DecayingParticle::addParticleCombination(pc);
+
+    // if not a final state particle,
+    // add to FourMomenta_, HelicityAngles_, and MeasuredBreakupMomenta_
+    if (!pc->isFinalStateParticle()) {
+        FourMomenta_->addParticleCombination(pc);
+        HelicityAngles_->addParticleCombination(pc);
+        MeasuredBreakupMomenta_->addParticleCombination(pc);
+        // call recursively to add to the daughters to the above
+        for (auto& d : pc->daughters())
+            addParticleCombination(d);
+    }
 }
 
 //-------------------------
@@ -223,7 +230,7 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->SymmetrizationIndices_.push_back(ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
+        fsp->addParticleCombination(ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
         fsp->setInitialStateParticle(this);
         FinalStateParticles_.push_back(fsp);
     }
@@ -400,7 +407,7 @@ void InitialStateParticle::setSymmetrizationIndexParents()
         if (!pc->daughters()[0]->parent())
             continue;
 
-        addSymmetrizationIndex(pc);
+        addParticleCombination(pc);
     }
 
     // next level

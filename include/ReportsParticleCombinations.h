@@ -23,6 +23,8 @@
 
 #include "ParticleCombination.h"
 
+#include <memory>
+
 /// \name ReportsParticleCombinations
 /// \brief Base class for all classes that report a list of particleCombinations
 /// \author Daniel Greenwald
@@ -54,6 +56,11 @@ public:
 
     /// default move assignment operator
     ReportsParticleCombinations& operator=(ReportsParticleCombinations&& rhs) = default;
+
+protected:
+
+    /// add ParticleCombination
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
 
 };
 
