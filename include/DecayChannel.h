@@ -141,12 +141,6 @@ protected:
     /// set raw pointer to owning DecayingParticle
     void setDecayingParticle(DecayingParticle* dp);
 
-    /* /// clear SymmetrizationIndices_ */
-    /* virtual void clearSymmetrizationIndices() override; */
-
-    // sets symmetrization index parents
-    void setSymmetrizationIndexParents();
-
     /// \return set of DataAccessors
     virtual DataAccessorSet dataAccessors();
 

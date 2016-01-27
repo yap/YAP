@@ -43,25 +43,5 @@ void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombinat
         ParticleCombinations_.push_back(pc);
 }
 
-//-------------------------
-void FinalStateParticle::setSymmetrizationIndexParents()
-{
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "FinalStateParticle::setSymmetrizationIndexParents");
-
-    ParticleCombinationVector PCs = ParticleCombinations_;
-
-    // check if already set
-    if (PCs[0]->parent())
-        return;
-
-    ParticleCombinations_.clear();
-
-    for (auto& PC : PCs)
-        for (auto& pc : initialStateParticle()->particleCombinationCache())
-            if (ParticleCombination::equivDown(PC, pc.lock()))
-                addParticleCombination(pc.lock());
-}
-
 }
 

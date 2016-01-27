@@ -91,9 +91,6 @@ protected:
     /// add ParticleCombination to ParticleCombinations
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
-    /// set parents of symmetrization indices
-    virtual void setSymmetrizationIndexParents() override;
-
 private:
 
     /// raw pointer to initial state particle decaying to this final state particle

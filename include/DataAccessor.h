@@ -138,9 +138,8 @@ protected:
     /// add ParticleCombination to SymmetrizationIndices_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices()
-    { SymmetrizationIndices_.clear(); }
+    /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
+    virtual void pruneSymmetrizationIndices();
 
     /// set storage index used in DataPoint. Must be unique.
     void setIndex(size_t i)

@@ -94,11 +94,6 @@ public:
     /// give friend status to DecayChannel to call setSymmetrizationIndexParents
     friend class DecayChannel;
 
-protected:
-
-    /// set symmetrization index parents
-    virtual void setSymmetrizationIndexParents() = 0;
-
 private:
 
     /// Quantum numbers of particle

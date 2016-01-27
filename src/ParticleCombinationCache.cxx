@@ -5,6 +5,7 @@
 #include "logging.h"
 
 #include <algorithm>
+#include <iomanip>
 
 namespace yap {
 
@@ -109,23 +110,90 @@ bool ParticleCombinationCache::consistent() const
 }
 
 //-------------------------
-std::string to_string(const ParticleCombinationCache& C)
+std::ostream& print_daughters(std::ostream& os, const ParticleCombinationCache& C, std::shared_ptr<ParticleCombination> pc, unsigned ndig, std::string prefix, std::set<unsigned>& used)
 {
-    std::string s;
-    for (auto wpc : C) {
-        auto pc = wpc.lock();
-        s += to_string(*pc);
-        auto pt = pc->parent();
-        if (pt) {
-            s += " in decay chain ";
-            while (pt->parent())
-                pt = pt->parent();
-            s += to_string(*pt);
+    for (auto& d : pc->daughters()) {
+        unsigned i = 0;
+        for (auto& w : C) {
+            if (!w.expired() and w.lock() == d) {
+                os << std::setfill('0') << std::setw(ndig) << i << " : " << prefix << *w.lock();
+                if (d->parent() != pc)
+                    os << " (parent unset)";
+                os << std::endl;
+                used.insert(i);
+                break;
+            }
+            ++i;
         }
-        s += "\n";
+        print_daughters(os, C, d, ndig, prefix + "    ", used);
     }
-    s.erase(s.size() - 1, 1);
-    return s;
+    return os;
+}
+
+//-------------------------
+std::ostream& ParticleCombinationCache::print(std::ostream& os) const
+{
+    if (size() == 0)
+        return os;
+
+    // get number of digits for writing position in cache
+    unsigned ndig = std::ceil(log10(size()));
+
+    // find largest number of indices
+    unsigned n_fsp = 0;
+    for (auto& w : *this)
+        if (!w.expired() and w.lock()->indices().size() > n_fsp)
+            n_fsp = w.lock()->indices().size();
+
+
+    // print final state particles
+    // unsigned i = 0;
+    // for (auto& w : *this) {
+    //     if (!w.expired() and w.lock()->isFinalStateParticle())
+    //         os << std::setfill('0') << std::setw(ndig) << i << " : (fsp) " << *w.lock() << std::endl;
+    //     ++i;
+    // }
+
+    std::set<unsigned> used;
+
+    // print others as decay trees starting from ISP's
+    unsigned i = 0;
+    for (auto& w : *this) {
+        if (!w.expired() and w.lock()->indices().size() == n_fsp) {
+            // print isp
+            os << std::setfill('0') << std::setw(ndig) << i << " : " << *w.lock() << std::endl;
+            used.insert(i);
+
+            // print daughters
+            print_daughters(os, *this, w.lock(), ndig, "    ", used);
+        }
+
+        ++i;
+    }
+
+    // print unused
+    i = 0;
+    for (auto& w : *this) {
+        if (!w.expired() and used.find(i) == used.end())
+            os << std::setfill('0') << std::setw(ndig) << i << " : (unused, " << w.use_count() << ") " << *w.lock() << std::endl;
+        ++i;
+    }
+    return os;
+
+    // for (auto wpc : C) {
+    //     auto pc = wpc.lock();
+    //     s += to_string(*pc);
+    //     auto pt = pc->parent();
+    //     if (pt) {
+    //         s += " in decay chain ";
+    //         while (pt->parent())
+    //             pt = pt->parent();
+    //         s += to_string(*pt);
+    //     }
+    //     s += "\n";
+    // }
+    // s.erase(s.size() - 1, 1);
+    // return s;
 }
 
 }

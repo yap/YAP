@@ -76,9 +76,6 @@ public:
 
     /// @}
 
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices() override;
-
 protected:
 
     /// add ParticleCombination to ParticleCombinations_,

@@ -126,6 +126,57 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
 }
 
 //-------------------------
+void DataAccessor::pruneSymmetrizationIndices()
+{
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle not set", "DataAccessor::pruneSymmetrizationIndices");
+
+    // remove entries that don't trace back to the ISP
+    for (auto it = SymmetrizationIndices_.begin(); it != SymmetrizationIndices_.end(); ) {
+        // find the top-most parent
+        auto pc = it->first;
+        while (pc->parent())
+            pc = pc->parent();
+        // check if it's not an ISP
+        if (pc->indices().size() != initialStateParticle()->finalStateParticles().size())
+            // erase
+            it = SymmetrizationIndices_.erase(it);
+        else
+            it++;
+    }
+
+    // fix indices now for holes
+
+    // collect used indices
+    std::set<unsigned> used;
+    for (const auto& kv : SymmetrizationIndices_)
+        used.insert(kv.second);
+
+    // repair
+    unsigned index = 0;
+    while (index < used.size()) {
+
+        // if index is not used
+        if (used.find(index) == used.end()) {
+            // clear used
+            used.clear();
+            // reduce all indices greater than index by 1
+            // and rebuild used
+            for (auto& kv : SymmetrizationIndices_) {
+                if (kv.second > index)
+                    kv.second -= 1;
+                used.insert(kv.second);
+            }
+        }
+
+        //if index is (now) used, increment by 1
+        if (used.find(index) != used.end())
+            index += 1;
+
+    }
+}
+
+//-------------------------
 void DataAccessor::addCachedDataValue(CachedDataValue* c)
 {
     c->setNumberOfSymmetrizations(maxSymmetrizationIndex() + 1);

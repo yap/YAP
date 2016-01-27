@@ -193,6 +193,9 @@ public:
     /// \param FSP list of shared pointers to final-state particles
     void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
+    /// \return set coordinate system
+    void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
+
     /// @}
 
     /// \name Data set and partitions
@@ -272,9 +275,6 @@ private:
 
     /// check if d is in DataPartitions_
     bool hasDataPartition(DataPartitionBase* d);
-
-    /// Set parents of symmetrization indices (recursively)
-    virtual void setSymmetrizationIndexParents() override;
 
     /// set number of data partitions of all #CachedDataValue's
     void setNumberOfDataPartitions(unsigned n) override;

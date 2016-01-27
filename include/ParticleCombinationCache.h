@@ -95,6 +95,9 @@ public:
     /// Check consistency of cache.
     bool consistent() const;
 
+    /// stream the cache elements as a table
+    virtual std::ostream& print(std::ostream& os) const override;
+
 protected:
 
     /* /// set lineage: copy each daughter, add pc as parent to copy, */
@@ -117,13 +120,6 @@ private:
     shared_ptr_type create_composite(const ParticleCombinationVector& D) const;
 
 };
-
-/// convert to string
-std::string to_string(const ParticleCombinationCache& C);
-
-/// streamer
-inline std::ostream& operator<<(std::ostream& os, const ParticleCombinationCache& C)
-{ os << to_string(C); return os; }
 
 }
 

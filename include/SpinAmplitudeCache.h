@@ -88,24 +88,6 @@ private:
 
 };
 
-
-/* /// convert to string */
-/* std::string to_string(const SpinAmplitudeCache& C); */
-
-/// streamer
-template <class T>
-inline std::ostream& operator<<(std::ostream& os, const SpinAmplitudeCache<T>& C)
-{
-    os << "SpinAmplitudeCache contents:" << std::endl;
-    for (auto& wsa : C) {
-        if (wsa.expired())
-            continue;
-        auto sa = wsa.lock();
-        os << "\t" << to_string(*sa) << std::endl;
-    }
-    return os;
-}
-
 }
 
 #endif

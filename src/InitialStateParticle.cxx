@@ -101,6 +101,11 @@ bool InitialStateParticle::consistent() const
     C &= ParticleCombinationCache_.consistent();
     C &= SpinAmplitudeCache_.consistent();
 
+    if (!isRightHanded(CoordinateSystem_)) {
+        FLOG(ERROR) << "Coordinate system is not right handed.";
+        C &= false;
+    }
+
     /// \todo: is this necessary to check?
     /// @{
     std::vector<std::shared_ptr<FinalStateParticle> > A = FinalStateParticles_;
@@ -126,24 +131,14 @@ void InitialStateParticle::prepare()
         throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
     }
 
-    // check coordinate system
-    CoordinateSystem_ = unit(CoordinateSystem_);
-    if (!isRightHanded(CoordinateSystem_)) {
-        FLOG(ERROR) << "Coordinate system is not right-handed.";
-        throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::prepare");
-    }
+    // set DataAccessors_
+    DataAccessors_ = dataAccessors();
 
-    /*
-        // particle combinations
-        std::vector<std::shared_ptr<ParticleCombination> > PCs;
-        for (auto& pc : particleCombinations()) {
-            PCs.push_back(std::make_shared<const ParticleCombination>(*pc));
-        }
-        particleCombinationCache = ParticleCombinationCache(PCs);
-        clearSymmetrizationIndices();
-        for (auto& pc : PCs)
-            addSymmetrizationIndex(pc);
-    */
+    for (auto& D : DataAccessors_)
+        D->pruneSymmetrizationIndices();
+
+    FLOG(INFO) << ParticleCombinationCache_;
+
     // check
     for (auto& wpc : ParticleCombinationCache_) {
         if (!wpc.lock())
@@ -156,14 +151,9 @@ void InitialStateParticle::prepare()
         }
     }
 
-    //
-    setSymmetrizationIndexParents();
-
     // prepare FourMomenta. Needs FinalStateParticles_
     FourMomenta_->prepare();
 
-    // set DataAccessors_
-    DataAccessors_ = dataAccessors();
     // add this (commented out because ISP has no need for data access at moment)
     // DataAccessors_.push_back(shared_from_this());
     // set unique indices to all DataAccessors
@@ -187,16 +177,25 @@ void InitialStateParticle::addParticleCombination(std::shared_ptr<ParticleCombin
     if (pc->indices().size() == FinalStateParticles_.size())
         DecayingParticle::addParticleCombination(pc);
 
-    // if not a final state particle,
-    // add to FourMomenta_, HelicityAngles_, and MeasuredBreakupMomenta_
-    if (!pc->isFinalStateParticle()) {
-        FourMomenta_->addParticleCombination(pc);
-        HelicityAngles_->addParticleCombination(pc);
-        MeasuredBreakupMomenta_->addParticleCombination(pc);
-        // call recursively to add to the daughters to the above
-        for (auto& d : pc->daughters())
-            addParticleCombination(d);
-    }
+    // if final state particle, halt
+    if (pc->isFinalStateParticle())
+        return;
+
+    // find top-most parent
+    auto p = pc;
+    while (p->parent())
+        p = p->parent();
+    // if does not trace up to ISP, halt
+    if (p->indices().size() != FinalStateParticles_.size())
+        return;
+
+    FourMomenta_->addParticleCombination(pc);
+    HelicityAngles_->addParticleCombination(pc);
+    MeasuredBreakupMomenta_->addParticleCombination(pc);
+
+    // call recursively on daughters
+    for (auto& d : pc->daughters())
+        addParticleCombination(d);
 }
 
 //-------------------------
@@ -234,6 +233,15 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
         fsp->setInitialStateParticle(this);
         FinalStateParticles_.push_back(fsp);
     }
+}
+
+//-------------------------
+void InitialStateParticle::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
+{
+    if (!isRightHanded(cs))
+        throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::setCoordinateSystem");
+
+    CoordinateSystem_ = unit(cs);
 }
 
 //-------------------------
@@ -381,39 +389,6 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
         std::cout << std::endl;
     }
     std::cout << std::endl;
-}
-
-//-------------------------
-void InitialStateParticle::setSymmetrizationIndexParents()
-{
-    unsigned size = particleCombinations()[0]->indices().size();
-
-    if (size <= 1)
-        throw exceptions::Exception("Fewer than two daughters", "InitialStateParticle::setSymmetrizationIndexParents");
-
-    clearSymmetrizationIndices();
-
-    // get initial state PCs from set and add them
-    for (auto& wpc : ParticleCombinationCache_) {
-
-        if (wpc.expired())
-            continue;
-
-        auto pc = wpc.lock();
-
-        if (pc->indices().size() < size)
-            continue;
-
-        if (!pc->daughters()[0]->parent())
-            continue;
-
-        addParticleCombination(pc);
-    }
-
-    // next level
-    for (auto& ch : channels())
-        ch->setSymmetrizationIndexParents();
-
 }
 
 //-------------------------

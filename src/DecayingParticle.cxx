@@ -218,29 +218,6 @@ void DecayingParticle::printDecayChainLevel(int level) const
 }
 
 //-------------------------
-void DecayingParticle::setSymmetrizationIndexParents()
-{
-    // clean up PCs without parents
-    auto PCsParents = particleCombinations();
-    auto it = PCsParents.begin();
-    while (it != PCsParents.end()) {
-        if (!(*it)->parent()) {
-            it = PCsParents.erase(it);
-        } else
-            ++it;
-    }
-    clearSymmetrizationIndices();
-
-    for (auto& pc : PCsParents)
-        addParticleCombination(pc);
-
-    // next level
-    for (auto& ch : channels())
-        ch->setSymmetrizationIndexParents();
-
-}
-
-//-------------------------
 CachedDataValueSet DecayingParticle::CachedDataValuesItDependsOn()
 {
     CachedDataValueSet S;

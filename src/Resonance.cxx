@@ -45,13 +45,6 @@ void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 }
 
 //-------------------------
-void Resonance::clearSymmetrizationIndices()
-{
-    DecayingParticle::clearSymmetrizationIndices();
-    MassShape_->clearSymmetrizationIndices();
-}
-
-//-------------------------
 DataAccessorSet Resonance::dataAccessors()
 {
     // call DecayingParticle's function

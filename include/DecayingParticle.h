@@ -116,9 +116,6 @@ public:
     void printDecayChain() const
     { printDecayChainLevel(0); }
 
-    // for internal use only
-    virtual void setSymmetrizationIndexParents() override;
-
     // virtual ParameterSet ParametersItDependsOn() override;
 
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override;

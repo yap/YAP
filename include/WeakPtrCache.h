@@ -44,12 +44,15 @@ public:
     using type = T;
 
     /// shared_ptr_type
+    /// \brief std::shared_ptr to T
     using shared_ptr_type = std::shared_ptr<T>;
 
     /// weak_ptr_type
+    /// \brief std::weak_ptr to T
     using weak_ptr_type = std::weak_ptr<T>;
 
     /// cache storage type
+    /// \brief A std::set of weak_ptr_type
     using cache_type = std::set<weak_ptr_type, std::owner_less<weak_ptr_type> >;
 
     /// @}
@@ -116,6 +119,14 @@ public:
         return t;
     }
 
+    /// \return size
+    size_t size() const
+    { return Cache_.size(); }
+
+    /// \return number of expired Cache_ elements
+    size_t count_expired() const
+    { return std::count_if(Cache_.begin(), Cache_.end(), [](const weak_ptr_type & w) {return w.expired();}); }
+
     /// remove expired Cache_ elements
     void removeExpired()
     {
@@ -148,6 +159,15 @@ public:
 
     /// @}
 
+    /// stream the cache elements as a table
+    virtual std::ostream& print(std::ostream& os) const
+    {
+        for (auto& w : *this)
+            if (!w.expired())
+                os << *w.lock() << std::endl;
+        return os;
+    }
+
 protected:
 
     /// add element to cache
@@ -160,6 +180,16 @@ private:
     cache_type Cache_;
 
 };
+
+/// streamer
+template <class T>
+inline std::ostream& operator<<(std::ostream& os, const WeakPtrCache<T>& C)
+{
+    os << "contains " << C.size() << " elements, of which "
+       << C.count_expired() << " have expired" << std::endl;
+
+    return C.print(os);
+}
 
 }
 

@@ -429,66 +429,6 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
     return fsps;
 }
 
-//-------------------------
-// void DecayChannel::clearSymmetrizationIndices()
-// {
-//     DataAccessor::clearSymmetrizationIndices();
-//     BlattWeisskopf_->clearSymmetrizationIndices();
-//     SpinAmplitude_->clearSymmetrizationIndices();
-// }
-
-//-------------------------
-void DecayChannel::setSymmetrizationIndexParents()
-{
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "DecayChannel::DecayChannel");
-
-    ParticleCombinationVector chPCs = particleCombinations();
-
-    // clean up PCs without parents
-    ParticleCombinationVector chPCsParents = particleCombinations();
-    auto it = chPCsParents.begin();
-    while (it != chPCsParents.end()) {
-        if (not (*it)->parent()) {
-            it = chPCsParents.erase(it);
-        } else
-            ++it;
-    }
-    clearSymmetrizationIndices();
-
-    for (auto& pc : chPCsParents)
-        addParticleCombination(pc);
-
-
-    for (auto& chPC : chPCs) {
-        for (auto& wpc : initialStateParticle()->particleCombinationCache()) {
-
-            if (wpc.expired())
-                continue;
-
-            auto pc = wpc.lock();
-
-            if (!ParticleCombination::equivDown(chPC, pc))
-                continue;
-
-            addParticleCombination(pc);
-
-            // set PCs for channel's daughters
-            for (auto& pcDaughPC : pc->daughters())
-                for (const std::shared_ptr<Particle>& chDaugh : daughters())
-                    if (std::dynamic_pointer_cast<DecayingParticle>(chDaugh))
-                        for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations())
-                            if (ParticleCombination::equivDown(pcDaughPC, chDaughPC))
-                                std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addParticleCombination(pcDaughPC);
-
-        }
-    }
-
-    // next level
-    for (auto d : daughters())
-        d->setSymmetrizationIndexParents();
-}
-
 //--------------------------
 DataAccessorSet DecayChannel::dataAccessors()
 {
