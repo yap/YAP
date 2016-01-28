@@ -35,6 +35,38 @@ void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 }
 
 //-------------------------
+std::shared_ptr<ParticleCombination> ParticleCombination::origin()
+{
+    auto pc = shared_from_this();
+    while (pc->parent())
+        pc = pc->parent();
+    return pc;
+}
+
+//-------------------------
+ParticleCombinationVector ParticleCombination::leaves()
+{
+    if (Daughters_.empty())
+        return ParticleCombinationVector(1, shared_from_this());
+
+    ParticleCombinationVector V;
+    for (auto& d : Daughters_) {
+        auto v = d->leaves();
+        V.insert(V.end(), v.begin(), v.end());
+    }
+    return V;
+}
+
+//-------------------------
+bool ParticleCombination::decaysToFinalStateParticles() const
+{
+    for (auto& leaf : const_cast<ParticleCombination*>(this)->leaves())
+        if (!leaf->isFinalStateParticle())
+            return false;
+    return true;
+}
+
+//-------------------------
 bool ParticleCombination::consistent() const
 {
     bool C = true;
@@ -130,9 +162,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_pt
         return true;
 
     // Check indices
-    if (A->indices().size() != B->indices().size())
-        return false;
-    if (!std::equal(A->indices().begin(), A->indices().end(), B->indices().begin()))
+    if (A->indices() != B->indices())
         return false;
 
     // a match!
@@ -158,7 +188,7 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
         return false;
     }
     for (unsigned i = 0; i < A->daughters().size(); ++i)
-        if (!operator()(A->daughters()[i], B->daughters()[i]))
+        if (!equivDown(A->daughters()[i], B->daughters()[i]))
             return false;
 
     // a match!
@@ -180,7 +210,7 @@ bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleComb
         return false;
 
     // check parent
-    if (! ParticleCombination::equivUp(A->parent(), B->parent()))
+    if (!ParticleCombination::equivUp(A->parent(), B->parent()))
         return false;
 
     // a match!

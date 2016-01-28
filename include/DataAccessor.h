@@ -102,6 +102,9 @@ public:
     /// \return vector of ParticleCombination's
     ParticleCombinationVector particleCombinations() const override;
 
+    /// print ParticleCombination map
+    void printParticleCombinations() const;
+
     /// @}
 
     /// \return size of storage in data point (number of real values)

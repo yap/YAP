@@ -7,8 +7,18 @@
 #include "logging.h"
 #include "ParticleCombinationCache.h"
 
+#include "BlattWeisskopf.h"
+#include "DecayChannel.h"
+#include "Resonance.h"
+#include "DecayingParticle.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
+#include "SpinAmplitude.h"
+#include "MassShape.h"
+
 #include <assert.h>
 #include <future>
+#include <memory>
 #include <stdexcept>
 
 namespace yap {
@@ -123,6 +133,40 @@ bool InitialStateParticle::consistent() const
 }
 
 //-------------------------
+std::string data_accessor_type(std::shared_ptr<DataAccessor> D)
+{
+    if (std::dynamic_pointer_cast<BlattWeisskopf>(D))
+        return "BlattWeisskopf";
+
+    if (std::dynamic_pointer_cast<DecayChannel>(D))
+        return "DecayChannel";
+
+    if (std::dynamic_pointer_cast<Resonance>(D))
+        return "Resonance";
+
+    if (std::dynamic_pointer_cast<DecayingParticle>(D))
+        return "DecayingParticle";
+
+    if (std::dynamic_pointer_cast<FourMomenta>(D))
+        return "FourMomenta";
+
+    if (std::dynamic_pointer_cast<HelicityAngles>(D))
+        return "HelicityAngles";
+
+    if (std::dynamic_pointer_cast<SpinAmplitude>(D))
+        return "SpinAmplitude";
+
+    if (std::dynamic_pointer_cast<MassShape>(D))
+        return "MassShape";
+
+    if (std::dynamic_pointer_cast<MeasuredBreakupMomenta>(D))
+        return "MeasuredBreakupMomenta";
+
+    return "DataAccessor";
+
+}
+
+//-------------------------
 void InitialStateParticle::prepare()
 {
     // check
@@ -130,6 +174,9 @@ void InitialStateParticle::prepare()
         FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent as DecayingParticle.";
         throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
     }
+
+    // prepare FourMomenta. Needs FinalStateParticles_
+    FourMomenta_->prepare();
 
     // set DataAccessors_
     DataAccessors_ = dataAccessors();
@@ -139,20 +186,22 @@ void InitialStateParticle::prepare()
 
     FLOG(INFO) << ParticleCombinationCache_;
 
-    // check
-    for (auto& wpc : ParticleCombinationCache_) {
-        if (!wpc.lock())
-            continue;
-        auto pc = wpc.lock();
-        if (!pc->consistent()
-                or (pc->indices().size() < particleCombinations()[0]->indices().size() and !pc->parent())) {
-            FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
-            throw exceptions::Exception("ParticleCombination inconsistent", "InitialStateParticle::prepare");
-        }
+    for (auto& D : DataAccessors_) {
+        std::cout << std::endl;
+        LOG(INFO) << data_accessor_type(D);
+        D->printParticleCombinations();
     }
 
-    // prepare FourMomenta. Needs FinalStateParticles_
-    FourMomenta_->prepare();
+    // // check
+    // for (auto& wpc : ParticleCombinationCache_) {
+    //     if (!wpc.lock())
+    //         continue;
+    //     auto pc = wpc.lock();
+    //     if (!pc->consistent() or pc->origin().indices().size() != finalStateParticles().size())
+    //         FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
+    //     throw exceptions::Exception("ParticleCombination inconsistent", "InitialStateParticle::prepare");
+    // }
+
 
     // add this (commented out because ISP has no need for data access at moment)
     // DataAccessors_.push_back(shared_from_this());
@@ -298,10 +347,8 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 //-------------------------
 void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
-    if (!Prepared_) {
-        FLOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        throw exceptions::Exception("InitialStateParticle not prepared", "InitialStateParticle::addDataPoint");
-    }
+    if (!Prepared_)
+        throw exceptions::Exception("InitialStateParticle not yet prepared", "InitialStateParticle::addDataPoint");
 
     if (DataSet_.empty()) {
         addDataPoint(std::move(DataPoint(fourMomenta)));
@@ -347,12 +394,23 @@ void InitialStateParticle::addDataPoint(const DataPoint& d)
 //-------------------------
 void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 {
+    if (!Prepared_)
+        throw exceptions::Exception("ISP not yet prepared", "InitialStateParticle::initializeForMonteCarloGeneration");
+
+    if (!DataSet_.empty())
+        throw exceptions::Exception("DataSet isn't empty", "InitialStateParticle::initializeForMonteCarloGeneration");
+
     // initialize with 0
     std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), FourVector_0);
 
+    // create data point
+    auto d = DataPoint(momenta);
+    // and allocate space
+    d.allocateStorage(FourMomenta_, DataAccessors_);
+
     // add n (empty) data points
     for (unsigned i = 0; i < n; ++i)
-        addDataPoint(momenta);
+        DataSet_.emplace_back(DataPoint(d));
 
     // set data partitions (1 for each data point)
     setDataPartitions(createDataPartitionsBlockBySize(DataSet_, 1));

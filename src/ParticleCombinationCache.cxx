@@ -29,16 +29,14 @@ ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> 
 //-------------------------
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other) const
 {
+    if (other.isFinalStateParticle())
+        return create_fsp(other.indices()[0]);
+
     auto pc = shared_ptr_type(new ParticleCombination());
 
-    // if copying a final-state particle, just copy indices
-    if (other.isFinalStateParticle())
-        pc->Indices_ = other.Indices_;
-
-    // else copy daughters (recursively) and add them
-    else
-        for (auto& d : other.Daughters_)
-            pc->addDaughter(create_copy(*d));
+    // copy daughters (recursively) and add them
+    for (auto& d : other.Daughters_)
+        pc->addDaughter(create_copy(*d));
 
     return pc;
 }
@@ -90,8 +88,13 @@ ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::findByUnordere
 void ParticleCombinationCache::addToCache(shared_ptr_type pc)
 {
     // add daughters into cache, too (recursively)
-    for (auto& d : pc->daughters())
-        addToCache(d);
+    for (auto& d : pc->daughters()) {
+        // look for daughter in cache
+        auto w = find(d);
+        // if it's not there, add it
+        if (w.expired())
+            addToCache(d);
+    }
     // add self into cache
     WeakPtrCache::addToCache(pc);
     // setLineage(pc);

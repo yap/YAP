@@ -54,11 +54,6 @@ public:
     shared_ptr_type fsp(ParticleIndex index)
     { return operator[](create_fsp(index)); }
 
-    /// retrieve or create copy of ParticleCombination
-    /// \param other ParticleCombination to copy
-    shared_ptr_type copy(const ParticleCombination& other)
-    { return operator[](create_copy(other)); }
-
     /// retrieve or create composite particle from daughters.
     /// copies daughters into composite, setting copies' parents = shared_from_this()
     /// \param D ParticleCombinationVector of daughters to create composite from
@@ -67,17 +62,19 @@ public:
 
     using WeakPtrCache::find;
 
-    /// retrieve final-state particle ParticleCombination
-    /// Does not add to the cache if ParticleCombination is not found.
-    /// \param index Index of particle
-    weak_ptr_type find(ParticleIndex index)
-    { return find(create_fsp(index)); }
+    /*
+        /// retrieve final-state particle ParticleCombination
+        /// Does not add to the cache if ParticleCombination is not found.
+        /// \param index Index of particle
+        weak_ptr_type find(ParticleIndex index)
+        { return find(create_fsp(index)); }
 
-    /// retrieve copy of ParticleCombination with new spin projection
-    /// Does not add to the cache if ParticleCombination is not found.
-    /// \param other ParticleCombination to copy
-    weak_ptr_type find(const ParticleCombination& other)
-    { return find(create_copy(other)); }
+        /// retrieve copy of ParticleCombination with new spin projection
+        /// Does not add to the cache if ParticleCombination is not found.
+        /// \param other ParticleCombination to copy
+        weak_ptr_type find(const ParticleCombination& other)
+        { return find(create_copy(other)); }
+    */
 
     /// retrieve composite particle ParticleCombination from cache.
     /// Does not add to the cache if ParticleCombination is not found.
@@ -109,14 +106,14 @@ private:
     /// add to cache
     void addToCache(shared_ptr_type pc) override;
 
-    /// create final-state particle
+    /// create final-state particle, it is not yet added to cache
     shared_ptr_type create_fsp(ParticleIndex index) const
     { return shared_ptr_type(new ParticleCombination(index)); }
 
-    /// create copy
+    /// create copy, it is not yet added to cache
     shared_ptr_type create_copy(const ParticleCombination& other) const;
 
-    /// create composite ParticleCombination
+    /// create composite ParticleCombination, it is not yet added to cache
     shared_ptr_type create_composite(const ParticleCombinationVector& D) const;
 
 };

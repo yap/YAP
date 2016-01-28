@@ -49,6 +49,21 @@ ParticleCombinationVector DataAccessor::particleCombinations() const
 }
 
 //-------------------------
+void DataAccessor::printParticleCombinations() const
+{
+    for (auto& kv : SymmetrizationIndices_) {
+        auto p = kv.first;
+        while (p->parent())
+            p = p->parent();
+        if (p->indices().size() != initialStateParticle()->finalStateParticles().size())
+            LOG(INFO) << kv.second << " : " << *(kv.first) << "\tin " << *p
+                      << "\t(unused; " << p->indices().size() << ")";
+        else
+            LOG(INFO) << kv.second << " : " << *(kv.first) << "\tin " << *p;
+    }
+}
+
+//-------------------------
 bool DataAccessor::hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
         const ParticleCombination::Equiv& equiv) const
 {

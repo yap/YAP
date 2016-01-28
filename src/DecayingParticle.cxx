@@ -17,7 +17,7 @@ namespace yap {
 DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
     AmplitudeComponent(),
     Particle(q, mass, name),
-    DataAccessor(),
+    DataAccessor(&ParticleCombination::equivUpAndDown),
     RadialSize_(std::make_shared<RealParameter>(radialSize))
 {
 }

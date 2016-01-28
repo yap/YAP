@@ -68,8 +68,18 @@ public:
 
     /// @}
 
+    /// \return whether ParticleCombination is for a final state particle
     bool isFinalStateParticle() const
     { return Daughters_.empty() and Indices_.size() == 1; }
+
+    /// \return top of decay tree this ParticleCombination belongs to
+    std::shared_ptr<ParticleCombination> origin();
+
+    /// \return vector of all leaves of decay tree below this ParticleCombination
+    ParticleCombinationVector leaves();
+
+    /// \return whether all leaves are final state particles
+    bool decaysToFinalStateParticles() const;
 
     /// Checks consistency of object
     bool consistent() const;
