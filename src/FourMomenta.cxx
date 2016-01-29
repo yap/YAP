@@ -17,7 +17,7 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta(InitialStateParticle* isp) :
     StaticDataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
-    M_(std::make_shared<RealCachedDataValue>(this))
+    M_(RealCachedDataValue::create(this))
 {
     if (!initialStateParticle())
         throw exceptions::Exception("InitialStateParticle unset", "FourMomenta::FourMomenta");
@@ -108,6 +108,14 @@ bool FourMomenta::consistent() const
     }
 
     return C;
+}
+
+//-------------------------
+const FourVector<double>& FourMomenta::p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    if (pc->isFinalStateParticle())
+        return d.finalStateFourMomenta()[pc->indices()[0]];
+    return d.fourMomenta()[symmetrizationIndex(pc)];
 }
 
 //-------------------------

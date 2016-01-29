@@ -7,15 +7,6 @@
 #include "logging.h"
 #include "ParticleCombinationCache.h"
 
-#include "BlattWeisskopf.h"
-#include "DecayChannel.h"
-#include "Resonance.h"
-#include "DecayingParticle.h"
-#include "FourMomenta.h"
-#include "HelicityAngles.h"
-#include "SpinAmplitude.h"
-#include "MassShape.h"
-
 #include <assert.h>
 #include <future>
 #include <memory>
@@ -133,40 +124,6 @@ bool InitialStateParticle::consistent() const
 }
 
 //-------------------------
-std::string data_accessor_type(std::shared_ptr<DataAccessor> D)
-{
-    if (std::dynamic_pointer_cast<BlattWeisskopf>(D))
-        return "BlattWeisskopf";
-
-    if (std::dynamic_pointer_cast<DecayChannel>(D))
-        return "DecayChannel";
-
-    if (std::dynamic_pointer_cast<Resonance>(D))
-        return "Resonance";
-
-    if (std::dynamic_pointer_cast<DecayingParticle>(D))
-        return "DecayingParticle";
-
-    if (std::dynamic_pointer_cast<FourMomenta>(D))
-        return "FourMomenta";
-
-    if (std::dynamic_pointer_cast<HelicityAngles>(D))
-        return "HelicityAngles";
-
-    if (std::dynamic_pointer_cast<SpinAmplitude>(D))
-        return "SpinAmplitude";
-
-    if (std::dynamic_pointer_cast<MassShape>(D))
-        return "MassShape";
-
-    if (std::dynamic_pointer_cast<MeasuredBreakupMomenta>(D))
-        return "MeasuredBreakupMomenta";
-
-    return "DataAccessor";
-
-}
-
-//-------------------------
 void InitialStateParticle::prepare()
 {
     // check
@@ -188,7 +145,6 @@ void InitialStateParticle::prepare()
 
     for (auto& D : DataAccessors_) {
         std::cout << std::endl;
-        LOG(INFO) << data_accessor_type(D);
         D->printParticleCombinations();
     }
 

@@ -34,7 +34,7 @@ bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two
         return false;
 
     // check whether J lies between |j1 - j2| and (j1 + j2)
-    if ((int)two_J < abs(two_j1 - two_j2) or two_J > (two_j1 + two_j2))
+    if (two_J < abs((int)two_j1 - (int)two_j2) or two_J > (two_j1 + two_j2))
         return false;
 
     // when either daughter spin is zero

@@ -22,6 +22,7 @@
 #define yap_DataAccessor_h
 
 #include "CalculationStatus.h"
+#include "CachedDataValue.h"
 #include "ReportsInitialStateParticle.h"
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
@@ -34,7 +35,6 @@
 
 namespace yap {
 
-class CachedDataValue;
 class DataPoint;
 
 /// \name DataAccessor
@@ -120,7 +120,7 @@ public:
     bool consistent() const;
 
     /// add CachedDataValue
-    void addCachedDataValue(CachedDataValue* c);
+    void addCachedDataValue(std::shared_ptr<CachedDataValue> c);
 
     /// \name Data access
     /// @{
@@ -173,7 +173,7 @@ private:
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
-    std::set<CachedDataValue*> CachedDataValues_;
+    CachedDataValueSet CachedDataValues_;
 
     /// number of real values stored per symm. index
     unsigned Size_;

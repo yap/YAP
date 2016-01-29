@@ -56,9 +56,13 @@ public:
 
     /// @}
 
-    /// get four momenta of data point
-    const std::vector<FourVector<double> >& finalStateFourMomenta()
+    /// get fsp four momenta (const)
+    const std::vector<FourVector<double> >& finalStateFourMomenta() const
     { return FSPFourMomenta_; }
+
+    /// get non-fsp four momenta (const)
+    const std::vector<FourVector<double> >& fourMomenta() const
+    { return FourMomenta_; }
 
     /// set four momenta into data point
     void setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
@@ -69,17 +73,12 @@ public:
     /// reserve space in Data_
     void allocateStorage(std::shared_ptr<FourMomenta> fourMom, const DataAccessorSet& dataAccessors);
 
-protected:
-
-    /// \name DataPoint friends
-    /// @{
-
     friend class CachedDataValue;
     friend class DataAccessor;
     friend class DataSet;
     friend class FourMomenta;
 
-    /// @}
+private:
 
     /// vector of 4-momenta of final-state particles in event
     std::vector<FourVector<double> > FSPFourMomenta_;

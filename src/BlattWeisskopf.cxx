@@ -35,8 +35,8 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     DecayingParticle_(dp),
     L_(L),
-    Fq_r(new RealCachedDataValue(this)),
-    Fq_ab(new RealCachedDataValue(this))
+    Fq_r(RealCachedDataValue::create(this)),
+    Fq_ab(RealCachedDataValue::create(this))
 {
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");

@@ -4,6 +4,17 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 
+//-------------------------
+#include "BlattWeisskopf.h"
+#include "DecayChannel.h"
+#include "Resonance.h"
+#include "DecayingParticle.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
+#include "SpinAmplitude.h"
+#include "MassShape.h"
+//-------------------------
+
 namespace yap {
 
 //-------------------------
@@ -49,17 +60,51 @@ ParticleCombinationVector DataAccessor::particleCombinations() const
 }
 
 //-------------------------
+std::string data_accessor_type(const DataAccessor* D)
+{
+    if (dynamic_cast<const BlattWeisskopf*>(D))
+        return "BlattWeisskopf";
+
+    if (dynamic_cast<const DecayChannel*>(D))
+        return "DecayChannel";
+
+    if (dynamic_cast<const Resonance*>(D))
+        return "Resonance";
+
+    if (dynamic_cast<const DecayingParticle*>(D))
+        return "DecayingParticle";
+
+    if (dynamic_cast<const FourMomenta*>(D))
+        return "FourMomenta";
+
+    if (dynamic_cast<const HelicityAngles*>(D))
+        return "HelicityAngles";
+
+    if (dynamic_cast<const SpinAmplitude*>(D))
+        return "SpinAmplitude";
+
+    if (dynamic_cast<const MassShape*>(D))
+        return "MassShape";
+
+    if (dynamic_cast<const MeasuredBreakupMomenta*>(D))
+        return "MeasuredBreakupMomenta";
+
+    return "DataAccessor";
+
+}
+
+//-------------------------
 void DataAccessor::printParticleCombinations() const
 {
+    LOG(INFO) << data_accessor_type(this);
     for (auto& kv : SymmetrizationIndices_) {
         auto p = kv.first;
         while (p->parent())
             p = p->parent();
-        if (p->indices().size() != initialStateParticle()->finalStateParticles().size())
-            LOG(INFO) << kv.second << " : " << *(kv.first) << "\tin " << *p
-                      << "\t(unused; " << p->indices().size() << ")";
+        if (p == kv.first)
+            LOG(INFO) << kv.second << " : " << *(kv.first);
         else
-            LOG(INFO) << kv.second << " : " << *(kv.first) << "\tin " << *p;
+            LOG(INFO) << kv.second << " : " << *(kv.first) << ". In " << *p;
     }
 }
 
@@ -77,7 +122,7 @@ bool DataAccessor::hasParticleCombination(const std::shared_ptr<ParticleCombinat
 bool DataAccessor::consistent() const
 {
     if (SymmetrizationIndices_.empty()) {
-        LOG(ERROR) << "DataAccessor::consistent() - SymmetrizationIndices_ is empty.";
+        FLOG(ERROR) << "SymmetrizationIndices_ is empty.";
         return false;
     }
 
@@ -87,20 +132,20 @@ bool DataAccessor::consistent() const
         result &= kv.first->consistent();
 
     // check CachedDataValues_
-    for (CachedDataValue* c : CachedDataValues_) {
+    for (auto& c : CachedDataValues_) {
         if (c->CalculationStatus_.size() == 0) {
-            LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_.size() == 0";
+            FLOG(ERROR) << "c->CalculationStatus_.size() == 0";
             result = false;
         }
         if (c->CalculationStatus_.size() != c->VariableStatus_.size()) {
-            LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_.size() != c->VariableStatus_.size()";
+            FLOG(ERROR) << "c->CalculationStatus_.size() != c->VariableStatus_.size()";
             result = false;
         }
 
         for (unsigned i = 0; i < c->CalculationStatus_.size(); ++i) {
             if (int(c->CalculationStatus_[i].size()) != maxSymmetrizationIndex() + 1) {
-                LOG(ERROR) << "DataAccessor::consistent() - c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1";
-                LOG(ERROR) << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
+                FLOG(ERROR) << "c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1 ("
+                            << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1 << ")";
                 DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
                 result = false;
             }
@@ -136,8 +181,8 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
     unsigned size = maxSymmetrizationIndex() + 1;
     SymmetrizationIndices_[c] = size;
 
-    for (CachedDataValue* d : CachedDataValues_)
-        d->setNumberOfSymmetrizations(size + 1);
+    for (auto& c : CachedDataValues_)
+        c->setNumberOfSymmetrizations(size + 1);
 }
 
 //-------------------------
@@ -189,10 +234,14 @@ void DataAccessor::pruneSymmetrizationIndices()
             index += 1;
 
     }
+
+    unsigned size = maxSymmetrizationIndex() + 1;
+    for (auto& c : CachedDataValues_)
+        c->setNumberOfSymmetrizations(size);
 }
 
 //-------------------------
-void DataAccessor::addCachedDataValue(CachedDataValue* c)
+void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
 {
     c->setNumberOfSymmetrizations(maxSymmetrizationIndex() + 1);
     CachedDataValues_.insert(c);
@@ -225,7 +274,7 @@ const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) co
 //-------------------------
 void DataAccessor::updateGlobalCalculationStatuses()
 {
-    for (CachedDataValue* c : CachedDataValues_) {
+    for (auto& c : CachedDataValues_) {
         for (auto& kv : SymmetrizationIndices_) {
             DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << * (kv.first));
             c->updateGlobalCalculationStatus(kv.first, kv.second);

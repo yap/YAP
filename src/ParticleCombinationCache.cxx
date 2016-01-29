@@ -5,6 +5,7 @@
 #include "logging.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iomanip>
 
 namespace yap {

@@ -23,10 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
-#include "DataAccessor.h"
-#include "DataPoint.h"
 #include "Parameter.h"
-#include "ParticleCombination.h"
 #include "VariableStatus.h"
 
 #include <memory>
@@ -37,6 +34,9 @@
 namespace yap {
 
 class CachedDataValue;
+class DataAccessor;
+class DataPoint;
+class ParticleCombination;
 
 /// \typedef CachedDataValueSet
 /// \ingroup Data
@@ -59,16 +59,12 @@ using CachedDataValueDaughterIndexPairSet = std::set<CachedDataValueDaughterInde
 /// \ingroup Data
 /// \ingroup Cache
 
-class CachedDataValue
+class CachedDataValue : public std::enable_shared_from_this<CachedDataValue>
 {
 public:
 
-    /// Constructor
-    /// \param owner #DataAccessor to which this cached value belongs
-    /// \param size Length of cached value (number of real elements)
-    /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedValues cached value depends on
-    CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
+    /// check consistency of object
+    bool consistent() const;
 
     /// \name Managing dependencies
     /// @{
@@ -122,6 +118,7 @@ public:
     /// \name Getters
     /// @{
 
+    /// \return raw pointer owning DataAccessor
     DataAccessor* owner() const
     { return Owner_; }
 
@@ -145,8 +142,7 @@ public:
     /// get global CalculationStatus
     /// \return #CalculationStatus of symmetrization index and data-partition index
     /// \param pc shared pointer to #ParticleCombination to check status of
-    CalculationStatus globalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
-    { return GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)]; }
+    CalculationStatus globalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc);
 
     /// \return VariableStatus for symmetrization index and data-partition index
     /// \param symmetrizationIndex index of symmetrization to check status of
@@ -163,12 +159,7 @@ public:
     /// \param d #DataPoint to get value from
     /// \param symmetrizationIndex index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    { return d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index];}
-#else
-    { return d.Data_.at(Owner_->index()).at(symmetrizationIndex).at(Position_ + index);}
-#endif
+    double value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const;
 
     /// \return Size of cached value (number of real elements)
     virtual unsigned size() const
@@ -204,8 +195,7 @@ public:
     /// \param stat VariableStatus to set to
     /// \param ParticleCombination to set status of
     /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex)
-    { CalculationStatus_[dataPartitionIndex][Owner_->symmetrizationIndex(pc)] = stat; }
+    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex);
 
     /// set all calculation statuses
     /// \param stat CalculationStatus to set to
@@ -223,9 +213,7 @@ public:
     /// set global CalculationStatus for symmetrization index
     /// \param stat VariableStatus to set to
     /// \param ParticleCombination to set status of
-    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc)
-    { GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)] = stat; }
-
+    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc);
 
     /// Set value into #DataPoint for particular symmetrization
     /// (No update to VariableStatus or CalculationStatus is made!)
@@ -233,15 +221,13 @@ public:
     /// \param val Value to set to
     /// \param d #DataPoint to update
     /// \param symmetrizationIndex index of symmetrization to apply to
-    void setValue(unsigned index, double val, DataPoint& d, unsigned symmetrizationIndex) const
-    { d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index] = val; }
+    void setValue(unsigned index, double val, DataPoint& d, unsigned symmetrizationIndex) const;
 
     /// @}
 
     /// update the global calculation status, depending on everything it depends on
     /// \param pc Shared pointer (const reference) to a Particle combination
-    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
-    { updateGlobalCalculationStatus(pc, Owner_->symmetrizationIndex(pc)); }
+    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc);
 
     /// update the global calculation status, depending on everything it depends on
     /// \param pc Shared pointer (const reference) to a Particle combination
@@ -253,15 +239,24 @@ public:
     void resetCalculationStatus(unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
-protected:
-
-    /// \name CachedDataValue friends
-    /// @{
-
     friend class DataAccessor;
     friend class InitialStateParticle;
 
-    /// @}
+protected:
+
+    /// Constructor (protected)
+    CachedDataValue(unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
+
+    /// set the owning DataAccessor
+    void setDataAccessor(DataAccessor* owner);
+
+    /// resize status vectors for number of symmetrizations
+    void setNumberOfSymmetrizations(unsigned n);
+
+    /// resize status vectors for number of data partitions
+    void setNumberOfDataPartitions(unsigned n);
+
+private:
 
     DataAccessor* Owner_;       ///< Owning #DataAccessor
     int Position_;              ///< Position of first element of cached value within data vector
@@ -283,15 +278,9 @@ protected:
     /// second index is for symmetrization
     std::vector<std::vector<VariableStatus> > VariableStatus_;
 
-    /// resize status vectors for number of symmetrizations
-    void setNumberOfSymmetrizations(unsigned n);
-
-    /// resize status vectors for number of data partitions
-    void setNumberOfDataPartitions(unsigned n);
-
 };
 
-/// \class RealCachedValue
+/// \class RealCachedDataValue
 /// \brief Class for managing a single real cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
@@ -301,13 +290,11 @@ class RealCachedDataValue : public CachedDataValue
 {
 public:
 
-    /// Constructor
+    /// create shared_ptr to RealCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
     /// \param vals set of shared pointers to CachedValues cached value depends on
-    RealCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
-        : CachedDataValue(owner, 1, pars, vals)
-    {}
+    static std::shared_ptr<RealCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -324,9 +311,15 @@ public:
     double value(const DataPoint& d, unsigned symmetrizationIndex) const
     { return CachedDataValue::value(0, d, symmetrizationIndex); }
 
+private:
+
+    /// Constructor
+    RealCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
+        : CachedDataValue(1, pars, vals) {}
+
 };
 
-/// \class ComplexCachedValue
+/// \class ComplexCachedDataValue
 /// \brief Class for managing a complex cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
@@ -336,13 +329,11 @@ class ComplexCachedDataValue : public CachedDataValue
 {
 public:
 
-    /// Constructor
+    /// create shared pointer to ComplexCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
     /// \param vals set of shared pointers to CachedValues cached value depends on
-    ComplexCachedDataValue(DataAccessor* owner, ParameterSet pars = {}, CachedDataValueSet vals = {})
-        : CachedDataValue(owner, 2, pars, vals)
-    {}
+    static std::shared_ptr<ComplexCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -368,6 +359,14 @@ public:
     /// \return Value of CachedDataValue inside the data point
     std::complex<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
     { return std::complex<double>(CachedDataValue::value(0, d, symmetrizationIndex), CachedDataValue::value(1, d, symmetrizationIndex)); }
+
+private:
+
+    /// Constructor (protected)
+    /// see #create for details
+    ComplexCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
+        : CachedDataValue(2, pars, vals) {}
+
 
 };
 

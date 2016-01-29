@@ -19,7 +19,7 @@ namespace yap {
 
 //-------------------------
 DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double> free) :
-    Fixed(std::make_shared<ComplexCachedDataValue>(dc)),
+    Fixed(ComplexCachedDataValue::create(dc)),
     Free(std::make_shared<ComplexParameter>(free))
 {
 }
@@ -170,7 +170,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 
         // add TotalAmplitude for two_m if needed
         if (TotalAmplitudes_.find(two_m) == TotalAmplitudes_.end())
-            TotalAmplitudes_[two_m] = std::make_shared<ComplexCachedDataValue>(this);
+            TotalAmplitudes_[two_m] = ComplexCachedDataValue::create(this);
 
         // insert new AmplitudePair into map, retaining the added Amplitude pair
         auto ap = (apM.insert(std::make_pair(two_m, std::move(AmplitudePair(this))))).first->second;

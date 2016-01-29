@@ -57,12 +57,7 @@ public:
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc)
-    {
-        if (pc->isFinalStateParticle())
-            return d.FSPFourMomenta_[pc->indices()[0]];
-        return d.FourMomenta_[symmetrizationIndex(pc)];
-    }
+    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from

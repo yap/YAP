@@ -143,7 +143,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     for (auto& kv : Channels_.back()->TotalAmplitudes_) {
         // if spin projection not yet in Amplitudes_, add it
         if (Amplitudes_.find(kv.first) == Amplitudes_.end())
-            Amplitudes_[kv.first] = std::make_shared<ComplexCachedDataValue>(this);
+            Amplitudes_[kv.first] = ComplexCachedDataValue::create(this);
         Amplitudes_[kv.first]->addDependency(kv.second);
     }
 

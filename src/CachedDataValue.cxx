@@ -1,13 +1,16 @@
 #include "CachedDataValue.h"
 
 #include "DataAccessor.h"
+#include "DataPoint.h"
+#include "Exceptions.h"
 #include "logging.h"
 
 namespace yap {
 
 //-------------------------
-CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSet pars, CachedDataValueSet vals) :
-    Owner_(owner),
+CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataValueSet vals) :
+    std::enable_shared_from_this<CachedDataValue>(),
+    Owner_(nullptr),
     Position_(-1),
     Size_(size),
     ParametersItDependsOn_(pars),
@@ -16,16 +19,53 @@ CachedDataValue::CachedDataValue(DataAccessor* owner, unsigned size, ParameterSe
     VariableStatus_(1, std::vector<VariableStatus>())
 {
     if (Size_ == 0)
-        LOG(ERROR) << "CachedDataValue::CachedDataValue - Size_ is zero!";
-    else if (Owner_) {
-        Owner_->addCachedDataValue(this);
-        // set position to end of owner's current storage
-        Position_ = Owner_->size();
-        // increase owner's storage to accommodate cached value
-        Owner_->increaseSize(Size_);
-    } else {
-        LOG(ERROR) << "CachedDataValue::CachedDataValue - No Owner given!";
-    }
+        throw exceptions::Exception("zero size", "CachedDataValue::CachedDataValue");
+}
+
+//-------------------------
+bool CachedDataValue::consistent() const
+{
+    return false;
+}
+
+//-------------------------
+CalculationStatus CachedDataValue::globalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
+{
+    return GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)];
+}
+
+//-------------------------
+double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const
+{
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+    return d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index];
+#else
+    return d.Data_.at(Owner_->index()).at(symmetrizationIndex).at(Position_ + index);
+#endif
+}
+
+//-------------------------
+void CachedDataValue::setCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex)
+{
+    CalculationStatus_[dataPartitionIndex][Owner_->symmetrizationIndex(pc)] = stat;
+}
+
+//-------------------------
+void CachedDataValue::setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc)
+{
+    GlobalCalculationStatus_[Owner_->symmetrizationIndex(pc)] = stat;
+}
+
+//-------------------------
+void CachedDataValue::setValue(unsigned index, double val, DataPoint& d, unsigned symmetrizationIndex) const
+{
+    d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index] = val;
+}
+
+//-------------------------
+void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc)
+{
+    updateGlobalCalculationStatus(pc, Owner_->symmetrizationIndex(pc));
 }
 
 //-------------------------
@@ -107,6 +147,27 @@ void CachedDataValue::updateGlobalCalculationStatus(const std::shared_ptr<Partic
 }
 
 //-------------------------
+void CachedDataValue::setDataAccessor(DataAccessor* owner)
+{
+    if (Owner_ != nullptr)
+        throw exceptions::Exception("Owner_ has already been set", "CachedDataValue");
+
+    Owner_ = owner;
+
+    if (Owner_ == nullptr)
+        throw exceptions::Exception("Owner_ is nullptr", "CachedDataValue");
+
+    // add self to owner
+    Owner_->addCachedDataValue(shared_from_this());
+
+    // set position to end of owner's current storage
+    Position_ = Owner_->size();
+
+    // increase owner's storage to accommodate cached value
+    Owner_->increaseSize(Size_);
+}
+
+//-------------------------
 void CachedDataValue::setNumberOfSymmetrizations(unsigned n)
 {
     for (auto& v : CalculationStatus_) {
@@ -132,6 +193,14 @@ void CachedDataValue::setNumberOfDataPartitions(unsigned n)
 }
 
 //-------------------------
+std::shared_ptr<RealCachedDataValue> RealCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+{
+    auto c = std::shared_ptr<RealCachedDataValue>(new RealCachedDataValue(pars, vals));
+    c->setDataAccessor(da);
+    return c;
+}
+
+//-------------------------
 void RealCachedDataValue::setValue(double val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
 {
     if (val != CachedDataValue::value(0, d, symmetrizationIndex)) {
@@ -140,6 +209,14 @@ void RealCachedDataValue::setValue(double val, DataPoint& d, unsigned symmetriza
     }
 
     setCalculationStatus(kCalculated, symmetrizationIndex, dataPartitionIndex);
+}
+
+//-------------------------
+std::shared_ptr<ComplexCachedDataValue> ComplexCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+{
+    auto c = std::shared_ptr<ComplexCachedDataValue>(new ComplexCachedDataValue(pars, vals));
+    c->setDataAccessor(da);
+    return c;
 }
 
 //-------------------------

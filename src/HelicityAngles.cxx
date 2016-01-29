@@ -16,8 +16,8 @@ namespace yap {
 //-------------------------
 HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
     StaticDataAccessor(isp, &ParticleCombination::equivUpAndDown),
-    Phi_(std::make_shared<RealCachedDataValue>(this)),
-    Theta_(std::make_shared<RealCachedDataValue>(this))
+    Phi_(RealCachedDataValue::create(this)),
+    Theta_(RealCachedDataValue::create(this))
 {
 }
 

@@ -21,6 +21,7 @@
 #ifndef yap_StaticDataAccessor_h
 #define yap_StaticDataAccessor_h
 
+#include "DataAccessor.h"
 #include "Exceptions.h"
 #include "ReportsInitialStateParticle.h"
 

@@ -14,7 +14,7 @@ BreitWigner::BreitWigner(double mass, double width) :
     MassShape(),
     Mass_(std::make_shared<RealParameter>(mass)),
     Width_(std::make_shared<RealParameter>(width)),
-    T_(std::make_shared<ComplexCachedDataValue>(this, ParameterSet{Mass_, Width_}))
+    T_(ComplexCachedDataValue::create(this, ParameterSet{Mass_, Width_}))
 {
 }
 

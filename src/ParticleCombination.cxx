@@ -124,18 +124,21 @@ std::string to_string(const ParticleCombination& pc)
         s += std::to_string(i);
     s += ")";
 
-    if (pc.daughters().empty() or (pc.daughters().size() == 2 and pc.indices().size() == 2))
+    if (pc.daughters().empty())
         return s;
 
     s += " -> ";
 
     for (auto& d : pc.daughters()) {
-        if (d->daughters().empty() or (d->daughters().size() == 2 and d->indices().size() == 2))
-            s += to_string(*d) + ", ";
-        else
-            s += "[" + to_string(*d) + "], ";
+        s += "(";
+        for (auto i : d->indices())
+            s += std::to_string(i);
+        s += ") + ";
     }
-    s.erase(s.size() - 2, 2);
+    s.erase(s.size() - 3, 3);
+    for (auto& d : pc.daughters())
+        if (!d->isFinalStateParticle())
+            s += "; " + to_string(*d);
     return s;
 }
 
@@ -180,13 +183,14 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
     if (A == B)
         return true;
 
-    if (!ParticleCombination::equivByOrderedContent(A, B))
+    // check ordered content
+    if (A->indices() != B->indices())
         return false;
 
     // Check daughters
-    if (A->daughters().size() != B->daughters().size()) {
+    if (A->daughters().size() != B->daughters().size())
         return false;
-    }
+
     for (unsigned i = 0; i < A->daughters().size(); ++i)
         if (!equivDown(A->daughters()[i], B->daughters()[i]))
             return false;
@@ -209,12 +213,12 @@ bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleComb
     if (!ParticleCombination::equivByOrderedContent(A, B))
         return false;
 
-    // check parent
-    if (!ParticleCombination::equivUp(A->parent(), B->parent()))
-        return false;
+    // if no more parents, return true
+    if (!A->parent() and !B->parent())
+        return true;
 
-    // a match!
-    return true;
+    // else continue up
+    return ParticleCombination::equivUp(A->parent(), B->parent());
 }
 
 //-------------------------
@@ -223,12 +227,12 @@ bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<Parti
     if (!ParticleCombination::equivDown(A, B))
         return false;
 
-    // check parent
-    if (!ParticleCombination::equivUp(A->parent(), B->parent()))
-        return false;
+    // if parents, return true
+    if (!A->parent() and !B->parent())
+        return true;
 
-    // a match!
-    return true;
+    // else check up
+    return ParticleCombination::equivUp(A->parent(), B->parent());
 }
 
 //-------------------------
