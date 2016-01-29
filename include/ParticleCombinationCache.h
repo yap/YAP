@@ -61,26 +61,26 @@ public:
     { return operator[](create_composite(D)); }
 
     using WeakPtrCache::find;
+    
+    /// retrieve final-state particle ParticleCombination
+    /// Does not add to the cache if ParticleCombination is not found.
+    /// \param index Index of particle
+    weak_ptr_type find(ParticleIndex index) const
+    { return find(create_fsp(index)); }
 
-    /*
-        /// retrieve final-state particle ParticleCombination
-        /// Does not add to the cache if ParticleCombination is not found.
-        /// \param index Index of particle
-        weak_ptr_type find(ParticleIndex index)
-        { return find(create_fsp(index)); }
-
-        /// retrieve copy of ParticleCombination with new spin projection
-        /// Does not add to the cache if ParticleCombination is not found.
-        /// \param other ParticleCombination to copy
-        weak_ptr_type find(const ParticleCombination& other)
-        { return find(create_copy(other)); }
-    */
+/*
+/// retrieve copy of ParticleCombination with new spin projection
+/// Does not add to the cache if ParticleCombination is not found.
+/// \param other ParticleCombination to copy
+weak_ptr_type find(const ParticleCombination& other)
+{ return find(create_copy(other)); }
+*/
 
     /// retrieve composite particle ParticleCombination from cache.
     /// Does not add to the cache if ParticleCombination is not found.
     /// \param D vector of daughters to construct ParticleCombination from
     /// \return weak_ptr to ParticleCombination; is empty if not found.
-    weak_ptr_type find(const ParticleCombinationVector& D)
+    weak_ptr_type find(const ParticleCombinationVector& D) const
     { return find(create_composite(D)); }
 
     /// retrieves first entry matching vector of particle indices by unordered content

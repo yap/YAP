@@ -115,7 +115,7 @@ bool ParticleCombination::consistent() const
 }
 
 //-------------------------
-std::string to_string(const ParticleCombination& pc)
+std::string indices_string(const ParticleCombination& pc)
 {
     if (pc.indices().empty())
         return "(empty)";
@@ -123,6 +123,13 @@ std::string to_string(const ParticleCombination& pc)
     for (auto i : pc.indices())
         s += std::to_string(i);
     s += ")";
+    return s;
+}
+
+//-------------------------
+std::string to_string(const ParticleCombination& pc)
+{
+    auto s = indices_string(pc);
 
     if (pc.daughters().empty())
         return s;

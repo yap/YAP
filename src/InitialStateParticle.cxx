@@ -373,8 +373,8 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 
     // do one initial calculation
     /// \todo Only calculate data-independent values
-    if (!std::isfinite(sumOfLogsOfSquaredAmplitudes()))
-        throw exceptions::NonfiniteResult();
+    // if (!std::isfinite(sumOfLogsOfSquaredAmplitudes()))
+    //     throw exceptions::NonfiniteResult();
 }
 
 //-------------------------

@@ -98,6 +98,7 @@ int main( int argc, char** argv)
     DEBUG("BEFORE");
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
+    DEBUG("setting squared mass ...");
     D->fourMomenta().setSquaredMasses(D->dataSet()[0], DalitzAxes, m2);
 
     DEBUG("AFTER");

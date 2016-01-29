@@ -26,6 +26,8 @@
 #include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
 
+#include <ostream>
+
 namespace yap {
 
 class DataPoint;
@@ -120,7 +122,7 @@ public:
     { return M_; }
 
     /// print all masses
-    void printMasses(const DataPoint& d) const;
+    std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
     /// calculate four-momenta from squared invariant masses
     /// with the following convention for three-momenta:\n

@@ -204,6 +204,9 @@ public:
 
 };
 
+/// Get indices listed as string
+std::string indices_string(const ParticleCombination& pc);
+
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);
 

@@ -12,6 +12,8 @@
 #include "ParticleCombinationCache.h"
 #include "ThreeVector.h"
 
+#include <iomanip>
+
 namespace yap {
 
 //-------------------------
@@ -360,17 +362,53 @@ ParticleCombinationMap<double> FourMomenta::pairMassSquares(const DataPoint& d) 
 //-------------------------
 void FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses)
 {
-    if (axes.size() != masses.size()) {
-        FLOG(ERROR) << "axes and masses vectors do not match in size.";
-        throw exceptions::Exception("Masses do not match Dalitz axes", "FourMomenta::setMasses");
-    }
+    // check none are negative
+    if (std::any_of(masses.begin(), masses.end(), [](double m){return m < 0;}))
+        throw exceptions::Exception("negative mass given", "FourMomenta::setMasses");
 
+    std::vector<double> squared_masses(masses.size(), 0);
+    std::transform(masses.begin(), masses.end(), squared_masses.begin(), [](double m){return m * m;});
+
+    setSquaredMasses(d, axes, squared_masses);
+}
+
+//-------------------------
+void FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squared_masses)
+{
+    if (axes.size() != squared_masses.size())
+        throw exceptions::Exception("Masses do not match Dalitz axes", "FourMomenta::setSquaredMasses");
+    
+    if (axes.size() != (3 * d.finalStateFourMomenta().size() - 7))
+        throw exceptions::Exception("Wrong number of Dalitz axes (" + std::to_string(axes.size()) + " != "
+                                    + "3 * " + std::to_string(d.finalStateFourMomenta().size()) + " - 7 = "
+                                    + std::to_string(3 * d.finalStateFourMomenta().size() - 7) + ")",
+                                    "FourMomenta::setSquaredMasses");
+
+    // check none are negative
+    if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m){return m < 0;}))
+        throw exceptions::Exception("negative squared mass given", "FourMomenta::setSquaredMasses");
+
+    FLOG(INFO) << "resetting";
     // reset all masses to -1
     resetMasses(d);
 
+    FLOG(INFO) << "setting";
     // set independent masses according to axes
     for (unsigned i = 0; i < axes.size(); ++i)
-        M_->setValue(masses[i], d, symmetrizationIndex(axes[i]), 0u);
+        M_->setValue(sqrt(squared_masses[i]), d, symmetrizationIndex(axes[i]), 0u);
+
+    // 3 particle
+    if (axes.size() == 2) {
+
+    }
+    // 4 particle
+    else if (axes.size() == 5) {
+
+    }
+    // 5 or more particle
+    else {
+
+    }
 
     // recalculate dependent masses
     if (!calculateMissingMasses(d)) {
@@ -382,24 +420,6 @@ void FourMomenta::setMasses(DataPoint& d, const ParticleCombinationVector& axes,
 
     // recalculate final state masses
     d.setFinalStateFourMomenta(calculateFourMomenta(d));
-}
-
-//-------------------------
-void FourMomenta::setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses)
-{
-    std::vector<double> masses(squaredMasses.size(), 0);
-
-    std::cout << "mass squares \n";
-    for (auto v : squaredMasses)
-        std::cout << "  " << v << "\n";
-
-    std::transform(squaredMasses.begin(), squaredMasses.end(), masses.begin(), sqrt);
-
-    std::cout << "masses \n";
-    for (auto v : masses)
-        std::cout << "  " << v << "\n";
-
-    setMasses(d, axes, masses);
 }
 
 //-------------------------
@@ -431,24 +451,49 @@ void FourMomenta::setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2
 }
 
 //-------------------------
-void FourMomenta::printMasses(const DataPoint& d) const
+std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) const
 {
-    std::cout << "Invariant masses:\n";
-    std::cout << "  " << *InitialStatePC_ << ": \t" << m(d, InitialStatePC_) << " GeV\n";
+    os << "Invariant masses:" << std::endl;
+    unsigned n_fsp = initialStateParticle()->finalStateParticles().size();
+    unsigned n = n_fsp + 2;
+    unsigned m_p = 6;
 
-    if (InitialStatePC_->indices().size() > 3)
-        for (auto& pc : RecoilPC_)
-            std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
+    std::set<unsigned> used;
 
-    for (auto& pc : pairParticleCombinations())
-        std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
+    // print the ISP
+    for (auto& kv : symmetrizationIndices())
+        // if ISP and not yet printed (should only print once)
+        if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
+            os << "    ISP : " << std::setw(n) << indices_string(*kv.first)
+               << " = " << std::setprecision(m_p) << m(d, kv.first) << " GeV/c^2"
+               << " (nominally " << std::setprecision(m_p) << initialStateParticle()->mass()->value() << " GeV/c^2)" << std::endl;
+            used.insert(kv.second);
+        }
+    
+    // print the FSP's
+    for (size_t i = 0; i < d.finalStateFourMomenta().size(); ++i)
+        os << "    FSP : " << std::setw(n) << (std::string("(") + std::to_string(i) + ")")
+           << " = " << std::setprecision(m_p) << abs(d.finalStateFourMomenta()[i]) << " GeV/c^2"
+           << " (nominally " << std::setprecision(m_p) << FinalStateParticleM_[i]->value() << " GeV/c^2)" << std::endl;
 
-    for (auto& pc : FinalStatePC_)
-        std::cout << "  " << *pc << ": \t" << m(d, pc) << " GeV\n";
+    // print the rest in increasing number of particle content
+    for (unsigned i = 2; i < n_fsp; ++i)
+        for (auto& kv : symmetrizationIndices())
+            // if i-particle mass and not yet printed
+            if (kv.first->indices().size() == i and used.find(kv.second) == used.end()) {
+                os << "    " << i << "-p : " << std::setw(n) << indices_string(*kv.first)
+                   << " = " << std::setprecision(m_p) << m(d, kv.first) << " GeV/c^2" << std::endl;
+                used.insert(kv.second);
+            }
 
-    for (int i = 0; i <= maxSymmetrizationIndex(); ++i) {
-        std::cout << "  symIndex " << i << ": " << M_->value(d, i) << " GeV\n";
-    }
+    // print unused
+    for (auto& kv : symmetrizationIndices())
+        if (used.find(kv.second) == used.end()) {
+            os << "        : " << std::setw(n) << indices_string(*kv.first) << " = " << m(d, kv.first) << " GeV/c^2" << std::endl;
+            used.insert(kv.second);
+        }
+            
+    return os;
 }
 
 //-------------------------
