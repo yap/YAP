@@ -72,6 +72,7 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
+        FLOG(INFO) << "setting Fq_r for " << *pc;
         Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
         calc = true;
@@ -84,7 +85,9 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
+        FLOG(INFO) << "setting Fq_ab for " << *pc << " " << symIndex << " " << dataPartitionIndex;
         Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
+        FLOG(INFO) << " ... set";
 
         calc = true;
         DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));

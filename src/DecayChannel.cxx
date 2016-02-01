@@ -432,17 +432,19 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 //--------------------------
 DataAccessorSet DecayChannel::dataAccessors()
 {
-    auto saV = spinAmplitudes();
-    DataAccessorSet V(saV.begin(), saV.end());
+    DataAccessorSet V;
 
+    // SpinAmplitudes
+    for (auto& kv : Amplitudes_)
+        V.insert(kv.first);
+
+    // Daughters
     for (auto& d : Daughters_) {
         // add daughter
-        if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-            V.emplace(std::dynamic_pointer_cast<DecayingParticle>(d));
-            // and its data accessors
-            auto v = std::dynamic_pointer_cast<DecayingParticle>(d)->dataAccessors();
-            V.insert(v.begin(), v.end());
-        }
+        if (std::dynamic_pointer_cast<DataAccessor>(d))
+            V.emplace(std::dynamic_pointer_cast<DataAccessor>(d));
+        auto v = d->dataAccessors();
+        V.insert(v.begin(), v.end());
     }
     return V;
 }

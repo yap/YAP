@@ -137,7 +137,7 @@ int main( int argc, char** argv)
 
 
     // create data partitions
-    D->setDataPartitions(yap::createDataPartitionsBlock(D->dataSet(), 2));
+    D->setDataPartitions(yap::createDataPartitionsBlocks(D->dataSet(), 1));
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = D->freeAmplitudes();
@@ -159,7 +159,8 @@ int main( int argc, char** argv)
 
         double logA(0);
 
-        logA = D->sumOfLogsOfSquaredAmplitudes();
+        logA = D->partialSumOfLogsOfSquaredAmplitudes(D->dataPartitions()[0]);
+        // logA = D->sumOfLogsOfSquaredAmplitudes();
 
         LOG(INFO) << "logA = " << logA;
     }

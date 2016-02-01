@@ -85,10 +85,26 @@ SpinAmplitude::operator std::string() const
 std::set<int> SpinAmplitude::twoM() const
 {
     std::set<int> S;
-    // loop over amplitudes, key = 3-array
+    // loop over amplitudes, key = two_M
     for (auto& kv : Amplitudes_)
         S.insert(kv.first);  // first entry is (twice) parent spin projection
     return S;
+}
+
+//-------------------------
+void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
+{
+    // retrieve (or create) AmplitudeSubmap for two_M
+    auto ASM = Amplitudes_[two_M];
+
+    SpinProjectionPair m1m2 = {two_m1, two_m2};
+    // look for m1m2 in AmplitudeSubmap
+    if (ASM.find(m1m2) != ASM.end())
+        throw exceptions::Exception("Amplitude already stored for " + spin_to_string(two_M)
+                                    + " -> " + spin_to_string(two_m1) + " + " + spin_to_string(two_m2),
+                                    "SpinAmplitude::addAmplitude");
+
+    ASM[m1m2] = ComplexCachedDataValue::create(this);
 }
 
 //-------------------------

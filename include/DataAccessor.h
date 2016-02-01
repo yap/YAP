@@ -74,7 +74,7 @@ public:
     /// @{
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
-    size_t index() const
+    int index() const
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
@@ -119,9 +119,6 @@ public:
     /// Check consistency of object
     bool consistent() const;
 
-    /// add CachedDataValue
-    void addCachedDataValue(std::shared_ptr<CachedDataValue> c);
-
     /// \name Data access
     /// @{
 
@@ -136,7 +133,14 @@ public:
     /// grant friend status to InitialStateParticle
     friend class InitialStateParticle;
 
+    /// grant friend status to CachedDataValue to call addCachedDataValue
+    friend class CachedDataValue;
+
 protected:
+
+    /// add CachedDataValue
+    void addCachedDataValue(std::shared_ptr<CachedDataValue> c)
+    { CachedDataValues_.insert(c); }
 
     /// add ParticleCombination to SymmetrizationIndices_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
@@ -179,12 +183,14 @@ private:
     unsigned Size_;
 
     /// storage index used in DataPoint. Must be unique.
-    size_t Index_;
+    int Index_;
 
 };
 
 /// \typedef DataAccessorSet
 using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
+
+std::string data_accessor_type(const DataAccessor* D);
 
 }
 

@@ -146,7 +146,7 @@ SquareMatrix<T, N> outer(const Vector<T, N>& A, const Vector<T, N>& B)
 {
     SquareMatrix<T, N> m;
     for (size_t r = 0; r < N; ++r)
-        for (size_t c = 0; c < N; ++r)
+        for (size_t c = 0; c < N; ++c)
             m[r][c] = A[r] * B[c];
     return m;
 }

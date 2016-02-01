@@ -23,7 +23,7 @@ DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
     ReportsParticleCombinations(),
     Equiv_(equiv),
     Size_(0),
-    Index_(0)
+    Index_(-1)
 {
     // index is set later by InitialStateParticle::setDataAcessorIndices()
     // via InitialStateParticle::prepare()
@@ -238,13 +238,6 @@ void DataAccessor::pruneSymmetrizationIndices()
     unsigned size = maxSymmetrizationIndex() + 1;
     for (auto& c : CachedDataValues_)
         c->setNumberOfSymmetrizations(size);
-}
-
-//-------------------------
-void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
-{
-    c->setNumberOfSymmetrizations(maxSymmetrizationIndex() + 1);
-    CachedDataValues_.insert(c);
 }
 
 //-------------------------

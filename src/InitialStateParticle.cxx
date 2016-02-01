@@ -5,6 +5,7 @@
 #include "DataSet.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
+#include "LorentzTransformation.h"
 #include "MassAxes.h"
 #include "ParticleCombinationCache.h"
 
@@ -161,7 +162,7 @@ void InitialStateParticle::prepare()
 
 
     // add this (commented out because ISP has no need for data access at moment)
-    // DataAccessors_.push_back(shared_from_this());
+    // DataAccessors_.insert(shared_from_this());
     // set unique indices to all DataAccessors
     unsigned i = 0;
     for (auto da : DataAccessors_)
@@ -370,7 +371,7 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
         DataSet_.emplace_back(DataPoint(d));
 
     // set data partitions (1 for each data point)
-    setDataPartitions(createDataPartitionsBlockBySize(DataSet_, 1));
+    setDataPartitions(createDataPartitionsBlocksBySize(DataSet_, 1));
 
     // do one initial calculation
     /// \todo Only calculate data-independent values
@@ -492,8 +493,10 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
     // get coordinate system
     auto C = coordinateSystem();
 
+    double m_01 = sqrt(m2_2[0][1]);
+
     // define p_0 in direction of z axis
-    double E0 = (m2_2[0][1] - m2_1[1] + m2_1[0]) / 2. / sqrt(m2_2[0][1]);
+    double E0 = (m2_2[0][1] - m2_1[1] + m2_1[0]) / 2. / m_01;
     if (E0 < finalStateParticles()[0]->mass()->value())
         return false;
 
@@ -501,39 +504,45 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
     P.push_back(FourVector<double>(E0, P0 * C[2]));
 
     // define p_1 in direction opposite p_0, with same 3-momentum as p_0
-    double E1 = (m2_2[0][1] - m2_1[0] + m2_1[1]) / 2. / sqrt(m2_2[0][1]);
+    double E1 = (m2_2[0][1] - m2_1[0] + m2_1[1]) / 2. / m_01;
     if (E1 < finalStateParticles()[1]->mass()->value())
         return false;
 
     P.push_back(FourVector<double>(E1, -P0 * C[2]));
 
     // define p_2 to lie in the y-z plane
-    double p02 = (m2_2[0][2] - m2_1[0] - m2_1[2]) / 2.;
-    double p12 = (m2_2[1][2] - m2_1[1] - m2_1[2]) / 2.;
+    double p0p2 = (m2_2[0][2] - m2_1[0] - m2_1[2]) / 2.;
+    double p1p2 = (m2_2[1][2] - m2_1[1] - m2_1[2]) / 2.;
 
-    double E2 = (p02 + p12) / m2_2[0][1];
+    double E2 = (p0p2 + p1p2) / m_01;
     if (E2 < finalStateParticles()[2]->mass()->value())
         return false;
 
-    double P2z = (E0 * p12 - E1 * p02) / sqrt(m2_2[0][1]) / P0;
+    double P2z = (E0 * p1p2 - E1 * p0p2) / 2. / m_01 / P0;
     double P2y = sqrt(E2 * E2 - m2_1[2] - P2z * P2z);
     P.push_back(FourVector<double>(E2, P2y * C[1] + P2z * C[2]));
 
     if (n_fsp == 4) {
         // define p_3 to be in positive-x hemisphere
-        double p03 = (m2_2[0][3] - m2_1[0] - m2_1[3]) / 2.;
-        double p13 = (m2_2[1][3] - m2_1[1] - m2_1[3]) / 2.;
-        double p23 = (m2_2[2][3] - m2_1[2] - m2_1[3]) / 2.;
+        double p0p3 = (m2_2[0][3] - m2_1[0] - m2_1[3]) / 2.;
+        double p1p3 = (m2_2[1][3] - m2_1[1] - m2_1[3]) / 2.;
+        double p2p3 = (m2_2[2][3] - m2_1[2] - m2_1[3]) / 2.;
 
-        double E3 = (p03 + p13) / m2_2[0][1];
+        double E3 = (p0p3 + p1p3) / m_01;
         if (E3 < finalStateParticles()[3]->mass()->value())
             return false;
 
-        double P3z = (E0 * p13 - E1 * p03) / sqrt(m2_2[0][1]) / P0;
-        double P3y = (E2 * E3 - P2z * P3z - p23) / P2y;
+        double P3z = (E0 * p1p3 - E1 * p0p3) / 2. / m_01 / P0;
+        double P3y = (E2 * E3 - p2p3 - P2z * P3z) / P2y;
         double P3x = sqrt(E3 * E3 - m2_1[3] - P3z * P3z - P3y * P3y);
         P.push_back(FourVector<double>(E2, P3x * C[0] + P3y * C[1] + P3z * C[2]));
     }
+
+    // boost:
+    // auto p_isp = std::accumulate(P.begin(), P.end(), FourVector_0);
+    // auto b = lorentzTransformation<double>(-
+    // for (auto& p : P)
+    //     p = b * p;
 
     // hand to data point
     d.setFinalStateFourMomenta(P);

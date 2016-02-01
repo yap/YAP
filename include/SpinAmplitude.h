@@ -157,6 +157,13 @@ public:
 
 protected:
 
+    /// add spin amplitude for transition from state with initial
+    /// projection to states with final projections.
+    /// \param two_M twice the spin projection of the initial state
+    /// \param two_m1 twice the spin projection of the first daughter
+    /// \param two_m2 twice the spin projection of the second daughter
+    virtual void addAmplitude(int two_M, int two_m1, int two_m2);
+
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const;
 

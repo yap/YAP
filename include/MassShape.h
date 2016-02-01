@@ -78,6 +78,9 @@ protected:
     /// Grant Resonance friendship, so it can set itself as owner
     friend class Resonance;
 
+    /* /// \return set of shared_ptr's to DataAccessor's belonging to this MassShape */
+    /* virtual DataAccessorSet dataAccessors() = 0; */
+
     /// Set raw pointer to owning Resonance.
     /// Calls borrowParametersFromResonance()
     void setResonance(Resonance* r)

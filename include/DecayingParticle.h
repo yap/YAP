@@ -135,7 +135,7 @@ protected:
     void printDecayChainLevel(int level) const;
 
     /// \return set of shared_ptr's of DataAccessor's
-    virtual DataAccessorSet dataAccessors();
+    virtual DataAccessorSet dataAccessors() override;
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
     virtual ComplexParameterVector freeAmplitudes() const;

@@ -184,12 +184,12 @@ std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsWeave(DataS
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param maxBlockSize maximum size of DataPoints a block can have
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize);
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocksBySize(DataSet& dataSet, unsigned maxBlockSize);
 
 /// create DataPartitionBlock's
 /// \param dataSet The dataSet
 /// \param nPartitions number of blocks to divide the dataSet into
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions);
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocks(DataSet& dataSet, unsigned nPartitions);
 
 
 }

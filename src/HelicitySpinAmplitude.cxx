@@ -32,8 +32,14 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
                 double CG = c * ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), two_m1,
                                                       finalQuantumNumbers()[1].twoJ(), two_m2,
                                                       L(), twoS(), initialQuantumNumbers().twoJ());
-                if (CG != 0)
-                    Coefficients_[two_m1][two_m2] = c * CG;
+                if (CG == 0)
+                    continue;
+
+                Coefficients_[two_m1][two_m2] = c * CG;
+
+                // add amplitudes for all initial spin projections
+                for (int two_M = -initialQuantumNumbers().twoJ(); two_M <= (int)initialQuantumNumbers().twoJ(); two_M += 2)
+                    addAmplitude(two_M, two_m1, two_m2);
 
             } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
 
