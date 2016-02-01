@@ -121,11 +121,6 @@ int main( int argc, char** argv)
 
         D->addDataPoint(momenta);
 
-        // test 4 momenta calculation
-        DEBUG("calculated 4 momenta from invariant masses:");
-        auto fourVecs = D->fourMomenta().calculateFourMomenta(D->dataSet().back());
-        for (auto v : fourVecs)
-            DEBUG(yap::to_string(v));
     }
 
     LOG(INFO) << "done creating dataPoints";

@@ -5,6 +5,7 @@
 #include "DataSet.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
+#include "MassAxes.h"
 #include "ParticleCombinationCache.h"
 
 #include <assert.h>
@@ -375,6 +376,171 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
     /// \todo Only calculate data-independent values
     // if (!std::isfinite(sumOfLogsOfSquaredAmplitudes()))
     //     throw exceptions::NonfiniteResult();
+}
+
+//-------------------------
+const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<ParticleIndex> > pcs)
+{
+    unsigned n_fsp = finalStateParticles().size();
+    unsigned n_axes = 3 * n_fsp - 7;
+
+    // check that number of requested axes == n_axes
+    if (pcs.size() != n_axes) {
+        if (pcs.size() < n_axes)
+            throw exceptions::Exception("too few axes requested ( " + std::to_string(pcs.size()) + " < " + std::to_string(n_axes) + " )",
+                                        "InitialStateParticle::getMassAxes");
+        else
+            throw exceptions::Exception("too many axes requested ( " + std::to_string(pcs.size()) + " > " + std::to_string(n_axes) + " )",
+                                        "InitialStateParticle::getMassAxes");
+    }
+
+    // for the moment, we only support 2-particle axes
+    // check that all axes are 2 -particle
+    if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<ParticleIndex>& v) {return v.size() != 2;}))
+    throw exceptions::Exception("only 2-particle axes supported currently", "InitialStateParticle::getMassAxes");
+
+    ParticleCombinationVector M;
+
+    for (auto& v : pcs) {
+
+        // check that all indices are in range
+        if (std::any_of(v.begin(), v.end(), [&](const ParticleIndex & i) {return i >= n_fsp;}))
+        throw exceptions::Exception("particle index out of range", "InitialStateParticle::getMassAxes");
+
+        // sort v
+        sort(v.begin(), v.end());
+        // check for duplicates
+        if (std::adjacent_find(v.begin(), v.end()) != v.end())
+            throw exceptions::Exception("duplicate index given", "InitialStateParticle::getMassAxes");
+
+        // get ParticleCombination
+        auto pc0 = particleCombinationCache().fsp(v[0]);
+        auto pc1 = particleCombinationCache().fsp(v[1]);
+        auto pc = particleCombinationCache().composite({pc0, pc1});
+
+        // check that pc isn't already in M
+        for (const auto& m : M)
+            if (ParticleCombination::equivByOrderlessContent(m, pc))
+                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "InitialStateParticle::getMassAxes");
+
+        M.push_back(pc);
+    }
+
+    return MassAxes(M);
+}
+
+//-------------------------
+bool InitialStateParticle::setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses)
+{
+    std::vector<double> squared_masses(masses.size(), -1);
+    std::transform(masses.begin(), masses.end(), squared_masses.begin(), [](double m) {return m * m;});
+    return setSquaredMasses(d, axes, squared_masses);
+}
+
+//-------------------------
+bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& squared_masses)
+{
+    if (axes.size() != squared_masses.size())
+        throw exceptions::Exception("Incorrect number of masses provided ("
+                                    + std::to_string(squared_masses.size()) + " != " + std::to_string(axes.size()) + ")",
+                                    "InitialStateParticle::setSquaredMasses");
+
+    // check none are negative
+    if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m) {return m < 0;}))
+    throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
+
+    // reset all masses to -1
+    FourMomenta_->resetMasses(d);
+
+    unsigned n_fsp = finalStateParticles().size();
+
+    // set two-particle invariant masses for those provided
+    std::vector<std::vector<double> > m2_2(n_fsp - 1, std::vector<double>(n_fsp, -1));
+    for (size_t i = 0; i < axes.size(); ++i)
+        m2_2[axes[i]->indices()[0]][axes[i]->indices()[1]] = squared_masses[i];
+
+    /// \todo: check sign determination on x component for particles 5 and higher
+    if (n_fsp > 4)
+        throw exceptions::Exception("not yet supporting 5 or more particles", "InitialStateParticle::setSquaredMasses");
+
+    //////////////////////////////////////////////////
+    // find unset two-particle invariant mass
+    // and calculate fsp squared masses
+    unsigned I = 0;
+    unsigned J = 1;
+    std::vector<double> m2_1(n_fsp, -1);
+    for (unsigned i = 0; i < n_fsp; ++i) {
+        m2_1[i] = pow(finalStateParticles()[i]->mass()->value(), 2);
+        if (m2_2[I][J] >= 0)
+            for (unsigned j = i + 1; j < m2_2[i].size(); ++j)
+                if (m2_2[i][j] < 0) {
+                    I = i;
+                    J = j;
+                }
+    }
+
+    // calculate unset mass: m^2_missing = M^2_isp + (n_fsp - 2) * sum_fsp (m^2) - sum_given(m^2)
+    m2_2[I][J] = pow(mass()->value(), 2)
+                 + (n_fsp - 2) * std::accumulate(m2_1.begin(), m2_1.end(), 0)
+                 - std::accumulate(squared_masses.begin(), squared_masses.end(), 0);
+
+    //////////////////////////////////////////////////
+    // calculate all four momenta in m_01 rest frame:
+    std::vector<FourVector<double> > P;
+    P.reserve(n_fsp);
+
+    // get coordinate system
+    auto C = coordinateSystem();
+
+    // define p_0 in direction of z axis
+    double E0 = (m2_2[0][1] - m2_1[1] + m2_1[0]) / 2. / sqrt(m2_2[0][1]);
+    if (E0 < finalStateParticles()[0]->mass()->value())
+        return false;
+
+    double P0 = sqrt(E0 * E0 - m2_1[0]);
+    P.push_back(FourVector<double>(E0, P0 * C[2]));
+
+    // define p_1 in direction opposite p_0, with same 3-momentum as p_0
+    double E1 = (m2_2[0][1] - m2_1[0] + m2_1[1]) / 2. / sqrt(m2_2[0][1]);
+    if (E1 < finalStateParticles()[1]->mass()->value())
+        return false;
+
+    P.push_back(FourVector<double>(E1, -P0 * C[2]));
+
+    // define p_2 to lie in the y-z plane
+    double p02 = (m2_2[0][2] - m2_1[0] - m2_1[2]) / 2.;
+    double p12 = (m2_2[1][2] - m2_1[1] - m2_1[2]) / 2.;
+
+    double E2 = (p02 + p12) / m2_2[0][1];
+    if (E2 < finalStateParticles()[2]->mass()->value())
+        return false;
+
+    double P2z = (E0 * p12 - E1 * p02) / sqrt(m2_2[0][1]) / P0;
+    double P2y = sqrt(E2 * E2 - m2_1[2] - P2z * P2z);
+    P.push_back(FourVector<double>(E2, P2y * C[1] + P2z * C[2]));
+
+    if (n_fsp == 4) {
+        // define p_3 to be in positive-x hemisphere
+        double p03 = (m2_2[0][3] - m2_1[0] - m2_1[3]) / 2.;
+        double p13 = (m2_2[1][3] - m2_1[1] - m2_1[3]) / 2.;
+        double p23 = (m2_2[2][3] - m2_1[2] - m2_1[3]) / 2.;
+
+        double E3 = (p03 + p13) / m2_2[0][1];
+        if (E3 < finalStateParticles()[3]->mass()->value())
+            return false;
+
+        double P3z = (E0 * p13 - E1 * p03) / sqrt(m2_2[0][1]) / P0;
+        double P3y = (E2 * E3 - P2z * P3z - p23) / P2y;
+        double P3x = sqrt(E3 * E3 - m2_1[3] - P3z * P3z - P3y * P3y);
+        P.push_back(FourVector<double>(E2, P3x * C[0] + P3y * C[1] + P3z * C[2]));
+    }
+
+    // hand to data point
+    d.setFinalStateFourMomenta(P);
+    calculate(d);
+
+    FLOG(INFO) << "out";
+    return true;
 }
 
 //-------------------------

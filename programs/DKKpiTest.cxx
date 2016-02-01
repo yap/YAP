@@ -3,6 +3,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "make_unique.h"
+#include "MassAxes.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
@@ -60,14 +61,14 @@ int main( int argc, char** argv)
     D->initializeForMonteCarloGeneration(5);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    yap::ParticleCombinationVector DalitzAxes = D->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = D->getMassAxes({{0, 1}, {1, 2}});
 
-    std::vector<double> m2(DalitzAxes.size(), 1);
+    std::vector<double> m2(massAxes.size(), 1);
 
     DEBUG("BEFORE");
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
-    D->fourMomenta().setSquaredMasses(D->dataSet()[0], DalitzAxes, m2);
+    D->setSquaredMasses(D->dataSet()[0], massAxes, m2);
 
     DEBUG("AFTER");
     D->fourMomenta().printMasses(D->dataSet()[0]);

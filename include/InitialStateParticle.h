@@ -40,6 +40,7 @@
 namespace yap {
 
 class FinalStateParticle;
+class MassAxes;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
@@ -238,6 +239,29 @@ public:
     /// Initialize DataSet for MC Generation
     /// \param n Number of simultaneous streams for MC generation
     void initializeForMonteCarloGeneration(unsigned n);
+
+    /// Build vector of mass axes for coordinates in phase space.
+    /// Currently only supports two-particle masses; the PCs put into
+    /// the returned MassAxes will have their daughters sorted (i.e. (10) will become (01)).
+    /// \return MassAxes for requested particle combinations
+    /// \param pcs vector of vectors of particle indices
+    const MassAxes getMassAxes(std::vector<std::vector<ParticleIndex> > pcs);
+
+    /// Set masses of particle combinations in axes to those in masses.
+    /// Masses will be squared and passed to setSquaredMasses, so negative masses will become positive.
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param masses vector of masses to be set to
+    /// \return success of action (false if the point lies outside phase space)
+    bool setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses);
+
+    /// Set squared masses of particle combinations in axes to those in masses;
+    /// negative squared masses will cause an exception to be thrown
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param squared_masses vector of masses to be set to
+    /// \return success of action (false if the point lies outside phase space)
+    bool setSquaredMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& squared_masses);
 
     /// @}
 

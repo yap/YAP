@@ -22,7 +22,7 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
-#include "FourMomenta.h"
+#include "FourVector.h"
 #include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
 
@@ -31,6 +31,7 @@
 namespace yap {
 
 class DataPoint;
+class InitialStateParticle;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses
@@ -46,8 +47,8 @@ public:
     /// Constructor
     FourMomenta(InitialStateParticle* isp);
 
-    /// Find ISP in set and store index location
-    /// Fill FinalStateParticleM_ and FinalStateParticleM2_
+    /// Find ISP in set and store index location;
+    /// record ParticleCombination's of all pairs
     void prepare();
 
     /// check consistency
@@ -70,48 +71,12 @@ public:
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return pc->isFinalStateParticle() ? FinalStateParticleM_[pc->indices()[0]]->value() : M_->value(d, symmetrizationIndex(pc)); }
+    double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
     const FourVector<double>& initialStateMomentum(const DataPoint& d)
     { return p(d, InitialStatePC_); }
-
-    /// \name Dalitz coordinate stuff
-    /// @{
-
-    /// get ParticleCombinationVector for requested combinations
-    ParticleCombinationVector getDalitzAxes(std::vector<std::vector<ParticleIndex> > pcs) const;
-
-    /// get pair masses
-    ParticleCombinationMap<double> pairMasses(const DataPoint& d) const;
-
-    /// get pair masses squared
-    ParticleCombinationMap<double> pairMassSquares(const DataPoint& d) const;
-
-    /// set masses of particle combinations in axes to those in masses
-    /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param masses vector of masses to be set to
-    /// \return success of action
-    void setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses);
-
-    /// set masses of particle combinations in axes to those in masses
-    /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param masses vector of masses to be set to
-    void setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses);
-
-    /// set masses
-    /// also calculate remaining masses and final-state 4-momenta
-    void setMasses(DataPoint& d, ParticleCombinationMap<double> m);
-
-    /// set masses squared
-    /// also calculate remaining masses and final-state 4-momenta
-    void setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2);
-
-    /// @}
 
     /// \return masses
     std::shared_ptr<RealCachedDataValue> masses()
@@ -124,46 +89,25 @@ public:
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
-    /// calculate four-momenta from squared invariant masses
-    /// with the following convention for three-momenta:\n
-    /// p1 defines +z direction
-    /// p1 x p2 defines +y direction
-    std::vector<FourVector<double> > calculateFourMomenta(const DataPoint& d) const;
+    /// grant friend status to InitialStateParticle to call resetMasses
+    friend class InitialStateParticle;
 
 protected:
 
-    /// set all masses to -1 (except FinalStateParticleM_)
+    /// set all (non-fsp) masses to -1
     void resetMasses(DataPoint& d);
 
-    /// calculate all masses from a complete set of masses
-    /// \return success of action
-    bool calculateMissingMasses(DataPoint& d);
-
-    /// \return set of all pair particle combinations, without duplicates
-    ParticleCombinationVector pairParticleCombinations() const;
+    /// override to do nothing, since FourMomenta doesn't rely on parents being set.
+    void pruneSymmetrizationIndices() override
+    {}
 
 private:
 
     /// Symmetrization index of initial state
     std::shared_ptr<ParticleCombination> InitialStatePC_;
 
-    /// \todo Perhaps find better way than storing FinalStatePC, RecoilPC, and PairPC.
-
-    /// Final-state particle PCs
-    ParticleCombinationVector FinalStatePC_;
-
-    /// Symmetrization indices for recoil against each final-state particle,
-    /// index in vector is FSP index
-    ParticleCombinationVector RecoilPC_;
-
-    /// Symmetrization indices for pairs of particles
-    std::vector<ParticleCombinationVector> PairPC_;
-
     /// invariant mass of particle combinations [GeV]
     std::shared_ptr<RealCachedDataValue> M_;
-
-    /// masses of the final state particles
-    std::vector<std::shared_ptr<RealParameter> > FinalStateParticleM_;
 
 };
 

@@ -76,6 +76,15 @@ public:
         : Exception(what_arg, func_name) {}
 };
 
+/// \class OutsidePhaseSpace
+/// \ingroup Exceptions
+class OutsidePhaseSpace : public Exception
+{
+public:
+    OutsidePhaseSpace(const std::string& what_arg = "", const std::string& func_name = "FourMomenta::setSquaredMasses")
+        : Exception(what_arg, func_name) {}
+};
+
 /// \class NonfiniteResult
 /// \ingroup Exceptions
 class NonfiniteResult : public Exception {};

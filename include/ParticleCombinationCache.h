@@ -61,20 +61,20 @@ public:
     { return operator[](create_composite(D)); }
 
     using WeakPtrCache::find;
-    
+
     /// retrieve final-state particle ParticleCombination
     /// Does not add to the cache if ParticleCombination is not found.
     /// \param index Index of particle
     weak_ptr_type find(ParticleIndex index) const
     { return find(create_fsp(index)); }
 
-/*
-/// retrieve copy of ParticleCombination with new spin projection
-/// Does not add to the cache if ParticleCombination is not found.
-/// \param other ParticleCombination to copy
-weak_ptr_type find(const ParticleCombination& other)
-{ return find(create_copy(other)); }
-*/
+    /*
+    /// retrieve copy of ParticleCombination with new spin projection
+    /// Does not add to the cache if ParticleCombination is not found.
+    /// \param other ParticleCombination to copy
+    weak_ptr_type find(const ParticleCombination& other)
+    { return find(create_copy(other)); }
+    */
 
     /// retrieve composite particle ParticleCombination from cache.
     /// Does not add to the cache if ParticleCombination is not found.
