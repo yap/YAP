@@ -137,8 +137,8 @@ void InitialStateParticle::prepare()
     // prepare FourMomenta. Needs FinalStateParticles_
     FourMomenta_->prepare();
 
-    // set DataAccessors_
-    DataAccessors_ = dataAccessors();
+    // remove expired elements of DataAccessors_
+    removeExpired(DataAccessors_);
 
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
@@ -563,10 +563,10 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 
     for (auto& d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1 << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
-        if (std::dynamic_pointer_cast<Particle>(d))
-            std::cout << std::dynamic_pointer_cast<Particle>(d)->name();
-        else if (std::dynamic_pointer_cast<DecayChannel>(d))
-            std::cout << *std::dynamic_pointer_cast<DecayChannel>(d);
+        if (dynamic_cast<Particle*>(d))
+            std::cout << dynamic_cast<Particle*>(d)->name();
+        else if (dynamic_cast<DecayChannel*>(d))
+            std::cout << *dynamic_cast<DecayChannel*>(d);
 
         if (printParticleCombinations) {
             std::cout << " \t";
@@ -597,8 +597,8 @@ void InitialStateParticle::calculate(DataPoint& d)
 {
     // call calculate on static data accessors
     for (auto& sda : DataAccessors_)
-        if (std::dynamic_pointer_cast<StaticDataAccessor>(sda))
-            std::dynamic_pointer_cast<StaticDataAccessor>(sda)->calculate(d);
+        if (dynamic_cast<StaticDataAccessor*>(sda))
+            dynamic_cast<StaticDataAccessor*>(sda)->calculate(d);
 }
 
 //-------------------------
@@ -608,7 +608,7 @@ void InitialStateParticle::setNumberOfDataPartitions(unsigned n)
     DataAccessor::setNumberOfDataPartitions(n);
     // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d.get() != this)
+        if (d != this)
             d->setNumberOfDataPartitions(n);
 }
 
@@ -619,7 +619,7 @@ void InitialStateParticle::updateGlobalCalculationStatuses()
     DataAccessor::updateGlobalCalculationStatuses();
     // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d.get() != this)
+        if (d != this)
             d->updateGlobalCalculationStatuses();
 }
 
@@ -630,7 +630,7 @@ void InitialStateParticle::resetCalculationStatuses(unsigned dataPartitionIndex)
     DataAccessor::resetCalculationStatuses(dataPartitionIndex);
     // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d.get() != this)
+        if (d != this)
             d->resetCalculationStatuses(dataPartitionIndex);
 }
 
@@ -641,7 +641,7 @@ void InitialStateParticle::setCachedDataValueFlagsToUnchanged(unsigned dataParti
     DataAccessor::setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
     // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d.get() != this)
+        if (d != this)
             d->setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
 }
 
@@ -652,22 +652,8 @@ void InitialStateParticle::setParameterFlagsToUnchanged()
     DataAccessor::setParameterFlagsToUnchanged();
     // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d.get() != this)
+        if (d != this)
             d->setParameterFlagsToUnchanged();
-}
-
-//-------------------------
-DataAccessorSet InitialStateParticle::dataAccessors()
-{
-    // call DecayingParticle's function
-    DataAccessorSet V = DecayingParticle::dataAccessors();
-
-    // add
-    V.emplace(FourMomenta_);
-    V.emplace(MeasuredBreakupMomenta_);
-    V.emplace(HelicityAngles_);
-
-    return V;
 }
 
 }

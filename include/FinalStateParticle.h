@@ -91,10 +91,6 @@ protected:
     /// add ParticleCombination to ParticleCombinations
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
-    /// \return empty set
-    virtual DataAccessorSet dataAccessors() override
-    { return DataAccessorSet(); }
-
 private:
 
     /// raw pointer to initial state particle decaying to this final state particle

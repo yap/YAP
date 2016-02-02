@@ -141,9 +141,6 @@ protected:
     /// set raw pointer to owning DecayingParticle
     void setDecayingParticle(DecayingParticle* dp);
 
-    /// \return set of DataAccessors
-    virtual DataAccessorSet dataAccessors();
-
 private:
 
     /// daughters of the decay

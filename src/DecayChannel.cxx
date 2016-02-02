@@ -96,6 +96,8 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         }
     }
 
+    // register with ISP
+    addToInitialStateParticle();
 }
 
 //-------------------------
@@ -207,8 +209,6 @@ ComplexParameterVector DecayChannel::freeAmplitudes()
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
         int two_m, unsigned dataPartitionIndex) const
 {
-    DEBUG("DecayChannel::amplitude - " << *this << " " << *pc);
-
     unsigned symIndex = symmetrizationIndex(pc);
 
     auto& totAmp = TotalAmplitudes_.at(two_m);
@@ -427,26 +427,6 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
     }
 
     return fsps;
-}
-
-//--------------------------
-DataAccessorSet DecayChannel::dataAccessors()
-{
-    DataAccessorSet V;
-
-    // SpinAmplitudes
-    for (auto& kv : Amplitudes_)
-        V.insert(kv.first);
-
-    // Daughters
-    for (auto& d : Daughters_) {
-        // add daughter
-        if (std::dynamic_pointer_cast<DataAccessor>(d))
-            V.emplace(std::dynamic_pointer_cast<DataAccessor>(d));
-        auto v = d->dataAccessors();
-        V.insert(v.begin(), v.end());
-    }
-    return V;
 }
 
 //-------------------------

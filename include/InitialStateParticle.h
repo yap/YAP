@@ -272,13 +272,11 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return this; }
 
-    /// \name InitialStateParticle friends
-    /// @{
-
+    /// grant friend status to DataAccessor to register itself with InitialStateParticle
     friend class DataAccessor;
-    friend class AmplitudeComponent;
 
-    /// @}
+    /// grant friend status to AmplitudeComponent to
+    friend class AmplitudeComponent;
 
 protected:
 
@@ -288,8 +286,9 @@ protected:
     /// recursive calling) if it is NOT for a FSP.
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
-    /// \return set of data accessors
-    virtual DataAccessorSet dataAccessors() override;
+    /// register a DataAccessor with this InitialStateParticle
+    virtual void addDataAccessor(DataAccessorSet::value_type da)
+    { DataAccessors_.insert(da); }
 
 private:
 
@@ -334,7 +333,7 @@ private:
     /// SpinAmplitude cache
     SpinAmplitudeCache<HelicitySpinAmplitude> SpinAmplitudeCache_;
 
-    /// Set of all DataAccessor objects in the InitialsStateParticle and below
+    /// Set of all DataAccessor's registered to this InitialStateParticle
     DataAccessorSet DataAccessors_;
 
     /// List of all AmplitudeComponent objects in the InitialsStateParticle and below

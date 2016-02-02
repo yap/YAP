@@ -22,11 +22,12 @@ double BlattWeisskopf::F2(unsigned l, double z)
             return 1.;
         case 1:
             return 1. + z;
-        case 3:
+        case 2:
             return 9. + 3.*z + z * z;
         default:
             /// \todo put in generic formula for L > 2
-            throw exceptions::Exception("BlattWeisskopf does not yet support l > 2", "BlattWeisskopf::F2");
+            throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(l) + " > 2",
+                                        "BlattWeisskopf::F2");
     }
 }
 
@@ -50,13 +51,15 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
 
     Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
     Fq_ab->addDependency(DecayingParticle_->radialSize());
+
+    // register with ISP
+    addToInitialStateParticle();
 }
 
 //-------------------------
-std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
+double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
-    bool calc(false); // for debugging
 
     if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
@@ -65,18 +68,11 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
         double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
-        DEBUG(*(pc->daughters()[0]) << " " << * (pc->daughters()[1]));
-        //DEBUG(initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(0)) <<
-        //        " " << initialStateParticle()->fourMomenta().symmetrizationIndex(pc->daughters().at(1)));
-        DEBUG(m_a << " " << m_b);
-
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
-        FLOG(INFO) << "setting Fq_r for " << *pc;
         Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
-        calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
+        // DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
 
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
@@ -85,23 +81,12 @@ std::complex<double> BlattWeisskopf::amplitude(DataPoint& d, const std::shared_p
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
-        FLOG(INFO) << "setting Fq_ab for " << *pc << " " << symIndex << " " << dataPartitionIndex;
         Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
-        FLOG(INFO) << " ... set";
 
-        calc = true;
-        DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
+        // DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
     }
 
-    double Fq_rOFq_ab = Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
-
-    if (calc) {
-        DEBUG("BlattWeisskopf::amplitude - using calculated values to calculate Blatt-Weisskopf barrier factor ratio (L = " << L_ << ") = " << Fq_rOFq_ab);
-    } else {
-        DEBUG("BlattWeisskopf::amplitude - using cached values to calculate Blatt-Weisskopf barrier factor ratio (L = " << L_ << ") = " << Fq_rOFq_ab);
-    }
-
-    return std::complex<double>(Fq_rOFq_ab);
+    return Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
 }
 
 //-------------------------

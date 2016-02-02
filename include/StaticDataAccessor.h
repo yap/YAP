@@ -44,6 +44,8 @@ public:
     {
         if (!initialStateParticle())
             throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
+        // register to with ISP
+        addToInitialStateParticle();
     }
 
     /// calculate cachedDataValues and store to DataPoint.

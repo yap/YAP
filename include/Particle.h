@@ -92,13 +92,8 @@ public:
 
     /// @}
 
-    /// give friend status to DecayChannel to call setSymmetrizationIndexParents
+    /// grant friend status to DecayChannel to call addParticleCombination
     friend class DecayChannel;
-
-protected:
-
-    /// \return set of shared_ptr's to DataAccessor's owned by Particle
-    virtual DataAccessorSet dataAccessors() = 0;
 
 private:
 

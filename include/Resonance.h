@@ -82,9 +82,6 @@ protected:
     /// also add to MassShape_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
-    /// \return set of shared_ptr's to DataAccessor's
-    virtual DataAccessorSet dataAccessors() override;
-
 private:
 
     /// MassShape object

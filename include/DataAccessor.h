@@ -119,17 +119,6 @@ public:
     /// Check consistency of object
     bool consistent() const;
 
-    /// \name Data access
-    /// @{
-
-    /// Access a data point's data (by friendship)
-    std::vector<double>& data(DataPoint& d, unsigned i) const;
-
-    /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const;
-
-    /// @}
-
     /// grant friend status to InitialStateParticle
     friend class InitialStateParticle;
 
@@ -137,6 +126,9 @@ public:
     friend class CachedDataValue;
 
 protected:
+
+    /// register with InitialStateParticle
+    void addToInitialStateParticle();
 
     /// add CachedDataValue
     void addCachedDataValue(std::shared_ptr<CachedDataValue> c)
@@ -168,6 +160,19 @@ protected:
     /// kFixed) for all Parameters that CachedDataValues_ depend on
     virtual void setParameterFlagsToUnchanged();
 
+    /// \name Data access
+    /// \todo Is this access ever used?
+    /// @{
+
+    /// Access a data point's data
+    std::vector<double>& data(DataPoint& d, unsigned i) const;
+
+    /// Access a data point's data (const)
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const
+    { return const_cast<DataAccessor*>(this)->data(d, i); }
+
+    /// @}
+
 private:
 
     /// Object to check equality of symmetrizations for determining storage indices
@@ -188,7 +193,11 @@ private:
 };
 
 /// \typedef DataAccessorSet
-using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
+using DataAccessorSet = std::set<DataAccessor*>;
+// using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
+
+/// remove expired elements of set
+void removeExpired(DataAccessorSet& S);
 
 std::string data_accessor_type(const DataAccessor* D);
 

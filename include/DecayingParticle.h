@@ -124,7 +124,7 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
 
-    /// grant friend status to DecayChannel to see BlattWeiskopffs_, and get dataAccessors
+    /// grant friend status to DecayChannel to see BlattWeiskopffs_
     friend DecayChannel;
 
 protected:
@@ -133,9 +133,6 @@ protected:
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     void printDecayChainLevel(int level) const;
-
-    /// \return set of shared_ptr's of DataAccessor's
-    virtual DataAccessorSet dataAccessors() override;
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
     virtual ComplexParameterVector freeAmplitudes() const;

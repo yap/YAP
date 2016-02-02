@@ -241,20 +241,15 @@ void DataAccessor::pruneSymmetrizationIndices()
 }
 
 //-------------------------
-std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
+void DataAccessor::addToInitialStateParticle()
 {
-    // dynamically allocate memory as needed
-    if (d.Data_.size() <= Index_)
-        d.Data_.resize(Index_ + 1);
-
-    if (d.Data_[Index_].size() <= i)
-        d.Data_[Index_].resize(i + 1);
-
-    return d.Data_[Index_][i];
+    if (!initialStateParticle())
+        throw exceptions::Exception("InitialStateParticle unset", "DataAccessor::addToInitialStateParticle");
+    initialStateParticle()->addDataAccessor(this);
 }
 
 //-------------------------
-const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) const
+std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
 {
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     return d.Data_[Index_][i];
@@ -262,7 +257,6 @@ const std::vector<double>& DataAccessor::data(const DataPoint& d, unsigned i) co
     return d.Data_.at(Index_).at(i);
 #endif
 }
-
 
 //-------------------------
 void DataAccessor::updateGlobalCalculationStatuses()
@@ -304,6 +298,15 @@ void DataAccessor::setParameterFlagsToUnchanged()
             if (p->variableStatus() == kChanged)
                 p->setVariableStatus(kUnchanged);
 }
+
+//-------------------------
+void removeExpired(DataAccessorSet& S)
+{
+    for (auto it = S.begin(); it != S.end(); )
+        if (!*it) it = S.erase(it);
+        else ++it;
+}
+
 
 }
 

@@ -28,7 +28,6 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
     unsigned symIndex = symmetrizationIndex(pc);
 
     // get cached amplitude object for spin projection two_m
-    FLOG(INFO) << name() << " " << spin_to_string(two_m);
     auto A = Amplitudes_.at(two_m);
 
     if (A->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
@@ -43,7 +42,6 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
                 a += c->amplitude(d, pc, two_m, dataPartitionIndex);
         }
 
-        FLOG(INFO) << "setting amplitude for " << *this << " for " << spin_to_string(two_m);
         A->setValue(a, d, symIndex, dataPartitionIndex);
 
         DEBUG("DecayingParticle::amplitude - calculate amplitude for " << name() << " " << *pc << " = " << a);
@@ -150,6 +148,9 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     }
 
     FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
+
+    // now that ISP is set, register with ISP (repeated registration has no effect)
+    addToInitialStateParticle();
 }
 
 //-------------------------
@@ -226,24 +227,6 @@ CachedDataValueSet DecayingParticle::CachedDataValuesItDependsOn()
     for (auto& kv : Amplitudes_)
         S.insert(kv.second);
     return S;
-}
-
-//-------------------------
-DataAccessorSet DecayingParticle::dataAccessors()
-{
-    DataAccessorSet V;
-
-    for (auto& kv : BlattWeisskopfs_)
-        V.emplace(kv.second);
-
-    for (auto& c : Channels_) {
-        // add channel
-        V.emplace(c);
-        // and channel's data accessors
-        auto v = c->dataAccessors();
-        V.insert(v.begin(), v.end());
-    }
-    return V;
 }
 
 //-------------------------

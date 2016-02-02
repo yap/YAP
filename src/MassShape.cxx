@@ -19,6 +19,19 @@ bool MassShape::consistent() const
 }
 
 //-------------------------
+void MassShape::setResonance(Resonance* r)
+{
+    Resonance_ = r;
+
+    if (Resonance_)
+        borrowParametersFromResonance();
+
+    // register with ISP
+    if (initialStateParticle())
+        addToInitialStateParticle();
+}
+
+//-------------------------
 InitialStateParticle* MassShape::initialStateParticle()
 { return (Resonance_) ? Resonance_->initialStateParticle() : nullptr; }
 

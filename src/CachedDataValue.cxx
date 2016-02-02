@@ -37,10 +37,6 @@ CalculationStatus CachedDataValue::globalCalculationStatus(const std::shared_ptr
 //-------------------------
 double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const
 {
-    FLOG(INFO) << data_accessor_type(Owner_) << " " << Owner_
-               << " accessing owner-index " << Owner_->index() << " of " << d.Data_.size()
-               << ", symIndex " << symmetrizationIndex << " of " << d.Data_.at(Owner_->index()).size()
-               << ", elt " << Position_ + index << " of " << d.Data_.at(Owner_->index()).at(symmetrizationIndex).size();
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     return d.Data_[Owner_->index()][symmetrizationIndex][Position_ + index];
 #else
