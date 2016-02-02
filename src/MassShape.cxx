@@ -25,10 +25,6 @@ void MassShape::setResonance(Resonance* r)
 
     if (Resonance_)
         borrowParametersFromResonance();
-
-    // register with ISP
-    if (initialStateParticle())
-        addToInitialStateParticle();
 }
 
 //-------------------------

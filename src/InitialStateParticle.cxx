@@ -49,7 +49,7 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
     for (int two_m = -quantumNumbers().twoJ(); two_m <= (int)quantumNumbers().twoJ(); two_m += 2)
         a += amplitude(d, two_m, dataPartitionIndex);
 
-    DEBUG ("InitialStateParticle::amplitude = " << a);
+    // DEBUG ("InitialStateParticle::amplitude = " << a);
 
     return a;
 }
@@ -64,7 +64,6 @@ double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBa
     // loop over data points in partition
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
         DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-
         L += logOfSquaredAmplitude(*d, D->index());
     }
 

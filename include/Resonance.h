@@ -78,6 +78,13 @@ public:
 
 protected:
 
+    /// overrides DataAccessor's function to also register MassShape_ with ISP
+    virtual void addToInitialStateParticle()
+    {
+        DecayingParticle::addToInitialStateParticle();
+        MassShape_->addToInitialStateParticle();
+    }
+
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;

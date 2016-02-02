@@ -95,7 +95,7 @@ std::set<int> SpinAmplitude::twoM() const
 void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
 {
     // retrieve (or create) AmplitudeSubmap for two_M
-    auto ASM = Amplitudes_[two_M];
+    auto& ASM = Amplitudes_[two_M];
 
     SpinProjectionPair m1m2 = {two_m1, two_m2};
     // look for m1m2 in AmplitudeSubmap
@@ -104,6 +104,7 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
                                     + " -> " + spin_to_string(two_m1) + " + " + spin_to_string(two_m2),
                                     "SpinAmplitude::addAmplitude");
 
+    // FLOG(DEBUG) << "adding CachedDataValue for"
     ASM[m1m2] = ComplexCachedDataValue::create(this);
 }
 

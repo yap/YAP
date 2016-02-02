@@ -128,7 +128,7 @@ public:
 protected:
 
     /// register with InitialStateParticle
-    void addToInitialStateParticle();
+    void virtual addToInitialStateParticle();
 
     /// add CachedDataValue
     void addCachedDataValue(std::shared_ptr<CachedDataValue> c)

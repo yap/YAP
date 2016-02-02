@@ -157,10 +157,8 @@ int main( int argc, char** argv)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
 
-        double logA(0);
-
-        logA = D->partialSumOfLogsOfSquaredAmplitudes(D->dataPartitions()[0]);
-        // logA = D->sumOfLogsOfSquaredAmplitudes();
+        double logA = D->partialSumOfLogsOfSquaredAmplitudes(D->dataPartitions()[0]);
+        // double logA = D->sumOfLogsOfSquaredAmplitudes();
 
         LOG(INFO) << "logA = " << logA;
     }

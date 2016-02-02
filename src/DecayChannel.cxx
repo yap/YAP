@@ -214,54 +214,60 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     auto& totAmp = TotalAmplitudes_.at(two_m);
 
     if (totAmp->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
-        DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << totAmp->value(d, symIndex));
+        FLOG(DEBUG) << "\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex);
         return totAmp->value(d, symIndex);
     }
 
     // sum over L-S combinations
     // LOOP_0 = sum_{L, S} BlattWeisskopf_L * free_amp(L, S, m) * LOOP_1
-    // kv = pair< shared_ptr<SpinAmplitude>, vector<AmplitudePair> >
+    // kvA = pair< shared_ptr<SpinAmplitude>, vector<AmplitudePair> >
     std::complex<double> A = Complex_0;
-    for (auto& kv : Amplitudes_) {
+    for (auto& kvA : Amplitudes_) {
 
-        auto ap = kv.second.at(two_m); // AmplitudePair for spin projection m
+        auto ap = kvA.second.at(two_m); // AmplitudePair for spin projection m
 
-        // if not yet calculated
-        if (ap.Fixed->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+        // if already calculated
 
-            auto sa = kv.first; // SpinAmplitude
-
-            // get map of SpinProjectionPair's to cached spin amplitudes
-            const auto& m = sa->amplitudes().at(two_m);
-            auto sa_symIndex = sa->symmetrizationIndex(pc);
-
-            // sum over daughter spin projection combinations (m1, m2)
-            // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
-            std::complex<double> a = Complex_0;
-            for (auto& kv : m) {
-                // retrieve cached spin amplitude from data point
-                auto amp = kv.second->value(d, sa_symIndex);
-
-                // loop over daughters, multiplying by their amplitudes for their spin projections
-                const auto& spp = kv.first; // SpinProjectionPair
-                for (size_t i = 0; i < spp.size(); ++i)
-                    amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], dataPartitionIndex);
-                // add into total amplitude thus far
-                a += amp;
-            }
-            // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
-            a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, dataPartitionIndex);
-            // store result
-            ap.Fixed->setValue(a, d, symIndex, dataPartitionIndex);
-            // add into total amplitude A
-            A += a;
-            DEBUG("DecayChannel::amplitude - calculated fixed amplitude for " << *this << " " << *pc << " = " << a);
-
-        } else {
-            // else Fixed is already calculated, simply retrieve from cache
+        if (ap.Fixed->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
+            // Fixed is already calculated, simply retrieve from cache
             A += ap.Free->value() * ap.Fixed->value(d, symIndex);
-            DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
+            // DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
+            continue;
         }
+
+        // else calculate
+
+        auto sa = kvA.first; // SpinAmplitude
+
+        // get map of SpinProjectionPair's to cached spin amplitudes
+        const auto& m = sa->amplitudes().at(two_m);
+        auto sa_symIndex = sa->symmetrizationIndex(pc);
+
+        // sum over daughter spin projection combinations (m1, m2)
+        // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
+        // kvM = pair <SpinProjectionPair, ComplexCachedDataValue>
+        std::complex<double> a = Complex_0;
+        for (auto& kvM : m) {
+            // retrieve cached spin amplitude from data point
+            auto amp = kvM.second->value(d, sa_symIndex);
+
+            // loop over daughters, multiplying by their amplitudes for their spin projections
+            const auto& spp = kvM.first; // SpinProjectionPair
+            for (size_t i = 0; i < spp.size(); ++i)
+                amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], dataPartitionIndex);
+
+            // add into total amplitude thus far
+            a += amp;
+        }
+
+        // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
+        a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, dataPartitionIndex);
+
+        // store result
+        ap.Fixed->setValue(a, d, symIndex, dataPartitionIndex);
+
+        // add into total amplitude A
+        A += a * ap.Free->value();
     }
 
     // store result

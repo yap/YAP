@@ -118,6 +118,8 @@ public:
     void calculate(DataPoint& d) override;
 
     /// \return precalculated complex amplitude
+    /// \param d DataPoint to retrieve value from
+    /// \param pc ParticleCombination to retrieve value for
     /// \param two_M 2 * spin projection of parent
     /// \param two_m1 2 * spin projection of first daughter
     /// \param two_m2 2 * spin projection of second daughter
