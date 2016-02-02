@@ -1,230 +1,414 @@
 #include "DecayChannel.h"
 
+#include "container_utils.h"
+#include "CachedDataValue.h"
 #include "DecayingParticle.h"
+#include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "Particle.h"
+#include "ParticleCombinationCache.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 
 #include <assert.h>
+#include <stdexcept>
 
 namespace yap {
 
 //-------------------------
-DecayChannel::DecayChannel(std::shared_ptr<Particle> daughterA, std::shared_ptr<Particle> daughterB, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
-    DecayChannel( {daughterA, daughterB}, spinAmplitude, parent)
+DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double> free) :
+    Fixed(ComplexCachedDataValue::create(dc)),
+    Free(std::make_shared<ComplexParameter>(free))
 {
 }
 
 //-------------------------
-DecayChannel::DecayChannel(std::vector<std::shared_ptr<Particle> > daughters, std::shared_ptr<SpinAmplitude> spinAmplitude, DecayingParticle* parent) :
+DecayChannel::DecayChannel(const ParticleVector& daughters) :
     DataAccessor(),
-    Parent_(parent),
     Daughters_(daughters),
-    BlattWeisskopf_(nullptr), // see comment below!
-    SpinAmplitude_(spinAmplitude),
-    FreeAmplitude_(new ComplexParameter(1.)),
-    FixedAmplitude_(new ComplexCachedDataValue(this))
+    DecayingParticle_(nullptr)
 {
-    /// this is done here because BlattWeisskopf needs a constructed DecayChannel object to set its dependencies
-    std::unique_ptr<BlattWeisskopf> bw(new BlattWeisskopf(this));
-    BlattWeisskopf_.swap(bw);
+    // check daughter size
+    if (Daughters_.empty())
+        throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
+    if (Daughters_.size() == 1)
+        throw exceptions::Exception("Only one daughter", "DecayChannel::DecayChannel");
+    if (Daughters_.size() > 2)
+        throw exceptions::Exception("More than two daughters", "DecayChannel::DecayChannel");
 
-    /// set dependencies
-    FixedAmplitude_->addDependencies(BlattWeisskopf_->ParametersItDependsOn());
-    FixedAmplitude_->addDependencies(BlattWeisskopf_->CachedDataValuesItDependsOn());
+    // check no Daughters_ are empty
+    if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;}))
+    throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
 
-    // Spin amplitude dependencies are added via addSpinAmplitudeDependencies() after sharing SpinAmplitudes
+    // check that first daughter's ISP is not nullptr
+    if (Daughters_[0]->initialStateParticle() == nullptr)
+        throw exceptions::Exception(std::string("InitialStateParticle unset in ") + to_string(*Daughters_[0]),
+                                    "DecayChannel::DecayChannel");
+    // check that all daughters have same ISP (trivially checks first daughter against itself)
+    for (auto& d : Daughters_)
+        if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
+            throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
 
-    // daughter dependencies
-    for (int i = 0; i < int(Daughters_.size()); ++i) {
-        auto daugh = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]);
-        if (!daugh)
-            continue;
-        for (auto& c : daugh->CachedDataValuesItDependsOn()) {
-            FixedAmplitude_->addDependency(c, i);
+    // collect ParticleCombination's of daughters
+    std::vector<ParticleCombinationVector> PCs;
+    for (auto d : Daughters_) {
+        ParticleCombinationVector v;
+        ParticleCombinationVector v_d = d->particleCombinations();
+        for (auto pc : v_d) {
+            // check for empty indices
+            if (pc->indices().empty())
+                throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
+            // ignore PC's that differ only by parent from ones already accounted for
+            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDown(A, pc);}))
+            v.push_back(pc);
+        }
+        if (v.empty())
+            throw exceptions::Exception(std::string("No ParticleCombinations for daughter ") + to_string(*d)
+                                        + " in DecayChannel " + to_string(*this),
+                                        "DecayChannel::DecayChannel");
+        PCs.push_back(v);
+    }
+
+    // create ParticleCombination's of parent
+    /// \todo remove hardcoding for two daughters so applies to n daughters?
+    for (auto& PCA : PCs[0]) {
+        for (auto& PCB : PCs[1]) {
+
+            // check that PCA and PCB don't overlap in FSP content
+            if (overlap(PCA->indices(), PCB->indices()))
+                continue;
+
+            // for identical particles, check if swapped particle combination is already added
+            if (Daughters_[0] == Daughters_[1]) {
+                // get (B,A) combination from cache
+                auto b_a = initialStateParticle()->particleCombinationCache().find({PCB, PCA});
+                // if b_a is not in cache, it can't be in SymmetrizationIndices_
+                if (!b_a.expired() and hasParticleCombination(b_a.lock()))
+                    // if (B,A) already added, don't proceed to adding (A,B)
+                    continue;
+            }
+
+            // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
+            // setting the parents of both to the newly created ParticleCombination
+            addParticleCombination(initialStateParticle()->particleCombinationCache().composite({PCA, PCB}));
         }
     }
 
-
-    // set symmetrization indices
-    std::vector<ParticleCombinationVector> PCs;
-    for (std::shared_ptr<Particle> d : Daughters_) {
-        if (std::dynamic_pointer_cast<DataAccessor>(d))
-            PCs.push_back(std::dynamic_pointer_cast<DataAccessor>(d)->particleCombinations());
-        else if (std::dynamic_pointer_cast<FinalStateParticle>(d))
-            PCs.push_back(std::static_pointer_cast<FinalStateParticle>(d)->particleCombinations());
-        else
-            LOG(ERROR) << "DecayChannel() - cannot get ParticleCombinations from daughter " << d->name();
-    }
-
-    if (PCs.size() < 2) {
-        LOG(ERROR) << "DecayChannel::DecayChannel - too few daughters provided.";
-        return;
-    }
-
-    if (PCs.size() != 2) {
-        LOG(ERROR) << "DecayChannel::DecayChannel - currently only accepting two-body decays.";
-        return;
-    }
-
-    /// \todo how to for three?
-    // hard-coded for two
-    for (std::shared_ptr<const ParticleCombination> PCA : PCs[0])
-        for (std::shared_ptr<const ParticleCombination> PCB : PCs[1])
-            if (!PCA->sharesIndices(PCB)) {
-                std::shared_ptr<const ParticleCombination> a_b = ParticleCombination::uniqueSharedPtr({PCA, PCB});
-
-                bool can_has_symmetrization = true;
-                if (Daughters_[0] == Daughters_[1]) {
-                    ParticleCombination b_a = ParticleCombination({PCB, PCA});
-                    for (auto& pc : particleCombinations())
-                        if (*pc == b_a) {
-                            can_has_symmetrization = false;
-                            break;
-                        }
-                }
-                if (can_has_symmetrization)
-                    addSymmetrizationIndex(a_b);
-            }
+    // register with ISP
+    addToInitialStateParticle();
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    DEBUG("DecayChannel::amplitude - " << std::string(*this) << " " << std::string(*pc));
+    DataAccessor::addParticleCombination(pc);
 
-    unsigned symIndex = symmetrizationIndex(pc);
+    // add to pc's daughters to daughter particles;
+    // pc's daughters have their parents set correctly.
+    for (size_t i = 0; i < pc->daughters().size(); ++i)
+        Daughters_[i]->addParticleCombination(pc->daughters()[i]);
 
-    if (FixedAmplitude_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
-        std::complex<double> a = BlattWeisskopf_->amplitude(d, pc, dataPartitionIndex) * SpinAmplitude_->amplitude(d, pc, dataPartitionIndex);
+    // add to SpinAmplitude's (keys of Amplitudes_)
+    for (auto& kv : Amplitudes_)
+        kv.first->addParticleCombination(pc);
+}
 
-        auto& pcDaughters = pc->daughters();
-        for (unsigned i = 0; i < Daughters_.size(); ++i)
-            a *= Daughters_[i]->amplitude(d, pcDaughters.at(i), dataPartitionIndex);
+//-------------------------
+void DecayChannel::setDecayingParticle(DecayingParticle* dp)
+{
+    DecayingParticle_ = dp;
+    if (!DecayingParticle_)
+        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
 
-        FixedAmplitude_->setValue(a, d, symIndex, dataPartitionIndex);
+    // if SpinAmplitude's have already been added by hand, don't add automatically
+    if (!Amplitudes_.empty())
+        return;
 
-        DEBUG("DecayChannel::amplitude - calculated fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << a);
-        return FreeAmplitude_->value() * a;
+    auto iQ = DecayingParticle_->quantumNumbers();
+    auto d1Q = Daughters_[0]->quantumNumbers();
+    auto d2Q = Daughters_[1]->quantumNumbers();
+
+    // create spin amplitudes
+    // loop over possible S: |j1-j2| <= S <= (j1+j2)
+    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2Q.twoJ(); two_S += 2)
+        // loop over possible L: |J-s| <= L <= (J+s)
+        for (unsigned L = std::abs<int>(iQ.twoJ() - two_S) / 2; L <= (iQ.twoJ() + two_S) / 2; ++L)
+            // add SpinAmplitude retrieved from cache
+            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache().spinAmplitude(iQ, d1Q, d2Q, L, two_S));
+}
+
+//-------------------------
+void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
+{
+    // check number of daughters
+    if (sa->finalQuantumNumbers().size() != Daughters_.size())
+        throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
+
+    // check against daughter quantum numbers
+    for (size_t i = 0; i < Daughters_.size(); ++i)
+        if (Daughters_[i]->quantumNumbers() != sa->finalQuantumNumbers()[i])
+            throw exceptions::Exception(std::string("QuantumNumbers don't match daughter ") + std::to_string(i),
+                                        "DecayChannel::addSpinAmplitude");
+
+    // check against DecayingParticle_ if set
+    if (DecayingParticle_) {
+        if (DecayingParticle_->quantumNumbers() != sa->initialQuantumNumbers())
+            throw exceptions::Exception("QuantumNumbers don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
+    } else {
+        // else check against previously added SpinAmplitude's initial quantum numbers
+        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->initialQuantumNumbers() != sa->initialQuantumNumbers())
+            throw exceptions::Exception("QuantumNumbers don't match previously added", "DecayChannel::addSpinAmplitude");
     }
 
-    DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << std::string(*this) << " " << std::string(*pc) << " = " << FixedAmplitude_->value(d, symIndex));
-    return FreeAmplitude_->value() * FixedAmplitude_->value(d, symIndex);
+    // add this' ParticleCombination's to it
+    for (auto& pc : particleCombinations())
+        sa -> addParticleCombination(pc);
+
+    // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
+    AmplitudePairMap apM;
+    for (auto& two_m : sa->twoM()) {
+
+        // add TotalAmplitude for two_m if needed
+        if (TotalAmplitudes_.find(two_m) == TotalAmplitudes_.end())
+            TotalAmplitudes_[two_m] = ComplexCachedDataValue::create(this);
+
+        // insert new AmplitudePair into map, retaining the added Amplitude pair
+        auto ap = (apM.insert(std::make_pair(two_m, std::move(AmplitudePair(this))))).first->second;
+
+        /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
+        ap.Fixed->addDependencies(sa->amplitudeSet());
+
+        // add daughter dependencies to the fixed amplitude
+        for (int i = 0; i < int(Daughters_.size()); ++i)
+            if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
+                for (auto& c : d->CachedDataValuesItDependsOn())
+                    ap.Fixed->addDependency(c, i);
+
+        // add to TotalAmplitudes_[two_m]'s dependencies
+        TotalAmplitudes_[two_m]->addDependency(ap.Free);
+        TotalAmplitudes_[two_m]->addDependency(ap.Fixed);
+    }
+
+    // add to Amplitudes_
+    Amplitudes_.insert(std::make_pair(sa, std::move(apM)));
+}
+
+//-------------------------
+ComplexParameterVector DecayChannel::freeAmplitudes()
+{
+    ComplexParameterVector V;
+    for (auto& apM_kv : Amplitudes_)
+        for (auto& ap_kv : apM_kv.second)
+            V.push_back(ap_kv.second.Free);
+    return V;
+}
+
+//-------------------------
+std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+        int two_m, unsigned dataPartitionIndex) const
+{
+    unsigned symIndex = symmetrizationIndex(pc);
+
+    auto& totAmp = TotalAmplitudes_.at(two_m);
+
+    if (totAmp->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
+        FLOG(DEBUG) << "\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex);
+        return totAmp->value(d, symIndex);
+    }
+
+    // sum over L-S combinations
+    // LOOP_0 = sum_{L, S} BlattWeisskopf_L * free_amp(L, S, m) * LOOP_1
+    // kvA = pair< shared_ptr<SpinAmplitude>, vector<AmplitudePair> >
+    std::complex<double> A = Complex_0;
+    for (auto& kvA : Amplitudes_) {
+
+        auto ap = kvA.second.at(two_m); // AmplitudePair for spin projection m
+
+        // if already calculated
+
+        if (ap.Fixed->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
+            // Fixed is already calculated, simply retrieve from cache
+            A += ap.Free->value() * ap.Fixed->value(d, symIndex);
+            // DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
+            continue;
+        }
+
+        // else calculate
+
+        auto sa = kvA.first; // SpinAmplitude
+
+        // get map of SpinProjectionPair's to cached spin amplitudes
+        const auto& m = sa->amplitudes().at(two_m);
+        auto sa_symIndex = sa->symmetrizationIndex(pc);
+
+        // sum over daughter spin projection combinations (m1, m2)
+        // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
+        // kvM = pair <SpinProjectionPair, ComplexCachedDataValue>
+        std::complex<double> a = Complex_0;
+        for (auto& kvM : m) {
+            // retrieve cached spin amplitude from data point
+            auto amp = kvM.second->value(d, sa_symIndex);
+
+            // loop over daughters, multiplying by their amplitudes for their spin projections
+            const auto& spp = kvM.first; // SpinProjectionPair
+            for (size_t i = 0; i < spp.size(); ++i)
+                amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], dataPartitionIndex);
+
+            // add into total amplitude thus far
+            a += amp;
+        }
+
+        // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
+        a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, dataPartitionIndex);
+
+        // store result
+        ap.Fixed->setValue(a, d, symIndex, dataPartitionIndex);
+
+        // add into total amplitude A
+        A += a * ap.Free->value();
+    }
+
+    // store result
+    totAmp->setValue(A, d, symIndex, dataPartitionIndex);
+
+    // and return it
+    return A;
 }
 
 //-------------------------
 bool DecayChannel::consistent() const
 {
-    bool result = true;
+    bool C = DataAccessor::consistent();
 
-    result &= DataAccessor::consistent();
-    if (!result) {
-        LOG(ERROR) << "Channel's DataAccessor is not consistent:  " << static_cast<std::string>(*this) << "\n";
-    }
-
-    // check number of daughters greater than 1
+    // check number of daughters
     if (Daughters_.size() < 2) {
-        LOG(ERROR) << "DecayChannel::consistent() - invalid number of daughters (" << Daughters_.size() << " < 2).";
-        result = false;
+        FLOG(ERROR) << "invalid number of daughters (" << Daughters_.size() << " < 2).";
+        C &= false;
     }
 
     // currently only allowing exactly two daughters
-    /// \todo allow more than two daugters?
-    if (Daughters_.size() != 2) {
-        LOG(ERROR) << "DecayChannel::consistent() - invalid number of daughters (" << Daughters_.size() << " != 2).";
-        result = false;
+    if (Daughters_.size() > 2) {
+        FLOG(ERROR) << "invalid number of daughters (" << Daughters_.size() << " > 2).";
+        C &= false;
     }
 
-    // compare number of daughters
-    for (auto& pc : particleCombinations())
-        if (Daughters_.size() != pc->daughters().size()) {
-            LOG(ERROR) << "DecayChannel::consistent() - DecayChannel and its particleCombinations do not have the same number of daughters.";
-            result = false;
-        }
+    // compare number of daughters with sizes of ParticleCombinations
+    auto pcs = particleCombinations();
+    if (std::any_of(pcs.begin(), pcs.end(),
+    [&](ParticleCombinationVector::value_type pc) {return pc->daughters().size() != Daughters_.size();})) {
+        FLOG(ERROR) << "DecayChannel and its particleCombinations do not have the same number of daughters.";
+        C &= false;
+    }
 
+    // check no daughters is empty
+    if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;})) {
+        FLOG(ERROR) << "null pointer in daughters vector.";
+        C &= false;
+    }
     // check daughters
-    bool prevResult = result;
-    for (std::shared_ptr<Particle> d : Daughters_)  {
-        if (!d) {
-            LOG(ERROR) << "DecayChannel::consistent() - null pointer in daughters vector.";
-            result = false;
-        } else
-            result &= d->consistent();
-    }
-    if (prevResult != result)
-        LOG(ERROR) << "DecayChannel::consistent() - daughter(s) inconsistent";
+    std::for_each(Daughters_.begin(), Daughters_.end(), [&](std::shared_ptr<Particle> d) {if (d) C &= d->consistent();});
 
-    // Check Blatt-Weisskopf object
-    result &= BlattWeisskopf_->consistent();
-    // check if BlattWeisskopf points back to this DecayChannel
-    if (this != BlattWeisskopf_->decayChannel()) {
-        LOG(ERROR) << "DecayChannel::consistent() - BlattWeisskopf does not point back to this DecayChannel.";
-        result =  false;
+    // check DecayingParticle_ is set
+    if (!DecayingParticle_) {
+        FLOG(ERROR) << "DecayingParticle is unset.";
+        C &= false;
     }
 
+    // loop over SpinAmplitude's, which are keys (first) to Amplitudes_ map
+    for (auto& kv : Amplitudes_) {
+        // check SpinAmplitude
+        if (!kv.first) {
+            FLOG(ERROR) << "A SpinAmplitude is empty";
+            C &= false;
+        } else {
+            C &= kv.first->consistent();
 
-    // Check SpinAmplitude object
-    if (!SpinAmplitude_) {
-        LOG(ERROR) << "DecayChannel::consistent() - no SpinAmplitude object set.";
-        result = false;
-    } else {
-        result &= SpinAmplitude_->consistent();
+            // check size of SpinAmplitude's quantum numbers against size of daughters
+            if (kv.first->finalQuantumNumbers().size() != Daughters_.size()) {
+                FLOG(ERROR) << "quantum numbers object and daughters object size mismatch";
+                C &= false;
+            }
 
-        // check size of spin amplitude quantum numbers and size of daughters
-        if (SpinAmplitude_->finalQuantumNumbers().size() != Daughters_.size()) {
-            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers object and daughters object size mismatch";
-            result = false;
-        }
+            // check if QuantumNumbers of SpinAmplitude objects match with Particles
+            if (kv.first->initialQuantumNumbers() != decayingParticle()->quantumNumbers()) {
+                FLOG(ERROR) << "quantum numbers of parent " << decayingParticle()->quantumNumbers()
+                            << " and SpinAmplitude " << kv.first->initialQuantumNumbers() << " don't match.";
+                C &= false;
+            }
 
-        // check if QuantumNumbers of SpinAmplitude objects match with Particles
-        if (SpinAmplitude_->initialQuantumNumbers() != parent()->quantumNumbers()) {
-            LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of parent "
-                       << parent()->quantumNumbers() << " and SpinAmplitude "
-                       << SpinAmplitude_->initialQuantumNumbers() << " don't match.";
-            result = false;
-        }
+            for (size_t i = 0; i < Daughters_.size(); ++i) {
+                if (kv.first->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
+                    FLOG(ERROR) << "quantum numbers of daughter " << i << " " << Daughters_[i]->quantumNumbers()
+                                << " and SpinAmplitude " << kv.first->finalQuantumNumbers()[i] << " don't match.";
+                    C &= false;
+                }
+            }
 
-        for (unsigned i = 0; i < Daughters_.size(); ++i) {
-            if (SpinAmplitude_->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
-                LOG(ERROR) << "DecayChannel::consistent() - quantum numbers of daughter " << i << " "
-                           << Daughters_[i]->quantumNumbers() << " and SpinAmplitude "
-                           << SpinAmplitude_->finalQuantumNumbers()[i] << " don't match.";
-                result = false;
+            // check its corresponding BlattWeisskopf
+            if (DecayingParticle_) {
+                // look for BlattWeisskopf object with corresponding orbital angular momentum
+                auto it = DecayingParticle_->BlattWeisskopfs_.find(kv.first->L());
+                if (it == DecayingParticle_->BlattWeisskopfs_.end() or !it->second) {
+                    FLOG(ERROR) << "Could not find BlattWeisskopf object with L = " << kv.first->L();
+                    C &= false;
+                } else {
+                    C &= it->second->consistent();
+                }
             }
         }
     }
 
     // check masses
-    double finalMass = 0;
-    for (std::shared_ptr<Particle> d : Daughters_)
-        finalMass += (!d) ? 0 : d->mass()->value();
-    if (finalMass > parent()->mass()->value()) {
-        LOG(ERROR) << "DecayChannel::consistent() - sum of daughter's masses is bigger than resonance mass.";
-        result =  false;
+    double mass_sum = std::accumulate(Daughters_.begin(), Daughters_.end(), 0.,
+    [](double m, std::shared_ptr<Particle> d) {return m + (d ? d->mass()->value() : 0);});
+    if (mass_sum > decayingParticle()->mass()->value()) {
+        FLOG(ERROR) << "sum of daughter's masses (" << mass_sum << ")"
+                    << "is bigger than resonance mass (" << decayingParticle()->mass()->value() << ").";
+        C &= false;
     }
 
-    if (!result)
-        LOG(ERROR) << "Channel is not consistent:  " << static_cast<std::string>(*this) << "\n";
-
-    return result;
+    return C;
 }
 
 //-------------------------
-DecayChannel::operator std::string() const
+SpinAmplitudeVector DecayChannel::spinAmplitudes()
 {
-    std::string result;
-    if (Parent_)
-        result += Parent_->name() + " ->";
-    if (Daughters_.empty())
-        result += " (nothing)";
-    for (std::shared_ptr<Particle> d : Daughters_)
-        result += " " + d->name();
-    if (SpinAmplitude_)
-        result += " " + std::string(*SpinAmplitude_);
-    return result;
+    SpinAmplitudeVector V;
+    for (auto& kv : Amplitudes_)
+        V.push_back(kv.first);
+    return V;
+}
+
+//-------------------------
+CachedDataValueSet DecayChannel::CachedDataValuesItDependsOn()
+{
+    CachedDataValueSet S;
+    for (auto& kv : TotalAmplitudes_)
+        S.insert(kv.second);
+    return S;
+}
+
+//-------------------------
+std::string to_string(const DecayChannel& dc)
+{
+    std::string s = "(";
+    if (dc.decayingParticle())
+        s += dc.decayingParticle()->name() + " -> ";
+    if (dc.daughters().empty())
+        s += "[nothing]";
+    else {
+        for (auto& d : dc.daughters())
+            s += d->name() + " ";
+        s.erase(s.size() - 1, 1);
+    }
+    s += ")";
+    auto& saV = dc.spinAmplitudes();
+    if (saV.empty())
+        return s;
+    s += " " + to_string(saV);
+    return s;
 }
 
 //-------------------------
@@ -234,103 +418,21 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 
     for (std::shared_ptr<Particle> d : Daughters_) {
 
+        // if daughter is fsp
         if (std::dynamic_pointer_cast<FinalStateParticle>(d)) {
             fsps.push_back(std::static_pointer_cast<FinalStateParticle>(d));
 
         } else if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-            std::vector<std::shared_ptr<FinalStateParticle> > ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles();
+            auto ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles();
             fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
 
         } else {
-            LOG(ERROR) << "DecayingParticle::finalStateParticles() - Daughter is neither a FinalStateParticle nor a DecayingParticle. DecayChannel is inconsistent.";
+            FLOG(ERROR) << "Daughter is neither a FinalStateParticle nor a DecayingParticle. DecayChannel is inconsistent.";
+            throw exceptions::Exception("Invalid daughter", "DecayChannel::DecayChannel");
         }
     }
 
     return fsps;
-}
-
-//-------------------------
-void DecayChannel::setInitialStateParticle(InitialStateParticle* isp)
-{
-    DataAccessor::setInitialStateParticle(isp);
-    SpinAmplitude_->setInitialStateParticle(initialStateParticle());
-    BlattWeisskopf_->setInitialStateParticle(initialStateParticle());
-
-    // hand ISP to daughters
-    for (auto d : Daughters_)
-        if (std::dynamic_pointer_cast<DecayingParticle>(d))
-            std::static_pointer_cast<DecayingParticle>(d)->setInitialStateParticle(initialStateParticle());
-}
-
-//-------------------------
-void DecayChannel::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
-{
-    DataAccessor::addSymmetrizationIndex(c);
-    BlattWeisskopf_->addSymmetrizationIndex(c);
-    SpinAmplitude_->addSymmetrizationIndex(c);
-}
-
-//-------------------------
-void DecayChannel::clearSymmetrizationIndices()
-{
-    DataAccessor::clearSymmetrizationIndices();
-    BlattWeisskopf_->clearSymmetrizationIndices();
-    SpinAmplitude_->clearSymmetrizationIndices();
-}
-
-//-------------------------
-void DecayChannel::setSymmetrizationIndexParents()
-{
-    ParticleCombinationVector chPCs = particleCombinations();
-
-    // clean up PCs without parents
-    ParticleCombinationVector chPCsParents = particleCombinations();
-    auto it = chPCsParents.begin();
-    while (it != chPCsParents.end()) {
-        if (not (*it)->parent()) {
-            it = chPCsParents.erase(it);
-        } else
-            ++it;
-    }
-    clearSymmetrizationIndices();
-
-    for (auto& pc : chPCsParents) {
-        addSymmetrizationIndex(pc);
-    }
-
-
-    for (auto& chPC : chPCs) {
-        for (auto& pc : ParticleCombination::particleCombinationSet()) {
-            if (ParticleCombination::equivDown(chPC, pc)) {
-
-                addSymmetrizationIndex(pc);
-
-                // set PCs for channel's daughters
-                for (auto& pcDaughPC : pc->daughters()) {
-                    for (const std::shared_ptr<Particle>& chDaugh : daughters()) {
-                        if (std::dynamic_pointer_cast<DecayingParticle>(chDaugh))
-                            for (auto& chDaughPC : std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->particleCombinations()) {
-                                if (ParticleCombination::equivDown(pcDaughPC, chDaughPC)) {
-                                    std::dynamic_pointer_cast<DecayingParticle>(chDaugh)->addSymmetrizationIndex(pcDaughPC);
-                                }
-                            }
-                    }
-                }
-            }
-        }
-    }
-
-    // next level
-    for (auto d : daughters())
-        d->setSymmetrizationIndexParents();
-
-}
-
-//-------------------------
-void DecayChannel::addSpinAmplitudeDependencies()
-{
-    FixedAmplitude_->addDependencies(SpinAmplitude_->ParametersItDependsOn());
-    FixedAmplitude_->addDependencies(SpinAmplitude_->CachedDataValuesItDependsOn());
 }
 
 //-------------------------

@@ -14,15 +14,15 @@
 namespace yap {
 
 //-------------------------
-HelicityAngles::HelicityAngles() :
-    StaticDataAccessor(&ParticleCombination::equivUpAndDownButLambda),
-    Phi_(new RealCachedDataValue(this)),
-    Theta_(new RealCachedDataValue(this))
+HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
+    StaticDataAccessor(isp, &ParticleCombination::equivUpAndDown),
+    Phi_(RealCachedDataValue::create(this)),
+    Theta_(RealCachedDataValue::create(this))
 {
 }
 
 //-------------------------
-// void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+// void HelicityAngles::addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c)
 // {
 //     /// dFunctions for J == 0 are 0, so we don't need to calculate and store helicity angles
 //     if (initialStateParticle()->quantumNumbers().twoJ() == 0
@@ -45,7 +45,7 @@ void HelicityAngles::calculate(DataPoint& d)
 }
 
 //-------------------------
-void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
+void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts)
 {
     // terminate recursion
@@ -72,11 +72,11 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const P
         if (Phi_->calculationStatus(pc, symIndex, 0) == kUncalculated or
                 Theta_->calculationStatus(pc, symIndex, 0) == kUncalculated ) {
 
-            auto phi_theta = angles<double>(vect<double>(p), C);
+            const auto phi_theta = angles<double>(vect<double>(p), C);
             Phi_->setValue(phi_theta[0], d, symIndex, 0);
             Theta_->setValue(phi_theta[1], d, symIndex, 0);
 
-            DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1]);
+            DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
         }
 
         // continue down the decay tree

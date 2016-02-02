@@ -12,37 +12,38 @@ namespace yap {
 //-------------------------
 BreitWigner::BreitWigner(double mass, double width) :
     MassShape(),
-    Mass_(new RealParameter(mass)),
-    Width_(new RealParameter(width)),
-    T_(new ComplexCachedDataValue(this, {Mass_, Width_}))
+    Mass_(std::make_shared<RealParameter>(mass)),
+    Width_(std::make_shared<RealParameter>(width)),
+    T_(ComplexCachedDataValue::create(this, ParameterSet{Mass_, Width_}))
 {
 }
 
 //-------------------------
-bool BreitWigner::setParameters(const ParticleTableEntry& entry)
+void BreitWigner::setParameters(const ParticleTableEntry& entry)
 {
-    Mass_->setValue(entry.Mass_);
+    Mass_->setValue(entry.Mass);
 
-    if (entry.MassShapeParameters_.size() < 1)
-        return false;
+    if (entry.MassShapeParameters.empty())
+        throw exceptions::Exception("entry.MassShapeParameter is empty", "BreitWigner::setParameters");
 
-    Width_->setValue(entry.MassShapeParameters_[0]);
-    return true;
+    Width_->setValue(entry.MassShapeParameters[0]);
 }
 
 //-------------------------
-void BreitWigner::borrowParametersFromResonance(Resonance* R)
+void BreitWigner::borrowParametersFromResonance()
 {
     // Remove existing mass parameter from M2iMG_
     T_->removeDependency(Mass_);
+
     // borrow mass from Owner_
-    Mass_ = R->mass();
+    Mass_ = resonance()->mass();
+
     // add new mass parameter into M2iMG_
     T_->addDependency(Mass_);
 }
 
 //-------------------------
-std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
@@ -54,11 +55,11 @@ std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<
 
         T_->setValue(T, d, symIndex, dataPartitionIndex);
 
-        DEBUG("BreitWigner::amplitude - calculated T = " << T << " and stored it in the cache");
+        // DEBUG("BreitWigner::amplitude - calculated T = " << T << " and stored it in the cache");
         return T;
     }
 
-    DEBUG("BreitWigner::amplitude - using cached T = " << T_->value(d, symIndex));
+    // DEBUG("BreitWigner::amplitude - using cached T = " << T_->value(d, symIndex));
 
     // else return cached value
     return T_->value(d, symIndex);

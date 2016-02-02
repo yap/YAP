@@ -22,12 +22,16 @@
 #define yap_InitialStateParticle_h
 
 #include "CoordinateSystem.h"
+#include "DataPartition.h"
 #include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "HelicityAngles.h"
+#include "HelicitySpinAmplitude.h"
 #include "MeasuredBreakupMomenta.h"
+#include "ParticleCombinationCache.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
@@ -35,36 +39,41 @@
 
 namespace yap {
 
-class DataPartitionBase;
 class FinalStateParticle;
+class MassAxes;
 
 /// \class InitialStateParticle
 /// \brief Class implementing an initial state particle.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 
-class InitialStateParticle : public DecayingParticle
+class InitialStateParticle : public std::enable_shared_from_this<InitialStateParticle>, public DecayingParticle
 {
 public:
 
-    /// \name Constructor, destructor, clone
-    /// @{
-
-    /// Constructor
-    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
-
-    /// Destructor
-    ~InitialStateParticle();
-
-    /// @}
+    /// constructing function
+    /// \param q QuantumNumbers of ISP
+    /// \param mass Mass of ISP [GeV]
+    /// \param name Name of ISP
+    /// \param r Radial size of ISP [GeV^-1]
+    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r)
+    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r)); }
 
     /// \name Amplitude-related
     /// @{
 
-    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const
+    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
     using DecayingParticle::amplitude;
 
     /// \return amplitude with a sum over all particle combinations
+    /// \param d DataPoint to calculate with
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    std::complex<double> amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const;
+
+    /// \return amplitude with a sum over all particle combinations and spin projections
+    /// \param d DataPoint to calculate with
+    /// \param dataPartitionIndex partition index for parallelization
     std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
@@ -72,12 +81,7 @@ public:
     double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
     {
         resetCalculationStatuses(dataPartitionIndex);
-        std::complex<double> a = amplitude(d, dataPartitionIndex);
-
-        if (isnan(a.real() or isnan(a.imag())))
-            return -std::numeric_limits<double>::infinity();
-
-        return log(norm(a));
+        return log(norm(amplitude(d, dataPartitionIndex)));
     }
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
@@ -96,20 +100,16 @@ public:
     /// @}
 
     /// call before looping over all DataPartitions
-    void updateGlobalCalculationStatuses();
+    void updateGlobalCalculationStatuses() override;
 
     /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
     void calculate(DataPoint& d);
-
-    /// set all parameter flags to kUnchanged (or leave at kFixed)
-    /// call after looping over ALL DataPartitions
-    void setParameterFlagsToUnchanged();
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// you MUST call this function after you have added all decay channels and before adding DataPoints
-    bool prepare();
+    void prepare();
 
     /// \name Getters
     /// @{
@@ -124,27 +124,43 @@ public:
 
     /// \return FourMomenta accessor
     FourMomenta& fourMomenta()
-    { return FourMomenta_; }
+    { return *FourMomenta_; }
 
     /// \return FourMomenta accessor (const)
     const FourMomenta& fourMomenta() const
-    { return FourMomenta_; }
+    { return *FourMomenta_; }
 
     /// \return MeasuredBreakupMomenta accessor
     MeasuredBreakupMomenta& measuredBreakupMomenta()
-    { return MeasuredBreakupMomenta_; }
+    { return *MeasuredBreakupMomenta_; }
 
     /// \return MeasuredBreakupMomenta accessor (const)
     const MeasuredBreakupMomenta& measuredBreakupMomenta() const
-    { return MeasuredBreakupMomenta_; }
+    { return *MeasuredBreakupMomenta_; }
 
     /// \return HelicityAngles accessor
     HelicityAngles& helicityAngles()
-    { return HelicityAngles_; }
+    { return *HelicityAngles_; }
 
     /// \return HelicityAngles accessor (const)
     const HelicityAngles& helicityAngles() const
-    { return HelicityAngles_; }
+    { return *HelicityAngles_; }
+
+    /// \return ParticleCombinationCache
+    ParticleCombinationCache& particleCombinationCache()
+    { return ParticleCombinationCache_; }
+
+    /// \return ParticleCombinationCache (const)
+    const ParticleCombinationCache& particleCombinationCache() const
+    { return ParticleCombinationCache_; }
+
+    /// \return SpinAmplitudeCache
+    SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache()
+    { return SpinAmplitudeCache_; }
+
+    /// \return SpinAmplitudeCache (const)
+    const SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache() const
+    { return SpinAmplitudeCache_; }
 
     /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
@@ -152,14 +168,14 @@ public:
 
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
-    std::array<double, 2> getMassRange(const std::shared_ptr<const ParticleCombination>& pc) const;
+    std::array<double, 2> getMassRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return if prepare() has been called for this InitialStateParticle
     bool prepared() const
     {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
-    std::vector<std::shared_ptr<ComplexParameter> > freeAmplitudes() const;
+    ComplexParameterVector freeAmplitudes() const override;
 
     /// @}
 
@@ -168,10 +184,13 @@ public:
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
-    /// given in data points
+    /// given in data points. The FinalStateParticle's have their
+    /// InitialStateParticle_ pointer set to this
     /// \param FSP list of shared pointers to final-state particles
-    /// \return Success of action
-    bool setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+    void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+
+    /// \return set coordinate system
+    void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
 
     /// @}
 
@@ -197,17 +216,15 @@ public:
     /// Add data point via four-momenta
     /// This method is faster since it avoids unneccessary copying of objects
     /// and resizing of the DataPoint's storage
-    bool addDataPoint(const std::vector<FourVector<double> >& fourMomenta);
+    void addDataPoint(const std::vector<FourVector<double> >& fourMomenta);
 
     /// Add data point via move
     /// \param d DataPoint to move into DataSet
-    /// \return Success of action
-    bool addDataPoint(DataPoint&& d);
+    void addDataPoint(DataPoint&& d);
 
     /// Add data point via copy
     /// \param d DataPoint to copy into DataSet
-    /// \return Success of action
-    bool addDataPoint(const DataPoint& d);
+    void addDataPoint(const DataPoint& d);
 
     /// @}
 
@@ -216,46 +233,81 @@ public:
 
     /// Initialize DataSet for MC Generation
     /// \param n Number of simultaneous streams for MC generation
-    bool initializeForMonteCarloGeneration(unsigned n);
+    void initializeForMonteCarloGeneration(unsigned n);
+
+    /// Build vector of mass axes for coordinates in phase space.
+    /// Currently only supports two-particle masses; the PCs put into
+    /// the returned MassAxes will have their daughters sorted (i.e. (10) will become (01)).
+    /// \return MassAxes for requested particle combinations
+    /// \param pcs vector of vectors of particle indices
+    const MassAxes getMassAxes(std::vector<std::vector<ParticleIndex> > pcs);
+
+    /// Set masses of particle combinations in axes to those in masses.
+    /// Masses will be squared and passed to setSquaredMasses, so negative masses will become positive.
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param masses vector of masses to be set to
+    /// \return success of action (false if the point lies outside phase space)
+    bool setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses);
+
+    /// Set squared masses of particle combinations in axes to those in masses;
+    /// negative squared masses will cause an exception to be thrown
+    /// \param d DataPoint to set into
+    /// \param axes vector of ParticleCombination's to set masses of
+    /// \param squared_masses vector of masses to be set to
+    /// \return success of action (false if the point lies outside phase space)
+    bool setSquaredMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& squared_masses);
 
     /// @}
 
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);
 
+    /// \return raw pointer to initial state particle through first DecayChannel
+    InitialStateParticle* initialStateParticle() override
+    { return this; }
+
+    /// grant friend status to DataAccessor to register itself with InitialStateParticle
+    friend class DataAccessor;
+
+    /// grant friend status to AmplitudeComponent to
+    friend class AmplitudeComponent;
+
+protected:
+
+    /// add ParticleCombination to ParticleCombinations_ if it is for
+    /// an ISP, and to FourMomenta_, HelicityAngles_, and
+    /// MeasuredBreakupMomenta_ (along with it's daughters through
+    /// recursive calling) if it is NOT for a FSP.
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
+    /// register a DataAccessor with this InitialStateParticle
+    virtual void addDataAccessor(DataAccessorSet::value_type da)
+    { DataAccessors_.insert(da); }
+
 private:
 
-    /// \name InitialStateParticle friends
-    /// @{
-
-    friend class DataAccessor;
-    friend class AmplitudeComponent;
-    friend void DecayingParticle::optimizeSpinAmplitudeSharing();
-
-    /// @}
+    /// constructor, made private since inherits from std::enable_shared_from_this.
+    /// see #create for details
+    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// check if d is in DataPartitions_
     bool hasDataPartition(DataPartitionBase* d);
 
     /// set number of data partitions of all #CachedDataValue's
-    void setNumberOfDataPartitions(unsigned n);
-
-    /// Set parents of symmetrization indices (recursively)
-    virtual void setSymmetrizationIndexParents() override;
+    void setNumberOfDataPartitions(unsigned n) override;
 
     /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
     /// call before calculating the amplitude for a new dataPoint
-    void resetCalculationStatuses(unsigned dataPartitionIndex);
+    void resetCalculationStatuses(unsigned dataPartitionIndex) override;
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition
-    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
+    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex) override;
 
-    /// add DataAccessor to set
-    void addDataAccessor(DataAccessor* d);
-
-    /// remove DataAccessor from set
-    void removeDataAccessor(DataAccessor* d);
+    /// set all parameter flags to kUnchanged (or leave at kFixed)
+    /// call after looping over ALL DataPartitions
+    void setParameterFlagsToUnchanged() override;
 
     /// add AmplitudeComponent to set
     void addAmplitudeComponent(AmplitudeComponent* d)
@@ -264,34 +316,35 @@ private:
     /// remove AmplitudeComponent from set
     void removeAmplitudeComponent(AmplitudeComponent* d);
 
-    void setDataAcessorIndices();
-
     /// Stores whether prepare() has been called
     bool Prepared_;
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
 
-    /// List of all DataAccessor objects in the InitialsStateParticle and below
-    std::set<DataAccessor*> DataAccessors_;
+    /// ParticleCombination cache
+    ParticleCombinationCache ParticleCombinationCache_;
+
+    /// SpinAmplitude cache
+    SpinAmplitudeCache<HelicitySpinAmplitude> SpinAmplitudeCache_;
+
+    /// Set of all DataAccessor's registered to this InitialStateParticle
+    DataAccessorSet DataAccessors_;
 
     /// List of all AmplitudeComponent objects in the InitialsStateParticle and below
     std::set<AmplitudeComponent*> AmplitudeComponents_;
-
-    /// List of all DecayChannel objects in the InitialsStateParticle and below
-    std::vector<DecayChannel*> DecayChannels_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;
 
     /// four momenta manager
-    FourMomenta FourMomenta_;
+    std::shared_ptr<FourMomenta> FourMomenta_;
 
     /// Breakup momenta manager
-    MeasuredBreakupMomenta MeasuredBreakupMomenta_;
+    std::shared_ptr<MeasuredBreakupMomenta> MeasuredBreakupMomenta_;
 
     /// helicity angles manager
-    HelicityAngles HelicityAngles_;
+    std::shared_ptr<HelicityAngles> HelicityAngles_;
 
     /// Data set
     DataSet DataSet_;

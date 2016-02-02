@@ -47,22 +47,22 @@
 
 namespace yap {
 
-/// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
-std::complex<double> DFunction(unsigned char twoJ, char twoM, char twoN, double alpha, double beta, double gamma);
-
 /// \return Wigner d-function \f$ d^{J}_{M N}(\beta) \f$
 /// \param twoJ twice the total spin of system
 /// \param twoM twice the first spin projection
 /// \param twoN twice the second spin projection
 /// \param beta rotation angle
-double dFunction(unsigned char twoJ, char twoM, char twoN, double beta);
+double dFunction(unsigned twoJ, int twoM, int twoN, double beta);
 
+/// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
+inline std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
+{ return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
 
 namespace dMatrix {
 
 /// Cache d-matrix elements for representation of spin J
 /// \param twoJ twice the spin of the representation
-void cache(unsigned char twoJ);
+void cache(unsigned int twoJ);
 
 /// \return cache size in bytes
 unsigned cacheSize();

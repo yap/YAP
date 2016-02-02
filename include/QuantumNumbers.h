@@ -21,9 +21,8 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
-#include "SpinUtilities.h"
+#include "MathUtilities.h"
 
-#include <cmath>
 #include <ostream>
 
 namespace yap {
@@ -40,10 +39,11 @@ public:
     /// @{
 
     /// Constructor
-    QuantumNumbers(unsigned char twoJ, char P, char C, unsigned char twoI, char G, char Q);
+    constexpr QuantumNumbers(unsigned twoJ, int P, int C, unsigned twoI, int G, int Q)
+        : TwoJ_(twoJ), P_(P), C_(C), TwoI_(twoI), G_(G), Q_(Q) {}
 
-    /// IJPQ(lambda) constructor
-    QuantumNumbers(unsigned char twoI, unsigned char twoJ, char P, char Q)
+    /// IJPQ constructor
+    constexpr QuantumNumbers(unsigned twoI, unsigned twoJ, int P, int Q)
         : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
 
     /// Default constructor
@@ -56,43 +56,39 @@ public:
     /// check consistency
     virtual bool consistent() const;
 
-    /// cast to std::string (for output)
-    explicit operator std::string() const
-    { return spinToString(TwoJ_) + (P_ > 0 ? "+" : "-") + (C_ == 0 ? "" : (C_ > 0 ? "+" : "-")); }
-
     /// \name Getters
     /// @{
 
     /// \return spin * 2
-    unsigned char twoJ() const
+    constexpr unsigned twoJ() const
     { return TwoJ_; }
 
     /// \return spin
-    double J() const
+    constexpr double J() const
     { return TwoJ_ * 0.5; }
 
     /// \return parity
-    signed char P() const
+    constexpr int P() const
     { return P_; }
 
     /// \return C-parity
-    signed char C() const
+    constexpr int C() const
     { return C_; }
 
     /// \return Isospin * 2
-    unsigned char twoI() const
+    constexpr unsigned twoI() const
     { return TwoI_; }
 
     /// \return Isospin
-    double I() const
+    constexpr double I() const
     { return TwoI_ * 0.5; }
 
     /// \return G-parity
-    signed char G() const
+    constexpr int G() const
     { return G_; }
 
-    /// \return Electric charge
-    char Q() const
+    /// \return Electric intge
+    constexpr int Q() const
     { return Q_; }
 
     /// @}
@@ -102,45 +98,54 @@ public:
 
     /// Set Spin
     void setJ(double J)
-    { TwoJ_ = std::round(2.*J); }
+    { TwoJ_ = 2 * J; }
 
     /// Set 2 * Spin
-    void setTwoJ(unsigned char J)
+    void setTwoJ(unsigned J)
     { TwoJ_ = J; }
 
     /// @}
 
-    /// equality operator
-    friend bool operator== (const QuantumNumbers& lhs, const QuantumNumbers& rhs);
-
-    /// returns NOT ==
-    friend bool operator!= (const QuantumNumbers& lhs, const QuantumNumbers& rhs)
-    { return !(lhs == rhs); }
-
 private:
 
     /// Spin * 2
-    unsigned char TwoJ_;
+    unsigned TwoJ_;
 
     /// Parity
-    signed char P_;
+    int P_;
 
     /// C-parity
-    signed char C_;
+    int C_;
 
     /// Isospin * 2
-    unsigned char TwoI_;
+    unsigned TwoI_;
 
     /// G-parity
-    signed char G_;
+    int G_;
 
     /// Electric charge
-    char Q_;
+    int Q_;
 
 };
 
+/// equality operator
+bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs);
+
+/// returns NOT ==
+inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+{ return !(lhs == rhs); }
+
+/// convert 2*J to string (e.g. 1/2, 1, 3/2, etc.)
+inline std::string spin_to_string(int twoJ)
+{ return is_even(twoJ) ? std::to_string(twoJ / 2) : std::to_string(twoJ) + "/2"; }
+
+/// convert to string
+inline std::string to_string(const QuantumNumbers& Q)
+{ return spin_to_string(Q.twoJ()) + (Q.P() > 0 ? "+" : "-") + (Q.C() == 0 ? "" : (Q.C() > 0 ? "+" : "-")); }
+
 /// Overload << operator
-std::ostream& operator<< (std::ostream&, const QuantumNumbers&);
+inline std::ostream& operator<< (std::ostream& os, const QuantumNumbers& Q)
+{ os << "JP" << ((Q.C() == 0) ? "" : "C") << " = " << to_string(Q); return os; }
 
 }
 

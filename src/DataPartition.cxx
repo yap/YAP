@@ -52,7 +52,7 @@ std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsWeave(DataS
 }
 
 //-------------------------
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlockBySize(DataSet& dataSet, unsigned maxBlockSize)
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocksBySize(DataSet& dataSet, unsigned maxBlockSize)
 {
     LOG(INFO) << "Partition dataSet of size " << dataSet.size() << " into blocks with a maximum size of " << maxBlockSize;
 
@@ -84,7 +84,7 @@ std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlockBySize
 }
 
 //-------------------------
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlock(DataSet& dataSet, unsigned nPartitions)
+std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocks(DataSet& dataSet, unsigned nPartitions)
 {
     LOG(INFO) << "Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " partition blocks";
 
@@ -95,7 +95,7 @@ std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlock(DataS
 
     partitionSize = std::max(1u, partitionSize);
 
-    return createDataPartitionsBlockBySize(dataSet, partitionSize);
+    return createDataPartitionsBlocksBySize(dataSet, partitionSize);
 }
 
 }

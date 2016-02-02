@@ -21,17 +21,16 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
+#include <DataAccessor.h>
 #include <FourVector.h>
 
 #include <complex>
 #include <memory>
-#include <set>
 #include <vector>
 
 namespace yap {
 
 class CachedDataValue;
-class DataAccessor;
 class FourMomenta;
 class HelicityAngles;
 class MeasuredBreakupMomenta;
@@ -57,28 +56,29 @@ public:
 
     /// @}
 
-    const std::vector<FourVector<double> >& finalStateFourMomenta()
+    /// get fsp four momenta (const)
+    const std::vector<FourVector<double> >& finalStateFourMomenta() const
     { return FSPFourMomenta_; }
 
-    bool setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
+    /// get non-fsp four momenta (const)
+    const std::vector<FourVector<double> >& fourMomenta() const
+    { return FourMomenta_; }
+
+    /// set four momenta into data point
+    void setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
 
     /// print information about the size of the DataPoint and its members
     void printDataSize();
 
     /// reserve space in Data_
-    void allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors);
-
-protected:
-
-    /// \name DataPoint friends
-    /// @{
+    void allocateStorage(std::shared_ptr<FourMomenta> fourMom, const DataAccessorSet& dataAccessors);
 
     friend class CachedDataValue;
     friend class DataAccessor;
     friend class DataSet;
     friend class FourMomenta;
 
-    /// @}
+private:
 
     /// vector of 4-momenta of final-state particles in event
     std::vector<FourVector<double> > FSPFourMomenta_;

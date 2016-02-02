@@ -27,6 +27,7 @@
 #include "MassShape.h"
 
 #include <complex>
+#include <memory>
 
 namespace yap {
 
@@ -44,15 +45,19 @@ class BreitWigner : public MassShape
 public:
 
     /// Constructor
+    /// \param mass Mass of resonance [GeV]
+    /// \param width Width of resonance [GeV]
     BreitWigner(double mass = -1, double width = -1);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
-    /// \return Success of action
-    virtual bool setParameters(const ParticleTableEntry& entry);
+    virtual void setParameters(const ParticleTableEntry& entry) override;
 
     /// \name Getters
     /// @{
@@ -77,7 +82,7 @@ public:
 protected:
 
     /// set owning resonance, borrow mass from owner
-    virtual void borrowParametersFromResonance(Resonance* R) override;
+    virtual void borrowParametersFromResonance() override;
 
     std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
     std::shared_ptr<RealParameter> Width_; ///< [GeV]

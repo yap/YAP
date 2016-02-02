@@ -22,7 +22,7 @@
 #define yap_HelicitySpinAmplitude_h
 
 #include "DataPoint.h"
-#include "ParticleCombination.h"
+#include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 
 #include <complex>
@@ -31,63 +31,60 @@
 
 namespace yap {
 
-class InitialStateParticle;
 class ParticleCombination;
+
+template <class T>
+class SpinAmplitudeCache;
 
 /// \class HelicitySpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-
 class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
-    /// \name Constructors
-    /// @{
+    /// Calculate spin amplitude for given ParticleCombination and spin projections
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    /// \param d DataPoint to retrieve data from for calculation
+    /// \param pc ParticleCombination to calculate for
+    virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
+                                      const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+
+    /// \return "helicity formalism"
+    virtual std::string formalism() const override
+    { return "helicity formalism"; }
+
+    /// grant SpinAmplitudeCache friend status to call constructor
+    friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
+
+protected:
 
     /// Constructor
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
+    /// \param isp raw pointer to owning InitialStateParticle
     HelicitySpinAmplitude(const QuantumNumbers& initial,
-                          const QuantumNumbers& final1, const QuantumNumbers& final2, unsigned char twoL);
-
-    /// @}
-
-    /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
-
-    /// Check consistency of object
-    virtual bool consistent() const override;
-
-    /// also calculates ClebschGordan coefficient
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
-
-    /// also clears ClebschGordanCoefficients_
-    virtual void clearSymmetrizationIndices();
-
-    /// cast into string
-    operator std::string() const override;
-
-    /// Calculate Clebsch-Gordan coefficients for all particleCombinations
-    double calculateClebschGordanCoefficient(std::shared_ptr<const ParticleCombination> c) const;
-
-    /// Set pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    // virtual std::vector<std::shared_ptr<ComplexParameter> > ParametersItDependsOn() override;
-
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
-    { return {SpinAmplitude_}; }
+                          const QuantumNumbers& final1,
+                          const QuantumNumbers& final2,
+                          unsigned l, unsigned two_s,
+                          InitialStateParticle* isp);
 
 private:
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const override
+    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
-    /// Check if SpinAmplitudes are equal
-    bool equals(const SpinAmplitude& rhs) const override;
-
-    /// Clebsch-Gordan coefficient for 2*λ_1, 2*λ_2
-    /// \todo make this a Parameter???
-    ParticleCombinationMap<double> ClebschGordanCoefficients_;
-
-    std::shared_ptr<ComplexCachedDataValue> SpinAmplitude_;
+    /// L-S * S-S coupling coefficients
+    /// first map key is m1;
+    /// second map key is m2;
+    /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
+    std::map<int, std::map<int, double> > Coefficients_;
 
 };
 

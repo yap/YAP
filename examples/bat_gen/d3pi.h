@@ -10,7 +10,7 @@
 #include <BAT/BCModel.h>
 
 #include <InitialStateParticle.h>
-#include <ParticleCombination.h>
+#include <MassAxes.h>
 
 #include <memory>
 #include <string>
@@ -28,9 +28,6 @@ public:
     // Constructor
     d3pi(std::string name);
 
-    // Destructor
-    ~d3pi();
-
     // Overload LogLikelihood to implement model
     double LogLikelihood(const std::vector<double>& parameters);
 
@@ -38,13 +35,8 @@ public:
     double LogAPrioriProbability(const std::vector<double>& parameters);
 
 protected:
-    yap::ParticleCombinationVector DalitzAxes_;
+    yap::MassAxes MassAxes_;
     std::shared_ptr<yap::InitialStateParticle> D_;
-
-    double m2_P;
-    double m2_a;
-    double m2_b;
-    double m2_c;
 
 };
 // ---------------------------------------------------------

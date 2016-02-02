@@ -18,28 +18,29 @@ DataPoint::DataPoint(const std::vector<FourVector<double> >& P) :
 {}
 
 //-------------------------
-bool DataPoint::setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta)
+void DataPoint::setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta)
 {
     if (FSPFourMomenta_.size() != fourMomenta.size()) {
         LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
                    << fourMomenta.size() << " != " << FSPFourMomenta_.size();
-        return false;
+        throw exceptions::Exception("fourMomenta is wrong size", "DataPoint::setFinalStateFourMomenta");
     }
 
     FSPFourMomenta_ = fourMomenta;
-    return true;
 }
 
 //-------------------------
-void DataPoint::allocateStorage(const FourMomenta& fourMom, const std::set<DataAccessor*> dataAccessors)
+void DataPoint::allocateStorage(std::shared_ptr<FourMomenta> fourMom, const DataAccessorSet& dataAccessors)
 {
-    FourMomenta_.resize(fourMom.maxSymmetrizationIndex() + 1);
+    FourMomenta_.resize(fourMom->maxSymmetrizationIndex() + 1);
 
     // allocate space in vectors
     Data_.resize(dataAccessors.size());
 
-    for (DataAccessor* d : dataAccessors) {
-        Data_[d->index()].assign(d->maxSymmetrizationIndex() + 1, std::vector<double>(d->size()));
+    for (auto d : dataAccessors) {
+        Data_[d->index()].assign(d->maxSymmetrizationIndex() + 1, std::vector<double>(d->size(), 0));
+        FLOG(INFO) << "assigned  " << data_accessor_type(d) << " at index" << d->index() << " a vector of size "
+                   << Data_[d->index()][0].size();
     }
 }
 

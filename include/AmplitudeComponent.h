@@ -41,8 +41,31 @@ class AmplitudeComponent
 {
 public:
 
+    /// \name Constructors and assignment operators
+    /// @{
+
+    /// default constructor
+    AmplitudeComponent() = default;
+
+    /// default copy constructor
+    AmplitudeComponent(const AmplitudeComponent&) = default;
+
+    /// default move constructor
+    AmplitudeComponent(AmplitudeComponent&&) = default;
+
+    /// virtual default destructor
+    virtual ~AmplitudeComponent() = default;
+
+    /// default copy operator
+    AmplitudeComponent& operator=(const AmplitudeComponent&) = default;
+
+    /// default move operator
+    AmplitudeComponent& operator=(AmplitudeComponent&&) = default;
+
+    /// @}
+
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
+    /* virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0; */
 
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;

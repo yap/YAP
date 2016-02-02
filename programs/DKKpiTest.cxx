@@ -3,11 +3,11 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "make_unique.h"
+#include "MassAxes.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
 
-#include <assert.h>
 #include <memory>
 #include <vector>
 
@@ -18,8 +18,6 @@ int main( int argc, char** argv)
 
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
-    // use only L up to 4
-    unsigned max2L(2 * 4);
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
@@ -35,13 +33,13 @@ int main( int argc, char** argv)
     // create a phi
     auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(4.266e-3);
-    phi->addChannels(kPlus, kMinus, max2L);
+    phi->addChannel({kPlus, kMinus});
 
     // Add channels to D
-    D->addChannels(phi, piPlus, max2L);
+    D->addChannel({phi, piPlus});
 
     // consistency and optimizations
-    assert(D->prepare());
+    D->prepare();
     std::cout << "consistent! \n";
 
     // print stuff
@@ -56,21 +54,21 @@ int main( int argc, char** argv)
     D->printDecayChain();
     std::cout << "\n";
 
-    D->printSpinAmplitudes();
+    std::cout << D->spinAmplitudeCache() << std::endl;
     D->printDataAccessors(false);
 
     // initialize for 5 streams
     D->initializeForMonteCarloGeneration(5);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    yap::ParticleCombinationVector DalitzAxes = D->fourMomenta().getDalitzAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = D->getMassAxes({{0, 1}, {1, 2}});
 
-    std::vector<double> m2(DalitzAxes.size(), 1);
+    std::vector<double> m2(massAxes.size(), 1);
 
     DEBUG("BEFORE");
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
-    D->fourMomenta().setSquaredMasses(D->dataSet()[0], DalitzAxes, m2);
+    D->setSquaredMasses(D->dataSet()[0], massAxes, m2);
 
     DEBUG("AFTER");
     D->fourMomenta().printMasses(D->dataSet()[0]);

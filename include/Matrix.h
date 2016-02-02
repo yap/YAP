@@ -22,6 +22,7 @@
 #define yap_Matrix_h
 
 #include <array>
+#include <string>
 
 namespace yap {
 
@@ -57,7 +58,7 @@ std::string to_string(const Matrix<T, R, C>& M)
     for (const auto& row : M) {
         s += "(";
         for (const auto& elt : row)
-            s += std::to_string(elt) + ", ";
+            s += to_string(elt) + ", ";
         s.erase(s.size() - 2, 2);
         s += "), ";
     }
@@ -94,7 +95,7 @@ constexpr Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
 
 /// matrix multiplication
 template <typename T, size_t R, size_t K, size_t C>
-std::enable_if_t < (R != 1) or (C != 1), Matrix<T, R, C> >
+typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
 operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
 {
     Matrix<T, R, C> res;

@@ -23,6 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "DataAccessor.h"
 #include "DataPoint.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
@@ -56,35 +57,46 @@ public:
 
     /// @}
 
-    /// Calculate complex amplitude
+    /// Calculate complex amplitude.
+    /// All parameters are ignored. See particle::amplitude() for info.
     /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
+    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, unsigned) const override
     { return Complex_1; }
 
     /// Check consistency
     virtual bool consistent() const override;
 
     /// \return list of all ParticleCombinations
-    ParticleCombinationVector particleCombinations() const
-    { return SymmetrizationIndices_; }
+    ParticleCombinationVector particleCombinations() const override
+    { return ParticleCombinations_; }
 
-    // for internal use only
-    virtual void setSymmetrizationIndexParents() override;
+    /// \return owning InitialStateParticle
+    InitialStateParticle* initialStateParticle() override
+    { return InitialStateParticle_; }
 
     /// \name Friends
     /// @{
 
     /// Grant ISP friendship to set FSP's indices
-    friend bool InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
+    friend void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
 
     /// @}
 
+protected:
+
+    /// set raw pointer to owning InitialStateParticle
+    void setInitialStateParticle(InitialStateParticle* isp)
+    { InitialStateParticle_ = isp; }
+
+    /// add ParticleCombination to ParticleCombinations
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
 private:
 
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+    /// raw pointer to initial state particle decaying to this final state particle
+    InitialStateParticle* InitialStateParticle_;
 
-    ParticleCombinationVector SymmetrizationIndices_;
+    ParticleCombinationVector ParticleCombinations_;
 
 };
 

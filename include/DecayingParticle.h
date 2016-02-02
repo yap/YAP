@@ -21,13 +21,19 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
-#include "AmplitudeComponent.h"
+#include "BlattWeisskopf.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "DecayChannel.h"
+#include "Exceptions.h"
+#include "HelicitySpinAmplitude.h"
+#include "make_unique.h"
 #include "Particle.h"
+#include "QuantumNumbers.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -56,20 +62,25 @@ public:
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                           int two_m, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c, i.e. c will point to nullptr afterwards
-    virtual void addChannel(std::unique_ptr<DecayChannel>& c);
+    /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    virtual void addChannel(std::unique_ptr<DecayChannel> c);
 
-    /// Add all possible two-body DecayChannels with #HelicitySpinAmplitudes up to a maximum relative angular momentum
-    /// \param A daughter particle in all possible helicity states
-    /// \param B daughter particle in all possible helicity states
-    /// \param L maximum relative angular momentum between A and B * 2
-    virtual void addChannels(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, unsigned maxTwoL);
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param daughters ParticleVector of daughters to create DecayChannel object from
+    virtual void addChannel(const ParticleVector& daughters)
+    { addChannel(std::make_unique<DecayChannel>(daughters)); }
+
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -80,7 +91,7 @@ public:
     /// @{
 
     /// return channels
-    const std::vector< std::unique_ptr<yap::DecayChannel> >& channels() const
+    const DecayChannelVector& channels() const
     { return Channels_;}
 
     /// \return Number of decay channels for this object
@@ -101,44 +112,45 @@ public:
 
     /// @}
 
-    /// \name Setters
-    /// @{
-
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    /// @}
-
-    /// SpinAmplitudes can be shared among DecayChannels if the QuantumNumbers are equal.
-    /// Check if this is the case, and share SpinAmplitudes
-    void optimizeSpinAmplitudeSharing();
-
     /// Print complete decay chain
     void printDecayChain() const
     { printDecayChainLevel(0); }
 
-    /// Print SpinAmplitudes involved in decay chain
-    void printSpinAmplitudes(int level = 0);
-
-    // for internal use only
-    virtual void setSymmetrizationIndexParents() override;
-
     // virtual ParameterSet ParametersItDependsOn() override;
 
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
-    { return {Amplitude_}; }
+    virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
+
+    /// \return raw pointer to initial state particle through first DecayChannel
+    InitialStateParticle* initialStateParticle() override
+    { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
+
+    /// grant friend status to DecayChannel to see BlattWeiskopffs_
+    friend DecayChannel;
 
 protected:
 
+    /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+
     void printDecayChainLevel(int level) const;
 
+    /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
+    virtual ComplexParameterVector freeAmplitudes() const;
+
+private:
+
     /// vector of decay channel objects
-    std::vector< std::unique_ptr<DecayChannel> > Channels_;
+    DecayChannelVector Channels_;
+
+    /// map of Blatt-Weisskopf barrier factors, key = angular momentum
+    std::map<unsigned, std::shared_ptr<BlattWeisskopf> > BlattWeisskopfs_;
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;
 
-    std::shared_ptr<ComplexCachedDataValue> Amplitude_;
+    /// Cached amplitudes for each spin projection
+    /// key = 2 * spin projection
+    std::map<int, std::shared_ptr<ComplexCachedDataValue> > Amplitudes_;
 
 };
 

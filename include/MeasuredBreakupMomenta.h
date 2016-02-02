@@ -26,17 +26,19 @@
 
 namespace yap {
 
+class InitialStateParticle;
+
 /// \class MeasuredBreakupMomenta
 /// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-
 class MeasuredBreakupMomenta : public StaticDataAccessor
 {
 public:
 
     /// Constructor
-    MeasuredBreakupMomenta();
+    /// \param isp Raw pointer to owning InitialStateParticle
+    MeasuredBreakupMomenta(InitialStateParticle* isp);
 
     /// Calculate breakup momenta for all possible symmetrization indices
     virtual void calculate(DataPoint& d) override;
@@ -44,19 +46,24 @@ public:
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return Q2_->value(d, symmetrizationIndex(pc)); }
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double q(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return sqrt(q2(d, pc)); }
 
     /// Calculate breakup momentum from parent and daughter masses
     static double calcQ2(double m2_R, double m_a, double m_b);
 
+    /// \return Breakup Momentum
     std::shared_ptr<RealCachedDataValue> breakupMomenta()
+    { return Q2_; }
+
+    /// \return Breakup Momentum (const)
+    std::shared_ptr<RealCachedDataValue> breakupMomenta() const
     { return Q2_; }
 
 protected:

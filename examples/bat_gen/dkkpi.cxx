@@ -33,81 +33,39 @@ dkkpi::dkkpi(std::string name)
 
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
-    // use only L up to 4
-    unsigned max2L(2 * 4);
 
     // final state particles
-    auto kPlus  = factory.createFinalStateParticle(+321);
-    auto kMinus = factory.createFinalStateParticle(-321);
-    auto piPlus = factory.createFinalStateParticle(+211);
+    std::shared_ptr<yap::FinalStateParticle> kPlus  = factory.createFinalStateParticle(+321);
+    std::shared_ptr<yap::FinalStateParticle> kMinus = factory.createFinalStateParticle(-321);
+    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(+211);
 
     // initial state particle
     D_ = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
     D_->setFinalStateParticles({kPlus, kMinus, piPlus});
 
     // phi
-    auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
-    //auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1310.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
+    //std::shared_ptr<yap::Resonance> phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1310.e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(40e-3);
-    phi->addChannels(kPlus, kMinus, max2L);
+    phi->addChannel({kPlus, kMinus});
 
     // X_2
-    auto X_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.2, "X_2", radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> X_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.2, "X_2", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(X_2->massShape()).width()->setValue(80e-3);
-    X_2->addChannels(piPlus, kMinus, max2L);
+    X_2->addChannel({piPlus, kMinus});
 
     // Add channels to D
-    //D_->addChannels(phi,      piPlus, max2L);
-    D_->addChannels(X_2,      kPlus,  max2L);
-    // D_->addChannels(f_2,      piPlus, max2L);
-    // D_->addChannels(f_0_980,  piPlus, max2L);
-    // D_->addChannels(f_0_1370, piPlus, max2L);
-    // D_->addChannels(f_0_1500, piPlus, max2L);
-    // D_->addChannels(sigma,    piPlus, max2L);
-
-    // D_->addChannels(f_0_500_100,  piPlus, max2L);
-    // D_->addChannels(f_0_1500_100, piPlus, max2L);
+    D_->addChannel({phi, piPlus});
+    D_->addChannel({X_2, kPlus});
 
     D_->prepare();
-
-
-    std::cout << "\n" << D_->particleCombinations().size() << " D symmetrizations \n";
-    for (auto& pc : D_->particleCombinations())
-        std::cout << std::string(*pc) << "\n";
-    std::cout << "\n";
-
-    std::cout << "\nFour momenta symmetrizations with " << D_->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : D_->fourMomenta().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D_->fourMomenta().symmetrizationIndex(pc) << "\n";
-
-    std::cout << "\nHelicity angles symmetrizations with " << D_->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : D_->helicityAngles().particleCombinations())
-        std::cout << std::string(*pc) << ": " << D_->helicityAngles().symmetrizationIndex(pc) << "\n";
-
-    D_->printDecayChain();
-    std::cout << "\n";
-
-    D_->printSpinAmplitudes();
-    D_->printDataAccessors(false);
-
 
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
         freeAmps[i]->setValue(yap::Complex_1);
 
-    // unsigned i = 0;
-    // freeAmps[i++]->setValue(yap::Complex_1);
-    // freeAmps[i++]->setValue(yap::Complex_i);
-
-    // freeAmps[i++]->setValue(std::polar(1.,     0.)); // rho
-    // freeAmps[i++]->setValue(std::polar(2.1, -123. * TMath::Pi() / 180.)); // f_2
-    // freeAmps[i++]->setValue(std::polar(1.4,   12. * TMath::Pi() / 180.)); // f_0_980
-    // freeAmps[i++]->setValue(std::polar(1.3,  -21. * TMath::Pi() / 180.)); // f_0_1370
-    // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
-    // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
-
-    bool b = D_->initializeForMonteCarloGeneration(GetNChains());
-    std::cout << "success = " << b << std::endl;
+    D_->initializeForMonteCarloGeneration(3);
+    SetNChains(3);
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 
     // initialize with random point in phasespace
@@ -142,16 +100,6 @@ dkkpi::dkkpi(std::string name)
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
                   << std::endl;
     }
-
-    m2_P = pow(D_->mass()->value(), 2);
-    m2_a = pow(D_->finalStateParticles()[0]->mass()->value(), 2);
-    m2_b = pow(D_->finalStateParticles()[1]->mass()->value(), 2);
-    m2_c = pow(D_->finalStateParticles()[2]->mass()->value(), 2);
-
-    // Define parameters here in the constructor. For example:
-    // AddParameter("mu",-2,1,"#mu");
-    // And set priors, if using built-in priors. For example:
-    // GetParamater("mu").SetPrior(new BCPriorGaus(-1, 0.25));
 }
 
 // ---------------------------------------------------------

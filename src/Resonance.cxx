@@ -1,73 +1,47 @@
 #include "Resonance.h"
 
 #include "DecayChannel.h"
+#include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "ParticleCombinationCache.h"
 
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>&& massShape) :
+Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape) :
     DecayingParticle(q, mass, name, radialSize),
-    MassShape_(nullptr)
+    MassShape_(std::move(massShape))
 {
-    setMassShape(massShape);
-}
+    if (!MassShape_)
+        throw exceptions::Exception("MassShape unset", "Resonance::Resonance");
 
-//-------------------------
-void Resonance::setMassShape(std::unique_ptr<MassShape>& massShape)
-{
-    MassShape_.swap(massShape);
-    MassShape_->borrowParametersFromResonance(this);
+    MassShape_->setResonance(this);
 }
-
 
 //-------------------------
 bool Resonance::consistent() const
 {
-    bool consistent = true;
+    bool C = DecayingParticle::consistent();
 
-    consistent &= DecayingParticle::consistent();
-    consistent &= MassShape_->consistent();
-
-    if (! consistent) {
-        LOG(ERROR) << "Resonance is not consistent:  " << this->name() << "\n";
+    if (!MassShape_->consistent()) {
+        FLOG(ERROR) << "MassShape not consistent";
+        C &= false;
+    }
+    if (MassShape_->resonance() != this) {
+        FLOG(ERROR) << "MassShape's resonance is not this";
+        C &= false;
     }
 
-    return consistent;
+    return C;
 }
 
 //-------------------------
-void Resonance::setInitialStateParticle(InitialStateParticle* isp)
+void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    DecayingParticle::setInitialStateParticle(isp);
-    // hand ISP to mass shape
-    MassShape_->setInitialStateParticle(initialStateParticle());
+    DecayingParticle::addParticleCombination(c);
+    MassShape_->addParticleCombination(c);
 }
-
-//-------------------------
-void Resonance::addChannel(std::unique_ptr<DecayChannel>& c)
-{
-    for (auto& pc : c->particleCombinations())
-        MassShape_->addSymmetrizationIndex(ParticleCombination::uniqueSharedPtr(pc));
-
-    DecayingParticle::addChannel(c);
-}
-
-//-------------------------
-void Resonance::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
-{
-    DecayingParticle::addSymmetrizationIndex(c);
-    MassShape_->addSymmetrizationIndex(c);
-}
-
-//-------------------------
-void Resonance::clearSymmetrizationIndices()
-{
-    DecayingParticle::clearSymmetrizationIndices();
-    MassShape_->clearSymmetrizationIndices();
-}
-
 
 }

@@ -19,36 +19,30 @@
 #ifndef yap_MathUtilities_h
 #define yap_MathUtilities_h
 
-#include <cmath>
-#include <math.h>
+#include <type_traits>
 
 namespace yap {
 
 /// \brief Math Utilities
 /// \author Johannes Rauch, Daniel Greenwald
-/// This code has been taken from rootpwa and modified
 
-/// return n!
-inline double factorial(int n)
-{ return std::tgamma(n + 1); }
-
-/// returns whether val is an odd number
-inline bool isOdd(int val)
+/// \return whether val is an odd number
+constexpr bool is_odd(int val)
 { return val & 0x1; }
 
-/// returns whether val is an even number
-inline bool isEven(int val)
-{ return not isOdd(val); }
+/// \return whether val is an even number
+constexpr bool is_even(int val)
+{ return not is_odd(val); }
 
 /// extracts sign from value
 template <typename T>
 typename std::enable_if<std::is_signed<T>::value, int>::type
-signum(const T& val)
+constexpr signum(const T& val)
 { return (T(0) < val) - (val < T(0)); }
 
 /// optimized function for (-1)^n
-inline int powMinusOne(const int exponent)
-{ return isOdd(exponent) ? -1 : +1; }
+constexpr int pow_negative_one(int exponent)
+{ return is_odd(exponent) ? -1 : +1; }
 
 }
 

@@ -21,6 +21,7 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "make_unique.h"
 #include "ParticleIndex.h"
 #include "QuantumNumbers.h"
 
@@ -44,10 +45,10 @@ class Resonance;
 struct ParticleTableEntry : public QuantumNumbers {
     ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
     bool consistent() const override;
-    int PDG_;
-    std::string Name_;
-    double Mass_;
-    std::vector<double> MassShapeParameters_;
+    int PDG;
+    std::string Name;
+    double Mass;
+    std::vector<double> MassShapeParameters;
 };
 
 /// \class ParticleFactory
@@ -80,6 +81,15 @@ public:
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return unique pointer to new Resonance object
     std::unique_ptr<Resonance> createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape);
+
+    /// Create a Resonance from a PDG code, and MassShape.
+    /// \tparam mass_shape Class used to create MassShape of
+    /// \param PDG PDG code of particle to create
+    /// \param radialSize Radial size of particle to create [GeV^-1]
+    /// \return unique pointer to new Resonance object
+    template <class mass_shape>
+    std::unique_ptr<Resonance> createResonance(int PDG, double radialSize)
+    { return createResonance(PDG, radialSize, std::make_unique<mass_shape>()); }
 
     /// \name Particle table access
     /// @{

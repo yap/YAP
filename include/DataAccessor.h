@@ -22,26 +22,28 @@
 #define yap_DataAccessor_h
 
 #include "CalculationStatus.h"
-#include "DataPartition.h"
-#include "DataPoint.h"
+#include "CachedDataValue.h"
+#include "ReportsInitialStateParticle.h"
+#include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
 #include "logging.h"
 
-#include <complex>
-#include <map>
+#include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
 
-class CachedDataValue;
-class InitialStateParticle;
+class DataPoint;
 
 /// \name DataAccessor
 /// \brief Base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class DataAccessor
+class DataAccessor :
+    public virtual ReportsInitialStateParticle,
+    public virtual ReportsParticleCombinations
 {
 public:
 
@@ -54,12 +56,17 @@ public:
 
     /// Copy constructor is deleted, since we don't need it and implementing it for all deriving classes would be too complicated
     DataAccessor(const DataAccessor& other) = delete;
+    /// Copy operator is deleted
+    DataAccessor& operator=(const DataAccessor& other) = delete;
 
     /// Destructor
     virtual ~DataAccessor();
 
     // Defaulted move constructor
+    DataAccessor(DataAccessor&& other) = default;
+
     // Defaulted move assignment operator
+    DataAccessor& operator=(DataAccessor&& other) = default;
 
     /// @}
 
@@ -67,28 +74,36 @@ public:
     /// @{
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
-    unsigned index() const
+    int index() const
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasSymmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
-    { return SymmetrizationIndices_.count(c); }
+    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const
+    { return SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end(); }
 
-    /// \return index inside row of DataPoint for the requested symmetrization
-    unsigned symmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
+    /// \return if the given ParticleCombination is in SymmetrizationIndices_
+    /// \param c ParticleCombination to look for equivalent of
+    /// \param equiv ParticleCombination::Equiv object for checking equivalence
+    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
+                                const ParticleCombination::Equiv& equiv) const;
+
+    /// \return index inside row of DataPoint for the requested ParticleCombination
+    unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
 
     /// \return SymmetrizationIndices_
     const ParticleCombinationMap<unsigned>& symmetrizationIndices() const
-    // const std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > >& symmetrizationIndices() const
     { return SymmetrizationIndices_; }
 
     /// \return maximum index of SymmetrizationIndices_
     /// -1 means empty
     int maxSymmetrizationIndex() const;
 
-    /// \return list of all ParticleCombinations
-    ParticleCombinationVector particleCombinations() const;
+    /// \return vector of ParticleCombination's
+    ParticleCombinationVector particleCombinations() const override;
+
+    /// print ParticleCombination map
+    void printParticleCombinations() const;
 
     /// @}
 
@@ -104,94 +119,87 @@ public:
     /// Check consistency of object
     bool consistent() const;
 
+    /// grant friend status to InitialStateParticle
+    friend class InitialStateParticle;
+
+    /// grant friend status to CachedDataValue to call addCachedDataValue
+    friend class CachedDataValue;
+
+protected:
+
+    /// register with InitialStateParticle
+    void virtual addToInitialStateParticle();
+
     /// add CachedDataValue
-    void addCachedDataValue(CachedDataValue* c);
+    void addCachedDataValue(std::shared_ptr<CachedDataValue> c)
+    { CachedDataValues_.insert(c); }
 
-    /// \name Symmetrization functions
-    /// @{
+    /// add ParticleCombination to SymmetrizationIndices_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
-    /// add symmetrizationIndex to SymmetrizationIndices_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c);
+    /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
+    virtual void pruneSymmetrizationIndices();
 
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices()
-    { SymmetrizationIndices_.clear(); }
+    /// set storage index used in DataPoint. Must be unique.
+    void setIndex(size_t i)
+    { Index_ = i; }
 
-    /// @}
-
-    /// \name Data access
-    /// @{
-
-    /// Access a data point's data (by friendship)
-    std::vector<double>& data(DataPoint& d, unsigned i) const;
-
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const
-    { return d.Data_[Index_][i]; }
-#else
-    /// Access a data point's data (by friendship) (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const
-    { return d.Data_.at(Index_).at(i); }
-#endif
-
-    /// Get pointer to the initial state particle
-    InitialStateParticle* initialStateParticle() const
-    { return InitialStateParticle_; }
-
-    /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set pointer to initial state particle
-    virtual void setInitialStateParticle(InitialStateParticle* isp);
-
-    /// @}
-
-    /// \name calculation statuses
-    /// @{
+    /// set number of data partitions into all members of CachedDataValues_
+    virtual void setNumberOfDataPartitions(unsigned n);
 
     /// Update global calculation statuses of all CachedDataValues
     virtual void updateGlobalCalculationStatuses();
 
-    /// @}
+    /// resets CalculationStatus'es for all CachedDataValues_
+    virtual void resetCalculationStatuses(unsigned dataPartitionIndex);
 
-protected:
+    /// set all VariableStatus flags to kUnchanged (or leave at kFixed) for CachedDataValues_
+    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
 
-    /// \name Data accessor friends
+    /// set all VariableStatus flags to kUnchanged (or leave at
+    /// kFixed) for all Parameters that CachedDataValues_ depend on
+    virtual void setParameterFlagsToUnchanged();
+
+    /// \name Data access
+    /// \todo Is this access ever used?
     /// @{
 
-    friend class InitialStateParticle;
+    /// Access a data point's data
+    std::vector<double>& data(DataPoint& d, unsigned i) const;
+
+    /// Access a data point's data (const)
+    const std::vector<double>& data(const DataPoint& d, unsigned i) const
+    { return const_cast<DataAccessor*>(this)->data(d, i); }
 
     /// @}
 
-    /// set storage index used in DataPoint. Must be unique.
-    void setIndex(unsigned i)
-    { Index_ = i; }
-
 private:
-
-    /// pointer to the initial state particle for access to FourMomenta, HelicityAngles etc.
-    InitialStateParticle* InitialStateParticle_;
 
     /// Object to check equality of symmetrizations for determining storage indices
     ParticleCombination::Equiv* Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
-    // std::map<std::shared_ptr<const ParticleCombination>, unsigned, std::owner_less<std::shared_ptr<const ParticleCombination> > > SymmetrizationIndices_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
-    std::set<CachedDataValue*> CachedDataValues_;
+    CachedDataValueSet CachedDataValues_;
 
     /// number of real values stored per symm. index
     unsigned Size_;
 
     /// storage index used in DataPoint. Must be unique.
-    unsigned Index_;
+    int Index_;
 
 };
+
+/// \typedef DataAccessorSet
+using DataAccessorSet = std::set<DataAccessor*>;
+// using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
+
+/// remove expired elements of set
+void removeExpired(DataAccessorSet& S);
+
+std::string data_accessor_type(const DataAccessor* D);
 
 }
 

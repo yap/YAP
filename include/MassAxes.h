@@ -14,24 +14,36 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /// \file
 
-#ifndef yap_cpp14_type_traits_h
-#define yap_cpp14_type_traits_h
+#ifndef yap_MassAxes_h
+#define yap_MassAxes_h
 
-#include <type_traits>
+#include "ParticleCombination.h"
 
-/// c++14 implements better type traits,
-/// for c++11 we have to define those we use ourselves
-#if __cplusplus <= 201103L
-namespace std {
+namespace yap {
 
-template <bool B, class T = void>
-using enable_if_t = typename enable_if<B, T>::type;
+/// \class MassAxes
+/// \brief ParticleCombinationVector specialized to contain axes for defining a phase-space coordinate
+/// \author Daniel Greenwald
+class MassAxes : public ParticleCombinationVector
+{
+public:
+    /// Default constructor
+    MassAxes() : ParticleCombinationVector() {}
+
+protected:
+
+    /// protected constructor, one must use FourMomenta::getMassAxes
+    MassAxes(const ParticleCombinationVector& axes) : ParticleCombinationVector(axes) {}
+
+    /// grant friend status to InitialStateParticle to create MassAxes
+    friend class InitialStateParticle;
+
+};
 
 }
-#endif
 
 #endif

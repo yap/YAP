@@ -22,13 +22,16 @@
 #define yap_FourMomenta_
 
 #include "CachedDataValue.h"
-#include "FourMomenta.h"
+#include "FourVector.h"
 #include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
+
+#include <ostream>
 
 namespace yap {
 
 class DataPoint;
+class InitialStateParticle;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses
@@ -42,10 +45,10 @@ class FourMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    FourMomenta();
+    FourMomenta(InitialStateParticle* isp);
 
-    /// Find ISP in set and store index location
-    /// Fill FinalStateParticleM_ and FinalStateParticleM2_
+    /// Find ISP in set and store index location;
+    /// record ParticleCombination's of all pairs
     void prepare();
 
     /// check consistency
@@ -57,116 +60,54 @@ public:
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
-    {
-        if (pc->isFinalStateParticle())
-            return d.FSPFourMomenta_[pc->indices()[0]];
-        return d.FourMomenta_[symmetrizationIndex(pc)];
-    }
+    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+    double m2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    {
-        if (pc->isFinalStateParticle())
-            return FinalStateParticleM_[pc->indices()[0]]->value();
-        return M_->value(d, symmetrizationIndex(pc));
-    }
+    double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access initial-state 4-momentum (const)
     /// \param d DataPoint to get data from
     const FourVector<double>& initialStateMomentum(const DataPoint& d)
     { return p(d, InitialStatePC_); }
 
-    /// \name Dalitz coordinate stuff
-    /// @{
-
-    /// get ParticleCombinationVector for requested combinations
-    ParticleCombinationVector getDalitzAxes(std::vector<std::vector<ParticleIndex> > pcs) const;
-
-    /// get pair masses
-    ParticleCombinationMap<double> pairMasses(const DataPoint& d) const;
-
-    /// get pair masses squared
-    ParticleCombinationMap<double> pairMassSquares(const DataPoint& d) const;
-
-    /// set masses of particle combinations in axes to those in masses
-    /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param masses vector of masses to be set to
-    /// \return success of action
-    bool setMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& masses);
-
-    /// set masses of particle combinations in axes to those in masses
-    /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param masses vector of masses to be set to
-    /// \return success of action
-    bool setSquaredMasses(DataPoint& d, const ParticleCombinationVector& axes, const std::vector<double>& squaredMasses);
-
-    /// set masses
-    /// also calculate remaining masses and final-state 4-momenta
-    /// \return if masses form a complete set and are in phase space
-    bool setMasses(DataPoint& d, ParticleCombinationMap<double> m);
-
-    /// set masses squared
-    /// also calculate remaining masses and final-state 4-momenta
-    /// \return if masses form a complete set and are in phase space
-    bool setMassSquares(DataPoint& d, ParticleCombinationMap<double> m2);
-
-    /// @}
-
+    /// \return masses
     std::shared_ptr<RealCachedDataValue> masses()
     { return M_; }
 
-    /// print all masses
-    void printMasses(const DataPoint& d) const;
+    /// \return masses (const)
+    std::shared_ptr<RealCachedDataValue> masses() const
+    { return M_; }
 
-    /// calculate four-momenta from squared invariant masses
-    /// with the following convention for three-momenta:\n
-    /// p1 defines +z direction
-    /// p1 x p2 defines +y direction
-    std::vector<FourVector<double> > calculateFourMomenta(const DataPoint& d) const;
+    /// print all masses
+    std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
+
+    /// grant friend status to InitialStateParticle to call resetMasses
+    friend class InitialStateParticle;
 
 protected:
 
-    /// set all masses to -1 (except FinalStateParticleM_)
+    /// set all (non-fsp) masses to -1
     void resetMasses(DataPoint& d);
 
-    /// calculate all masses from a complete set of masses
-    /// \return success of action
-    bool calculateMissingMasses(DataPoint& d);
+    /// override to do nothing, since FourMomenta doesn't rely on parents being set.
+    void pruneSymmetrizationIndices() override
+    {}
 
-    /// \return set of all pair particle combinations, without duplicates
-    ParticleCombinationVector pairParticleCombinations() const;
+private:
 
     /// Symmetrization index of initial state
-    std::shared_ptr<const ParticleCombination> InitialStatePC_;
-
-    /// \todo Perhaps find better way than storing FinalStatePC, RecoilPC, and PairPC.
-
-    /// Final-state particle PCs
-    ParticleCombinationVector FinalStatePC_;
-
-    /// Symmetrization indices for recoil against each final-state particle,
-    /// index in vector is FSP index
-    ParticleCombinationVector RecoilPC_;
-
-    /// Symmetrization indices for pairs of particles
-    std::vector<ParticleCombinationVector> PairPC_;
+    std::shared_ptr<ParticleCombination> InitialStatePC_;
 
     /// invariant mass of particle combinations [GeV]
     std::shared_ptr<RealCachedDataValue> M_;
-
-    /// masses of the final state particles
-    std::vector<std::shared_ptr<RealParameter> > FinalStateParticleM_;
 
 };
 

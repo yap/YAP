@@ -2,12 +2,14 @@
 
 #include "logging.h"
 #include "ParticleCombination.h"
+#include "ParticleCombinationCache.h"
 
 namespace yap {
 
 //-------------------------
 FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
-    : Particle(q, m, name)
+    : Particle(q, m, name),
+      InitialStateParticle_(nullptr)
 {
     // final state particles have fixed mass
     mass()->setVariableStatus(kFixed);
@@ -16,59 +18,29 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::s
 //-------------------------
 bool FinalStateParticle::consistent() const
 {
-    bool consistent = true;
+    bool C = Particle::consistent();
 
-    consistent &= Particle::consistent();
-
-    if (SymmetrizationIndices_.empty()) {
-        LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ are empty!";
-        return false;
+    if (ParticleCombinations_.empty()) {
+        FLOG(ERROR) << "ParticleCombinations_ are empty!";
+        C &= false;
     }
 
-    for (auto i : SymmetrizationIndices_) {
-        if (i->indices().size() != 1) {
-            LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ don't have size 1!";
-            return false;
-        }
-        if (i->daughters().size() != 0) {
-            LOG(ERROR) << "FinalStateParticle::consistent() - SymmetrizationIndices_ have daughters!";
-            return false;
-        }
-    }
-
-    return consistent;
+    return C;
 }
 
 //-------------------------
-void FinalStateParticle::addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c)
+void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    // check if not yet there
-    if (std::find(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), c) == SymmetrizationIndices_.end()) {
-        SymmetrizationIndices_.push_back(c);
-    } else {
-        LOG(WARNING) << "FinalStateParticle::addSymmetrizationIndex() - Index already existing!";
-    }
-}
+    // pc must be final state particle
+    if (!pc->isFinalStateParticle())
+        throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
-//-------------------------
-void FinalStateParticle::setSymmetrizationIndexParents()
-{
-    ParticleCombinationVector PCs = SymmetrizationIndices_;
-
-    // check if already set
-    if (PCs[0]->parent() != nullptr)
-        return;
-
-    SymmetrizationIndices_.clear();
-
-    for (auto& PC : PCs) {
-        for (auto& pc : ParticleCombination::particleCombinationSet()) {
-            if (ParticleCombination::equivDown(PC, pc)) {
-                SymmetrizationIndices_.push_back(pc);
-            }
-        }
-    }
-
+    // look for pc in ParticleCombinations_
+    auto it = std::find_if(ParticleCombinations_.begin(), ParticleCombinations_.end(),
+    [&](const std::shared_ptr<ParticleCombination>& p) {return p->indices() == pc->indices();});
+    // if pc already contained, do nothing
+    if (it == ParticleCombinations_.end())
+        ParticleCombinations_.push_back(pc);
 }
 
 }

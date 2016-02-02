@@ -21,14 +21,12 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
-#include "AmplitudeComponent.h"
-#include "DataAccessor.h"
-#include "logging.h"
-#include "ParticleCombination.h"
+#include "CachedDataValue.h"
 #include "QuantumNumbers.h"
+#include "StaticDataAccessor.h"
 
 #include <array>
-#include <complex>
+#include <cstdlib>
 #include <memory>
 
 namespace yap {
@@ -38,62 +36,154 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup SpinAmplitude Spin Amplitudes
 
-class SpinAmplitude : public AmplitudeComponent, public DataAccessor
+class SpinAmplitude : public StaticDataAccessor
 {
 public:
 
-    /// Constructor
-    SpinAmplitude(const QuantumNumbers& initial,
-                  const QuantumNumbers& final1, const QuantumNumbers& final2,
-                  unsigned char twoL);
+    /// \typedef SpinProjectionPair
+    using SpinProjectionPair = std::array<int, 2>;
 
-    /// Check consistency of object
-    virtual bool consistent() const override;
+    /// \typedef AmplitudeSubmap
+    /// \brief maps SpinProjectionPair to ComplexCachesDataValue
+    using AmplitudeSubmap = std::map<SpinProjectionPair, std::shared_ptr<ComplexCachedDataValue> >;
+
+    /// \typedef AmplitudeMap
+    /// \brief maps parent spin projectin to AmplitudeSubmap
+    using AmplitudeMap = std::map<int, AmplitudeSubmap>;
+
+    /// \return whether three spins fulfill the triangle relationship
+    /// \param two_a 2 * spin a
+    /// \param two_b 2 * spin b
+    /// \param two_c 2 * spin c
+    /// \return \f$ \Delta(abc) \f$
+    static constexpr bool triangle(unsigned two_a, unsigned two_b, unsigned two_c)
+    { return is_even(two_a + two_b + two_c) and std::abs<int>(two_a - two_b) <= two_c and two_c <= (two_a + two_b); }
+
+    /// \return Whether angular momentum is conserved in J -> j1 + j2 with orbital angular momentum l
+    /// \param two_J 2 * spin of initial state
+    /// \param two_j1 2 * spin of first daughter
+    /// \param two_j2 2 * spin of second daughter
+    /// \param l orbital angular momentum
+    static constexpr bool conserves(unsigned two_J, unsigned two_j1, unsigned two_j2, int l)
+    {
+        // check that the spins are consistent, and that the triangle requirements for (Jlj) and (j1j2j) can be met simultaneously
+        return is_even(two_J + two_j1 + two_j2)
+               and (std::min(two_j1 + two_j2, two_J + 2 * l) >= std::max(std::abs<int>(two_j1 - two_j2), std::abs<int>(two_J - 2 * l)));
+    }
 
     /// cast into string
-    virtual operator std::string() const = 0;
+    virtual operator std::string() const;
+
+    /// check consistency of object
+    virtual bool consistent() const
+    { return true; }
 
     /// \name Getters
     /// @{
 
-    /// Get initial QuantumNumbers
+    /// \return initial QuantumNumbers (const)
     const QuantumNumbers& initialQuantumNumbers() const
     { return InitialQuantumNumbers_; }
 
-    /// Get QuantumNumbers of daughters const
+    /// \return array of QuantumNumbers of daughters (const)
     const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
     { return FinalQuantumNumbers_; }
 
-    /// Get relative angular momentum between daughters * 2
-    unsigned char twoL() const
-    { return TwoL_; }
+    /// \return orbital angular momentum
+    unsigned L() const
+    { return L_; }
 
-    /// Get relative angular momentum between daughters
-    double L() const
-    { return 0.5 * TwoL_; }
+    /// \return total spin angular momentum */
+    unsigned twoS() const
+    { return TwoS_; }
 
-    /// @}
-
-
-    /// \name SpinAmplitude friends
-    /// @{
-
-    /// Compare SpinAmplitude objects
-    friend bool operator== (const SpinAmplitude& lhs, const SpinAmplitude& rhs)
-    { return typeid(lhs) == typeid(rhs) && lhs.equals(rhs); }
+    /// \return set of (twice the) spin projections of initial state
+    std::set<int> twoM() const;
 
     /// @}
 
-    /// check if angular momentum is conserved with the given quantum numbers
-    static bool angularMomentumConserved(
-        const QuantumNumbers& initial,
-        const QuantumNumbers& final1, const QuantumNumbers& final2,
-        unsigned char twoL);
+    /// Calculate spin amplitude for caching.
+    /// Must be overrided in derived classes.
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    /// \param d DataPoint to retrieve data from for calculation
+    /// \param pc ParticleCombination to calculate for
+    virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
+                                      const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+
+    /// Loops over particle combinations (pc) and all (M, m1, m2) combinations
+    /// and call calc(M, m1, m2, d, pc) when necessary
+    /// \param d DataPoint to calculate into
+    void calculate(DataPoint& d) override;
+
+    /// \return precalculated complex amplitude
+    /// \param d DataPoint to retrieve value from
+    /// \param pc ParticleCombination to retrieve value for
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                   int two_M, int two_m1, int two_m2) const
+    { return amplitude(two_M, two_m1, two_m2)->value(d, symmetrizationIndex(pc)); }
+
+    /// access cached spin amplitude
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2)
+    { return Amplitudes_.at(two_M).at({two_m1, two_m2}); }
+
+    /// access cached spin amplitude (const)
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m1 2 * spin projection of first daughter
+    /// \param two_m2 2 * spin projection of second daughter
+    const std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, int two_m1, int two_m2) const
+    { return Amplitudes_.at(two_M).at({two_m1, two_m2}); }
+
+    /// \return set of cached spin amplitudes
+    CachedDataValueSet amplitudeSet();
+
+    /// \return AmplitudeMap Amplitudes_
+    const AmplitudeMap& amplitudes() const
+    { return Amplitudes_; }
+
+    /// \return a string naming the formalism used for the SpinAmplitude calculation
+    virtual std::string formalism() const = 0;
+
+    /// grant friend access to SpinAmplitudeCache to create SpinAmplitude's and set InitialStateParticle
+    template <class spin_amplitude> friend class SpinAmplitudeCache;
+
+    /// grant friend access to DecayChannel to call addParticleCombination
+    friend class DecayChannel;
 
 protected:
 
-    /// Check if SpinAmplitudes are equal
-    virtual bool equals(const SpinAmplitude& rhs) const;
+    /// add spin amplitude for transition from state with initial
+    /// projection to states with final projections.
+    /// \param two_M twice the spin projection of the initial state
+    /// \param two_m1 twice the spin projection of the first daughter
+    /// \param two_m2 twice the spin projection of the second daughter
+    virtual void addAmplitude(int two_M, int two_m1, int two_m2);
+
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const;
+
+    /// Constructor
+    /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
+    /// \param intial quantum numbers of Initial-state
+    /// \param final1 quantum numbers of first daughter
+    /// \param final2 quantum numbers of second daughter
+    /// \param L orbital angular momentum
+    /// \param two_S twice the total spin angular momentum
+    /// \param isp InitialStateParticle to which this SpinAmplitude belongs
+    SpinAmplitude(const QuantumNumbers& initial,
+                  const QuantumNumbers& final1,
+                  const QuantumNumbers& final2,
+                  unsigned L, unsigned two_S,
+                  InitialStateParticle* isp);
+
+private:
 
     /// Initial-state quantum numbers
     QuantumNumbers InitialQuantumNumbers_;
@@ -101,18 +191,40 @@ protected:
     /// array of final-state quantum numbers
     std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
 
-    /// relative angular momentum between daughters * 2
-    unsigned char TwoL_;
+    /// orbital angular momentum
+    unsigned L_;
+
+    /// twice the total spin angular momentum
+    unsigned TwoS_;
+
+    /// Cached complex spin amplitude
+    AmplitudeMap Amplitudes_;
+
+    /// equality operator
+    friend bool operator==(const SpinAmplitude& A, const SpinAmplitude& B)
+    { return typeid(A) == typeid(B) and A.equals(B); }
 
 };
 
-struct SharedSpinAmplitudeComparator {
-/// Compare SpinAmplitude shared_ptr's
-    bool operator() (const std::shared_ptr<SpinAmplitude>& lhs, const std::shared_ptr<SpinAmplitude>& rhs) const
-    { return lhs.get() == rhs.get() || *lhs == *rhs; }
+/// convert to string
+inline std::string to_string(const SpinAmplitude& sa)
+{ return (std::string)sa; }
 
-};
+/// << operator
+inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
+{ os << to_string(sa); return os; }
 
+/// \typedef SpinAmplitudeVector
+using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
+
+/// convert to string
+std::string to_string(const SpinAmplitudeVector& saV);
+
+/// \typedef SpinAmplitudeMap
+/// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key
+template<typename T>
+using SpinAmplitudeMap = std::map<std::shared_ptr<SpinAmplitude>, T,
+      std::owner_less<std::shared_ptr<SpinAmplitude> > >;
 
 }
 

@@ -21,7 +21,6 @@
 #ifndef yap_CoordinateSystem_h
 #define yap_CoordinateSystem_h
 
-#include "cpp14_type_traits.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "ThreeVector.h"

@@ -22,14 +22,18 @@
 #define yap_Particle_h
 
 #include "AmplitudeComponent.h"
+#include "DataAccessor.h"
 #include "Parameter.h"
 #include "QuantumNumbers.h"
+#include "ReportsInitialStateParticle.h"
+#include "ReportsParticleCombinations.h"
 
 #include <string>
 
 namespace yap {
 
 class ParticleCombination;
+class FinalStateParticle;
 
 /// \class Particle
 /// \brief Abstract Particle base class.
@@ -37,7 +41,10 @@ class ParticleCombination;
 /// \defgroup Particle Particle-related classes
 
 // keyword virtual is needed to solve diamond problem in DecayingParticle
-class Particle : public virtual AmplitudeComponent
+class Particle :
+    public virtual AmplitudeComponent,
+    public virtual ReportsInitialStateParticle,
+    public virtual ReportsParticleCombinations
 {
 public:
 
@@ -47,8 +54,20 @@ public:
     /// \param name Name of particle
     Particle(const QuantumNumbers& q, double m, std::string name);
 
+    /// Calculate complex amplitude
+    /// must be overrided in derived classes
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                           int two_m, unsigned dataPartitionIndex) const = 0;
+
     /// Check consitency of object
     virtual bool consistent() const override;
+
+    /// \name Getters
+    /// @{
 
     /// const access QuantumNumbers object
     const QuantumNumbers& quantumNumbers() const
@@ -58,13 +77,6 @@ public:
     /// \return quantum numbers
     QuantumNumbers& quantumNumbers()
     { return QuantumNumbers_; }
-
-    /// explicitly cast to string
-    explicit operator std::string()
-    { return Name_ + "(" + (std::string)QuantumNumbers_ + "), mass = " + std::to_string(Mass_->value()); }
-
-    /// \name Getters
-    /// @{
 
     /// Get mass [GeV]
     std::shared_ptr<RealParameter> mass() const
@@ -80,8 +92,8 @@ public:
 
     /// @}
 
-    /// for internal use only
-    virtual void setSymmetrizationIndexParents() = 0;
+    /// grant friend status to DecayChannel to call addParticleCombination
+    friend class DecayChannel;
 
 private:
 
@@ -96,6 +108,18 @@ private:
     std::string Name_;
 
 };
+
+/// \typedef ParticleVector
+/// \ingroup Particle
+using ParticleVector = std::vector<std::shared_ptr<Particle> >;
+
+/// convert to string
+inline std::string to_string(const Particle& p)
+{ return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value()); }
+
+/// streamer
+inline std::ostream& operator<<(std::ostream& os, const Particle& p)
+{ os << to_string(p); return os; }
 
 }
 

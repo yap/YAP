@@ -46,11 +46,19 @@ class Resonance : public DecayingParticle
 public:
 
     /// Constructor
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape>&& massShape);
+    /// \param q QuantumNumbers of resonance
+    /// \param mass mass of resonance
+    /// \param radialSize radial size of resonance
+    /// \param massShape unique_ptr to MassShape of resonance
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, unsigned dataPartitionIndex) const override
-    { return DecayingParticle::amplitude(d, pc, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex); }
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param two_m 2 * the spin projection to calculate for
+    /// \param dataPartitionIndex partition index for parallelization
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override
+    { return DecayingParticle::amplitude(d, pc, two_m, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex); }
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -62,40 +70,29 @@ public:
     MassShape& massShape()
     { return *(MassShape_.get()); }
 
-    /// const'ly access MassShape
+    /// access MassShape (const)
     const MassShape& massShape() const
     { return *(MassShape_.get()); }
 
     /// @}
 
-    /// \name Setters
-    /// @{
+protected:
 
-    /// set MassShape
-    void setMassShape(std::unique_ptr<MassShape>& massShape);
+    /// overrides DataAccessor's function to also register MassShape_ with ISP
+    virtual void addToInitialStateParticle()
+    {
+        DecayingParticle::addToInitialStateParticle();
+        MassShape_->addToInitialStateParticle();
+    }
 
-    /// Set pointer to initial state particle
-    void setInitialStateParticle(InitialStateParticle* isp) override;
-
-    using DecayingParticle::addChannel;
-
-    /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c DecayingParticle takes ownership of c
-    void addChannel(std::unique_ptr<DecayChannel>& c) override;
-
-    /// add symmetrizationIndex to SymmetrizationIndices_,
+    /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
-    virtual void addSymmetrizationIndex(std::shared_ptr<const ParticleCombination> c) override;
-
-    /// @}
-
-    /// clear SymmetrizationIndices_
-    virtual void clearSymmetrizationIndices() override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
 private:
 
     /// MassShape object
-    std::unique_ptr<MassShape> MassShape_;
+    std::shared_ptr<MassShape> MassShape_;
 
 };
 

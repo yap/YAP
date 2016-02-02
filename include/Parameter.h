@@ -102,7 +102,7 @@ public:
     {
         if (ParameterValue_ != val) {
             if (VariableStatus_ == kFixed) {
-                LOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
+                FLOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
                 return;
             }
             ParameterValue_ = val;
@@ -123,6 +123,14 @@ using ComplexParameter = Parameter<std::complex<double> >;
 /// \typedef RealParameter
 /// \ingroup Parameters
 using RealParameter = Parameter<double>;
+
+/// \typedef ComplexParameterVector
+/// \ingroup Parameters
+using ComplexParameterVector = std::vector<std::shared_ptr<ComplexParameter> >;
+
+/// \typedef RealParameterVector
+/// \ingroup Parameters
+using RealParameterVector = std::vector<std::shared_ptr<RealParameter> >;
 
 }
 

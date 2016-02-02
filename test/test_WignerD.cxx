@@ -1,6 +1,7 @@
 #include <catch.hpp>
 
 #include <Constants.h>
+#include <Exceptions.h>
 #include <logging.h>
 #include <WignerD.h>
 
@@ -25,8 +26,8 @@ TEST_CASE( "WignerD" )
     SECTION( "J = 0") {
         SECTION ("d matrix") {
             // check invalid args
-            REQUIRE_THROWS_AS( yap::dFunction(0, 1, 0, beta), std::invalid_argument );
-            REQUIRE_THROWS_AS( yap::dFunction(0, 0, 1, beta), std::invalid_argument );
+            REQUIRE_THROWS_AS( yap::dFunction(0, 1, 0, beta), yap::exceptions::Exception );
+            REQUIRE_THROWS_AS( yap::dFunction(0, 0, 1, beta), yap::exceptions::Exception );
 
             // check val when M or N exceeds J
             REQUIRE( yap::dFunction(0, 2, 0, beta) == 0 );
@@ -40,8 +41,8 @@ TEST_CASE( "WignerD" )
     SECTION( "J = 1/2") {
         SECTION( "d matrix") {
             // check invalid args
-            REQUIRE_THROWS_AS( yap::dFunction(1, 2, 0, beta), std::invalid_argument );
-            REQUIRE_THROWS_AS( yap::dFunction(1, 0, 2, beta), std::invalid_argument );
+            REQUIRE_THROWS_AS( yap::dFunction(1, 2, 0, beta), yap::exceptions::Exception );
+            REQUIRE_THROWS_AS( yap::dFunction(1, 0, 2, beta), yap::exceptions::Exception );
 
             // check val when M or N exceeds J
             REQUIRE( yap::dFunction(1, 3, 0, beta) == 0 );
@@ -64,8 +65,8 @@ TEST_CASE( "WignerD" )
     SECTION("J = 1") {
         SECTION( "d matrix") {
             // check invalid args
-            REQUIRE_THROWS_AS( yap::dFunction(2, 1, 0, beta), std::invalid_argument );
-            REQUIRE_THROWS_AS( yap::dFunction(2, 0, 3, beta), std::invalid_argument );
+            REQUIRE_THROWS_AS( yap::dFunction(2, 1, 0, beta), yap::exceptions::Exception );
+            REQUIRE_THROWS_AS( yap::dFunction(2, 0, 3, beta), yap::exceptions::Exception );
 
             // check val when M or N exceeds J
             REQUIRE( yap::dFunction(2, 4, 0, beta) == 0 );

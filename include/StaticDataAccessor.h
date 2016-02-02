@@ -21,29 +21,64 @@
 #ifndef yap_StaticDataAccessor_h
 #define yap_StaticDataAccessor_h
 
+#include "DataAccessor.h"
+#include "Exceptions.h"
+#include "ReportsInitialStateParticle.h"
+
 namespace yap {
+
+class InitialStateParticle;
 
 /// \name StaticDataAccessor
 /// \brief Base class for all data accessors that will only write to DataPoint once at initial data loading
 /// \author Johannes Rauch, Daniel Greenwald
-
 class StaticDataAccessor : public DataAccessor
 {
 public:
 
     /// Constructor
+    /// \param isp Raw pointer to owning InitialStateParticle
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    StaticDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv)
-    { }
+    StaticDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
+        : DataAccessor(equiv), InitialStateParticle_(isp)
+    {
+        if (!initialStateParticle())
+            throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
+        // register to with ISP
+        addToInitialStateParticle();
+    }
 
-    /// Update global calculation statuses of all CachedDataValues
-    /// [Does nothing since data is never to be updated!]
-    virtual void updateGlobalCalculationStatuses() override
-    { }
-
-    /// calculate cachedDataValues and store to DataPoint
+    /// calculate cachedDataValues and store to DataPoint.
+    /// Must be overriden in derived classes.
     virtual void calculate(DataPoint& d) = 0;
+
+    /// does nothing since StaticDataAccessor's never update
+    virtual void updateGlobalCalculationStatuses() override {}
+
+    /// include const access to ISP
+    using ReportsInitialStateParticle::initialStateParticle;
+
+    /// \return Raw pointer to owning InitialStateParticle
+    InitialStateParticle* initialStateParticle() override
+    { return InitialStateParticle_; }
+
+protected:
+
+    /// does nothing, since StaticDataAccessor's ignore partitions
+    virtual void setNumberOfDataPartitions(unsigned n) override {}
+
+    /// does nothing, since StaticDataAccessor's never update
+    virtual void resetCalculationStatuses(unsigned dataPartitionIndex) override {}
+
+    /// does nothing, since StaticDataAccessor's never change
+    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex) override {}
+
+    /// does nothing, since StaticDataAccessor's never change
+    virtual void setParameterFlagsToUnchanged() override {}
+
+private:
+
+    InitialStateParticle* InitialStateParticle_;
 
 };
 

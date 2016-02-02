@@ -21,7 +21,6 @@
 #ifndef yap_Vector_h
 #define yap_Vector_h
 
-#include "cpp14_type_traits.h"
 #include "Matrix.h"
 
 #include <algorithm>
@@ -53,11 +52,11 @@ public:
     using std::array<T, N>::operator=;
 
     /// inner (dot) product of #Vector's
-    virtual constexpr T operator*(const Vector<T, N>& B) const
+    virtual T operator*(const Vector<T, N>& B) const
     { return std::inner_product(this->begin(), this->end(), B.begin(), T(0)); }
 
     /// unary minus
-    constexpr virtual Vector<T, N> operator-() const
+    virtual Vector<T, N> operator-() const
     { return T(-1) * *(this); }
 };
 
@@ -74,6 +73,7 @@ std::string to_string(const Vector<T, N>& V)
     return s;
 }
 
+/// streamer
 template <typename T, size_t N>
 std::ostream& operator<<(std::ostream& os, const Vector<T, N>& V)
 { os << to_string(V); return os; }
@@ -146,7 +146,7 @@ SquareMatrix<T, N> outer(const Vector<T, N>& A, const Vector<T, N>& B)
 {
     SquareMatrix<T, N> m;
     for (size_t r = 0; r < N; ++r)
-        for (size_t c = 0; c < N; ++r)
+        for (size_t c = 0; c < N; ++c)
             m[r][c] = A[r] * B[c];
     return m;
 }

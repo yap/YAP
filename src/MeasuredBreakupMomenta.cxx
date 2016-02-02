@@ -5,13 +5,14 @@
 #include "logging.h"
 
 #include <set>
+#include <stdexcept>
 
 namespace yap {
 
 //-------------------------
-MeasuredBreakupMomenta::MeasuredBreakupMomenta() :
-    StaticDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
-    Q2_(new RealCachedDataValue(this))
+MeasuredBreakupMomenta::MeasuredBreakupMomenta(InitialStateParticle* isp) :
+    StaticDataAccessor(isp, &ParticleCombination::equivDownByOrderlessContent),
+    Q2_(RealCachedDataValue::create(this))
 {
 }
 
