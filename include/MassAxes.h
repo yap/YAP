@@ -30,6 +30,10 @@ namespace yap {
 /// \author Daniel Greenwald
 class MassAxes : public ParticleCombinationVector
 {
+public:
+    /// Default constructor
+    MassAxes() : ParticleCombinationVector() {}
+
 protected:
 
     /// protected constructor, one must use FourMomenta::getMassAxes
