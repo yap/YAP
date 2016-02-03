@@ -71,7 +71,7 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_compo
 // }
 
 //-------------------------
-ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::findByUnorderedContent(const std::vector<ParticleIndex>& I) const
+ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::findByUnorderedContent(const std::vector<unsigned>& I) const
 {
     // look for entry with same content
     // by checking if indices() contains I and is the same size

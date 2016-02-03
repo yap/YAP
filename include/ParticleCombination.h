@@ -21,8 +21,6 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
-#include "ParticleIndex.h"
-
 #include <map>
 #include <memory>
 #include <ostream>
@@ -42,7 +40,7 @@ using ParticleCombinationMap = std::map<std::shared_ptr<ParticleCombination>, T,
       std::owner_less<std::shared_ptr<ParticleCombination> > >;
 
 /// \class ParticleCombination
-/// \brief Stores combinations of ParticleIndex types
+/// \brief Stores combinations of particle indices
 /// \author Johannes Rauch, Daniel Greenwald
 ///
 /// Constructors are private. New ParticleCombination objects are
@@ -55,7 +53,7 @@ public:
     /// @{
 
     /// Get vector of indices (const)
-    const std::vector<ParticleIndex>& indices() const
+    const std::vector<unsigned>& indices() const
     { return Indices_; }
 
     /// Get vector of daughters (const)
@@ -102,7 +100,7 @@ private:
     ParticleCombinationVector Daughters_;
 
     /// vector indices of daughters
-    std::vector<ParticleIndex> Indices_;
+    std::vector<unsigned> Indices_;
 
     /// \name private constructors
     /// for valid use of shared_from_this()
@@ -112,7 +110,7 @@ private:
     ParticleCombination() = default;
 
     /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
-    ParticleCombination(ParticleIndex index) : Indices_(1, index) {}
+    ParticleCombination(unsigned index) : Indices_(1, index) {}
 
     /// Copy constructor is deleted
     ParticleCombination(const ParticleCombination&) = delete;
