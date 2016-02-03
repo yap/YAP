@@ -483,6 +483,8 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
                 pp[i][j] = pow(mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
     // upper triangular elements are now two-particle squared masses
 
+    double m_01 = sqrt(pp[0][1]);
+
     // finish calculation of off diagonal elements
     for (unsigned i = 0; i < n_fsp; ++i)
         for (unsigned j = i + 1; j < n_fsp; ++j) {
@@ -494,17 +496,21 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
             pp[j][i] = pp[i][j];
         }
 
-    for (unsigned i = 0; i < n_fsp; ++i) {
-        std::cout << std::endl;
-        for (unsigned j = 0; j < n_fsp; ++j)
-            std::cout << pp[i][j] << "  ";
-    }
+    // if (n_fsp == 3) {
+    //     double s = 0;
+    //     for (unsigned i = 0; i < n_fsp; ++i) {
+    //         double j = (i + 1) % n_fsp;
+    //         double k = (i + 2) % n_fsp;
+    //         s += pow(pp[j][k], 2) / pp[j][j] / pp[k][k];
+    //     }
+    //     if (s < 1)
+    //         return std::vector<FourVector<double> >();
+    // }
 
     //////////////////////////////////////////////////
     // calculate all four momenta in m_01 rest frame:
 
     // calculate energies in m_01 rest frame:
-    double m_01 = sqrt(pp[0][1]);
     std::vector<double> E(n_fsp, -1);
     for (unsigned i = 0; i < n_fsp; ++i) {
         E[i] = (pp[0][i] + pp[1][i]) / m_01;
@@ -530,7 +536,7 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
     // rest are calculated from p2
     for (unsigned i = 3; i < n_fsp; ++i)
         Y[i] = (E[2] * E[i] - pp[2][i] - Z[2] * Z[i]) / Y[2];
-    
+
     // calculate X components
     std::vector<double> X(n_fsp, 0);
     // p0, p1, p2 are defined in z-y plane
