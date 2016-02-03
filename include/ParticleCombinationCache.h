@@ -22,7 +22,6 @@
 #define yap_ParticleCombinationCache_h
 
 #include "ParticleCombination.h"
-#include "ParticleIndex.h"
 #include "WeakPtrCache.h"
 
 #include <memory>
@@ -51,7 +50,7 @@ public:
 
     /// retrieve or create final-state particle ParticleCombination
     /// \param index Index of particle
-    shared_ptr_type fsp(ParticleIndex index)
+    shared_ptr_type fsp(unsigned index)
     { return operator[](create_fsp(index)); }
 
     /// retrieve or create composite particle from daughters.
@@ -65,7 +64,7 @@ public:
     /// retrieve final-state particle ParticleCombination
     /// Does not add to the cache if ParticleCombination is not found.
     /// \param index Index of particle
-    weak_ptr_type find(ParticleIndex index) const
+    weak_ptr_type find(unsigned index) const
     { return find(create_fsp(index)); }
 
     /*
@@ -85,9 +84,9 @@ public:
 
     /// retrieves first entry matching vector of particle indices by unordered content
     /// Does not add to the cache if a match is not found.
-    /// \param I vector of ParticleIndex's to look for
+    /// \param I vector of unsigned's to look for
     /// \return weak_ptr to ParticleCombination; is empty if not found.
-    weak_ptr_type findByUnorderedContent(const std::vector<ParticleIndex>& I) const;
+    weak_ptr_type findByUnorderedContent(const std::vector<unsigned>& I) const;
 
     /// Check consistency of cache.
     bool consistent() const;
@@ -107,7 +106,7 @@ private:
     void addToCache(shared_ptr_type pc) override;
 
     /// create final-state particle, it is not yet added to cache
-    shared_ptr_type create_fsp(ParticleIndex index) const
+    shared_ptr_type create_fsp(unsigned index) const
     { return shared_ptr_type(new ParticleCombination(index)); }
 
     /// create copy, it is not yet added to cache

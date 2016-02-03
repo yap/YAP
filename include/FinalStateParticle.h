@@ -27,7 +27,6 @@
 #include "DataPoint.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"
-#include "ParticleIndex.h"
 
 #include <complex>
 #include <memory>

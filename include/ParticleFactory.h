@@ -22,7 +22,6 @@
 #define yap_ParticleFactory_h
 
 #include "make_unique.h"
-#include "ParticleIndex.h"
 #include "QuantumNumbers.h"
 
 #include <limits>

@@ -240,7 +240,7 @@ public:
     /// the returned MassAxes will have their daughters sorted (i.e. (10) will become (01)).
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
-    const MassAxes getMassAxes(std::vector<std::vector<ParticleIndex> > pcs);
+    const MassAxes getMassAxes(std::vector<std::vector<unsigned> > pcs);
 
     /// Set masses of particle combinations in axes to those in masses.
     /// Masses will be squared and passed to setSquaredMasses, so negative masses will become positive.

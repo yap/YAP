@@ -86,7 +86,7 @@ bool ParticleCombination::consistent() const
     if (!Daughters_.empty()) {
         // Check Indices_ doesn't have duplicates
         // create unique_copy of Indices_ (as set)
-        std::set<ParticleIndex> U(Indices_.begin(), Indices_.end());
+        std::set<unsigned> U(Indices_.begin(), Indices_.end());
         // check unique_copy-object's size == this object's size
         if (U.size() != Indices_.size()) {
             FLOG(ERROR) << "index vector contains duplicate entries (" << U.size() << " != " << Indices_.size() << ").";
@@ -260,8 +260,8 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_
     // check contents of indices vectors
     // (creating a set will sort entries for easy comparison,
     // since order doesn't matter)
-    std::set<ParticleIndex> a(A->indices().begin(), A->indices().end());
-    std::set<ParticleIndex> b(B->indices().begin(), B->indices().end());
+    std::set<unsigned> a(A->indices().begin(), A->indices().end());
+    std::set<unsigned> b(B->indices().begin(), B->indices().end());
 
     return std::equal(a.begin(), a.end(), b.begin());
 }

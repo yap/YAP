@@ -379,7 +379,7 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 }
 
 //-------------------------
-const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<ParticleIndex> > pcs)
+const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigned> > pcs)
 {
     unsigned n_fsp = finalStateParticles().size();
     unsigned n_axes = 3 * n_fsp - 7;
@@ -396,7 +396,7 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<Particl
 
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
-    if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<ParticleIndex>& v) {return v.size() != 2;}))
+    if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
     throw exceptions::Exception("only 2-particle axes supported currently", "InitialStateParticle::getMassAxes");
 
     ParticleCombinationVector M;
@@ -404,7 +404,7 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<Particl
     for (auto& v : pcs) {
 
         // check that all indices are in range
-        if (std::any_of(v.begin(), v.end(), [&](const ParticleIndex & i) {return i >= n_fsp;}))
+        if (std::any_of(v.begin(), v.end(), [&](const unsigned & i) {return i >= n_fsp;}))
         throw exceptions::Exception("particle index out of range", "InitialStateParticle::getMassAxes");
 
         // sort v
