@@ -214,7 +214,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     auto& totAmp = TotalAmplitudes_.at(two_m);
 
     if (totAmp->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
-        FLOG(DEBUG) << "\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex);
+        FDEBUG("\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex));
         return totAmp->value(d, symIndex);
     }
 

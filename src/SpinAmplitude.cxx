@@ -104,7 +104,7 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
                                     + " -> " + spin_to_string(two_m1) + " + " + spin_to_string(two_m2),
                                     "SpinAmplitude::addAmplitude");
 
-    // FLOG(DEBUG) << "adding CachedDataValue for"
+    // FDEBUG("adding CachedDataValue for")
     ASM[m1m2] = ComplexCachedDataValue::create(this);
 }
 
