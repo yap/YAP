@@ -111,5 +111,8 @@ int main( int argc, char** argv)
     LOG(INFO) << "AFTER";
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
+    for (auto p : D->dataSet()[0].finalStateFourMomenta())
+        LOG(INFO) << p;
+
     LOG(INFO) << "alright!";
 }
