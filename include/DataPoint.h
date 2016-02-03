@@ -21,6 +21,7 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
+#include <Constants.h>
 #include <DataAccessor.h>
 #include <FourVector.h>
 
@@ -49,7 +50,12 @@ public:
     /// @{
 
     /// 4-momenta constructor
-    DataPoint(const std::vector<FourVector<double> >& P);
+    /// \param P vector of four-momenta to initialize to
+    DataPoint(const std::vector<FourVector<double> >& P) : FSPFourMomenta_(P) {}
+
+    /// initializes fsp four momenta to #FourVector_0
+    /// \param n number of final state particles
+    DataPoint(unsigned n) : FSPFourMomenta_(n, FourVector_0) {}
 
     // /// Invariant mass constructor
     //DataPoint(const std::map<std::shared_ptr<ParticleCombination>, double>& m2);
