@@ -46,38 +46,38 @@ d3pi::d3pi(std::string name)
     std::shared_ptr<yap::Resonance> f_2 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
     f_2->addChannel({piPlus, piMinus});
+    /*
+        // f_0(980)
+        std::shared_ptr<yap::Resonance> f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
+        f_0_980->addChannel({piPlus, piMinus});
 
-    // f_0(980)
-    std::shared_ptr<yap::Resonance> f_0_980 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
-    f_0_980->addChannel({piPlus, piMinus});
+        // f_0(1370)
+        std::shared_ptr<yap::Resonance> f_0_1370 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
+        f_0_1370->addChannel({piPlus, piMinus});
 
-    // f_0(1370)
-    std::shared_ptr<yap::Resonance> f_0_1370 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
-    f_0_1370->addChannel({piPlus, piMinus});
+        // f_0(1500)
+        std::shared_ptr<yap::Resonance> f_0_1500 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
+        f_0_1500->addChannel({piPlus, piMinus});
 
-    // f_0(1500)
-    std::shared_ptr<yap::Resonance> f_0_1500 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
-    f_0_1500->addChannel({piPlus, piMinus});
+        // sigma a.k.a. f_0(500)
+        std::shared_ptr<yap::Resonance> sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
+        sigma->addChannel({piPlus, piMinus});
 
-    // sigma a.k.a. f_0(500)
-    std::shared_ptr<yap::Resonance> sigma = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
-    sigma->addChannel({piPlus, piMinus});
+        // f_0(500+100i)
+        std::shared_ptr<yap::Resonance> f_0_500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), .500, "f_0_500_100", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(f_0_500_100->massShape()).width()->setValue(0.100);
+        f_0_500_100->addChannel({piPlus, piMinus});
 
-    // f_0(500+100i)
-    std::shared_ptr<yap::Resonance> f_0_500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), .500, "f_0_500_100", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_500_100->massShape()).width()->setValue(0.100);
-    f_0_500_100->addChannel({piPlus, piMinus});
+        // f_0(1500+100i)
+        std::shared_ptr<yap::Resonance> f_0_1500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_unique<yap::BreitWigner>());
+        static_cast<yap::BreitWigner&>(f_0_1500_100->massShape()).width()->setValue(0.100);
+        f_0_1500_100->addChannel({piPlus, piMinus});
 
-    // f_0(1500+100i)
-    std::shared_ptr<yap::Resonance> f_0_1500_100 = std::make_shared<yap::Resonance>(factory.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(f_0_1500_100->massShape()).width()->setValue(0.100);
-    f_0_1500_100->addChannel({piPlus, piMinus});
-
-
+    */
     // Add channels to D
     D_->addChannel({rho,      piPlus});
     D_->addChannel({f_2,      piPlus});
@@ -103,7 +103,7 @@ d3pi::d3pi(std::string name)
     // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
     // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
 
-    D_->initializeForMonteCarloGeneration(3);
+    D_->initializeForMonteCarloGeneration(4);
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 
     MassAxes_ = D_->getMassAxes({{0, 1}, {1, 2}});
@@ -122,8 +122,9 @@ d3pi::d3pi(std::string name)
 // ---------------------------------------------------------
 double d3pi::LogLikelihood(const std::vector<double>& parameters)
 {
-    unsigned c = GetCurrentChain();
-    return D_->logOfSquaredAmplitude(D_->dataSet()[c], c);
+    // unsigned c = GetCurrentChain();
+    // return D_->logOfSquaredAmplitude(D_->dataSet()[c], c);
+    return 0;
 }
 
 // ---------------------------------------------------------
@@ -135,6 +136,7 @@ double d3pi::LogAPrioriProbability(const std::vector<double>& parameters)
     // if failed, outside phase space
     if (P.empty())
         return -std::numeric_limits<double>::infinity();
+    return 0;
 
     unsigned c = GetCurrentChain();
     D_->setFinalStateFourMomenta(D_->dataSet()[c], P, c);

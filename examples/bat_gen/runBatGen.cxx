@@ -24,6 +24,7 @@ int main()
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
+    m.SetNChains(4);
 
     // generate 4e6 samples in total
     m.SetNIterationsRun(static_cast<int>(4e6 / m.GetNChains()));
