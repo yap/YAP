@@ -63,6 +63,15 @@ inline void plainLogs(el::Level lvl)
 #define DEBUG(x) LOG(DEBUG) << x;
 #endif
 
+/// \def FDEBUG(x)
+/// Provides way to have debug output ignored by the compiler.
+/// Pretty logging output: prepends function name to x
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+#define FDEBUG(x)
+#else
+#define FDEBUG(x) LOG(DEBUG) << std::string(ELPP_FUNC) + ": " << x;
+#endif
+
 /// \def FLOG(x)
 /// Pretty logging output: prepends function name to x
 #define FLOG(x) LOG( x ) << std::string(ELPP_FUNC) + ": "
