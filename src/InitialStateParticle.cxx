@@ -357,11 +357,9 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
     if (!DataSet_.empty())
         throw exceptions::Exception("DataSet isn't empty", "InitialStateParticle::initializeForMonteCarloGeneration");
 
-    // initialize with 0
-    std::vector<FourVector<double> > momenta(FinalStateParticles_.size(), FourVector_0);
 
     // create data point
-    auto d = DataPoint(momenta);
+    auto d = DataPoint(FinalStateParticles_.size());
     // and allocate space
     d.allocateStorage(FourMomenta_, DataAccessors_);
 
