@@ -75,7 +75,7 @@ int main( int argc, char** argv)
     else {
         LOG(INFO) << "... inside phase space";
         D->setFinalStateFourMomenta(D->dataSet()[0], P);
-    }        
+    }
 
     DEBUG("AFTER");
     D->fourMomenta().printMasses(D->dataSet()[0]);

@@ -248,7 +248,7 @@ public:
     /// \param axes phase-space axes
     /// \param squared_masses phase-space coordinate
     std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const;
-    
+
     /// Set fsp four-momenta of data point
     /// \param d DataPoint to set into
     /// \param P Final-state four momenta

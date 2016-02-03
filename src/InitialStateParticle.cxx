@@ -447,8 +447,8 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
 
     // check none are negative
     if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m) {return m < 0;}))
-        throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
-    
+    throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
+
     unsigned n_fsp = finalStateParticles().size();
 
     // set two-particle invariant masses for those provided
