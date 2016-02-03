@@ -66,10 +66,10 @@ std::string data_accessor_type(const DataAccessor* D)
         return "BlattWeisskopf";
 
     if (dynamic_cast<const DecayChannel*>(D))
-        return "DecayChannel";
+        return "DecayChannel" + to_string(*dynamic_cast<const DecayChannel*>(D));
 
     if (dynamic_cast<const Resonance*>(D))
-        return "Resonance";
+        return "Resonance" + dynamic_cast<const Resonance*>(D)->name();
 
     if (dynamic_cast<const DecayingParticle*>(D))
         return "DecayingParticle";
@@ -81,7 +81,7 @@ std::string data_accessor_type(const DataAccessor* D)
         return "HelicityAngles";
 
     if (dynamic_cast<const SpinAmplitude*>(D))
-        return "SpinAmplitude";
+        return "SpinAmplitude" + to_string(*dynamic_cast<const SpinAmplitude*>(D));
 
     if (dynamic_cast<const MassShape*>(D))
         return "MassShape";
