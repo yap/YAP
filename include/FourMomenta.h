@@ -55,7 +55,9 @@ public:
     bool consistent() const;
 
     /// Fill 4-momenta
-    virtual void calculate(DataPoint& d) override;
+    /// \param d DataPoint to fill
+    /// \param dataPartitionIndex for status tracking
+    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
 
     /// Access 4-momenutm (const)
     /// \param d DataPoint to get data from
@@ -89,13 +91,10 @@ public:
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
-    /// grant friend status to InitialStateParticle to call resetMasses
+    /// grant friend status to InitialStateParticle to call setFourMomenta
     friend class InitialStateParticle;
 
 protected:
-
-    /// set all (non-fsp) masses to -1
-    void resetMasses(DataPoint& d);
 
     /// override to do nothing, since FourMomenta doesn't rely on parents being set.
     void pruneSymmetrizationIndices() override

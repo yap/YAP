@@ -115,7 +115,8 @@ public:
     /// Loops over particle combinations (pc) and all (M, m1, m2) combinations
     /// and call calc(M, m1, m2, d, pc) when necessary
     /// \param d DataPoint to calculate into
-    void calculate(DataPoint& d) override;
+    /// \param dataPartitionIndex for tracking status
+    void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
 
     /// \return precalculated complex amplitude
     /// \param d DataPoint to retrieve value from

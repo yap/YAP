@@ -429,16 +429,16 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<Particl
     return MassAxes(M);
 }
 
-//-------------------------
-bool InitialStateParticle::setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses)
-{
-    std::vector<double> squared_masses(masses.size(), -1);
-    std::transform(masses.begin(), masses.end(), squared_masses.begin(), [](double m) {return m * m;});
-    return setSquaredMasses(d, axes, squared_masses);
-}
+// //-------------------------
+// bool InitialStateParticle::setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses)
+// {
+//     std::vector<double> squared_masses(masses.size(), -1);
+//     std::transform(masses.begin(), masses.end(), squared_masses.begin(), [](double m) {return m * m;});
+//     return setSquaredMasses(d, axes, squared_masses);
+// }
 
 //-------------------------
-bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& squared_masses)
+std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const
 {
     if (axes.size() != squared_masses.size())
         throw exceptions::Exception("Incorrect number of masses provided ("
@@ -447,11 +447,8 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
 
     // check none are negative
     if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m) {return m < 0;}))
-    throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
-
-    // reset all masses to -1
-    FourMomenta_->resetMasses(d);
-
+        throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
+    
     unsigned n_fsp = finalStateParticles().size();
 
     // set two-particle invariant masses for those provided
@@ -497,7 +494,7 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
     // define p_0 in direction of z axis
     double E0 = (m2_2[0][1] - m2_1[1] + m2_1[0]) / 2. / m_01;
     if (E0 < finalStateParticles()[0]->mass()->value())
-        return false;
+        return std::vector<FourVector<double> >();
 
     double P0 = sqrt(E0 * E0 - m2_1[0]);
     P.push_back(FourVector<double>(E0, P0 * C[2]));
@@ -505,7 +502,7 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
     // define p_1 in direction opposite p_0, with same 3-momentum as p_0
     double E1 = (m2_2[0][1] - m2_1[0] + m2_1[1]) / 2. / m_01;
     if (E1 < finalStateParticles()[1]->mass()->value())
-        return false;
+        return std::vector<FourVector<double> >();
 
     P.push_back(FourVector<double>(E1, -P0 * C[2]));
 
@@ -515,7 +512,7 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
 
     double E2 = (p0p2 + p1p2) / m_01;
     if (E2 < finalStateParticles()[2]->mass()->value())
-        return false;
+        return std::vector<FourVector<double> >();
 
     double P2z = (E0 * p1p2 - E1 * p0p2) / 2. / m_01 / P0;
     double P2y = sqrt(E2 * E2 - m2_1[2] - P2z * P2z);
@@ -529,7 +526,7 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
 
         double E3 = (p0p3 + p1p3) / m_01;
         if (E3 < finalStateParticles()[3]->mass()->value())
-            return false;
+            return std::vector<FourVector<double> >();
 
         double P3z = (E0 * p1p3 - E1 * p0p3) / 2. / m_01 / P0;
         double P3y = (E2 * E3 - p2p3 - P2z * P3z) / P2y;
@@ -543,12 +540,15 @@ bool InitialStateParticle::setSquaredMasses(DataPoint& d, const MassAxes& axes, 
     // for (auto& p : P)
     //     p = b * p;
 
-    // hand to data point
-    d.setFinalStateFourMomenta(P);
-    calculate(d);
+    return P;
+}
 
-    FLOG(INFO) << "out";
-    return true;
+//-------------------------
+void InitialStateParticle::setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
+{
+    if (!d.setFinalStateFourMomenta(P, true))
+        // if FSP four momenta are changed
+        calculate(d, dataPartitionIndex);
 }
 
 //-------------------------
@@ -592,12 +592,12 @@ bool InitialStateParticle::hasDataPartition(DataPartitionBase* d)
 }
 
 //-------------------------
-void InitialStateParticle::calculate(DataPoint& d)
+void InitialStateParticle::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
     // call calculate on static data accessors
     for (auto& sda : DataAccessors_)
         if (dynamic_cast<StaticDataAccessor*>(sda))
-            dynamic_cast<StaticDataAccessor*>(sda)->calculate(d);
+            dynamic_cast<StaticDataAccessor*>(sda)->calculate(d, dataPartitionIndex);
 }
 
 //-------------------------

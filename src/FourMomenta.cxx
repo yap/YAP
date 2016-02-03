@@ -72,15 +72,14 @@ const FourVector<double>& FourMomenta::p(const DataPoint& d, const std::shared_p
 }
 
 //-------------------------
-void FourMomenta::calculate(DataPoint& d)
+void FourMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
-    // use a default dataPartitionIndex of 0
-    M_->setCalculationStatus(kUncalculated, 0);
+    M_->setCalculationStatus(kUncalculated, dataPartitionIndex);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (M_->calculationStatus(kv.first, kv.second, 0) == kCalculated)
+        if (M_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
             continue;
 
         // reset 4-momentum
@@ -90,7 +89,7 @@ void FourMomenta::calculate(DataPoint& d)
         for (unsigned i : kv.first->indices())
             d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
 
-        M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, 0);
+        M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, dataPartitionIndex);
 
         DEBUG("FourMomenta::calculate - 4-momentum " << * (kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
         DEBUG("FourMomenta::calculate - Set mass for " << * (kv.first) << " to " << M_->value(d, kv.second));
@@ -149,17 +148,6 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
         }
 
     return os;
-}
-
-//-------------------------
-void FourMomenta::resetMasses(DataPoint& d)
-{
-    for (int i = 0; i <= maxSymmetrizationIndex(); ++i) {
-        if (i == int(symmetrizationIndex(InitialStatePC_)))
-            continue;
-
-        M_->setValue(-1, d, unsigned(i), 0u);
-    }
 }
 
 }

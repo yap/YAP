@@ -68,7 +68,14 @@ int main( int argc, char** argv)
     DEBUG("BEFORE");
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
-    D->setSquaredMasses(D->dataSet()[0], massAxes, m2);
+    LOG(INFO) << "setting squared mass ...";
+    auto P = D->calculateFourMomenta(massAxes, m2);
+    if (P.empty())
+        LOG(INFO) << "... outside phase space";
+    else {
+        LOG(INFO) << "... inside phase space";
+        D->setFinalStateFourMomenta(D->dataSet()[0], P);
+    }        
 
     DEBUG("AFTER");
     D->fourMomenta().printMasses(D->dataSet()[0]);

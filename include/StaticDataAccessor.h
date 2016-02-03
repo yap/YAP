@@ -50,7 +50,7 @@ public:
 
     /// calculate cachedDataValues and store to DataPoint.
     /// Must be overriden in derived classes.
-    virtual void calculate(DataPoint& d) = 0;
+    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) = 0;
 
     /// does nothing since StaticDataAccessor's never update
     virtual void updateGlobalCalculationStatuses() override {}

@@ -39,14 +39,11 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
 }
 
 //-------------------------
-void SpinAmplitude::calculate(DataPoint& d)
+void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
-    // use a default dataPartitionIndex of 0 always
-    const int dPI = 0;
-
     // set calculation statuses uncalc'ed
     for (auto& a : amplitudeSet())
-        a->setCalculationStatus(kUncalculated, dPI);
+        a->setCalculationStatus(kUncalculated, dataPartitionIndex);
 
     // loop over particle combinations
     for (auto& pc : particleCombinations()) {
@@ -58,12 +55,12 @@ void SpinAmplitude::calculate(DataPoint& d)
             // loop over mappin of daughter spin projection pairs to amplitudes
             for (auto& aSM_kv : aM_kv.second)
                 // if yet uncalculated
-                if (aSM_kv.second->calculationStatus(pc, symIndex, 0) == kUncalculated) {
+                if (aSM_kv.second->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
                     const auto& two_M = aM_kv.first; // parent spin projection
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 
-                    aSM_kv.second->setValue(calc(two_M, spp[0], spp[1], d, pc), d, symIndex, 0);
+                    aSM_kv.second->setValue(calc(two_M, spp[0], spp[1], d, pc), d, symIndex, dataPartitionIndex);
 
                 }
     }

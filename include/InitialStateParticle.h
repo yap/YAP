@@ -102,8 +102,10 @@ public:
     /// call before looping over all DataPartitions
     void updateGlobalCalculationStatuses() override;
 
-    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
-    void calculate(DataPoint& d);
+    /// calculate StaticDataAccessors
+    /// \param d DataPoint to calculate on
+    /// \param dataPartitionIndex for tracking statuses
+    void calculate(DataPoint& d, unsigned dataPartitionIndex = 0);
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -242,21 +244,16 @@ public:
     /// \param pcs vector of vectors of particle indices
     const MassAxes getMassAxes(std::vector<std::vector<ParticleIndex> > pcs);
 
-    /// Set masses of particle combinations in axes to those in masses.
-    /// Masses will be squared and passed to setSquaredMasses, so negative masses will become positive.
+    /// Calculate four-momenta for final-state particles for phase-space coordinate
+    /// \param axes phase-space axes
+    /// \param squared_masses phase-space coordinate
+    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const;
+    
+    /// Set fsp four-momenta of data point
     /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param masses vector of masses to be set to
-    /// \return success of action (false if the point lies outside phase space)
-    bool setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses);
-
-    /// Set squared masses of particle combinations in axes to those in masses;
-    /// negative squared masses will cause an exception to be thrown
-    /// \param d DataPoint to set into
-    /// \param axes vector of ParticleCombination's to set masses of
-    /// \param squared_masses vector of masses to be set to
-    /// \return success of action (false if the point lies outside phase space)
-    bool setSquaredMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& squared_masses);
+    /// \param P Final-state four momenta
+    /// \param dataPartitionIndex for tracking status
+    void setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
 
     /// @}
 

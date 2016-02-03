@@ -41,7 +41,9 @@ public:
     MeasuredBreakupMomenta(InitialStateParticle* isp);
 
     /// Calculate breakup momenta for all possible symmetrization indices
-    virtual void calculate(DataPoint& d) override;
+    /// \param d DataPoint to caluclate into
+    /// \param dataPartitionIndex for tracking status
+    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
 
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from

@@ -33,20 +33,19 @@ HelicityAngles::HelicityAngles(InitialStateParticle* isp) :
 // }
 
 //-------------------------
-void HelicityAngles::calculate(DataPoint& d)
+void HelicityAngles::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
-    // use a default dataPartitionIndex of 0
-
-    Phi_->setCalculationStatus(kUncalculated, 0);
-    Theta_->setCalculationStatus(kUncalculated, 0);
+    Phi_->setCalculationStatus(kUncalculated, dataPartitionIndex);
+    Theta_->setCalculationStatus(kUncalculated, dataPartitionIndex);
 
     for (auto& pc : initialStateParticle()->particleCombinations())
-        calculateAngles(d, pc, initialStateParticle()->coordinateSystem(), unitMatrix<double, 4>());
+        calculateAngles(d, pc, initialStateParticle()->coordinateSystem(), unitMatrix<double, 4>(), dataPartitionIndex);
 }
 
 //-------------------------
 void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                     const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts)
+                                     const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
+                                     unsigned dataPartitionIndex)
 {
     // terminate recursion
     if (pc->isFinalStateParticle())
@@ -70,17 +69,17 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 
         // if unset, set angles of parent to first daughter's
         if (Phi_->calculationStatus(pc, symIndex, 0) == kUncalculated or
-                Theta_->calculationStatus(pc, symIndex, 0) == kUncalculated ) {
+                Theta_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated ) {
 
             const auto phi_theta = angles<double>(vect<double>(p), C);
-            Phi_->setValue(phi_theta[0], d, symIndex, 0);
-            Theta_->setValue(phi_theta[1], d, symIndex, 0);
+            Phi_->setValue(phi_theta[0], d, symIndex, dataPartitionIndex);
+            Theta_->setValue(phi_theta[1], d, symIndex, dataPartitionIndex);
 
             DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
         }
 
         // continue down the decay tree
-        calculateAngles(d, daughter, cP, b);
+        calculateAngles(d, daughter, cP, b, dataPartitionIndex);
     }
 }
 

@@ -100,11 +100,13 @@ int main( int argc, char** argv)
     D->fourMomenta().printMasses(D->dataSet()[0]);
 
     LOG(INFO) << "setting squared mass ...";
-    bool phsp = D->setSquaredMasses(D->dataSet()[0], massAxes, m2);
-    if (phsp)
-        LOG(INFO) << "... inside phase space";
-    else
+    auto P = D->calculateFourMomenta(massAxes, m2);
+    if (P.empty())
         LOG(INFO) << "... outside phase space";
+    else {
+        LOG(INFO) << "... inside phase space";
+        D->setFinalStateFourMomenta(D->dataSet()[0], P);
+    }        
 
     LOG(INFO) << "AFTER";
     D->fourMomenta().printMasses(D->dataSet()[0]);

@@ -65,7 +65,10 @@ public:
     { return FourMomenta_; }
 
     /// set four momenta into data point
-    void setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta);
+    /// \param fourMomenta Four-momenta to set to
+    /// \param check Whether to check equality of old and new four-momenta
+    /// \return Whether new momenta == old momenta if check == true, else false
+    bool setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta, bool check = true);
 
     /// print information about the size of the DataPoint and its members
     void printDataSize();

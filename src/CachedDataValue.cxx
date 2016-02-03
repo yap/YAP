@@ -236,5 +236,4 @@ void ComplexCachedDataValue::setValue(double val_re, double val_im, DataPoint& d
     setCalculationStatus(kCalculated, symmetrizationIndex, dataPartitionIndex);
 }
 
-
 }

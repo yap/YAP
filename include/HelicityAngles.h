@@ -61,7 +61,9 @@ public:
     HelicityAngles(InitialStateParticle* isp);
 
     /// Calculate helicity angles for all possible symmetrization indices
-    virtual void calculate(DataPoint& d) override;
+    /// \param d DataPoint to calculate into
+    /// \param dataPartitionIndex for status tracking
+    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
 
     // /// add symmetrizationIndex to SymmetrizationIndices_
     // virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
@@ -93,7 +95,9 @@ public:
 protected:
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
-    void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts);
+    void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                         const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
+                         unsigned dataPartitionIndex);
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedDataValue> Phi_;

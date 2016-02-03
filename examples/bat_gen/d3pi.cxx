@@ -109,9 +109,7 @@ d3pi::d3pi(std::string name)
     MassAxes_ = D_->getMassAxes({{0, 1}, {1, 2}});
 
     for (auto& pc : MassAxes_) {
-        std::string axis_label = "m2_";
-        for (auto& d : pc->daughters())
-            axis_label += std::to_string(d->indices()[0]);
+        std::string axis_label = "m2_" + indices_string(*pc).substr(1,2);
         auto mrange = D_->getMassRange(pc);
         AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
         std::cout << "Added parameter " << axis_label
@@ -131,7 +129,14 @@ double d3pi::LogLikelihood(const std::vector<double>& parameters)
 // ---------------------------------------------------------
 double d3pi::LogAPrioriProbability(const std::vector<double>& parameters)
 {
-    if (D_->setSquaredMasses(D_->dataSet()[GetCurrentChain()], MassAxes_, parameters))
-        return 0;
-    return -std::numeric_limits<double>::infinity();
+    // calculate four-momenta
+    auto P = D_->calculateFourMomenta(MassAxes_, parameters);
+
+    // if failed, outside phase space
+    if (P.empty())
+        return -std::numeric_limits<double>::infinity();
+
+    unsigned c = GetCurrentChain();
+    D_->setFinalStateFourMomenta(D_->dataSet()[c], P, c);
+    return 0;
 }

@@ -17,16 +17,14 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(InitialStateParticle* isp) :
 }
 
 //-------------------------
-void MeasuredBreakupMomenta::calculate(DataPoint& d)
+void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
-    // use a default dataPartitionIndex of 0
-
-    Q2_->setCalculationStatus(kUncalculated, 0);
+    Q2_->setCalculationStatus(kUncalculated, dataPartitionIndex);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation necessary
-        if (Q2_->calculationStatus(kv.first, kv.second, 0) == kCalculated)
+        if (Q2_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
             continue;
 
         if (kv.first->daughters().size() != 2) {
@@ -39,7 +37,7 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d)
         double m_a  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
         double m_b  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
 
-        Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, 0);
+        Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, dataPartitionIndex);
     }
 }
 
