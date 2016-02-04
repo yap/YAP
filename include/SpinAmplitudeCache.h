@@ -53,7 +53,7 @@ public:
 
     /// equivalence
     bool equiv(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
-    { return (A.get() == B.get()) or (*A == *B); }
+    { return (A.get() == B.get()) or A->equiv(*B)); }
 
     /// retrieve or create SpinAmplitude
     /// \param intial quantum numbers of Initial-state

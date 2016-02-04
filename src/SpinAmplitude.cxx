@@ -13,29 +13,30 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              unsigned l, unsigned two_s,
                              InitialStateParticle* isp) :
     StaticDataAccessor(isp),
-    InitialQuantumNumbers_(initial),
-    FinalQuantumNumbers_( {final1, final2}),
+    InitialTwoJ_(initial.twoJ()),
+    FinalTwoJ_( {final1.twoJ(), final2.twoJ()}),
                       L_(l),
                       TwoS_(two_s)
 {
     // check JLS triangle
-    if (!triangle(InitialQuantumNumbers_.twoJ(), 2 * L_, TwoS_))
+    if (!triangle(InitialTwoJ_, 2 * L_, TwoS_))
         throw exceptions::AngularMomentumNotConserved("SpinAmplitude::SpinAmplitude");
 
     // check j1j2S triangle
-    if (!triangle(FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), TwoS_))
+    if (!triangle(FinalTwoJ_[0], FinalTwoJ_[1], TwoS_))
         throw exceptions::AngularMomentumNotConserved("SpinAmplitude::SpinAmplitude");
 
-    // if (!conserves(InitialQuantumNumbers_.twoJ(), FinalQuantumNumbers_[0].twoJ(), FinalQuantumNumbers_[1].twoJ(), l))
+    // if (!conserves(InitialTwoJ_, FinalTwoJ_[0], FinalTwoJ_[1], l))
     //     throw exceptions::AngularMomentumNotConserved();
 
     // check charge conservation
-    if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
+    // \todo check somewhere else
+    /*if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
         throw exceptions::Exception(std::string("charge conservation violated: ")
                                     + "(" + std::to_string(InitialQuantumNumbers_.Q())  + ") -> "
                                     + "(" + std::to_string(FinalQuantumNumbers_[0].Q()) + ") + "
                                     + "(" + std::to_string(FinalQuantumNumbers_[1].Q()) + ")",
-                                    "SpinAmplitude::SpinAmplitude");
+                                    "SpinAmplitude::SpinAmplitude");*/
 }
 
 //-------------------------
@@ -69,9 +70,9 @@ void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
 //-------------------------
 SpinAmplitude::operator std::string() const
 {
-    std::string s = to_string(InitialQuantumNumbers_) + " -> ";
-    for (auto& d : FinalQuantumNumbers_)
-        s += to_string(d) + " + ";
+    std::string s = spin_to_string(InitialTwoJ_) + " -> ";
+    for (auto& j : FinalTwoJ_)
+        s += spin_to_string(j) + " + ";
     s.erase(s.size() - 2, 2);
     s += "with L = " + std::to_string(L_);
     s += " and S = " + spin_to_string(TwoS_);
@@ -106,15 +107,21 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
 }
 
 //-------------------------
+bool SpinAmplitude::equiv(const SpinAmplitude& B) const
+{
+    return // compare only spin of QuantumNumbers
+           InitialTwoJ_ == B.InitialTwoJ_
+           and FinalTwoJ_[0] == B.FinalTwoJ_[0]
+           and FinalTwoJ_[1] == B.FinalTwoJ_[1]
+           and L_ == B.L_
+           and TwoS_ == B.TwoS_;
+}
+
+//-------------------------
 bool SpinAmplitude::equals(const SpinAmplitude& B) const
 {
     return symmetrizationIndices() == B.symmetrizationIndices()
-           // compare only spin of QuantumNumbers
-           and InitialQuantumNumbers_.twoJ() == B.InitialQuantumNumbers_.twoJ()
-           and FinalQuantumNumbers_[0].twoJ() == B.FinalQuantumNumbers_[0].twoJ()
-           and FinalQuantumNumbers_[1].twoJ() == B.FinalQuantumNumbers_[1].twoJ()
-           and L_ == B.L_
-           and TwoS_ == B.TwoS_;
+           and equiv(B);
 }
 
 //-------------------------
@@ -135,9 +142,9 @@ std::string to_string(const SpinAmplitudeVector& saV)
     if (saV.empty())
         return std::string();
 
-    std::string s = to_string(saV[0]->initialQuantumNumbers()) + " -> ";
-    for (auto& d : saV[0]->finalQuantumNumbers())
-        s += to_string(d) + " + ";
+    std::string s = spin_to_string(saV[0]->initialTwoJ()) + " -> ";
+    for (auto& j : saV[0]->finalTwoJ())
+        s += spin_to_string(j) + " + ";
     s.erase(s.size() - 2, 2);
     s += "with LS =";
     for (auto& sa : saV)

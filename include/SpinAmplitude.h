@@ -81,13 +81,13 @@ public:
     /// \name Getters
     /// @{
 
-    /// \return initial QuantumNumbers (const)
-    const QuantumNumbers& initialQuantumNumbers() const
-    { return InitialQuantumNumbers_; }
+    /// \return initial spin * 2 (const)
+    unsigned initialTwoJ() const
+    { return InitialTwoJ_; }
 
-    /// \return array of QuantumNumbers of daughters (const)
-    const std::array<QuantumNumbers, 2>& finalQuantumNumbers() const
-    { return FinalQuantumNumbers_; }
+    /// \return array of spin * 2 of daughters (const)
+    const std::array<unsigned, 2>& finalTwoJ() const
+    { return FinalTwoJ_; }
 
     /// \return orbital angular momentum
     unsigned L() const
@@ -167,7 +167,10 @@ protected:
     /// \param two_m2 twice the spin projection of the second daughter
     virtual void addAmplitude(int two_M, int two_m1, int two_m2);
 
-    /// check equality
+    /// check equivalence: only check spins and angular momenta
+    virtual bool equiv(const SpinAmplitude& other) const;
+
+    /// check equality: calls #equiv() and checks symmetrizationIndices
     virtual bool equals(const SpinAmplitude& other) const;
 
     /// Constructor
@@ -186,11 +189,11 @@ protected:
 
 private:
 
-    /// Initial-state quantum numbers
-    QuantumNumbers InitialQuantumNumbers_;
+    /// Initial-state spin * 2
+    unsigned InitialTwoJ_;
 
-    /// array of final-state quantum numbers
-    std::array<QuantumNumbers, 2> FinalQuantumNumbers_;
+    /// array of final-state spin * 2
+    std::array<unsigned, 2> FinalTwoJ_;
 
     /// orbital angular momentum
     unsigned L_;

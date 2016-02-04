@@ -143,6 +143,11 @@ inline std::string spin_to_string(int twoJ)
 inline std::string to_string(const QuantumNumbers& Q)
 { return spin_to_string(Q.twoJ()) + (Q.P() > 0 ? "+" : "-") + (Q.C() == 0 ? "" : (Q.C() > 0 ? "+" : "-")); }
 
+/// convert to string
+inline std::string debug_string(const QuantumNumbers& Q)
+{ return (std::to_string(Q.twoJ()) + " " + std::to_string(Q.P()) + " " + std::to_string(Q.C()) + " " + std::to_string(Q.twoI()) + " " + std::to_string(Q.G()) + " " + std::to_string(Q.Q())); }
+
+
 /// Overload << operator
 inline std::ostream& operator<< (std::ostream& os, const QuantumNumbers& Q)
 { os << "JP" << ((Q.C() == 0) ? "" : "C") << " = " << to_string(Q); return os; }
