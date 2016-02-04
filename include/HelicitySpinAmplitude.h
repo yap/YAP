@@ -22,7 +22,6 @@
 #define yap_HelicitySpinAmplitude_h
 
 #include "DataPoint.h"
-#include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 
 #include <complex>
@@ -63,16 +62,13 @@ public:
 protected:
 
     /// Constructor
-    /// \param intial quantum numbers of Initial-state
-    /// \param final1 quantum numbers of first daughter
-    /// \param final2 quantum numbers of second daughter
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
     /// \param isp raw pointer to owning InitialStateParticle
-    HelicitySpinAmplitude(const QuantumNumbers& initial,
-                          const QuantumNumbers& final1,
-                          const QuantumNumbers& final2,
-                          unsigned l, unsigned two_s,
+    HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                           InitialStateParticle* isp);
 
 private:

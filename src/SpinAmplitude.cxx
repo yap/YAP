@@ -3,18 +3,16 @@
 #include "ClebschGordan.h"
 #include "Exceptions.h"
 #include "logging.h"
+#include "QuantumNumbers.h"
 
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
-                             const QuantumNumbers& final1,
-                             const QuantumNumbers& final2,
-                             unsigned l, unsigned two_s,
+SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                              InitialStateParticle* isp) :
     StaticDataAccessor(),
-    InitialTwoJ_(initial.twoJ()),
-    FinalTwoJ_( {final1.twoJ(), final2.twoJ()}),
+    InitialTwoJ_(two_J),
+    FinalTwoJ_( {two_j1, two_j2}),
             L_(l),
             TwoS_(two_s)
 {
@@ -52,18 +50,19 @@ void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
         unsigned symIndex = symmetrizationIndex(pc);
 
         // loop over mapping of parent spin projection to AmplitudeSubmap
-        for (auto& aM_kv : Amplitudes_)
+        for (auto& aM_kv : Amplitudes_) {
+            const auto& two_M = aM_kv.first; // parent spin projection
             // loop over mappin of daughter spin projection pairs to amplitudes
             for (auto& aSM_kv : aM_kv.second)
                 // if yet uncalculated
                 if (aSM_kv.second->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
-                    const auto& two_M = aM_kv.first; // parent spin projection
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 
                     aSM_kv.second->setValue(calc(two_M, spp[0], spp[1], d, pc), d, symIndex, dataPartitionIndex);
 
                 }
+        }
     }
 }
 
