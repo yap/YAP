@@ -46,6 +46,14 @@ public:
     constexpr QuantumNumbers(unsigned twoI, unsigned twoJ, int P, int Q)
         : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
 
+    /// JPQ constructor
+    constexpr QuantumNumbers(unsigned twoJ, int P, int Q)
+        : QuantumNumbers(twoJ, P, 0, 0, 0, Q) {}
+
+    /// JQ constructor
+    constexpr QuantumNumbers(unsigned twoJ, int Q)
+        : QuantumNumbers(twoJ, 0, 0, 0, 0, Q) {}
+
     /// Default constructor
     /// is inconsistent
     QuantumNumbers()
