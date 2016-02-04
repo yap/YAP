@@ -510,47 +510,113 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
     //////////////////////////////////////////////////
     // calculate all four momenta in m_01 rest frame:
 
-    // calculate energies in m_01 rest frame:
-    std::vector<double> E(n_fsp, -1);
+    std::vector<FourVector<double> > P(n_fsp, FourVector_0);
+
     for (unsigned i = 0; i < n_fsp; ++i) {
-        E[i] = (pp[0][i] + pp[1][i]) / m_01;
-        if (E[i] < finalStateParticles()[i]->mass()->value())
+
+        const double E = (pp[0][i] + pp[1][i]) / m_01;
+        const double E2 = E * E;
+
+        // if E^2 < m^2
+        if (E2 < pp[i][i])
             return std::vector<FourVector<double> >();
+
+        if (i < 2) {
+
+            const double Z = sqrt(E2 - pp[i][i]);
+
+            // p0 in z direction, p1 in negative z direction
+            P[i] = {E, 0, 0, pow_negative_one(i)* Z};
+
+        } else {
+
+            // Z_i = (E_0 * P_1 * P_i - E_1 * P_0 * P_i) / m_01 / Z_0
+            const double Z = (P[0][0] * pp[1][i] - P[1][0] * pp[0][i]) / m_01 / P[0][3];
+
+            if (!std::isfinite(Z))
+                return std::vector<FourVector<double> >();
+
+            if (i < 3) {
+
+                // p2 in y-z plane
+                const double Y = sqrt(E2 - pp[i][i] - Z * Z);
+
+                if (!std::isfinite(Y))
+                    return std::vector<FourVector<double> >();
+
+                P[i] = {E, 0, Y, Z};
+
+            } else {
+
+                // Y_i = (E_2 * E_i - P_2 * P_i - Z_2 * Z_i) / Y_2
+                const double Y = (P[2][0] * E - pp[2][i] - P[2][3] * Z) / P[2][2];
+
+                if (!std::isfinite(Y))
+                    return std::vector<FourVector<double> >();
+
+                if (i < 4) {
+
+                    const double X = sqrt(E2 - pp[3][3] - Z * Z - Y * Y);
+
+                    if (!std::isfinite(X))
+                        return std::vector<FourVector<double> >();
+
+                    P[i] = {E, X, Y, Z};
+
+                } else
+                    throw exceptions::Exception("not yet supporting 5 or more particles", "InitialStateParticle::setSquaredMasses");
+            }
+        }
     }
 
-    // calculate Z components
-    std::vector<double> Z(n_fsp, -1);
-    // define p0 in +z direction
-    Z[0] = sqrt(E[0] * E[0] - pp[0][0]);
-    // define p1 in -z direction
-    Z[1] = -Z[0];
-    // rest are calculated from p0 and p1
-    for (unsigned i = 2; i < n_fsp; ++i)
-        Z[i] = (E[0] * pp[1][i] - E[1] * pp[0][i]) / m_01 / Z[0];
-
-    // calculate Y components
-    std::vector<double> Y(n_fsp, 0);
-    // p0 and p1 have 0 y component
-    // p2 is defined in z-y plane
-    Y[2] = sqrt(E[2] * E[2] - pp[2][2] - Z[2] * Z[2]);
-    // rest are calculated from p2
-    for (unsigned i = 3; i < n_fsp; ++i)
-        Y[i] = (E[2] * E[i] - pp[2][i] - Z[2] * Z[i]) / Y[2];
-
-    // calculate X components
-    std::vector<double> X(n_fsp, 0);
-    // p0, p1, p2 are defined in z-y plane
-    // p3 defines positive x direction
-    if (3 < n_fsp)
-        Y[3] = sqrt(E[3] * E[3] - pp[3][3] - Z[3] * Z[3] - Y[3] * Y[3]);
-
-    std::vector<FourVector<double> > P;
-    P.reserve(n_fsp);
-
-    // get coordinate system
+    // adjust for user-provided coordinate system
     auto C = coordinateSystem();
-    for (unsigned i = 0; i < n_fsp; ++i)
-        P.push_back(FourVector<double>(E[i], X[i] * C[0] + Y[i] * C[1] + Z[i] * C[2]));
+    for (auto& p : P)
+        p = FourVector<double>(p[0], p[1] * C[0] + p[2] * C[1] + p[3] * C[2]);
+
+    return P;
+
+    // // calculate energies in m_01 rest frame:
+    // std::vector<double> E(n_fsp, -1);
+    // for (unsigned i = 0; i < n_fsp; ++i) {
+    //     E[i] = (pp[0][i] + pp[1][i]) / m_01;
+    //     if (E[i] < finalStateParticles()[i]->mass()->value())
+    //         return std::vector<FourVector<double> >();
+    // }
+
+    // // calculate Z components
+    // std::vector<double> Z(n_fsp, -1);
+    // // define p0 in +z direction
+    // Z[0] = sqrt(E[0] * E[0] - pp[0][0]);
+    // // define p1 in -z direction
+    // Z[1] = -Z[0];
+    // // rest are calculated from p0 and p1
+    // for (unsigned i = 2; i < n_fsp; ++i)
+    //     Z[i] = (E[0] * pp[1][i] - E[1] * pp[0][i]) / m_01 / Z[0];
+
+    // // calculate Y components
+    // std::vector<double> Y(n_fsp, 0);
+    // // p0 and p1 have 0 y component
+    // // p2 is defined in z-y plane
+    // Y[2] = sqrt(E[2] * E[2] - pp[2][2] - Z[2] * Z[2]);
+    // // rest are calculated from p2
+    // for (unsigned i = 3; i < n_fsp; ++i)
+    //     Y[i] = (E[2] * E[i] - pp[2][i] - Z[2] * Z[i]) / Y[2];
+
+    // // calculate X components
+    // std::vector<double> X(n_fsp, 0);
+    // // p0, p1, p2 are defined in z-y plane
+    // // p3 defines positive x direction
+    // if (3 < n_fsp)
+    //     Y[3] = sqrt(E[3] * E[3] - pp[3][3] - Z[3] * Z[3] - Y[3] * Y[3]);
+
+    // std::vector<FourVector<double> > P;
+    // P.reserve(n_fsp);
+
+    // // get coordinate system
+    // auto C = coordinateSystem();
+    // for (unsigned i = 0; i < n_fsp; ++i)
+    //     P.push_back(FourVector<double>(E[i], X[i] * C[0] + Y[i] * C[1] + Z[i] * C[2]));
 
     // boost:
     // auto p_isp = std::accumulate(P.begin(), P.end(), FourVector_0);
@@ -558,7 +624,7 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
     // for (auto& p : P)
     //     p = b * p;
 
-    return P;
+    // return P;
 }
 
 //-------------------------
