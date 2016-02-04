@@ -25,20 +25,20 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
 
     // cache coefficients
     double c = sqrt((2. * L() + 1) / 4. / PI);
-    for (int two_m1 = -finalQuantumNumbers()[0].twoJ(); two_m1 <= (int)finalQuantumNumbers()[0].twoJ(); two_m1 += 2)
-        for (int two_m2 = -finalQuantumNumbers()[1].twoJ(); two_m2 <= (int)finalQuantumNumbers()[1].twoJ(); two_m2 += 2)
+    for (int two_m1 = -finalTwoJ()[0]; two_m1 <= (int)finalTwoJ()[0]; two_m1 += 2)
+        for (int two_m2 = -finalTwoJ()[1]; two_m2 <= (int)finalTwoJ()[1]; two_m2 += 2)
             try {
 
-                double CG = c * ClebschGordan::couple(finalQuantumNumbers()[0].twoJ(), two_m1,
-                                                      finalQuantumNumbers()[1].twoJ(), two_m2,
-                                                      L(), twoS(), initialQuantumNumbers().twoJ());
+                double CG = c * ClebschGordan::couple(finalTwoJ()[0], two_m1,
+                                                      finalTwoJ()[1], two_m2,
+                                                      L(), twoS(), initialTwoJ());
                 if (CG == 0)
                     continue;
 
                 Coefficients_[two_m1][two_m2] = c * CG;
 
                 // add amplitudes for all initial spin projections
-                for (int two_M = -initialQuantumNumbers().twoJ(); two_M <= (int)initialQuantumNumbers().twoJ(); two_M += 2)
+                for (int two_M = -initialTwoJ(); two_M <= (int)initialTwoJ(); two_M += 2)
                     addAmplitude(two_M, two_m1, two_m2);
 
             } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
@@ -57,7 +57,7 @@ std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_
     double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
     double theta = initialStateParticle()->helicityAngles().theta(d, pc);
 
-    return std::conj(DFunction(initialQuantumNumbers().twoJ(), two_M, two_m1 - two_m2, phi, theta, 0))
+    return std::conj(DFunction(initialTwoJ(), two_M, two_m1 - two_m2, phi, theta, 0))
            * Coefficients_.at(two_m1).at(two_m2);
 
     /// \todo Take a look at momentum-dependent Clebsch-Gordan

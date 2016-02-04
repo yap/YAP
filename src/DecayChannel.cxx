@@ -143,23 +143,23 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
 void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
     // check number of daughters
-    if (sa->finalQuantumNumbers().size() != Daughters_.size())
+    if (sa->finalTwoJ().size() != Daughters_.size())
         throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
 
+    // \todo see what needs to be checked
     // check against daughter quantum numbers
     for (size_t i = 0; i < Daughters_.size(); ++i)
-        if (Daughters_[i]->quantumNumbers() != sa->finalQuantumNumbers()[i])
-            throw exceptions::Exception(std::string("QuantumNumbers don't match daughter ") + std::to_string(i),
-                                        "DecayChannel::addSpinAmplitude");
+        if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
+            throw exceptions::Exception("Spins don't match daughter's", "DecayChannel::addSpinAmplitude");
 
     // check against DecayingParticle_ if set
     if (DecayingParticle_) {
-        if (DecayingParticle_->quantumNumbers() != sa->initialQuantumNumbers())
-            throw exceptions::Exception("QuantumNumbers don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
+        if (DecayingParticle_->quantumNumbers().twoJ() != sa->initialTwoJ())
+            throw exceptions::Exception("Spins don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
     } else {
         // else check against previously added SpinAmplitude's initial quantum numbers
-        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->initialQuantumNumbers() != sa->initialQuantumNumbers())
-            throw exceptions::Exception("QuantumNumbers don't match previously added", "DecayChannel::addSpinAmplitude");
+        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->initialTwoJ() != sa->initialTwoJ())
+            throw exceptions::Exception("Spins don't match previously added", "DecayChannel::addSpinAmplitude");
     }
 
     // add this' ParticleCombination's to it
@@ -326,22 +326,22 @@ bool DecayChannel::consistent() const
             C &= kv.first->consistent();
 
             // check size of SpinAmplitude's quantum numbers against size of daughters
-            if (kv.first->finalQuantumNumbers().size() != Daughters_.size()) {
+            if (kv.first->finalTwoJ().size() != Daughters_.size()) {
                 FLOG(ERROR) << "quantum numbers object and daughters object size mismatch";
                 C &= false;
             }
 
             // check if QuantumNumbers of SpinAmplitude objects match with Particles
-            if (kv.first->initialQuantumNumbers() != decayingParticle()->quantumNumbers()) {
-                FLOG(ERROR) << "quantum numbers of parent " << decayingParticle()->quantumNumbers()
-                            << " and SpinAmplitude " << kv.first->initialQuantumNumbers() << " don't match.";
+            if (kv.first->initialTwoJ() != decayingParticle()->quantumNumbers().twoJ()) {
+                FLOG(ERROR) << "spins of parent " << decayingParticle()->quantumNumbers().twoJ()
+                            << " and SpinAmplitude " << kv.first->initialTwoJ() << " don't match.";
                 C &= false;
             }
 
             for (size_t i = 0; i < Daughters_.size(); ++i) {
-                if (kv.first->finalQuantumNumbers()[i] != Daughters_[i]->quantumNumbers()) {
-                    FLOG(ERROR) << "quantum numbers of daughter " << i << " " << Daughters_[i]->quantumNumbers()
-                                << " and SpinAmplitude " << kv.first->finalQuantumNumbers()[i] << " don't match.";
+                if (kv.first->finalTwoJ()[i] != Daughters_[i]->quantumNumbers().twoJ()) {
+                    FLOG(ERROR) << "spins of daughter " << i << " " << Daughters_[i]->quantumNumbers().twoJ()
+                                << " and SpinAmplitude " << kv.first->finalTwoJ()[i] << " don't match.";
                     C &= false;
                 }
             }

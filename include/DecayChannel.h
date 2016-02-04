@@ -128,6 +128,9 @@ public:
     /// \return Vector of free amplitudes
     ComplexParameterVector freeAmplitudes();
 
+    virtual std::string data_accessor_type() const override
+    {return "DecayChannel"; }
+
     /// Grant friend status to DecayingParticle to set itself as owner
     friend DecayingParticle;
 

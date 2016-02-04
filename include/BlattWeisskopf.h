@@ -75,6 +75,9 @@ public:
     /// \return raw pointer to InitialStateParticle through owning DecayingParticle
     InitialStateParticle* initialStateParticle() override;
 
+    virtual std::string data_accessor_type() const override
+    {return "BlattWeisskopf"; }
+
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 

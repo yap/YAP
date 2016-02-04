@@ -81,6 +81,7 @@ d3pi::d3pi(std::string name)
     // Add channels to D
     D_->addChannel({rho,      piPlus});
     D_->addChannel({f_2,      piPlus});
+    // \todo do not store/prune DataAccessors from InitialStateParticle that are not used
     // D_->addChannel({f_0_980,  piPlus});
     // D_->addChannel({f_0_1370, piPlus});
     // D_->addChannel({f_0_1500, piPlus});

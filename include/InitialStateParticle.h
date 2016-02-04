@@ -264,6 +264,9 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return this; }
 
+    virtual std::string data_accessor_type() const override
+    {return "InitialStateParticle"; }
+
     /// grant friend status to DataAccessor to register itself with InitialStateParticle
     friend class DataAccessor;
 
@@ -281,6 +284,10 @@ protected:
     /// register a DataAccessor with this InitialStateParticle
     virtual void addDataAccessor(DataAccessorSet::value_type da)
     { DataAccessors_.insert(da); }
+
+    /// remove a DataAccessor from this InitialStateParticle
+    /*virtual void removeDataAccessor(DataAccessorSet::value_type da)
+    { DataAccessors_.erase(da); }*/
 
 private:
 

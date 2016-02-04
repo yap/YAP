@@ -73,6 +73,9 @@ public:
     /// get raw pointer to initial state particle through resonance
     InitialStateParticle* initialStateParticle() override;
 
+    virtual std::string data_accessor_type() const override
+    {return "MassShape"; }
+
 protected:
 
     /// Grant Resonance friendship, so it can set itself as owner

@@ -79,6 +79,9 @@ public:
 
     /// @}
 
+    virtual std::string data_accessor_type() const override
+    {return "BreitWigner"; }
+
 protected:
 
     /// set owning resonance, borrow mass from owner

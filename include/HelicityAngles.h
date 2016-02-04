@@ -92,6 +92,9 @@ public:
     const std::shared_ptr<RealCachedDataValue>& theta() const
     { return Theta_; }
 
+    virtual std::string data_accessor_type() const override
+    {return "HelicityAngles"; }
+
 protected:
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
