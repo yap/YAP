@@ -17,16 +17,24 @@
 namespace yap {
 
 //-------------------------
-InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize,
+        std::unique_ptr<SpinAmplitudeCache> SAC) :
     std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
-    SpinAmplitudeCache_(this),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
     HelicityAngles_(std::make_shared<HelicityAngles>(this))
 {
+    if (!SAC)
+        throw exceptions::Exception("SpinAmplitudeCache unset", "InitialStateParticle::InitialStateParticle");
+    if (!SAC->empty())
+        throw exceptions::Exception("SpinAmplitudeCache not empty", "InitialStateParticle::InitialStateParticle");
+    if (SAC->initialStateParticle())
+        throw exceptions::Exception("SpinAmplitudeCache already has owner", "InitialStateParticle::InitialStateParticle");
+    SpinAmplitudeCache_ = std::move(SAC);
+    SpinAmplitudeCache_->setInitialStateParticle(this);
 }
 
 //-------------------------
@@ -35,8 +43,10 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, int two_m, un
     std::complex<double> a = Complex_0;
 
     // sum up DecayingParticle::amplitude over each particle combination
-    for (auto& pc : particleCombinations())
-        a += amplitude(d, pc, two_m, dataPartitionIndex);
+    for (auto& kv : symmetrizationIndices()) {
+        FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
+        a += amplitude(d, kv.first, two_m, dataPartitionIndex);
+    }
 
     return a;
 }
@@ -46,8 +56,10 @@ std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned data
 {
     std::complex<double> a = Complex_0;
 
-    for (int two_m = -quantumNumbers().twoJ(); two_m <= (int)quantumNumbers().twoJ(); two_m += 2)
+    for (int two_m = -quantumNumbers().twoJ(); two_m <= (int)quantumNumbers().twoJ(); two_m += 2) {
+        FDEBUG("calculating for two_m = " << two_m);
         a += amplitude(d, two_m, dataPartitionIndex);
+    }
 
     // DEBUG ("InitialStateParticle::amplitude = " << a);
 
@@ -101,7 +113,7 @@ bool InitialStateParticle::consistent() const
     C &= MeasuredBreakupMomenta_->consistent();
     C &= HelicityAngles_->consistent();
     C &= ParticleCombinationCache_.consistent();
-    C &= SpinAmplitudeCache_.consistent();
+    C &= SpinAmplitudeCache_->consistent();
 
     if (!isRightHanded(CoordinateSystem_)) {
         FLOG(ERROR) << "Coordinate system is not right handed.";

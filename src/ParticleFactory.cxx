@@ -6,6 +6,7 @@
 #include "logging.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
+#include "SpinAmplitudeCache.h"
 
 #include <fstream>
 
@@ -49,7 +50,7 @@ std::unique_ptr<FinalStateParticle> ParticleFactory::createFinalStateParticle(in
 }
 
 //-------------------------
-std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize)
+std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticle(int PDG, double radialSize, std::unique_ptr<SpinAmplitudeCache> SAC)
 {
     const auto& p = particleTableEntry(PDG);
 
@@ -57,7 +58,7 @@ std::unique_ptr<InitialStateParticle> ParticleFactory::createInitialStateParticl
         LOG(ERROR) << "InitialStateParticle has spin != 0. ";
 
     DEBUG("make InitialStateParticle " << p.Name << " with quantum numbers " << p);
-    return InitialStateParticle::create(p, p.Mass, p.Name, radialSize);
+    return InitialStateParticle::create(p, p.Mass, p.Name, radialSize, std::move(SAC));
 }
 
 //-------------------------

@@ -11,8 +11,8 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-        InitialStateParticle* isp) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)
+        InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, equiv)
 {
     // set cached spin amplitudes' dependencies on helicity angles
     for (auto& a : amplitudeSet()) {
@@ -53,6 +53,11 @@ std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_
     // helicity angles
     double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
     double theta = initialStateParticle()->helicityAngles().theta(d, pc);
+
+    DEBUG("HelicitySpinAmplitude::calc : "
+          << spin_to_string(initialTwoJ()) << ", " << spin_to_string(two_M)
+          << " -> " << spin_to_string(two_m1) << " + " << spin_to_string(two_m2)
+          << " for pc = " << *pc);
 
     return std::conj(DFunction(initialTwoJ(), two_M, two_m1 - two_m2, phi, theta, 0))
            * Coefficients_.at(two_m1).at(two_m2);

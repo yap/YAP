@@ -37,6 +37,7 @@ class InitialStateParticle;
 class MassShape;
 class Particle;
 class Resonance;
+class SpinAmplitudeCache;
 
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
@@ -71,8 +72,10 @@ public:
     /// Create an InitialStateParticle from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
+    /// \param SAC unique_ptr to SpinAmplitudeCache
     /// \return unique pointer to new InitialStateParticle object
-    std::unique_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize);
+    std::unique_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize,
+            std::unique_ptr<SpinAmplitudeCache> SAC);
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create

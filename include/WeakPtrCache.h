@@ -119,6 +119,10 @@ public:
         return t;
     }
 
+    /// \return whether empty
+    bool empty() const
+    { return Cache_.empty(); }
+
     /// \return size
     size_t size() const
     { return Cache_.size(); }

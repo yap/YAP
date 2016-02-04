@@ -32,7 +32,8 @@ int main( int argc, char** argv)
 
     // initial state particle
     double radialSize = 1.;
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize);
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize,
+            std::make_unique<yap::HelicitySpinAmplitudeCache>());
 
     // final state particles
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
@@ -92,7 +93,7 @@ int main( int argc, char** argv)
     D->printDecayChain();
     std::cout << "\n";
 
-    std::cout << D->spinAmplitudeCache() << std::endl;
+    std::cout << *D->spinAmplitudeCache() << std::endl;
     D->printDataAccessors(false);
     //D->printDataAccessors();
 
