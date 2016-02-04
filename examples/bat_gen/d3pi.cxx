@@ -112,7 +112,7 @@ d3pi::d3pi(std::string name)
     for (auto& pc : MassAxes_) {
         std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
         auto mrange = D_->getMassRange(pc);
-        AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
+        AddParameter(axis_label, 0, pow(D_->mass()->value(), 2)); //pow(mrange[0], 2), pow(mrange[1], 2));
         std::cout << "Added parameter " << axis_label
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
                   << std::endl;
