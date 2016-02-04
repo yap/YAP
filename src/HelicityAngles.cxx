@@ -68,7 +68,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         FourVector<double> p = b * initialStateParticle()->fourMomenta().p(d, daughter);
 
         // if unset, set angles of parent to first daughter's
-        if (Phi_->calculationStatus(pc, symIndex, 0) == kUncalculated or
+        if (Phi_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated or
                 Theta_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated ) {
 
             const auto phi_theta = angles<double>(vect<double>(p), C);
