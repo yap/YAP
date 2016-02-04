@@ -155,8 +155,8 @@ public:
     /// \return a string naming the formalism used for the SpinAmplitude calculation
     virtual std::string formalism() const = 0;
 
-    /// grant friend access to SpinAmplitudeCache to create SpinAmplitude's and set InitialStateParticle
-    template <class spin_amplitude> friend class SpinAmplitudeCache;
+    /// grant friend access to SpinAmplitudeCache to set InitialStateParticle
+    friend class SpinAmplitudeCache;
 
     /// grant friend access to DecayChannel to call addParticleCombination
     friend class DecayChannel;

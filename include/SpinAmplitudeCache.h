@@ -34,12 +34,6 @@ class InitialStateParticle;
 /// \class SpinAmplitudeCache
 /// \brief Caches SpinAmplitudes
 /// \author Johannes Rauch, Daniel Greenwald
-///
-/// Templating here insures that all SpinAmplitude's created for an
-/// InitialStateParticle have the same formalism
-///
-/// \tparam spin_amplitude Class for constructing SpinAmplitude's from
-template <class spin_amplitude>
 class SpinAmplitudeCache :
     public WeakPtrCache<SpinAmplitude>,
     public ReportsInitialStateParticle
@@ -63,7 +57,7 @@ public:
     /// \param two_S 2 * the total spin angular momentum
     std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S)
     {
-        auto retVal = operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(two_J, two_j1, two_j2, L, two_S, initialStateParticle())));
+        auto retVal = operator[](create(two_J, two_j1, two_j2, L, two_S, initialStateParticle()));
         retVal->setInitialStateParticle(initialStateParticle());
         return retVal;
     }
@@ -82,7 +76,27 @@ public:
     InitialStateParticle* initialStateParticle() override
     { return InitialStateParticle_; }
 
+    /// grant friend status to InitialStateParticle to set itself owner
+    friend class InitialStateParticle;
+
+protected:
+
+    /// set raw pointer to owning ISP
+    void setInitialStateParticle(InitialStateParticle* isp)
+    { InitialStateParticle_ = isp; }
+
 private:
+
+    /// override in inherting classes
+    /// \return shared_ptr to SpinAmplitude object
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    /// \param isp Raw pointer to initial state particle
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S,
+            InitialStateParticle* isp) const = 0;
 
     /// raw pointer to InitialStateParticle this cache belongs to
     InitialStateParticle* InitialStateParticle_;

@@ -136,7 +136,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
         // loop over possible L: |J-s| <= L <= (J+s)
         for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
             // add SpinAmplitude retrieved from cache
-            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache().spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 }
 
 //-------------------------

@@ -22,9 +22,9 @@
 #define yap_ZemachSpinAmplitude_h
 
 #include "DataPoint.h"
-#include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <map>
@@ -32,21 +32,7 @@
 
 namespace yap {
 
-// add Zemach equivalence checker
-class ParticleCombination {
-public:
-
-    /// treats all two-particle states as equal
-    struct EquivZemach {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A,
-                                const std::shared_ptr<ParticleCombination>& B) const;
-    };
-
-    static EquivZemach equivZemach;
-};
-
-template <class T>
-class SpinAmplitudeCache;
+class ParticleCombination;
 
 /// \class ZemachSpinAmplitude
 /// \brief Class implementing Zemach tensors
@@ -70,7 +56,7 @@ public:
     { return "Zemach formalism"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
-    friend class SpinAmplitudeCache<ZemachSpinAmplitude>;
+    friend class ZemachSpinAmplitudeCache;
 
 protected:
     /// Constructor
@@ -81,7 +67,7 @@ protected:
     /// \param two_s twice the total spin angular momentum
     /// \param isp raw pointer to owning InitialStateParticle
     ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                          InitialStateParticle* isp);
+                        InitialStateParticle* isp);
 
 private:
     /// check equality
@@ -89,6 +75,34 @@ private:
     { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
 };
+
+/// \class ZemachSpinAmplitudeCache
+/// \brief Caches ZemachSpinAmplitude's
+/// \author Daniel Greenwald
+class ZemachSpinAmplitudeCache : public SpinAmplitudeCache
+{
+public:
+
+    /// Constructor
+    /// \param isp raw pointer to InitialStateParticle this cache belongs to
+    ZemachSpinAmplitudeCache(InitialStateParticle* isp = nullptr) : SpinAmplitudeCache(isp) {}
+
+private:
+
+    /// override in inherting classes
+    /// \return shared_ptr to SpinAmplitude object
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    /// \param isp Raw pointer to initial state particle
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
+            InitialStateParticle* isp) const override
+    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)); }
+
+};
+
 
 }
 

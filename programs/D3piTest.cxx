@@ -1,6 +1,7 @@
 #include "logging.h"
 #include "BreitWigner.h"
 #include "FinalStateParticle.h"
+#include "HelicitySpinAmplitude.h"
 #include "InitialStateParticle.h"
 #include "make_unique.h"
 #include "MassAxes.h"
@@ -22,7 +23,8 @@ int main( int argc, char** argv)
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // initial state particle
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize,
+            std::make_unique<yap::HelicitySpinAmplitudeCache>());
 
     // final state particles
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
@@ -85,7 +87,7 @@ int main( int argc, char** argv)
     D->printDecayChain();
     std::cout << "\n";
 
-    std::cout << D->spinAmplitudeCache() << std::endl;
+    std::cout << *D->spinAmplitudeCache() << std::endl;
     D->printDataAccessors(false);
 
     // initialize for 5 streams

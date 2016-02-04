@@ -56,8 +56,9 @@ public:
     /// \param mass Mass of ISP [GeV]
     /// \param name Name of ISP
     /// \param r Radial size of ISP [GeV^-1]
-    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r)
-    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r)); }
+    /// \param SAC unique_ptr to SpinAmplitudeCache
+    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r, std::unique_ptr<SpinAmplitudeCache> SAC)
+    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r, std::move(SAC))); }
 
     /// \name Amplitude-related
     /// @{
@@ -157,12 +158,12 @@ public:
     { return ParticleCombinationCache_; }
 
     /// \return SpinAmplitudeCache
-    SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache()
-    { return SpinAmplitudeCache_; }
+    SpinAmplitudeCache* spinAmplitudeCache()
+    { return SpinAmplitudeCache_.get(); }
 
     /// \return SpinAmplitudeCache (const)
-    const SpinAmplitudeCache<HelicitySpinAmplitude>& spinAmplitudeCache() const
-    { return SpinAmplitudeCache_; }
+    const SpinAmplitudeCache* spinAmplitudeCache() const
+    { return SpinAmplitudeCache_.get(); }
 
     /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
@@ -191,7 +192,7 @@ public:
     /// \param FSP list of shared pointers to final-state particles
     void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
-    /// \return set coordinate system
+    /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
 
     /// @}
@@ -297,7 +298,8 @@ private:
 
     /// constructor, made private since inherits from std::enable_shared_from_this.
     /// see #create for details
-    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize,
+                         std::unique_ptr<SpinAmplitudeCache> SAC);
 
     /// check if d is in DataPartitions_
     bool hasDataPartition(DataPartitionBase* d);
@@ -330,7 +332,7 @@ private:
     ParticleCombinationCache ParticleCombinationCache_;
 
     /// SpinAmplitude cache
-    SpinAmplitudeCache<HelicitySpinAmplitude> SpinAmplitudeCache_;
+    std::unique_ptr<SpinAmplitudeCache> SpinAmplitudeCache_;
 
     /// Set of all DataAccessor's registered to this InitialStateParticle
     DataAccessorSet DataAccessors_;

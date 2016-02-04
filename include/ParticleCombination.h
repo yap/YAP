@@ -188,6 +188,17 @@ public:
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
+    /// \struct EquivZemach
+
+    /// \brief Check objects reference by shared pointers; treats all
+    /// two-particle states as equal, compares three particle states
+    /// by unordered content of resonance, and throws on 4 or more
+    /// particles
+    struct EquivZemach : Equiv {
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+    };
+
+
     /// \name Static Comparison objects
     static Equiv equivBySharedPointer;
     static EquivDown equivDown;
@@ -197,6 +208,7 @@ public:
     static EquivByOrderlessContent equivByOrderlessContent;
     static EquivDownByOrderlessContent equivDownByOrderlessContent;
     static EquivByReferenceFrame equivByReferenceFrame;
+    static EquivZemach equivZemach;
 
 /// @}
 

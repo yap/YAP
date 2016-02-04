@@ -11,7 +11,7 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                                             InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
+        InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
     SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, equiv)
 {
     // set cached spin amplitudes' dependencies on helicity angles

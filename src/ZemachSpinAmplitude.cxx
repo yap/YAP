@@ -1,8 +1,9 @@
-#include "HelicitySpinAmplitude.h"
+#include "ZemachSpinAmplitude.h"
 
 #include "ClebschGordan.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
+#include "Exceptions.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
 #include "WignerD.h"
@@ -10,91 +11,89 @@
 namespace yap {
 
 //-------------------------
-ParticleCombination::EquivZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
-                                             const std::shared_ptr<ParticleCombination>& B) const
-{
-    //check if either empty
-    if (!A or !B)
-        return false;
-
-    if (A->indices().size() > 3 or B->indices().size() > 3)
-        throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
-                                    "ParticleCombination::EquivZemach::operator()");
-
-    // compare shared_ptr addresses
-    if (A == B)
-        return true;
-
-    // check if both size < 3
-    if (A->indices().size() < 3 and B->indices().size() < 3)
-        return true;
-
-    // now check if sizes same
-    if (A->indices().size() != B->indices().size())
-        return false;
-
-    // find size-1 and size-2 daughters
-    auto dA1 = 
-    
-    if (
-}
-
-//-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
+ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
         InitialStateParticle* isp) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, &ParticleCombination::equivZemach)
 {
-    // set cached spin amplitudes' dependencies on helicity angles
-    for (auto& a : amplitudeSet()) {
-        a->addDependency(initialStateParticle()->helicityAngles().phi());
-        a->addDependency(initialStateParticle()->helicityAngles().theta());
+    if (is_odd(two_J) or is_odd(two_j1) or is_odd(two_j2) or is_odd(l) or is_odd(two_s))
+        throw exceptions::Exception("only supporting integer spins", "ZemachSpinAmplitude::ZemachSpinAmplitude");
+
+    if (initialTwoJ() != 0) {
+        if (finalTwoJ()[0] != 0 or finalTwoJ()[1] != 0)
+            throw exceptions::Exception("Zemach not valid for " + spin_to_string(initialTwoJ())
+                                        + " -> " + spin_to_string(finalTwoJ()[0])
+                                        + " + " + spin_to_string(finalTwoJ()[1]),
+                                        "ZemachSpinAmplitude::ZemachSpinAmplitude");
+        if (2 * L() != initialTwoJ() and twoS() != 0)
+            throw exceptions::Exception("Zemach not valid for " + spin_to_string(initialTwoJ())
+                                        + " -> " + spin_to_string(finalTwoJ()[0])
+                                        + " + " + spin_to_string(finalTwoJ()[1])
+                                        + " with L = " + std::to_string(L()) + " and S = " + spin_to_string(twoS()),
+                                        "ZemachSpinAmplitude::ZemachSpinAmplitude");
+    } else {
+
+        if (finalTwoJ()[0] != 0 and finalTwoJ()[1] != 0)
+            throw exceptions::Exception("one daughter must be a scalar",
+                                        "ZemachSpinAmplitude::ZemachSpinAmplitude");
+
+        // get resonance spin
+        auto two_J_r = std::max(finalTwoJ()[0], finalTwoJ()[1]);
+        if (two_J_r != 2 * L())
+            throw exceptions::Exception("orbital angular momentum != resonance spin (" + std::to_string(L()) + " != " + spin_to_string(two_J_r) + ")",
+                                        "ZemachSpinAmplitude::ZemachSpinAmplitude");
+        if (two_J_r != twoS())
+            throw exceptions::Exception("total spin != resonance spin (" + std::to_string(L()) + " != " + spin_to_string(twoS()) + ")",
+                                        "ZemachSpinAmplitude::ZemachSpinAmplitude");
+
     }
 
-    // cache coefficients
-    double c = sqrt((2. * L() + 1) / 4. / PI);
-    for (int two_m1 = -finalTwoJ()[0]; two_m1 <= (int)finalTwoJ()[0]; two_m1 += 2)
-        for (int two_m2 = -finalTwoJ()[1]; two_m2 <= (int)finalTwoJ()[1]; two_m2 += 2)
-            try {
+    if (twoS() > 2 * 2)
+        throw exceptions::Exception("currently only supporting up to spin 2",
+                                    "ZemachSpinAmplitude::ZemachSpinAmplitude");
 
-                double CG = c * ClebschGordan::couple(finalTwoJ()[0], two_m1,
-                                                      finalTwoJ()[1], two_m2,
-                                                      L(), twoS(), initialTwoJ());
-                if (CG == 0)
-                    continue;
-
-                Coefficients_[two_m1][two_m2] = c * CG;
-
-                // add amplitudes for all initial spin projections
-                for (int two_M = -initialTwoJ(); two_M <= (int)initialTwoJ(); two_M += 2)
-                    addAmplitude(two_M, two_m1, two_m2);
-
-            } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
-
-    if (Coefficients_.empty()) {
-        FLOG(ERROR) << "no valid nonzero Clebsch-Gordan coefficients stored in " << *this;
-        throw exceptions::Exception("no valid nonzero Clebsch-Gordan coefficients stored", "HelicitySpinAmplitude::HelicitySpinAmplitude");
-    }
+    addAmplitude(0, 0, 0);
+    // dependencies?
 }
 //-------------------------
-std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_m2,
+std::complex<double> ZemachSpinAmplitude::calc(int two_M, int two_m1, int two_m2,
         const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
+    if (pc->indices().size() < 3)
+        return Complex_1;
 
-    // helicity angles
-    double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
-    double theta = initialStateParticle()->helicityAngles().theta(d, pc);
+    if (pc->indices().size() > 3)
+        throw exceptions::Exception("Zemach not valid for more than 3 particles",
+                                    "ZemachSpinAmplitude::calc");
 
-    DEBUG("HelicitySpinAmplitude::calc : "
-          << spin_to_string(initialTwoJ()) << ", " << spin_to_string(two_M)
-          << " -> " << spin_to_string(two_m1) << " + " << spin_to_string(two_m2)
-          << " for pc = " << *pc);
+    if (twoS() == 0)
+        return Complex_1;
 
-    return std::conj(DFunction(initialTwoJ(), two_M, two_m1 - two_m2, phi, theta, 0))
-           * Coefficients_.at(two_m1).at(two_m2);
+    if (twoS() > 4)
+        throw exceptions::Exception("spin greater than 2 not supported", "ZemachSpinAmplitude::calc");
 
-    /// \todo Take a look at momentum-dependent Clebsch-Gordan
-    /// coefficients by J. Friedrich and S.U. Chung implemented in
-    /// rootPWA by C. Bicker
+    // find resonance and spectator ParticleCombinations
+    auto pcR = pc->daughters()[0];
+    auto pcS = pc->daughters()[1];
+    if (pcR->indices().size() == 1)
+        std::swap(pcR, pcS);
+
+    // get resonance four-momentum
+    auto R4 = initialStateParticle()->fourMomenta().p(d, pcR);
+    // get spectator four-momentum
+    auto p4 = initialStateParticle()->fourMomenta().p(d, pcS);
+    // get four-momentum of R's daughter
+    auto q4 = initialStateParticle()->fourMomenta().p(d, pcR->daughters()[0]);
+
+    // boost p and q into R rest frame, and get spacial components
+    auto B = lorentzTransformation<double>(-R4);
+    auto p = vect(B * p4);
+    auto q = vect(B * q4);
+
+    if (twoS() == 2)
+        return -2. * p * q;
+
+    // else twoS() == 4
+    return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.);
 }
 
 }

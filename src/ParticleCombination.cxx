@@ -159,6 +159,7 @@ ParticleCombination::EquivUpAndDown ParticleCombination::equivUpAndDown;
 ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
 ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
 ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
+ParticleCombination::EquivZemach ParticleCombination::equivZemach;
 
 //-------------------------
 bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
@@ -316,6 +317,50 @@ bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_pt
         return false;
 
     return operator()(A->parent(), B->parent());
+}
+
+//-------------------------
+bool ParticleCombination::EquivZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
+        const std::shared_ptr<ParticleCombination>& B) const
+{
+    //check if either empty
+    if (!A or !B)
+        return false;
+
+    if (A->indices().size() > 3 or B->indices().size() > 3)
+        throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
+                                    "ParticleCombination::EquivZemach::operator()");
+
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    // check if both size < 3
+    if (A->indices().size() < 3 and B->indices().size() < 3)
+        return true;
+
+    // now check if sizes same
+    if (A->indices().size() != B->indices().size())
+        return false;
+
+    // find resonance and spectator
+    auto rA = A->daughters()[0];
+    auto sA = A->daughters()[1];
+    if (sA->indices().size() == 2)
+        std::swap(sA, rA);
+    if (rA->indices().size() != 2 and sA->indices().size() != 1)
+        throw exceptions::Exception("could not find resonance and spectator in A",
+                                    "ParticleCombination::EquivZemach::operator()");
+    auto rB = B->daughters()[0];
+    auto sB = B->daughters()[1];
+    if (sB->indices().size() == 2)
+        std::swap(sB, rB);
+    if (rB->indices().size() != 2 and sB->indices().size() != 1)
+        throw exceptions::Exception("could not find resonance and spectator in B",
+                                    "ParticleCombination::EquivZemach::operator()");
+
+    return ParticleCombination::equivByOrderlessContent(rA, rB)
+           and ParticleCombination::equivByOrderlessContent(sA, sB);
 }
 
 }

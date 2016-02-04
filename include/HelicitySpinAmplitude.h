@@ -23,6 +23,7 @@
 
 #include "DataPoint.h"
 #include "SpinAmplitude.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <map>
@@ -31,9 +32,6 @@
 namespace yap {
 
 class ParticleCombination;
-
-template <class T>
-class SpinAmplitudeCache;
 
 /// \class HelicitySpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
@@ -57,7 +55,7 @@ public:
     { return "helicity formalism"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
-    friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
+    friend class HelicitySpinAmplitudeCache;
 
 protected:
 
@@ -83,6 +81,33 @@ private:
     /// second map key is m2;
     /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
     std::map<int, std::map<int, double> > Coefficients_;
+
+};
+
+/// \class HelicitySpinAmplitudeCache
+/// \brief Caches HelicitySpinAmplitude's
+/// \author Daniel Greenwald
+class HelicitySpinAmplitudeCache : public SpinAmplitudeCache
+{
+public:
+
+    /// Constructor
+    /// \param isp raw pointer to InitialStateParticle this cache belongs to
+    HelicitySpinAmplitudeCache(InitialStateParticle* isp = nullptr) : SpinAmplitudeCache(isp) {}
+
+private:
+
+    /// override in inherting classes
+    /// \return shared_ptr to SpinAmplitude object
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    /// \param isp Raw pointer to initial state particle
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
+            InitialStateParticle* isp) const override
+    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)); }
 
 };
 

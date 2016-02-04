@@ -17,16 +17,24 @@
 namespace yap {
 
 //-------------------------
-InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
+InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize,
+        std::unique_ptr<SpinAmplitudeCache> SAC) :
     std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
     Prepared_(false),
     CoordinateSystem_(ThreeAxes),
-    SpinAmplitudeCache_(this),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
     HelicityAngles_(std::make_shared<HelicityAngles>(this))
 {
+    if (!SAC)
+        throw exceptions::Exception("SpinAmplitudeCache unset", "InitialStateParticle::InitialStateParticle");
+    if (!SAC->empty())
+        throw exceptions::Exception("SpinAmplitudeCache not empty", "InitialStateParticle::InitialStateParticle");
+    if (SAC->initialStateParticle())
+        throw exceptions::Exception("SpinAmplitudeCache already has owner", "InitialStateParticle::InitialStateParticle");
+    SpinAmplitudeCache_ = std::move(SAC);
+    SpinAmplitudeCache_->setInitialStateParticle(this);
 }
 
 //-------------------------
@@ -105,7 +113,7 @@ bool InitialStateParticle::consistent() const
     C &= MeasuredBreakupMomenta_->consistent();
     C &= HelicityAngles_->consistent();
     C &= ParticleCombinationCache_.consistent();
-    C &= SpinAmplitudeCache_.consistent();
+    C &= SpinAmplitudeCache_->consistent();
 
     if (!isRightHanded(CoordinateSystem_)) {
         FLOG(ERROR) << "Coordinate system is not right handed.";

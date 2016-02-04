@@ -27,7 +27,8 @@ int main( int argc, char** argv)
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(+211);
 
     // create initial state particle and set final state
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize);
+    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize,
+            std::make_unique<yap::HelicitySpinAmplitudeCache>());
     D->setFinalStateParticles({kPlus, kMinus, piPlus});
 
     // create a phi
@@ -54,7 +55,7 @@ int main( int argc, char** argv)
     D->printDecayChain();
     std::cout << "\n";
 
-    std::cout << D->spinAmplitudeCache() << std::endl;
+    std::cout << *D->spinAmplitudeCache() << std::endl;
     D->printDataAccessors(false);
 
     // initialize for 5 streams
