@@ -10,12 +10,9 @@
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(const QuantumNumbers& initial,
-        const QuantumNumbers& final1,
-        const QuantumNumbers& final2,
-        unsigned l, unsigned two_s,
+HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
         InitialStateParticle* isp) :
-    SpinAmplitude(initial, final1, final2, l, two_s, isp)
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)
 {
     // set cached spin amplitudes' dependencies on helicity angles
     for (auto& a : amplitudeSet()) {

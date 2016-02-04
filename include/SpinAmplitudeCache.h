@@ -56,17 +56,14 @@ public:
     { return (A.get() == B.get()) or A->equiv(*B); }
 
     /// retrieve or create SpinAmplitude
-    /// \param intial quantum numbers of Initial-state
-    /// \param final1 quantum numbers of first daughter
-    /// \param final2 quantum numbers of second daughter
-    /// \param l orbital angular momentum
-    /// \param two_s 2 * the total spin angular momentum
-    std::shared_ptr<SpinAmplitude> spinAmplitude(const QuantumNumbers& initial,
-            const QuantumNumbers& final1,
-            const QuantumNumbers& final2,
-            unsigned l, unsigned two_s)
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S)
     {
-        auto retVal = operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, two_s, initialStateParticle())));
+        auto retVal = operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(two_J, two_j1, two_j2, L, two_S, initialStateParticle())));
         retVal->setInitialStateParticle(initialStateParticle());
         return retVal;
     }

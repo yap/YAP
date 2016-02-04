@@ -22,7 +22,7 @@
 #define yap_SpinAmplitude_h
 
 #include "CachedDataValue.h"
-#include "QuantumNumbers.h"
+#include "MathUtilities.h"
 #include "StaticDataAccessor.h"
 
 #include <array>
@@ -178,16 +178,13 @@ protected:
 
     /// Constructor
     /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
-    /// \param intial quantum numbers of Initial-state
-    /// \param final1 quantum numbers of first daughter
-    /// \param final2 quantum numbers of second daughter
-    /// \param L orbital angular momentum
-    /// \param two_S twice the total spin angular momentum
+    /// \param two_J  twice the spin of Initial-state
+    /// \param two_j1 twice the spin of first daughter
+    /// \param two_j2 twice the spin of second daughter
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
     /// \param isp InitialStateParticle to which this SpinAmplitude belongs
-    SpinAmplitude(const QuantumNumbers& initial,
-                  const QuantumNumbers& final1,
-                  const QuantumNumbers& final2,
-                  unsigned L, unsigned two_S,
+    SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                   InitialStateParticle* isp);
 
 private:

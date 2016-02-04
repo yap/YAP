@@ -126,17 +126,17 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (!Amplitudes_.empty())
         return;
 
-    auto iQ = DecayingParticle_->quantumNumbers();
-    auto d1Q = Daughters_[0]->quantumNumbers();
-    auto d2Q = Daughters_[1]->quantumNumbers();
+    auto two_J = DecayingParticle_->quantumNumbers().twoJ();
+    auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
+    auto two_j2 = Daughters_[1]->quantumNumbers().twoJ();
 
     // create spin amplitudes
     // loop over possible S: |j1-j2| <= S <= (j1+j2)
-    for (unsigned two_S = std::abs<int>(d1Q.twoJ() - d2Q.twoJ()); two_S <= d1Q.twoJ() + d2Q.twoJ(); two_S += 2)
+    for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2)
         // loop over possible L: |J-s| <= L <= (J+s)
-        for (unsigned L = std::abs<int>(iQ.twoJ() - two_S) / 2; L <= (iQ.twoJ() + two_S) / 2; ++L)
+        for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
             // add SpinAmplitude retrieved from cache
-            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache().spinAmplitude(iQ, d1Q, d2Q, L, two_S));
+            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache().spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 }
 
 //-------------------------
@@ -404,10 +404,10 @@ std::string to_string(const DecayChannel& dc)
         s.erase(s.size() - 1, 1);
     }
     s += ")";
-    auto& saV = dc.spinAmplitudes();
-    if (saV.empty())
-        return s;
-    s += " " + to_string(saV);
+    // auto& saV = dc.spinAmplitudes();
+    // if (saV.empty())
+    //     return s;
+    // s += " " + to_string(saV);
     return s;
 }
 
