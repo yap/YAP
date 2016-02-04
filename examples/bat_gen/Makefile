@@ -17,8 +17,7 @@
 # List of all class (models) sources used in the program
 # Add classes to the end. Backslash indicates continuation
 # on the next line
-CXXSRCS = d3pi.cxx
-#dkkpi.cxx
+CXXSRCS = d2X.cxx d3pi.cxx dkkpi.cxx
 
 # List of all program sources used in the program
 # Add classes to the end. Backslash indicates continuation

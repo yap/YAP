@@ -19,15 +19,15 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    d3pi m("D3PI");
-    // dkkpi m("DKKPI");
+    // d3pi m("D3PI");
+    dkkpi m("DKKPI");
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
     m.SetNChains(4);
+    m.initialize(m.GetNChains());
 
-    // generate 4e6 samples in total
-    m.SetNIterationsRun(static_cast<int>(4e6 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
 
     m.GetObservables().FillHistograms(true, true);
 
