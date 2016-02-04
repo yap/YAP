@@ -10,9 +10,39 @@
 namespace yap {
 
 //-------------------------
+ParticleCombination::EquivZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
+                                             const std::shared_ptr<ParticleCombination>& B) const
+{
+    //check if either empty
+    if (!A or !B)
+        return false;
+
+    if (A->indices().size() > 3 or B->indices().size() > 3)
+        throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
+                                    "ParticleCombination::EquivZemach::operator()");
+
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    // check if both size < 3
+    if (A->indices().size() < 3 and B->indices().size() < 3)
+        return true;
+
+    // now check if sizes same
+    if (A->indices().size() != B->indices().size())
+        return false;
+
+    // find size-1 and size-2 daughters
+    auto dA1 = 
+    
+    if (
+}
+
+//-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                                             InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, equiv)
+        InitialStateParticle* isp) :
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)
 {
     // set cached spin amplitudes' dependencies on helicity angles
     for (auto& a : amplitudeSet()) {

@@ -239,6 +239,9 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         auto sa = kvA.first; // SpinAmplitude
 
+        DEBUG("DecayChannel::amplitude :: Calculating " << *this << " for two_m = " << two_m
+              << " and pc = " << *pc << " for sp.amp. = " << *sa);
+
         // get map of SpinProjectionPair's to cached spin amplitudes
         const auto& m = sa->amplitudes().at(two_m);
         auto sa_symIndex = sa->symmetrizationIndex(pc);

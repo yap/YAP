@@ -184,8 +184,10 @@ protected:
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
     /// \param isp InitialStateParticle to which this SpinAmplitude belongs
+    /// \param equiv ParticleCombination equivalence struct for determining index assignments
     SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                  InitialStateParticle* isp);
+                  InitialStateParticle* isp,
+                  ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
 private:
 

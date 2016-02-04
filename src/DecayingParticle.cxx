@@ -37,10 +37,13 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
         /// \todo Is this the best way to do it? (loop over pc's then channels. or channels then pc's?)
 
         // sum up DecayChannel::amplitude over each channel
-        for (auto& c : channels()) {
-            if (c->hasParticleCombination(pc))
+        for (auto& c : channels())
+            if (c->hasParticleCombination(pc)) {
+                DEBUG(name() << "\tDecayingParticle::amplitude :: calculating for two_m = " << two_m << " and pc = " << *pc << " on channel = " << *c);
+                auto b = a;
                 a += c->amplitude(d, pc, two_m, dataPartitionIndex);
-        }
+                DEBUG(name() << "\ta = " << b << " -> " << a);
+            }
 
         A->setValue(a, d, symIndex, dataPartitionIndex);
 

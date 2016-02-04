@@ -18,10 +18,12 @@
 
 /// \file
 
-#ifndef yap_HelicitySpinAmplitude_h
-#define yap_HelicitySpinAmplitude_h
+#ifndef yap_ZemachSpinAmplitude_h
+#define yap_ZemachSpinAmplitude_h
 
 #include "DataPoint.h"
+#include "ParticleCombination.h"
+#include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 
 #include <complex>
@@ -30,16 +32,27 @@
 
 namespace yap {
 
-class ParticleCombination;
+// add Zemach equivalence checker
+class ParticleCombination {
+public:
+
+    /// treats all two-particle states as equal
+    struct EquivZemach {
+        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A,
+                                const std::shared_ptr<ParticleCombination>& B) const;
+    };
+
+    static EquivZemach equivZemach;
+};
 
 template <class T>
 class SpinAmplitudeCache;
 
-/// \class HelicitySpinAmplitude
-/// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
+/// \class ZemachSpinAmplitude
+/// \brief Class implementing Zemach tensors
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-class HelicitySpinAmplitude : public SpinAmplitude
+class ZemachSpinAmplitude : public SpinAmplitude
 {
 public:
 
@@ -52,15 +65,14 @@ public:
     virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
                                       const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
-    /// \return "helicity formalism"
+    /// \return "Zemach formalism"
     virtual std::string formalism() const override
-    { return "helicity formalism"; }
+    { return "Zemach formalism"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
-    friend class SpinAmplitudeCache<HelicitySpinAmplitude>;
+    friend class SpinAmplitudeCache<ZemachSpinAmplitude>;
 
 protected:
-
     /// Constructor
     /// \param two_J  twice the spin of Initial-state
     /// \param two_j1 twice the spin of first daughter
@@ -68,21 +80,13 @@ protected:
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
     /// \param isp raw pointer to owning InitialStateParticle
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                          InitialStateParticle* isp,
-                          ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+    ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
+                          InitialStateParticle* isp);
 
 private:
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override
-    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
-
-    /// L-S * S-S coupling coefficients
-    /// first map key is m1;
-    /// second map key is m2;
-    /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
-    std::map<int, std::map<int, double> > Coefficients_;
+    { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
 };
 

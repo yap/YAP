@@ -267,6 +267,10 @@ public:
     virtual std::string data_accessor_type() const override
     {return "InitialStateParticle"; }
 
+    /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
+    /// call before calculating the amplitude for a new dataPoint
+    void resetCalculationStatuses(unsigned dataPartitionIndex) override;
+
     /// grant friend status to DataAccessor to register itself with InitialStateParticle
     friend class DataAccessor;
 
@@ -300,10 +304,6 @@ private:
 
     /// set number of data partitions of all #CachedDataValue's
     void setNumberOfDataPartitions(unsigned n) override;
-
-    /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
-    /// call before calculating the amplitude for a new dataPoint
-    void resetCalculationStatuses(unsigned dataPartitionIndex) override;
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition

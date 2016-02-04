@@ -9,8 +9,8 @@ namespace yap {
 
 //-------------------------
 SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                             InitialStateParticle* isp) :
-    StaticDataAccessor(),
+                             InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
+    StaticDataAccessor(equiv),
     InitialTwoJ_(two_J),
     FinalTwoJ_( {two_j1, two_j2}),
             L_(l),
@@ -101,7 +101,8 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
                                     + " -> " + spin_to_string(two_m1) + " + " + spin_to_string(two_m2),
                                     "SpinAmplitude::addAmplitude");
 
-    // FDEBUG("adding CachedDataValue for")
+    FDEBUG("adding CachedDataValue for " << spin_to_string(two_M) << " -> " << m1m2[0] << " + " << m1m2[1]
+           << " in " << *this)
     ASM[m1m2] = ComplexCachedDataValue::create(this);
 }
 
