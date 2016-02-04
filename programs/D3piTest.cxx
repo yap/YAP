@@ -8,6 +8,7 @@
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
+#include "ZemachSpinAmplitude.h"
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ int main( int argc, char** argv)
 
     // initial state particle
     std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize,
-            std::make_unique<yap::HelicitySpinAmplitudeCache>());
+            std::make_unique<yap::ZemachSpinAmplitudeCache>());
 
     // final state particles
     std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
