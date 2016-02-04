@@ -94,7 +94,7 @@ int main( int argc, char** argv)
     // choose Dalitz coordinates m^2_12 and m^2_23
     const yap::MassAxes massAxes = D->getMassAxes({{0, 1}, {1, 2}});
 
-    std::vector<double> m2 = {0.1, 4};
+    std::vector<double> m2 = {0.9, 1.1}; //{0.1, 4};
 
     LOG(INFO) << "BEFORE";
     D->fourMomenta().printMasses(D->dataSet()[0]);
@@ -113,6 +113,10 @@ int main( int argc, char** argv)
 
     for (auto p : D->dataSet()[0].finalStateFourMomenta())
         LOG(INFO) << p;
+
+    D->resetCalculationStatuses(0);
+    auto A = D->amplitude(D->dataSet()[0], 0);
+    LOG(INFO) << "A = " << A;
 
     LOG(INFO) << "alright!";
 }
