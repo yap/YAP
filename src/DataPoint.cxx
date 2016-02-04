@@ -1,6 +1,5 @@
 #include "DataPoint.h"
 
-#include "Constants.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "logging.h"
@@ -13,18 +12,12 @@
 namespace yap {
 
 //-------------------------
-DataPoint::DataPoint(const std::vector<FourVector<double> >& P) :
-    FSPFourMomenta_(P)
-{}
-
-//-------------------------
 bool DataPoint::setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta, bool check)
 {
-    if (FSPFourMomenta_.size() != fourMomenta.size()) {
-        LOG(ERROR) << "DataPoint::setFourMomenta - fourMomenta have wrong size "
-                   << fourMomenta.size() << " != " << FSPFourMomenta_.size();
-        throw exceptions::Exception("fourMomenta is wrong size", "DataPoint::setFinalStateFourMomenta");
-    }
+    if (fourMomenta.size() != FSPFourMomenta_.size())
+        throw exceptions::Exception("fourMomenta is wrong size (" + std::to_string(fourMomenta.size())
+                                    + "!= " + std::to_string(FSPFourMomenta_.size()) + ")",
+                                    "DataPoint::setFinalStateFourMomenta");
 
     if (check and FSPFourMomenta_ == fourMomenta)
         return true;

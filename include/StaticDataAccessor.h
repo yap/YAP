@@ -78,9 +78,6 @@ public:
 
 protected:
 
-    /// does nothing, since StaticDataAccessor's ignore partitions
-    virtual void setNumberOfDataPartitions(unsigned n) override {}
-
     /// does nothing, since StaticDataAccessor's never update
     virtual void resetCalculationStatuses(unsigned dataPartitionIndex) override {}
 
