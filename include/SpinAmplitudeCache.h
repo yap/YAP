@@ -53,7 +53,7 @@ public:
 
     /// equivalence
     bool equiv(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
-    { return (A.get() == B.get()) or A->equiv(*B)); }
+    { return (A.get() == B.get()) or A->equiv(*B); }
 
     /// retrieve or create SpinAmplitude
     /// \param intial quantum numbers of Initial-state
@@ -65,7 +65,11 @@ public:
             const QuantumNumbers& final1,
             const QuantumNumbers& final2,
             unsigned l, unsigned two_s)
-    { return operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, two_s, initialStateParticle()))); }
+    {
+        auto retVal = operator[](std::shared_ptr<spin_amplitude>(new spin_amplitude(initial, final1, final2, l, two_s, initialStateParticle())));
+        retVal->setInitialStateParticle(initialStateParticle());
+        return retVal;
+    }
 
     /// Check consistency of cache. Skips expired entries.
     bool consistent() const

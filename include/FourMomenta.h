@@ -91,6 +91,9 @@ public:
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
+    virtual std::string data_accessor_type() const override
+    {return "FourMomenta"; }
+
     /// grant friend status to InitialStateParticle to call setFourMomenta
     friend class InitialStateParticle;
 

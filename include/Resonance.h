@@ -76,6 +76,9 @@ public:
 
     /// @}
 
+    virtual std::string data_accessor_type() const override
+    {return "Resonance"; }
+
 protected:
 
     /// overrides DataAccessor's function to also register MassShape_ with ISP

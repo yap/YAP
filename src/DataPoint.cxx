@@ -43,7 +43,7 @@ void DataPoint::allocateStorage(std::shared_ptr<FourMomenta> fourMom, const Data
 
     for (auto d : dataAccessors) {
         Data_[d->index()].assign(d->maxSymmetrizationIndex() + 1, std::vector<double>(d->size(), 0));
-        FLOG(INFO) << "assigned  " << data_accessor_type(d) << " at index" << d->index() << " a vector of size "
+        FLOG(INFO) << "assigned  " << d->data_accessor_type() << " at index" << d->index() << " a vector of size "
                    << Data_[d->index()][0].size();
     }
 }

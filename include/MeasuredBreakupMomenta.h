@@ -68,6 +68,9 @@ public:
     std::shared_ptr<RealCachedDataValue> breakupMomenta() const
     { return Q2_; }
 
+    virtual std::string data_accessor_type() const override
+    {return "MeasuredBreakupMomenta"; }
+
 protected:
 
     /// squared breakup momentum [GeV^2]

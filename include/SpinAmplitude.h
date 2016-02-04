@@ -149,6 +149,9 @@ public:
     const AmplitudeMap& amplitudes() const
     { return Amplitudes_; }
 
+    virtual std::string data_accessor_type() const override
+    {return "SpinAmplitude"; }
+
     /// \return a string naming the formalism used for the SpinAmplitude calculation
     virtual std::string formalism() const = 0;
 

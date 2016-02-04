@@ -12,7 +12,7 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
                              const QuantumNumbers& final2,
                              unsigned l, unsigned two_s,
                              InitialStateParticle* isp) :
-    StaticDataAccessor(isp),
+    StaticDataAccessor(),
     InitialTwoJ_(initial.twoJ()),
     FinalTwoJ_( {final1.twoJ(), final2.twoJ()}),
             L_(l),

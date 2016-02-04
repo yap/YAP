@@ -23,7 +23,6 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
-#include "DataAccessor.h"
 #include "DataPoint.h"
 #include "InitialStateParticle.h"
 #include "Particle.h"

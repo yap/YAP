@@ -38,7 +38,7 @@ namespace yap {
 class DataPoint;
 
 /// \name DataAccessor
-/// \brief Base class for all objects accessing DataPoint's
+/// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
 class DataAccessor :
@@ -119,6 +119,8 @@ public:
     /// Check consistency of object
     bool consistent() const;
 
+    virtual std::string data_accessor_type() const = 0;
+
     /// grant friend status to InitialStateParticle
     friend class InitialStateParticle;
 
@@ -198,8 +200,6 @@ using DataAccessorSet = std::set<DataAccessor*>;
 
 /// remove expired elements of set
 void removeExpired(DataAccessorSet& S);
-
-std::string data_accessor_type(const DataAccessor* D);
 
 }
 

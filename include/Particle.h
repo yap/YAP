@@ -22,7 +22,6 @@
 #define yap_Particle_h
 
 #include "AmplitudeComponent.h"
-#include "DataAccessor.h"
 #include "Parameter.h"
 #include "QuantumNumbers.h"
 #include "ReportsInitialStateParticle.h"

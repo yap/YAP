@@ -37,11 +37,25 @@ class StaticDataAccessor : public DataAccessor
 public:
 
     /// Constructor
+    /// \param equiv ParticleCombination equivalence struct for determining index assignments
+    StaticDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
+        : DataAccessor(equiv), InitialStateParticle_(nullptr)
+    {
+    }
+
+    /// Constructor
     /// \param isp Raw pointer to owning InitialStateParticle
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     StaticDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), InitialStateParticle_(isp)
+        : DataAccessor(equiv), InitialStateParticle_(nullptr)
     {
+        setInitialStateParticle(isp);
+    }
+
+    /// Set the InitialStateParticle and add this DataAccessor to the ISP's DataAccessorSet
+    void setInitialStateParticle(InitialStateParticle* isp)
+    {
+        InitialStateParticle_ = isp;
         if (!initialStateParticle())
             throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
         // register to with ISP

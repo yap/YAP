@@ -4,17 +4,6 @@
 #include "InitialStateParticle.h"
 #include "logging.h"
 
-//-------------------------
-#include "BlattWeisskopf.h"
-#include "DecayChannel.h"
-#include "Resonance.h"
-#include "DecayingParticle.h"
-#include "FourMomenta.h"
-#include "HelicityAngles.h"
-#include "SpinAmplitude.h"
-#include "MassShape.h"
-//-------------------------
-
 namespace yap {
 
 //-------------------------
@@ -60,43 +49,9 @@ ParticleCombinationVector DataAccessor::particleCombinations() const
 }
 
 //-------------------------
-std::string data_accessor_type(const DataAccessor* D)
-{
-    if (dynamic_cast<const BlattWeisskopf*>(D))
-        return "BlattWeisskopf";
-
-    if (dynamic_cast<const DecayChannel*>(D))
-        return "DecayChannel";
-
-    if (dynamic_cast<const Resonance*>(D))
-        return "Resonance";
-
-    if (dynamic_cast<const DecayingParticle*>(D))
-        return "DecayingParticle";
-
-    if (dynamic_cast<const FourMomenta*>(D))
-        return "FourMomenta";
-
-    if (dynamic_cast<const HelicityAngles*>(D))
-        return "HelicityAngles";
-
-    if (dynamic_cast<const SpinAmplitude*>(D))
-        return "SpinAmplitude";
-
-    if (dynamic_cast<const MassShape*>(D))
-        return "MassShape";
-
-    if (dynamic_cast<const MeasuredBreakupMomenta*>(D))
-        return "MeasuredBreakupMomenta";
-
-    return "DataAccessor";
-
-}
-
-//-------------------------
 void DataAccessor::printParticleCombinations() const
 {
-    LOG(INFO) << data_accessor_type(this);
+    LOG(INFO) << data_accessor_type();
     for (auto& kv : SymmetrizationIndices_) {
         auto p = kv.first;
         while (p->parent())
