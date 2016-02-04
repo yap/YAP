@@ -52,16 +52,16 @@ TEST_CASE( "ClebschGordan" )
         SECTION ( "j2 = 0" ) {
             for (unsigned two_j1 = 0; two_j1 <= 10; ++two_j1)
                 for (int two_m1 = -two_j1; two_m1 <= (int)two_j1; two_m1 += 2) {
-                    REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1) == 1 );
-                    REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1 + 2, two_m1) == 0 );
+                    REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1) == Approx( 1 ) );
+                    REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1 + 2, two_m1) == Approx( 0 ) );
                     if (two_m1 < (int)two_j1)
-                        REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1 + 2) == 0 );
+                        REQUIRE( yap::ClebschGordan::coefficient(two_j1, two_m1, 0, 0, two_j1, two_m1 + 2) == Approx( 0 ) );
                 }
         }
 
         SECTION ( "j1 = 1/2, j2 = 1/2" ) {
-            REQUIRE( yap::ClebschGordan::coefficient(1, +1, 1, +1, 2, +2) == 1 );
-            REQUIRE( yap::ClebschGordan::coefficient(1, -1, 1, -1, 2, -2) == 1 );
+            REQUIRE( yap::ClebschGordan::coefficient(1, +1, 1, +1, 2, +2) == Approx( 1 ) );
+            REQUIRE( yap::ClebschGordan::coefficient(1, -1, 1, -1, 2, -2) == Approx( 1 ) );
             REQUIRE( yap::ClebschGordan::coefficient(1, +1, 1, -1, 2, 0) == Approx( sqrt(1. / 2)) );
             REQUIRE( yap::ClebschGordan::coefficient(1, +1, 1, -1, 0, 0) == Approx( sqrt(1. / 2)) );
             REQUIRE( yap::ClebschGordan::coefficient(1, -1, 1, +1, 2, 0) == Approx( sqrt(1. / 2)) );
@@ -69,7 +69,7 @@ TEST_CASE( "ClebschGordan" )
         }
 
         SECTION ( "j1 = 1, j2 = 1" ) {
-            REQUIRE( yap::ClebschGordan::coefficient(2, +2, 2, +2, 4, 4) == 1 );
+            REQUIRE( yap::ClebschGordan::coefficient(2, +2, 2, +2, 4, 4) == Approx( 1 ) );
 
             REQUIRE( yap::ClebschGordan::coefficient(2, +2, 2,  0, 4, 2) == Approx( sqrt(1. / 2)) );
             REQUIRE( yap::ClebschGordan::coefficient(2,  0, 2, +2, 4, 2) == Approx( sqrt(1. / 2)) );
@@ -80,7 +80,7 @@ TEST_CASE( "ClebschGordan" )
             REQUIRE( yap::ClebschGordan::coefficient(2,  0, 2,  0, 4, 0) == Approx(sqrt(2. / 3)) );
             REQUIRE( yap::ClebschGordan::coefficient(2, -2, 2, +2, 4, 0) == Approx(sqrt(1. / 6)) );
             REQUIRE( yap::ClebschGordan::coefficient(2, +2, 2, -2, 2, 0) == Approx(sqrt(1. / 2)) );
-            REQUIRE( yap::ClebschGordan::coefficient(2,  0, 2,  0, 2, 0) == 0 );
+            REQUIRE( yap::ClebschGordan::coefficient(2,  0, 2,  0, 2, 0) == Approx( 0 ) );
             REQUIRE( yap::ClebschGordan::coefficient(2, -2, 2, +2, 2, 0) == Approx(-sqrt(1. / 2)) );
             REQUIRE( yap::ClebschGordan::coefficient(2, +2, 2, -2, 0, 0) == Approx( sqrt(1. / 3)) );
             REQUIRE( yap::ClebschGordan::coefficient(2,  0, 2,  0, 0, 0) == Approx(-sqrt(1. / 3)) );
@@ -88,7 +88,7 @@ TEST_CASE( "ClebschGordan" )
         }
 
         SECTION ( "j1 = 2, j2 = 1" ) {
-            REQUIRE( yap::ClebschGordan::coefficient(4, +4, 2, +2, 6, 6) == 1 );
+            REQUIRE( yap::ClebschGordan::coefficient(4, +4, 2, +2, 6, 6) == Approx(1) );
 
             REQUIRE( yap::ClebschGordan::coefficient(4, +4, 2,  0, 6, 4) == Approx( sqrt(1. / 3)) );
             REQUIRE( yap::ClebschGordan::coefficient(4, +2, 2, +2, 6, 4) == Approx( sqrt(2. / 3)) );
@@ -109,7 +109,7 @@ TEST_CASE( "ClebschGordan" )
             REQUIRE( yap::ClebschGordan::coefficient(4,  0, 2,  0, 6, 0) == Approx( sqrt(3. / 5)) );
             REQUIRE( yap::ClebschGordan::coefficient(4, -2, 2, +2, 6, 0) == Approx( sqrt(1. / 5)) );
             REQUIRE( yap::ClebschGordan::coefficient(4, +2, 2, -2, 4, 0) == Approx( sqrt(1. / 2)) );
-            REQUIRE( yap::ClebschGordan::coefficient(4,  0, 2,  0, 4, 0) == 0 );
+            REQUIRE( yap::ClebschGordan::coefficient(4,  0, 2,  0, 4, 0) == Approx( 0 ) );
             REQUIRE( yap::ClebschGordan::coefficient(4, -2, 2, +2, 4, 0) == Approx(-sqrt(1. / 2)) );
             REQUIRE( yap::ClebschGordan::coefficient(4, +2, 2, -2, 2, 0) == Approx( sqrt(3. / 10)) );
             REQUIRE( yap::ClebschGordan::coefficient(4,  0, 2,  0, 2, 0) == Approx(-sqrt(2. / 5)) );
