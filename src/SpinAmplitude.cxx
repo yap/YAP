@@ -15,8 +15,8 @@ SpinAmplitude::SpinAmplitude(const QuantumNumbers& initial,
     StaticDataAccessor(isp),
     InitialTwoJ_(initial.twoJ()),
     FinalTwoJ_( {final1.twoJ(), final2.twoJ()}),
-                      L_(l),
-                      TwoS_(two_s)
+            L_(l),
+            TwoS_(two_s)
 {
     // check JLS triangle
     if (!triangle(InitialTwoJ_, 2 * L_, TwoS_))
@@ -110,11 +110,11 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
 bool SpinAmplitude::equiv(const SpinAmplitude& B) const
 {
     return // compare only spin of QuantumNumbers
-           InitialTwoJ_ == B.InitialTwoJ_
-           and FinalTwoJ_[0] == B.FinalTwoJ_[0]
-           and FinalTwoJ_[1] == B.FinalTwoJ_[1]
-           and L_ == B.L_
-           and TwoS_ == B.TwoS_;
+        InitialTwoJ_ == B.InitialTwoJ_
+        and FinalTwoJ_[0] == B.FinalTwoJ_[0]
+        and FinalTwoJ_[1] == B.FinalTwoJ_[1]
+        and L_ == B.L_
+        and TwoS_ == B.TwoS_;
 }
 
 //-------------------------
