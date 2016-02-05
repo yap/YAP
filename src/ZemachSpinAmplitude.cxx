@@ -90,10 +90,10 @@ std::complex<double> ZemachSpinAmplitude::calc(int two_M, int two_m1, int two_m2
     auto q = vect(B * q4);
 
     if (twoS() == 2)
-        return -2. * p * q;
+        return -2. * p * q * Complex_1;
 
     // else twoS() == 4
-    return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.);
+    return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.) * Complex_1;
 }
 
 }
