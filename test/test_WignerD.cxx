@@ -9,9 +9,10 @@
 
 #include <cmath>
 
-void checkDSymmetries(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma) {
-    REQUIRE( yap::DFunction(twoJ, twoM, twoN, alpha, beta,gamma) == std::conj(yap::DFunction(twoJ, twoN, twoM,  -gamma, -beta, -alpha )) );
-    REQUIRE( std::conj(yap::DFunction(twoJ, twoM, twoN, alpha, beta,gamma)) == double(yap::pow_negative_one((twoN - twoM)/2)) * yap::DFunction(twoJ, -twoM, -twoN,  alpha, beta, gamma ) );
+void checkDSymmetries(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
+{
+    REQUIRE( yap::DFunction(twoJ, twoM, twoN, alpha, beta, gamma) == std::conj(yap::DFunction(twoJ, twoN, twoM,  -gamma, -beta, -alpha )) );
+    REQUIRE( std::conj(yap::DFunction(twoJ, twoM, twoN, alpha, beta, gamma)) == double(yap::pow_negative_one((twoN - twoM) / 2)) * yap::DFunction(twoJ, -twoM, -twoN,  alpha, beta, gamma ) );
 }
 
 TEST_CASE( "WignerD" )
