@@ -1,11 +1,18 @@
 #include <catch.hpp>
+#include <catch_capprox.hpp>
 
 #include <Constants.h>
 #include <Exceptions.h>
 #include <logging.h>
+#include <MathUtilities.h>
 #include <WignerD.h>
 
 #include <cmath>
+
+void checkDSymmetries(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma) {
+    REQUIRE( yap::DFunction(twoJ, twoM, twoN, alpha, beta,gamma) == std::conj(yap::DFunction(twoJ, twoN, twoM,  -gamma, -beta, -alpha )) );
+    REQUIRE( std::conj(yap::DFunction(twoJ, twoM, twoN, alpha, beta,gamma)) == double(yap::pow_negative_one((twoN - twoM)/2)) * yap::DFunction(twoJ, -twoM, -twoN,  alpha, beta, gamma ) );
+}
 
 TEST_CASE( "WignerD" )
 {
@@ -13,8 +20,10 @@ TEST_CASE( "WignerD" )
     // disable logs in text
     yap::disableLogs(el::Level::Global);
 
-    // choose an arbitrary angle to test with
+    // choose arbitrary angles to test with
+    double alpha = 0.4 * yap::PI;
     double beta = 0.6 * yap::PI;
+    double gamma = 0.5 * yap::PI;
 
     SECTION( "Caching" ) {
         // cache J = 0, 1/2, 1 (out of order)
@@ -35,6 +44,13 @@ TEST_CASE( "WignerD" )
 
             // check val
             REQUIRE( yap::dFunction(0, 0, 0, beta) == 1 );
+        }
+
+        SECTION ("D matrix") {
+            // check symmetries
+            checkDSymmetries(0, 0, 0, alpha, beta, gamma);
+            checkDSymmetries(0, 2, 0, alpha, beta, gamma);
+            checkDSymmetries(0, 0, 2, alpha, beta, gamma);
         }
     }
 
@@ -59,6 +75,14 @@ TEST_CASE( "WignerD" )
             REQUIRE( yap::dFunction(1, -1, +1, beta) + yap::dFunction(1, +1, -1, beta) == 0);
             REQUIRE( yap::dFunction(1, +1, +1, beta) - yap::dFunction(1, +1, +1, -beta) == 0);
             REQUIRE( yap::dFunction(1, +1, -1, beta) - yap::dFunction(1, -1, +1, -beta) == 0);
+        }
+
+        SECTION ("D matrix") {
+            // check symmetries
+            checkDSymmetries(1, +1, +1, alpha, beta, gamma);
+            checkDSymmetries(1, +1, -1, alpha, beta, gamma);
+            checkDSymmetries(1, -1, +1, alpha, beta, gamma);
+            checkDSymmetries(1, -1, -1, alpha, beta, gamma);
         }
     }
 
@@ -88,6 +112,19 @@ TEST_CASE( "WignerD" )
             REQUIRE( yap::dFunction(2, +2,  0, beta) + yap::dFunction(2,  0, +2, beta) == 0);
             REQUIRE( yap::dFunction(2, +2, -2, beta) - yap::dFunction(2, -2, +2, -beta) == 0);
             REQUIRE( yap::dFunction(2,  0, +2, beta) - yap::dFunction(2, +2,  0, -beta) == 0);
+        }
+
+        SECTION ("D matrix") {
+            // check symmetries
+            checkDSymmetries(2, +2, +2, alpha, beta, gamma);
+            checkDSymmetries(2, +2,  0, alpha, beta, gamma);
+            checkDSymmetries(2, +2, -2, alpha, beta, gamma);
+            checkDSymmetries(2,  0, +2, alpha, beta, gamma);
+            checkDSymmetries(2,  0,  0, alpha, beta, gamma);
+            checkDSymmetries(2,  0, -2, alpha, beta, gamma);
+            checkDSymmetries(2, -2, +2, alpha, beta, gamma);
+            checkDSymmetries(2, -2,  0, alpha, beta, gamma);
+            checkDSymmetries(2, -2, -2, alpha, beta, gamma);
         }
     }
 }
