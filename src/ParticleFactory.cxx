@@ -180,7 +180,7 @@ void ParticleFactory::readPDT(const std::string fname)
 
                 // note: isospin & parity are missing from .pdl format
                 addParticleTableEntry(ParticleTableEntry(stdhepid, pname,
-                                      QuantumNumbers(0, spin2, 0, std::round(1. * chg3 / 3)),
+                                      QuantumNumbers(spin2, std::round(1. * chg3 / 3)),
                                       mass, {pwidth}));
             }
 
