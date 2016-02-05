@@ -44,8 +44,11 @@ message(${CMAKE_CXX_COMPILER})
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-missing-braces -Werror=overloaded-virtual -pthread" )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g2" )
-#set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
+# build with cmake -DCMAKE_BUILD_TYPE=Debug
+set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g2" )
+
+# build with cmake -DCMAKE_BUILD_TYPE=Release
+set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
 
 add_subdirectory(src)
 add_subdirectory(test)
