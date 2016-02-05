@@ -13,14 +13,16 @@
 
 int main()
 {
+    yap::plainLogs(el::Level::Info);
+
     // set nicer style for drawing than the ROOT default
     BCAux::SetStyle();
 
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    // d3pi m("D3PI");
-    dkkpi m("DKKPI");
+    d3pi m("D3PI");
+    // dkkpi m("DKKPI");
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);

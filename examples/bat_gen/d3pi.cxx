@@ -13,7 +13,9 @@
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "QuantumNumbers.h"
 #include "Resonance.h"
+#include "ZemachSpinAmplitude.h"
 
 // ---------------------------------------------------------
 d3pi::d3pi(std::string name)
@@ -27,12 +29,14 @@ d3pi::d3pi(std::string name)
     std::shared_ptr<yap::FinalStateParticle> piMinus = Factory_.createFinalStateParticle(-211);
 
     // initial state particle
-    D_ = Factory_.createInitialStateParticle(Factory_.pdgCode("D+"), radialSize);
+    D_ = Factory_.createInitialStateParticle(Factory_.pdgCode("D+"), radialSize, std::make_unique<yap::ZemachSpinAmplitudeCache>());
+    // D_ = Factory_.createInitialStateParticle(Factory_.pdgCode("D+"), radialSize, std::make_unique<yap::ZemachSpinAmplitudeCache>());
     D_->setFinalStateParticles({piPlus, piMinus, piPlus});
 
     // rho
-    std::shared_ptr<yap::Resonance> rho = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.149);
+    // std::shared_ptr<yap::Resonance> rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
+    std::shared_ptr<yap::Resonance> rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 1.2, "rho", radialSize, std::make_unique<yap::BreitWigner>());
+    static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.1);
     rho->addChannel({piPlus, piMinus});
 
     /*

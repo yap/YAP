@@ -26,7 +26,7 @@ PRGSRCS = runBatGen.cxx
 
 # compiler and flags
 CXX       = g++
-CXXFLAGS  = -std=c++11 -g -O2 -Wall -fPIC -Wno-deprecated  #-fopenmp
+CXXFLAGS  = -std=c++11 -g -O2 -Wall -fPIC -Wno-deprecated  -Wno-missing-braces #-fopenmp
 LD        = /usr/bin/ld -m elf_x86_64
 LDFLAGS   = -g -O2  #-fopenmp
 
