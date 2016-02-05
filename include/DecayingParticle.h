@@ -44,7 +44,7 @@ class InitialStateParticle;
 class ParticleCombination;
 
 /// \class DecayingParticle
-/// \brief Abstract base class for a particle that will decay
+/// \brief Class for a particle that will decay
 /// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 ///
@@ -60,9 +60,6 @@ public:
 
     /// Constructor
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
-
-    /// Make this a pure virtual class
-    virtual ~DecayingParticle() = 0;
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with

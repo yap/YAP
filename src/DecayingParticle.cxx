@@ -23,11 +23,6 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 }
 
 //-------------------------
-DecayingParticle::~DecayingParticle()
-{
-}
-
-//-------------------------
 std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
