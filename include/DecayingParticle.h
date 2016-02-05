@@ -44,7 +44,7 @@ class InitialStateParticle;
 class ParticleCombination;
 
 /// \class DecayingParticle
-/// \brief Class for a particle that will decay
+/// \brief Abstract base class for a particle that will decay
 /// \authors Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 ///
