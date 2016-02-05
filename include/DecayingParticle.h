@@ -61,6 +61,9 @@ public:
     /// Constructor
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
+    /// Make this a pure virtual class
+    virtual ~DecayingParticle() = 0;
+
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
