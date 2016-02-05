@@ -27,14 +27,6 @@ SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, u
     // if (!conserves(InitialTwoJ_, FinalTwoJ_[0], FinalTwoJ_[1], l))
     //     throw exceptions::AngularMomentumNotConserved();
 
-    // check charge conservation
-    // \todo check somewhere else
-    /*if (InitialQuantumNumbers_.Q() != FinalQuantumNumbers_[0].Q() + FinalQuantumNumbers_[1].Q())
-        throw exceptions::Exception(std::string("charge conservation violated: ")
-                                    + "(" + std::to_string(InitialQuantumNumbers_.Q())  + ") -> "
-                                    + "(" + std::to_string(FinalQuantumNumbers_[0].Q()) + ") + "
-                                    + "(" + std::to_string(FinalQuantumNumbers_[1].Q()) + ")",
-                                    "SpinAmplitude::SpinAmplitude");*/
 }
 
 //-------------------------

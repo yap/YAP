@@ -372,6 +372,15 @@ bool DecayChannel::consistent() const
         C &= false;
     }
 
+    // check charge conservation
+    int daughtersQ(0);
+    for (auto& d : Daughters_)
+        daughtersQ += d->quantumNumbers().Q();
+    if (DecayingParticle_->quantumNumbers().Q() != daughtersQ) {
+        FLOG(ERROR) << "charge conservation violated";
+        C &= false;
+    }
+
     return C;
 }
 
