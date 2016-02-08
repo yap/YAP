@@ -57,8 +57,8 @@ public:
     /// \param name Name of ISP
     /// \param r Radial size of ISP [GeV^-1]
     /// \param SAC unique_ptr to SpinAmplitudeCache
-    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r, std::unique_ptr<SpinAmplitudeCache> SAC)
-    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r, std::move(SAC))); }
+    static std::shared_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r, std::unique_ptr<SpinAmplitudeCache> SAC)
+    { return std::shared_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r, std::move(SAC))); }
 
     /// \name Amplitude-related
     /// @{

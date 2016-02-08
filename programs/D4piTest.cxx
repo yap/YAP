@@ -32,30 +32,29 @@ int main( int argc, char** argv)
 
     // initial state particle
     double radialSize = 1.;
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize,
-            std::make_unique<yap::HelicitySpinAmplitudeCache>());
+    auto D = factory.isp(421, radialSize, std::make_unique<yap::HelicitySpinAmplitudeCache>());
 
     // final state particles
-    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
-    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211);
+    auto piPlus = factory.fsp(211);
+    auto piMinus = factory.fsp(-211);
 
     // Set final-state particles
     D->setFinalStateParticles({piPlus, piMinus, piPlus, piMinus});
 
     // sigma
-    std::shared_ptr<yap::Resonance> sigma = factory.createResonance(9000221, radialSize, std::make_unique<yap::BreitWigner>());
+    auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addChannel({piPlus, piMinus});
 
     // rho
-    std::shared_ptr<yap::Resonance> rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());
+    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addChannel({piPlus, piMinus});
 
     // omega
-    std::shared_ptr<yap::Resonance> omega = factory.createResonance(223, radialSize, std::make_unique<yap::BreitWigner>());
+    auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
     omega->addChannel({piPlus, piMinus});
 
     // a_1
-    std::shared_ptr<yap::Resonance> a_1 = factory.createResonance(20213, radialSize, std::make_unique<yap::BreitWigner>());
+    auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
     a_1->addChannel({sigma, piPlus});
     a_1->addChannel({rho,   piPlus});
 
@@ -66,7 +65,7 @@ int main( int argc, char** argv)
     D->addChannel({a_1, piMinus});
 
     // R pi pi channels
-    //yap::Resonance* f_0_980 = factory.createResonanceBreitWigner(9000221, radialSize);
+    //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
 

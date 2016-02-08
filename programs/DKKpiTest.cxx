@@ -22,17 +22,16 @@ int main( int argc, char** argv)
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // create final state particles
-    std::shared_ptr<yap::FinalStateParticle> kPlus  = factory.createFinalStateParticle(+321);
-    std::shared_ptr<yap::FinalStateParticle> kMinus = factory.createFinalStateParticle(-321);
-    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(+211);
+    auto kPlus  = factory.fsp(+321);
+    auto kMinus = factory.fsp(-321);
+    auto piPlus = factory.fsp(+211);
 
     // create initial state particle and set final state
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize,
-            std::make_unique<yap::HelicitySpinAmplitudeCache>());
+    auto D = factory.isp(factory.pdgCode("D+"), radialSize, std::make_unique<yap::HelicitySpinAmplitudeCache>());
     D->setFinalStateParticles({kPlus, kMinus, piPlus});
 
     // create a phi
-    auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_unique<yap::BreitWigner>());
+    auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
     static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(4.266e-3);
     phi->addChannel({kPlus, kMinus});
 

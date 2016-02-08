@@ -49,8 +49,8 @@ public:
     /// \param q QuantumNumbers of resonance
     /// \param mass mass of resonance
     /// \param radialSize radial size of resonance
-    /// \param massShape unique_ptr to MassShape of resonance
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
+    /// \param massShape shared_ptr to MassShape of resonance
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
