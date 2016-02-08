@@ -276,6 +276,8 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     // store result
     totAmp->setValue(A, d, symIndex, dataPartitionIndex);
 
+    DEBUG("DecayChannel::amplitude :: A = " << A);
+
     // and return it
     return A;
 }

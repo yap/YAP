@@ -95,7 +95,7 @@ constexpr bool isLeftHanded(const CoordinateSystem<T, 3>& C)
 /// \param C Coordinate frame to measure in
 template <typename T>
 constexpr T phi(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{ return angle(V - (V*C[2]) * C[2], C[0]) * ( ((V * C[1]) >= 0) ? T(1) : T(-1) ); }
+{ return angle(V - (V * C[2]) * C[2], C[0]) * ( ((V * C[1]) >= 0) ? T(1) : T(-1) ); }
 
 /// \return polar angle of V in coordinate system C, in [0, pi]
 /// \param V ThreeVector to calculate azimuthal angle of
