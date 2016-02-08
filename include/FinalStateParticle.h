@@ -24,7 +24,6 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "DataPoint.h"
-#include "InitialStateParticle.h"
 #include "Particle.h"
 
 #include <complex>
@@ -76,7 +75,7 @@ public:
     /// @{
 
     /// Grant ISP friendship to set FSP's indices
-    friend void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> >);
+    friend class InitialStateParticle;
 
     /// @}
 

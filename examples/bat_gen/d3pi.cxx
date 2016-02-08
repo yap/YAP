@@ -30,7 +30,7 @@ d3pi::d3pi(std::string name)
 
     // initial state particle
     D_ = Factory_.isp(Factory_.pdgCode("D+"), radialSize, std::make_unique<yap::ZemachSpinAmplitudeCache>());
-    D_->setFinalStateParticles({piPlus, piMinus, piPlus});
+    D_->setFinalState({piPlus, piMinus, piPlus});
 
     // rho
     // auto rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 0.775, "rho", radialSize, std::make_shared<yap::BreitWigner>());

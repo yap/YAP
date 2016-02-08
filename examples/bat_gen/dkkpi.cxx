@@ -42,7 +42,7 @@ dkkpi::dkkpi(std::string name)
     // initial state particle
     D_ = Factory_.isp(Factory_.pdgCode("D+"), radialSize, std::make_unique<yap::ZemachSpinAmplitudeCache>());
     // D_ = Factory_.isp(Factory_.pdgCode("D+"), radialSize, std::make_unique<yap::HelicitySpinAmplitudeCache>());
-    D_->setFinalStateParticles({kPlus, kMinus, piPlus});
+    D_->setFinalState({kPlus, kMinus, piPlus});
 
     // phi
     // auto phi = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());

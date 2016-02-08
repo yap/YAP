@@ -31,7 +31,7 @@ int main( int argc, char** argv)
     auto piMinus = factory.fsp(-211);
 
     // set final state
-    D->setFinalStateParticles({piPlus, piMinus, piPlus});
+    D->setFinalState({piPlus, piMinus, piPlus});
 
     // rho
     auto rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());

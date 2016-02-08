@@ -190,7 +190,7 @@ public:
     /// given in data points. The FinalStateParticle's have their
     /// InitialStateParticle_ pointer set to this
     /// \param FSP list of shared pointers to final-state particles
-    void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+    void  setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);

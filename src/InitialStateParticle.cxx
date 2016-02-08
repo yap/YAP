@@ -217,12 +217,12 @@ void InitialStateParticle::addParticleCombination(std::shared_ptr<ParticleCombin
 }
 
 //-------------------------
-void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+void InitialStateParticle::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
 {
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty()) {
         FLOG(ERROR) << "final-state particles have already been set.";
-        throw exceptions::Exception("Final-state particles already set", "InitialStateParticle::setFinalStateParticles");
+        throw exceptions::Exception("Final-state particles already set", "InitialStateParticle::setFinalState");
     }
 
     // check that none of the FSP's has yet been used
@@ -231,17 +231,25 @@ void InitialStateParticle::setFinalStateParticles(std::initializer_list<std::sha
     for (auto& fsp : FSP) {
         if (!fsp) {
             FLOG(ERROR) << "final-state particle empty";
-            throw exceptions::Exception("FinalStateParticle empty", "InitialStateParticle::setFinalStateParticles");
+            throw exceptions::Exception("FinalStateParticle empty", "InitialStateParticle::setFinalState");
         }
         if (!fsp->particleCombinations().empty()) {
             FLOG(ERROR) << "final-state particle already has indices assigned: " << *fsp;
-            throw exceptions::Exception("FinalStateParticle already used", "InitialStateParticle::setFinalStateParticles");
+            throw exceptions::Exception("FinalStateParticle already used", "InitialStateParticle::setFinalState");
         }
         if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
             FLOG(ERROR) << "final-state particle already has ISP assigned: " << *fsp;
-            throw exceptions::Exception("FinalStateParticle already has ISP set", "InitialStateParticle::setFinalStateParticles");
+            throw exceptions::Exception("FinalStateParticle already has ISP set", "InitialStateParticle::setFinalState");
         }
     }
+
+    // check total mass of final state particles
+    /// \todo possibly remove to allow setting of masses later, or fitting of masses?
+    double fsp_mass_sum = std::accumulate(FSP.begin(), FSP.end(), 0., [](double m, std::shared_ptr<FinalStateParticle> p) {return m + p->mass()->value();});
+    if (fsp_mass_sum > mass()->value())
+        throw exceptions::Exception("Final-state mass is greater than initial-state mass ("
+                                    + std::to_string(fsp_mass_sum) + " > " + std::to_string(mass()->value()) + ")",
+                                    "InitialStateParticle::setFinalState");
 
     FinalStateParticles_.reserve(FSP.size());
 

@@ -39,7 +39,7 @@ int main( int argc, char** argv)
     auto piMinus = factory.fsp(-211);
 
     // Set final-state particles
-    D->setFinalStateParticles({piPlus, piMinus, piPlus, piMinus});
+    D->setFinalState({piPlus, piMinus, piPlus, piMinus});
 
     // sigma
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());

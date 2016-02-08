@@ -28,7 +28,7 @@ int main( int argc, char** argv)
 
     // create initial state particle and set final state
     auto D = factory.isp(factory.pdgCode("D+"), radialSize, std::make_unique<yap::HelicitySpinAmplitudeCache>());
-    D->setFinalStateParticles({kPlus, kMinus, piPlus});
+    D->setFinalState({kPlus, kMinus, piPlus});
 
     // create a phi
     auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
