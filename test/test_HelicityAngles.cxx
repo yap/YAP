@@ -18,6 +18,7 @@
 
 #include <TGenPhaseSpace.h>
 #include <TLorentzVector.h>
+#include <TRandom.h>
 
 #include <cmath>
 
@@ -25,8 +26,11 @@ TEST_CASE( "HelicityAngles" )
 {
 
     // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    //yap::disableLogs(el::Level::Global);
     //yap::plainLogs(el::Level::Debug);
+
+    // init random generator
+    gRandom->SetSeed(1234);
 
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
@@ -66,7 +70,7 @@ TEST_CASE( "HelicityAngles" )
                                     piPlus->mass()->value()
                                   };
 
-    for (unsigned int iEvt = 0; iEvt < 1; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 10; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, nParticles, masses);
         event.Generate();
@@ -75,12 +79,10 @@ TEST_CASE( "HelicityAngles" )
         for (unsigned i = 0; i < nParticles; ++i) {
             TLorentzVector p = *event.GetDecay(i);
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
-
-            DEBUG(yap::to_string(momenta.back()));
         }
 
         D->addDataPoint(momenta);
-        auto dp = D->dataSet()[0];
+        auto dp = D->dataSet().back();
 
 
         // \todo we are now assuming that the D's coordinate system is (1,0,0; 0,1,0; 0,0,1)
@@ -90,6 +92,8 @@ TEST_CASE( "HelicityAngles" )
             TLorentzVector daughter;
             for (unsigned i : pc->daughters()[0]->indices())
                 daughter += *event.GetDecay(i);
+
+            DEBUG( to_string(*pc) << "; phi = " << daughter.Phi() << "; theta = " << daughter.Theta());
 
             REQUIRE( D->helicityAngles().phi(dp, pc) == Approx(daughter.Phi()) );
             REQUIRE( D->helicityAngles().theta(dp, pc) == Approx(daughter.Theta()) );
