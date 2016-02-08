@@ -47,7 +47,7 @@ dkkpi::dkkpi(std::string name)
     // phi
     // auto phi = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
     auto phi = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 1310.e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(20e-3);
+    std::static_pointer_cast<yap::BreitWigner>(phi->massShape())->width()->setValue(20e-3);
     phi->addChannel({kPlus, kMinus});
     D_->addChannel({phi, piPlus});
 
@@ -56,7 +56,7 @@ dkkpi::dkkpi(std::string name)
     /*
     // X_2
     auto X_2 = std::make_shared<yap::Resonance>(yap::QuantumNumbers(4, 0), 1.2, "X_2", radialSize, std::make_shared<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(X_2->massShape()).width()->setValue(80e-3);
+    std::static_pointer_cast<yap::BreitWigner>(X_2->massShape())->width()->setValue(80e-3);
     X_2->addChannel({piPlus, kMinus});
     D_->addChannel({X_2, kPlus});
     */

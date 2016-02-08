@@ -32,7 +32,7 @@ int main( int argc, char** argv)
 
     // create a phi
     auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(phi->massShape()).width()->setValue(4.266e-3);
+    std::static_pointer_cast<yap::BreitWigner>(phi->massShape())->width()->setValue(4.266e-3);
     phi->addChannel({kPlus, kMinus});
 
     // Add channels to D

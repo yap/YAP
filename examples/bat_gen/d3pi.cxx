@@ -35,43 +35,43 @@ d3pi::d3pi(std::string name)
     // rho
     // auto rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 0.775, "rho", radialSize, std::make_shared<yap::BreitWigner>());
     auto rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 1.2, "rho", radialSize, std::make_shared<yap::BreitWigner>());
-    static_cast<yap::BreitWigner&>(rho->massShape()).width()->setValue(0.1);
+    std::static_pointer_cast<yap::BreitWigner>(rho->massShape())->width()->setValue(0.1);
     rho->addChannel({piPlus, piMinus});
 
     /*
         // // f_2(1270)
         auto f_2 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_shared<yap::BreitWigner>());
-        static_cast<yap::BreitWigner&>(f_2->massShape()).width()->setValue(0.185);
+        std::static_pointer_cast<yap::BreitWigner>(f_2->massShape())->width()->setValue(0.185);
         f_2->addChannel({piPlus, piMinus});
 
             // f_0(980)
             auto f_0_980 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(f_0_980->massShape()).width()->setValue(0.329);
+            std::static_pointer_cast<yap::BreitWigner>(f_0_980->massShape())->width()->setValue(0.329);
             f_0_980->addChannel({piPlus, piMinus});
 
             // f_0(1370)
             auto f_0_1370 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(f_0_1370->massShape()).width()->setValue(0.250);
+            std::static_pointer_cast<yap::BreitWigner>(f_0_1370->massShape())->width()->setValue(0.250);
             f_0_1370->addChannel({piPlus, piMinus});
 
             // f_0(1500)
             auto f_0_1500 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(f_0_1500->massShape()).width()->setValue(0.109);
+            std::static_pointer_cast<yap::BreitWigner>(f_0_1500->massShape())->width()->setValue(0.109);
             f_0_1500->addChannel({piPlus, piMinus});
 
             // sigma a.k.a. f_0(500)
             auto sigma = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(sigma->massShape()).width()->setValue(0.800);
+            std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.800);
             sigma->addChannel({piPlus, piMinus});
 
             // f_0(500+100i)
             auto f_0_500_100 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), .500, "f_0_500_100", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(f_0_500_100->massShape()).width()->setValue(0.100);
+            std::static_pointer_cast<yap::BreitWigner>(f_0_500_100->massShape())->width()->setValue(0.100);
             f_0_500_100->addChannel({piPlus, piMinus});
 
             // f_0(1500+100i)
             auto f_0_1500_100 = std::make_shared<yap::Resonance>(Factory_.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_shared<yap::BreitWigner>());
-            static_cast<yap::BreitWigner&>(f_0_1500_100->massShape()).width()->setValue(0.100);
+            std::static_pointer_cast<yap::BreitWigner>(f_0_1500_100->massShape())->width()->setValue(0.100);
             f_0_1500_100->addChannel({piPlus, piMinus});
 
         */

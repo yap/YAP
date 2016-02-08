@@ -67,12 +67,12 @@ public:
     /// @{
 
     /// access MassShape
-    MassShape& massShape()
-    { return *(MassShape_.get()); }
+    std::shared_ptr<MassShape> massShape()
+    { return MassShape_; }
 
     /// access MassShape (const)
-    const MassShape& massShape() const
-    { return *(MassShape_.get()); }
+    std::shared_ptr<const MassShape> massShape() const
+    { return MassShape_; }
 
     /// @}
 
