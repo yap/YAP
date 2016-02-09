@@ -38,9 +38,11 @@ int main( int argc, char** argv)
     // Add channels to D
     D->addChannel({phi, piPlus});
 
-    // consistency and optimizations
-    D->prepare();
-    std::cout << "consistent! \n";
+    // check consistency
+    if (D->consistent())
+        LOG(INFO) << "consistent!";
+    else
+        LOG(INFO) << "inconsistent!";
 
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();

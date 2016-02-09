@@ -33,6 +33,9 @@ void d2X::initialize(unsigned n)
     if (!D_)
         throw std::exception();
 
+    if (!D_->consistent())
+        throw std::exception();
+
     D_->initializeForMonteCarloGeneration(n);
     std::cout << "number of data partitions = " << D_->dataPartitions().size() << std::endl;
 

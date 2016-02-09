@@ -111,8 +111,8 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// you MUST call this function after you have added all decay channels and before adding DataPoints
-    void prepare();
+    /// removes expired DataAccessor's, prune's remaining, and assigns them indices
+    void prepareDataAccessors();
 
     /// \name Getters
     /// @{
@@ -172,10 +172,6 @@ public:
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> getMassRange(const std::shared_ptr<ParticleCombination>& pc) const;
-
-    /// \return if prepare() has been called for this InitialStateParticle
-    bool prepared() const
-    {return Prepared_; }
 
     /// \return free amplitudes of DecayChannels_
     ComplexParameterVector freeAmplitudes() const override;
@@ -287,12 +283,10 @@ protected:
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// register a DataAccessor with this InitialStateParticle
-    virtual void addDataAccessor(DataAccessorSet::value_type da)
-    { DataAccessors_.insert(da); }
+    virtual void addDataAccessor(DataAccessorSet::value_type da);
 
-    /// remove a DataAccessor from this InitialStateParticle
-    /*virtual void removeDataAccessor(DataAccessorSet::value_type da)
-    { DataAccessors_.erase(da); }*/
+    /* /// remove a DataAccessor from this InitialStateParticle */
+    /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
 
 private:
 
@@ -321,9 +315,6 @@ private:
 
     /// remove AmplitudeComponent from set
     void removeAmplitudeComponent(AmplitudeComponent* d);
-
-    /// Stores whether prepare() has been called
-    bool Prepared_;
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;

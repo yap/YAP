@@ -68,10 +68,11 @@ int main( int argc, char** argv)
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
-
-    // consistency and optimizations
-    D->prepare();
-    std::cout << "consistent! \n";
+    // check consistency
+    if (D->consistent())
+        LOG(INFO) << "consistent!";
+    else
+        LOG(INFO) << "inconsistent!";
 
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();

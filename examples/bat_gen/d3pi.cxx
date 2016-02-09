@@ -87,8 +87,6 @@ d3pi::d3pi(std::string name)
     // D_->addChannel({f_0_500_100,  piPlus});
     // D_->addChannel({f_0_1500_100, piPlus});
 
-    D_->prepare();
-
     std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = D_->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
         freeAmps[i]->setValue(yap::Complex_1);

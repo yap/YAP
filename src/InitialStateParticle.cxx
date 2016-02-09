@@ -17,11 +17,9 @@
 namespace yap {
 
 //-------------------------
-InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize,
-        std::unique_ptr<SpinAmplitudeCache> SAC) :
+InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<SpinAmplitudeCache> SAC) :
     std::enable_shared_from_this<InitialStateParticle>(),
     DecayingParticle(q, mass, name, radialSize),
-    Prepared_(false),
     CoordinateSystem_(ThreeAxes),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
@@ -134,55 +132,6 @@ bool InitialStateParticle::consistent() const
     /// @}
 
     return C;
-}
-
-//-------------------------
-void InitialStateParticle::prepare()
-{
-    // check
-    if (!DecayingParticle::consistent()) {
-        FLOG(ERROR) << "Cannot prepare InitialStateParticle, it is not consistent as DecayingParticle.";
-        throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
-    }
-
-    // remove expired elements of DataAccessors_
-    removeExpired(DataAccessors_);
-
-    for (auto& D : DataAccessors_)
-        D->pruneSymmetrizationIndices();
-
-    FLOG(INFO) << ParticleCombinationCache_;
-
-    for (auto& D : DataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-
-    // // check
-    // for (auto& wpc : ParticleCombinationCache_) {
-    //     if (!wpc.lock())
-    //         continue;
-    //     auto pc = wpc.lock();
-    //     if (!pc->consistent() or pc->origin().indices().size() != finalStateParticles().size())
-    //         FLOG(ERROR) << "Cannot prepare InitialStateParticle, particleCombinationCache is not consistent.";
-    //     throw exceptions::Exception("ParticleCombination inconsistent", "InitialStateParticle::prepare");
-    // }
-
-
-    // add this (commented out because ISP has no need for data access at moment)
-    // DataAccessors_.insert(shared_from_this());
-    // set unique indices to all DataAccessors
-    unsigned i = 0;
-    for (auto da : DataAccessors_)
-        da->setIndex(i++);
-
-    // check
-    if (!consistent()) {
-        FLOG(ERROR) << "Something went wrong while preparing InitialStateParticle, it is not consistent anymore.";
-        throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
-    }
-
-    Prepared_ = true;
 }
 
 //-------------------------
@@ -321,9 +270,6 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 //-------------------------
 void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
-    if (!Prepared_)
-        throw exceptions::Exception("InitialStateParticle not yet prepared", "InitialStateParticle::addDataPoint");
-
     if (DataSet_.empty()) {
         addDataPoint(std::move(DataPoint(fourMomenta)));
         return;
@@ -343,12 +289,73 @@ void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& 
 }
 
 //-------------------------
+void InitialStateParticle::addDataAccessor(DataAccessorSet::value_type da)
+{
+    // check if already in DataAccessors_
+    if (DataAccessors_.find(da) != DataAccessors_.end())
+        // do nothing
+        return;
+
+    if (da->initialStateParticle() != this)
+        throw exceptions::Exception("DataAccessor's InitialStateParticle is not this", "InitialStateParticle::addDataAccessor");
+
+    if (DataAccessors_.insert(da).second)
+        // if insertion was successful
+        da->setIndex(DataAccessors_.size() - 1);
+}
+
+//-------------------------
+void InitialStateParticle::prepareDataAccessors()
+{
+    // remove expired elements of DataAccessors_
+    removeExpired(DataAccessors_);
+
+    // prune remaining DataAccessor's
+    for (auto& D : DataAccessors_)
+        D->pruneSymmetrizationIndices();
+
+    // fix indices
+
+    // collect used indices
+    std::set<unsigned> used;
+    for (const auto& da : DataAccessors_)
+        used.insert(da->index());
+
+    // repair
+    unsigned index = 0;
+    while (index < used.size()) {
+
+        // if index is not used
+        if (used.find(index) == used.end()) {
+            // clear used
+            used.clear();
+            // reduce all DataAccessor indices greater than index by 1
+            // and rebuild used
+            for (auto& da : DataAccessors_) {
+                if (da->index() > index)
+                    da->setIndex(da->index() - 1);
+                used.insert(da->index());
+            }
+        }
+
+        // if index is now used, increment it by 1
+        if (used.find(index) != used.end())
+            index += 1;
+
+    }
+
+    for (auto& D : DataAccessors_) {
+        std::cout << std::endl;
+        D->printParticleCombinations();
+    }
+}
+
+//-------------------------
 void InitialStateParticle::addDataPoint(DataPoint&& d)
 {
-    if (!Prepared_) {
-        LOG(ERROR) << "Cannot add DataPoint to InitialStateParticle. Call InitialStateParticle::prepare() first!";
-        throw exceptions::Exception("InitialStateParticle not prepared", "InitialStateParticle::addDataPoint");
-    }
+    // if adding first data point, first prepare data accessors
+    if (DataSet_.empty())
+        prepareDataAccessors();
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
 
@@ -368,9 +375,6 @@ void InitialStateParticle::addDataPoint(const DataPoint& d)
 //-------------------------
 void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 {
-    if (!Prepared_)
-        throw exceptions::Exception("ISP not yet prepared", "InitialStateParticle::initializeForMonteCarloGeneration");
-
     if (!DataSet_.empty())
         throw exceptions::Exception("DataSet isn't empty", "InitialStateParticle::initializeForMonteCarloGeneration");
 
