@@ -120,6 +120,9 @@ bool DataAccessor::consistent() const
 //-------------------------
 void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
+    if (!c)
+        throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
+
     if (hasParticleCombination(c))
         // c is already in map
         return;

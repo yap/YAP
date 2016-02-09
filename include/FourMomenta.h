@@ -47,10 +47,6 @@ public:
     /// Constructor
     FourMomenta(InitialStateParticle* isp);
 
-    /// Find ISP in set and store index location;
-    /// record ParticleCombination's of all pairs
-    void prepare();
-
     /// check consistency
     bool consistent() const;
 
@@ -98,6 +94,9 @@ public:
     friend class InitialStateParticle;
 
 protected:
+
+    /// looks for ISP when adding ParticleCombination's
+    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// override to do nothing, since FourMomenta doesn't rely on parents being set.
     void pruneSymmetrizationIndices() override

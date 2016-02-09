@@ -26,21 +26,12 @@ FourMomenta::FourMomenta(InitialStateParticle* isp) :
 }
 
 //-------------------------
-void FourMomenta::prepare()
+void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    ParticleCombinationVector PCs = particleCombinations();
-
-    unsigned n_fsp = initialStateParticle()->finalStateParticles().size();
-
-    // look for ISP
-    auto it = std::find_if(PCs.begin(), PCs.end(),
-    [&](const ParticleCombinationVector::value_type & a) {return a->indices().size() == n_fsp;});
-
-    if (it == PCs.end())
-        throw exceptions::Exception("ISP ParticleCombination not found", "FourMomenta::prepare");
-
-    InitialStatePC_ = *it;
-
+    StaticDataAccessor::addParticleCombination(pc);
+    // check for ISP
+    if (!InitialStatePC_ and pc->indices().size() == initialStateParticle()->finalStateParticles().size())
+        InitialStatePC_ = pc;
 }
 
 //-------------------------

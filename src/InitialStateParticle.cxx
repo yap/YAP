@@ -145,9 +145,6 @@ void InitialStateParticle::prepare()
         throw exceptions::Exception("InitialStateParticle inconsistent", "InitialStateParticle::prepare");
     }
 
-    // prepare FourMomenta. Needs FinalStateParticles_
-    FourMomenta_->prepare();
-
     // remove expired elements of DataAccessors_
     removeExpired(DataAccessors_);
 
