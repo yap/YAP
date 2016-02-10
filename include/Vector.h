@@ -36,6 +36,7 @@ namespace yap {
 
 /// \class Vector
 /// \brief N-dimensional column vector
+/// ATTENTION: You have to take care about initialization of vectors!!!
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup VectorAlgebra
 template <typename T, size_t N>
@@ -133,7 +134,7 @@ Vector<T, N> unit(const Vector<T, N>& V)
 template <typename T, size_t R, size_t C>
 Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
 {
-    Vector<T, R> v;
+    Vector<T, R> v = {};
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             v[r] += M[r][c] * V[c];

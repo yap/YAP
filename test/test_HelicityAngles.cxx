@@ -26,7 +26,7 @@ TEST_CASE( "HelicityAngles" )
 {
 
     // disable logs in text
-    //yap::disableLogs(el::Level::Global);
+    yap::disableLogs(el::Level::Global);
     //yap::plainLogs(el::Level::Debug);
 
     // init random generator

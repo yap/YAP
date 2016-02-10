@@ -24,9 +24,12 @@
 #include <array>
 #include <string>
 
+#include<iostream>
+
 namespace yap {
 
 /// \typedef Matrix
+/// ATTENTION: You have to take care of initializing matrices!!!
 /// \ingroup VectorAlgebra
 /// \param R number of rows
 /// \param C number of columns
@@ -58,7 +61,7 @@ std::string to_string(const Matrix<T, R, C>& M)
     for (const auto& row : M) {
         s += "(";
         for (const auto& elt : row)
-            s += to_string(elt) + ", ";
+            s += std::to_string(elt) + ", ";
         s.erase(s.size() - 2, 2);
         s += "), ";
     }
@@ -98,7 +101,7 @@ template <typename T, size_t R, size_t K, size_t C>
 typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
 operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
 {
-    Matrix<T, R, C> res;
+    Matrix<T, R, C> res({});
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             for (size_t k = 0; k < K; ++k)
@@ -110,7 +113,7 @@ operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
 template <typename T, size_t K>
 T operator*(const Matrix<T, 1, K> A, const Matrix<T, K, 1> B)
 {
-    T res;
+    T res({});
     for (size_t k = 0; k < K; ++k)
         res += A[0][k] * B[k][0];
     return res;
