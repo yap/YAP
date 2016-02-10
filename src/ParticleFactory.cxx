@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "MassShape.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
@@ -50,15 +51,12 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG)
 }
 
 //-------------------------
-std::shared_ptr<InitialStateParticle> ParticleFactory::isp(int PDG, double radialSize, std::unique_ptr<SpinAmplitudeCache> SAC)
+std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize)
 {
     const auto& p = particleTableEntry(PDG);
 
-    if (p.twoJ() != 0)
-        LOG(ERROR) << "InitialStateParticle has spin != 0. ";
-
-    DEBUG("make InitialStateParticle " << p.Name << " with quantum numbers " << p);
-    return InitialStateParticle::create(p, p.Mass, p.Name, radialSize, std::move(SAC));
+    DEBUG("make DecayingParticle " << p.Name << " with quantum numbers " << p);
+    return std::make_shared<DecayingParticle>(p, p.Mass, p.Name, radialSize);
 }
 
 //-------------------------

@@ -2,9 +2,9 @@
 #include "BreitWigner.h"
 #include "FinalStateParticle.h"
 #include "HelicitySpinAmplitude.h"
-#include "InitialStateParticle.h"
 #include "make_unique.h"
 #include "MassAxes.h"
+#include "Model.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
@@ -21,17 +21,27 @@ int main( int argc, char** argv)
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
+    yap::Model M(std::make_unique<yap::ZemachSpinAmplitudeCache>());
+
+    LOG(DEBUG) << "1";
+
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // initial state particle
-    auto D = factory.isp(factory.pdgCode("D+"), radialSize, std::make_unique<yap::ZemachSpinAmplitudeCache>());
+    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+
+    LOG(DEBUG) << "2";
 
     // final state particles
     auto piPlus = factory.fsp(211);
     auto piMinus = factory.fsp(-211);
 
+    LOG(DEBUG) << "3";
+
     // set final state
-    D->setFinalState({piPlus, piMinus, piPlus});
+    M.setFinalState({piPlus, piMinus, piPlus});
+
+    LOG(DEBUG) << "4";
 
     // rho
     auto rho = std::make_shared<yap::Resonance>(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
@@ -72,7 +82,7 @@ int main( int argc, char** argv)
     D->addChannel({sigma,    piPlus});
 
     // check consistency
-    if (D->consistent())
+    if (M.consistent())
         LOG(INFO) << "consistent!";
     else
         LOG(INFO) << "inconsistent!";
@@ -82,44 +92,44 @@ int main( int argc, char** argv)
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
-    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
 
-    std::cout << "\nHelicity angle symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
 
     D->printDecayChain();
     std::cout << "\n";
 
-    std::cout << *D->spinAmplitudeCache() << std::endl;
-    D->printDataAccessors(false);
+    std::cout << *M.spinAmplitudeCache() << std::endl;
+    M.printDataAccessors(false);
 
     // initialize for 5 streams
-    D->initializeForMonteCarloGeneration(5);
+    M.initializeForMonteCarloGeneration(5);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = D->getMassAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = M.getMassAxes({{0, 1}, {1, 2}});
 
     std::vector<double> m2 = {0.9, 1.1}; //{0.1, 4};
 
     LOG(INFO) << "BEFORE";
-    D->fourMomenta().printMasses(D->dataSet()[0]);
+    M.fourMomenta().printMasses(M.dataSet()[0]);
 
     LOG(INFO) << "setting squared mass ...";
-    auto P = D->calculateFourMomenta(massAxes, m2);
+    auto P = M.calculateFourMomenta(massAxes, m2);
     if (P.empty())
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        D->setFinalStateFourMomenta(D->dataSet()[0], P);
+        M.setFinalStateFourMomenta(M.dataSet()[0], P);
     }
 
     LOG(INFO) << "AFTER";
-    D->fourMomenta().printMasses(D->dataSet()[0]);
+    M.fourMomenta().printMasses(M.dataSet()[0]);
 
-    for (auto p : D->dataSet()[0].finalStateFourMomenta())
+    for (auto p : M.dataSet()[0].finalStateFourMomenta())
         LOG(INFO) << p;
 
-    D->resetCalculationStatuses(0);
-    auto A = D->amplitude(D->dataSet()[0], 0);
+    M.resetCalculationStatuses(0);
+    auto A = M.amplitude(M.dataSet()[0], 0);
     LOG(INFO) << "A = " << A;
 
     LOG(INFO) << "alright!";

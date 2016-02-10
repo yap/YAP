@@ -3,32 +3,24 @@
 #include "ClebschGordan.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 #include "WignerD.h"
 
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-        InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, equiv)
+HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equiv* equiv) :
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, equiv)
 {
-    // set cached spin amplitudes' dependencies on helicity angles
-    for (auto& a : amplitudeSet()) {
-        a->addDependency(initialStateParticle()->helicityAngles().phi());
-        a->addDependency(initialStateParticle()->helicityAngles().theta());
-    }
-
     // cache coefficients
     double c = sqrt((2. * L() + 1) / 4. / PI);
     for (int two_m1 = -finalTwoJ()[0]; two_m1 <= (int)finalTwoJ()[0]; two_m1 += 2)
         for (int two_m2 = -finalTwoJ()[1]; two_m2 <= (int)finalTwoJ()[1]; two_m2 += 2)
             try {
 
-                double CG = c * ClebschGordan::couple(finalTwoJ()[0], two_m1,
-                                                      finalTwoJ()[1], two_m2,
-                                                      L(), twoS(), initialTwoJ());
+                double CG = c * ClebschGordan::couple(finalTwoJ()[0], two_m1, finalTwoJ()[1], two_m2, L(), twoS(), initialTwoJ());
+
                 if (CG == 0)
                     continue;
 
@@ -45,14 +37,27 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
         throw exceptions::Exception("no valid nonzero Clebsch-Gordan coefficients stored", "HelicitySpinAmplitude::HelicitySpinAmplitude");
     }
 }
+
+//-------------------------
+void HelicitySpinAmplitude::setModel(Model* m)
+{
+    SpinAmplitude::setModel(m);
+
+    // set cached spin amplitudes' dependencies on helicity angles
+    for (auto& a : amplitudeSet()) {
+        a->addDependency(model()->helicityAngles().phi());
+        a->addDependency(model()->helicityAngles().theta());
+    }
+}
+
 //-------------------------
 std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_m2,
         const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
 
     // helicity angles
-    double phi   = initialStateParticle()->helicityAngles().phi(d, pc);
-    double theta = initialStateParticle()->helicityAngles().theta(d, pc);
+    double phi   = model()->helicityAngles().phi(d, pc);
+    double theta = model()->helicityAngles().theta(d, pc);
 
     DEBUG("HelicitySpinAmplitude::calc : "
           << spin_to_string(initialTwoJ()) << ", " << spin_to_string(two_M)

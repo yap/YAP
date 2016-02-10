@@ -105,7 +105,7 @@ protected:
     /// @{
 
     friend DataIterator;
-    friend class InitialStateParticle;
+    friend class Model;
 
     /// @}
 

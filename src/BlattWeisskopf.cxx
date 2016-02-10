@@ -4,8 +4,8 @@
 #include "Constants.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
-#include "InitialStateParticle.h"
 #include "logging.h"
+#include "Model.h"
 #include "QuantumNumbers.h"
 #include "Resonance.h"
 #include "SpinAmplitude.h"
@@ -42,18 +42,18 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");
 
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "BlattWeisskopf::BlattWeisskopf");
+    if (!model())
+        throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(initialStateParticle()->fourMomenta().masses());
+    Fq_r->addDependency(model()->fourMomenta().masses());
     Fq_r->addDependency(DecayingParticle_->mass());
     Fq_r->addDependency(DecayingParticle_->radialSize());
 
-    Fq_ab->addDependency(initialStateParticle()->measuredBreakupMomenta().breakupMomenta());
+    Fq_ab->addDependency(model()->measuredBreakupMomenta().breakupMomenta());
     Fq_ab->addDependency(DecayingParticle_->radialSize());
 
-    // register with ISP
-    addToInitialStateParticle();
+    // register with model
+    addToModel();
 }
 
 //-------------------------
@@ -64,8 +64,8 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
     if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
         double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-        double m_a = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(0));
-        double m_b = initialStateParticle()->fourMomenta().m(d, pc->daughters().at(1));
+        double m_a = model()->fourMomenta().m(d, pc->daughters().at(0));
+        double m_b = model()->fourMomenta().m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
         double R = DecayingParticle_->radialSize()->value();
@@ -77,7 +77,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // measured breakup momentum
-        double q2 = initialStateParticle()->measuredBreakupMomenta().q2(d, pc);
+        double q2 = model()->measuredBreakupMomenta().q2(d, pc);
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
@@ -94,11 +94,11 @@ bool BlattWeisskopf::consistent() const
 {
     bool C = true;
 
-    if (!Fq_r->dependsOn(initialStateParticle()->fourMomenta().masses())) {
+    if (!Fq_r->dependsOn(model()->fourMomenta().masses())) {
         FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
         C &= false;
     }
-    if (!Fq_ab->dependsOn(initialStateParticle()->measuredBreakupMomenta().breakupMomenta())) {
+    if (!Fq_ab->dependsOn(model()->measuredBreakupMomenta().breakupMomenta())) {
         FLOG(ERROR) << "Fq_ab doesn't have breakup-momenta dependencies set";
         C &= false;
     }
@@ -107,9 +107,9 @@ bool BlattWeisskopf::consistent() const
 }
 
 //-------------------------
-InitialStateParticle* BlattWeisskopf::initialStateParticle()
+Model* BlattWeisskopf::model()
 {
-    return DecayingParticle_->initialStateParticle();
+    return DecayingParticle_->model();
 }
 
 }

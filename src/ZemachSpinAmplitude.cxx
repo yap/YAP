@@ -4,16 +4,15 @@
 #include "Constants.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 #include "WignerD.h"
 
 namespace yap {
 
 //-------------------------
-ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-        InitialStateParticle* isp) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp, &ParticleCombination::equivZemach)
+ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) :
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, &ParticleCombination::equivZemach)
 {
     if (is_odd(two_J) or is_odd(two_j1) or is_odd(two_j2) or is_odd(two_s))
         throw exceptions::Exception("only supporting integer spins", "ZemachSpinAmplitude::ZemachSpinAmplitude");
@@ -78,19 +77,27 @@ std::complex<double> ZemachSpinAmplitude::calc(int two_M, int two_m1, int two_m2
         std::swap(pcR, pcS);
 
     // get resonance four-momentum
-    auto R4 = initialStateParticle()->fourMomenta().p(d, pcR);
+    auto R4 = model()->fourMomenta().p(d, pcR);
     // get spectator four-momentum
-    auto p4 = initialStateParticle()->fourMomenta().p(d, pcS);
+    auto p4 = model()->fourMomenta().p(d, pcS);
     // get four-momentum of R's daughter
-    auto q4 = initialStateParticle()->fourMomenta().p(d, pcR->daughters()[0]);
+    auto q4 = model()->fourMomenta().p(d, pcR->daughters()[0]);
+
+    FDEBUG("R4 = " << R4 << " = " << model()->fourMomenta().p(d, pcR->daughters()[0]) << " + " << model()->fourMomenta().p(d, pcR->daughters()[1]));
+    FDEBUG("p4 = " << p4);
+    FDEBUG("q4 = " << q4);
 
     // boost p and q into R rest frame, and get spacial components
     auto B = lorentzTransformation<double>(-R4);
     auto p = vect(B * p4);
     auto q = vect(B * q4);
 
-    if (twoS() == 2)
-        return -2. * p * q * Complex_1;
+    if (twoS() == 2) {
+        FDEBUG("p = " << to_string(p));
+        FDEBUG("q = " << to_string(q));
+        FDEBUG("p * q = " << (p * q));
+        return -2. * (p * q) * Complex_1;
+    }
 
     // else twoS() == 4
     return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.) * Complex_1;

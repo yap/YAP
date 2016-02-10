@@ -1,6 +1,7 @@
 #include "MassShape.h"
 
 #include "Exceptions.h"
+#include "DecayingParticle.h"
 #include "Resonance.h"
 
 namespace yap {
@@ -32,7 +33,7 @@ void MassShape::setResonance(Resonance* r)
 }
 
 //-------------------------
-InitialStateParticle* MassShape::initialStateParticle()
-{ return (Resonance_) ? Resonance_->initialStateParticle() : nullptr; }
+Model* MassShape::model()
+{ return (Resonance_) ? Resonance_->model() : nullptr; }
 
 }

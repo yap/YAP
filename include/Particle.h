@@ -42,7 +42,7 @@ class FinalStateParticle;
 // keyword virtual is needed to solve diamond problem in DecayingParticle
 class Particle :
     public virtual AmplitudeComponent,
-    public virtual ReportsInitialStateParticle,
+    public virtual ReportsModel,
     public virtual ReportsParticleCombinations
 {
 public:

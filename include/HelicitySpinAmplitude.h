@@ -65,11 +65,12 @@ protected:
     /// \param two_j2 twice the spin of second daughter
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    /// \param isp raw pointer to owning InitialStateParticle
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                          InitialStateParticle* isp,
                           ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+
+    /// set raw pointer to owning Model; overrides to call original function and then add helicity angle dependencies
+    void setModel(Model* m) override;
 
 private:
     /// check equality
@@ -92,8 +93,7 @@ class HelicitySpinAmplitudeCache : public SpinAmplitudeCache
 public:
 
     /// Constructor
-    /// \param isp raw pointer to InitialStateParticle this cache belongs to
-    HelicitySpinAmplitudeCache(InitialStateParticle* isp = nullptr) : SpinAmplitudeCache(isp) {}
+    HelicitySpinAmplitudeCache() : SpinAmplitudeCache() {}
 
 private:
 
@@ -104,10 +104,8 @@ private:
     /// \param two_j2 twice the spin of second daughter
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    /// \param isp Raw pointer to initial state particle
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-            InitialStateParticle* isp) const override
-    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)); }
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) const override
+    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j1, two_j2, l, two_s)); }
 
 };
 

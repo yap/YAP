@@ -29,21 +29,19 @@
 
 namespace yap {
 
-class InitialStateParticle;
-
 /// \class SpinAmplitudeCache
 /// \brief Caches SpinAmplitudes
 /// \author Johannes Rauch, Daniel Greenwald
 class SpinAmplitudeCache :
     public WeakPtrCache<SpinAmplitude>,
-    public ReportsInitialStateParticle
+    public ReportsModel
 {
 public:
 
     /// Constructor
-    /// \param isp raw pointer to InitialStateParticle this cache belongs to
-    SpinAmplitudeCache(InitialStateParticle* isp = nullptr) :
-        WeakPtrCache(), InitialStateParticle_(isp) {}
+    /// \param model raw pointer to Model this cache belongs to
+    SpinAmplitudeCache(Model* model = nullptr) :
+        WeakPtrCache(), Model_(model) {}
 
     /// equivalence
     bool equiv(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
@@ -57,8 +55,8 @@ public:
     /// \param two_S 2 * the total spin angular momentum
     std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S)
     {
-        auto retVal = operator[](create(two_J, two_j1, two_j2, L, two_S, initialStateParticle()));
-        retVal->setInitialStateParticle(initialStateParticle());
+        auto retVal = operator[](create(two_J, two_j1, two_j2, L, two_S));
+        retVal->setModel(model());
         return retVal;
     }
 
@@ -72,18 +70,18 @@ public:
         return C;
     }
 
-    /// \return raw pointer to owning InitialStateParticle
-    InitialStateParticle* initialStateParticle() override
-    { return InitialStateParticle_; }
+    /// \return raw pointer to owning Model
+    Model* model() override
+    { return Model_; }
 
-    /// grant friend status to InitialStateParticle to set itself owner
-    friend class InitialStateParticle;
+    /// grant friend status to Model to set itself owner
+    friend class Model;
 
 protected:
 
-    /// set raw pointer to owning ISP
-    void setInitialStateParticle(InitialStateParticle* isp)
-    { InitialStateParticle_ = isp; }
+    /// set raw pointer to owning Model
+    void setModel(Model* model)
+    { Model_ = model; }
 
 private:
 
@@ -94,12 +92,10 @@ private:
     /// \param two_j2 twice the spin of second daughter
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    /// \param isp Raw pointer to initial state particle
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S,
-            InitialStateParticle* isp) const = 0;
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S) const = 0;
 
-    /// raw pointer to InitialStateParticle this cache belongs to
-    InitialStateParticle* InitialStateParticle_;
+    /// raw pointer to Model this cache belongs to
+    Model* Model_;
 
 };
 

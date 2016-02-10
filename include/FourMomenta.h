@@ -31,7 +31,7 @@
 namespace yap {
 
 class DataPoint;
-class InitialStateParticle;
+class Model;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses
@@ -45,7 +45,7 @@ class FourMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    FourMomenta(InitialStateParticle* isp);
+    FourMomenta(Model* m);
 
     /// check consistency
     bool consistent() const;
@@ -90,8 +90,8 @@ public:
     virtual std::string data_accessor_type() const override
     {return "FourMomenta"; }
 
-    /// grant friend status to InitialStateParticle to call setFourMomenta
-    friend class InitialStateParticle;
+    /// grant friend status to Model to call setFourMomenta
+    friend class Model;
 
 protected:
 

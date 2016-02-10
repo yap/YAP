@@ -5,11 +5,10 @@
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
-#include "InitialStateParticle.h"
 #include "logging.h"
+#include "Model.h"
 #include "Particle.h"
 #include "ParticleCombinationCache.h"
-#include "Resonance.h"
 #include "SpinAmplitude.h"
 
 #include <assert.h>
@@ -42,14 +41,14 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;}))
     throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
 
-    // check that first daughter's ISP is not nullptr
-    if (Daughters_[0]->initialStateParticle() == nullptr)
-        throw exceptions::Exception(std::string("InitialStateParticle unset in ") + to_string(*Daughters_[0]),
+    // check that first daughter's Model is not nullptr
+    if (Daughters_[0]->model() == nullptr)
+        throw exceptions::Exception(std::string("Model unset in ") + to_string(*Daughters_[0]),
                                     "DecayChannel::DecayChannel");
-    // check that all daughters have same ISP (trivially checks first daughter against itself)
+    // check that all daughters have same Model (trivially checks first daughter against itself)
     for (auto& d : Daughters_)
-        if (d->initialStateParticle() != Daughters_[0]->initialStateParticle())
-            throw exceptions::Exception("InitialStateParticle mismatch", "DecayChannel::DecayChannel");
+        if (d->model() != Daughters_[0]->model())
+            throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
 
     // collect ParticleCombination's of daughters
     std::vector<ParticleCombinationVector> PCs;
@@ -83,7 +82,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             // for identical particles, check if swapped particle combination is already added
             if (Daughters_[0] == Daughters_[1]) {
                 // get (B,A) combination from cache
-                auto b_a = initialStateParticle()->particleCombinationCache().find({PCB, PCA});
+                auto b_a = model()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
                 if (!b_a.expired() and hasParticleCombination(b_a.lock()))
                     // if (B,A) already added, don't proceed to adding (A,B)
@@ -92,12 +91,12 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 
             // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
             // setting the parents of both to the newly created ParticleCombination
-            addParticleCombination(initialStateParticle()->particleCombinationCache().composite({PCA, PCB}));
+            addParticleCombination(model()->particleCombinationCache().composite({PCA, PCB}));
         }
     }
 
-    // register with ISP
-    addToInitialStateParticle();
+    // register with Model
+    addToModel();
 }
 
 //-------------------------
@@ -136,7 +135,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
         // loop over possible L: |J-s| <= L <= (J+s)
         for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
             // add SpinAmplitude retrieved from cache
-            addSpinAmplitude(initialStateParticle()->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+            addSpinAmplitude(model()->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 }
 
 //-------------------------
@@ -209,7 +208,7 @@ ComplexParameterVector DecayChannel::freeAmplitudes()
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
         int two_m, unsigned dataPartitionIndex) const
 {
-    unsigned symIndex = symmetrizationIndex(pc);
+    const unsigned symIndex = symmetrizationIndex(pc);
 
     auto& totAmp = TotalAmplitudes_.at(two_m);
 
@@ -244,7 +243,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         // get map of SpinProjectionPair's to cached spin amplitudes
         const auto& m = sa->amplitudes().at(two_m);
-        auto sa_symIndex = sa->symmetrizationIndex(pc);
+        const auto sa_symIndex = sa->symmetrizationIndex(pc);
 
         // sum over daughter spin projection combinations (m1, m2)
         // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
@@ -254,27 +253,39 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
             // retrieve cached spin amplitude from data point
             auto amp = kvM.second->value(d, sa_symIndex);
 
+            FDEBUG("amp(" << sa_symIndex << " of " << kvM.second->numberOfSymmetrizations()  << ") := " << amp);
+
             // loop over daughters, multiplying by their amplitudes for their spin projections
             const auto& spp = kvM.first; // SpinProjectionPair
             for (size_t i = 0; i < spp.size(); ++i)
                 amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], dataPartitionIndex);
 
+            FDEBUG("amp -> " << amp);
+
             // add into total amplitude thus far
             a += amp;
+            FDEBUG("a -> " << a);
         }
+        FDEBUG("a = " << a);
 
         // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
         a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, dataPartitionIndex);
+
+        FDEBUG("a * bl = " << a);
 
         // store result
         ap.Fixed->setValue(a, d, symIndex, dataPartitionIndex);
 
         // add into total amplitude A
         A += a * ap.Free->value();
+
+        FDEBUG("A -> " << A);
     }
 
     // store result
     totAmp->setValue(A, d, symIndex, dataPartitionIndex);
+
+    FDEBUG("return " << A);
 
     // and return it
     return A;
@@ -368,7 +379,7 @@ bool DecayChannel::consistent() const
     [](double m, std::shared_ptr<Particle> d) {return m + (d ? d->mass()->value() : 0);});
     if (mass_sum > decayingParticle()->mass()->value()) {
         FLOG(ERROR) << "sum of daughter's masses (" << mass_sum << ")"
-                    << "is bigger than resonance mass (" << decayingParticle()->mass()->value() << ").";
+                    << "is bigger than decaying particle's mass (" << decayingParticle()->mass()->value() << ").";
         C &= false;
     }
 

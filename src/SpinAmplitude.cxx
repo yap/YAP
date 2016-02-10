@@ -8,8 +8,7 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                             InitialStateParticle* isp, ParticleCombination::Equiv* equiv) :
+SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equiv* equiv) :
     StaticDataAccessor(equiv),
     InitialTwoJ_(two_J),
     FinalTwoJ_( {two_j1, two_j2}),
@@ -51,7 +50,10 @@ void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
 
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 
-                    aSM_kv.second->setValue(calc(two_M, spp[0], spp[1], d, pc), d, symIndex, dataPartitionIndex);
+                    auto val = calc(two_M, spp[0], spp[1], d, pc);
+                    FDEBUG(*this << " := " << val << ", for " << *pc << " for " << two_M << " -> " << spp[0] << " + " << spp[1]);
+
+                    aSM_kv.second->setValue(val, d, symIndex, dataPartitionIndex);
 
                 }
         }

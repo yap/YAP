@@ -239,8 +239,8 @@ public:
     void resetCalculationStatus(unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
+    /// grant friend status to DataAccessor to set itself owner
     friend class DataAccessor;
-    friend class InitialStateParticle;
 
 protected:
 

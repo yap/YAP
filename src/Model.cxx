@@ -1,8 +1,9 @@
-#include "InitialStateParticle.h"
+#include "Model.h"
 
 #include "Constants.h"
 #include "DataPartition.h"
 #include "DataSet.h"
+#include "DecayingParticle.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "LorentzTransformation.h"
@@ -12,59 +13,71 @@
 #include <assert.h>
 #include <future>
 #include <memory>
-#include <stdexcept>
 
 namespace yap {
 
 //-------------------------
-InitialStateParticle::InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<SpinAmplitudeCache> SAC) :
-    std::enable_shared_from_this<InitialStateParticle>(),
-    DecayingParticle(q, mass, name, radialSize),
+Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
+    InitialStateParticle_(nullptr),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
     HelicityAngles_(std::make_shared<HelicityAngles>(this))
 {
     if (!SAC)
-        throw exceptions::Exception("SpinAmplitudeCache unset", "InitialStateParticle::InitialStateParticle");
+        throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
-        throw exceptions::Exception("SpinAmplitudeCache not empty", "InitialStateParticle::InitialStateParticle");
-    if (SAC->initialStateParticle())
-        throw exceptions::Exception("SpinAmplitudeCache already has owner", "InitialStateParticle::InitialStateParticle");
+        throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
+    if (SAC->model())
+        throw exceptions::Exception("SpinAmplitudeCache already has owner", "Model::Model");
     SpinAmplitudeCache_ = std::move(SAC);
-    SpinAmplitudeCache_->setInitialStateParticle(this);
+    SpinAmplitudeCache_->setModel(this);
 }
 
 //-------------------------
-std::complex<double> InitialStateParticle::amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const
+std::complex<double> Model::amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const
 {
+    if (!InitialStateParticle_)
+        throw exceptions::Exception("Initial state unset", "Model::amplitude");
+
     std::complex<double> a = Complex_0;
 
-    // sum up DecayingParticle::amplitude over each particle combination
-    for (auto& kv : symmetrizationIndices()) {
+    // sum up ISP's amplitude over each particle combination
+    for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
         FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
-        a += amplitude(d, kv.first, two_m, dataPartitionIndex);
+        a += InitialStateParticle_->amplitude(d, kv.first, two_m, dataPartitionIndex);
     }
 
     return a;
 }
 
 //-------------------------
-std::complex<double> InitialStateParticle::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
+std::complex<double> Model::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
 {
+    if (!InitialStateParticle_)
+        throw exceptions::Exception("Initial state unset", "Model::amplitude");
+
     std::complex<double> a = Complex_0;
 
-    for (int two_m = -quantumNumbers().twoJ(); two_m <= (int)quantumNumbers().twoJ(); two_m += 2) {
-        FDEBUG("calculating for two_m = " << two_m);
-        a += amplitude(d, two_m, dataPartitionIndex);
+    for (int two_m = -InitialStateParticle_->quantumNumbers().twoJ(); two_m <= (int)InitialStateParticle_->quantumNumbers().twoJ(); two_m += 2) {
+        for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
+            FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
+            a += InitialStateParticle_->amplitude(d, kv.first, two_m, dataPartitionIndex);
+        }
     }
-
-    // DEBUG ("InitialStateParticle::amplitude = " << a);
 
     return a;
 }
+
 //-------------------------
-double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
+double Model::logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
+{
+    resetCalculationStatuses(dataPartitionIndex);
+    return log(norm(amplitude(d, dataPartitionIndex)));
+}
+
+//-------------------------
+double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
 {
     if (!hasDataPartition(D))
         return 0;
@@ -83,7 +96,7 @@ double InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBa
 }
 
 //-------------------------
-double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
+double Model::sumOfLogsOfSquaredAmplitudes()
 {
     // update global caclulationStatus's before looping over partitions
     updateGlobalCalculationStatuses();
@@ -91,7 +104,7 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
     // create thread for calculation on each partition
     std::vector<std::future<double> > L;
     for (auto& D : DataPartitions_)
-        L.push_back(std::async(std::launch::async, &InitialStateParticle::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
+        L.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
 
     // wait for each partition to finish calculating
     double sum = 0;
@@ -104,9 +117,10 @@ double InitialStateParticle::sumOfLogsOfSquaredAmplitudes()
 }
 
 //-------------------------
-bool InitialStateParticle::consistent() const
+bool Model::consistent() const
 {
-    bool C = DecayingParticle::consistent();
+    bool C = true;
+
     C &= FourMomenta_->consistent();
     C &= MeasuredBreakupMomenta_->consistent();
     C &= HelicityAngles_->consistent();
@@ -122,7 +136,7 @@ bool InitialStateParticle::consistent() const
     /// @{
     std::vector<std::shared_ptr<FinalStateParticle> > A = FinalStateParticles_;
     sort(A.begin(), A.end());
-    std::vector<std::shared_ptr<FinalStateParticle> > B = DecayingParticle::finalStateParticles();
+    std::vector<std::shared_ptr<FinalStateParticle> > B = InitialStateParticle_->finalStateParticles();
     sort(B.begin(), B.end());
 
     if (A != B) {
@@ -131,16 +145,14 @@ bool InitialStateParticle::consistent() const
     }
     /// @}
 
+    C &= InitialStateParticle_->consistent();
+
     return C;
 }
 
 //-------------------------
-void InitialStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    // if pc is for this initial state particle, call DecayingParticle::addParticleCombination
-    if (pc->indices().size() == FinalStateParticles_.size())
-        DecayingParticle::addParticleCombination(pc);
-
     // if final state particle, halt
     if (pc->isFinalStateParticle())
         return;
@@ -163,63 +175,79 @@ void InitialStateParticle::addParticleCombination(std::shared_ptr<ParticleCombin
 }
 
 //-------------------------
-void InitialStateParticle::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+void Model::setInitialStateParticle(DecayingParticle* isp)
 {
+    if (InitialStateParticle_)
+        throw exceptions::Exception("Initial-state particle already set", "Model::setInitialStateParticle");
+
+    if (!isp)
+        throw exceptions::Exception("Initial-state particle empty", "Model::setInitialStateParticle");
+
+    if (isp->model() != this)
+        throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::setInitialStateParticle");
+
+    if (isp->finalStateParticles().size() != FinalStateParticles_.size())
+        throw exceptions::Exception("Initial-state particle has wrong number of final-state particles ("
+                                    + std::to_string(isp->finalStateParticles().size()) + " != " + std::to_string(FinalStateParticles_.size()) + ")",
+                                    "Model::setInitialStateParticle");
+
+    InitialStateParticle_ = isp;
+}
+
+//-------------------------
+void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+{
+    FDEBUG("1");
+
     // check that FinalStateParticles_ is empty
-    if (!FinalStateParticles_.empty()) {
-        FLOG(ERROR) << "final-state particles have already been set.";
-        throw exceptions::Exception("Final-state particles already set", "InitialStateParticle::setFinalState");
-    }
+    if (!FinalStateParticles_.empty())
+        throw exceptions::Exception("Final-state particles already set", "Model::setFinalState");
+
+    FDEBUG("2");
 
     // check that none of the FSP's has yet been used
     // and that FinalStateParticles don't have ISP set to another ISP
-    // (in principle ISP's should be set to nullptr)
     for (auto& fsp : FSP) {
-        if (!fsp) {
-            FLOG(ERROR) << "final-state particle empty";
-            throw exceptions::Exception("FinalStateParticle empty", "InitialStateParticle::setFinalState");
-        }
-        if (!fsp->particleCombinations().empty()) {
-            FLOG(ERROR) << "final-state particle already has indices assigned: " << *fsp;
-            throw exceptions::Exception("FinalStateParticle already used", "InitialStateParticle::setFinalState");
-        }
-        if (fsp->initialStateParticle() != nullptr and fsp->initialStateParticle() != this) {
-            FLOG(ERROR) << "final-state particle already has ISP assigned: " << *fsp;
-            throw exceptions::Exception("FinalStateParticle already has ISP set", "InitialStateParticle::setFinalState");
-        }
+        if (!fsp)
+            throw exceptions::Exception("FinalStateParticle empty", "Model::setFinalState");
+        if (!fsp->particleCombinations().empty())
+            throw exceptions::Exception("FinalStateParticle already used", "Model::setFinalState");
+        if (fsp->model() != nullptr)
+            throw exceptions::Exception("FinalStateParticle already has Model set", "Model::setFinalState");
     }
 
-    // check total mass of final state particles
-    /// \todo possibly remove to allow setting of masses later, or fitting of masses?
-    double fsp_mass_sum = std::accumulate(FSP.begin(), FSP.end(), 0., [](double m, std::shared_ptr<FinalStateParticle> p) {return m + p->mass()->value();});
-    if (fsp_mass_sum > mass()->value())
-        throw exceptions::Exception("Final-state mass is greater than initial-state mass ("
-                                    + std::to_string(fsp_mass_sum) + " > " + std::to_string(mass()->value()) + ")",
-                                    "InitialStateParticle::setFinalState");
+    FDEBUG("3");
 
     FinalStateParticles_.reserve(FSP.size());
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
         fsp->addParticleCombination(ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
-        fsp->setInitialStateParticle(this);
+        fsp->setModel(this);
         FinalStateParticles_.push_back(fsp);
     }
+    FDEBUG("4");
 }
 
 //-------------------------
-void InitialStateParticle::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
+void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 {
     if (!isRightHanded(cs))
-        throw exceptions::Exception("Coordinate system not right-handed", "InitialStateParticle::setCoordinateSystem");
+        throw exceptions::Exception("Coordinate system not right-handed", "Model::setCoordinateSystem");
 
     CoordinateSystem_ = unit(cs);
 }
 
 //-------------------------
-std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<ParticleCombination>& pc) const
+std::array<double, 2> Model::getMassRange(const std::shared_ptr<ParticleCombination>& pc) const
 {
-    std::array<double, 2> m = {0, mass()->value()};
+    if (!InitialStateParticle_)
+        throw exceptions::Exception("Initial state not set", "Model::getMassRange");
+
+    if (FinalStateParticles_.empty())
+        throw exceptions::Exception("Final state not set", "Model::getMassRange");
+
+    std::array<double, 2> m = {0, InitialStateParticle_->mass()->value()};
 
     for (size_t i = 0; i < FinalStateParticles_.size(); ++i) {
         if (std::find(pc->indices().begin(), pc->indices().end(), i) != pc->indices().end())
@@ -233,10 +261,11 @@ std::array<double, 2> InitialStateParticle::getMassRange(const std::shared_ptr<P
 }
 
 //-------------------------
-ComplexParameterVector InitialStateParticle::freeAmplitudes() const
+ComplexParameterVector Model::freeAmplitudes() const
 {
-    ComplexParameterVector V = DecayingParticle::freeAmplitudes();
+    ComplexParameterVector V = InitialStateParticle_->freeAmplitudes();
 
+    /// \todo remove?
     // if only one free amplitude, treat as fixed and return empty vector
     if (V.size() == 1)
         V.clear();
@@ -245,7 +274,7 @@ ComplexParameterVector InitialStateParticle::freeAmplitudes() const
 }
 
 //-------------------------
-std::vector<DataPartitionBase*> InitialStateParticle::dataPartitions()
+std::vector<DataPartitionBase*> Model::dataPartitions()
 {
     std::vector<DataPartitionBase*> partitions;
     partitions.reserve(DataPartitions_.size());
@@ -257,7 +286,7 @@ std::vector<DataPartitionBase*> InitialStateParticle::dataPartitions()
 }
 
 //-------------------------
-void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions)
+void Model::setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions)
 {
     DataPartitions_ = std::move(partitions);
 
@@ -268,7 +297,7 @@ void InitialStateParticle::setDataPartitions(std::vector<std::unique_ptr<DataPar
 }
 
 //-------------------------
-void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
+void Model::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
     if (DataSet_.empty()) {
         addDataPoint(std::move(DataPoint(fourMomenta)));
@@ -281,23 +310,23 @@ void InitialStateParticle::addDataPoint(const std::vector<FourVector<double> >& 
 
     d.setFinalStateFourMomenta(fourMomenta);
 
-    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    /// calculate StaticDataAccessors
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        throw exceptions::Exception("DataPoint inconsistent", "InitialStateParticle::addDataPoint");
+        throw exceptions::Exception("DataPoint inconsistent", "Model::addDataPoint");
 }
 
 //-------------------------
-void InitialStateParticle::addDataAccessor(DataAccessorSet::value_type da)
+void Model::addDataAccessor(DataAccessorSet::value_type da)
 {
     // check if already in DataAccessors_
     if (DataAccessors_.find(da) != DataAccessors_.end())
         // do nothing
         return;
 
-    if (da->initialStateParticle() != this)
-        throw exceptions::Exception("DataAccessor's InitialStateParticle is not this", "InitialStateParticle::addDataAccessor");
+    if (da->model() != this)
+        throw exceptions::Exception("DataAccessor's Model is not this", "Model::addDataAccessor");
 
     if (DataAccessors_.insert(da).second)
         // if insertion was successful
@@ -305,7 +334,7 @@ void InitialStateParticle::addDataAccessor(DataAccessorSet::value_type da)
 }
 
 //-------------------------
-void InitialStateParticle::prepareDataAccessors()
+void Model::prepareDataAccessors()
 {
     // remove expired elements of DataAccessors_
     removeExpired(DataAccessors_);
@@ -351,7 +380,7 @@ void InitialStateParticle::prepareDataAccessors()
 }
 
 //-------------------------
-void InitialStateParticle::addDataPoint(DataPoint&& d)
+void Model::addDataPoint(DataPoint&& d)
 {
     // if adding first data point, first prepare data accessors
     if (DataSet_.empty())
@@ -359,25 +388,26 @@ void InitialStateParticle::addDataPoint(DataPoint&& d)
 
     d.allocateStorage(FourMomenta_, DataAccessors_);
 
-    /// calculate FourMomenta_, MeasuredBreakupMomenta_ and HelicityAngles_
+    // calculate StaticDataAccessors
     calculate(d);
 
     if (!DataSet_.consistent(d))
-        throw exceptions::Exception("DataPoint inconsistent", "InitialStateParticle::addDataPoint");
+        throw exceptions::Exception("DataPoint inconsistent", "Model::addDataPoint");
 
     DataSet_.push_back(d);
 }
 
 //-------------------------
-void InitialStateParticle::addDataPoint(const DataPoint& d)
-{ addDataPoint(std::move(DataPoint(d))); }
+void Model::addDataPoint(const DataPoint& d)
+{
+    addDataPoint(std::move(DataPoint(d)));
+}
 
 //-------------------------
-void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
+void Model::initializeForMonteCarloGeneration(unsigned n)
 {
     if (!DataSet_.empty())
-        throw exceptions::Exception("DataSet isn't empty", "InitialStateParticle::initializeForMonteCarloGeneration");
-
+        throw exceptions::Exception("DataSet isn't empty", "Model::initializeForMonteCarloGeneration");
 
     // create data point
     auto d = DataPoint(FinalStateParticles_.size());
@@ -390,15 +420,10 @@ void InitialStateParticle::initializeForMonteCarloGeneration(unsigned n)
 
     // set data partitions (1 for each data point)
     setDataPartitions(createDataPartitionsBlocksBySize(DataSet_, 1));
-
-    // do one initial calculation
-    /// \todo Only calculate data-independent values
-    // if (!std::isfinite(sumOfLogsOfSquaredAmplitudes()))
-    //     throw exceptions::NonfiniteResult();
 }
 
 //-------------------------
-const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigned> > pcs)
+const MassAxes Model::getMassAxes(std::vector<std::vector<unsigned> > pcs)
 {
     unsigned n_fsp = finalStateParticles().size();
     unsigned n_axes = 3 * n_fsp - 7;
@@ -407,16 +432,16 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigne
     if (pcs.size() != n_axes) {
         if (pcs.size() < n_axes)
             throw exceptions::Exception("too few axes requested ( " + std::to_string(pcs.size()) + " < " + std::to_string(n_axes) + " )",
-                                        "InitialStateParticle::getMassAxes");
+                                        "Model::getMassAxes");
         else
             throw exceptions::Exception("too many axes requested ( " + std::to_string(pcs.size()) + " > " + std::to_string(n_axes) + " )",
-                                        "InitialStateParticle::getMassAxes");
+                                        "Model::getMassAxes");
     }
 
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
     if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
-    throw exceptions::Exception("only 2-particle axes supported currently", "InitialStateParticle::getMassAxes");
+    throw exceptions::Exception("only 2-particle axes supported currently", "Model::getMassAxes");
 
     ParticleCombinationVector M;
 
@@ -424,13 +449,13 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigne
 
         // check that all indices are in range
         if (std::any_of(v.begin(), v.end(), [&](const unsigned & i) {return i >= n_fsp;}))
-        throw exceptions::Exception("particle index out of range", "InitialStateParticle::getMassAxes");
+        throw exceptions::Exception("particle index out of range", "Model::getMassAxes");
 
         // sort v
         sort(v.begin(), v.end());
         // check for duplicates
         if (std::adjacent_find(v.begin(), v.end()) != v.end())
-            throw exceptions::Exception("duplicate index given", "InitialStateParticle::getMassAxes");
+            throw exceptions::Exception("duplicate index given", "Model::getMassAxes");
 
         // get ParticleCombination
         auto pc0 = particleCombinationCache().fsp(v[0]);
@@ -440,7 +465,7 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigne
         // check that pc isn't already in M
         for (const auto& m : M)
             if (ParticleCombination::equivByOrderlessContent(m, pc))
-                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "InitialStateParticle::getMassAxes");
+                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "Model::getMassAxes");
 
         M.push_back(pc);
     }
@@ -448,31 +473,29 @@ const MassAxes InitialStateParticle::getMassAxes(std::vector<std::vector<unsigne
     return MassAxes(M);
 }
 
-// //-------------------------
-// bool InitialStateParticle::setMasses(DataPoint& d, const MassAxes& axes, const std::vector<double>& masses)
-// {
-//     std::vector<double> squared_masses(masses.size(), -1);
-//     std::transform(masses.begin(), masses.end(), squared_masses.begin(), [](double m) {return m * m;});
-//     return setSquaredMasses(d, axes, squared_masses);
-// }
-
 //-------------------------
-std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const
+std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const
 {
+    if (!InitialStateParticle_)
+        throw exceptions::Exception("Initial state unset", "Model::calculateFourMomenta");
+
+    if (FinalStateParticles_.empty())
+        throw exceptions::Exception("Final state unset", "Model::calculateFourMomenta");
+
     if (axes.size() != squared_masses.size())
         throw exceptions::Exception("Incorrect number of masses provided ("
                                     + std::to_string(squared_masses.size()) + " != " + std::to_string(axes.size()) + ")",
-                                    "InitialStateParticle::setSquaredMasses");
+                                    "Model::calculateFourMomenta");
 
     // check none are negative
     if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m) {return m < 0;}))
-    throw exceptions::Exception("negative squared mass given", "InitialStateParticle::setSquaredMasses");
+    throw exceptions::Exception("negative squared mass given", "Model::calculateFourMomenta");
 
     unsigned n_fsp = finalStateParticles().size();
 
     /// \todo: check sign determination on x component for particles 5 and higher
     if (n_fsp > 4)
-        throw exceptions::Exception("not yet supporting 5 or more particles", "InitialStateParticle::setSquaredMasses");
+        throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
 
     // matrix of four-vector products
     std::vector<std::vector<double> > pp(n_fsp, std::vector<double>(n_fsp, -1));
@@ -501,7 +524,7 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
         for (unsigned j = i + 1; j < n_fsp; ++j)
             if (pp[i][j] < 0)
                 // calculate unset mass: m^2_missing = M^2_isp + (n_fsp - 2) * sum_fsp (m^2) - sum_given(m^2)
-                pp[i][j] = pow(mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
+                pp[i][j] = pow(InitialStateParticle_->mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
     // upper triangular elements are now two-particle squared masses
 
     double m_01 = sqrt(pp[0][1]);
@@ -516,17 +539,6 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
             pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
             pp[j][i] = pp[i][j];
         }
-
-    // if (n_fsp == 3) {
-    //     double s = 0;
-    //     for (unsigned i = 0; i < n_fsp; ++i) {
-    //         double j = (i + 1) % n_fsp;
-    //         double k = (i + 2) % n_fsp;
-    //         s += pow(pp[j][k], 2) / pp[j][j] / pp[k][k];
-    //     }
-    //     if (s < 1)
-    //         return std::vector<FourVector<double> >();
-    // }
 
     //////////////////////////////////////////////////
     // calculate all four momenta in m_01 rest frame:
@@ -585,7 +597,7 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
                     P[i] = {E, X, Y, Z};
 
                 } else
-                    throw exceptions::Exception("not yet supporting 5 or more particles", "InitialStateParticle::setSquaredMasses");
+                    throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
             }
         }
     }
@@ -595,61 +607,17 @@ std::vector<FourVector<double> > InitialStateParticle::calculateFourMomenta(cons
     for (auto& p : P)
         p = FourVector<double>(p[0], p[1] * C[0] + p[2] * C[1] + p[3] * C[2]);
 
-    return P;
-
-    // // calculate energies in m_01 rest frame:
-    // std::vector<double> E(n_fsp, -1);
-    // for (unsigned i = 0; i < n_fsp; ++i) {
-    //     E[i] = (pp[0][i] + pp[1][i]) / m_01;
-    //     if (E[i] < finalStateParticles()[i]->mass()->value())
-    //         return std::vector<FourVector<double> >();
-    // }
-
-    // // calculate Z components
-    // std::vector<double> Z(n_fsp, -1);
-    // // define p0 in +z direction
-    // Z[0] = sqrt(E[0] * E[0] - pp[0][0]);
-    // // define p1 in -z direction
-    // Z[1] = -Z[0];
-    // // rest are calculated from p0 and p1
-    // for (unsigned i = 2; i < n_fsp; ++i)
-    //     Z[i] = (E[0] * pp[1][i] - E[1] * pp[0][i]) / m_01 / Z[0];
-
-    // // calculate Y components
-    // std::vector<double> Y(n_fsp, 0);
-    // // p0 and p1 have 0 y component
-    // // p2 is defined in z-y plane
-    // Y[2] = sqrt(E[2] * E[2] - pp[2][2] - Z[2] * Z[2]);
-    // // rest are calculated from p2
-    // for (unsigned i = 3; i < n_fsp; ++i)
-    //     Y[i] = (E[2] * E[i] - pp[2][i] - Z[2] * Z[i]) / Y[2];
-
-    // // calculate X components
-    // std::vector<double> X(n_fsp, 0);
-    // // p0, p1, p2 are defined in z-y plane
-    // // p3 defines positive x direction
-    // if (3 < n_fsp)
-    //     Y[3] = sqrt(E[3] * E[3] - pp[3][3] - Z[3] * Z[3] - Y[3] * Y[3]);
-
-    // std::vector<FourVector<double> > P;
-    // P.reserve(n_fsp);
-
-    // // get coordinate system
-    // auto C = coordinateSystem();
-    // for (unsigned i = 0; i < n_fsp; ++i)
-    //     P.push_back(FourVector<double>(E[i], X[i] * C[0] + Y[i] * C[1] + Z[i] * C[2]));
-
     // boost:
     // auto p_isp = std::accumulate(P.begin(), P.end(), FourVector_0);
-    // auto b = lorentzTransformation<double>(-
+    // auto b = lorentzTransformation<double>(-p_isp);
     // for (auto& p : P)
     //     p = b * p;
 
-    // return P;
+    return P;
 }
 
 //-------------------------
-void InitialStateParticle::setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
+void Model::setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
 {
     if (!d.setFinalStateFourMomenta(P, true))
         // if FSP four momenta are changed
@@ -657,12 +625,15 @@ void InitialStateParticle::setFinalStateFourMomenta(DataPoint& d, const std::vec
 }
 
 //-------------------------
-void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
+void Model::printDataAccessors(bool printParticleCombinations)
 {
     // header
-    std::cout << "DataAccessors of " << name() << "\n" << "index \tnSymIndices \taddress  \tname";
+    std::cout << "DataAccessors of \n"
+              << "index \tnSymIndices \taddress  \tname";
+
     if (printParticleCombinations)
         std::cout << "\t\tparticleCombinations";
+
     std::cout << std::endl;
 
     for (auto& d : DataAccessors_) {
@@ -685,19 +656,17 @@ void InitialStateParticle::printDataAccessors(bool printParticleCombinations)
 }
 
 //-------------------------
-bool InitialStateParticle::hasDataPartition(DataPartitionBase* d)
+bool Model::hasDataPartition(DataPartitionBase* d)
 {
-    for (auto& dp : DataPartitions_) {
+    for (auto& dp : DataPartitions_)
         if (d == dp.get())
             return true;
-    }
 
-    FLOG(ERROR) << "trying to calculate for a DataPartition, which is not stored in this InitialStateParticle.";
     return false;
 }
 
 //-------------------------
-void InitialStateParticle::calculate(DataPoint& d, unsigned dataPartitionIndex)
+void Model::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
     // call calculate on static data accessors
     for (auto& sda : DataAccessors_)
@@ -706,58 +675,38 @@ void InitialStateParticle::calculate(DataPoint& d, unsigned dataPartitionIndex)
 }
 
 //-------------------------
-void InitialStateParticle::setNumberOfDataPartitions(unsigned n)
+void Model::setNumberOfDataPartitions(unsigned n)
 {
-    // call on this object
-    DataAccessor::setNumberOfDataPartitions(n);
-    // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d != this)
-            d->setNumberOfDataPartitions(n);
+        d->setNumberOfDataPartitions(n);
 }
 
 //-------------------------
-void InitialStateParticle::updateGlobalCalculationStatuses()
+void Model::updateGlobalCalculationStatuses()
 {
-    // call on this
-    DataAccessor::updateGlobalCalculationStatuses();
-    // call on all other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d != this)
-            d->updateGlobalCalculationStatuses();
+        d->updateGlobalCalculationStatuses();
 }
 
 //-------------------------
-void InitialStateParticle::resetCalculationStatuses(unsigned dataPartitionIndex)
+void Model::resetCalculationStatuses(unsigned dataPartitionIndex)
 {
-    // call on this
-    DataAccessor::resetCalculationStatuses(dataPartitionIndex);
-    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d != this)
-            d->resetCalculationStatuses(dataPartitionIndex);
+        d->resetCalculationStatuses(dataPartitionIndex);
 }
 
 //-------------------------
-void InitialStateParticle::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
+void Model::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
 {
-    // call on this
-    DataAccessor::setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
-    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d != this)
-            d->setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
+        d->setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
 }
 
 //-------------------------
-void InitialStateParticle::setParameterFlagsToUnchanged()
+void Model::setParameterFlagsToUnchanged()
 {
-    // call on this
-    DataAccessor::setParameterFlagsToUnchanged();
-    // call on other DataAccessor's (does nothing to StaticDataAccessor's)
     for (auto& d : DataAccessors_)
-        if (d != this)
-            d->setParameterFlagsToUnchanged();
+        d->setParameterFlagsToUnchanged();
 }
 
 }

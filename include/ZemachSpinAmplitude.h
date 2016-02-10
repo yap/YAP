@@ -65,9 +65,7 @@ protected:
     /// \param two_j2 twice the spin of second daughter
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    /// \param isp raw pointer to owning InitialStateParticle
-    ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                        InitialStateParticle* isp);
+    ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s);
 
 private:
     /// check equality
@@ -84,8 +82,7 @@ class ZemachSpinAmplitudeCache : public SpinAmplitudeCache
 public:
 
     /// Constructor
-    /// \param isp raw pointer to InitialStateParticle this cache belongs to
-    ZemachSpinAmplitudeCache(InitialStateParticle* isp = nullptr) : SpinAmplitudeCache(isp) {}
+    ZemachSpinAmplitudeCache() : SpinAmplitudeCache() {}
 
 private:
 
@@ -96,10 +93,8 @@ private:
     /// \param two_j2 twice the spin of second daughter
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    /// \param isp Raw pointer to initial state particle
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-            InitialStateParticle* isp) const override
-    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j1, two_j2, l, two_s, isp)); }
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) const override
+    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j1, two_j2, l, two_s)); }
 
 };
 

@@ -7,7 +7,7 @@ namespace yap {
 //-------------------------
 Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
     AmplitudeComponent(),
-    ReportsInitialStateParticle(),
+    ReportsModel(),
     ReportsParticleCombinations(),
     QuantumNumbers_(q),
     Mass_(new RealParameter(m)),

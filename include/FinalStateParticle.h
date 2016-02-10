@@ -21,17 +21,16 @@
 #ifndef yap_FinalStateParticle_h
 #define yap_FinalStateParticle_h
 
-#include "CalculationStatus.h"
 #include "Constants.h"
 #include "DataPoint.h"
 #include "Particle.h"
 
 #include <complex>
 #include <memory>
-#include <vector>
 
 namespace yap {
 
+class Model;
 class ParticleCombination;
 
 /// \class FinalStateParticle
@@ -67,31 +66,31 @@ public:
     ParticleCombinationVector particleCombinations() const override
     { return ParticleCombinations_; }
 
-    /// \return owning InitialStateParticle
-    InitialStateParticle* initialStateParticle() override
-    { return InitialStateParticle_; }
+    /// \return owning Model
+    Model* model() override
+    { return Model_; }
 
     /// \name Friends
     /// @{
 
-    /// Grant ISP friendship to set FSP's indices
-    friend class InitialStateParticle;
+    /// Grant friend status to Model to set FSP's indices
+    friend class Model;
 
     /// @}
 
 protected:
 
-    /// set raw pointer to owning InitialStateParticle
-    void setInitialStateParticle(InitialStateParticle* isp)
-    { InitialStateParticle_ = isp; }
+    /// set raw pointer to owning Model
+    void setModel(Model* m)
+    { Model_ = m; }
 
     /// add ParticleCombination to ParticleCombinations
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 
-    /// raw pointer to initial state particle decaying to this final state particle
-    InitialStateParticle* InitialStateParticle_;
+    /// raw pointer to Model owning this final state particle
+    Model* Model_;
 
     ParticleCombinationVector ParticleCombinations_;
 

@@ -146,8 +146,8 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
 //-------------------------
 void DataAccessor::pruneSymmetrizationIndices()
 {
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle not set", "DataAccessor::pruneSymmetrizationIndices");
+    if (!model())
+        throw exceptions::Exception("Model not set", "DataAccessor::pruneSymmetrizationIndices");
 
     // remove entries that don't trace back to the ISP
     for (auto it = SymmetrizationIndices_.begin(); it != SymmetrizationIndices_.end(); ) {
@@ -156,7 +156,7 @@ void DataAccessor::pruneSymmetrizationIndices()
         while (pc->parent())
             pc = pc->parent();
         // check if it's not an ISP
-        if (pc->indices().size() != initialStateParticle()->finalStateParticles().size())
+        if (pc->indices().size() != model()->finalStateParticles().size())
             // erase
             it = SymmetrizationIndices_.erase(it);
         else
@@ -199,11 +199,11 @@ void DataAccessor::pruneSymmetrizationIndices()
 }
 
 //-------------------------
-void DataAccessor::addToInitialStateParticle()
+void DataAccessor::addToModel()
 {
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "DataAccessor::addToInitialStateParticle");
-    initialStateParticle()->addDataAccessor(this);
+    if (!model())
+        throw exceptions::Exception("Model unset", "DataAccessor::addToModel");
+    model()->addDataAccessor(this);
 }
 
 //-------------------------

@@ -40,10 +40,9 @@ namespace yap {
 class ComplexCachedDataValue;
 class DecayingParticle;
 class FinalStateParticle;
-class InitialStateParticle;
 class ParticleCombination;
 
-/// \class InitialStateParticle
+/// \class DecayChannel
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayChannel : public AmplitudeComponent, public DataAccessor
@@ -114,9 +113,9 @@ public:
     /// \return the set of TotalAmplitudes_ values
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
 
-    /// \return raw pointer to initial state particle through first Daughter
-    InitialStateParticle* initialStateParticle() override
-    { return Daughters_[0]->initialStateParticle(); }
+    /// \return raw pointer to model through first Daughter
+    Model* model() override
+    { return Daughters_[0]->model(); }
 
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const
@@ -133,9 +132,6 @@ public:
 
     /// Grant friend status to DecayingParticle to set itself as owner
     friend DecayingParticle;
-
-    /// Grant friend status to InitialStateParticle
-    friend class InitialStateParticle;
 
 protected:
 

@@ -5,6 +5,7 @@
 #include "FinalStateParticle.h"
 #include "InitialStateParticle.h"
 #include "logging.h"
+#include "MassShape.h"
 #include "ParticleCombinationCache.h"
 
 namespace yap {
@@ -18,6 +19,12 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
         throw exceptions::Exception("MassShape unset", "Resonance::Resonance");
 
     MassShape_->setResonance(this);
+}
+
+//-------------------------
+std::complex<double> Resonance::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const
+{
+    return DecayingParticle::amplitude(d, pc, two_m, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex);
 }
 
 //-------------------------
@@ -35,6 +42,13 @@ bool Resonance::consistent() const
     }
 
     return C;
+}
+
+//-------------------------
+void Resonance::addToModel()
+{
+    DecayingParticle::addToModel();
+    MassShape_->addToModel();
 }
 
 //-------------------------

@@ -32,7 +32,6 @@ namespace yap {
 
 class DecayingParticle;
 class FinalStateParticle;
-class InitialStateParticle;
 class MassShape;
 class Particle;
 class Resonance;
@@ -68,13 +67,11 @@ public:
     /// \return shared pointer to new final state particle
     std::shared_ptr<FinalStateParticle> fsp(int PDG);
 
-    /// Create an InitialStateParticle from a PDG code and a MassShape
+    /// Create an decayingParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
-    /// \param SAC unique_ptr to SpinAmplitudeCache
-    /// \return shared pointer to new InitialStateParticle object
-    std::shared_ptr<InitialStateParticle> isp(int PDG, double radialSize,
-            std::unique_ptr<SpinAmplitudeCache> SAC);
+    /// \return shared pointer to new DecayingParticle object
+    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
@@ -82,15 +79,6 @@ public:
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return shared pointer to new Resonance object
     std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
-
-    /// Create a Resonance from a PDG code, and MassShape.
-    /// \tparam mass_shape Class used to create MassShape of
-    /// \param PDG PDG code of particle to create
-    /// \param radialSize Radial size of particle to create [GeV^-1]
-    /// \return shared pointer to new Resonance object
-    template <class mass_shape>
-    std::shared_ptr<Resonance> resonance(int PDG, double radialSize)
-    { return createResonance(PDG, radialSize, std::make_shared<mass_shape>()); }
 
     /// \name Particle table access
     /// @{
