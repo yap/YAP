@@ -69,13 +69,14 @@ protected:
     HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                           ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
-    /// set raw pointer to owning Model; overrides to call original function and then add helicity angle dependencies
-    void setModel(Model* m) override;
-
 private:
+
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override
     { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
+
+    /// set dependency on helicty angles
+    virtual void setDependencies(std::shared_ptr<CachedDataValue> a) override;
 
     /// L-S * S-S coupling coefficients
     /// first map key is m1;

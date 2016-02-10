@@ -50,5 +50,13 @@ double MeasuredBreakupMomenta::calcQ2(double m2_R, double m_a, double m_b)
     return (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.;
 }
 
+//-------------------------
+unsigned MeasuredBreakupMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    if (pc->isFinalStateParticle())
+        throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "MeasuredBreakupMomenta::addParticleCombination");
+    return StaticDataAccessor::addParticleCombination(pc);
+}
+
 
 }

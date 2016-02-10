@@ -71,7 +71,13 @@ public:
     virtual std::string data_accessor_type() const override
     {return "MeasuredBreakupMomenta"; }
 
+    /// grant friend status to Model to call addParticleCombination
+    friend class Model;
+
 protected:
+
+    /// override to throw on adding final-state PC
+    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// squared breakup momentum [GeV^2]
     std::shared_ptr<RealCachedDataValue> Q2_;

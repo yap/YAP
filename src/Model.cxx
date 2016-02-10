@@ -153,10 +153,6 @@ bool Model::consistent() const
 //-------------------------
 void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    // if final state particle, halt
-    if (pc->isFinalStateParticle())
-        return;
-
     // find top-most parent
     auto p = pc;
     while (p->parent())
@@ -166,8 +162,11 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
         return;
 
     FourMomenta_->addParticleCombination(pc);
-    HelicityAngles_->addParticleCombination(pc);
-    MeasuredBreakupMomenta_->addParticleCombination(pc);
+
+    if (!pc->isFinalStateParticle()) {
+        HelicityAngles_->addParticleCombination(pc);
+        MeasuredBreakupMomenta_->addParticleCombination(pc);
+    }
 
     // call recursively on daughters
     for (auto& d : pc->daughters())
@@ -299,22 +298,24 @@ void Model::setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > p
 //-------------------------
 void Model::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
 {
+    // if adding first data point
     if (DataSet_.empty()) {
-        addDataPoint(std::move(DataPoint(fourMomenta)));
-        return;
+        // prepare data accessors
+        prepareDataAccessors();
+        // and add first point
     }
 
-    DataSet_.push_back(DataPoint(DataSet_[0]));
+    DataSet_.emplace_back(DataAccessors_);
+    auto& d = DataSet_.back();
 
-    DataPoint& d = DataSet_.back();
-
-    d.setFinalStateFourMomenta(fourMomenta);
-
-    /// calculate StaticDataAccessors
-    calculate(d);
+    if (DataSet_.size() == 1)
+        for (const auto& da : DataAccessors_)
+            FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
 
     if (!DataSet_.consistent(d))
-        throw exceptions::Exception("DataPoint inconsistent", "Model::addDataPoint");
+        throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
+
+    setFinalStateMomenta(d, fourMomenta);
 }
 
 //-------------------------
@@ -380,39 +381,15 @@ void Model::prepareDataAccessors()
 }
 
 //-------------------------
-void Model::addDataPoint(DataPoint&& d)
-{
-    // if adding first data point, first prepare data accessors
-    if (DataSet_.empty())
-        prepareDataAccessors();
-
-    d.allocateStorage(FourMomenta_, DataAccessors_);
-
-    // calculate StaticDataAccessors
-    calculate(d);
-
-    if (!DataSet_.consistent(d))
-        throw exceptions::Exception("DataPoint inconsistent", "Model::addDataPoint");
-
-    DataSet_.push_back(d);
-}
-
-//-------------------------
-void Model::addDataPoint(const DataPoint& d)
-{
-    addDataPoint(std::move(DataPoint(d)));
-}
-
-//-------------------------
 void Model::initializeForMonteCarloGeneration(unsigned n)
 {
     if (!DataSet_.empty())
         throw exceptions::Exception("DataSet isn't empty", "Model::initializeForMonteCarloGeneration");
 
     // create data point
-    auto d = DataPoint(FinalStateParticles_.size());
-    // and allocate space
-    d.allocateStorage(FourMomenta_, DataAccessors_);
+    auto d = DataPoint(DataAccessors_);
+    for (const auto& da : DataAccessors_)
+        FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
 
     // add n (empty) data points
     for (unsigned i = 0; i < n; ++i)
@@ -617,11 +594,13 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 }
 
 //-------------------------
-void Model::setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
+void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
 {
-    if (!d.setFinalStateFourMomenta(P, true))
-        // if FSP four momenta are changed
-        calculate(d, dataPartitionIndex);
+    FDEBUG("1");
+    FourMomenta_->setFinalStateMomenta(d, P, dataPartitionIndex);
+    FDEBUG("2");
+    calculate(d, dataPartitionIndex);
+    FDEBUG("3");
 }
 
 //-------------------------

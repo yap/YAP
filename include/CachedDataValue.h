@@ -23,6 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "FourVector.h"
 #include "Parameter.h"
 #include "VariableStatus.h"
 
@@ -53,12 +54,11 @@ using CachedDataValueDaughterIndexPair = std::pair<std::shared_ptr<CachedDataVal
 /// \ingroup Cache
 using CachedDataValueDaughterIndexPairSet = std::set<CachedDataValueDaughterIndexPair>;
 
-/// \class CachedDataValue
+/// \class CachedDataValueBase
 /// \brief Class for managing cached values inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-
 class CachedDataValue : public std::enable_shared_from_this<CachedDataValue>
 {
 public:
@@ -293,7 +293,6 @@ private:
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-
 class RealCachedDataValue : public CachedDataValue
 {
 public:
@@ -332,7 +331,6 @@ private:
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-
 class ComplexCachedDataValue : public CachedDataValue
 {
 public:
@@ -374,6 +372,52 @@ private:
     /// see #create for details
     ComplexCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
         : CachedDataValue(2, pars, vals) {}
+
+
+};
+
+/// \class FourVectorCachedDataValue
+/// \brief Class for managing a four-vector cached value inside a #DataPoint
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
+/// \ingroup Cache
+class FourVectorCachedDataValue : public CachedDataValue
+{
+public:
+
+    /// create shared pointer to ComplexCachedDataValue
+    /// \param owner #DataAccessor to which this cached value belongs
+    /// \param pars set of shared pointers to Parameters cached value depends on
+    /// \param vals set of shared pointers to CachedValues cached value depends on
+    static std::shared_ptr<FourVectorCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
+
+    /// Set value into #DataPoint for particular symmetrization, and
+    /// update VariableStatus for symm. and partition index
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param symmetrizationIndex index of symmetrization to apply to
+    /// \param dataPartitionIndex index of data partition being worked on
+    void setValue(FourVector<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+
+    /// Get value from #DataPoint for particular symmetrization
+    /// \param d #DataPoint to get value from
+    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \return Value of CachedDataValue inside the data point
+    FourVector<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
+    {
+        return FourVector<double>( { CachedDataValue::value(0, d, symmetrizationIndex),
+                                     CachedDataValue::value(1, d, symmetrizationIndex),
+                                     CachedDataValue::value(2, d, symmetrizationIndex),
+                                     CachedDataValue::value(3, d, symmetrizationIndex)
+                                   });
+    }
+
+private:
+
+    /// Constructor (protected)
+    /// see #create for details
+    FourVectorCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
+        : CachedDataValue(4, pars, vals) {}
 
 
 };

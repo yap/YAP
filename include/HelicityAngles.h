@@ -29,6 +29,7 @@
 namespace yap {
 
 class Model;
+class ParticleCombination;
 
 /// \class HelicityAngles
 /// \brief Calculates, stores and gives access to helicity angles
@@ -95,12 +96,18 @@ public:
     virtual std::string data_accessor_type() const override
     {return "HelicityAngles"; }
 
+    /// grant friend status to Model to call addParticleCombination
+    friend class Model;
+
 protected:
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
                          unsigned dataPartitionIndex);
+
+    /// override to throw on adding final-state PC
+    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedDataValue> Phi_;

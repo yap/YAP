@@ -39,15 +39,10 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
 }
 
 //-------------------------
-void HelicitySpinAmplitude::setModel(Model* m)
+void HelicitySpinAmplitude::setDependencies(std::shared_ptr<CachedDataValue> a)
 {
-    SpinAmplitude::setModel(m);
-
-    // set cached spin amplitudes' dependencies on helicity angles
-    for (auto& a : amplitudeSet()) {
-        a->addDependency(model()->helicityAngles().phi());
-        a->addDependency(model()->helicityAngles().theta());
-    }
+    a->addDependency(model()->helicityAngles().phi());
+    a->addDependency(model()->helicityAngles().theta());
 }
 
 //-------------------------

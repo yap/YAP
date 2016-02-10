@@ -45,7 +45,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(model()->fourMomenta().masses());
+    Fq_r->addDependency(model()->fourMomenta().mass());
     Fq_r->addDependency(DecayingParticle_->mass());
     Fq_r->addDependency(DecayingParticle_->radialSize());
 
@@ -94,7 +94,7 @@ bool BlattWeisskopf::consistent() const
 {
     bool C = true;
 
-    if (!Fq_r->dependsOn(model()->fourMomenta().masses())) {
+    if (!Fq_r->dependsOn(model()->fourMomenta().mass())) {
         FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
         C &= false;
     }

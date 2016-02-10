@@ -8,6 +8,10 @@
 #include <BAT/BCLog.h>
 #include <BAT/BCAux.h>
 
+#include <make_unique.h>
+#include <ZemachSpinAmplitude.h>
+
+#include "bat_gen.h"
 #include "d3pi.h"
 #include "dkkpi.h"
 
@@ -21,7 +25,8 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    d3pi m("D3PI");
+    bat_gen m("D3PI", std::make_unique<d3pi>(std::make_unique<yap::ZemachSpinAmplitudeCache>()),
+    {{0, 1}, {1, 2}});
     // dkkpi m("DKKPI");
 
     // set precision

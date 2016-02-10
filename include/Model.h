@@ -38,6 +38,7 @@
 namespace yap {
 
 class DecayingParticle;
+class DataPoint;
 class FinalStateParticle;
 class MassAxes;
 class SpinAmplitudeCache;
@@ -210,14 +211,6 @@ public:
     /// and resizing of the DataPoint's storage
     void addDataPoint(const std::vector<FourVector<double> >& fourMomenta);
 
-    /// Add data point via move
-    /// \param d DataPoint to move into DataSet
-    void addDataPoint(DataPoint&& d);
-
-    /// Add data point via copy
-    /// \param d DataPoint to copy into DataSet
-    void addDataPoint(const DataPoint& d);
-
     /// @}
 
     /// \name Monte Carlo Generation
@@ -243,7 +236,7 @@ public:
     /// \param d DataPoint to set into
     /// \param P Final-state four momenta
     /// \param dataPartitionIndex for tracking status
-    void setFinalStateFourMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
 
     /// @}
 

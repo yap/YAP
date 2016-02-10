@@ -16,11 +16,14 @@
 namespace yap {
 
 //-------------------------
-HelicityAngles::HelicityAngles(Model* isp) :
-    StaticDataAccessor(isp, &ParticleCombination::equivUpAndDown),
+HelicityAngles::HelicityAngles(Model* m) :
+    StaticDataAccessor(m, &ParticleCombination::equivUpAndDown),
     Phi_(RealCachedDataValue::create(this)),
     Theta_(RealCachedDataValue::create(this))
 {
+    /// \todo add check that FourMomenta exists, after changing to return shared_ptr
+    Phi_->addDependency(model()->fourMomenta().momentum());
+    Theta_->addDependency(model()->fourMomenta().momentum());
 }
 
 //-------------------------
@@ -75,6 +78,14 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         // continue down the decay tree
         calculateAngles(d, daughter, cP, b, dataPartitionIndex);
     }
+}
+
+//-------------------------
+unsigned HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    if (pc->isFinalStateParticle())
+        throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "HelicityAngles::addParticleCombination");
+    return StaticDataAccessor::addParticleCombination(pc);
 }
 
 }

@@ -49,51 +49,43 @@ public:
     /// \name Constructors
     /// @{
 
-    /// 4-momenta constructor
-    /// \param P vector of four-momenta to initialize to
-    DataPoint(const std::vector<FourVector<double> >& P) : FSPFourMomenta_(P) {}
-
-    /// initializes fsp four momenta to #FourVector_0
-    /// \param n number of final state particles
-    DataPoint(unsigned n) : FSPFourMomenta_(n, FourVector_0) {}
-
-    // /// Invariant mass constructor
-    //DataPoint(const std::map<std::shared_ptr<ParticleCombination>, double>& m2);
+    DataPoint(const DataAccessorSet& S);
 
     /// @}
 
-    /// get fsp four momenta (const)
-    const std::vector<FourVector<double> >& finalStateFourMomenta() const
-    { return FSPFourMomenta_; }
+    /// \return number of data accessor rows
+    size_t nDataAccessors() const
+    { return Data_.size(); }
 
-    /// get non-fsp four momenta (const)
-    const std::vector<FourVector<double> >& fourMomenta() const
-    { return FourMomenta_; }
+    /// \return number of sym indices rows for data accessor
+    /// \param i index of DataAccessor
+    size_t nSymIndices(unsigned i) const
+    { return Data_[i].size(); }
 
-    /// set four momenta into data point
-    /// \param fourMomenta Four-momenta to set to
-    /// \param check Whether to check equality of old and new four-momenta
-    /// \return Whether new momenta == old momenta if check == true, else false
-    bool setFinalStateFourMomenta(const std::vector<FourVector<double> >& fourMomenta, bool check = true);
+    /// \return number of elements for data accessor
+    /// \param i index of DataAccessor
+    /// \param j index of symmetrization
+    size_t nElements(unsigned i, unsigned j = 0) const
+    { return Data_[i][j].size(); }
 
-    /// print information about the size of the DataPoint and its members
-    void printDataSize();
+    /// \return size of data point
+    unsigned dataSize() const;
 
-    /// reserve space in Data_
-    void allocateStorage(std::shared_ptr<FourMomenta> fourMom, const DataAccessorSet& dataAccessors);
+    /// \return string of size of data point
+    std::string dataSizeString() const
+    { return "Size of DataPoint: " + std::to_string(dataSize()) + " byte (for " + std::to_string(Data_.size()) + " data accessors"; }
 
+    /// check that two DataPoint's have same internal structure
+    friend bool equalStructure(const DataPoint& A, const DataPoint& B);
+
+    /// check that two DataPoint's are equal
+    friend bool operator==(const DataPoint& lhs, const DataPoint& rhs)
+    { return lhs.Data_ == rhs.Data_; }
+
+    /// grant friend status to CachedDataValue to access Data_
     friend class CachedDataValue;
-    friend class DataAccessor;
-    friend class DataSet;
-    friend class FourMomenta;
 
 private:
-
-    /// vector of 4-momenta of final-state particles in event
-    std::vector<FourVector<double> > FSPFourMomenta_;
-
-    /// Vector of 4-momenta of non-final-state particles in event
-    std::vector<FourVector<double> > FourMomenta_;
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor

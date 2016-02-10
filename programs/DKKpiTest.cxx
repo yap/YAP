@@ -79,7 +79,7 @@ int main( int argc, char** argv)
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        M.setFinalStateFourMomenta(M.dataSet()[0], P);
+        M.setFinalStateMomenta(M.dataSet()[0], P);
     }
 
     DEBUG("AFTER");
