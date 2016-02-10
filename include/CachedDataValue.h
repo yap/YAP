@@ -165,6 +165,14 @@ public:
     virtual unsigned size() const
     { return Size_; }
 
+    /// \return number of Symmetrizations
+    unsigned numberOfSymmetrizations() const
+    { return GlobalCalculationStatus_.size(); }
+
+    /// \return number DataPartitions
+    unsigned numberOfDataPartitions() const
+    { return CalculationStatus_.size(); }
+
     /// @}
 
     /// \name Setters
