@@ -191,8 +191,12 @@ unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombin
 //-------------------------
 std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
 {
-    if (!Channels_.at(i))
-        return std::vector<std::shared_ptr<FinalStateParticle>>();
+    if (i >= Channels_.size())
+        throw exceptions::Exception("Channel index too high (" + std::to_string(i) + " >= " + std::to_string(Channels_.size()) + ")",
+                                    "DecayingParticle::finalStateParticles");
+    if (!Channels_[i])
+        throw exceptions::Exception("Channel " + std::to_string(i) + " is empty", "DecayingParticle::finalStateParticles");
+
     return Channels_[i]->finalStateParticles();
 }
 

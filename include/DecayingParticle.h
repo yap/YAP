@@ -83,7 +83,6 @@ public:
     virtual void addChannel(const ParticleVector& daughters)
     { addChannel(std::make_unique<DecayChannel>(daughters)); }
 
-
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.
