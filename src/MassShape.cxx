@@ -1,5 +1,7 @@
 #include "MassShape.h"
 
+#include "Exceptions.h"
+#include "DecayingParticle.h"
 #include "Resonance.h"
 
 namespace yap {
@@ -21,6 +23,9 @@ bool MassShape::consistent() const
 //-------------------------
 void MassShape::setResonance(Resonance* r)
 {
+    if (Resonance_)
+        throw exceptions::Exception("MassShape already has owning Resonance", "MassShape::setResonance");
+
     Resonance_ = r;
 
     if (Resonance_)
@@ -28,7 +33,7 @@ void MassShape::setResonance(Resonance* r)
 }
 
 //-------------------------
-InitialStateParticle* MassShape::initialStateParticle()
-{ return (Resonance_) ? Resonance_->initialStateParticle() : nullptr; }
+Model* MassShape::model()
+{ return (Resonance_) ? Resonance_->model() : nullptr; }
 
 }

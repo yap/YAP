@@ -3,7 +3,7 @@
 #include "Constants.h"
 #include "FourMomenta.h"
 #include "logging.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "ParticleCombination.h"
 #include "Resonance.h"
 
@@ -51,7 +51,7 @@ std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<
     if (T_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         // T = 1 / (M^2 - m^2 - iMG)
-        std::complex<double> T = 1. / (pow(Mass_->value(), 2) - initialStateParticle()->fourMomenta().m2(d, pc) - Complex_i * Mass_->value() * Width_->value());
+        std::complex<double> T = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta().m2(d, pc) - Complex_i * Mass_->value() * Width_->value());
 
         T_->setValue(T, d, symIndex, dataPartitionIndex);
 

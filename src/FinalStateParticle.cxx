@@ -1,5 +1,6 @@
 #include "FinalStateParticle.h"
 
+#include "Exceptions.h"
 #include "logging.h"
 #include "ParticleCombination.h"
 #include "ParticleCombinationCache.h"
@@ -9,7 +10,7 @@ namespace yap {
 //-------------------------
 FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
     : Particle(q, m, name),
-      InitialStateParticle_(nullptr)
+      Model_(nullptr)
 {
     // final state particles have fixed mass
     mass()->setVariableStatus(kFixed);

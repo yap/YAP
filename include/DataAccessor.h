@@ -23,7 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "CachedDataValue.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
@@ -42,7 +42,7 @@ class DataPoint;
 /// \author Johannes Rauch, Daniel Greenwald
 
 class DataAccessor :
-    public virtual ReportsInitialStateParticle,
+    public virtual ReportsModel,
     public virtual ReportsParticleCombinations
 {
 public:
@@ -60,7 +60,7 @@ public:
     DataAccessor& operator=(const DataAccessor& other) = delete;
 
     /// Destructor
-    virtual ~DataAccessor();
+    virtual ~DataAccessor() = default;
 
     // Defaulted move constructor
     DataAccessor(DataAccessor&& other) = default;
@@ -119,18 +119,20 @@ public:
     /// Check consistency of object
     bool consistent() const;
 
+    /// \return string denoting DataAccessor type
+    /// \todo REMOVE
     virtual std::string data_accessor_type() const = 0;
 
-    /// grant friend status to InitialStateParticle
-    friend class InitialStateParticle;
+    /// grant friend status to Model
+    friend class Model;
 
     /// grant friend status to CachedDataValue to call addCachedDataValue
     friend class CachedDataValue;
 
 protected:
 
-    /// register with InitialStateParticle
-    void virtual addToInitialStateParticle();
+    /// register with Model
+    void virtual addToModel();
 
     /// add CachedDataValue
     void addCachedDataValue(std::shared_ptr<CachedDataValue> c)

@@ -24,7 +24,6 @@
 #include "DecayingParticle.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
-#include "MassShape.h"
 
 #include <complex>
 #include <memory>
@@ -33,7 +32,7 @@ namespace yap {
 
 class DecayChannel;
 class FinalStateParticle;
-class InitialStateParticle;
+class MassShape;
 class ParticleCombination;
 
 /// \class Resonance
@@ -49,16 +48,15 @@ public:
     /// \param q QuantumNumbers of resonance
     /// \param mass mass of resonance
     /// \param radialSize radial size of resonance
-    /// \param massShape unique_ptr to MassShape of resonance
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::unique_ptr<MassShape> massShape);
+    /// \param massShape shared_ptr to MassShape of resonance
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
     /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override
-    { return DecayingParticle::amplitude(d, pc, two_m, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex); }
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -67,12 +65,12 @@ public:
     /// @{
 
     /// access MassShape
-    MassShape& massShape()
-    { return *(MassShape_.get()); }
+    std::shared_ptr<MassShape> massShape()
+    { return MassShape_; }
 
     /// access MassShape (const)
-    const MassShape& massShape() const
-    { return *(MassShape_.get()); }
+    std::shared_ptr<const MassShape> massShape() const
+    { return MassShape_; }
 
     /// @}
 
@@ -81,12 +79,8 @@ public:
 
 protected:
 
-    /// overrides DataAccessor's function to also register MassShape_ with ISP
-    virtual void addToInitialStateParticle()
-    {
-        DecayingParticle::addToInitialStateParticle();
-        MassShape_->addToInitialStateParticle();
-    }
+    /// overrides DataAccessor's function to also register MassShape_ with Model
+    virtual void addToModel();
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_

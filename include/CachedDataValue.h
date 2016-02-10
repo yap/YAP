@@ -165,6 +165,14 @@ public:
     virtual unsigned size() const
     { return Size_; }
 
+    /// \return number of Symmetrizations
+    unsigned numberOfSymmetrizations() const
+    { return GlobalCalculationStatus_.size(); }
+
+    /// \return number DataPartitions
+    unsigned numberOfDataPartitions() const
+    { return CalculationStatus_.size(); }
+
     /// @}
 
     /// \name Setters
@@ -239,8 +247,8 @@ public:
     void resetCalculationStatus(unsigned dataPartitionIndex)
     { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
+    /// grant friend status to DataAccessor to set itself owner
     friend class DataAccessor;
-    friend class InitialStateParticle;
 
 protected:
 

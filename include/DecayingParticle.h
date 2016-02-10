@@ -40,7 +40,7 @@
 namespace yap {
 
 class FinalStateParticle;
-class InitialStateParticle;
+class Model;
 class ParticleCombination;
 
 /// \class DecayingParticle
@@ -59,6 +59,9 @@ class DecayingParticle : public Particle, public DataAccessor
 public:
 
     /// Constructor
+    /// \param q QuantumNumbers of decaying particle
+    /// \param mass mass of decaying particle
+    /// \param radialSize radial size of decaying particle
     DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
 
     /// Calculate complex amplitude
@@ -66,8 +69,7 @@ public:
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
     /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                           int two_m, unsigned dataPartitionIndex) const override;
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -120,12 +122,19 @@ public:
 
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
 
-    /// \return raw pointer to initial state particle through first DecayChannel
-    InitialStateParticle* initialStateParticle() override
-    { return Channels_.empty() ? nullptr : Channels_[0]->initialStateParticle(); }
+    /// \return raw pointer to Model through first DecayChannel
+    Model* model() override
+    { return Channels_.empty() ? nullptr : Channels_[0]->model(); }
+
+    /// \return string denoting DataAccessor type
+    virtual std::string data_accessor_type() const
+    { return "DecayingParticle"; }
 
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
     friend DecayChannel;
+
+    /// grant friend status to Model to see freeAmplitudes
+    friend class Model;
 
 protected:
 

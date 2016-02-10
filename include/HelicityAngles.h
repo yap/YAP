@@ -28,7 +28,7 @@
 
 namespace yap {
 
-class InitialStateParticle;
+class Model;
 
 /// \class HelicityAngles
 /// \brief Calculates, stores and gives access to helicity angles
@@ -57,8 +57,8 @@ class HelicityAngles : public StaticDataAccessor
 public:
 
     /// Constructor
-    /// \param isp Raw pointer to owning InitialStateParticle
-    HelicityAngles(InitialStateParticle* isp);
+    /// \param m Raw pointer to owning Model
+    HelicityAngles(Model* m);
 
     /// Calculate helicity angles for all possible symmetrization indices
     /// \param d DataPoint to calculate into

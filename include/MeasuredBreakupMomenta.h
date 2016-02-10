@@ -26,7 +26,7 @@
 
 namespace yap {
 
-class InitialStateParticle;
+class Model;
 
 /// \class MeasuredBreakupMomenta
 /// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
@@ -37,8 +37,8 @@ class MeasuredBreakupMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    /// \param isp Raw pointer to owning InitialStateParticle
-    MeasuredBreakupMomenta(InitialStateParticle* isp);
+    /// \param m Raw pointer to owning Model
+    MeasuredBreakupMomenta(Model* m);
 
     /// Calculate breakup momenta for all possible symmetrization indices
     /// \param d DataPoint to caluclate into

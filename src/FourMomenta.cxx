@@ -2,10 +2,11 @@
 
 #include "container_utils.h"
 #include "DataPoint.h"
+#include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "FourVector.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 #include "MathUtilities.h"
 #include "ParticleCombination.h"
@@ -17,30 +18,21 @@
 namespace yap {
 
 //-------------------------
-FourMomenta::FourMomenta(InitialStateParticle* isp) :
-    StaticDataAccessor(isp, &ParticleCombination::equivByOrderlessContent),
+FourMomenta::FourMomenta(Model* m) :
+    StaticDataAccessor(m, &ParticleCombination::equivByOrderlessContent),
     M_(RealCachedDataValue::create(this))
 {
-    if (!initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle unset", "FourMomenta::FourMomenta");
+    if (!model())
+        throw exceptions::Exception("Model unset", "FourMomenta::FourMomenta");
 }
 
 //-------------------------
-void FourMomenta::prepare()
+void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    ParticleCombinationVector PCs = particleCombinations();
-
-    unsigned n_fsp = initialStateParticle()->finalStateParticles().size();
-
-    // look for ISP
-    auto it = std::find_if(PCs.begin(), PCs.end(),
-    [&](const ParticleCombinationVector::value_type & a) {return a->indices().size() == n_fsp;});
-
-    if (it == PCs.end())
-        throw exceptions::Exception("ISP ParticleCombination not found", "FourMomenta::prepare");
-
-    InitialStatePC_ = *it;
-
+    StaticDataAccessor::addParticleCombination(pc);
+    // check for ISP
+    if (!InitialStatePC_ and pc->indices().size() == model()->finalStateParticles().size())
+        InitialStatePC_ = pc;
 }
 
 //-------------------------
@@ -82,12 +74,12 @@ void FourMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
         if (M_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
             continue;
 
-        // reset 4-momentum
-        d.FourMomenta_.at(kv.second) = {0, 0, 0, 0};
+        const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector_0,
+        [&](const FourVector<double>& V, unsigned i) {return V + d.FSPFourMomenta_.at(i);});
 
-        // add in final-state particle momenta
-        for (unsigned i : kv.first->indices())
-            d.FourMomenta_.at(kv.second) += d.FSPFourMomenta_.at(i);
+        d.FourMomenta_.at(kv.second) = P;
+
+        FDEBUG(*kv.first << " = " << d.FourMomenta_.at(kv.second));
 
         M_->setValue(abs(d.FourMomenta_.at(kv.second)), d, kv.second, dataPartitionIndex);
 
@@ -100,7 +92,7 @@ void FourMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
 double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     if (pc->isFinalStateParticle())
-        return initialStateParticle()->finalStateParticles()[pc->indices()[0]]->mass()->value();
+        return model()->finalStateParticles()[pc->indices()[0]]->mass()->value();
     return M_->value(d, symmetrizationIndex(pc));
 }
 
@@ -108,7 +100,7 @@ double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombinat
 std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) const
 {
     os << "Invariant masses:" << std::endl;
-    unsigned n_fsp = initialStateParticle()->finalStateParticles().size();
+    unsigned n_fsp = model()->finalStateParticles().size();
     unsigned n = n_fsp + 2;
     unsigned m_p = 6;
 
@@ -120,7 +112,7 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
         if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
             os << "    ISP : " << std::setw(n) << indices_string(*kv.first)
                << " = " << std::setprecision(m_p) << m(d, kv.first) << " GeV/c^2"
-               << " (nominally " << std::setprecision(m_p) << initialStateParticle()->mass()->value() << " GeV/c^2)" << std::endl;
+               << " (nominally " << std::setprecision(m_p) << model()->initialStateParticle()->mass()->value() << " GeV/c^2)" << std::endl;
             used.insert(kv.second);
         }
 
@@ -128,7 +120,7 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
     for (size_t i = 0; i < d.finalStateFourMomenta().size(); ++i)
         os << "    FSP : " << std::setw(n) << (std::string("(") + std::to_string(i) + ")")
            << " = " << std::setprecision(m_p) << abs(d.finalStateFourMomenta()[i]) << " GeV/c^2"
-           << " (nominally " << std::setprecision(m_p) << initialStateParticle()->finalStateParticles()[i]->mass()->value() << " GeV/c^2)" << std::endl;
+           << " (nominally " << std::setprecision(m_p) << model()->finalStateParticles()[i]->mass()->value() << " GeV/c^2)" << std::endl;
 
     // print the rest in increasing number of particle content
     for (unsigned i = 2; i < n_fsp; ++i)

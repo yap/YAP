@@ -25,7 +25,7 @@
 #include "DataAccessor.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 namespace yap {
 
@@ -68,10 +68,10 @@ public:
     { return Resonance_; }
 
     /// include const access to ISP
-    using ReportsInitialStateParticle::initialStateParticle;
+    using ReportsModel::model;
 
-    /// get raw pointer to initial state particle through resonance
-    InitialStateParticle* initialStateParticle() override;
+    /// get raw pointer to Model through resonance
+    Model* model() override;
 
     virtual std::string data_accessor_type() const override
     {return "MassShape"; }

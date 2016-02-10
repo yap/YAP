@@ -25,7 +25,7 @@
 #include "CachedDataValue.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 #include <complex>
 #include <memory>
@@ -69,11 +69,11 @@ public:
     virtual CachedDataValueSet CachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
-    /// include const access to ISP
-    using ReportsInitialStateParticle::initialStateParticle;
+    /// include const access to Model
+    using ReportsModel::model;
 
-    /// \return raw pointer to InitialStateParticle through owning DecayingParticle
-    InitialStateParticle* initialStateParticle() override;
+    /// \return raw pointer to Model through owning DecayingParticle
+    Model* model() override;
 
     virtual std::string data_accessor_type() const override
     {return "BlattWeisskopf"; }

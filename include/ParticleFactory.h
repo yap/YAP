@@ -21,7 +21,6 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
-#include "make_unique.h"
 #include "QuantumNumbers.h"
 
 #include <limits>
@@ -33,7 +32,6 @@ namespace yap {
 
 class DecayingParticle;
 class FinalStateParticle;
-class InitialStateParticle;
 class MassShape;
 class Particle;
 class Resonance;
@@ -66,32 +64,21 @@ public:
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
-    /// \return unique pointer to new final state particle
-    std::unique_ptr<FinalStateParticle> createFinalStateParticle(int PDG);
+    /// \return shared pointer to new final state particle
+    std::shared_ptr<FinalStateParticle> fsp(int PDG);
 
-    /// Create an InitialStateParticle from a PDG code and a MassShape
+    /// Create an decayingParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
-    /// \param SAC unique_ptr to SpinAmplitudeCache
-    /// \return unique pointer to new InitialStateParticle object
-    std::unique_ptr<InitialStateParticle> createInitialStateParticle(int PDG, double radialSize,
-            std::unique_ptr<SpinAmplitudeCache> SAC);
+    /// \return shared pointer to new DecayingParticle object
+    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radialSize);
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
-    /// \return unique pointer to new Resonance object
-    std::unique_ptr<Resonance> createResonance(int PDG, double radialSize, std::unique_ptr<MassShape>&& massShape);
-
-    /// Create a Resonance from a PDG code, and MassShape.
-    /// \tparam mass_shape Class used to create MassShape of
-    /// \param PDG PDG code of particle to create
-    /// \param radialSize Radial size of particle to create [GeV^-1]
-    /// \return unique pointer to new Resonance object
-    template <class mass_shape>
-    std::unique_ptr<Resonance> createResonance(int PDG, double radialSize)
-    { return createResonance(PDG, radialSize, std::make_unique<mass_shape>()); }
+    /// \return shared pointer to new Resonance object
+    std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
 
     /// \name Particle table access
     /// @{

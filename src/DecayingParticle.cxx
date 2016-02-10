@@ -3,7 +3,7 @@
 #include "container_utils.h"
 #include "HelicitySpinAmplitude.h"
 #include "FinalStateParticle.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 #include "ParticleCombinationCache.h"
 
@@ -39,10 +39,13 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
         // sum up DecayChannel::amplitude over each channel
         for (auto& c : channels())
             if (c->hasParticleCombination(pc)) {
-                DEBUG(name() << "\tDecayingParticle::amplitude :: calculating for two_m = " << two_m << " and pc = " << *pc << " on channel = " << *c);
-                auto b = a; // \todo only needed in debug mode
-                a += c->amplitude(d, pc, two_m, dataPartitionIndex);
-                DEBUG(name() << "\ta = " << b << " -> " << a);
+                // DEBUG(name() << "\tDecayingParticle::amplitude :: calculating for two_m = " << two_m << " and pc = " << *pc << " on channel = " << *c);
+                // auto b = a; // \todo only needed in debug mode
+                auto b = c->amplitude(d, pc, two_m, dataPartitionIndex);
+                FDEBUG("a = " << a << " -> " << (a + b));
+                a += b;
+                FDEBUG("a := " << a);
+                // DEBUG(name() << "\ta = " << b << " -> " << a);
             }
 
         A->setValue(a, d, symIndex, dataPartitionIndex);
@@ -111,8 +114,8 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
                                     "DecayingParticle::addChannel");
 
     // check ISP
-    if (!Channels_.empty() and c->initialStateParticle() != initialStateParticle())
-        throw exceptions::Exception("InitialStateParticle mismatch", "DecayingParticle::addChannel");
+    if (!Channels_.empty() and c->model() != model())
+        throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
     Channels_.emplace_back(std::move(c));
     Channels_.back()->setDecayingParticle(this);
@@ -133,6 +136,13 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
         }
     }
 
+    // now that Model is set, register with Model (repeated registration has no effect)
+    addToModel();
+
+    // if this is to be the initial state particle
+    if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
+        model()->setInitialStateParticle(this);
+
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
         addParticleCombination(pc);
@@ -152,8 +162,6 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 
     FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
 
-    // now that ISP is set, register with ISP (repeated registration has no effect)
-    addToInitialStateParticle();
 }
 
 //-------------------------
@@ -172,6 +180,10 @@ void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombinatio
         if (dc->hasParticleCombination(pc, ParticleCombination::equivDown))
             dc->addParticleCombination(pc);
     }
+
+    // check if also model's initial state particle
+    if (model() and model()->initialStateParticle() == this)
+        model()->addParticleCombination(pc);
 }
 
 //-------------------------

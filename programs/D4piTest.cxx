@@ -3,8 +3,8 @@
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
 #include "FourVector.h"
-#include "InitialStateParticle.h"
 #include "make_unique.h"
+#include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
@@ -28,34 +28,36 @@ int main( int argc, char** argv)
     //yap::disableLogs(el::Level::Debug);
     yap::plainLogs(el::Level::Debug);
 
+    yap::Model M(std::make_unique<yap::HelicitySpinAmplitudeCache>());
+
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
-    // initial state particle
     double radialSize = 1.;
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(421, radialSize,
-            std::make_unique<yap::HelicitySpinAmplitudeCache>());
+
+    // initial state particle
+    auto D = factory.decayingParticle(421, radialSize);
 
     // final state particles
-    std::shared_ptr<yap::FinalStateParticle> piPlus = factory.createFinalStateParticle(211);
-    std::shared_ptr<yap::FinalStateParticle> piMinus = factory.createFinalStateParticle(-211);
+    auto piPlus = factory.fsp(211);
+    auto piMinus = factory.fsp(-211);
 
     // Set final-state particles
-    D->setFinalStateParticles({piPlus, piMinus, piPlus, piMinus});
+    M.setFinalState({piPlus, piMinus, piPlus, piMinus});
 
     // sigma
-    std::shared_ptr<yap::Resonance> sigma = factory.createResonance(9000221, radialSize, std::make_unique<yap::BreitWigner>());
+    auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addChannel({piPlus, piMinus});
 
     // rho
-    std::shared_ptr<yap::Resonance> rho = factory.createResonance(113, radialSize, std::make_unique<yap::BreitWigner>());
+    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addChannel({piPlus, piMinus});
 
     // omega
-    std::shared_ptr<yap::Resonance> omega = factory.createResonance(223, radialSize, std::make_unique<yap::BreitWigner>());
+    auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
     omega->addChannel({piPlus, piMinus});
 
     // a_1
-    std::shared_ptr<yap::Resonance> a_1 = factory.createResonance(20213, radialSize, std::make_unique<yap::BreitWigner>());
+    auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
     a_1->addChannel({sigma, piPlus});
     a_1->addChannel({rho,   piPlus});
 
@@ -66,13 +68,14 @@ int main( int argc, char** argv)
     D->addChannel({a_1, piMinus});
 
     // R pi pi channels
-    //yap::Resonance* f_0_980 = factory.createResonanceBreitWigner(9000221, radialSize);
+    //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
-
-    // consistency and optimizations
-    D->prepare();
-    std::cout << "consistent! \n";
+    // check consistency
+    if (M.consistent())
+        LOG(INFO) << "consistent!";
+    else
+        LOG(INFO) << "inconsistent!";
 
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
@@ -82,28 +85,23 @@ int main( int argc, char** argv)
         std::cout << *pc << "\n";
     std::cout << "\n";
 
-    std::cout << "\nFour momenta symmetrizations with " << D->fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : D->fourMomenta().particleCombinations())
-        std::cout << *pc << ": " << D->fourMomenta().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : M.fourMomenta().particleCombinations())
+        std::cout << *pc << ": " << M.fourMomenta().symmetrizationIndex(pc) << "\n";
 
-    std::cout << "\nHelicity angles symmetrizations with " << D->helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : D->helicityAngles().particleCombinations())
-        std::cout << *pc << ": " << D->helicityAngles().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nHelicity angles symmetrizations with " << M.helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : M.helicityAngles().particleCombinations())
+        std::cout << *pc << ": " << M.helicityAngles().symmetrizationIndex(pc) << "\n";
 
     D->printDecayChain();
     std::cout << "\n";
 
-    std::cout << *D->spinAmplitudeCache() << std::endl;
-    D->printDataAccessors(false);
-    //D->printDataAccessors();
-
-
+    std::cout << *M.spinAmplitudeCache() << std::endl;
+    M.printDataAccessors(false);
 
     // create pseudo data
     TLorentzVector P(0., 0., 0., D->mass()->value());
-    Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(),
-                           piPlus->mass()->value(), piMinus->mass()->value()
-                         };
+    Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value(), piMinus->mass()->value() };
 
     LOG(INFO) << "create dataPoints";
 
@@ -120,28 +118,27 @@ int main( int argc, char** argv)
             DEBUG(yap::to_string(momenta.back()));
         }
 
-        D->addDataPoint(momenta);
+        M.addDataPoint(momenta);
 
     }
 
     LOG(INFO) << "done creating dataPoints";
 
-    D->dataSet()[0].printDataSize();
+    M.dataSet()[0].printDataSize();
 
     LOG(INFO) << "Printing data:";
-    for (unsigned d = 0; d < D->dataSet().size(); ++d) {
+    for (unsigned d = 0; d < M.dataSet().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
-        for (auto& v : D->dataSet()[d].finalStateFourMomenta()) {
-            LOG(INFO) << v[0] << "; " << v[1] << ", " << v[2] << ", " << v[3];
-        }
+        for (auto& v : M.dataSet()[d].finalStateFourMomenta())
+            LOG(INFO) << to_string(v);
     }
 
 
     // create data partitions
-    D->setDataPartitions(yap::createDataPartitionsBlocks(D->dataSet(), 1));
+    M.setDataPartitions(yap::createDataPartitionsBlocks(M.dataSet(), 1));
 
     // to test amplitude calculation, set all free amps to 1
-    auto freeAmps = D->freeAmplitudes();
+    auto freeAmps = M.freeAmplitudes();
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 
@@ -158,7 +155,7 @@ int main( int argc, char** argv)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
 
-        double logA = D->partialSumOfLogsOfSquaredAmplitudes(D->dataPartitions()[0]);
+        double logA = M.partialSumOfLogsOfSquaredAmplitudes(M.dataPartitions()[0]);
         // double logA = D->sumOfLogsOfSquaredAmplitudes();
 
         LOG(INFO) << "logA = " << logA;

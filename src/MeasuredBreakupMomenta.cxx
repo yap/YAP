@@ -1,7 +1,7 @@
 #include "MeasuredBreakupMomenta.h"
 
 #include "FourMomenta.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 
 #include <set>
@@ -10,8 +10,8 @@
 namespace yap {
 
 //-------------------------
-MeasuredBreakupMomenta::MeasuredBreakupMomenta(InitialStateParticle* isp) :
-    StaticDataAccessor(isp, &ParticleCombination::equivDownByOrderlessContent),
+MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
+    StaticDataAccessor(m, &ParticleCombination::equivDownByOrderlessContent),
     Q2_(RealCachedDataValue::create(this))
 {
 }
@@ -33,9 +33,9 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex
         }
 
         // Calculate
-        double m2_R = initialStateParticle()->fourMomenta().m2(d, kv.first);
-        double m_a  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[0]);
-        double m_b  = initialStateParticle()->fourMomenta().m(d, kv.first->daughters()[1]);
+        double m2_R = model()->fourMomenta().m2(d, kv.first);
+        double m_a  = model()->fourMomenta().m(d, kv.first->daughters()[0]);
+        double m_b  = model()->fourMomenta().m(d, kv.first->daughters()[1]);
 
         Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, dataPartitionIndex);
     }

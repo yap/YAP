@@ -18,20 +18,18 @@
 
 /// \file
 
-#ifndef yap_InitialStateParticle_h
-#define yap_InitialStateParticle_h
+#ifndef yap_Model_h
+#define yap_Model_h
 
 #include "CoordinateSystem.h"
 #include "DataPartition.h"
 #include "DataSet.h"
-#include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "HelicityAngles.h"
 #include "HelicitySpinAmplitude.h"
 #include "MeasuredBreakupMomenta.h"
 #include "ParticleCombinationCache.h"
-#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
@@ -39,51 +37,40 @@
 
 namespace yap {
 
+class DecayingParticle;
 class FinalStateParticle;
 class MassAxes;
+class SpinAmplitudeCache;
 
-/// \class InitialStateParticle
-/// \brief Class implementing an initial state particle.
+/// \class Model
+/// \brief Class implementing a PWA model
 /// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup Particle
 
-class InitialStateParticle : public std::enable_shared_from_this<InitialStateParticle>, public DecayingParticle
+class Model
 {
 public:
 
-    /// constructing function
-    /// \param q QuantumNumbers of ISP
-    /// \param mass Mass of ISP [GeV]
-    /// \param name Name of ISP
-    /// \param r Radial size of ISP [GeV^-1]
+    /// Constructor
     /// \param SAC unique_ptr to SpinAmplitudeCache
-    static std::unique_ptr<InitialStateParticle> create(const QuantumNumbers& q, double mass, std::string name, double r, std::unique_ptr<SpinAmplitudeCache> SAC)
-    { return std::unique_ptr<InitialStateParticle>(new InitialStateParticle(q, mass, name, r, std::move(SAC))); }
+    Model(std::unique_ptr<SpinAmplitudeCache> SAC);
 
     /// \name Amplitude-related
     /// @{
 
-    /// inherit std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
-    using DecayingParticle::amplitude;
-
-    /// \return amplitude with a sum over all particle combinations
+    /// \return amplitude with a sum over all particle combinations of ISP
     /// \param d DataPoint to calculate with
-    /// \param two_m 2 * the spin projection to calculate for
+    /// \param two_m 2 * the spin projection of ISP to calculate for
     /// \param dataPartitionIndex partition index for parallelization
     std::complex<double> amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const;
 
-    /// \return amplitude with a sum over all particle combinations and spin projections
+    /// \return amplitude with a sum over all particle combinations and spin projections of ISP
     /// \param d DataPoint to calculate with
     /// \param dataPartitionIndex partition index for parallelization
     std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
 
     /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
     /// calls resetCalculationStatuses before calculation
-    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
-    {
-        resetCalculationStatuses(dataPartitionIndex);
-        return log(norm(amplitude(d, dataPartitionIndex)));
-    }
+    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex);
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D Pointer to a #DataPartitionBase object
@@ -92,16 +79,10 @@ public:
     /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
     double sumOfLogsOfSquaredAmplitudes();
 
-    /// Stores the sum of the lqogs of the squared amplitudes evaluated over the data partition
-    /// \param D Pointer to a #DataPartitionBase
-    /// \param s Double to store sum of log of squared amplitudes in
-    void storeSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, double& s)
-    { s = partialSumOfLogsOfSquaredAmplitudes(D); }
-
     /// @}
 
     /// call before looping over all DataPartitions
-    void updateGlobalCalculationStatuses() override;
+    void updateGlobalCalculationStatuses();
 
     /// calculate StaticDataAccessors
     /// \param d DataPoint to calculate on
@@ -109,10 +90,10 @@ public:
     void calculate(DataPoint& d, unsigned dataPartitionIndex = 0);
 
     /// Check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
-    /// you MUST call this function after you have added all decay channels and before adding DataPoints
-    void prepare();
+    /// removes expired DataAccessor's, prune's remaining, and assigns them indices
+    void prepareDataAccessors();
 
     /// \name Getters
     /// @{
@@ -165,6 +146,14 @@ public:
     const SpinAmplitudeCache* spinAmplitudeCache() const
     { return SpinAmplitudeCache_.get(); }
 
+    /// \return Initial-state particle
+    DecayingParticle* initialStateParticle()
+    { return InitialStateParticle_; }
+
+    /// \return Initial-state particle (const)
+    const DecayingParticle* initialStateParticle() const
+    { return InitialStateParticle_; }
+
     /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
@@ -173,24 +162,24 @@ public:
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> getMassRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// \return if prepare() has been called for this InitialStateParticle
-    bool prepared() const
-    {return Prepared_; }
-
     /// \return free amplitudes of DecayChannels_
-    ComplexParameterVector freeAmplitudes() const override;
+    ComplexParameterVector freeAmplitudes() const;
 
     /// @}
 
     /// \name Setters
     /// @{
 
+    /// Set initial-state particle
+    /// \param isp raw pointer to initial-state particle
+    void setInitialStateParticle(DecayingParticle* isp);
+
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
     /// given in data points. The FinalStateParticle's have their
-    /// InitialStateParticle_ pointer set to this
+    /// Model pointer set to this
     /// \param FSP list of shared pointers to final-state particles
-    void  setFinalStateParticles(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+    void  setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
@@ -261,69 +250,44 @@ public:
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);
 
-    /// \return raw pointer to initial state particle through first DecayChannel
-    InitialStateParticle* initialStateParticle() override
-    { return this; }
-
-    virtual std::string data_accessor_type() const override
-    {return "InitialStateParticle"; }
-
     /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
     /// call before calculating the amplitude for a new dataPoint
-    void resetCalculationStatuses(unsigned dataPartitionIndex) override;
+    void resetCalculationStatuses(unsigned dataPartitionIndex);
 
-    /// grant friend status to DataAccessor to register itself with InitialStateParticle
+    /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
 
-    /// grant friend status to AmplitudeComponent to
-    friend class AmplitudeComponent;
+    /// grant friend status to DecayingParticle to call addParticleCombination
+    friend class DecayingParticle;
 
 protected:
 
-    /// add ParticleCombination to ParticleCombinations_ if it is for
-    /// an ISP, and to FourMomenta_, HelicityAngles_, and
+    /// add ParticleCombination to to FourMomenta_, HelicityAngles_, and
     /// MeasuredBreakupMomenta_ (along with it's daughters through
     /// recursive calling) if it is NOT for a FSP.
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
 
-    /// register a DataAccessor with this InitialStateParticle
-    virtual void addDataAccessor(DataAccessorSet::value_type da)
-    { DataAccessors_.insert(da); }
+    /// register a DataAccessor with this Model
+    virtual void addDataAccessor(DataAccessorSet::value_type da);
 
-    /// remove a DataAccessor from this InitialStateParticle
-    /*virtual void removeDataAccessor(DataAccessorSet::value_type da)
-    { DataAccessors_.erase(da); }*/
+    /* /// remove a DataAccessor from this Model */
+    /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
 
 private:
-
-    /// constructor, made private since inherits from std::enable_shared_from_this.
-    /// see #create for details
-    InitialStateParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize,
-                         std::unique_ptr<SpinAmplitudeCache> SAC);
 
     /// check if d is in DataPartitions_
     bool hasDataPartition(DataPartitionBase* d);
 
     /// set number of data partitions of all #CachedDataValue's
-    void setNumberOfDataPartitions(unsigned n) override;
+    void setNumberOfDataPartitions(unsigned n);
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over a DataPartition
-    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex) override;
+    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
 
     /// set all parameter flags to kUnchanged (or leave at kFixed)
     /// call after looping over ALL DataPartitions
-    void setParameterFlagsToUnchanged() override;
-
-    /// add AmplitudeComponent to set
-    void addAmplitudeComponent(AmplitudeComponent* d)
-    { AmplitudeComponents_.insert(d); }
-
-    /// remove AmplitudeComponent from set
-    void removeAmplitudeComponent(AmplitudeComponent* d);
-
-    /// Stores whether prepare() has been called
-    bool Prepared_;
+    void setParameterFlagsToUnchanged();
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
@@ -334,11 +298,11 @@ private:
     /// SpinAmplitude cache
     std::unique_ptr<SpinAmplitudeCache> SpinAmplitudeCache_;
 
-    /// Set of all DataAccessor's registered to this InitialStateParticle
+    /// Set of all DataAccessor's registered to this model
     DataAccessorSet DataAccessors_;
 
-    /// List of all AmplitudeComponent objects in the InitialsStateParticle and below
-    std::set<AmplitudeComponent*> AmplitudeComponents_;
+    /// Raw pointer to initial-state particle
+    DecayingParticle* InitialStateParticle_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;

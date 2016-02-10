@@ -23,11 +23,11 @@
 
 #include "DataAccessor.h"
 #include "Exceptions.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 namespace yap {
 
-class InitialStateParticle;
+class Model;
 
 /// \name StaticDataAccessor
 /// \brief Base class for all data accessors that will only write to DataPoint once at initial data loading
@@ -39,27 +39,27 @@ public:
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     StaticDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), InitialStateParticle_(nullptr)
+        : DataAccessor(equiv), Model_(nullptr)
     {
     }
 
     /// Constructor
-    /// \param isp Raw pointer to owning InitialStateParticle
+    /// \param model Raw pointer to owning Model
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    StaticDataAccessor(InitialStateParticle* isp, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), InitialStateParticle_(nullptr)
+    StaticDataAccessor(Model* m, ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
+        : DataAccessor(equiv), Model_(nullptr)
     {
-        setInitialStateParticle(isp);
+        setModel(m);
     }
 
-    /// Set the InitialStateParticle and add this DataAccessor to the ISP's DataAccessorSet
-    void setInitialStateParticle(InitialStateParticle* isp)
+    /// Set the Model and add this DataAccessor to the Model's DataAccessorSet
+    virtual void setModel(Model* m)
     {
-        InitialStateParticle_ = isp;
-        if (!initialStateParticle())
-            throw exceptions::Exception("InitialStateParticle unset", "StaticDataAccessor::StaticDataAccessor");
-        // register to with ISP
-        addToInitialStateParticle();
+        Model_ = m;
+        if (!model())
+            throw exceptions::Exception("Model unset", "StaticDataAccessor::StaticDataAccessor");
+        // register with Model
+        addToModel();
     }
 
     /// calculate cachedDataValues and store to DataPoint.
@@ -69,12 +69,12 @@ public:
     /// does nothing since StaticDataAccessor's never update
     virtual void updateGlobalCalculationStatuses() override {}
 
-    /// include const access to ISP
-    using ReportsInitialStateParticle::initialStateParticle;
+    /// include const access to Model
+    using ReportsModel::model;
 
-    /// \return Raw pointer to owning InitialStateParticle
-    InitialStateParticle* initialStateParticle() override
-    { return InitialStateParticle_; }
+    /// \return Raw pointer to owning Model
+    Model* model() override
+    { return Model_; }
 
 protected:
 
@@ -89,7 +89,7 @@ protected:
 
 private:
 
-    InitialStateParticle* InitialStateParticle_;
+    Model* Model_;
 
 };
 

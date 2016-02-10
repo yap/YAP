@@ -18,45 +18,45 @@
 
 /// \file
 
-#ifndef yap_ReportsInitialStateParticle_h
-#define yap_ReportsInitialStateParticle_h
+#ifndef yap_ReportsModel_h
+#define yap_ReportsModel_h
 
 namespace yap {
 
-class InitialStateParticle;
+class Model;
 
-/// \name ReportsInitialStateParticle
-/// \brief Base class for all classes that report which InitialStateParticle they belong
+/// \name ReportsModel
+/// \brief Base class for all classes that report which Model they belong
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ReportsInitialStateParticle
+class ReportsModel
 {
 public:
 
-    /// get raw pointer to initial state particle
-    virtual InitialStateParticle* initialStateParticle() = 0;
+    /// get raw pointer to Model
+    virtual Model* model() = 0;
 
-    /// get raw pointer to initial state particle (const)
-    const InitialStateParticle* initialStateParticle() const
-    { return const_cast<ReportsInitialStateParticle*>(this)->initialStateParticle(); }
+    /// get raw pointer to Model (const)
+    const Model* model() const
+    { return const_cast<ReportsModel*>(this)->model(); }
 
     /// Default constructor
-    ReportsInitialStateParticle() {}
+    ReportsModel() {}
 
     /// virtual destructor
-    virtual ~ReportsInitialStateParticle() = default;
+    virtual ~ReportsModel() = default;
 
     /// default copy constructor
-    ReportsInitialStateParticle(const ReportsInitialStateParticle& other) = default;
+    ReportsModel(const ReportsModel& other) = default;
 
     /// default move constructor
-    ReportsInitialStateParticle(ReportsInitialStateParticle&& other) = default;
+    ReportsModel(ReportsModel&& other) = default;
 
     /// default copy assignment operator
-    ReportsInitialStateParticle& operator=(const ReportsInitialStateParticle& rhs) = default;
+    ReportsModel& operator=(const ReportsModel& rhs) = default;
 
     /// default move assignment operator
-    ReportsInitialStateParticle& operator=(ReportsInitialStateParticle&& rhs) = default;
+    ReportsModel& operator=(ReportsModel&& rhs) = default;
 
 };
 
