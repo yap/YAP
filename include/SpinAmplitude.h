@@ -187,7 +187,13 @@ protected:
     SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                   ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
+    /// set raw pointer to owning model; overrides to call setDependencies
+    virtual void setModel(Model* m) override;
+
 private:
+
+    /// set dependencies for amplitudes
+    virtual void setDependencies(std::shared_ptr<CachedDataValue> a) = 0;
 
     /// Initial-state spin * 2
     unsigned InitialTwoJ_;

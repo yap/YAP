@@ -139,7 +139,7 @@ protected:
     { CachedDataValues_.insert(c); }
 
     /// add ParticleCombination to SymmetrizationIndices_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneSymmetrizationIndices();
@@ -163,19 +163,6 @@ protected:
     /// set all VariableStatus flags to kUnchanged (or leave at
     /// kFixed) for all Parameters that CachedDataValues_ depend on
     virtual void setParameterFlagsToUnchanged();
-
-    /// \name Data access
-    /// \todo Is this access ever used?
-    /// @{
-
-    /// Access a data point's data
-    std::vector<double>& data(DataPoint& d, unsigned i) const;
-
-    /// Access a data point's data (const)
-    const std::vector<double>& data(const DataPoint& d, unsigned i) const
-    { return const_cast<DataAccessor*>(this)->data(d, i); }
-
-    /// @}
 
 private:
 

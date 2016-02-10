@@ -51,10 +51,11 @@ void Resonance::addToModel()
 }
 
 //-------------------------
-void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+unsigned Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    DecayingParticle::addParticleCombination(c);
+    unsigned index = DecayingParticle::addParticleCombination(c);
     MassShape_->addParticleCombination(c);
+    return index;
 }
 
 }

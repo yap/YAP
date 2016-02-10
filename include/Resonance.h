@@ -84,7 +84,7 @@ protected:
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
 private:
 

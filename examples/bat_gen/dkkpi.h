@@ -7,21 +7,23 @@
 #ifndef __BAT__DKKPI__H
 #define __BAT__DKKPI__H
 
-#include "d2X.h"
+#include <Model.h>
+#include <SpinAmplitudeCache.h>
 
-#include <string>
+#include <memory>
+
 
 // This is a dkkpi header file.
 // Model source code is located in file yap_test/dkkpi.cxx
 
 // ---------------------------------------------------------
-class dkkpi : public d2X
+class dkkpi : public yap::Model
 {
 
 public:
 
     // Constructor
-    dkkpi(std::string name);
+    dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC);
 
 };
 // ---------------------------------------------------------

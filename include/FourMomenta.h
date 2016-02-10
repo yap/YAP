@@ -21,7 +21,6 @@
 #ifndef yap_FourMomenta_
 #define yap_FourMomenta_
 
-#include "CachedDataValue.h"
 #include "FourVector.h"
 #include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
@@ -31,15 +30,13 @@
 namespace yap {
 
 class DataPoint;
+class FourVectorCachedDataValue;
 class Model;
+class RealCachedDataValue;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses
 /// \author Johannes Rauch, Daniel Greenwald
-///
-/// The final-state particles must have indices corresponding to number;
-/// initial state must also exist in entries
-
 class FourMomenta : public StaticDataAccessor
 {
 public:
@@ -55,10 +52,13 @@ public:
     /// \param dataPartitionIndex for status tracking
     virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
 
-    /// Access 4-momenutm (const)
+    /// \name Getters
+    /// @{
+
+    /// Access 4-momenta (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    const FourVector<double>& p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    FourVector<double> p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
@@ -71,18 +71,31 @@ public:
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// Access initial-state 4-momentum (const)
+    /// \return initial-state four-momentum (const)
     /// \param d DataPoint to get data from
-    const FourVector<double>& initialStateMomentum(const DataPoint& d)
-    { return p(d, InitialStatePC_); }
+    const FourVector<double> initialStateMomentum(const DataPoint& d) const;
+
+    /// \return vector of final-state four-momenta (const)
+    /// \param d DataPoint to get data from
+    const std::vector<FourVector<double> > finalStateMomenta(const DataPoint& d) const;
 
     /// \return masses
-    std::shared_ptr<RealCachedDataValue> masses()
+    std::shared_ptr<RealCachedDataValue> mass()
     { return M_; }
 
     /// \return masses (const)
-    std::shared_ptr<RealCachedDataValue> masses() const
+    std::shared_ptr<RealCachedDataValue> mass() const
     { return M_; }
+
+    /// \return momentum
+    std::shared_ptr<FourVectorCachedDataValue> momentum()
+    { return P_; }
+
+    /// \return momentum (const)
+    std::shared_ptr<FourVectorCachedDataValue> momentum() const
+    { return P_; }
+
+    /// @}
 
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
@@ -90,13 +103,16 @@ public:
     virtual std::string data_accessor_type() const override
     {return "FourMomenta"; }
 
-    /// grant friend status to Model to call setFourMomenta
+    /// grant friend status to Model to call setFourMomenta and addParticleCombination
     friend class Model;
 
 protected:
 
+    /// set final-state four-momenta
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
+
     /// looks for ISP when adding ParticleCombination's
-    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// override to do nothing, since FourMomenta doesn't rely on parents being set.
     void pruneSymmetrizationIndices() override
@@ -105,7 +121,13 @@ protected:
 private:
 
     /// Symmetrization index of initial state
-    std::shared_ptr<ParticleCombination> InitialStatePC_;
+    int ISPIndex_;
+
+    /// Symmetrization indices of final states
+    std::vector<int> FSPIndices_;
+
+    /// four-vector of particle combinations
+    std::shared_ptr<FourVectorCachedDataValue> P_;
 
     /// invariant mass of particle combinations [GeV]
     std::shared_ptr<RealCachedDataValue> M_;

@@ -124,12 +124,12 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "done creating dataPoints";
 
-    M.dataSet()[0].printDataSize();
+    LOG(INFO) << M.dataSet()[0].dataSizeString();
 
     LOG(INFO) << "Printing data:";
     for (unsigned d = 0; d < M.dataSet().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
-        for (auto& v : M.dataSet()[d].finalStateFourMomenta())
+        for (auto& v : M.fourMomenta().finalStateMomenta(M.dataSet()[d]))
             LOG(INFO) << to_string(v);
     }
 

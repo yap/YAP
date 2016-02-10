@@ -236,4 +236,24 @@ void ComplexCachedDataValue::setValue(double val_re, double val_im, DataPoint& d
     setCalculationStatus(kCalculated, symmetrizationIndex, dataPartitionIndex);
 }
 
+//-------------------------
+std::shared_ptr<FourVectorCachedDataValue> FourVectorCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+{
+    auto c = std::shared_ptr<FourVectorCachedDataValue>(new FourVectorCachedDataValue(pars, vals));
+    c->setDataAccessor(da);
+    return c;
+}
+
+//-------------------------
+void FourVectorCachedDataValue::setValue(FourVector<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
+{
+    for (size_t i = 0; i < val.size(); ++i) {
+        if (val[i] != CachedDataValue::value(i, d, symmetrizationIndex)) {
+            CachedDataValue::setValue(i, val[i], d, symmetrizationIndex);
+            setVariableStatus(kChanged, symmetrizationIndex, dataPartitionIndex);
+        }
+    }
+    setCalculationStatus(kCalculated, symmetrizationIndex, dataPartitionIndex);
+}
+
 }

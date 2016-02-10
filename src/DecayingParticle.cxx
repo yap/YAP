@@ -165,9 +165,9 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    DataAccessor::addParticleCombination(pc);
+    unsigned index = DataAccessor::addParticleCombination(pc);
 
     // add also to all BlattWeiskopf barrier factors
     for (auto& kv : BlattWeisskopfs_)
@@ -184,6 +184,8 @@ void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombinatio
     // check if also model's initial state particle
     if (model() and model()->initialStateParticle() == this)
         model()->addParticleCombination(pc);
+
+    return index;
 }
 
 //-------------------------

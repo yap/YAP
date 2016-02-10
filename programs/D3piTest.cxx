@@ -108,7 +108,7 @@ int main( int argc, char** argv)
     // choose Dalitz coordinates m^2_12 and m^2_23
     const yap::MassAxes massAxes = M.getMassAxes({{0, 1}, {1, 2}});
 
-    std::vector<double> m2 = {0.9, 1.1}; //{0.1, 4};
+    std::vector<double> m2 = {1, 1};//{0.9, 1.1}; //{0.1, 4};
 
     LOG(INFO) << "BEFORE";
     M.fourMomenta().printMasses(M.dataSet()[0]);
@@ -119,13 +119,13 @@ int main( int argc, char** argv)
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        M.setFinalStateFourMomenta(M.dataSet()[0], P);
+        M.setFinalStateMomenta(M.dataSet()[0], P);
     }
 
     LOG(INFO) << "AFTER";
     M.fourMomenta().printMasses(M.dataSet()[0]);
 
-    for (auto p : M.dataSet()[0].finalStateFourMomenta())
+    for (auto p : M.fourMomenta().finalStateMomenta(M.dataSet()[0]))
         LOG(INFO) << p;
 
     M.resetCalculationStatuses(0);

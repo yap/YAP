@@ -111,21 +111,21 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
     if (hasParticleCombination(c))
         // c is already in map
-        return;
+        return symmetrizationIndex(c);
 
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
         if ((*Equiv_)(kv.first, c)) {
             // equating member found; set index; return
             SymmetrizationIndices_[c] = kv.second;
-            return;
+            return kv.second;
         }
 
     // else assign to current size = highest current index + 1
@@ -134,6 +134,8 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
 
     for (auto& c : CachedDataValues_)
         c->setNumberOfSymmetrizations(size + 1);
+
+    return size;
 }
 
 //-------------------------
@@ -197,16 +199,6 @@ void DataAccessor::addToModel()
     if (!model())
         throw exceptions::Exception("Model unset", "DataAccessor::addToModel");
     model()->addDataAccessor(this);
-}
-
-//-------------------------
-std::vector<double>& DataAccessor::data(DataPoint& d, unsigned i) const
-{
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    return d.Data_[Index_][i];
-#else
-    return d.Data_.at(Index_).at(i);
-#endif
 }
 
 //-------------------------

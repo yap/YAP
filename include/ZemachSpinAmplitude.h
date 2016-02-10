@@ -72,6 +72,9 @@ private:
     virtual bool equals(const SpinAmplitude& other) const override
     { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
+    /// set dependency on four-momenta
+    virtual void setDependencies(std::shared_ptr<CachedDataValue> a) override;
+
 };
 
 /// \class ZemachSpinAmplitudeCache

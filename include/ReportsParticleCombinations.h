@@ -60,7 +60,9 @@ public:
 protected:
 
     /// add ParticleCombination
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
+    /// \param pc ParticleCombination to store
+    /// \return interal symmetrization index for pc
+    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
 
 };
 

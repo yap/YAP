@@ -139,7 +139,7 @@ public:
 protected:
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     void printDecayChainLevel(int level) const;
 

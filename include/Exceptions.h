@@ -85,6 +85,15 @@ public:
         : Exception(what_arg, func_name) {}
 };
 
+/// \class FinalStateParticleCombination
+/// \ingroup Exceptions
+class FinalStateParticleCombination : public Exception
+{
+public:
+    FinalStateParticleCombination(const std::string& what_arg = "", const std::string& func_name = "")
+        : Exception(what_arg, func_name) {}
+};
+
 /// \class NonfiniteResult
 /// \ingroup Exceptions
 class NonfiniteResult : public Exception {};

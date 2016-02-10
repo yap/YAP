@@ -4,32 +4,35 @@
 // BAT can be downloaded from http://mpp.mpg.de/bat
 // ***************************************************************
 
-#ifndef __BAT__D2X__H
-#define __BAT__D2X__H
+#ifndef __BAT__BAT_GEN__H
+#define __BAT__BAT_GEN__H
 
 #include <BAT/BCModel.h>
 
-#include <InitialStateParticle.h>
 #include <MassAxes.h>
+#include <Model.h>
 #include <ParticleFactory.h>
+#include <SpinAmplitudeCache.h>
 
 #include <memory>
 #include <string>
 #include <vector>
 
-// This is a d2X header file.
-// Model source code is located in file yap_test/d2X.cxx
+// This is a bat_gen header file.
+// Model source code is located in file yap_test/bat_gen.cxx
 
 // ---------------------------------------------------------
-class d2X : public BCModel
+class bat_gen : public BCModel
 {
 
 public:
 
     // Constructor
-    d2X(std::string name);
+    bat_gen(std::string name, std::unique_ptr<yap::Model> M,
+            std::vector<std::vector<unsigned> > pcs);
 
-    void initialize(unsigned n);
+    void initialize(unsigned n)
+    { M_->initializeForMonteCarloGeneration(n); }
 
     // Overload LogLikelihood to implement model
     double LogLikelihood(const std::vector<double>& parameters);
@@ -39,8 +42,7 @@ public:
 
 protected:
     yap::MassAxes MassAxes_;
-    std::shared_ptr<yap::InitialStateParticle> D_;
-    yap::ParticleFactory Factory_;
+    std::shared_ptr<yap::Model> M_;
 
 };
 // ---------------------------------------------------------

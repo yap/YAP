@@ -30,7 +30,7 @@ bool FinalStateParticle::consistent() const
 }
 
 //-------------------------
-void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+unsigned FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // pc must be final state particle
     if (!pc->isFinalStateParticle())
@@ -42,6 +42,8 @@ void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombinat
     // if pc already contained, do nothing
     if (it == ParticleCombinations_.end())
         ParticleCombinations_.push_back(pc);
+
+    return pc->indices()[0];
 }
 
 }
