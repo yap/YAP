@@ -28,15 +28,9 @@ int main( int argc, char** argv)
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
     // initial state particle
-<<<<<<< HEAD
-    std::shared_ptr<yap::InitialStateParticle> D = factory.createInitialStateParticle(factory.pdgCode("D+"), radialSize,
-            std::make_unique<yap::ZemachSpinAmplitudeCache>());
-    //std::make_unique<yap::HelicitySpinAmplitudeCache>());
-=======
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
     LOG(DEBUG) << "2";
->>>>>>> fdfd70489de8f87debb3425453c1251c893b64b9
 
     // final state particles
     auto piPlus = factory.fsp(211);

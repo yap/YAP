@@ -69,7 +69,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
             Phi_->setValue(phi_theta[0], d, symIndex, dataPartitionIndex);
             Theta_->setValue(phi_theta[1], d, symIndex, dataPartitionIndex);
 
-            DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
+            //DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
         }
 
         // continue down the decay tree
