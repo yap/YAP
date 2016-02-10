@@ -25,13 +25,17 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    bat_gen m("D3PI", std::make_unique<d3pi>(std::make_unique<yap::ZemachSpinAmplitudeCache>()),
-    {{0, 1}, {1, 2}});
-    // dkkpi m("DKKPI");
+    auto M = d3pi(std::make_unique<yap::ZemachSpinAmplitudeCache>());
+    // auto M = dkkpi(std::make_unique<yap::ZemachSpinAmplitudeCache());
+
+    bat_gen m("D3PI", std::move(M), {{0, 1}, {1, 2}});
+    // dkkpi m("DKKPI", std::move(M), {{0, 1}, {1, 2}});
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
     m.SetNChains(4);
+
+    BCLog::OutSummary("Initializing for MC Generation");
     m.initialize(m.GetNChains());
 
     m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
