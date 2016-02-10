@@ -133,8 +133,8 @@ void FourMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
 
         M_->setValue(abs(P), d, kv.second, dataPartitionIndex);
 
-        // DEBUG("FourMomenta::calculate - 4-momentum " << * (kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
-        // DEBUG("FourMomenta::calculate - Set mass for " << * (kv.first) << " to " << M_->value(d, kv.second));
+        //DEBUG("FourMomenta::calculate - 4-momentum " << * (kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
+        //DEBUG("FourMomenta::calculate - Set mass for " << * (kv.first) << " to " << M_->value(d, kv.second));
     }
 }
 

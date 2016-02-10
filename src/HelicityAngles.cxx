@@ -11,6 +11,8 @@
 #include "Rotation.h"
 #include "ThreeVector.h"
 
+#include <assert.h>
+
 namespace yap {
 
 //-------------------------
@@ -66,10 +68,11 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
                 Theta_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated ) {
 
             const auto phi_theta = angles<double>(vect<double>(p), C);
+
             Phi_->setValue(phi_theta[0], d, symIndex, dataPartitionIndex);
             Theta_->setValue(phi_theta[1], d, symIndex, dataPartitionIndex);
 
-            // DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
+            //DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
         }
 
         // continue down the decay tree

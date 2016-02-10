@@ -50,11 +50,11 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 
         A->setValue(a, d, symIndex, dataPartitionIndex);
 
-        // FDEBUG("\ncalculated amplitude for " << name() << " " << *pc << " = " << a);
+        DEBUG("DecayingParticle::amplitude - calculated amplitude for " << name() << " " << *pc << " = " << a);
         return a;
     }
 
-    // FDEBUG("\nused cached amplitude for " << name() << " " << *pc << " = " << A->value(d, symIndex));
+    DEBUG("DecayingParticle::amplitude - used cached amplitude for " << name() << " " << *pc << " = " << A->value(d, symIndex));
     return A->value(d, symIndex);
 }
 

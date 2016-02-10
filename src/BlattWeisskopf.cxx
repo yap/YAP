@@ -72,7 +72,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
         double f = sqrt(F2(L_, R * R * q2));
         Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
 
-        // DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
 
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
@@ -83,7 +83,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
         double f = sqrt(F2(L_, R * R * q2));
         Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
 
-        // DEBUG("BlattWeisskopf::amplitude - calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
+        DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
     }
 
     return Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);

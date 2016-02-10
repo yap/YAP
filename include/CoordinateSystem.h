@@ -95,27 +95,22 @@ constexpr bool isLeftHanded(const CoordinateSystem<T, 3>& C)
 /// \param C Coordinate frame to measure in
 template <typename T>
 constexpr T phi(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{ return angle(V, C[2]) * (((V * C[1]) >= 0) ? T(1) : T(-1)); }
+{ return angle(V - (V * C[2]) * C[2], C[0]) * ( ((V * C[1]) >= 0) ? T(1) : T(-1) ); }
 
 /// \return polar angle of V in coordinate system C, in [0, pi]
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
 constexpr T theta(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{ return acos(V * C[0] / abs(V) / abs(C[0]) / sin(theta(V, C))); }
+{ return angle(V, C[2]); }
 
 /// This is the fastest to use if calculating both angles
 /// \return azimuthal (0; phi) and polar (1; theta) angles of V in coordinate system C
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
-std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{
-    Vector<T, 3> uV = unit(V);
-    T cosPhi = uV * unit(C[2]);
-    T s = ((uV * C[1]) >= 0) ? T(1) : T(-1);
-    return std::array<T, 2> { s * acos(cosPhi), uV * unit(C[0]) / sqrt(1 - cosPhi * cosPhi) };
-}
+constexpr std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
+{ return std::array<T, 2> { phi(V, C), theta(V, C) }; }
 
 /// Calculate helicity frame of V transformed from C,
 /// with z = unit(V), y = C.z X z, x = y X z

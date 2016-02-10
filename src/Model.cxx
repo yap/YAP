@@ -647,10 +647,23 @@ bool Model::hasDataPartition(DataPartitionBase* d)
 //-------------------------
 void Model::calculate(DataPoint& d, unsigned dataPartitionIndex)
 {
+    // these need to be calculated in order!
+    FourMomenta_->calculate(d, dataPartitionIndex);
+    MeasuredBreakupMomenta_->calculate(d, dataPartitionIndex);
+    HelicityAngles_->calculate(d, dataPartitionIndex);
+
+    // \todo find a nicer solution
+
     // call calculate on static data accessors
-    for (auto& sda : DataAccessors_)
+    for (auto& sda : DataAccessors_) {
+        if (sda == static_cast<StaticDataAccessor*>(FourMomenta_.get()) or
+                sda == static_cast<StaticDataAccessor*>(MeasuredBreakupMomenta_.get()) or
+                sda == static_cast<StaticDataAccessor*>(HelicityAngles_.get()))
+            continue;
+
         if (dynamic_cast<StaticDataAccessor*>(sda))
-            dynamic_cast<StaticDataAccessor*>(sda)->calculate(d, dataPartitionIndex);
+            static_cast<StaticDataAccessor*>(sda)->calculate(d, dataPartitionIndex);
+    }
 }
 
 //-------------------------

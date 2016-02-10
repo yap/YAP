@@ -13,6 +13,13 @@ TEST_CASE( "Vector" )
     // disable logs in text
     yap::disableLogs(el::Level::Global);
 
+    SECTION( "Initialization" ) {
+        // this cannot work right now
+        /*yap::Vector<double, 3> v;
+        yap::Vector<double, 3> v0({0,0,0});
+        REQUIRE( v == v0);*/
+    }
+
     SECTION( "ThreeVector" ) {
 
         auto v1 = yap::ThreeVector<double>({1, 2, 3});
