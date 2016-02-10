@@ -1,25 +1,18 @@
 #include "DataAccessor.h"
 
 #include "DataPoint.h"
-#include "InitialStateParticle.h"
+#include "Model.h"
 #include "logging.h"
 
 namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
-    ReportsInitialStateParticle(),
+    ReportsModel(),
     ReportsParticleCombinations(),
     Equiv_(equiv),
     Size_(0),
     Index_(-1)
-{
-    // index is set later by InitialStateParticle::setDataAcessorIndices()
-    // via InitialStateParticle::prepare()
-}
-
-//-------------------------
-DataAccessor::~DataAccessor()
 {
 }
 

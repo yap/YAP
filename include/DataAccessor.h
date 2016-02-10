@@ -60,7 +60,7 @@ public:
     DataAccessor& operator=(const DataAccessor& other) = delete;
 
     /// Destructor
-    virtual ~DataAccessor();
+    virtual ~DataAccessor() = default;
 
     // Defaulted move constructor
     DataAccessor(DataAccessor&& other) = default;
