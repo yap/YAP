@@ -64,13 +64,6 @@ bool FourMomenta::consistent() const
 {
     bool C = StaticDataAccessor::consistent();
 
-    // check that the first indices in the SymmetrizationIndices_ are the final state particles in order
-    for (auto& kv : symmetrizationIndices())
-        if (kv.first->isFinalStateParticle() and kv.first->indices()[0] != kv.second) {
-            FLOG(ERROR) << "final-state particle id does not match index (" << kv.first->indices()[0] << " != " << kv.second << ")";
-            C &= false;
-        }
-
     if (ISPIndex_ < 0) {
         FLOG(ERROR) << "ISP symmetrization index has not been recorded.";
         C &= false;
