@@ -21,7 +21,7 @@
 #ifndef yap_SpinAmplitudeCache_h
 #define yap_SpinAmplitudeCache_h
 
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 #include "SpinAmplitude.h"
 #include "WeakPtrCache.h"
 

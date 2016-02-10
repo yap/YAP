@@ -23,7 +23,7 @@
 
 #include "CalculationStatus.h"
 #include "CachedDataValue.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 

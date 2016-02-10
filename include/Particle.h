@@ -24,7 +24,7 @@
 #include "AmplitudeComponent.h"
 #include "Parameter.h"
 #include "QuantumNumbers.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 
 #include <string>

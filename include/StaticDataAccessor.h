@@ -23,7 +23,7 @@
 
 #include "DataAccessor.h"
 #include "Exceptions.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 namespace yap {
 

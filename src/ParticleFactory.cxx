@@ -2,7 +2,6 @@
 
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
-#include "InitialStateParticle.h"
 #include "logging.h"
 #include "MassShape.h"
 #include "Resonance.h"

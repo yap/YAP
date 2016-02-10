@@ -33,10 +33,10 @@ class ReportsModel
 {
 public:
 
-    /// get raw pointer to initial state particle
+    /// get raw pointer to Model
     virtual Model* model() = 0;
 
-    /// get raw pointer to initial state particle (const)
+    /// get raw pointer to Model (const)
     const Model* model() const
     { return const_cast<ReportsModel*>(this)->model(); }
 

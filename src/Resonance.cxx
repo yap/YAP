@@ -3,7 +3,6 @@
 #include "DecayChannel.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
-#include "InitialStateParticle.h"
 #include "logging.h"
 #include "MassShape.h"
 #include "ParticleCombinationCache.h"

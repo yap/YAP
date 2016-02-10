@@ -25,7 +25,7 @@
 #include "CachedDataValue.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 #include <complex>
 #include <memory>

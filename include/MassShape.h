@@ -25,7 +25,7 @@
 #include "DataAccessor.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
-#include "ReportsInitialStateParticle.h"
+#include "ReportsModel.h"
 
 namespace yap {
 
@@ -70,7 +70,7 @@ public:
     /// include const access to ISP
     using ReportsModel::model;
 
-    /// get raw pointer to initial state particle through resonance
+    /// get raw pointer to Model through resonance
     Model* model() override;
 
     virtual std::string data_accessor_type() const override
