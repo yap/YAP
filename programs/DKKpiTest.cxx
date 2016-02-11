@@ -16,7 +16,7 @@ int main( int argc, char** argv)
 
     yap::plainLogs(el::Level::Debug);
 
-    yap::Model M(std::make_unique<yap::HelicitySpinAmplitudeCache>());
+    yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]

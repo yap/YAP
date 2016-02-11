@@ -56,7 +56,7 @@ public:
     { return "Zemach formalism"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
-    friend class ZemachSpinAmplitudeCache;
+    friend class ZemachFormalism;
 
 protected:
     /// Constructor
@@ -77,15 +77,15 @@ private:
 
 };
 
-/// \class ZemachSpinAmplitudeCache
+/// \class ZemachFormalism
 /// \brief Caches ZemachSpinAmplitude's
 /// \author Daniel Greenwald
-class ZemachSpinAmplitudeCache : public SpinAmplitudeCache
+class ZemachFormalism : public SpinAmplitudeCache
 {
 public:
 
     /// Constructor
-    ZemachSpinAmplitudeCache() : SpinAmplitudeCache() {}
+    ZemachFormalism() : SpinAmplitudeCache() {}
 
 private:
 

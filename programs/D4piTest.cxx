@@ -28,7 +28,7 @@ int main( int argc, char** argv)
     //yap::disableLogs(el::Level::Debug);
     yap::plainLogs(el::Level::Debug);
 
-    yap::Model M(std::make_unique<yap::HelicitySpinAmplitudeCache>());
+    yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 

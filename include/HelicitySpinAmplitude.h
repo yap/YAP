@@ -54,8 +54,8 @@ public:
     virtual std::string formalism() const override
     { return "helicity formalism"; }
 
-    /// grant SpinAmplitudeCache friend status to call constructor
-    friend class HelicitySpinAmplitudeCache;
+    /// grant HelicityFormalism friend status to call constructor
+    friend class HelicityFormalism;
 
 protected:
 
@@ -86,15 +86,15 @@ private:
 
 };
 
-/// \class HelicitySpinAmplitudeCache
+/// \class HelicityFormalism
 /// \brief Caches HelicitySpinAmplitude's
 /// \author Daniel Greenwald
-class HelicitySpinAmplitudeCache : public SpinAmplitudeCache
+class HelicityFormalism : public SpinAmplitudeCache
 {
 public:
 
     /// Constructor
-    HelicitySpinAmplitudeCache() : SpinAmplitudeCache() {}
+    HelicityFormalism() : SpinAmplitudeCache() {}
 
 private:
 
