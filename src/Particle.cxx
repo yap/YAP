@@ -9,6 +9,7 @@ Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
     AmplitudeComponent(),
     ReportsModel(),
     ReportsParticleCombinations(),
+    std::enable_shared_from_this<Particle>(),
     QuantumNumbers_(q),
     Mass_(new RealParameter(m)),
     Name_(name)

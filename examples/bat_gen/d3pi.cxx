@@ -16,19 +16,19 @@
 #include <complex>
 
 // ---------------------------------------------------------
-d3pi::d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
-    : yap::Model(std::move(SAC))
+std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
-    // use common radial size for all resonances
-    double radialSize = 3.; // [GeV^-1]
-
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
 
-    setFinalState({piPlus, piMinus, piPlus});
+    auto M = std::make_unique<yap::Model>(std::move(SAC));
+    M->setFinalState({piPlus, piMinus, piPlus});
+
+    // use common radial size for all resonances
+    double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
@@ -88,7 +88,7 @@ d3pi::d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     // D->addChannel({f_0_500_100,  piPlus});
     // D->addChannel({f_0_1500_100, piPlus});
 
-    std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = freeAmplitudes();
+    std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = M->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
         freeAmps[i]->setValue(yap::Complex_1);
 
@@ -100,4 +100,5 @@ d3pi::d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
     // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
 
+    return M;
 }

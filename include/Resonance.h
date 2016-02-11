@@ -42,14 +42,21 @@ class ParticleCombination;
 
 class Resonance : public DecayingParticle
 {
-public:
+protected:
 
     /// Constructor
+    /// see #create
+    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
+
+public:
+
+    /// create
     /// \param q QuantumNumbers of resonance
     /// \param mass mass of resonance
     /// \param radialSize radial size of resonance
     /// \param massShape shared_ptr to MassShape of resonance
-    Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape);
+    static std::shared_ptr<Resonance> create(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape)
+    { return std::shared_ptr<Resonance>(new Resonance(q, mass, name, radialSize, massShape)); }
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with

@@ -12,20 +12,6 @@
 
 #include <memory>
 
-
-// This is a dkkpi header file.
-// Model source code is located in file yap_test/dkkpi.cxx
-
-// ---------------------------------------------------------
-class dkkpi : public yap::Model
-{
-
-public:
-
-    // Constructor
-    dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC);
-
-};
-// ---------------------------------------------------------
+std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC);
 
 #endif

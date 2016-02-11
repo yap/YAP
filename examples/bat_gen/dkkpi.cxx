@@ -9,28 +9,29 @@
 #include "BreitWigner.h"
 #include "Constants.h"
 #include "FinalStateParticle.h"
+#include "make_unique.h"
 #include "ParticleCombination.h"
 #include "QuantumNumbers.h"
 #include "Resonance.h"
 
 #include <complex>
 
-// ---------------------------------------------------------
-dkkpi::dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
-    : yap::Model(std::move(SAC))
+std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
 
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/evt.pdl");
-
-    // use common radial size for all resonances
-    double radialSize = 3.; // [GeV^-1]
 
     // final state particles
     auto kPlus  = F.fsp(+321);
     auto kMinus = F.fsp(-321);
     auto piPlus = F.fsp(+211);
 
-    setFinalState({kPlus, kMinus, piPlus});
+    auto M = std::make_unique<yap::Model>(std::move(SAC));
+
+    M->setFinalState({kPlus, kMinus, piPlus});
+
+    // use common radial size for all resonances
+    double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
@@ -52,8 +53,9 @@ dkkpi::dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     D->addChannel({X_2, kPlus});
     */
 
-    std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = freeAmplitudes();
+    std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = M->freeAmplitudes();
     for (unsigned i = 0; i < freeAmps.size(); ++i)
         freeAmps[i]->setValue(yap::Complex_1);
 
+    return M;
 }
