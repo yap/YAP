@@ -261,14 +261,7 @@ std::array<double, 2> Model::getMassRange(const std::shared_ptr<ParticleCombinat
 //-------------------------
 ComplexParameterVector Model::freeAmplitudes() const
 {
-    ComplexParameterVector V = InitialStateParticle_->freeAmplitudes();
-
-    /// \todo remove?
-    // if only one free amplitude, treat as fixed and return empty vector
-    if (V.size() == 1)
-        V.clear();
-
-    return V;
+    return InitialStateParticle_->freeAmplitudes();
 }
 
 //-------------------------
@@ -307,9 +300,11 @@ void Model::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
     DataSet_.emplace_back(DataAccessors_);
     auto& d = DataSet_.back();
 
+#ifndef ELPP_DISABLE_DEBUG_LOGS
     if (DataSet_.size() == 1)
         for (const auto& da : DataAccessors_)
             FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
+#endif
 
     if (!DataSet_.consistent(d))
         throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
@@ -387,8 +382,11 @@ void Model::initializeForMonteCarloGeneration(unsigned n)
 
     // create data point
     auto d = DataPoint(DataAccessors_);
+
+#ifndef ELPP_DISABLE_DEBUG_LOGS
     for (const auto& da : DataAccessors_)
         FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
+#endif
 
     // add n (empty) data points
     for (unsigned i = 0; i < n; ++i)

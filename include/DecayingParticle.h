@@ -83,12 +83,14 @@ public:
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
-    virtual void addChannel(std::unique_ptr<DecayChannel> c);
+    /// \return shared_ptr to DecayChannel that has been added
+    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
-    virtual void addChannel(const ParticleVector& daughters)
-    { addChannel(std::make_unique<DecayChannel>(daughters)); }
+    /// \return shared_ptr to DecayChannel that has been added
+    virtual std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters)
+    { return addChannel(std::make_shared<DecayChannel>(daughters)); }
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -98,7 +100,10 @@ public:
     /// \name Getters
     /// @{
 
-    /// return channels
+    /// \return channel
+    std::shared_ptr<DecayChannel> channel(const ParticleVector& daughters);
+
+    /// \return channels
     const DecayChannelVector& channels() const
     { return Channels_;}
 
@@ -107,12 +112,12 @@ public:
     { return Channels_.size(); }
 
     /// Return Channel i
-    const DecayChannel* channel(unsigned i) const
-    { return Channels_.at(i).get(); }
+    std::shared_ptr<DecayChannel> channel(unsigned i) const
+    { return Channels_.at(i); }
 
     /// Return Channel i
-    DecayChannel* channel(unsigned i)
-    { return Channels_.at(i).get(); }
+    std::shared_ptr<DecayChannel> channel(unsigned i)
+    { return Channels_.at(i); }
 
     /// \return Radial size [GeV^-1]
     std::shared_ptr<RealParameter> radialSize()

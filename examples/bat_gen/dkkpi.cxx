@@ -36,26 +36,25 @@ std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
-    // phi
-    // auto phi = std::make_shared<yap::Resonance>(F.quantumNumbers("phi"), 1010.e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
-    auto phi = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 1310.e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(phi->massShape())->width()->setValue(20e-3);
-    phi->addChannel({kPlus, kMinus});
-    D->addChannel({phi, piPlus});
+    auto KK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.1, "KK0", radialSize, std::make_shared<yap::BreitWigner>(1.1, 0.05));
+    KK0->addChannel({kPlus, kMinus});
+    D->addChannel({KK0, piPlus})->freeAmplitudes()[0]->setValue(yap::Complex_1);
 
-    std::cout << *phi << std::endl;
+    auto KK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.35, "KK1", radialSize, std::make_shared<yap::BreitWigner>(1.35, 0.05));
+    KK1->addChannel({kPlus, kMinus});
+    D->addChannel({KK1, piPlus})->freeAmplitudes()[0]->setValue(2. * yap::Complex_1);
+
+    auto KK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.6, "KK2", radialSize, std::make_shared<yap::BreitWigner>(1.6, 0.05));
+    KK2->addChannel({kPlus, kMinus});
+    D->addChannel({KK2, piPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
 
     /*
     // X_2
-    auto X_2 = std::make_shared<yap::Resonance>(yap::QuantumNumbers(4, 0), 1.2, "X_2", radialSize, std::make_shared<yap::BreitWigner>());
+    auto X_2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.2, "X_2", radialSize, std::make_shared<yap::BreitWigner>());
     std::static_pointer_cast<yap::BreitWigner>(X_2->massShape())->width()->setValue(80e-3);
     X_2->addChannel({piPlus, kMinus});
     D->addChannel({X_2, kPlus});
     */
-
-    std::vector<std::shared_ptr<yap::ComplexParameter> > freeAmps = M->freeAmplitudes();
-    for (unsigned i = 0; i < freeAmps.size(); ++i)
-        freeAmps[i]->setValue(yap::Complex_1);
 
     return M;
 }

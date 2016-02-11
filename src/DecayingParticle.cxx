@@ -104,7 +104,7 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
-void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
+std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<DecayChannel> c)
 {
     if (!c)
         throw exceptions::Exception("DecayChannel empty", "DecayingParticle::addChannel");
@@ -117,7 +117,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     if (!Channels_.empty() and c->model() != model())
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
-    Channels_.push_back(std::move(c));
+    Channels_.push_back(c);
     Channels_.back()->setDecayingParticle(this);
 
     // insert necessary Blatt-Weisskopf barrier factor
@@ -146,9 +146,6 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
         addParticleCombination(pc);
-        // and add pc's daughters to Channels' daughters
-        // for (size_t i = 0; i < pc->daughters().size(); ++i)
-        //     Channels_.back()->Daughters_[i].addSymmetrizationIndex(pc->daughters()[i]);
     }
 
     // Add DecayChannel's TotalAmplitude's as dependencies for this object's Amplitudes
@@ -161,7 +158,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     }
 
     FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
-
+    return Channels_.back();
 }
 
 //-------------------------
@@ -248,6 +245,15 @@ CachedDataValueSet DecayingParticle::CachedDataValuesItDependsOn()
     for (auto& kv : Amplitudes_)
         S.insert(kv.second);
     return S;
+}
+
+//-------------------------
+std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& daughters)
+{
+    auto it = std::find_if(Channels_.begin(), Channels_.end(), [&](std::shared_ptr<DecayChannel> dc) {return dc->daughters() == daughters;});
+    if (it == Channels_.end())
+        throw exceptions::Exception("Channel not found", "DecayingParticle::channel");
+    return *it;
 }
 
 //-------------------------

@@ -7,6 +7,7 @@
 #ifndef __BAT__D3PI__H
 #define __BAT__D3PI__H
 
+#include <DecayingParticle.h>
 #include <Model.h>
 #include <SpinAmplitudeCache.h>
 

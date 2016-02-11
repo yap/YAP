@@ -60,6 +60,10 @@ public:
     /// \brief maps spin projection to AmplitudePair
     using AmplitudePairMap = std::map<int, AmplitudePair>;
 
+    /// \typedef map_type
+    /// \brief maps shared_ptr's to SpinAmplitude's to AmplitudePairMap's
+    using map_type = SpinAmplitudeMap<AmplitudePairMap>;
+
     /// \name Constructors
     /// @{
 
@@ -124,6 +128,12 @@ public:
     /// add a spin amplitude
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
 
+    /// \return free amplitude
+    /// \param two_M twice the spin projection
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin
+    std::shared_ptr<ComplexParameter> freeAmplitude(int two_M, unsigned l, unsigned two_s);
+
     /// \return Vector of free amplitudes
     ComplexParameterVector freeAmplitudes();
 
@@ -146,7 +156,7 @@ private:
     ParticleVector Daughters_;
 
     /// Map of SpinAmplitude (by shared_ptr) to AmplitudePairMap
-    SpinAmplitudeMap<AmplitudePairMap> Amplitudes_;
+    map_type Amplitudes_;
 
     /// Map of spin projection to total amplitude for that spin projection
     std::map<int, std::shared_ptr<ComplexCachedDataValue> > TotalAmplitudes_;

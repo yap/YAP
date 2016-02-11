@@ -8,6 +8,8 @@
 #include <BAT/BCLog.h>
 #include <BAT/BCAux.h>
 
+#include <DecayingParticle.h>
+#include <FinalStateParticle.h>
 #include <make_unique.h>
 #include <ZemachSpinAmplitude.h>
 
@@ -25,11 +27,9 @@ int main()
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    auto M = d3pi(std::make_unique<yap::ZemachSpinAmplitudeCache>());
-    // auto M = dkkpi(std::make_unique<yap::ZemachSpinAmplitudeCache());
-
-    bat_gen m("D3PI", std::move(M), {{0, 1}, {1, 2}});
-    // dkkpi m("DKKPI", std::move(M), {{0, 1}, {1, 2}});
+    bat_gen m("D3PI", std::move(d3pi(std::make_unique<yap::ZemachSpinAmplitudeCache>())), {{0, 1}, {1, 2}});
+    // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachSpinAmplitudeCache>())), {{0, 1}, {1, 2}});
+    // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicitySpinAmplitudeCache>())), {{0, 1}, {1, 2}});
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
@@ -38,7 +38,7 @@ int main()
     BCLog::OutSummary("Initializing for MC Generation");
     m.initialize(m.GetNChains());
 
-    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(5e5 / m.GetNChains()));
 
     m.GetObservables().FillHistograms(true, true);
 

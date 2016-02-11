@@ -197,6 +197,20 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 }
 
 //-------------------------
+std::shared_ptr<ComplexParameter> DecayChannel::freeAmplitude(int two_M, unsigned l, unsigned two_s)
+{
+    auto it1 = std::find_if(Amplitudes_.begin(), Amplitudes_.end(), [&](const map_type::value_type & kv) {return kv.first->L() == l and kv.first->twoS() == two_s;});
+    if (it1 == Amplitudes_.end())
+        throw exceptions::Exception("No amplitude found for L = " + std::to_string(l) + " and S = " + spin_to_string(two_s), "DecayChannel::freeAmplitude");
+
+    auto it2 = it1->second.find(two_M);
+    if (it2 == it1->second.end())
+        throw exceptions::Exception("No amplitude found for spin projection = " + spin_to_string(two_M), "DecayChannel::freeAmplitude");
+
+    return it2->second.Free;
+}
+
+//-------------------------
 ComplexParameterVector DecayChannel::freeAmplitudes()
 {
     ComplexParameterVector V;
