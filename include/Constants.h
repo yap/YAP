@@ -22,7 +22,6 @@
 #define yap_Constants_h
 
 #include "FourVector.h"
-#include "Matrix.h"
 #include "ThreeVector.h"
 
 #include <complex>

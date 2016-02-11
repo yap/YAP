@@ -380,6 +380,8 @@ void Model::initializeForMonteCarloGeneration(unsigned n)
     if (!DataSet_.empty())
         throw exceptions::Exception("DataSet isn't empty", "Model::initializeForMonteCarloGeneration");
 
+    prepareDataAccessors();
+
     // create data point
     auto d = DataPoint(DataAccessors_);
 
