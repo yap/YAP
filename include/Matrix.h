@@ -91,7 +91,7 @@ Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
             res[c][r] = M[r][c];
 }
 
-/// uniary minus
+/// unary minus
 template <typename T, size_t R, size_t C>
 constexpr Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
 { return T(-1) * M; }

@@ -14,10 +14,9 @@ TEST_CASE( "Vector" )
     yap::disableLogs(el::Level::Global);
 
     SECTION( "Initialization" ) {
-        // this cannot work right now
-        /*yap::Vector<double, 3> v;
+        yap::Vector<double, 3> v = {};
         yap::Vector<double, 3> v0({0,0,0});
-        REQUIRE( v == v0);*/
+        REQUIRE( v == v0);
     }
 
     SECTION( "ThreeVector" ) {
