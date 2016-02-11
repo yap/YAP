@@ -36,7 +36,7 @@ TEST_CASE( "HelicityAngles" )
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
-    yap::Model M(std::make_unique<yap::ZemachSpinAmplitudeCache>());
+    yap::Model M(std::make_unique<yap::ZemachFormalism>());
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
 
