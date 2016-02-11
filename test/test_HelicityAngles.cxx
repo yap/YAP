@@ -86,6 +86,7 @@ TEST_CASE( "HelicityAngles" )
 
 
         // \todo we are now assuming that the D's coordinate system is (1,0,0; 0,1,0; 0,0,1)
+        // this is ok since it is the default and we didn't change it
         // actually we would have to rotate
 
         for (auto pc : D->particleCombinations()) {
