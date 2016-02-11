@@ -47,13 +47,15 @@ class Particle :
     public virtual ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
-public:
+protected:
 
     /// Constructor
     /// \param q Quantum numbers of particle
     /// \param m Mass of particle
     /// \param name Name of particle
     Particle(const QuantumNumbers& q, double m, std::string name);
+
+public:
 
     /// Calculate complex amplitude
     /// must be overrided in derived classes
