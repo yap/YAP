@@ -36,6 +36,7 @@ TEST_CASE( "Matrix" )
 
         REQUIRE( m - m == zero);
         REQUIRE( -m == m_m );
+        REQUIRE( -1. * m == m_m );
         REQUIRE( m + minus_m == zero );
         REQUIRE( m + m == 2 * m );
     }
