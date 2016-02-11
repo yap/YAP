@@ -70,6 +70,17 @@ std::string to_string(const Matrix<T, R, C>& M)
     return s;
 }
 
+/// zero matrix
+template <typename T, size_t N>
+SquareMatrix<T, N> zeroMatrix()
+{
+    SquareMatrix<T, N> u;
+    for (size_t i = 0; i < N; ++i)
+        for (size_t j = 0; j < N; ++j)
+            u[i][j] = (T)(0);
+    return u;
+}
+
 /// unit matrix
 template <typename T, size_t N>
 SquareMatrix<T, N> unitMatrix()
@@ -131,7 +142,7 @@ Matrix<T, R, C>& operator*=(Matrix<T, R, C>& M, const T& c)
 
 /// multiplication by a single element
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> operator*(const T& c, const Matrix<T, R , C>& M)
+Matrix<T, R, C> operator*(const T& c, const Matrix<T, R, C>& M)
 { auto m = M; m *= c; return m; }
 
 /// multiplication by a single element
