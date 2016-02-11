@@ -117,7 +117,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
     if (!Channels_.empty() and c->model() != model())
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
-    Channels_.emplace_back(std::move(c));
+    Channels_.push_back(std::move(c));
     Channels_.back()->setDecayingParticle(this);
 
     // insert necessary Blatt-Weisskopf barrier factor
@@ -141,7 +141,7 @@ void DecayingParticle::addChannel(std::unique_ptr<DecayChannel> c)
 
     // if this is to be the initial state particle
     if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
-        model()->setInitialStateParticle(this);
+        model()->setInitialStateParticle(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
 
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations()) {
@@ -182,7 +182,7 @@ unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombin
     }
 
     // check if also model's initial state particle
-    if (model() and model()->initialStateParticle() == this)
+    if (model() and model()->initialStateParticle() == shared_from_this())
         model()->addParticleCombination(pc);
 
     return index;

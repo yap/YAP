@@ -46,16 +46,15 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG)
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name << " with quantum numbers " << p);
-    return std::make_shared<FinalStateParticle>(p, p.Mass, p.Name);
+    return FinalStateParticle::create(p, p.Mass, p.Name);
 }
 
 //-------------------------
 std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize)
 {
     const auto& p = particleTableEntry(PDG);
-
     DEBUG("make DecayingParticle " << p.Name << " with quantum numbers " << p);
-    return std::make_shared<DecayingParticle>(p, p.Mass, p.Name, radialSize);
+    return DecayingParticle::create(p, p.Mass, p.Name, radialSize);
 }
 
 //-------------------------
@@ -64,7 +63,7 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
     const auto& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name << " with quantum numbers " << p);
     massShape->setParameters(p);
-    return std::make_shared<Resonance>(p, p.Mass, p.Name, radialSize, std::move(massShape));
+    return Resonance::create(p, p.Mass, p.Name, radialSize, std::move(massShape));
 }
 
 //-------------------------

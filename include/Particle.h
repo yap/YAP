@@ -27,6 +27,7 @@
 #include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 
+#include <memory>
 #include <string>
 
 namespace yap {
@@ -43,7 +44,8 @@ class FinalStateParticle;
 class Particle :
     public virtual AmplitudeComponent,
     public virtual ReportsModel,
-    public virtual ReportsParticleCombinations
+    public virtual ReportsParticleCombinations,
+    public std::enable_shared_from_this<Particle>
 {
 public:
 

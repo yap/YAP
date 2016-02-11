@@ -40,18 +40,20 @@ class ParticleCombination;
 
 class FinalStateParticle : public Particle
 {
-public:
-
-    /// \name Constructor
-    /// @{
+protected:
 
     /// Constructor
+    /// see #create
+    FinalStateParticle(const QuantumNumbers& q, double m, std::string name);
+
+public:
+
+    /// create
     /// \param q Quantum numbers of particle
     /// \param m Mass of particle
     /// \param name Name of particle
-    FinalStateParticle(const QuantumNumbers& q, double m, std::string name);
-
-    /// @}
+    static std::shared_ptr<FinalStateParticle> create(const QuantumNumbers& q, double m, std::string name)
+    { return std::shared_ptr<FinalStateParticle>(new FinalStateParticle(q, m, name)); }
 
     /// Calculate complex amplitude.
     /// All parameters are ignored. See particle::amplitude() for info.

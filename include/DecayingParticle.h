@@ -56,13 +56,20 @@ class ParticleCombination;
 
 class DecayingParticle : public Particle, public DataAccessor
 {
-public:
+protected:
 
     /// Constructor
+    /// see #create
+    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+
+public:
+
+    /// create
     /// \param q QuantumNumbers of decaying particle
     /// \param mass mass of decaying particle
     /// \param radialSize radial size of decaying particle
-    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+    static std::shared_ptr<DecayingParticle> create(const QuantumNumbers& q, double mass, std::string name, double radialSize)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(q, mass, name, radialSize)); }
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with

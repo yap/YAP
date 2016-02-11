@@ -34,7 +34,7 @@ int main( int argc, char** argv)
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
     // create a phi
-    auto phi = std::make_shared<yap::Resonance>(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
+    auto phi = yap::Resonance::create(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
     std::static_pointer_cast<yap::BreitWigner>(phi->massShape())->width()->setValue(4.266e-3);
     phi->addChannel({kPlus, kMinus});
 

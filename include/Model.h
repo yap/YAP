@@ -148,11 +148,11 @@ public:
     { return SpinAmplitudeCache_.get(); }
 
     /// \return Initial-state particle
-    DecayingParticle* initialStateParticle()
+    std::shared_ptr<DecayingParticle> initialStateParticle()
     { return InitialStateParticle_; }
 
     /// \return Initial-state particle (const)
-    const DecayingParticle* initialStateParticle() const
+    std::shared_ptr<DecayingParticle> initialStateParticle() const
     { return InitialStateParticle_; }
 
     /// \return vector of shared pointers to final state particles
@@ -172,8 +172,8 @@ public:
     /// @{
 
     /// Set initial-state particle
-    /// \param isp raw pointer to initial-state particle
-    void setInitialStateParticle(DecayingParticle* isp);
+    /// \param isp shared pointer to initial-state particle
+    void setInitialStateParticle(std::shared_ptr<DecayingParticle> isp);
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
@@ -295,7 +295,7 @@ private:
     DataAccessorSet DataAccessors_;
 
     /// Raw pointer to initial-state particle
-    DecayingParticle* InitialStateParticle_;
+    std::shared_ptr<DecayingParticle> InitialStateParticle_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;

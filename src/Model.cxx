@@ -19,7 +19,6 @@ namespace yap {
 //-------------------------
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
-    InitialStateParticle_(nullptr),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
     HelicityAngles_(std::make_shared<HelicityAngles>(this))
@@ -174,7 +173,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 }
 
 //-------------------------
-void Model::setInitialStateParticle(DecayingParticle* isp)
+void Model::setInitialStateParticle(std::shared_ptr<DecayingParticle> isp)
 {
     if (InitialStateParticle_)
         throw exceptions::Exception("Initial-state particle already set", "Model::setInitialStateParticle");
