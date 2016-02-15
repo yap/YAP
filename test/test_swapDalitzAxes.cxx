@@ -17,8 +17,8 @@ TEST_CASE( "swapDalitzAxes" )
 {
 
     // disable logs in text
-    //yap::disableLogs(el::Level::Global);
-    yap::plainLogs(el::Level::Global);
+    yap::disableLogs(el::Level::Global);
+    //yap::plainLogs(el::Level::Global);
 
 
     std::array<double, 2> m_0_range = {0.4, 1.9};
