@@ -510,11 +510,11 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
     // finish calculation of off diagonal elements
     for (unsigned i = 0; i < n_fsp; ++i)
         for (unsigned j = i + 1; j < n_fsp; ++j) {
-            // if m^2_ij < (m_i + m_j)^2
-            if (pp[i][j] < pow(finalStateParticles()[i]->mass()->value() + finalStateParticles()[j]->mass()->value(), 2))
-                return std::vector<FourVector<double> >();
             // P_i * P_j = (m^2_ij - m^2_i - m^2_j) / 2
             pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
+            // equivalent to: if m^2_ij < (m_i + m_j)^2
+            if (pp[i][j] < finalStateParticles()[i]->mass()->value() * finalStateParticles()[j]->mass()->value())
+                return std::vector<FourVector<double> >();
             pp[j][i] = pp[i][j];
         }
 
