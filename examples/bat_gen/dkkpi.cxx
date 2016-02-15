@@ -19,7 +19,7 @@
 std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/evt.pdl");
+    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto kPlus  = F.fsp(+321);

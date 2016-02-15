@@ -25,7 +25,7 @@ int main( int argc, char** argv)
 
     LOG(DEBUG) << "1";
 
-    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
+    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);

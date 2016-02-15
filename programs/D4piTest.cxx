@@ -30,7 +30,7 @@ int main( int argc, char** argv)
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") : ".") + "/evt.pdl");
+    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     double radialSize = 1.;
 
