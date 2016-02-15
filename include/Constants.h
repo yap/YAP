@@ -43,8 +43,8 @@ constexpr auto Complex_i = std::complex<double>(0, 1);
 /// \name real constants
 /// @{
 
-/// pi (11 digits)
-constexpr auto PI = 3.14159226535;
+/// pi (enough digits)
+constexpr auto PI = 3.14159265358979323846264338327950288;
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
 constexpr auto DEGTORAD = PI / 180.;
