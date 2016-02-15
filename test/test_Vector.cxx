@@ -125,8 +125,8 @@ TEST_CASE( "Vector" )
 
             REQUIRE(yap::angle(a, a) == 0.);
             REQUIRE(yap::angle(a, -a) == yap::PI);
-            REQUIRE(yap::angle(a, b) == 0.5*yap::PI);
-            REQUIRE(yap::angle(a, c) == 0.5*yap::PI);
+            REQUIRE(yap::angle(a, b) == 0.5 * yap::PI);
+            REQUIRE(yap::angle(a, c) == 0.5 * yap::PI);
 
         }
 
