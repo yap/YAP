@@ -5,6 +5,7 @@ include_directories(${YAP_SOURCE_DIR}/include ${YAP_SOURCE_DIR}/tools ${ROOT_INC
 
 set(YAP_TEST_SOURCES
   test_ClebschGordan.cxx
+  test_FourMomentaCalculation.cxx
   test_HelicityAngles.cxx
 #  test_Matrix.cxx
   test_Vector.cxx
