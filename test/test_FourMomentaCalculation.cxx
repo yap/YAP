@@ -74,8 +74,15 @@ TEST_CASE( "FourMomentaCalculation" )
     yap::FourVector<double> isp = std::accumulate(P.begin(), P.end(), yap::FourVector_0);
     REQUIRE( abs(isp) == Approx(D->mass()->value()) );
     // 2-p
-    REQUIRE( abs(P[0] + P[1]) == Approx(m2[0]) );
-    REQUIRE( abs(P[1] + P[2]) == Approx(m2[1]) );
+    unsigned i_a(0);
+    for (auto& axis : massAxes) {
+        auto sum = yap::FourVector_0;
+        for (unsigned i : axis->indices())
+            sum +=  P[i];
+
+        REQUIRE( abs(sum) == Approx(m2[i_a]) );
+        ++i_a;
+    }
 
 
     // Require ISP to be in its rest frame
