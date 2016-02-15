@@ -356,7 +356,7 @@ void Model::prepareDataAccessors()
             // reduce all DataAccessor indices greater than index by 1
             // and rebuild used
             for (auto& da : DataAccessors_) {
-                if (da->index() > index)
+                if (da->index() > (int)index)
                     da->setIndex(da->index() - 1);
                 used.insert(da->index());
             }
