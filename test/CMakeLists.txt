@@ -8,6 +8,7 @@ set(YAP_TEST_SOURCES
   test_FourMomentaCalculation.cxx
   test_HelicityAngles.cxx
 #  test_Matrix.cxx
+  test_swapDalitzAxes.cxx
   test_Vector.cxx
   test_WignerD.cxx
 )

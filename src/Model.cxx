@@ -396,8 +396,6 @@ void Model::initializeForMonteCarloGeneration(unsigned n)
 
     // set data partitions (1 for each data point)
     setDataPartitions(createDataPartitionsBlocksBySize(DataSet_, 1));
-
-    prepareDataAccessors();
 }
 
 //-------------------------
