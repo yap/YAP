@@ -15,7 +15,7 @@ TEST_CASE( "Vector" )
 
     SECTION( "Initialization" ) {
         yap::Vector<double, 3> v = {};
-        yap::Vector<double, 3> v0({0,0,0});
+        yap::Vector<double, 3> v0({0, 0, 0});
         REQUIRE( v == v0);
     }
 
