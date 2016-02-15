@@ -117,6 +117,19 @@ TEST_CASE( "Vector" )
 
         }
 
+        SECTION( "angles" ) {
+
+            auto a = yap::ThreeVector<double>({2, 0, 0});
+            auto b = yap::ThreeVector<double>({0, 2, 0});
+            auto c = yap::ThreeVector<double>({0, 0, 2});
+
+            REQUIRE(yap::angle(a, a) == 0.);
+            REQUIRE(yap::angle(a, -a) == yap::PI);
+            REQUIRE(yap::angle(a, b) == 0.5*yap::PI);
+            REQUIRE(yap::angle(a, c) == 0.5*yap::PI);
+
+        }
+
         // unit
         //REQUIRE( unit(yap::FourVector<double>({1,0,0,0})) == yap::FourVector<double>({1,0,0,0}) );
 
