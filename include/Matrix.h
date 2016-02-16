@@ -28,13 +28,24 @@
 
 namespace yap {
 
-/// \typedef Matrix
+/// \class Matrix
 /// ATTENTION: You have to take care of initializing matrices!!!
 /// \ingroup VectorAlgebra
 /// \param R number of rows
 /// \param C number of columns
 template <typename T, size_t R, size_t C>
-using Matrix = std::array<std::array<T, C>, R>;
+class Matrix : public std::array<std::array<T, C>, R>
+{
+public:
+    /// Constructor
+    constexpr Matrix(const std::array<std::array<T, C>, R>& m) noexcept : std::array<std::array<T, C>, R>(m) {}
+
+    /// Default constructor
+    Matrix() = default;
+
+    /// Use std::array's assignment operators
+    using std::array<std::array<T, C>, R>::operator=;
+};
 
 /// \typedef SquareMatrix
 /// \ingroup VectorAlgebra
@@ -70,7 +81,7 @@ std::string to_string(const Matrix<T, R, C>& M)
     return s;
 }
 
-/// zero matrix
+/// zero square matrix
 template <typename T, size_t N>
 SquareMatrix<T, N> zeroMatrix()
 {
@@ -78,6 +89,17 @@ SquareMatrix<T, N> zeroMatrix()
     for (size_t i = 0; i < N; ++i)
         for (size_t j = 0; j < N; ++j)
             u[i][j] = (T)(0);
+    return u;
+}
+
+/// zero matrix
+template <typename T, size_t R, size_t C>
+Matrix<T, R, C> zeroMatrix()
+{
+    Matrix<T, R, C> u;
+    for (size_t r = 0; r < R; ++r)
+        for (size_t c = 0; c < C; ++c)
+            u[r][c] = (T)(0);
     return u;
 }
 
@@ -112,7 +134,7 @@ template <typename T, size_t R, size_t K, size_t C>
 typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
 operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
 {
-    Matrix<T, R, C> res({});
+    Matrix<T, R, C> res = zeroMatrix<T, R, C>();
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             for (size_t k = 0; k < K; ++k)
