@@ -127,7 +127,7 @@ TEST_CASE( "swapFinalStates" )
 
                     // if failed, outside phase space
                     if (P.empty()) {
-                        std::cout<<"PhSp\n";
+                        std::cout<<"PhSp    ";
                         continue;
                     }
 
