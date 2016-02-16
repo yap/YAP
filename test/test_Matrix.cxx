@@ -14,11 +14,11 @@ TEST_CASE( "Matrix" )
     // disable logs in text
     yap::disableLogs(el::Level::Global);
 
-    yap::ThreeMatrix<double> zero({0, 0, 0, 0, 0, 0, 0, 0, 0});
-    yap::ThreeMatrix<double> unit({1, 0, 0, 0, 1, 0, 0, 0, 1});
+    const yap::ThreeMatrix<double> zero({0, 0, 0, 0, 0, 0, 0, 0, 0});
+    const yap::ThreeMatrix<double> unit({1, 0, 0, 0, 1, 0, 0, 0, 1});
 
     SECTION( "Initialization" ) {
-        yap::ThreeMatrix<double> m = yap::zeroMatrix<double, 3>();
+        const yap::ThreeMatrix<double> m = yap::zeroMatrix<double, 3>();
         REQUIRE(m == zero);
 
         auto u = yap::unitMatrix<double, 3>();
@@ -26,15 +26,15 @@ TEST_CASE( "Matrix" )
     }
 
     SECTION( "Transpose" ) {
-        yap::ThreeMatrix<double> m({1, 2, 3, 4, 5, 6, 7, 8, 9});
-        yap::ThreeMatrix<double> m_T({1, 4, 7, 2, 5, 8, 3, 6, 9});
+        const yap::ThreeMatrix<double> m({1, 2, 3, 4, 5, 6, 7, 8, 9});
+        const yap::ThreeMatrix<double> m_T({1, 4, 7, 2, 5, 8, 3, 6, 9});
 
         REQUIRE(m == m_T);
     }
 
     SECTION( "+ -" ) {
-        yap::ThreeMatrix<double> m({1, 2, 3, 4, 5, 6, 7, 8, 9});
-        yap::ThreeMatrix<double> minus_m({ -1, -2, -3, -4, -5, -6, -7, -8, -9});
+        const yap::ThreeMatrix<double> m({1, 2, 3, 4, 5, 6, 7, 8, 9});
+        const yap::ThreeMatrix<double> minus_m({ -1, -2, -3, -4, -5, -6, -7, -8, -9});
 
         REQUIRE(m - m == zero);
         REQUIRE(-m == minus_m);
@@ -44,12 +44,16 @@ TEST_CASE( "Matrix" )
     }
 
     SECTION("boost") {
-        yap::FourVector<double> a({1.2, 0., -1.1, 2.5});
-        yap::FourVector<double> b({1.6, -0.2, 1.15, 1.5});
-        yap::FourVector<double> c({1.9, 0.55, 2., -2.3});
+        const yap::FourVector<double> a({1.2, 0., -1.1, 2.5});
+        const yap::FourVector<double> b({1.6, -0.2, 1.15, 1.5});
+        const yap::FourVector<double> c({1.9, 0.55, 2., -2.3});
 
+        // see if we can boost a 4vector into its rest frame
+        REQUIRE( abs(vect(-lorentzTransformation(a) * a)) == Approx(0.) );
+        REQUIRE( norm(-lorentzTransformation(a) * a) == Approx(norm(a)) );
+
+        // now boost all 4vectors
         std::vector<yap::FourVector<double> > V({a, b, c});
-
         auto V_boost = -lorentzTransformation(V) * V;
 
         // check if they have been boosted into their rest frame
