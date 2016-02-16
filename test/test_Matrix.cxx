@@ -16,7 +16,7 @@ TEST_CASE( "Matrix" )
     yap::ThreeMatrix<double> unit({1, 0, 0, 0, 1, 0, 0, 0, 1});
 
     SECTION( "Initialization" ) {
-        yap::ThreeMatrix<double> m({});
+        yap::ThreeMatrix<double> m = yap::zeroMatrix<double, 3>();
         REQUIRE( m == zero);
 
         auto u = yap::unitMatrix<double, 3>();
@@ -32,13 +32,13 @@ TEST_CASE( "Matrix" )
 
     SECTION( "+ -" ) {
         yap::ThreeMatrix<double> m({1, 2, 3, 4, 5, 6, 7, 8, 9});
-        yap::ThreeMatrix<double> minus_m({ -1, -2, -3, -4, -5, -6, -7, -8, -9});
+        yap::ThreeMatrix<double> minus_m({-1, -2, -3, -4, -5, -6, -7, -8, -9});
 
         REQUIRE( m - m == zero);
-        REQUIRE( -m == m_m );
-        REQUIRE( -1. * m == m_m );
+        REQUIRE( -m == minus_m );
+        REQUIRE( -1. * m == minus_m );
         REQUIRE( m + minus_m == zero );
-        REQUIRE( m + m == 2 * m );
+        REQUIRE( m + m == 2. * m );
     }
 
 
