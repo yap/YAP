@@ -37,12 +37,12 @@ TEST_CASE( "swapDalitzAxes" )
 
             // calc 3rd inv mass square
             double m2_ac = pow(F.decayingParticle(PDGs[0], 3.)->mass()->value(), 2)
-                                    + pow(F.fsp(PDGs[1])->mass()->value(), 2)
-                                    + pow(F.fsp(PDGs[2])->mass()->value(), 2)
-                                    + pow(F.fsp(PDGs[3])->mass()->value(), 2)
-                                    - m2_ab - m2_bc;
+                           + pow(F.fsp(PDGs[1])->mass()->value(), 2)
+                           + pow(F.fsp(PDGs[2])->mass()->value(), 2)
+                           + pow(F.fsp(PDGs[3])->mass()->value(), 2)
+                           - m2_ab - m2_bc;
 
-            if (m2_ac < 0.){
+            if (m2_ac < 0.) {
                 //std::cout << "m2_ac < 0.\n";
                 continue;
             }
@@ -87,35 +87,35 @@ TEST_CASE( "swapDalitzAxes" )
                     // Dalitz coordinates
                     yap::MassAxes massAxes;
                     std::vector<double> squared_masses;
-                    switch(i) {
-                    case 0:
-                        // original
-                        massAxes = M->getMassAxes({{0, 1}, {1, 2}});
-                        squared_masses = {m2_ab, m2_bc};
-                        break;
-                    case 1:
-                        // 0 <-> 1
-                        massAxes = M->getMassAxes({{1, 0}, {0, 2}});
-                        squared_masses = {m2_ab, m2_ac};
-                        break;
-                    case 2:
-                        // 0 <-> 2
-                        massAxes = M->getMassAxes({{2, 1}, {1, 0}});
-                        squared_masses = {m2_bc, m2_ab};
-                        break;
-                    case 3:
-                        // 1 <-> 2
-                        massAxes = M->getMassAxes({{0, 2}, {2, 1}});
-                        squared_masses = {m2_ac, m2_bc};
-                        break;
-                    case 4:
-                        massAxes = M->getMassAxes({{1, 2}, {2, 0}});
-                        squared_masses = {m2_bc, m2_ac};
-                        break;
-                    case 5:
-                        massAxes = M->getMassAxes({{2, 0}, {0, 1}});
-                        squared_masses = {m2_ac, m2_ab};
-                        break;
+                    switch (i) {
+                        case 0:
+                            // original
+                            massAxes = M->getMassAxes({{0, 1}, {1, 2}});
+                            squared_masses = {m2_ab, m2_bc};
+                            break;
+                        case 1:
+                            // 0 <-> 1
+                            massAxes = M->getMassAxes({{1, 0}, {0, 2}});
+                            squared_masses = {m2_ab, m2_ac};
+                            break;
+                        case 2:
+                            // 0 <-> 2
+                            massAxes = M->getMassAxes({{2, 1}, {1, 0}});
+                            squared_masses = {m2_bc, m2_ab};
+                            break;
+                        case 3:
+                            // 1 <-> 2
+                            massAxes = M->getMassAxes({{0, 2}, {2, 1}});
+                            squared_masses = {m2_ac, m2_bc};
+                            break;
+                        case 4:
+                            massAxes = M->getMassAxes({{1, 2}, {2, 0}});
+                            squared_masses = {m2_bc, m2_ac};
+                            break;
+                        case 5:
+                            massAxes = M->getMassAxes({{2, 0}, {0, 1}});
+                            squared_masses = {m2_ac, m2_ab};
+                            break;
                     }
 
                     // calculate four-momenta
@@ -134,7 +134,7 @@ TEST_CASE( "swapDalitzAxes" )
                 }
 
                 REQUIRE( std::isfinite(resultingAmplitudes[0]) );
-                for (unsigned i=1; i<resultingAmplitudes.size(); ++i)
+                for (unsigned i = 1; i < resultingAmplitudes.size(); ++i)
                     REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[i]) );
 
                 //std::cout<<"\n";
