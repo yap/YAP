@@ -51,7 +51,7 @@ TEST_CASE( "swapDalitzAxes" )
             // loop over SpinFormalisms
             for (unsigned i_formalism = 0; i_formalism < 2; ++i_formalism) {
 
-                std::vector<double> resultingAmplitudes({0, 0, 0, 0});
+                std::vector<double> resultingAmplitudes(6, 0.);
 
                 // loop over axis swaps
                 for (unsigned i = 0; i < 4; ++i) {
@@ -64,8 +64,6 @@ TEST_CASE( "swapDalitzAxes" )
                     auto M = i_formalism == 0 ? std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>()) :
                              std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
-                    /// \todo have to thest this!!
-                    //M->setFinalState({kPlus, kMinus, piPlus});
                     M->setFinalState({piPlus, kMinus, kPlus});
 
                     // initial state particle
@@ -109,6 +107,15 @@ TEST_CASE( "swapDalitzAxes" )
                         // 1 <-> 2
                         massAxes = M->getMassAxes({{0, 2}, {2, 1}});
                         squared_masses = {m2_ac, m2_bc};
+                        break;
+                    case 4:
+                        massAxes = M->getMassAxes({{1, 2}, {2, 0}});
+                        squared_masses = {m2_bc, m2_ac};
+                        break;
+                    case 5:
+                        massAxes = M->getMassAxes({{2, 0}, {0, 1}});
+                        squared_masses = {m2_ac, m2_ab};
+                        break;
                     }
 
                     // calculate four-momenta
@@ -127,9 +134,8 @@ TEST_CASE( "swapDalitzAxes" )
                 }
 
                 REQUIRE( std::isfinite(resultingAmplitudes[0]) );
-                REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[1]) );
-                REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[2]) );
-                REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[3]) );
+                for (unsigned i=1; i<resultingAmplitudes.size(); ++i)
+                    REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[i]) );
 
                 //std::cout<<"\n";
 
