@@ -122,6 +122,8 @@ Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             res[c][r] = M[r][c];
+
+    return res;
 }
 
 /// unary minus
