@@ -64,22 +64,19 @@ public:
 
     /// @}
 
-    /// Calculate complex amplitude
-    /* virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0; */
-
     /// Check if AmplitudeComponent is consistent
     virtual bool consistent() const = 0;
 
     /// \return a set of parameters this AmplitudeComponent depends on
     /// to be overridden in the concrete AmplitudeComponent
     /// \return empty set
-    virtual ParameterSet ParametersItDependsOn()
+    virtual ParameterSet parametersItDependsOn()
     { return {}; }
 
     /// \return a list of CachedDataValues this AmplitudeComponent depends on
     /// to be overridden in the concrete AmplitudeComponent
     /// \return empty vector
-    virtual CachedDataValueSet CachedDataValuesItDependsOn()
+    virtual CachedDataValueSet cachedDataValuesItDependsOn()
     { return {}; }
 
 };

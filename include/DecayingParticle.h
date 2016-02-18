@@ -129,9 +129,7 @@ public:
     void printDecayChain() const
     { printDecayChainLevel(0); }
 
-    // virtual ParameterSet ParametersItDependsOn() override;
-
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
+    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to Model through first DecayChannel
     Model* model() override

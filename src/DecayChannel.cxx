@@ -184,7 +184,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
         // add daughter dependencies to the fixed amplitude
         for (int i = 0; i < int(Daughters_.size()); ++i)
             if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
-                for (auto& c : d->CachedDataValuesItDependsOn())
+                for (auto& c : d->cachedDataValuesItDependsOn())
                     ap.Fixed->addDependency(c, i);
 
         // add to TotalAmplitudes_[two_m]'s dependencies
@@ -421,7 +421,7 @@ SpinAmplitudeVector DecayChannel::spinAmplitudes()
 }
 
 //-------------------------
-CachedDataValueSet DecayChannel::CachedDataValuesItDependsOn()
+CachedDataValueSet DecayChannel::cachedDataValuesItDependsOn()
 {
     CachedDataValueSet S;
     for (auto& kv : TotalAmplitudes_)
@@ -473,26 +473,5 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
 
     return fsps;
 }
-
-//-------------------------
-/*CachedDataValuePcIndexSet DecayChannel::CachedDataValuesItDependsOn()
-{
-    CachedDataValuePcIndexSet set;
-    set.insert(std::make_pair(FixedAmplitude_, -1));
-
-    for (int i=0; i<int(Daughters_.size()); ++i) {
-        auto daugh = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]);
-        if (!daugh)
-            continue;
-        for (auto& c : daugh->CachedDataValuesItDependsOn()) {
-            if (c.second >= 0)
-                LOG(FATAL) << "fatal error";
-            set.insert(std::make_pair(c.first, i));
-        }
-    }
-
-    return set;
-}*/
-
 
 }

@@ -64,9 +64,7 @@ public:
     /// check consistency of object
     virtual bool consistent() const override;
 
-    //virtual ParameterSet ParametersItDependsOn() override;
-
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override
+    virtual CachedDataValueSet cachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
     /// include const access to Model

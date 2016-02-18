@@ -131,8 +131,8 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         // add BW to Fixed amplitudes for all spin projections
         auto& apM = Channels_.back()->amplitudes(sa);
         for (auto& ap : apM) {
-            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->ParametersItDependsOn());
-            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->CachedDataValuesItDependsOn());
+            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->parametersItDependsOn());
+            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->cachedDataValuesItDependsOn());
         }
     }
 
@@ -239,7 +239,7 @@ void DecayingParticle::printDecayChainLevel(int level) const
 }
 
 //-------------------------
-CachedDataValueSet DecayingParticle::CachedDataValuesItDependsOn()
+CachedDataValueSet DecayingParticle::cachedDataValuesItDependsOn()
 {
     CachedDataValueSet S;
     for (auto& kv : Amplitudes_)

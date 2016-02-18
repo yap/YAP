@@ -112,10 +112,8 @@ public:
 
     /// @}
 
-    /* virtual ParameterSet ParametersItDependsOn() override; */
-
     /// \return the set of TotalAmplitudes_ values
-    virtual CachedDataValueSet CachedDataValuesItDependsOn() override;
+    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to model through first Daughter
     Model* model() override
