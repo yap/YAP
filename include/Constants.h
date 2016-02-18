@@ -44,10 +44,10 @@ constexpr auto Complex_i = std::complex<double>(0, 1);
 /// @{
 
 /// pi
-constexpr double PI = acos(-1);
+constexpr long double PI = acos(-1L);
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
-constexpr double DEGTORAD = PI / 180.;
+constexpr long double DEGTORAD = PI / 180.;
 
 /// @}
 
