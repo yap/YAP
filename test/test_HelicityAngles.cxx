@@ -8,7 +8,7 @@
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <HelicityAngles.h>
-#include <HelicitySpinAmplitude.h>
+#include <HelicityFormalism.h>
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>
@@ -17,7 +17,7 @@
 #include <ParticleFactory.h>
 #include <Resonance.h>
 #include <WignerD.h>
-#include <ZemachSpinAmplitude.h>
+#include <ZemachFormalism.h>
 
 #include <TGenPhaseSpace.h>
 #include <TLorentzVector.h>

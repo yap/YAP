@@ -3,7 +3,7 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
-#include "HelicitySpinAmplitude.h"
+#include "HelicityFormalism.h"
 #include "make_unique.h"
 #include "MassAxes.h"
 #include "Model.h"

@@ -17,7 +17,7 @@ set(YAP_SOURCES
 	FinalStateParticle.cxx
 	FourMomenta.cxx
 	HelicityAngles.cxx
-	HelicitySpinAmplitude.cxx
+	HelicityFormalism.cxx
   MassShape.cxx
 	MeasuredBreakupMomenta.cxx
   Model.cxx
@@ -29,7 +29,7 @@ set(YAP_SOURCES
 	Resonance.cxx
 	SpinAmplitude.cxx
 	WignerD.cxx
-  ZemachSpinAmplitude.cxx
+  ZemachFormalism.cxx
 )
 
 make_static_library(YAP "${YAP_SOURCES}" "${ROOT_LIBS}")

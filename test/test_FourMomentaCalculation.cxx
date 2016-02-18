@@ -11,7 +11,7 @@
 #include <Model.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
-#include <ZemachSpinAmplitude.h>
+#include <ZemachFormalism.h>
 
 #include <cmath>
 

@@ -18,13 +18,14 @@
 
 /// \file
 
-#ifndef yap_ZemachSpinAmplitude_h
-#define yap_ZemachSpinAmplitude_h
+#ifndef yap_HelicityFormalism_h
+#define yap_HelicityFormalism_h
 
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 
 #include <complex>
+#include <map>
 #include <memory>
 
 namespace yap {
@@ -32,11 +33,11 @@ namespace yap {
 class DataPoint;
 class ParticleCombination;
 
-/// \class ZemachSpinAmplitude
-/// \brief Class implementing Zemach tensors
+/// \class HelicitySpinAmplitude
+/// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-class ZemachSpinAmplitude : public SpinAmplitude
+class HelicitySpinAmplitude : public SpinAmplitude
 {
 public:
 
@@ -49,41 +50,51 @@ public:
     virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
                                       const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
-    /// \return "Zemach formalism"
+    /// \return "helicity formalism"
     virtual std::string formalism() const override
-    { return "Zemach formalism"; }
+    { return "helicity formalism"; }
 
-    /// grant SpinAmplitudeCache friend status to call constructor
-    friend class ZemachFormalism;
+    /// grant HelicityFormalism friend status to call constructor
+    friend class HelicityFormalism;
 
 protected:
+
     /// Constructor
     /// \param two_J  twice the spin of Initial-state
     /// \param two_j1 twice the spin of first daughter
     /// \param two_j2 twice the spin of second daughter
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s);
+    /// \param equiv ParticleCombination equivalence struct for determining index assignments
+    HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
+                          ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
 
 private:
+
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override
-    { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
+    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
-    /// set dependency on four-momenta
+    /// set dependency on helicty angles
     virtual void setDependencies(std::shared_ptr<CachedDataValue> a) override;
+
+    /// L-S * S-S coupling coefficients
+    /// first map key is m1;
+    /// second map key is m2;
+    /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
+    std::map<int, std::map<int, double> > Coefficients_;
 
 };
 
-/// \class ZemachFormalism
-/// \brief Caches ZemachSpinAmplitude's
+/// \class HelicityFormalism
+/// \brief Caches HelicitySpinAmplitude's
 /// \author Daniel Greenwald
-class ZemachFormalism : public SpinAmplitudeCache
+class HelicityFormalism : public SpinAmplitudeCache
 {
 public:
 
     /// Constructor
-    ZemachFormalism() : SpinAmplitudeCache() {}
+    HelicityFormalism() : SpinAmplitudeCache() {}
 
 private:
 
@@ -95,10 +106,9 @@ private:
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
     virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) const override
-    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j1, two_j2, l, two_s)); }
+    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j1, two_j2, l, two_s)); }
 
 };
-
 
 }
 

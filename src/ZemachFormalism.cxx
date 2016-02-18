@@ -1,4 +1,4 @@
-#include "ZemachSpinAmplitude.h"
+#include "ZemachFormalism.h"
 
 #include "ClebschGordan.h"
 #include "Constants.h"

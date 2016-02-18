@@ -5,7 +5,7 @@
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "HelicityAngles.h"
-#include "HelicitySpinAmplitude.h"
+#include "HelicityFormalism.h"
 #include "make_unique.h"
 #include "logging.h"
 #include "Model.h"

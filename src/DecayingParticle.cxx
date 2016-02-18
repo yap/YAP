@@ -2,7 +2,6 @@
 
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
-#include "HelicitySpinAmplitude.h"
 #include "FinalStateParticle.h"
 #include "Model.h"
 #include "logging.h"

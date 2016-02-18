@@ -3,14 +3,14 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
-#include "HelicitySpinAmplitude.h"
+#include "HelicityFormalism.h"
 #include "make_unique.h"
 #include "MassAxes.h"
 #include "Model.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
-#include "ZemachSpinAmplitude.h"
+#include "ZemachFormalism.h"
 
 #include <memory>
 #include <vector>

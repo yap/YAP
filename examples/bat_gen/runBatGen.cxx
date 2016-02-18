@@ -11,7 +11,7 @@
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <make_unique.h>
-#include <ZemachSpinAmplitude.h>
+#include <ZemachFormalism.h>
 
 #include "bat_gen.h"
 #include "d3pi.h"

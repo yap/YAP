@@ -5,12 +5,12 @@
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <logging.h>
-#include <HelicitySpinAmplitude.h>
+#include <HelicityFormalism.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <ParticleFactory.h>
 #include <Resonance.h>
-#include <ZemachSpinAmplitude.h>
+#include <ZemachFormalism.h>
 
 #include <cmath>
 

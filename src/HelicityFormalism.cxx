@@ -1,4 +1,4 @@
-#include "HelicitySpinAmplitude.h"
+#include "HelicityFormalism.h"
 
 #include "ClebschGordan.h"
 #include "Constants.h"
