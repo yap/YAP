@@ -119,7 +119,7 @@ SquareMatrix<T, N> unitMatrix()
 template <typename T, size_t N>
 SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
 {
-    SquareMatrix<T, N> D({});
+    SquareMatrix<T, N> D = zeroMatrix<T, N, N>();
     for (size_t i = 0; i < N; ++i)
         D[i][i] = d[i];
     return D;
