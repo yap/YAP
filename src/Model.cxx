@@ -478,9 +478,11 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 
     // set diagonal elements to squared masses, and store sum
     double m2_sum_1 = 0;
+    double m_sum_1 = InitialStateParticle_->mass()->value();
     for (size_t i = 0; i < n_fsp; ++i) {
         pp[i][i] = pow(finalStateParticles()[i]->mass()->value(), 2);
         m2_sum_1 += pp[i][i];
+        m_sum_1 -= finalStateParticles()[i]->mass()->value();
     }
 
     // add two-particle invariant masses for those provided
@@ -508,6 +510,9 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
     // finish calculation of off diagonal elements
     for (unsigned i = 0; i < n_fsp; ++i)
         for (unsigned j = i + 1; j < n_fsp; ++j) {
+            // first check if m_ij > (M - sum_m + m_i + m_j)
+            if (pp[i][j] > pow(m_sum_1 + finalStateParticles()[i]->mass()->value() + finalStateParticles()[j]->mass()->value(), 2))
+                return std::vector<FourVector<double> >();
             // P_i * P_j = (m^2_ij - m^2_i - m^2_j) / 2
             pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
             // equivalent to: if m^2_ij < (m_i + m_j)^2
@@ -523,54 +528,50 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 
     for (unsigned i = 0; i < n_fsp; ++i) {
 
-        const double E = (pp[0][i] + pp[1][i]) / m_01;
-        const double E2 = E * E;
-
-        // if E^2 < m^2
-        if (E2 < pp[i][i])
-            return std::vector<FourVector<double> >();
+        FourVector<double> p;
 
         if (i < 2) {
 
-            const double Z = sqrt(E2 - pp[i][i]);
+            P[i][0] = (pp[0][i] + pp[1][i]) / m_01; // E
+            P[i][3] = pow_negative_one(i) * P[i][0] * sqrt(1. - pp[i][i] / pow(P[i][0], 2)); // Z
 
-            // p0 in z direction, p1 in negative z direction
-            P[i] = {E, 0, 0, pow_negative_one(i)* Z};
+            if (!std::isfinite(P[i][3]))
+                return std::vector<FourVector<double> >();
 
         } else {
 
-            // Z_i = (E_0 * P_1 * P_i - E_1 * P_0 * P_i) / m_01 / Z_0
-            const double Z = (P[0][0] * pp[1][i] - P[1][0] * pp[0][i]) / m_01 / P[0][3];
+            // Energy E_i = (P_0 * P_i + P_1 * P_i) / (E_1 + E_0)
+            P[i][0] = (pp[0][i] + pp[1][i]) / (P[0][0] + P[1][0]);
 
-            if (!std::isfinite(Z))
+            // if E^2 < m^2
+            if (P[i][0] < sqrt(pp[i][i]))
                 return std::vector<FourVector<double> >();
+
+            // if p0 and p1 are at rest in m01 rest frame, Z_i := 0
+            // else Z_i = (P_1 * P_i - P_0 * P_i - (E_1 - E_0) * E_i) / 2 / Z_0
+            P[i][3] = (P[0][3] == 0) ? 0 : (pp[1][i] - pp[0][i] - (P[1][0] - P[0][0]) * P[i][0]) / 2. / P[0][3];
 
             if (i < 3) {
 
-                // p2 in y-z plane
-                const double Y = sqrt(E2 - pp[i][i] - Z * Z);
+                // p2 in y-z plane, enforce P^2 = m^2
+                P[i][2] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
 
-                if (!std::isfinite(Y))
+                if (!std::isfinite(P[i][2]))
                     return std::vector<FourVector<double> >();
-
-                P[i] = {E, 0, Y, Z};
 
             } else {
 
-                // Y_i = (E_2 * E_i - P_2 * P_i - Z_2 * Z_i) / Y_2
-                const double Y = (P[2][0] * E - pp[2][i] - P[2][3] * Z) / P[2][2];
-
-                if (!std::isfinite(Y))
-                    return std::vector<FourVector<double> >();
+                // if Y_2 == 0, Y_i := 0
+                // else Y_i = (P_2 * P_i - P_2 * P_i) / Y_2
+                P[i][2] = (P[2][2] == 0) ? 0 : (P[2][0] * P[i][0] - pp[2][i] - P[2][3] * P[i][3]) / P[2][2];
 
                 if (i < 4) {
 
-                    const double X = sqrt(E2 - pp[3][3] - Z * Z - Y * Y);
+                    // enforce P^2 = m^2
+                    P[i][1] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][2] / P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
 
-                    if (!std::isfinite(X))
+                    if (!std::isfinite(P[i][1]))
                         return std::vector<FourVector<double> >();
-
-                    P[i] = {E, X, Y, Z};
 
                 } else
                     throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
@@ -582,12 +583,6 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
     auto C = coordinateSystem();
     for (auto& p : P)
         p = FourVector<double>(p[0], p[1] * C[0] + p[2] * C[1] + p[3] * C[2]);
-
-    // boost:
-    // auto p_isp = std::accumulate(P.begin(), P.end(), FourVector_0);
-    // auto b = lorentzTransformation<double>(-p_isp);
-    // for (auto& p : P)
-    //     p = b * p;
 
     return P;
 }
