@@ -21,12 +21,16 @@
 #ifndef yap_MeasuredBreakupMomenta_h
 #define yap_MeasuredBreakupMomenta_h
 
-#include "CachedDataValue.h"
 #include "StaticDataAccessor.h"
+
+#include <memory>
+#include <string>
 
 namespace yap {
 
 class Model;
+class ParticleCombination;
+class RealCachedDataValue;
 
 /// \class MeasuredBreakupMomenta
 /// \brief Calculates, stores and gives access to breakup momenta (using measured masses)

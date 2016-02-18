@@ -21,21 +21,12 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include <Constants.h>
 #include <DataAccessor.h>
-#include <FourVector.h>
 
-#include <complex>
-#include <memory>
+#include <string>
 #include <vector>
 
 namespace yap {
-
-class CachedDataValue;
-class FourMomenta;
-class HelicityAngles;
-class MeasuredBreakupMomenta;
-class ParticleCombination;
 
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation

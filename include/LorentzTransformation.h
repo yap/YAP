@@ -21,9 +21,11 @@
 #ifndef yap_LorentzTransformation_h
 #define yap_LorentzTransformation_h
 
-#include "Constants.h"
 #include "Matrix.h"
+#include "FourVector.h"
 #include "ThreeVector.h"
+
+#include <algorithm>
 
 namespace yap {
 

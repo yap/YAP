@@ -29,6 +29,8 @@
 
 namespace yap {
 
+class Model;
+
 /// \class SpinAmplitudeCache
 /// \brief Caches SpinAmplitudes
 /// \author Johannes Rauch, Daniel Greenwald

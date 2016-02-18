@@ -22,7 +22,6 @@
 #define yap_FinalStateParticle_h
 
 #include "Constants.h"
-#include "DataPoint.h"
 #include "Particle.h"
 
 #include <complex>
@@ -30,6 +29,7 @@
 
 namespace yap {
 
+class DataPoint;
 class Model;
 class ParticleCombination;
 

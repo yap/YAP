@@ -24,11 +24,7 @@
 #include "CoordinateSystem.h"
 #include "DataPartition.h"
 #include "DataSet.h"
-#include "FourMomenta.h"
 #include "FourVector.h"
-#include "HelicityAngles.h"
-#include "HelicitySpinAmplitude.h"
-#include "MeasuredBreakupMomenta.h"
 #include "ParticleCombinationCache.h"
 
 #include <complex>
@@ -40,7 +36,10 @@ namespace yap {
 class DecayingParticle;
 class DataPoint;
 class FinalStateParticle;
+class FourMomenta;
+class HelicityAngles;
 class MassAxes;
+class MeasuredBreakupMomenta;
 class SpinAmplitudeCache;
 
 /// \class Model

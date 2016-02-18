@@ -21,17 +21,13 @@
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
-#include "CalculationStatus.h"
 #include "CachedDataValue.h"
 #include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
-#include "logging.h"
-
 #include <memory>
 #include <set>
-#include <vector>
 
 namespace yap {
 

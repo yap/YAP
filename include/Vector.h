@@ -25,11 +25,9 @@
 
 #include <algorithm>
 #include <array>
-#include <cassert>
 #include <cmath>
 #include <numeric>
 #include <ostream>
-#include <stdexcept>
 #include <string>
 
 namespace yap {

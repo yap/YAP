@@ -21,7 +21,6 @@
 #ifndef yap_Rotation_h
 #define yap_Rotation_h
 
-#include "Constants.h"
 #include "Matrix.h"
 #include "ThreeVector.h"
 

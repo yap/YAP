@@ -5,6 +5,7 @@
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <logging.h>
+#include <HelicitySpinAmplitude.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <ParticleFactory.h>

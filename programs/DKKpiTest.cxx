@@ -1,12 +1,16 @@
 #include "logging.h"
 #include "BreitWigner.h"
 #include "FinalStateParticle.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
+#include "HelicitySpinAmplitude.h"
 #include "make_unique.h"
 #include "MassAxes.h"
 #include "Model.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
 #include "Resonance.h"
+#include "SpinAmplitudeCache.h"
 
 #include <memory>
 #include <vector>

@@ -22,7 +22,6 @@
 #define yap_CachedDataValue_h
 
 #include "CalculationStatus.h"
-#include "Constants.h"
 #include "FourVector.h"
 #include "Parameter.h"
 #include "VariableStatus.h"

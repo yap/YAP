@@ -31,16 +31,17 @@ namespace yap {
 class MassAxes : public ParticleCombinationVector
 {
 public:
+
     /// Default constructor
     MassAxes() : ParticleCombinationVector() {}
+
+    /// grant friend status to Model to create MassAxes
+    friend class Model;
 
 protected:
 
     /// protected constructor, one must use FourMomenta::getMassAxes
     MassAxes(const ParticleCombinationVector& axes) : ParticleCombinationVector(axes) {}
-
-    /// grant friend status to Model to create MassAxes
-    friend class Model;
 
 };
 

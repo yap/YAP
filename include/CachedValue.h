@@ -22,13 +22,10 @@
 #define yap_CachedValue_h
 
 #include "CalculationStatus.h"
-#include "Constants.h"
 #include "Parameter.h"
-#include "VariableStatus.h"
 
 #include <memory>
 #include <set>
-#include <vector>
 
 namespace yap {
 

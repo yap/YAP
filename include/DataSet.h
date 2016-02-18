@@ -21,12 +21,11 @@
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
-#include <memory>
+#include "DataPoint.h"
+
 #include <vector>
 
 namespace yap {
-
-class DataPoint;
 
 /// \class DataSet
 /// \brief Class holding a set of DataPoint objects.
@@ -38,7 +37,10 @@ class DataSet : public std::vector<DataPoint>
 public:
 
     /// Check if data point is consisent with data set
-    bool consistent(const DataPoint& d) const;
+    bool consistent(const DataPoint& d) const
+    {
+        return empty() or equalStructure(front(), d);
+    }
 
 };
 

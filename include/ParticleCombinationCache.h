@@ -24,9 +24,8 @@
 #include "ParticleCombination.h"
 #include "WeakPtrCache.h"
 
-#include <memory>
-#include <set>
-#include <string>
+#include <ostream>
+#include <vector>
 
 namespace yap {
 
@@ -93,12 +92,6 @@ public:
 
     /// stream the cache elements as a table
     virtual std::ostream& print(std::ostream& os) const override;
-
-protected:
-
-    /* /// set lineage: copy each daughter, add pc as parent to copy, */
-    /* /// swap copy for daughter, and call setLineage on each daughter. */
-    /* void setLineage(shared_ptr_type pc); */
 
 private:
 

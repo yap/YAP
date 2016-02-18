@@ -21,7 +21,6 @@
 #ifndef yap_HelicitySpinAmplitude_h
 #define yap_HelicitySpinAmplitude_h
 
-#include "DataPoint.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 
@@ -31,6 +30,7 @@
 
 namespace yap {
 
+class DataPoint;
 class ParticleCombination;
 
 /// \class HelicitySpinAmplitude

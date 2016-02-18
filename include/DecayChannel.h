@@ -24,7 +24,6 @@
 #include "AmplitudeComponent.h"
 #include "Constants.h"
 #include "DataAccessor.h"
-#include "DataPoint.h"
 #include "Parameter.h"
 #include "Particle.h"
 #include "SpinAmplitude.h"
@@ -38,6 +37,7 @@
 namespace yap {
 
 class ComplexCachedDataValue;
+class DataPoint;
 class DecayingParticle;
 class FinalStateParticle;
 class ParticleCombination;

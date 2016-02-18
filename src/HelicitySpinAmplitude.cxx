@@ -3,6 +3,7 @@
 #include "ClebschGordan.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
+#include "HelicityAngles.h"
 #include "Model.h"
 #include "logging.h"
 #include "WignerD.h"

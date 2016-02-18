@@ -23,9 +23,9 @@
 
 #include "QuantumNumbers.h"
 
-#include <limits>
 #include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace yap {
@@ -33,9 +33,7 @@ namespace yap {
 class DecayingParticle;
 class FinalStateParticle;
 class MassShape;
-class Particle;
 class Resonance;
-class SpinAmplitudeCache;
 
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database

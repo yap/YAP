@@ -5,10 +5,14 @@
 #include "DataSet.h"
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
+#include "FourMomenta.h"
+#include "HelicityAngles.h"
 #include "logging.h"
 #include "LorentzTransformation.h"
 #include "MassAxes.h"
+#include "MeasuredBreakupMomenta.h"
 #include "ParticleCombinationCache.h"
+#include "SpinAmplitudeCache.h"
 
 #include <assert.h>
 #include <future>

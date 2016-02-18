@@ -2,12 +2,17 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "FinalStateParticle.h"
+#include "FourMomenta.h"
 #include "FourVector.h"
+#include "HelicityAngles.h"
+#include "HelicitySpinAmplitude.h"
 #include "make_unique.h"
+#include "logging.h"
 #include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "SpinAmplitudeCache.h"
 #include "Resonance.h"
 #include "WignerD.h"
 
@@ -19,8 +24,6 @@
 #include <string>
 
 //#include <callgrind.h>
-
-#include "logging.h"
 
 int main( int argc, char** argv)
 {
@@ -130,7 +133,7 @@ int main( int argc, char** argv)
     for (unsigned d = 0; d < M.dataSet().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
         for (auto& v : M.fourMomenta().finalStateMomenta(M.dataSet()[d]))
-            LOG(INFO) << to_string(v);
+            LOG(INFO) << yap::to_string(v);
     }
 
 

@@ -22,18 +22,17 @@
 #define yap_Resonance_h
 
 #include "DecayingParticle.h"
-#include "DataAccessor.h"
-#include "DataPoint.h"
 
 #include <complex>
 #include <memory>
+#include <string>
 
 namespace yap {
 
-class DecayChannel;
-class FinalStateParticle;
+class DataPoint;
 class MassShape;
 class ParticleCombination;
+class QuantumNumbers;
 
 /// \class Resonance
 /// \brief Class for a particle that will decay and has a mass shape
@@ -87,7 +86,7 @@ public:
 protected:
 
     /// overrides DataAccessor's function to also register MassShape_ with Model
-    virtual void addToModel();
+    virtual void addToModel() override;
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_

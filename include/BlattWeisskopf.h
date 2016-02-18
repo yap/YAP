@@ -22,18 +22,17 @@
 #define yap_BlattWeisskopf_h
 
 #include "AmplitudeComponent.h"
-#include "CachedDataValue.h"
 #include "DataAccessor.h"
-#include "DataPoint.h"
-#include "ReportsModel.h"
 
-#include <complex>
 #include <memory>
 
 namespace yap {
 
+class DataPoint;
 class DecayingParticle;
+class Model;
 class ParticleCombination;
+class RealCachedDataValue;
 
 /// \class BlattWeisskopf
 /// \brief Class implementing BlattWeisskopf barrier factors
@@ -58,7 +57,7 @@ public:
     unsigned L() const
     { return L_; }
 
-    /// Calculate complex amplitude
+    /// Calculate amplitude
     virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const;
 
     /// check consistency of object
@@ -68,7 +67,7 @@ public:
     { return {Fq_r, Fq_ab}; }
 
     /// include const access to Model
-    using ReportsModel::model;
+    using DataAccessor::model;
 
     /// \return raw pointer to Model through owning DecayingParticle
     Model* model() override;

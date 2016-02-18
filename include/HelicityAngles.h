@@ -21,13 +21,13 @@
 #ifndef yap_HelicityAngles_h
 #define yap_HelicityAngles_h
 
-#include "CachedDataValue.h"
-#include "FourVector.h"
-#include "LorentzTransformation.h"
 #include "StaticDataAccessor.h"
+
+#include <memory>
 
 namespace yap {
 
+class RealCachedDataValue;
 class Model;
 class ParticleCombination;
 

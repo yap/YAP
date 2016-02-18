@@ -4,6 +4,7 @@
 #include <BreitWigner.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
+#include <HelicitySpinAmplitude.h>
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>

@@ -21,17 +21,10 @@
 #ifndef yap_AmplitudeComponent_h
 #define yap_AmplitudeComponent_h
 
-#include "CalculationStatus.h"
 #include "CachedDataValue.h"
-#include "DataPoint.h"
 #include "Parameter.h"
 
-#include <complex>
-#include <memory>
-
 namespace yap {
-
-class ParticleCombination;
 
 /// \name AmplitudeComponent
 /// \brief Abstract base class for all objects implementing a (complex) amplitude

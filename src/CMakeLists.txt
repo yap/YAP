@@ -12,7 +12,6 @@ set(YAP_SOURCES
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
-	DataSet.cxx
 	DecayChannel.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx

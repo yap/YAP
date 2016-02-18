@@ -25,10 +25,13 @@
 #include "DataAccessor.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
-#include "ReportsModel.h"
+
+#include <memory>
+#include <string>
 
 namespace yap {
 
+class Model;
 class Resonance;
 
 /// \class MassShape
@@ -68,7 +71,7 @@ public:
     { return Resonance_; }
 
     /// include const access to ISP
-    using ReportsModel::model;
+    using DataAccessor::model;
 
     /// get raw pointer to Model through resonance
     Model* model() override;
@@ -76,10 +79,10 @@ public:
     virtual std::string data_accessor_type() const override
     {return "MassShape"; }
 
-protected:
-
     /// Grant Resonance friendship, so it can set itself as owner
     friend class Resonance;
+
+protected:
 
     /// Set raw pointer to owning Resonance.
     /// Calls borrowParametersFromResonance()

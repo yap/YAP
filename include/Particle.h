@@ -29,9 +29,11 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace yap {
 
+class DataPoint;
 class ParticleCombination;
 class FinalStateParticle;
 

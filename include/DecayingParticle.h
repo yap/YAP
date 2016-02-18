@@ -21,16 +21,10 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
-#include "BlattWeisskopf.h"
 #include "DataAccessor.h"
-#include "DataPoint.h"
 #include "DecayChannel.h"
-#include "Exceptions.h"
-#include "HelicitySpinAmplitude.h"
 #include "make_unique.h"
 #include "Particle.h"
-#include "QuantumNumbers.h"
-#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <map>
@@ -39,9 +33,12 @@
 
 namespace yap {
 
+class BlattWeisskopf;
+class DataPoint;
 class FinalStateParticle;
 class Model;
 class ParticleCombination;
+class QuantumNumbers;
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay

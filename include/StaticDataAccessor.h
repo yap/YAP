@@ -23,7 +23,7 @@
 
 #include "DataAccessor.h"
 #include "Exceptions.h"
-#include "ReportsModel.h"
+#include "ParticleCombination.h"
 
 namespace yap {
 
@@ -70,7 +70,7 @@ public:
     virtual void updateGlobalCalculationStatuses() override {}
 
     /// include const access to Model
-    using ReportsModel::model;
+    using DataAccessor::model;
 
     /// \return Raw pointer to owning Model
     Model* model() override

@@ -6,6 +6,8 @@
 #include <Constants.h>
 #include <Exceptions.h>
 #include <FinalStateParticle.h>
+#include <FourMomenta.h>
+#include <HelicityAngles.h>
 #include <HelicitySpinAmplitude.h>
 #include <logging.h>
 #include <MassAxes.h>

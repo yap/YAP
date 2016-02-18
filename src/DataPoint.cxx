@@ -1,14 +1,5 @@
 #include "DataPoint.h"
 
-#include "FourMomenta.h"
-#include "HelicityAngles.h"
-#include "logging.h"
-#include "MeasuredBreakupMomenta.h"
-
-#include <assert.h>
-#include <iomanip>
-#include <iostream>
-
 namespace yap {
 
 //-------------------------

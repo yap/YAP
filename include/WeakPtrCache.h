@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <string>
 

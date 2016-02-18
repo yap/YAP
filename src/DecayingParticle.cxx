@@ -1,5 +1,6 @@
 #include "DecayingParticle.h"
 
+#include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "HelicitySpinAmplitude.h"
 #include "FinalStateParticle.h"

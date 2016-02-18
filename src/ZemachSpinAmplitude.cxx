@@ -4,8 +4,10 @@
 #include "Constants.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
-#include "Model.h"
+#include "FourMomenta.h"
 #include "logging.h"
+#include "LorentzTransformation.h"
+#include "Model.h"
 #include "WignerD.h"
 
 namespace yap {

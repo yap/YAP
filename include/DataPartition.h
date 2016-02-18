@@ -21,17 +21,16 @@
 #ifndef yap_DataPartition_h
 #define yap_DataPartition_h
 
-#include "DataPoint.h"
-#include "DataSet.h"
-#include "logging.h"
-
 #include <algorithm>
 #include <iterator>
+#include <memory>
 #include <vector>
 
 namespace yap {
 
+class DataPoint;
 class DataPartitionBase;
+class DataSet;
 
 /// \class DataIterator
 /// \brief Class for iterating over a #DataPartitionBase

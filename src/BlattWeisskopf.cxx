@@ -1,16 +1,12 @@
 #include "BlattWeisskopf.h"
 
 #include "CalculationStatus.h"
-#include "Constants.h"
-#include "DecayChannel.h"
 #include "DecayingParticle.h"
+#include "Exceptions.h"
+#include "FourMomenta.h"
 #include "logging.h"
+#include "MeasuredBreakupMomenta.h"
 #include "Model.h"
-#include "QuantumNumbers.h"
-#include "Resonance.h"
-#include "SpinAmplitude.h"
-
-#include <stdexcept>
 
 namespace yap {
 

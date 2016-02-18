@@ -27,6 +27,7 @@
 #include "Vector.h"
 
 #include <algorithm>
+#include <array>
 #include <type_traits>
 
 namespace yap {

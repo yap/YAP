@@ -22,16 +22,18 @@
 #define yap_FourMomenta_
 
 #include "FourVector.h"
-#include "ParticleCombination.h"
 #include "StaticDataAccessor.h"
 
+#include <memory>
 #include <ostream>
+#include <vector>
 
 namespace yap {
 
 class DataPoint;
 class FourVectorCachedDataValue;
 class Model;
+class ParticleCombination;
 class RealCachedDataValue;
 
 /// \class FourMomenta

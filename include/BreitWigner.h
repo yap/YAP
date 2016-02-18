@@ -22,8 +22,6 @@
 #define yap_BreitWigner_h
 
 #include "CachedValue.h"
-#include "CalculationStatus.h"
-#include "DataPoint.h"
 #include "MassShape.h"
 
 #include <complex>
@@ -31,6 +29,7 @@
 
 namespace yap {
 
+class DataPoint;
 class ParticleCombination;
 
 /// \class BreitWigner

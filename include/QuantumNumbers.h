@@ -24,6 +24,7 @@
 #include "MathUtilities.h"
 
 #include <ostream>
+#include <string>
 
 namespace yap {
 

@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "CoordinateSystem.h"
+#include "FourMomenta.h"
 #include "FourVector.h"
 #include "logging.h"
 #include "LorentzTransformation.h"

@@ -21,8 +21,6 @@
 #ifndef yap_Parameter_h
 #define yap_Parameter_h
 
-#include "CalculationStatus.h"
-#include "Constants.h"
 #include "logging.h"
 #include "VariableStatus.h"
 

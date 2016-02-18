@@ -21,17 +21,15 @@
 #ifndef yap_ZemachSpinAmplitude_h
 #define yap_ZemachSpinAmplitude_h
 
-#include "DataPoint.h"
-#include "QuantumNumbers.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 
 #include <complex>
-#include <map>
 #include <memory>
 
 namespace yap {
 
+class DataPoint;
 class ParticleCombination;
 
 /// \class ZemachSpinAmplitude

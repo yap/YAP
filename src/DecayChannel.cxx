@@ -1,5 +1,6 @@
 #include "DecayChannel.h"
 
+#include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "CachedDataValue.h"
 #include "DecayingParticle.h"
@@ -10,9 +11,7 @@
 #include "Particle.h"
 #include "ParticleCombinationCache.h"
 #include "SpinAmplitude.h"
-
-#include <assert.h>
-#include <stdexcept>
+#include "SpinAmplitudeCache.h"
 
 namespace yap {
 
