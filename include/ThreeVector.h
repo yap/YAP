@@ -38,8 +38,15 @@ constexpr ThreeVector<T> cross(const ThreeVector<T>& A, const ThreeVector<T>& B)
 
 /// \return angle between two 3D vectors
 template <typename T>
-constexpr T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
-{ return acos(A * B / abs(A) / abs(B)); }
+T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
+{
+    T arg = A * B / abs(A) / abs(B);
+    if (std::isfinite(arg) && fabs(arg) > 1)
+        // none of the vectors is 0, otherwise arg would not be finite. Arg is numerically a bit bigger than one
+        return (arg > 0) ? 0 : acos(-1.); // \todo cannot include Constants.h since it includes this header
+
+    return acos(arg);
+}
 
 /// skew symmetric matrix formed from a 3 vector
 template<typename T>

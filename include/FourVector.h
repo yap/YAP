@@ -78,6 +78,17 @@ template <typename T>
 constexpr FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V)
 { return FourVector<T>(R * static_cast<Vector<T, 4> >(V)); }
 
+/// multiply a 4x4 matrix times each of a vector of FourVector's
+template <typename T>
+std::vector<FourVector<T> > operator*(const FourMatrix<T>& R, const std::vector<FourVector<T> >& V)
+{
+    std::vector<FourVector<T> > result;
+    result.reserve(V.size());
+    for (auto& v : V)
+        result.push_back(FourVector<T>(R * static_cast<Vector<T, 4> >(v)));
+    return result;
+}
+
 /// apply a three-rotation to a FourVector (rotating only the spatial components)
 template <typename T>
 constexpr FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)

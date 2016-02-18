@@ -55,6 +55,12 @@ template <typename T>
 constexpr FourMatrix<T> lorentzTransformation(const ThreeVector<T>& V)
 { return lorentzTransformation<T>(FourVector<T>(T(1), V)); }
 
+/// \return a 4D Lorentz-transformation matrix for a pure boost
+/// \param fourVecs the sum of these define the boost
+template <typename T>
+constexpr FourMatrix<T> lorentzTransformation(const std::vector<FourVector<T> >& fourVecs)
+{ return lorentzTransformation(std::accumulate(fourVecs.begin(), fourVecs.end(), FourVector<T>({0, 0, 0, 0}))); }
+
 /// \return a 4D Lorentz-transformation matrix for a rotation followed by a boost
 /// \param R #ThreeMatrix defining rotation
 /// \param V #FourVector defining boost

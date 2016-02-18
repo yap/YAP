@@ -15,7 +15,7 @@ TEST_CASE( "Vector" )
 
     SECTION( "Initialization" ) {
         yap::Vector<double, 3> v = {};
-        yap::Vector<double, 3> v0({0,0,0});
+        yap::Vector<double, 3> v0({0, 0, 0});
         REQUIRE( v == v0);
     }
 
@@ -114,6 +114,21 @@ TEST_CASE( "Vector" )
             REQUIRE( abs(v1) == sqrt(2) );
             REQUIRE( abs(yap::FourVector<double>({1, 0, 0, 0})) == 1 );
             REQUIRE( abs(yap::FourVector<double>({1, 1, 0, 0})) == 0 );
+
+        }
+
+        SECTION( "angles" ) {
+
+            auto a = yap::ThreeVector<double>({2, 0, 0});
+            auto b = yap::ThreeVector<double>({0, 2, 0});
+            auto c = yap::ThreeVector<double>({0, 0, 2});
+            auto z = yap::ThreeVector<double>({0, 0, 0});
+
+            REQUIRE(yap::angle(a, a) == 0.);
+            REQUIRE(yap::angle(a, -a) == yap::PI);
+            REQUIRE(yap::angle(a, b) == 0.5 * yap::PI);
+            REQUIRE(yap::angle(a, c) == 0.5 * yap::PI);
+            REQUIRE(std::isnan(yap::angle(a, z)));
 
         }
 

@@ -368,10 +368,13 @@ void Model::prepareDataAccessors()
 
     }
 
+#ifndef ELPP_DISABLE_DEBUG_LOGS
     for (auto& D : DataAccessors_) {
         std::cout << std::endl;
         D->printParticleCombinations();
     }
+#endif
+
 }
 
 //-------------------------
