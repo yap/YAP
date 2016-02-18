@@ -34,22 +34,19 @@ FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R)
 {
     FourMatrix<T> L = unitMatrix<T, 4>();
     for (unsigned i = 0; i < R.size(); ++i)
-        std::copy(R[i].begin(), R[i].end(), L[i].begin());
+        std::copy(R[i].begin(), R[i].end(), L[i + 1].begin() + 1);
     return L;
 }
 
 /// \return a 4D Lorentz-transformation matrix for a pure boost
-/// \param V #FourVector defining boost
+/// \param V #FourVector of four-momentum defining boost
 template <typename T>
 FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 {
-    FourVector<T> B = (T(1) / V[0]) * V;
-    T gamma = T(1) / abs(B);
-    B[0] = -(gamma + 1);
+    auto gamma = V[0] / abs(V); // E / m
+    auto b = FourVector<T>(-(gamma + 1), gamma * vect(V) / V[0]) / sqrt(gamma + 1); // vect(V)/V[0] = beta
 
-    FourMatrix<T> L = unitMatrix<T, 4>() + outer(B, B) * (gamma / (gamma + 1));
-    L[0][0] -= gamma * gamma + 1;
-    return L;
+    return diagonalMatrix<T, 4>({ -1, 1, 1, 1}) + outer(b, b);
 }
 
 /// \return a 4D Lorentz-transformation matrix for a pure boost

@@ -47,7 +47,8 @@ public:
     constexpr Vector(const std::array<T, N>& v) noexcept : std::array<T, N>(v) {}
 
     /// Default constructor
-    Vector() = default;
+    Vector()
+    { this->fill(T(0)); }
 
     /// Use std::array's assignment operators
     using std::array<T, N>::operator=;
@@ -113,6 +114,16 @@ Vector<T, N> operator*(const Vector<T, N>& A, const T& c)
 template <typename T, size_t N>
 constexpr Vector<T, N> operator*(const T& c, const Vector<T, N>& A)
 { return A * c; }
+
+/// (assignment) division by a single element
+template <typename T, size_t N>
+Vector<T, N>& operator/=(Vector<T, N>& A, const T& B)
+{ std::transform(A.begin(), A.end(), A.begin(), [&](const T & v) {return v / B;}); return A; }
+
+/// division: #Vector<T> / T
+template <typename T, size_t N>
+Vector<T, N> operator/(const Vector<T, N>& A, const T& c)
+{ auto v = A; v /= c; return v; }
 
 /// \return squared magnitude of #Vector (using associated inner product)
 template <typename T, size_t N>

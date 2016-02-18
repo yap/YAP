@@ -21,10 +21,11 @@
 #ifndef yap_Matrix_h
 #define yap_Matrix_h
 
+#include "Exceptions.h"
+#include "MathUtilities.h"
+
 #include <array>
 #include <string>
-
-#include<iostream>
 
 namespace yap {
 
@@ -90,6 +91,16 @@ SquareMatrix<T, N> unitMatrix()
         for (size_t j = 0; j < N; ++j)
             u[i][j] = (T)(i == j);
     return u;
+}
+
+/// diagonal matrix
+template <typename T, size_t N>
+SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
+{
+    SquareMatrix<T, N> D({});
+    for (size_t i = 0; i < N; ++i)
+        D[i][i] = d[i];
+    return D;
 }
 
 /// transpose a matrix
@@ -179,6 +190,93 @@ Matrix<T, R, C>& operator-=(Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 template <typename T, size_t R, size_t C>
 Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 { auto m = lhs; m -= rhs; return m; }
+
+/// Minor matrix
+/// \param r row
+/// \param c column
+template <typename T, size_t N>
+SquareMatrix < T, N - 1 > minor_matrix(const SquareMatrix<T, N>& M, size_t r, size_t c)
+{
+    SquareMatrix < T, N - 1 > m({});
+    for (size_t i = 0; i < N; ++i)
+        if (i != r)
+            for (size_t j = 0; j < N; ++j)
+                if (j != c)
+                    m[i - (size_t)(i > r)][j - (size_t)(j > c)] = M[i][j];
+    return m;
+}
+
+/// Minor
+/// \param r row
+/// \param c column
+template <typename T, size_t N>
+T minor_det(const SquareMatrix<T, N>& M, size_t r, size_t c)
+{ return det(minor_matrix(M, r, c)); }
+
+/// cofactor
+/// \param r row
+/// \param c column
+template <typename T, size_t N>
+T cofactor(const SquareMatrix<T, N>& M, size_t r, size_t c)
+{ return pow_negative_one(r + c) * M[r][c] * minor_det(M, r, c); }
+
+/// Determinant
+/// This algorithm is simple, and should not be used for large matrices
+template <typename T, size_t N>
+T det(SquareMatrix<T, N> M)
+{
+    switch (N) {
+        case 0:
+            throw exceptions::Exception("zero-size matric", "determinant");
+        case 1:
+            return M[0][0];
+        case 2:
+            return M[0][0] * M[1][1] - M[0][1] * M[1][0];
+        case 3:
+            return M[0][0] * M[1][1] * M[2][2]
+                   +  M[0][1] * M[1][2] * M[2][0]
+                   +  M[0][2] * M[1][0] * M[2][1]
+                   -  M[0][2] * M[1][1] * M[2][0]
+                   -  M[0][0] * M[1][2] * M[2][1]
+                   -  M[0][1] * M[1][0] * M[2][2];
+        default:
+            T d(0);
+            for (size_t i = 0; i < N; ++i)
+                d += cofactor(M, i, 0);
+            return d;
+    }
+}
+
+/// trace
+template <typename T, size_t N>
+T trace(const SquareMatrix<T, N>& M)
+{
+    T t(0);
+    for (size_t i = 0; i < N; ++i)
+        t += M[i][i];
+    return t;
+}
+
+/// delta
+/// defined as (-)^(n-1) * sum over all n-by-n diagonal minors
+template <typename T, size_t N>
+T delta(const SquareMatrix<T, N>& M, size_t n)
+{
+    if (n > N)
+        throw exceptions::Exception("delta undefined for n larger than matrix size", "delta");
+    if (n == 0)
+        throw exceptions::Exception("delta undefined for n = 0", "delta");
+    if (n == N)
+        return determinant(M);
+    if (n == 1)
+        return trace(M);
+
+    // recursively call on diagonal minors
+    T d(0);
+    for (size_t i = 0; i < N; ++i)
+        d += delta(minor_matrix(M, i, i), n);
+    return d;
+}
 
 }
 #endif
