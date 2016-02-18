@@ -103,8 +103,7 @@ public:
 
     /// add ParticleTableEntry to #particleTable_
     /// \param entry ParticleTableEntry to add to #particleTable_
-    /// \return Success of action
-    bool addParticleTableEntry(ParticleTableEntry entry);
+    void addParticleTableEntry(ParticleTableEntry entry);
 
     // find PDG number by particle name
     // \return PDG code number

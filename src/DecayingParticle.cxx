@@ -2,14 +2,11 @@
 
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
-#include "FinalStateParticle.h"
 #include "Model.h"
 #include "logging.h"
-#include "ParticleCombinationCache.h"
 
 #include <iomanip>
 #include <memory>
-#include <stdexcept>
 
 namespace yap {
 

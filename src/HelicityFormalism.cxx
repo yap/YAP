@@ -1,11 +1,9 @@
 #include "HelicityFormalism.h"
 
 #include "ClebschGordan.h"
-#include "Constants.h"
-#include "DecayingParticle.h"
 #include "HelicityAngles.h"
 #include "Model.h"
-#include "logging.h"
+#include "spin.h"
 #include "WignerD.h"
 
 namespace yap {
@@ -33,10 +31,8 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
 
             } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
 
-    if (Coefficients_.empty()) {
-        FLOG(ERROR) << "no valid nonzero Clebsch-Gordan coefficients stored in " << *this;
+    if (Coefficients_.empty())
         throw exceptions::Exception("no valid nonzero Clebsch-Gordan coefficients stored", "HelicitySpinAmplitude::HelicitySpinAmplitude");
-    }
 }
 
 //-------------------------

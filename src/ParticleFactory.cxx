@@ -5,8 +5,6 @@
 #include "logging.h"
 #include "MassShape.h"
 #include "Resonance.h"
-#include "SpinAmplitude.h"
-#include "SpinAmplitudeCache.h"
 
 #include <fstream>
 
@@ -76,22 +74,16 @@ const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 }
 
 //-------------------------
-bool ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
+void ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
 {
-    if (!entry.consistent()) {
-        LOG(ERROR) << "ParticleFactory::addParticleTableEntry : entry with PDG code " << entry.PDG << " inconsistent";
-        return false;
-    }
+    if (!entry.consistent())
+        throw exceptions::Exception("entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
+                                    "ParticlFactory::addParticleTableEntry");
 
-    if (particleTable_.count(entry.PDG) != 0) {
+    if (particleTable_.count(entry.PDG) != 0)
         LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG << " already exists. Overwriting entry.";
-    }
 
     particleTable_[entry.PDG] = entry;
-    // } else
-    //     particleTable_.insert(std::make_pair<int, ParticleTableEntry>(entry.PDG, entry));
-
-    return true;
 }
 
 //-------------------------

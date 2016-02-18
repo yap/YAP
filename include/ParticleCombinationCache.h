@@ -44,9 +44,6 @@ public:
     /// Default constructor
     ParticleCombinationCache() = default;
 
-    /// Construct cache from vector of ISP's ParticleCombination's
-    ParticleCombinationCache(std::vector<shared_ptr_type> V);
-
     /// retrieve or create final-state particle ParticleCombination
     /// \param index Index of particle
     shared_ptr_type fsp(unsigned index)

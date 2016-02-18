@@ -1,14 +1,11 @@
 #include "ZemachFormalism.h"
 
-#include "ClebschGordan.h"
 #include "Constants.h"
-#include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
-#include "logging.h"
 #include "LorentzTransformation.h"
 #include "Model.h"
-#include "WignerD.h"
+#include "spin.h"
 
 namespace yap {
 

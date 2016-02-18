@@ -1,7 +1,7 @@
 #include "MassShape.h"
 
 #include "Exceptions.h"
-#include "DecayingParticle.h"
+#include "logging.h"
 #include "Resonance.h"
 
 namespace yap {

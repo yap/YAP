@@ -3,7 +3,6 @@
 #include "container_utils.h"
 #include "Exceptions.h"
 #include "logging.h"
-#include "QuantumNumbers.h"
 
 #include <algorithm>
 #include <set>

@@ -1,6 +1,5 @@
 #include "CachedDataValue.h"
 
-#include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Exceptions.h"
 #include "logging.h"

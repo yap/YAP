@@ -1,6 +1,5 @@
 #include "DataAccessor.h"
 
-#include "DataPoint.h"
 #include "Model.h"
 #include "logging.h"
 

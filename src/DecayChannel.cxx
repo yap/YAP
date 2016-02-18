@@ -8,8 +8,8 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "Model.h"
-#include "Particle.h"
 #include "ParticleCombinationCache.h"
+#include "spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 

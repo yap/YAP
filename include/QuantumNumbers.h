@@ -21,7 +21,7 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
-#include "MathUtilities.h"
+#include "spin.h"
 
 #include <ostream>
 #include <string>
@@ -144,10 +144,6 @@ bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs);
 inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 { return !(lhs == rhs); }
 
-/// convert 2*J to string (e.g. 1/2, 1, 3/2, etc.)
-inline std::string spin_to_string(int twoJ)
-{ return is_even(twoJ) ? std::to_string(twoJ / 2) : std::to_string(twoJ) + "/2"; }
-
 /// convert to string
 inline std::string to_string(const QuantumNumbers& Q)
 { return spin_to_string(Q.twoJ()) + (Q.P() > 0 ? "+" : "-") + (Q.C() == 0 ? "" : (Q.C() > 0 ? "+" : "-")); }
@@ -155,7 +151,6 @@ inline std::string to_string(const QuantumNumbers& Q)
 /// convert to string
 inline std::string debug_string(const QuantumNumbers& Q)
 { return (std::to_string(Q.twoJ()) + " " + std::to_string(Q.P()) + " " + std::to_string(Q.C()) + " " + std::to_string(Q.twoI()) + " " + std::to_string(Q.G()) + " " + std::to_string(Q.Q())); }
-
 
 /// Overload << operator
 inline std::ostream& operator<< (std::ostream& os, const QuantumNumbers& Q)

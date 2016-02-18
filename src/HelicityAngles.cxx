@@ -1,18 +1,12 @@
 #include "HelicityAngles.h"
 
-#include "Constants.h"
 #include "CoordinateSystem.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
-#include "logging.h"
 #include "LorentzTransformation.h"
-#include "MathUtilities.h"
 #include "Model.h"
 #include "ParticleCombination.h"
-#include "Rotation.h"
 #include "ThreeVector.h"
-
-#include <assert.h>
 
 namespace yap {
 

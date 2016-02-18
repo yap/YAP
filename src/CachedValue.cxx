@@ -1,7 +1,5 @@
 #include "CachedValue.h"
 
-#include "logging.h"
-
 namespace yap {
 
 //-------------------------

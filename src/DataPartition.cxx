@@ -1,6 +1,5 @@
 #include "DataPartition.h"
 
-#include "DataPoint.h"
 #include "DataSet.h"
 #include "logging.h"
 #include "make_unique.h"

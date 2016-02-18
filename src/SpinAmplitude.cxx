@@ -1,9 +1,7 @@
 #include "SpinAmplitude.h"
 
-#include "ClebschGordan.h"
 #include "Exceptions.h"
-#include "logging.h"
-#include "QuantumNumbers.h"
+#include "spin.h"
 
 namespace yap {
 

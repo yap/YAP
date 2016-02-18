@@ -1,17 +1,13 @@
 #include "FourMomenta.h"
 
 #include "container_utils.h"
-#include "DataPoint.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "FourVector.h"
 #include "Model.h"
 #include "logging.h"
-#include "MathUtilities.h"
 #include "ParticleCombination.h"
-#include "ParticleCombinationCache.h"
-#include "ThreeVector.h"
 
 #include <iomanip>
 

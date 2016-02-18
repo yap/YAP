@@ -1,11 +1,8 @@
 #include "MeasuredBreakupMomenta.h"
 
+#include "Exceptions.h"
 #include "FourMomenta.h"
 #include "Model.h"
-#include "logging.h"
-
-#include <set>
-#include <stdexcept>
 
 namespace yap {
 
@@ -27,10 +24,9 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex
         if (Q2_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
             continue;
 
-        if (kv.first->daughters().size() != 2) {
-            LOG(ERROR) << "MeasuredBreakupMomenta::calculate - invalid number of daughters (" << kv.first->daughters().size() << " != 2)";
-            return;
-        }
+        if (kv.first->daughters().size() != 2)
+            throw exceptions::Exception("invalid number of daughters (" + std::to_string(kv.first->daughters().size()) + ")",
+                                        "MeasuredBreakupMomenta::calculate");
 
         // Calculate
         double m2_R = model()->fourMomenta().m2(d, kv.first);

@@ -1,10 +1,8 @@
 #include "BreitWigner.h"
 
-#include "Constants.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
-#include "ParticleCombination.h"
 #include "Resonance.h"
 
 namespace yap {

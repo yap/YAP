@@ -2,30 +2,12 @@
 
 #include "container_utils.h"
 #include "Exceptions.h"
-#include "logging.h"
 
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
 
 namespace yap {
-
-//-------------------------
-/// \todo Shouldn't this management be done in the creation process?
-ParticleCombinationCache::ParticleCombinationCache(std::vector<shared_ptr_type> V)
-    : WeakPtrCache(V)
-{
-    // // set parents from isp down
-    // for (auto& pc : V)
-    //     setLineage(pc);
-
-    // check consistency
-    if (!consistent())
-        throw exceptions::Exception("Inconsistent ParticleCombinationCache", "ParticleCombinationCache::ParticleCombinationCache");
-
-    // remove expired cache entries
-    removeExpired();
-}
 
 //-------------------------
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other) const
@@ -52,23 +34,6 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_compo
 
     return pc;
 }
-
-//-------------------------
-// void ParticleCombinationCache::setLineage(shared_ptr_type pc)
-// {
-//     /// \todo why do we need to do this here?
-//     for (auto& D : pc->Daughters_) {
-//         // copy D
-//         auto d = std::make_shared<type>(*D);
-//         // set copy's parent to pc
-//         std::const_pointer_cast<ParticleCombination>(d)->Parent_ = pc;
-//         // call recursively
-//         setLineage(pc);
-//         // replace daughter with copy (from cache)
-//         std::const_pointer_cast<ParticleCombination>(D) = std::const_pointer_cast<ParticleCombination>(operator[](d));
-//         // std::const_pointer_cast<ParticleCombination>(D).swap(std::const_pointer_cast<ParticleCombination>(operator[](d)));
-//     }
-// }
 
 //-------------------------
 ParticleCombinationCache::weak_ptr_type ParticleCombinationCache::findByUnorderedContent(const std::vector<unsigned>& I) const
@@ -149,15 +114,6 @@ std::ostream& ParticleCombinationCache::print(std::ostream& os) const
         if (!w.expired() and w.lock()->indices().size() > n_fsp)
             n_fsp = w.lock()->indices().size();
 
-
-    // print final state particles
-    // unsigned i = 0;
-    // for (auto& w : *this) {
-    //     if (!w.expired() and w.lock()->isFinalStateParticle())
-    //         os << std::setfill('0') << std::setw(ndig) << i << " : (fsp) " << *w.lock() << std::endl;
-    //     ++i;
-    // }
-
     std::set<unsigned> used;
 
     // print others as decay trees starting from ISP's
@@ -184,20 +140,6 @@ std::ostream& ParticleCombinationCache::print(std::ostream& os) const
     }
     return os;
 
-    // for (auto wpc : C) {
-    //     auto pc = wpc.lock();
-    //     s += to_string(*pc);
-    //     auto pt = pc->parent();
-    //     if (pt) {
-    //         s += " in decay chain ";
-    //         while (pt->parent())
-    //             pt = pt->parent();
-    //         s += to_string(*pt);
-    //     }
-    //     s += "\n";
-    // }
-    // s.erase(s.size() - 1, 1);
-    // return s;
 }
 
 }

@@ -1,13 +1,9 @@
 #include "WignerD.h"
 
-#include "ClebschGordan.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "MathUtilities.h"
-#include "QuantumNumbers.h"
-
-/// \todo Find better place for this
-INITIALIZE_EASYLOGGINGPP
+#include "spin.h"
 
 #include <cmath>
 #include <vector>
