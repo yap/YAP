@@ -92,7 +92,7 @@ TEST_CASE( "HelicityAngles" )
         // actually we would have to rotate
 
         for (auto pc : D->particleCombinations()) {
-            REQUIRE( M.fourMomenta().m(dp, pc) == Approx(D->mass()->value()) );
+            REQUIRE( M.fourMomenta()->m(dp, pc) == Approx(D->mass()->value()) );
 
             TLorentzVector daughter;
             for (unsigned i : pc->daughters()[0]->indices()) {
@@ -101,8 +101,8 @@ TEST_CASE( "HelicityAngles" )
 
             DEBUG( to_string(*pc) << "; phi = " << daughter.Phi() << "; theta = " << daughter.Theta());
 
-            REQUIRE( M.helicityAngles().phi(dp, pc) == Approx(daughter.Phi()) );
-            REQUIRE( M.helicityAngles().theta(dp, pc) == Approx(daughter.Theta()) );
+            REQUIRE( M.helicityAngles()->phi(dp, pc) == Approx(daughter.Phi()) );
+            REQUIRE( M.helicityAngles()->theta(dp, pc) == Approx(daughter.Theta()) );
 
             // \todo recurse down
         }
