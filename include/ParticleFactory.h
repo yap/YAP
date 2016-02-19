@@ -63,20 +63,20 @@ public:
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \return shared pointer to new final state particle
-    std::shared_ptr<FinalStateParticle> fsp(int PDG);
+    std::shared_ptr<FinalStateParticle> fsp(int PDG) const;
 
     /// Create an decayingParticle from a PDG code
     /// \param PDG PDG code of particle to create
     /// \param radialSize radial size of particle to create [GeV^-1]
     /// \return shared pointer to new DecayingParticle object
-    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radialSize);
+    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radialSize) const;
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create
     /// \param radialSize Radial size of particle to create [GeV^-1]
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return shared pointer to new Resonance object
-    std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape);
+    std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const;
 
     /// \name Particle table access
     /// @{

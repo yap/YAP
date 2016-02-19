@@ -40,7 +40,7 @@ ParticleFactory::ParticleFactory(const std::string pdlFile)
 }
 
 //-------------------------
-std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG)
+std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make FinalStateParticle " << p.Name << " with quantum numbers " << p);
@@ -48,7 +48,7 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG)
 }
 
 //-------------------------
-std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize)
+std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize) const
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make DecayingParticle " << p.Name << " with quantum numbers " << p);
@@ -56,7 +56,7 @@ std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, dou
 }
 
 //-------------------------
-std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape)
+std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const
 {
     const auto& p = particleTableEntry(PDG);
     DEBUG("make Resonance " << p.Name << " with quantum numbers " << p);
