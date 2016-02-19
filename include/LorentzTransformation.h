@@ -46,7 +46,7 @@ template <typename T>
 FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 {
     auto gamma = V[0] / abs(V); // E / m
-    auto b = FourVector<T>(-(gamma + 1), gamma * -vect(V) / V[0]) / sqrt(gamma + 1); // vect(V)/V[0] = beta
+    auto b = FourVector<T>((gamma + 1), gamma * vect(V) / V[0]) / sqrt(gamma + 1); // vect(V)/V[0] = beta
 
     return diagonalMatrix<T, 4>({ -1, 1, 1, 1}) + outer(b, b);
 }
