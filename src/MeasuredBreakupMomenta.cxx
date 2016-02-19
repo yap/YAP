@@ -29,9 +29,9 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex
                                         "MeasuredBreakupMomenta::calculate");
 
         // Calculate
-        double m2_R = model()->fourMomenta().m2(d, kv.first);
-        double m_a  = model()->fourMomenta().m(d, kv.first->daughters()[0]);
-        double m_b  = model()->fourMomenta().m(d, kv.first->daughters()[1]);
+        double m2_R = model()->fourMomenta()->m2(d, kv.first);
+        double m_a  = model()->fourMomenta()->m(d, kv.first->daughters()[0]);
+        double m_b  = model()->fourMomenta()->m(d, kv.first->daughters()[1]);
 
         Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, dataPartitionIndex);
     }

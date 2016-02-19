@@ -107,28 +107,28 @@ public:
     { return CoordinateSystem_; }
 
     /// \return FourMomenta accessor
-    FourMomenta& fourMomenta()
-    { return *FourMomenta_; }
+    std::shared_ptr<FourMomenta> fourMomenta()
+    { return FourMomenta_; }
 
     /// \return FourMomenta accessor (const)
-    const FourMomenta& fourMomenta() const
-    { return *FourMomenta_; }
+    const std::shared_ptr<FourMomenta> fourMomenta() const
+    { return FourMomenta_; }
 
     /// \return MeasuredBreakupMomenta accessor
-    MeasuredBreakupMomenta& measuredBreakupMomenta()
-    { return *MeasuredBreakupMomenta_; }
+    std::shared_ptr<MeasuredBreakupMomenta> measuredBreakupMomenta()
+    { return MeasuredBreakupMomenta_; }
 
     /// \return MeasuredBreakupMomenta accessor (const)
-    const MeasuredBreakupMomenta& measuredBreakupMomenta() const
-    { return *MeasuredBreakupMomenta_; }
+    const std::shared_ptr<MeasuredBreakupMomenta> measuredBreakupMomenta() const
+    { return MeasuredBreakupMomenta_; }
 
     /// \return HelicityAngles accessor
-    HelicityAngles& helicityAngles()
-    { return *HelicityAngles_; }
+    std::shared_ptr<HelicityAngles> helicityAngles()
+    { return HelicityAngles_; }
 
     /// \return HelicityAngles accessor (const)
-    const HelicityAngles& helicityAngles() const
-    { return *HelicityAngles_; }
+    const std::shared_ptr<HelicityAngles> helicityAngles() const
+    { return HelicityAngles_; }
 
     /// \return ParticleCombinationCache
     ParticleCombinationCache& particleCombinationCache()

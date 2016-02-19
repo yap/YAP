@@ -38,8 +38,8 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
 //-------------------------
 void HelicitySpinAmplitude::setDependencies(std::shared_ptr<CachedDataValue> a)
 {
-    a->addDependency(model()->helicityAngles().phi());
-    a->addDependency(model()->helicityAngles().theta());
+    a->addDependency(model()->helicityAngles()->phi());
+    a->addDependency(model()->helicityAngles()->theta());
 }
 
 //-------------------------
@@ -48,8 +48,8 @@ std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_
 {
 
     // helicity angles
-    double phi   = model()->helicityAngles().phi(d, pc);
-    double theta = model()->helicityAngles().theta(d, pc);
+    double phi   = model()->helicityAngles()->phi(d, pc);
+    double theta = model()->helicityAngles()->theta(d, pc);
 
     DEBUG("HelicitySpinAmplitude::calc : "
           << spin_to_string(initialTwoJ()) << ", " << spin_to_string(two_M)

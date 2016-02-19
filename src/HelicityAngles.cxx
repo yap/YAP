@@ -17,8 +17,8 @@ HelicityAngles::HelicityAngles(Model* m) :
     Theta_(RealCachedDataValue::create(this))
 {
     /// \todo add check that FourMomenta exists, after changing to return shared_ptr
-    Phi_->addDependency(model()->fourMomenta().momentum());
-    Theta_->addDependency(model()->fourMomenta().momentum());
+    Phi_->addDependency(model()->fourMomenta()->momentum());
+    Theta_->addDependency(model()->fourMomenta()->momentum());
 }
 
 //-------------------------
@@ -46,7 +46,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         return;
 
     // calculate pc momentum in parent frame:
-    FourVector<double> P = boosts * model()->fourMomenta().p(d, pc);
+    FourVector<double> P = boosts * model()->fourMomenta()->p(d, pc);
 
     // calculate reference frame for pc
     CoordinateSystem<double, 3> cP = helicityFrame<double>(P, C);
@@ -59,7 +59,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
     for (auto& daughter : pc->daughters()) {
 
         // boost daughter momentum from lab frame into pc rest frame
-        FourVector<double> p = b * model()->fourMomenta().p(d, daughter);
+        FourVector<double> p = b * model()->fourMomenta()->p(d, daughter);
 
         // if unset, set angles of parent to first daughter's
         if (Phi_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated or

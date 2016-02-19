@@ -41,11 +41,11 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(model()->fourMomenta().mass());
+    Fq_r->addDependency(model()->fourMomenta()->mass());
     Fq_r->addDependency(DecayingParticle_->mass());
     Fq_r->addDependency(DecayingParticle_->radialSize());
 
-    Fq_ab->addDependency(model()->measuredBreakupMomenta().breakupMomenta());
+    Fq_ab->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
     Fq_ab->addDependency(DecayingParticle_->radialSize());
 
     // register with model
@@ -60,8 +60,8 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
     if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // nominal breakup momentum
         double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-        double m_a = model()->fourMomenta().m(d, pc->daughters().at(0));
-        double m_b = model()->fourMomenta().m(d, pc->daughters().at(1));
+        double m_a = model()->fourMomenta()->m(d, pc->daughters().at(0));
+        double m_b = model()->fourMomenta()->m(d, pc->daughters().at(1));
         double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
         double R = DecayingParticle_->radialSize()->value();
@@ -73,7 +73,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 
     if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
         // measured breakup momentum
-        double q2 = model()->measuredBreakupMomenta().q2(d, pc);
+        double q2 = model()->measuredBreakupMomenta()->q2(d, pc);
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
@@ -90,11 +90,11 @@ bool BlattWeisskopf::consistent() const
 {
     bool C = true;
 
-    if (!Fq_r->dependsOn(model()->fourMomenta().mass())) {
+    if (!Fq_r->dependsOn(model()->fourMomenta()->mass())) {
         FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
         C &= false;
     }
-    if (!Fq_ab->dependsOn(model()->measuredBreakupMomenta().breakupMomenta())) {
+    if (!Fq_ab->dependsOn(model()->measuredBreakupMomenta()->breakupMomenta())) {
         FLOG(ERROR) << "Fq_ab doesn't have breakup-momenta dependencies set";
         C &= false;
     }

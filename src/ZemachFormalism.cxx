@@ -56,8 +56,8 @@ ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsign
 //-------------------------
 void ZemachSpinAmplitude::setDependencies(std::shared_ptr<CachedDataValue> a)
 {
-    a->addDependency(std::make_pair(model()->fourMomenta().momentum(), 0));
-    a->addDependency(std::make_pair(model()->fourMomenta().momentum(), 1));
+    a->addDependency(std::make_pair(model()->fourMomenta()->momentum(), 0));
+    a->addDependency(std::make_pair(model()->fourMomenta()->momentum(), 1));
 }
 
 //-------------------------
@@ -84,13 +84,13 @@ std::complex<double> ZemachSpinAmplitude::calc(int two_M, int two_m1, int two_m2
         std::swap(pcR, pcS);
 
     // get resonance four-momentum
-    auto R4 = model()->fourMomenta().p(d, pcR);
+    auto R4 = model()->fourMomenta()->p(d, pcR);
     // get spectator four-momentum
-    auto p4 = model()->fourMomenta().p(d, pcS);
+    auto p4 = model()->fourMomenta()->p(d, pcS);
     // get four-momentum of R's daughter
-    auto q4 = model()->fourMomenta().p(d, pcR->daughters()[0]);
+    auto q4 = model()->fourMomenta()->p(d, pcR->daughters()[0]);
 
-    FDEBUG("R4 = " << R4 << " = " << model()->fourMomenta().p(d, pcR->daughters()[0]) << " + " << model()->fourMomenta().p(d, pcR->daughters()[1]));
+    FDEBUG("R4 = " << R4 << " = " << model()->fourMomenta()->p(d, pcR->daughters()[0]) << " + " << model()->fourMomenta()->p(d, pcR->daughters()[1]));
     FDEBUG("p4 = " << p4);
     FDEBUG("q4 = " << q4);
 

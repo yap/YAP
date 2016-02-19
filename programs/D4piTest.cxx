@@ -88,13 +88,13 @@ int main( int argc, char** argv)
         std::cout << *pc << "\n";
     std::cout << "\n";
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : M.fourMomenta().particleCombinations())
-        std::cout << *pc << ": " << M.fourMomenta().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : M.fourMomenta()->particleCombinations())
+        std::cout << *pc << ": " << M.fourMomenta()->symmetrizationIndex(pc) << "\n";
 
-    std::cout << "\nHelicity angles symmetrizations with " << M.helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
-    for (auto& pc : M.helicityAngles().particleCombinations())
-        std::cout << *pc << ": " << M.helicityAngles().symmetrizationIndex(pc) << "\n";
+    std::cout << "\nHelicity angles symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
+    for (auto& pc : M.helicityAngles()->particleCombinations())
+        std::cout << *pc << ": " << M.helicityAngles()->symmetrizationIndex(pc) << "\n";
 
     D->printDecayChain();
     std::cout << "\n";
@@ -132,7 +132,7 @@ int main( int argc, char** argv)
     LOG(INFO) << "Printing data:";
     for (unsigned d = 0; d < M.dataSet().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
-        for (auto& v : M.fourMomenta().finalStateMomenta(M.dataSet()[d]))
+        for (auto& v : M.fourMomenta()->finalStateMomenta(M.dataSet()[d]))
             LOG(INFO) << yap::to_string(v);
     }
 

@@ -94,9 +94,9 @@ int main( int argc, char** argv)
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta().maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->maxSymmetrizationIndex() + 1 << " indices \n";
 
-    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles().maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
 
     D->printDecayChain();
     std::cout << "\n";
@@ -113,7 +113,7 @@ int main( int argc, char** argv)
     std::vector<double> m2 = {1, 1};//{0.9, 1.1}; //{0.1, 4};
 
     LOG(INFO) << "BEFORE";
-    M.fourMomenta().printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(M.dataSet()[0]);
 
     LOG(INFO) << "setting squared mass ...";
     auto P = M.calculateFourMomenta(massAxes, m2);
@@ -125,9 +125,9 @@ int main( int argc, char** argv)
     }
 
     LOG(INFO) << "AFTER";
-    M.fourMomenta().printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(M.dataSet()[0]);
 
-    for (auto p : M.fourMomenta().finalStateMomenta(M.dataSet()[0]))
+    for (auto p : M.fourMomenta()->finalStateMomenta(M.dataSet()[0]))
         LOG(INFO) << p;
 
     M.resetCalculationStatuses(0);
