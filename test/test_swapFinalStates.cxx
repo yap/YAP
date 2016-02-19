@@ -3,7 +3,9 @@
 
 #include <BreitWigner.h>
 #include <FinalStateParticle.h>
+#include <FourMomenta.h>
 #include <FourVector.h>
+#include <HelicityAngles.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
 #include <MassAxes.h>
@@ -18,6 +20,67 @@
  * Test that the amplitude remains the same after swapping the order of the final state particles
  */
 
+yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const std::vector<int>& FSP)
+{
+    // create and set final-state particles
+    M.setFinalState({F.fsp(FSP[0]), F.fsp(FSP[1]), F.fsp(FSP[2])});
+
+    // find FSP's
+    unsigned i_piPlus = FSP.size();
+    unsigned i_kPlus = FSP.size();
+    unsigned i_kMinus = FSP.size();
+    for (size_t i = 0; i < FSP.size(); ++i)
+        if (FSP[i] == F.pdgCode("pi+"))
+            i_piPlus = i;
+        else if (FSP[i] == F.pdgCode("K+"))
+            i_kPlus  = i;
+        else if (FSP[i] == F.pdgCode("K-"))
+            i_kMinus = i;
+    auto piPlus = M.finalStateParticles()[i_piPlus];
+    auto kPlus = M.finalStateParticles()[i_kPlus];
+    auto kMinus = M.finalStateParticles()[i_kMinus];
+
+    // create ISP
+    auto D = F.decayingParticle(F.pdgCode("D+"), 3.);
+
+    // create resonances
+
+    // auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.75, 0.025));
+    // piK0->addChannel({piPlus, kMinus});
+    // D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5 * yap::Complex_1);
+
+    auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(1.00, 0.025));
+    piK1->addChannel({piPlus, kMinus});
+    D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1. * yap::Complex_1);
+
+    // auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(1.25, 0.025));
+    // piK2->addChannel({piPlus, kMinus});
+    // D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
+
+    M.initializeForMonteCarloGeneration(1);
+
+    return M.getMassAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
+}
+
+std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2)
+{
+    // calculate four-momenta
+    auto P = M.calculateFourMomenta(A, m2);
+
+    // if failed, outside phase space
+    if (P.empty())
+        return std::numeric_limits<double>::quiet_NaN();
+
+    /// \todo enabling this makes a difference in the amplitude, but it should not
+    //P = yap::operator-(lorentzTransformation(P)) * P;
+    M.setFinalStateMomenta(M.dataSet()[0], P, 0);
+
+    // calculate
+    M.resetCalculationStatuses(0);
+
+    return M.amplitude(M.dataSet()[0], 0);
+}
+
 TEST_CASE( "swapFinalStates" )
 {
 
@@ -25,155 +88,81 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Global);
     //yap::plainLogs(el::Level::Global);
 
-    std::array<double, 4> PDGs = {411, 321, -321, 211}; // D+ -> K+ K- pi+
-    std::array<double, 2> m2_ab_range = {0.4, 1.9};
-    std::array<double, 2> m2_bc_range = {0.9, 3.1};
-
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
+    // create models
+    std::vector<yap::Model*> Z;     // Zemach
+    std::vector<yap::MassAxes> mZ; // always (pi+, K-), (K-, K+)
+    std::vector<yap::Model*> H;     // Helicity
+    std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
+
+    std::vector<int> FSP = {F.pdgCode("K-"), F.pdgCode("pi+"), F.pdgCode("K+")};
+    std::sort(FSP.begin(), FSP.end());
+    do {
+
+        // Zemach
+        Z.emplace_back(new yap::Model(std::make_unique<yap::ZemachFormalism>()));
+        mZ.push_back(populate_model(*Z.back(), F, FSP));
+
+        // Helicity
+        H.emplace_back(new yap::Model(std::make_unique<yap::HelicityFormalism>()));
+        mH.push_back(populate_model(*H.back(), F, FSP));
+
+    } while (std::next_permutation(FSP.begin(), FSP.end()));
+
+    // get piK and KK mass ranges
+    auto m2_piK_range = Z[0]->getMassRange(mZ[0][0]);
+    auto m2_KK_range  = Z[0]->getMassRange(mZ[0][1]);
 
     const unsigned N = 20;
-    for (double m2_ab = m2_ab_range[0]; m2_ab <= m2_ab_range[1]; m2_ab += (m2_ab_range[1] - m2_ab_range[0]) / N) {
-        for (double m2_bc = m2_bc_range[0]; m2_bc <= m2_bc_range[1]; m2_bc += (m2_bc_range[1] - m2_bc_range[0]) / N) {
+    for (double m2_piK = m2_piK_range[0]; m2_piK <= m2_piK_range[1]; m2_piK += (m2_piK_range[1] - m2_piK_range[0]) / N) {
+        for (double m2_KK = m2_KK_range[0]; m2_KK <= m2_KK_range[1]; m2_KK += (m2_KK_range[1] - m2_KK_range[0]) / N) {
 
-            // calc 3rd inv mass square
-            double m2_ac = pow(F.decayingParticle(PDGs[0], 3.)->mass()->value(), 2)
-                           + pow(F.fsp(PDGs[1])->mass()->value(), 2)
-                           + pow(F.fsp(PDGs[2])->mass()->value(), 2)
-                           + pow(F.fsp(PDGs[3])->mass()->value(), 2)
-                           - m2_ab - m2_bc;
+            std::vector<std::complex<double> > amps_Z(Z.size(), 0.);
+            std::vector<std::complex<double> > amps_H(H.size(), 0.);
 
-            if (m2_ac < 0.) {
-                //std::cout << "m2_ac < 0.\n";
-                continue;
+            for (size_t i = 0; i < Z.size(); ++i) {
+                amps_Z[i] = calculate_model(*Z[i], mZ[i], {m2_piK, m2_KK});
+                amps_H[i] = calculate_model(*H[i], mH[i], {m2_piK, m2_KK});
+
+                // check equality between Zemach and Helicity
+                // REQUIRE( amps_Z[i] == CApprox( amps_H[i] ) );
             }
 
+            std::cout << m2_piK << ", " << m2_KK << " is "
+                      << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
-            // loop over SpinFormalisms
-            for (unsigned i_formalism = 0; i_formalism < 2; ++i_formalism) {
+            // if (!std::isnan(real(amps_Z[0]))) {
 
-                std::vector<double> resultingAmplitudes(6, 0.);
+            //     for (size_t i = 0; i < H.size(); ++i)  {
+            //         std::cout << *mH[i][0] << std::flush;
+            //         std::cout << " = " << H[i]->helicityAngles()->symmetrizationIndex(mH[i][0]) << std::endl;
+            //     }
+            //     //     std::cout << "("  << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], mH[i][0])
+            //     //               << ", " << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], mH[i][0])
+            //     //               << "    ";
+            //     // std::cout << std::endl;
+            //     // for (size_t i = 0; i < H.size(); ++i)
+            //     //     std::cout << "("  << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], mH[i][1])
+            //     //               << ", " << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], mH[i][1])
+            //     //               << "    ";
+            //     // std::cout << std::endl;
 
-                std::cout << (i_formalism == 0 ? "1. Zemach  \t" : "2. Helicity\t") << "    ";
+            // }
 
-                // loop over fsp swaps
-                for (unsigned i = 0; i < 6; ++i) {
+            // print
+            std::cout << "Zemach:                  Helicity:" << std::endl;
+            for (size_t i = 0; i < amps_Z.size(); ++i)
+                std:: cout << amps_Z[i] << "    " << amps_H[i] << std::endl;
 
-                    // final state particles
-                    auto kPlus  = F.fsp(PDGs[1]);
-                    auto kMinus = F.fsp(PDGs[2]);
-                    auto piPlus = F.fsp(PDGs[3]);
+            // // check equality for Zemach
+            // for (size_t i = 1; i < amps_Z.size(); ++i)
+            //     REQUIRE ( amps_Z[i - 1] == CApprox( amps_Z[i] ) );
 
-                    auto M = i_formalism == 0 ? std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>()) :
-                             std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
-
-
-                    switch (i) {
-                        case 0:
-                            // original
-                            M->setFinalState({piPlus, kMinus, kPlus});
-                            break;
-                        case 1:
-                            // 0 <-> 1
-                            M->setFinalState({kMinus, piPlus, kPlus});
-                            break;
-                        case 2:
-                            // 0 <-> 2
-                            M->setFinalState({kPlus, kMinus, piPlus});
-                            break;
-                        case 3:
-                            // 1 <-> 2
-                            M->setFinalState({piPlus, kPlus, kMinus});
-                            break;
-                        case 4:
-                            // <<
-                            M->setFinalState({kMinus, kPlus, piPlus});
-                            break;
-                        case 5:
-                            // >>
-                            M->setFinalState({kPlus, piPlus, kMinus});
-                            break;
-                    }
-
-
-                    // initial state particle
-                    auto D = F.decayingParticle(PDGs[0], 3.);
-
-                    /*auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.75, 0.025));
-                    piK0->addChannel({piPlus, kMinus});
-                    D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5 * yap::Complex_1);
-                    */
-                    auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(1.00, 0.025));
-                    piK1->addChannel({piPlus, kMinus});
-                    D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1. * yap::Complex_1);
-                    /*
-                                        auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(1.25, 0.025));
-                                        piK2->addChannel({piPlus, kMinus});
-                                        D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
-                    */
-                    M->initializeForMonteCarloGeneration(1);
-
-
-                    // Dalitz coordinates
-                    yap::MassAxes massAxes = M->getMassAxes({{0, 1}, {1, 2}});;
-                    std::vector<double> squared_masses;
-                    switch (i) {
-                        case 0:
-                            // original
-                            squared_masses = {m2_ab, m2_bc};
-                            break;
-                        case 1:
-                            // 0 <-> 1
-                            squared_masses = {m2_ab, m2_ac};
-                            break;
-                        case 2:
-                            // 0 <-> 2
-                            squared_masses = {m2_bc, m2_ab};
-                            break;
-                        case 3:
-                            // 1 <-> 2
-                            squared_masses = {m2_ac, m2_bc};
-                            break;
-                        case 4:
-                            // <<
-                            squared_masses = {m2_bc, m2_ac};
-                            break;
-                        case 5:
-                            // >>
-                            squared_masses = {m2_ac, m2_ab};
-                            break;
-                    }
-
-                    // calculate four-momenta
-                    auto P = M->calculateFourMomenta(massAxes, squared_masses);
-
-                    // if failed, outside phase space
-                    if (P.empty()) {
-                        std::cout << "PhSp    ";
-                        continue;
-                    }
-
-                    /// \todo enabling this makes a difference in the amplitude, but it should not
-                    //P = yap::operator-(lorentzTransformation(P)) * P;
-                    M->setFinalStateMomenta(M->dataSet()[0], P, 0);
-
-                    resultingAmplitudes[i] = M->logOfSquaredAmplitude(M->dataSet()[0], 0);
-
-                    std::cout << resultingAmplitudes[i] << "   ";
-                }
-
-                /*REQUIRE( std::isfinite(resultingAmplitudes[0]) );
-                for (unsigned i=1; i<resultingAmplitudes.size(); ++i)
-                    REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[i]) );*/
-
-                std::cout << "\n";
-
-            }// end loop over SpinFormalisms
-
+            // // check equality for Helicity
+            // for (size_t i = 1; i < amps_H.size(); ++i)
+            //     REQUIRE ( amps_H[i - 1] == CApprox( amps_H[i] ) );
         }
     }
-
-
-
 
 }
