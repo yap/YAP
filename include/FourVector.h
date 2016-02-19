@@ -57,11 +57,6 @@ public:
     /// \return inner (dot) product for 4-vectors
     constexpr T operator*(const Vector<T, 4>& B) const override
     { return this->front() * B.front() - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, (T)0); }
-
-    /// unary minus for 4-vector,
-    /// does not change sign of zero'th component
-    constexpr Vector<T, 4> operator-() const override
-    { return FourVector<T>((*this)[0], -vect(*this)); }
 };
 
 /// \return Spatial #ThreeVector inside #FourVector
@@ -73,6 +68,24 @@ constexpr ThreeVector<T> vect(const FourVector<T>& V) noexcept
 template <typename T>
 constexpr ThreeVector<T> boost(const FourVector<T>& V)
 { return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T>({0, 0, 0}); }
+
+/// unary minus for 4-vector,
+/// does not change sign of zero'th component
+template <typename T>
+constexpr FourVector<T> operator-(const FourVector<T>& V)
+{ return FourVector<T>(V[0], -vect(V)); }
+
+/// unary minus for a vector of 4-vectors,
+/// does not change sign of zero'th components
+template <typename T>
+std::vector<FourVector<T> > operator-(const std::vector<FourVector<T> >& V)
+{
+    std::vector<FourVector<T> > result;
+    result.reserve(V.size());
+    for (auto& v : V)
+        result.push_back(-v);
+    return result;
+}
 
 /// multiply a 4x4 matrix times a FourVector
 template <typename T>

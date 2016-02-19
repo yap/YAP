@@ -21,6 +21,7 @@ TEST_CASE( "Vector" )
 
     SECTION( "ThreeVector" ) {
 
+        auto zero = yap::ThreeVector<double>({0, 0, 0});
         auto v1 = yap::ThreeVector<double>({1, 2, 3});
         auto v2 = yap::ThreeVector<double>({4, 5, 6});
 
@@ -63,6 +64,26 @@ TEST_CASE( "Vector" )
             auto y = yap::ThreeVector<double>({0, 1, 0});
             auto z = yap::ThreeVector<double>({0, 0, 1});
             REQUIRE( cross(x, y) == z );
+
+            // (unary) minus
+            REQUIRE( -v1 == -1. * v1 );
+            REQUIRE( -v1 + v1 == zero );
+
+
+        }
+
+        SECTION( "angles" ) {
+
+            auto a = yap::ThreeVector<double>({2, 0, 0});
+            auto b = yap::ThreeVector<double>({0, 2, 0});
+            auto c = yap::ThreeVector<double>({0, 0, 2});
+            auto z = yap::ThreeVector<double>({0, 0, 0});
+
+            REQUIRE(yap::angle(a, a) == 0.);
+            REQUIRE(yap::angle(a, -a) == yap::PI);
+            REQUIRE(yap::angle(a, b) == 0.5 * yap::PI);
+            REQUIRE(yap::angle(a, c) == 0.5 * yap::PI);
+            REQUIRE(std::isnan(yap::angle(a, z)));
 
         }
 
@@ -117,27 +138,15 @@ TEST_CASE( "Vector" )
 
         }
 
-        SECTION( "angles" ) {
-
-            auto a = yap::ThreeVector<double>({2, 0, 0});
-            auto b = yap::ThreeVector<double>({0, 2, 0});
-            auto c = yap::ThreeVector<double>({0, 0, 2});
-            auto z = yap::ThreeVector<double>({0, 0, 0});
-
-            REQUIRE(yap::angle(a, a) == 0.);
-            REQUIRE(yap::angle(a, -a) == yap::PI);
-            REQUIRE(yap::angle(a, b) == 0.5 * yap::PI);
-            REQUIRE(yap::angle(a, c) == 0.5 * yap::PI);
-            REQUIRE(std::isnan(yap::angle(a, z)));
-
-        }
-
         // unit
         //REQUIRE( unit(yap::FourVector<double>({1,0,0,0})) == yap::FourVector<double>({1,0,0,0}) );
 
         // *
 
         // -
+        SECTION("minus") {
+            REQUIRE( -v1 == yap::FourVector<double>({4, -3, -2, -1}) );
+        }
 
         // cross
 

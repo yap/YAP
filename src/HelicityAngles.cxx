@@ -30,7 +30,10 @@ void HelicityAngles::calculate(DataPoint& d, unsigned dataPartitionIndex)
     // call an ISP PC's
     for (auto& kv : symmetrizationIndices())
         if (kv.first->indices().size() == model()->finalStateParticles().size())
-            calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), dataPartitionIndex);
+            calculateAngles(d, kv.first, model()->coordinateSystem(),
+                    unitMatrix<double, 4>(),
+                    //lorentzTransformation(-(model()->fourMomenta().finalStateMomenta(d))),
+                    dataPartitionIndex);
 }
 
 //-------------------------

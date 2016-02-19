@@ -54,10 +54,6 @@ public:
     /// inner (dot) product of #Vector's
     virtual T operator*(const Vector<T, N>& B) const
     { return std::inner_product(this->begin(), this->end(), B.begin(), T(0)); }
-
-    /// unary minus
-    virtual Vector<T, N> operator-() const
-    { return T(-1) * *(this); }
 };
 
 /// \return string
@@ -87,6 +83,11 @@ Vector<T, N>& operator+=(Vector<T, N>& A, const Vector<T, N>& B)
 template <typename T, size_t N>
 Vector<T, N> operator+(const Vector<T, N>& A, const Vector<T, N>& B)
 { auto v = A; v += B; return v; }
+
+/// unary minus
+template <typename T, size_t N>
+constexpr Vector<T, N> operator-(const Vector<T, N>& V)
+{ return T(-1) * V; }
 
 /// subtraction assignment
 template <typename T, size_t N>
