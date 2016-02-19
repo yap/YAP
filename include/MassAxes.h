@@ -45,6 +45,16 @@ protected:
 
 };
 
+/// convert to string
+inline std::string to_string(const MassAxes& A)
+{
+    std::string s = "";
+    for (auto a : A)
+        s += indices_string(*a) + ", ";
+    s.erase(s.size() - 2, 2);
+    return s;
+}
+
 }
 
 #endif
