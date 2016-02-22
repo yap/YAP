@@ -55,7 +55,7 @@ TEST_CASE( "swapDalitzAxes" )
                 std::vector<double> resultingAmplitudes(6, 0.);
 
                 // loop over axis swaps
-                for (unsigned i = 0; i < 4; ++i) {
+                for (unsigned i = 0; i < 6; ++i) {
 
                     // final state particles
                     auto kPlus  = F.fsp(PDGs[1]);
@@ -124,7 +124,7 @@ TEST_CASE( "swapDalitzAxes" )
 
                     // if failed, outside phase space
                     if (P.empty()) {
-                        //std::cout<<"PhSp\n";
+                        //std::cout<<"PhSp ";
                         continue;
                     }
 
