@@ -119,8 +119,9 @@ constexpr std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSyste
 template <typename T>
 CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 {
+    constexpr T epsilon = T(5.) * std::numeric_limits<T>::epsilon();
     // if V is 0, return C
-    if (norm(V) == 0)
+    if (norm(V) <= epsilon)
         return C;
 
     CoordinateSystem<double, 3> vC;
@@ -129,7 +130,7 @@ CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSy
     vC[2] = unit(V);
 
     // if Z direction is same, return C
-    if (vC[2] == C[2])
+    if (angle(vC[2], C[2]) <= epsilon)
         return C;
 
     // Y := (C's Z) cross Z
