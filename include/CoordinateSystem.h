@@ -120,6 +120,7 @@ template <typename T>
 CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 {
     constexpr T epsilon = T(5.) * std::numeric_limits<T>::epsilon();
+
     // if V is 0, return C
     if (norm(V) <= epsilon)
         return C;
