@@ -41,9 +41,10 @@ template <typename T>
 T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
 {
     T arg = A * B / abs(A) / abs(B);
-    if (std::isfinite(arg) && fabs(arg) > 1)
-        // none of the vectors is 0, otherwise arg would not be finite. Arg is numerically a bit bigger than one
-        return (arg > 0) ? 0 : acos(-1.); // \todo cannot include Constants.h since it includes this header
+
+    // correct for arg just outside boundary (by numerical precision)
+    if (std::isfinite(arg) and fabs(arg) > 1)
+        arg = (arg > 0) ? (T)1 : (T) - 1;
 
     return acos(arg);
 }
