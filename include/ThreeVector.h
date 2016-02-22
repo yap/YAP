@@ -53,11 +53,10 @@ T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
 template<typename T>
 constexpr SquareMatrix<T, 3> skewSymmetric(const ThreeVector<T> V) noexcept
 {
-    return {
-        {    0., -V[2],  V[1] },
-        {  V[2],    0., -V[0] },
-        { -V[1],  V[0],    0. }
-    };
+    return SquareMatrix<T, 3>({(T)0,  -V[2], +V[1],
+                               V[2],  (T)0, -V[0],
+                               V[1], +V[0],  (T)0
+                              });
 }
 
 }
