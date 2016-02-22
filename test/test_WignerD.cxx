@@ -22,9 +22,9 @@ TEST_CASE( "WignerD" )
     yap::disableLogs(el::Level::Global);
 
     // choose arbitrary angles to test with
-    double alpha = 0.4 * yap::PI;
-    double beta = 0.6 * yap::PI;
-    double gamma = 0.5 * yap::PI;
+    double alpha = 0.4 * yap::pi<double>();
+    double beta = 0.6 * yap::pi<double>();
+    double gamma = 0.5 * yap::pi<double>();
 
     SECTION( "Caching" ) {
         // cache J = 0, 1/2, 1 (out of order)

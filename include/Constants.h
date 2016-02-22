@@ -21,6 +21,7 @@
 #ifndef yap_Constants_h
 #define yap_Constants_h
 
+#include "CoordinateSystem.h"
 #include "FourVector.h"
 #include "ThreeVector.h"
 
@@ -44,10 +45,19 @@ constexpr auto Complex_i = std::complex<double>(0, 1);
 /// @{
 
 /// pi
-constexpr long double PI = acos(-1L);
+template <typename T>
+constexpr T pi()
+{ return acos((T) - 1); }
 
 /// convert deg to rad by multiplying by; rad to deg by dividing by
-constexpr long double DEGTORAD = PI / 180.;
+template <typename T>
+constexpr T deg_to_rad()
+{ return pi<T>() / T(180); }
+
+template <typename T>
+constexpr T rad_to_deg()
+{ return T(180) / pi<T>(); }
+
 
 /// @}
 
