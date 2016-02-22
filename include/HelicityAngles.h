@@ -21,7 +21,11 @@
 #ifndef yap_HelicityAngles_h
 #define yap_HelicityAngles_h
 
+#include "Constants.h"
+#include "CoordinateSystem.h"
+#include "Rotation.h"
 #include "StaticDataAccessor.h"
+#include "ThreeVector.h"
 
 #include <memory>
 
@@ -116,6 +120,45 @@ protected:
     std::shared_ptr<RealCachedDataValue> Theta_;
 
 };
+
+/// Calculate helicity frame of V transformed from C,
+/// with z = unit(V), y = C.z X z, x = y X z
+/// \param V ThreeVector defining new Z direction
+/// \param C CoordinateSystem aiding in defining new Y direction
+template <typename T>
+CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
+{
+    constexpr T epsilon = T(5) * std::numeric_limits<T>::epsilon();
+
+    // if V is 0, return C
+    if (norm(V) <= epsilon)
+        return C;
+
+    CoordinateSystem<double, 3> vC;
+
+    // Set Z to V direction
+    vC[2] = unit(V);
+
+    // calc angle between new Z and old Z
+    auto theta = angle(vC[2], C[2]);
+
+    // if Z direction is same, return C
+    if (std::abs(theta) <= epsilon)
+        return C;
+
+    // if Z direction is opposite, return C rotated 180 degrees around Y axis
+    if (std::abs(theta - pi<double>()) <= epsilon)
+        return rotation<T>(C[1], pi<double>()) * C;
+
+    // Y := (C's Z) cross Z
+    vC[1] = unit(cross(C[2], vC[2]));
+
+    // X := Y cross Z (right-handed)
+    vC[0] = cross(vC[1], vC[2]);
+
+    return vC;
+}
+
 
 }
 
