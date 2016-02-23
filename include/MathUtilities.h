@@ -36,7 +36,7 @@ constexpr bool is_even(int val)
 
 /// extracts sign from value
 template <typename T>
-typename std::enable_if<std::is_signed<T>::value, int>::type
+typename std::enable_if<std::is_signed<T>::value, T>::type
 constexpr signum(const T& val)
 { return (T(0) < val) - (val < T(0)); }
 
