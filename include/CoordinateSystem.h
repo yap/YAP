@@ -112,37 +112,6 @@ template <typename T>
 constexpr std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return std::array<T, 2> { phi(V, C), theta(V, C) }; }
 
-/// Calculate helicity frame of V transformed from C,
-/// with z = unit(V), y = C.z X z, x = y X z
-/// \param V ThreeVector defining new Z direction
-/// \param C CoordinateSystem aiding in defining new Y direction
-template <typename T>
-CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{
-    constexpr T epsilon = T(5.) * std::numeric_limits<T>::epsilon();
-
-    // if V is 0, return C
-    if (norm(V) <= epsilon)
-        return C;
-
-    CoordinateSystem<double, 3> vC;
-
-    // Set Z to V direction
-    vC[2] = unit(V);
-
-    // if Z direction is same, return C
-    if (angle(vC[2], C[2]) <= epsilon)
-        return C;
-
-    // Y := (C's Z) cross Z
-    vC[1] = unit(cross(C[2], vC[2]));
-
-    // X := Y cross Z (right-handed)
-    vC[0] = cross(vC[1], vC[2]);
-
-    return vC;
-}
-
 /// @}
 
 }

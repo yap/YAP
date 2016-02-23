@@ -30,7 +30,6 @@
 namespace yap {
 
 /// \class Matrix
-/// ATTENTION: You have to take care of initializing matrices!!!
 /// \ingroup VectorAlgebra
 /// \param R number of rows
 /// \param C number of columns
@@ -42,7 +41,12 @@ public:
     constexpr Matrix(const std::array<std::array<T, C>, R>& m) noexcept : std::array<std::array<T, C>, R>(m) {}
 
     /// Default constructor
-    Matrix() = default;
+    /// zeroed
+    Matrix()
+    {
+        for (size_t i = 0; i < this->size(); ++i)
+            this->at(i).fill(T(0));
+    }
 
     /// Use std::array's assignment operators
     using std::array<std::array<T, C>, R>::operator=;

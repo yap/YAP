@@ -13,7 +13,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
     SpinAmplitude(two_J, two_j1, two_j2, l, two_s, equiv)
 {
     // cache coefficients
-    double c = sqrt((2. * L() + 1) / 4. / PI);
+    double c = sqrt((2. * L() + 1) / 4. / pi<double>());
     for (int two_m1 = -finalTwoJ()[0]; two_m1 <= (int)finalTwoJ()[0]; two_m1 += 2)
         for (int two_m2 = -finalTwoJ()[1]; two_m2 <= (int)finalTwoJ()[1]; two_m2 += 2)
             try {

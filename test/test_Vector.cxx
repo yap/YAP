@@ -80,9 +80,9 @@ TEST_CASE( "Vector" )
             auto z = yap::ThreeVector<double>({0, 0, 0});
 
             REQUIRE(yap::angle(a, a) == 0.);
-            REQUIRE(yap::angle(a, -a) == yap::PI);
-            REQUIRE(yap::angle(a, b) == 0.5 * yap::PI);
-            REQUIRE(yap::angle(a, c) == 0.5 * yap::PI);
+            REQUIRE(yap::angle(a, -a) == yap::pi<double>());
+            REQUIRE(yap::angle(a, b) == 0.5 * yap::pi<double>());
+            REQUIRE(yap::angle(a, c) == 0.5 * yap::pi<double>());
             REQUIRE(std::isnan(yap::angle(a, z)));
 
         }
