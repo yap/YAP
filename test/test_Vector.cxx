@@ -146,6 +146,10 @@ TEST_CASE( "Vector" )
         // -
         SECTION("minus") {
             REQUIRE( -v1 == yap::FourVector<double>({4, -3, -2, -1}) );
+
+            std::vector<yap::FourVector<double>> VV = {v1, v2};
+            std::vector<yap::FourVector<double>> mVV = { -v1, -v2};
+            REQUIRE( -VV == mVV );
         }
 
         // cross
