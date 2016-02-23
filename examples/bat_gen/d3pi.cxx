@@ -33,81 +33,48 @@ std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
-    auto pp0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.1, "pp0", radialSize, std::make_shared<yap::BreitWigner>(1.1, 0.05));
-    pp0->addChannel({piPlus, piMinus});
-    D->addChannel({pp0, piPlus})->freeAmplitudes()[0]->setValue(yap::Complex_1);
-
-    auto pp1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.35, "pp1", radialSize, std::make_shared<yap::BreitWigner>(1.35, 0.05));
-    pp1->addChannel({piPlus, piMinus});
-    D->addChannel({pp1, piPlus})->freeAmplitudes()[0]->setValue(2. * yap::Complex_1);
-
-    auto pp2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.6, "pp2", radialSize, std::make_shared<yap::BreitWigner>(1.6, 0.05));
-    pp2->addChannel({piPlus, piMinus});
-    D->addChannel({pp2, piPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
-
-    /*
-    // rho
-    // auto rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 0.775, "rho", radialSize, std::make_shared<yap::BreitWigner>());
-    auto rho = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<yap::BreitWigner>());
-    auto rho = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.2, "BW1200", radialSize, std::make_shared<yap::BreitWigner>(1.2, 0.1));
-    // auto rho = std::make_shared<yap::Resonance>(yap::QuantumNumbers(2, 0), 1.2, "rho", radialSize, std::make_shared<yap::BreitWigner>());
-    // std::static_pointer_cast<yap::BreitWigner>(rho->massShape())->width()->setValue(0.1);
-    rho->addChannel({piPlus, piMinus});
-    D->addChannel({rho, piPlus});
-
-    // // f_2(1270)
-    auto f_2 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_2->massShape())->width()->setValue(0.185);
-    f_2->addChannel({piPlus, piMinus});
-
-    // f_0(980)
-    auto f_0_980 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_980->massShape())->width()->setValue(0.329);
-    f_0_980->addChannel({piPlus, piMinus});
-
-    // f_0(1370)
-    auto f_0_1370 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_1370->massShape())->width()->setValue(0.250);
-    f_0_1370->addChannel({piPlus, piMinus});
-
-    // f_0(1500)
-    auto f_0_1500 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_1500->massShape())->width()->setValue(0.109);
-    f_0_1500->addChannel({piPlus, piMinus});
-
-    // sigma a.k.a. f_0(500)
-    auto sigma = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_shared<yap::BreitWigner>());
+    // f_0(500), aka "sigma"
+    auto sigma = yap::Resonance::create(F.quantumNumbers("f_0(500)"), 0.800, "sigma", radialSize, std::make_shared<yap::BreitWigner>());
     std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.800);
     sigma->addChannel({piPlus, piMinus});
+    D->addChannel({sigma, piPlus})->freeAmplitudes()[0]->setValue(std::polar(3.7, yap::rad(-3.)));
 
-    // f_0(500+100i)
-    auto f_0_500_100 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), .500, "f_0_500_100", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_500_100->massShape())->width()->setValue(0.100);
-    f_0_500_100->addChannel({piPlus, piMinus});
+    // f_0(1370)
+    auto f_0_1370 = F.resonance(F.pdgCode("f'_0"), radialSize, std::make_shared<yap::BreitWigner>());
+    f_0_1370->addChannel({piPlus, piMinus});
+    D->addChannel({f_0_1370, piPlus})->freeAmplitudes()[0]->setValue(std::polar(1.3, yap::rad(-21.)));
 
-    // f_0(1500+100i)
-    auto f_0_1500_100 = std::make_shared<yap::Resonance>(F.quantumNumbers("f_0"), 1.500, "f_0_1500_100", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_1500_100->massShape())->width()->setValue(0.100);
-    f_0_1500_100->addChannel({piPlus, piMinus});
+    // f_0(1500)
+    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_shared<yap::BreitWigner>());
+    f_0_1500->addChannel({piPlus, piMinus});
+    D->addChannel({f_0_1500, piPlus})->freeAmplitudes()[0]->setValue(std::polar(1.1, yap::rad(-44.)));
 
-    */
-    // Add channels to D
-    // D->addChannel({f_2,      piPlus});
-    // \todo do not store/prune DataAccessors from InitialStateParticle that are not used
-    // D->addChannel({f_0_980,  piPlus});
-    // D->addChannel({f_0_1370, piPlus});
-    // D->addChannel({f_0_1500, piPlus});
-    // D->addChannel({sigma,    piPlus});
+    // rho^0(770)
+    auto rho0 = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<yap::BreitWigner>());
+    rho0->addChannel({piPlus, piMinus});
+    D->addChannel({rho0, piPlus})->freeAmplitudes()[0]->setValue(yap::Complex_1);
 
-    // D->addChannel({f_0_500_100,  piPlus});
-    // D->addChannel({f_0_1500_100, piPlus});
+    // f_2(1270)
+    auto f_2_1270 = F.resonance(F.pdgCode("f_2"), radialSize, std::make_shared<yap::BreitWigner>());
+    f_2_1270->addChannel({piPlus, piMinus});
+    D->addChannel({f_2_1270, piPlus})->freeAmplitudes()[0]->setValue(std::polar(2.1, yap::rad(-123.)));
 
-    // freeAmps[i++]->setValue(std::polar(1.,     0.)); // rho
-    // freeAmps[i++]->setValue(std::polar(2.1, -123. * TMath::Pi() / 180.)); // f_2
-    // freeAmps[i++]->setValue(std::polar(1.4,   12. * TMath::Pi() / 180.)); // f_0_980
-    // freeAmps[i++]->setValue(std::polar(1.3,  -21. * TMath::Pi() / 180.)); // f_0_1370
-    // freeAmps[i++]->setValue(std::polar(1.1,  -44. * TMath::Pi() / 180.)); // f_0_1500
-    // freeAmps[i++]->setValue(std::polar(3.7,   -3. * TMath::Pi() / 180.)); // sigma
+    // // f_0(980) (as Breit-Wigner)
+    // auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, std::make_shared<yap::BreitWigner>());
+    // f_0_980->addChannel({piPlus, piMinus});
+    // D->addChannel({f_0_980, piPlus})->freeAmplitudes()[0]->setValue(std::polar(0.75, yap::rad(12.)));
+
+    // auto pp0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.1, "pp0", radialSize, std::make_shared<yap::BreitWigner>(1.1, 0.05));
+    // pp0->addChannel({piPlus, piMinus});
+    // D->addChannel({pp0, piPlus})->freeAmplitudes()[0]->setValue(yap::Complex_1);
+
+    // auto pp1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.35, "pp1", radialSize, std::make_shared<yap::BreitWigner>(1.35, 0.05));
+    // pp1->addChannel({piPlus, piMinus});
+    // D->addChannel({pp1, piPlus})->freeAmplitudes()[0]->setValue(2. * yap::Complex_1);
+
+    // auto pp2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.6, "pp2", radialSize, std::make_shared<yap::BreitWigner>(1.6, 0.05));
+    // pp2->addChannel({piPlus, piMinus});
+    // D->addChannel({pp2, piPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
 
     return M;
 }

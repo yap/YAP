@@ -10,12 +10,14 @@
 
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
+#include <HelicityFormalism.h>
 #include <make_unique.h>
 #include <ZemachFormalism.h>
 
 #include "bat_gen.h"
 #include "d3pi.h"
 #include "dkkpi.h"
+#include "D_K0pi0pi0.h"
 
 int main()
 {
@@ -28,7 +30,8 @@ int main()
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
     // bat_gen m("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
-    bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
+    bat_gen m("DKSPIPI", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
+    //bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
     // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}});
 
     // set precision
@@ -38,7 +41,7 @@ int main()
     BCLog::OutSummary("Initializing for MC Generation");
     m.initialize(m.GetNChains());
 
-    m.SetNIterationsRun(static_cast<int>(5e5 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(5e6 / m.GetNChains()));
 
     m.GetObservables().FillHistograms(true, true);
 

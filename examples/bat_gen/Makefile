@@ -17,7 +17,7 @@
 # List of all class (models) sources used in the program
 # Add classes to the end. Backslash indicates continuation
 # on the next line
-CXXSRCS = bat_gen.cxx d3pi.cxx dkkpi.cxx
+CXXSRCS = bat_gen.cxx d3pi.cxx dkkpi.cxx D_K0pi0pi0.cxx
 
 # List of all program sources used in the program
 # Add classes to the end. Backslash indicates continuation
