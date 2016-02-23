@@ -61,7 +61,8 @@ public:
     virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const;
 
     /// check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const override
+    { return DataAccessor::consistent(); }
 
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }

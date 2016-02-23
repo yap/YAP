@@ -11,6 +11,11 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
     StaticDataAccessor(m, &ParticleCombination::equivDownByOrderlessContent),
     Q2_(RealCachedDataValue::create(this))
 {
+    if (!model()->fourMomenta())
+        throw exceptions::Exception("Model's FourMomenta unset", "MeasuredBreakupMomenta::MeasuredBreakupMomenta");
+    Q2_->addDependency(model()->fourMomenta()->mass());
+    Q2_->addDependency(std::make_pair(model()->fourMomenta()->mass(), 0));
+    Q2_->addDependency(std::make_pair(model()->fourMomenta()->mass(), 1));
 }
 
 //-------------------------
