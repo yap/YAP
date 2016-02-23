@@ -84,12 +84,19 @@ public:
 
 protected:
 
+    /// calls setDependenciesFromModel
+    virtual void addToModel() override;
+
     /// Set raw pointer to owning Resonance.
-    /// Calls borrowParametersFromResonance()
-    void setResonance(Resonance* r);
+    /// Calls borrowParametersFromResonance().
+    virtual void setResonance(Resonance* r);
 
     /// override in inheriting classes to borrow parameters from owning resonance
     virtual void borrowParametersFromResonance()
+    {}
+
+    /// override in inheriting class to set dependencies on values accessible through model
+    virtual void setDependenciesFromModel()
     {}
 
 private:

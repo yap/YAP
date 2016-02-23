@@ -21,6 +21,13 @@ bool MassShape::consistent() const
 }
 
 //-------------------------
+void MassShape::addToModel()
+{
+    DataAccessor::addToModel();
+    setDependenciesFromModel();
+}
+
+//-------------------------
 void MassShape::setResonance(Resonance* r)
 {
     if (Resonance_)

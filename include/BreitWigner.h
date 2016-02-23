@@ -83,8 +83,11 @@ public:
 
 protected:
 
-    /// set owning resonance, borrow mass from owner
+    /// borrow mass from owner
     virtual void borrowParametersFromResonance() override;
+
+    /// set dependency on masses from model
+    virtual void setDependenciesFromModel() override;
 
     std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
     std::shared_ptr<RealParameter> Width_; ///< [GeV]
