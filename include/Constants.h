@@ -49,13 +49,14 @@ template <typename T>
 constexpr T pi()
 { return acos((T) - 1); }
 
-/// convert deg to rad by multiplying by; rad to deg by dividing by
+/// convert degrees to radians
 template <typename T>
-constexpr T deg_to_rad()
+constexpr T rad_per_deg()
 { return pi<T>() / T(180); }
 
+/// convert radians to degrees
 template <typename T>
-constexpr T rad_to_deg()
+constexpr T deg_per_rad()
 { return T(180) / pi<T>(); }
 
 
