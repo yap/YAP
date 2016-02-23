@@ -122,6 +122,15 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
 
+    // check charge conservation
+    int q = 0;
+    for (const auto& d : Daughters_)
+        q += d->quantumNumbers().Q();
+    if (DecayingParticle_->quantumNumbers().Q() != q)
+        throw exceptions::Exception("Charge not conserved: " + std::to_string(DecayingParticle_->quantumNumbers().Q()) + " != " + std::to_string(q)
+                                    + " in " + to_string(*this),
+                                    "DecayChannel::setDecayingParticle");
+
     // if SpinAmplitude's have already been added by hand, don't add automatically
     if (!Amplitudes_.empty())
         return;
@@ -390,13 +399,13 @@ bool DecayChannel::consistent() const
     }
 
     // check masses
-    double mass_sum = std::accumulate(Daughters_.begin(), Daughters_.end(), 0.,
-    [](double m, std::shared_ptr<Particle> d) {return m + (d ? d->mass()->value() : 0);});
-    if (mass_sum > decayingParticle()->mass()->value()) {
-        FLOG(ERROR) << "sum of daughter's masses (" << mass_sum << ")"
-                    << "is bigger than decaying particle's mass (" << decayingParticle()->mass()->value() << ").";
-        C &= false;
-    }
+    // double mass_sum = std::accumulate(Daughters_.begin(), Daughters_.end(), 0.,
+    // [](double m, std::shared_ptr<Particle> d) {return m + (d ? d->mass()->value() : 0);});
+    // if (mass_sum > decayingParticle()->mass()->value()) {
+    //     FLOG(ERROR) << "sum of daughter's masses (" << mass_sum << ")"
+    //                 << "is bigger than decaying particle's mass (" << decayingParticle()->mass()->value() << ").";
+    //     C &= false;
+    // }
 
     // check charge conservation
     int daughtersQ(0);
