@@ -54,11 +54,20 @@ template <typename T>
 constexpr T rad_per_deg()
 { return pi<T>() / T(180); }
 
+/// convert degrees to radians
+template <typename T>
+constexpr T rad(const T& d)
+{ return d * rad_per_deg<T>(); }
+
 /// convert radians to degrees
 template <typename T>
 constexpr T deg_per_rad()
 { return T(180) / pi<T>(); }
 
+/// convert radians to degrees
+template <typename T>
+constexpr T deg(const T& r)
+{ return r * deg_per_rad<double>(); }
 
 /// @}
 
