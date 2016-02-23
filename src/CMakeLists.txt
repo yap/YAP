@@ -15,6 +15,7 @@ set(YAP_SOURCES
 	DecayChannel.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx
+  Flatte.cxx
 	FourMomenta.cxx
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
