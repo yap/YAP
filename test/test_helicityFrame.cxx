@@ -20,6 +20,7 @@
 /// \brief Tests calculation of helicity reference frame
 
 #include <catch.hpp>
+#include <catch_iapprox.hpp>
 
 #include <Constants.h>
 #include <CoordinateSystem.h>
@@ -39,16 +40,29 @@ TEST_CASE( "helicityFrame" )
 
     }
 
-    SECTION ( "equal_z" ) {
+    SECTION ( "z" ) {
 
         REQUIRE( yap::helicityFrame(yap::ThreeAxes[2], yap::ThreeAxes) == yap::ThreeAxes );
 
     }
 
-    SECTION ( "forty-five_degrees" ) {
+    SECTION ( "minus_z" ) {
 
-        // rotate Z around Y by 45 degrees
-        auto P = yap::rotation(yap::ThreeAxes[1], yap::pi<double>() / 4) * yap::ThreeAxes[2];
+        auto C = yap::helicityFrame(-yap::ThreeAxes[2], yap::ThreeAxes);
+        
+        REQUIRE( C[2] == Catch::Detail::IApprox<yap::ThreeVector<double> >(-yap::ThreeAxes[2]) );
+        REQUIRE( C[1] == Catch::Detail::IApprox<yap::ThreeVector<double> >( yap::ThreeAxes[1]) );
+        REQUIRE( C[0] == Catch::Detail::IApprox<yap::ThreeVector<double> >(-yap::ThreeAxes[0]) );
+        
+    }
+
+    SECTION ( "rotate_Y" ) {
+
+        // rotate by 45 degrees
+        auto R = 45 * yap::rad_per_deg<double>();
+
+        // rotate Z around Y by R
+        auto P = yap::rotation(yap::ThreeAxes[1], R) * yap::ThreeAxes[2];
 
         // calculate new helicity frame
         auto C = yap::helicityFrame(P, yap::ThreeAxes);
@@ -59,8 +73,31 @@ TEST_CASE( "helicityFrame" )
         // check Y axis is unchanged
         REQUIRE (C[1] == yap::ThreeAxes[1]);
 
-        // check X is rotated by 45 degrees
-        REQUIRE (angle(C[0], yap::ThreeAxes[0]) == Approx(yap::pi<double>() / 4.));
+        // check X is rotated by R
+        REQUIRE (angle(C[0], yap::ThreeAxes[0]) == Approx(R));
+
+    }
+
+    SECTION ( "rotate_X" ) {
+
+        // rotate by 19.5 degrees
+        auto R = 19.5 * yap::rad_per_deg<double>();
+
+        // rotate Z around X by R
+        auto P = yap::rotation(yap::ThreeAxes[0], R) * yap::ThreeAxes[2];
+
+        // calculate new helicity frame
+        auto C = yap::helicityFrame(P, yap::ThreeAxes);
+
+        // check Z axis of new frame is P
+        REQUIRE( C[2] == P );
+
+        // check Y axis is old X axis
+        REQUIRE (C[1] == Catch::Detail::IApprox<yap::ThreeVector<double> >(yap::signum(R) * yap::ThreeAxes[0]));
+        REQUIRE (C[1] == yap::signum(R) * yap::ThreeAxes[0]);
+
+        // check X is rotated by R from old -Y
+        REQUIRE (angle(C[0], -yap::ThreeAxes[1]) == Approx(R));
 
     }
 
