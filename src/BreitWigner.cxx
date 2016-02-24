@@ -30,14 +30,25 @@ void BreitWigner::setParameters(const ParticleTableEntry& entry)
 //-------------------------
 void BreitWigner::borrowParametersFromResonance()
 {
-    // Remove existing mass parameter from M2iMG_
+    // Remove existing mass parameter from T_
     T_->removeDependency(Mass_);
 
     // borrow mass from Owner_
     Mass_ = resonance()->mass();
 
-    // add new mass parameter into M2iMG_
+    // add new mass parameter into T_
     T_->addDependency(Mass_);
+}
+
+//-------------------------
+void BreitWigner::setDependenciesFromModel()
+{
+    if (!model())
+        throw exceptions::Exception("Model unset", "BreitWigner::setDependenciesFromResonance");
+    if (!model()->fourMomenta())
+        throw exceptions::Exception("Model's FourMomenta unset", "BreitWigner::setDependenciesFromResonance");
+
+    T_->addDependency(model()->fourMomenta()->mass());
 }
 
 //-------------------------

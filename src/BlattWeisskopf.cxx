@@ -41,7 +41,8 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(model()->fourMomenta()->mass());
+    Fq_r->addDependency(std::make_pair(model()->fourMomenta()->mass(), 0));
+    Fq_r->addDependency(std::make_pair(model()->fourMomenta()->mass(), 1));
     Fq_r->addDependency(DecayingParticle_->mass());
     Fq_r->addDependency(DecayingParticle_->radialSize());
 
@@ -83,23 +84,6 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
     }
 
     return Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
-}
-
-//-------------------------
-bool BlattWeisskopf::consistent() const
-{
-    bool C = true;
-
-    if (!Fq_r->dependsOn(model()->fourMomenta()->mass())) {
-        FLOG(ERROR) << "Fq_r doesn't have mass dependencies set";
-        C &= false;
-    }
-    if (!Fq_ab->dependsOn(model()->measuredBreakupMomenta()->breakupMomenta())) {
-        FLOG(ERROR) << "Fq_ab doesn't have breakup-momenta dependencies set";
-        C &= false;
-    }
-
-    return C;
 }
 
 //-------------------------

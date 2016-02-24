@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_BreitWigner_h
-#define yap_BreitWigner_h
+#ifndef yap_Flatte_h
+#define yap_Flatte_h
 
 #include "CachedValue.h"
 #include "MassShape.h"
@@ -32,21 +32,31 @@ namespace yap {
 class DataPoint;
 class ParticleCombination;
 
-/// \class BreitWigner
+/// \class Flatte
 /// \brief Class for Breit-Wigner resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
 /// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
 
-class BreitWigner : public MassShape
+class Flatte : public MassShape
 {
 public:
 
+    struct FlatteChannel {
+        /// [GeV]
+        std::shared_ptr<RealParameter> Coupling;
+
+        /// [GeV]
+        std::shared_ptr<RealParameter> Mass;
+
+        FlatteChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
+            : Coupling(coupling), Mass(mass) {}
+    };
+
     /// Constructor
     /// \param mass Mass of resonance [GeV]
-    /// \param width Width of resonance [GeV]
-    BreitWigner(double mass = -1, double width = -1);
+    Flatte(double mass = -1);
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
@@ -58,6 +68,12 @@ public:
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;
 
+    /// Add FlatteChannel
+    void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);
+
+    /// Add FlatteChannel
+    void addChannel(double coupling, double mass);
+
     /// \name Getters
     /// @{
 
@@ -65,9 +81,9 @@ public:
     std::shared_ptr<RealParameter> mass() const
     { return Mass_; }
 
-    /// Get width
-    std::shared_ptr<RealParameter> width() const
-    { return Width_; }
+    /// Get FlatteChannel's
+    const std::vector<FlatteChannel>& channels() const
+    { return FlatteChannels_; }
 
     /// @}
 
@@ -79,20 +95,26 @@ public:
     /// @}
 
     virtual std::string data_accessor_type() const override
-    {return "BreitWigner"; }
+    {return "Flatte"; }
 
 protected:
 
-    /// borrow mass from owner
-    virtual void borrowParametersFromResonance() override;
-
-    /// set dependency on masses from model
+    /// borrow dependencies from model
     virtual void setDependenciesFromModel() override;
 
-    std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
-    std::shared_ptr<RealParameter> Width_; ///< [GeV]
+    /// set owning resonance, borrow mass from owner
+    virtual void borrowParametersFromResonance() override;
 
-    std::shared_ptr<ComplexCachedDataValue> T_; ///< Mass-shape amplitude
+    /// mass [GeV]
+    std::shared_ptr<RealParameter> Mass_;
+
+    std::vector<FlatteChannel> FlatteChannels_;
+
+    /// width-like term := i 2 / m * sum_channels coupling * breakup momentum(m -> mass + mass)
+    std::shared_ptr<ComplexCachedDataValue> WidthTerm_;
+
+    /// dynamic amplitude
+    std::shared_ptr<ComplexCachedDataValue> T_;
 
 };
 
