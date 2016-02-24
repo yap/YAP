@@ -87,12 +87,28 @@ public:
     Parameter(T t) : ParameterBase(), ParameterValue_(t)
     {}
 
+    /// virtual destructor defaulted
+    ~Parameter() = default;
+
+    /// copy constructor defaulted
+    Parameter(const Parameter&) = default;
+
+    /// move constructor defaulted
+    Parameter(Parameter&&) = default;
+
+    /// copy assignment defaulted
+    Parameter& operator=(const Parameter&) = default;
+
+    /// move assignment defaulted
+    Parameter& operator=(Parameter&&) = default;
+
     /// \return value of parameter
-    const T& value() const
+    virtual typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type
+    value() const
     { return ParameterValue_; }
 
-    /// set complex value
-    void setValue(T val)
+    /// set value
+    virtual void setValue(T val)
     {
         if (variableStatus() == kFixed)
             throw exceptions::ParameterIsFixed("", "Parameter::setValue");
@@ -124,6 +140,102 @@ using ComplexParameterVector = std::vector<std::shared_ptr<ComplexParameter> >;
 /// \typedef RealParameterVector
 /// \ingroup Parameters
 using RealParameterVector = std::vector<std::shared_ptr<RealParameter> >;
+
+/// \class ComplexComponentParameter
+/// \brief Abstract base allowing access to the components of a ComplexParameter as a RealParameter
+/// \author Daniel Greenwald
+class ComplexComponentParameter : public RealParameter
+{
+public:
+    /// Constructor
+    /// \param par shared_ptr to ComplexParameter to access
+    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par)
+        : RealParameter(), Parent_(par)
+    {
+        if (!Parent_)
+            throw exceptions::Exception("Parent unset", "RealSubparameter::RealSubparameter");
+    }
+
+    /// \return value of parameter by accessing parent
+    double value() const override
+    { return component(Parent_->value()); }
+
+    /// set value by accessing parent
+    void setValue(double val) override
+    {
+        if (variableStatus() == kFixed)
+            throw exceptions::ParameterIsFixed("", "ComplexComponentParameter::setValue");
+        if (value() == val)
+            return;
+        Parent_->setValue(setComponent(Parent_->value(), val));
+        setVariableStatus(kChanged);
+    }
+
+    /// \return shared_ptr to parent
+    std::shared_ptr<ComplexParameter> parent()
+    { return Parent_; }
+
+protected:
+
+    /// \return component value from whole value
+    virtual double component(const std::complex<double>& c) const = 0;
+
+    /// \return complex value with component changed
+    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const = 0;
+
+private:
+
+    std::shared_ptr<ComplexParameter> Parent_;
+
+};
+
+/// \class RealComponentParameter
+/// \brief RealParameter accessing real component of ComplexParameter
+/// \author Daniel Greenwald
+class RealComponentParameter : public ComplexComponentParameter
+{
+public:
+
+    /// Constructor
+    /// \param par shared_ptr to ComplexParameter to access
+    RealComponentParameter(std::shared_ptr<ComplexParameter> par)
+        : ComplexComponentParameter(par) {}
+
+protected:
+
+    /// \return component value from whole value
+    double component(const std::complex<double>& c) const override
+    { return real(c); }
+
+    /// \return complex value with component changed
+    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const
+    { return std::complex<double>(v, imag(c)); }
+
+};
+
+/// \class ImaginaryComponentParameter
+/// \brief ImaginaryParameter accessing imaginary component of ComplexParameter
+/// \author Daniel Greenwald
+class ImaginaryComponentParameter : public ComplexComponentParameter
+{
+public:
+
+    /// Constructor
+    /// \param par shared_ptr to ComplexParameter to access
+    ImaginaryComponentParameter(std::shared_ptr<ComplexParameter> par)
+        : ComplexComponentParameter(par) {}
+
+protected:
+
+    /// \return component value from whole value
+    double component(const std::complex<double>& c) const override
+    { return imag(c); }
+
+    /// \return complex value with component changed
+    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const
+    { return std::complex<double>(real(c), v); }
+
+};
 
 }
 
