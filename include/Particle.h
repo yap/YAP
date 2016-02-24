@@ -100,13 +100,17 @@ public:
     /// grant friend status to DecayChannel to call addParticleCombination
     friend class DecayChannel;
 
+protected:
+
+    // set mass parameter
+    void setMass(std::shared_ptr<RealParameter> m);
+
 private:
 
     /// Quantum numbers of particle
     QuantumNumbers QuantumNumbers_;
 
     /// Mass [GeV]
-    /// \todo share with massShape
     std::shared_ptr<RealParameter> Mass_;
 
     /// Name of particle

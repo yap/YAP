@@ -99,6 +99,9 @@ protected:
     virtual void setDependenciesFromModel()
     {}
 
+    /// replace resonance's mass
+    void replaceResonanceMass(std::shared_ptr<RealParameter> m);
+
 private:
 
     /// raw pointer to resonance that owns this mass shape
