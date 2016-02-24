@@ -21,6 +21,7 @@
 #ifndef yap_Parameter_h
 #define yap_Parameter_h
 
+#include "Exceptions.h"
 #include "logging.h"
 #include "VariableStatus.h"
 
@@ -48,17 +49,13 @@ public:
     VariableStatus variableStatus() const
     { return VariableStatus_; }
 
-    // /// \return number of real parameters
-    // virtual unsigned size() const
-    // { return Size_; }
-
     /// set VariableStatus
     void setVariableStatus(VariableStatus stat)
     { VariableStatus_ = stat; }
 
-protected:
+private:
 
-    // unsigned Size_;
+    /// Status of variable
     VariableStatus VariableStatus_;
 
 };
@@ -77,7 +74,6 @@ using ParameterSet = std::set<std::shared_ptr<ParameterBase> >;
 /// \brief Template class holding also a value for a parameter
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
-
 template <typename T>
 class Parameter : public ParameterBase
 {
@@ -98,18 +94,17 @@ public:
     /// set complex value
     void setValue(T val)
     {
-        if (ParameterValue_ != val) {
-            if (VariableStatus_ == kFixed) {
-                FLOG(ERROR) << "Error, trying to change the value of a fixed parameter! Abort.";
-                return;
-            }
-            ParameterValue_ = val;
-            VariableStatus_ = kChanged;
-        }
+        if (variableStatus() == kFixed)
+            throw exceptions::ParameterIsFixed("", "Parameter::setValue");
+        if (ParameterValue_ == val)
+            return;
+        ParameterValue_ = val;
+        setVariableStatus(kChanged);
     }
 
 protected:
 
+    /// Value stored
     T ParameterValue_;
 
 };
