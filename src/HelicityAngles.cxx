@@ -28,12 +28,10 @@ void HelicityAngles::calculate(DataPoint& d, unsigned dataPartitionIndex)
     Theta_->setCalculationStatus(kUncalculated, dataPartitionIndex);
 
     // call an ISP PC's
+    // \todo allow for designating the boost that takes from the data frame to the lab frame (possibly event dependent)
     for (auto& kv : symmetrizationIndices())
         if (kv.first->indices().size() == model()->finalStateParticles().size())
-            calculateAngles(d, kv.first, model()->coordinateSystem(),
-                            //unitMatrix<double, 4>(),
-                            lorentzTransformation( -(model()->fourMomenta()->initialStateMomentum(d)) ), // boost into ISP rest frame
-                            dataPartitionIndex);
+            calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), dataPartitionIndex);
 }
 
 //-------------------------
@@ -42,53 +40,49 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
                                      unsigned dataPartitionIndex)
 {
     yap::plainLogs(el::Level::Debug);
-
+    
     // terminate recursion
-    if (pc->isFinalStateParticle()) {
-        DEBUG(" done calculating Helicity angles");
+    if (pc->isFinalStateParticle())
         return;
-    }
 
-    // calculate pc momentum in parent frame:
-    const FourVector<double> P = boosts * model()->fourMomenta()->p(d, pc);
+    // get pc's 4-mom in data frame
+    const auto P = model()->fourMomenta()->p(d, pc);
 
-    DEBUG(to_string(*pc) << " momentum in parent frame: " << to_string(P) << "; norm = " << norm(vect(P)));
+    // boost C?
+    // const CoordinateSystem<double, 3> c = {vect(boosts * FourVector<double>(0., C[0])),
+    //                                        vect(boosts * FourVector<double>(0., C[1])),
+    //                                        vect(boosts * FourVector<double>(0., C[2]))};
+    
+    // calculate reference frame for P from parent's RF
+    const auto cP = helicityFrame(boosts * P, C);
+    LOG(INFO) << "C  = " << to_string(C);
+    LOG(INFO) << "cP = " << to_string(cP);
 
-    // calculate reference frame for pc
-    const CoordinateSystem<double, 3> cP = helicityFrame<double>(P, C);
-
-    DEBUG("coordinate system: " << to_string(C));
-    DEBUG("helicity frame:    " << to_string(cP));
-
-    // calculate boost from lab frame into pc rest frame
-    const FourMatrix<double> b = lorentzTransformation<double>(-P) * boosts;
+    // calculate boost from data frame into pc rest frame
+    const auto b = lorentzTransformation(-P);
 
     const unsigned symIndex = symmetrizationIndex(pc);
 
     for (auto& daughter : pc->daughters()) {
 
-        // boost daughter momentum from lab frame into pc rest frame
-        const FourVector<double> p = b * model()->fourMomenta()->p(d, daughter);
-
-        DEBUG(to_string(*daughter) << " momentum in pc rest frame: " << to_string(p));
+        // boost daughter momentum from data frame into pc rest frame
+        const auto p = b * model()->fourMomenta()->p(d, daughter);
 
         // if unset, set angles of parent to first daughter's
         if (Phi_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated or
                 Theta_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated ) {
 
-            const auto phi_theta = angles<double>(vect<double>(p), C);
+            const auto phi_theta = angles<double>(vect<double>(p), cP);
 
             Phi_->setValue(phi_theta[0], d, symIndex, dataPartitionIndex);
             Theta_->setValue(phi_theta[1], d, symIndex, dataPartitionIndex);
 
-            DEBUG("calculated helicity angles: phi = " << phi_theta[0] << ", theta = " << phi_theta[1] << " for " << *pc);
         }
 
         // continue down the decay tree
         calculateAngles(d, daughter, cP, b, dataPartitionIndex);
     }
-
-    yap::disableLogs(el::Level::Debug);
+    yap::disableLogs(el::Level::Global);
 }
 
 //-------------------------

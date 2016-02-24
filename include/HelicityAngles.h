@@ -148,7 +148,7 @@ CoordinateSystem<T, 3> helicityFrame(const ThreeVector<T>& V, const CoordinateSy
 
     // if Z direction is opposite, return C rotated 180 degrees around Y axis
     if (std::abs(theta - pi<double>()) <= epsilon)
-        return rotation<T>(C[1], pi<double>()) * C;
+        return rotation<T>(C[1], rad(180.)) * C;
 
     // Y := (C's Z) cross Z
     vC[1] = unit(cross(C[2], vC[2]));

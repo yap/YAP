@@ -113,8 +113,7 @@ constexpr FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& 
 /// \param V Fourector defining new Z direction
 /// \param C CoordinateSystem aiding in defining new Y direction
 template <typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, CoordinateSystem<T, 3> >::type
-helicityFrame(const FourVector<T>& V, const CoordinateSystem<T, 3>& C)
+CoordinateSystem<T, 3> helicityFrame(const FourVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return helicityFrame(vect<T>(V), C); }
 
 }
