@@ -11,6 +11,7 @@
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <ParticleCombination.h>
+#include <PoleMass.h>
 #include <QuantumNumbers.h>
 #include <Resonance.h>
 
@@ -34,9 +35,16 @@ std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> 
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D0"), radialSize);
 
-    // f_0(500), aka "sigma"
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.220);
+    // // f_0(500), aka "sigma"
+    // auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::BreitWigner>());
+    // std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.220);
+    // sigma->addChannel({piZero, piZero});
+    // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.67, yap::rad(140.)));
+    // // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.99, yap::rad(39.)));
+
+    // f_0(500), aka "sigma" (as PoleMass)
+    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::PoleMass>());
+    std::static_pointer_cast<yap::PoleMass>(sigma->massShape())->mass()->setValue(std::complex<double>(0.470, 0.220));
     sigma->addChannel({piZero, piZero});
     D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.67, yap::rad(140.)));
     // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.99, yap::rad(39.)));

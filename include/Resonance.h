@@ -83,6 +83,9 @@ public:
     virtual std::string data_accessor_type() const override
     {return "Resonance"; }
 
+    /// grant friend status to MassShape to call setMass
+    friend MassShape;
+
 protected:
 
     /// overrides DataAccessor's function to also register MassShape_ with Model

@@ -16,6 +16,14 @@ Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
 {}
 
 //-------------------------
+void Particle::setMass(std::shared_ptr<RealParameter> m)
+{
+    if (!m)
+        throw exceptions::Exception("mass is unset", "Particle::setMass");
+    Mass_ = m;
+}
+
+//-------------------------
 bool Particle::consistent() const
 {
     if (Mass_->value() < 0.) {
