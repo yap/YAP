@@ -33,11 +33,12 @@ class DataPoint;
 class ParticleCombination;
 
 /// \class Flatte
-/// \brief Class for Breit-Wigner resonance shape
+/// \brief Class for Flatte resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
-/// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
+/// Amplitude is 1 / (mass^2 - s - i * sum_channels(coupling * phase-space factor)\n\n
+/// phase space factor := 2 * breakup-momentum / m; may be complex
 
 class Flatte : public MassShape
 {
