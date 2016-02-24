@@ -26,6 +26,7 @@ set(YAP_SOURCES
   ParticleCombinationCache.cxx
 	Particle.cxx
 	ParticleFactory.cxx
+  PoleMass.cxx
 	QuantumNumbers.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
