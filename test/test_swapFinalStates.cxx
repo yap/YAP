@@ -149,9 +149,20 @@ TEST_CASE( "swapFinalStates" )
             // }
 
             // print
-            std::cout << "Zemach:                  Helicity:" << std::endl;
-            for (size_t i = 0; i < amps_Z.size(); ++i)
-                std:: cout << amps_Z[i] << "    " << amps_H[i] << std::endl;
+            // std::cout << "Zemach:                  Helicity:" << std::endl;
+            // for (size_t i = 0; i < amps_Z.size(); ++i)
+            //     std::cout << amps_Z[i] << "    " << amps_H[i] << std::endl;
+            for (size_t i = 0; i < H.size(); ++i) {
+                auto PCs = H[i]->helicityAngles()->particleCombinations();
+                std::cout << "piK = " << *mH[i][0];
+                for (size_t j = 0; j < PCs.size(); ++j) {
+                    std::cout << "\t :: " << *PCs[j] << ": " 
+                              << "(" << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], PCs[j]) * yap::deg_per_rad<double>()
+                              << ", " << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], PCs[j]) * yap::deg_per_rad<double>()
+                              << ")";
+                }
+                std::cout << std::endl;
+            }
 
             // // check equality for Zemach
             // for (size_t i = 1; i < amps_Z.size(); ++i)

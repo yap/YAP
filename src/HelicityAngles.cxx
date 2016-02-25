@@ -39,8 +39,6 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
                                      unsigned dataPartitionIndex)
 {
-    yap::plainLogs(el::Level::Debug);
-    
     // terminate recursion
     if (pc->isFinalStateParticle())
         return;
@@ -48,15 +46,8 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
     // get pc's 4-mom in data frame
     const auto P = model()->fourMomenta()->p(d, pc);
 
-    // boost C?
-    // const CoordinateSystem<double, 3> c = {vect(boosts * FourVector<double>(0., C[0])),
-    //                                        vect(boosts * FourVector<double>(0., C[1])),
-    //                                        vect(boosts * FourVector<double>(0., C[2]))};
-    
     // calculate reference frame for P from parent's RF
     const auto cP = helicityFrame(boosts * P, C);
-    LOG(INFO) << "C  = " << to_string(C);
-    LOG(INFO) << "cP = " << to_string(cP);
 
     // calculate boost from data frame into pc rest frame
     const auto b = lorentzTransformation(-P);
@@ -82,7 +73,6 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         // continue down the decay tree
         calculateAngles(d, daughter, cP, b, dataPartitionIndex);
     }
-    yap::disableLogs(el::Level::Global);
 }
 
 //-------------------------

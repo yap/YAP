@@ -66,7 +66,8 @@ void calculate_helicity_angles(const yap::Model& M,
         for (const auto& i : d->indices())
             p += momenta[i];
         
-        phi_theta[d] = angles(vect(p), yap::ThreeAxes);
+        if (phi_theta.find(pc) == phi_theta.end())
+            phi_theta[pc] = angles(vect(p), yap::ThreeAxes);
 
         // next helicity frame
         const auto L = transformation_to_helicityFrame(p);
@@ -136,6 +137,9 @@ TEST_CASE( "HelicityAngles" )
         M.addDataPoint(momenta);
         auto dp = M.dataSet().back();
 
+        auto Pisp = std::accumulate(momenta.begin(), momenta.end(), yap::FourVector_0);
+        momenta = lorentzTransformation(-Pisp) * momenta;
+
         std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
 
         for (auto pc : D->particleCombinations()) {
@@ -145,10 +149,8 @@ TEST_CASE( "HelicityAngles" )
 
         // compare results
         for (auto& kv : phi_theta) {
-            // REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
-            // REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
-            WARN( "phi = " << M.helicityAngles()->phi(dp, kv.first)   << "\t" << kv.second[0] );
-            WARN( "theta = " << M.helicityAngles()->theta(dp, kv.first) << "\t" << kv.second[1] );
+            REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
+            REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
         }
 
 
