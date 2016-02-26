@@ -19,6 +19,9 @@
 #include "dkkpi.h"
 #include "D_K0pi0pi0.h"
 
+#include <chrono>
+#include <ratio>
+
 int main()
 {
     yap::plainLogs(el::Level::Info);
@@ -55,8 +58,14 @@ int main()
 
     m.WriteMarkovChain(m.GetSafeName() + "_mcmc.root", "RECREATE");
 
+    // start timing:
+    auto start = std::chrono::steady_clock::now();
+
     // run MCMC, marginalizing posterior
     m.MarginalizeAll(BCIntegrate::kMargMetropolis);
+
+    // end timing
+    auto end = std::chrono::steady_clock::now();
 
     // run mode finding; by default using Minuit
     // m.FindMode(m.GetGlobalMode());
@@ -72,6 +81,12 @@ int main()
 
     // print results of the analysis into a text file
     m.PrintSummary();
+
+    // timing:
+    auto diff = end - start;
+    auto ms = std::chrono::duration<double, std::micro>(diff).count();
+    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(m.GetNIterationsRun() * m.GetNChains()) + " events");
+    BCLog::OutSummary(std::to_string(ms / m.GetNIterationsRun() / m.GetNChains()) + " microsec / event");
 
     // close log file
     BCLog::OutSummary("Exiting");
