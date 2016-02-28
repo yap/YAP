@@ -70,7 +70,7 @@ int main( int argc, char** argv)
     M.initializeForMonteCarloGeneration(5);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.getMassAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
     std::vector<double> m2(massAxes.size(), 1);
 

@@ -160,7 +160,7 @@ public:
 
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
-    std::array<double, 2> getMassRange(const std::shared_ptr<ParticleCombination>& pc) const;
+    std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return free amplitudes of DecayChannels_
     ComplexParameterVector freeAmplitudes() const;
@@ -224,7 +224,7 @@ public:
     /// the returned MassAxes will have their daughters sorted (i.e. (10) will become (01)).
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
-    const MassAxes getMassAxes(std::vector<std::vector<unsigned> > pcs);
+    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
 
     /// Calculate four-momenta for final-state particles for phase-space coordinate
     /// \param axes phase-space axes

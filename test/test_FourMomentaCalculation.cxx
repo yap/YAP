@@ -44,10 +44,10 @@ TEST_CASE( "FourMomentaCalculation" )
     // REQUIRE( M.consistent() );
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.getMassAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
-    auto m_0_range = M.getMassRange(massAxes[0]);
-    auto m_1_range = M.getMassRange(massAxes[1]);
+    auto m_0_range = M.massRange(massAxes[0]);
+    auto m_1_range = M.massRange(massAxes[1]);
 
     const unsigned N = 20;
     for (double m_0 = m_0_range[0]; m_0 <= m_0_range[1]; m_0 += (m_0_range[1] - m_0_range[0]) / N) {

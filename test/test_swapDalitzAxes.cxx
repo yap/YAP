@@ -91,30 +91,30 @@ TEST_CASE( "swapDalitzAxes" )
                     switch (i) {
                         case 0:
                             // original
-                            massAxes = M->getMassAxes({{0, 1}, {1, 2}});
+                            massAxes = M->massAxes({{0, 1}, {1, 2}});
                             squared_masses = {m2_ab, m2_bc};
                             break;
                         case 1:
                             // 0 <-> 1
-                            massAxes = M->getMassAxes({{1, 0}, {0, 2}});
+                            massAxes = M->massAxes({{1, 0}, {0, 2}});
                             squared_masses = {m2_ab, m2_ac};
                             break;
                         case 2:
                             // 0 <-> 2
-                            massAxes = M->getMassAxes({{2, 1}, {1, 0}});
+                            massAxes = M->massAxes({{2, 1}, {1, 0}});
                             squared_masses = {m2_bc, m2_ab};
                             break;
                         case 3:
                             // 1 <-> 2
-                            massAxes = M->getMassAxes({{0, 2}, {2, 1}});
+                            massAxes = M->massAxes({{0, 2}, {2, 1}});
                             squared_masses = {m2_ac, m2_bc};
                             break;
                         case 4:
-                            massAxes = M->getMassAxes({{1, 2}, {2, 0}});
+                            massAxes = M->massAxes({{1, 2}, {2, 0}});
                             squared_masses = {m2_bc, m2_ac};
                             break;
                         case 5:
-                            massAxes = M->getMassAxes({{2, 0}, {0, 1}});
+                            massAxes = M->massAxes({{2, 0}, {0, 1}});
                             squared_masses = {m2_ac, m2_ab};
                             break;
                     }

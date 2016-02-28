@@ -59,7 +59,7 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
 
     M.initializeForMonteCarloGeneration(1);
 
-    return M.getMassAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
+    return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
 std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2)
@@ -109,8 +109,8 @@ TEST_CASE( "swapFinalStates" )
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 
     // get piK and KK mass ranges
-    auto m2_piK_range = Z[0]->getMassRange(mZ[0][0]);
-    auto m2_KK_range  = Z[0]->getMassRange(mZ[0][1]);
+    auto m2_piK_range = Z[0]->massRange(mZ[0][0]);
+    auto m2_KK_range  = Z[0]->massRange(mZ[0][1]);
 
     const unsigned N = 20;
     for (double m2_piK = m2_piK_range[0]; m2_piK <= m2_piK_range[1]; m2_piK += (m2_piK_range[1] - m2_piK_range[0]) / N) {

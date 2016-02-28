@@ -114,7 +114,7 @@ TEST_CASE( "HelicityAngles" )
     D->addChannel({rho,      piPlus});
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.getMassAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
     REQUIRE( M.consistent() );
 

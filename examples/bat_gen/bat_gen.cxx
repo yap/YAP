@@ -20,11 +20,11 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M,
     if (!M_ or !M_->consistent())
         throw std::exception();
 
-    MassAxes_ = M_->getMassAxes(pcs);
+    MassAxes_ = M_->massAxes(pcs);
 
     for (auto& pc : MassAxes_) {
         std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
-        auto mrange = M_->getMassRange(pc);
+        auto mrange = M_->massRange(pc);
         AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
         std::cout << "Added parameter " << axis_label
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"

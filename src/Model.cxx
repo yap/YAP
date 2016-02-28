@@ -238,13 +238,13 @@ void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 }
 
 //-------------------------
-std::array<double, 2> Model::getMassRange(const std::shared_ptr<ParticleCombination>& pc) const
+std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination>& pc) const
 {
     if (!InitialStateParticle_)
-        throw exceptions::Exception("Initial state not set", "Model::getMassRange");
+        throw exceptions::Exception("Initial state not set", "Model::massRange");
 
     if (FinalStateParticles_.empty())
-        throw exceptions::Exception("Final state not set", "Model::getMassRange");
+        throw exceptions::Exception("Final state not set", "Model::massRange");
 
     std::array<double, 2> m = {0, InitialStateParticle_->mass()->value()};
 
@@ -403,7 +403,7 @@ void Model::initializeForMonteCarloGeneration(unsigned n)
 }
 
 //-------------------------
-const MassAxes Model::getMassAxes(std::vector<std::vector<unsigned> > pcs)
+const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
 {
     unsigned n_fsp = finalStateParticles().size();
     unsigned n_axes = 3 * n_fsp - 7;
@@ -412,16 +412,16 @@ const MassAxes Model::getMassAxes(std::vector<std::vector<unsigned> > pcs)
     if (pcs.size() != n_axes) {
         if (pcs.size() < n_axes)
             throw exceptions::Exception("too few axes requested ( " + std::to_string(pcs.size()) + " < " + std::to_string(n_axes) + " )",
-                                        "Model::getMassAxes");
+                                        "Model::massAxes");
         else
             throw exceptions::Exception("too many axes requested ( " + std::to_string(pcs.size()) + " > " + std::to_string(n_axes) + " )",
-                                        "Model::getMassAxes");
+                                        "Model::massAxes");
     }
 
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
     if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
-    throw exceptions::Exception("only 2-particle axes supported currently", "Model::getMassAxes");
+    throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
 
     ParticleCombinationVector M;
 
@@ -429,13 +429,13 @@ const MassAxes Model::getMassAxes(std::vector<std::vector<unsigned> > pcs)
 
         // check that all indices are in range
         if (std::any_of(v.begin(), v.end(), [&](const unsigned & i) {return i >= n_fsp;}))
-        throw exceptions::Exception("particle index out of range", "Model::getMassAxes");
+        throw exceptions::Exception("particle index out of range", "Model::massAxes");
 
         // sort v
         sort(v.begin(), v.end());
         // check for duplicates
         if (std::adjacent_find(v.begin(), v.end()) != v.end())
-            throw exceptions::Exception("duplicate index given", "Model::getMassAxes");
+            throw exceptions::Exception("duplicate index given", "Model::massAxes");
 
         // get ParticleCombination
         auto pc0 = particleCombinationCache().fsp(v[0]);
@@ -445,7 +445,7 @@ const MassAxes Model::getMassAxes(std::vector<std::vector<unsigned> > pcs)
         // check that pc isn't already in M
         for (const auto& m : M)
             if (ParticleCombination::equivByOrderlessContent(m, pc))
-                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "Model::getMassAxes");
+                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "Model::massAxes");
 
         M.push_back(pc);
     }
