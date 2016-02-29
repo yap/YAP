@@ -71,7 +71,7 @@ public:
     {return "BreitWigner"; }
 
 private:
-    
+
     std::shared_ptr<RealParameter> Width_; ///< [GeV]
 
 };

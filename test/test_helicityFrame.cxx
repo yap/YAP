@@ -49,11 +49,11 @@ TEST_CASE( "helicityFrame" )
     SECTION ( "minus_z" ) {
 
         auto C = yap::helicityFrame(-yap::ThreeAxes[2], yap::ThreeAxes);
-        
+
         REQUIRE( C[2] == Catch::Detail::IApprox<yap::ThreeVector<double> >(-yap::ThreeAxes[2]) );
         REQUIRE( C[1] == Catch::Detail::IApprox<yap::ThreeVector<double> >( yap::ThreeAxes[1]) );
         REQUIRE( C[0] == Catch::Detail::IApprox<yap::ThreeVector<double> >(-yap::ThreeAxes[0]) );
-        
+
     }
 
     SECTION ( "rotate_Y" ) {

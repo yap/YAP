@@ -108,7 +108,7 @@ protected:
     /// access cached dynamic amplitude (const)
     const std::shared_ptr<ComplexCachedDataValue> T() const
     { return const_cast<MassShape*>(this)->T(); }
-    
+
 private:
 
     /// raw pointer to resonance that owns this mass shape
@@ -116,7 +116,7 @@ private:
 
     /// cached dynamic amplitude
     std::shared_ptr<ComplexCachedDataValue> T_;
-    
+
 };
 
 }

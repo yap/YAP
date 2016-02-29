@@ -14,14 +14,13 @@ std::shared_ptr<RealParameter> MassShapeWithNominalMass::mass()
         throw exceptions::ResonanceUnset("MassShapeWithNominalMass::mass");
     return resonance()->mass();
 }
-    
+
 //-------------------------
 void MassShapeWithNominalMass::setParameters(const ParticleTableEntry& entry)
 {
     try {
         mass()->setValue(entry.Mass);
-    }
-    catch (const exceptions::ResonanceUnset&) { /* ignore */ }
+    } catch (const exceptions::ResonanceUnset&) { /* ignore */ }
 }
 
 //-------------------------
@@ -29,7 +28,7 @@ void MassShapeWithNominalMass::setDependenciesFromResonance()
 {
     if (!resonance())
         throw exceptions::ResonanceUnset("MassShapeWithNominalMass::setDependenciesFromResonance");
-    
+
     T()->addDependency(mass());
 }
 
@@ -40,7 +39,7 @@ void MassShapeWithNominalMass::setDependenciesFromModel()
         throw exceptions::Exception("Model unset", "MassShapeWithNominalMass::setDependenciesFromResonance");
     if (!model()->fourMomenta())
         throw exceptions::Exception("Model's FourMomenta unset", "MassShapeWithNominalMass::setDependenciesFromResonance");
-    
+
     T()->addDependency(model()->fourMomenta()->mass());
 }
 

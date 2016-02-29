@@ -37,7 +37,7 @@ yap::FourMatrix<double> transformation_to_helicityFrame(yap::FourVector<double> 
 
     // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
     auto R = rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>())
-        * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+             * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
 
     // apply rotation to daughter
     daughter = R * daughter;
@@ -60,12 +60,12 @@ void calculate_helicity_angles(const yap::Model& M,
 
         if (d->daughters().empty())
             continue;
-        
+
         // construct 4-vector of daughter
         auto p = yap::FourVector_0;
         for (const auto& i : d->indices())
             p += momenta[i];
-        
+
         if (phi_theta.find(pc) == phi_theta.end())
             phi_theta[pc] = angles(vect(p), yap::ThreeAxes);
 
@@ -128,7 +128,7 @@ TEST_CASE( "HelicityAngles" )
         event.Generate();
 
         std::vector<yap::FourVector<double> > momenta;
-        
+
         for (unsigned i = 0; i < masses.size(); ++i) {
             TLorentzVector p = *event.GetDecay(i);
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));

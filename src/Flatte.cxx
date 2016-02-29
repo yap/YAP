@@ -79,7 +79,7 @@ bool Flatte::consistent() const
 {
     bool C = MassShapeWithNominalMass::consistent();
 
-     for (const auto& fc : FlatteChannels_) {
+    for (const auto& fc : FlatteChannels_) {
         if (fc.Coupling->value() <= 0) {
             FLOG(ERROR) << "coupling constant <= 0";
             C &= false;
