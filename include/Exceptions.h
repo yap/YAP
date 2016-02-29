@@ -103,6 +103,15 @@ public:
         : Exception(what_arg, func_name) {}
 };
 
+/// \class ResonanceUnset
+/// \ingroup Exceptions
+class ResonanceUnset : public Exception
+{
+public:
+    ResonanceUnset(const std::string& func_name = "")
+        : Exception("Resonance unset", func_name) {}
+};
+
 /// \class NonfiniteResult
 /// \ingroup Exceptions
 class NonfiniteResult : public Exception {};

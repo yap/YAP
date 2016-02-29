@@ -9,12 +9,11 @@
 namespace yap {
 
 //-------------------------
-Flatte::Flatte(double mass) :
-    MassShape(),
-    Mass_(std::make_shared<RealParameter>(mass)),
-    WidthTerm_(ComplexCachedDataValue::create(this)),
-    T_(ComplexCachedDataValue::create(this, ParameterSet{Mass_}, CachedDataValueSet{WidthTerm_}))
+Flatte::Flatte() :
+    MassShapeWithNominalMass(),
+    WidthTerm_(ComplexCachedDataValue::create(this))
 {
+    T()->addDependency(WidthTerm_);
 }
 
 //-------------------------
@@ -36,29 +35,10 @@ void Flatte::addChannel(double coupling, double mass)
 }
 
 //-------------------------
-void Flatte::setParameters(const ParticleTableEntry& entry)
-{
-    Mass_->setValue(entry.Mass);
-}
-
-//-------------------------
 void Flatte::setDependenciesFromModel()
 {
+    MassShapeWithNominalMass::setDependenciesFromModel();
     WidthTerm_->addDependency(model()->fourMomenta()->mass());
-    T_->addDependency(model()->fourMomenta()->mass());
-}
-
-//-------------------------
-void Flatte::borrowParametersFromResonance()
-{
-    // Remove existing mass parameter from M2iMG_
-    T_->removeDependency(Mass_);
-
-    // borrow mass from Owner_
-    Mass_ = resonance()->mass();
-
-    // add new mass parameter into M2iMG_
-    T_->addDependency(Mass_);
 }
 
 //-------------------------
@@ -77,33 +57,29 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
     }
 
     // recalculate, cache, & return, if necessary
-    if (T_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (T()->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
 
         // T = 1 / (M^2 - m^2 - width-term)
-        std::complex<double> T = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc) - WidthTerm_->value(d, symIndex));
+        std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - WidthTerm_->value(d, symIndex));
 
-        T_->setValue(T, d, symIndex, dataPartitionIndex);
+        T()->setValue(t, d, symIndex, dataPartitionIndex);
 
-        FDEBUG("calculated T = " << T << " and stored it in the cache");
-        return T;
+        FDEBUG("calculated T = " << t << " and stored it in the cache");
+        return t;
     }
 
-    FDEBUG("using cached T = " << T_->value(d, symIndex));
+    FDEBUG("using cached T = " << T()->value(d, symIndex));
 
     // else return cached value
-    return T_->value(d, symIndex);
+    return T()->value(d, symIndex);
 }
 
 //-------------------------
 bool Flatte::consistent() const
 {
-    bool C = MassShape::consistent();
+    bool C = MassShapeWithNominalMass::consistent();
 
-    if (Mass_->value() <= 0) {
-        FLOG(ERROR) << "mass <= 0";
-        C &= false;
-    }
-    for (const auto& fc : FlatteChannels_) {
+     for (const auto& fc : FlatteChannels_) {
         if (fc.Coupling->value() <= 0) {
             FLOG(ERROR) << "coupling constant <= 0";
             C &= false;

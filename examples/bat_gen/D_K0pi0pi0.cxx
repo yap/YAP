@@ -35,24 +35,17 @@ std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> 
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D0"), radialSize);
 
-    // // f_0(500), aka "sigma"
-    // auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::BreitWigner>());
-    // std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.220);
-    // sigma->addChannel({piZero, piZero});
-    // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.67, yap::rad(140.)));
-    // // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.99, yap::rad(39.)));
-
     // f_0(500), aka "sigma" (as PoleMass)
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::PoleMass>());
-    std::static_pointer_cast<yap::PoleMass>(sigma->massShape())->mass()->setValue(std::complex<double>(0.470, 0.220));
+    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, 0.220)));
     sigma->addChannel({piZero, piZero});
     D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.67, yap::rad(140.)));
     // D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.99, yap::rad(39.)));
 
     // f_0(980) (as Flatte)
-    auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, std::make_shared<yap::Flatte>());
-    std::static_pointer_cast<yap::Flatte>(f_0_980->massShape())->addChannel(0.406, piZero->mass()->value());
-    std::static_pointer_cast<yap::Flatte>(f_0_980->massShape())->addChannel(0.406 * 2, Kshort->mass()->value());
+    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
+    f_0_980_flatte->addChannel(0.406, piZero->mass()->value());
+    f_0_980_flatte->addChannel(0.406 * 2, Kshort->mass()->value());
+    auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, f_0_980_flatte);
     f_0_980->addChannel({piZero, piZero});
     D->addChannel({f_0_980, Kshort})->freeAmplitudes()[0]->setValue(std::polar(1.71, yap::rad(35.2)));
     // D->addChannel({f_0_980, Kshort})->freeAmplitudes()[0]->setValue(std::polar(2.59, yap::rad(44.8)));

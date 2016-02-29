@@ -34,8 +34,7 @@ std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
     // f_0(500), aka "sigma"
-    auto sigma = yap::Resonance::create(F.quantumNumbers("f_0(500)"), 0.800, "sigma", radialSize, std::make_shared<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.800);
+    auto sigma = yap::Resonance::create(F.quantumNumbers("f_0(500)"), 0.800, "sigma", radialSize, std::make_shared<yap::BreitWigner>(0.800));
     sigma->addChannel({piPlus, piMinus});
     D->addChannel({sigma, piPlus})->freeAmplitudes()[0]->setValue(std::polar(3.7, yap::rad(-3.)));
 

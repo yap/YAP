@@ -22,7 +22,7 @@
 #define yap_BreitWigner_h
 
 #include "CachedValue.h"
-#include "MassShape.h"
+#include "MassShapeWithNominalMass.h"
 
 #include <complex>
 #include <memory>
@@ -39,14 +39,13 @@ class ParticleCombination;
 ///
 /// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
 
-class BreitWigner : public MassShape
+class BreitWigner : public MassShapeWithNominalMass
 {
 public:
 
     /// Constructor
-    /// \param mass Mass of resonance [GeV]
     /// \param width Width of resonance [GeV]
-    BreitWigner(double mass = -1, double width = -1);
+    BreitWigner(double w = -1);
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
@@ -58,41 +57,22 @@ public:
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;
 
-    /// \name Getters
-    /// @{
-
-    /// Get mass
-    std::shared_ptr<RealParameter> mass() const
-    { return Mass_; }
-
     /// Get width
-    std::shared_ptr<RealParameter> width() const
+    std::shared_ptr<RealParameter> width()
     { return Width_; }
 
-    /// @}
-
-    /// \name Bookkeeping related
-    /// @{
+    /// Get width (const)
+    const std::shared_ptr<RealParameter> width() const
+    { return const_cast<BreitWigner*>(this)->width(); }
 
     virtual bool consistent() const override;
-
-    /// @}
 
     virtual std::string data_accessor_type() const override
     {return "BreitWigner"; }
 
-protected:
-
-    /// borrow mass from owner
-    virtual void borrowParametersFromResonance() override;
-
-    /// set dependency on masses from model
-    virtual void setDependenciesFromModel() override;
-
-    std::shared_ptr<RealParameter> Mass_;  ///< [GeV]
+private:
+    
     std::shared_ptr<RealParameter> Width_; ///< [GeV]
-
-    std::shared_ptr<ComplexCachedDataValue> T_; ///< Mass-shape amplitude
 
 };
 

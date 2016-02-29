@@ -23,7 +23,6 @@
 
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "ParticleCombination.h"
 #include "ParticleFactory.h"
 
 #include <memory>
@@ -32,6 +31,7 @@
 namespace yap {
 
 class Model;
+class ParticleCombination;
 class Resonance;
 
 /// \class MassShape
@@ -47,8 +47,7 @@ class MassShape : public AmplitudeComponent, public DataAccessor
 public:
 
     /// Constructor
-    MassShape() : DataAccessor(&ParticleCombination::equivByOrderlessContent), Resonance_(nullptr)
-    {}
+    MassShape();
 
     /// Calculate complex amplitude.
     /// Must be overrided in derived classes.
@@ -91,8 +90,8 @@ protected:
     /// Calls borrowParametersFromResonance().
     virtual void setResonance(Resonance* r);
 
-    /// override in inheriting classes to borrow parameters from owning resonance
-    virtual void borrowParametersFromResonance()
+    /// override in inheriting class to set dependencies on values accessible through resonance
+    virtual void setDependenciesFromResonance()
     {}
 
     /// override in inheriting class to set dependencies on values accessible through model
@@ -102,11 +101,22 @@ protected:
     /// replace resonance's mass
     void replaceResonanceMass(std::shared_ptr<RealParameter> m);
 
+    /// access cached dynamic amplitude
+    std::shared_ptr<ComplexCachedDataValue> T()
+    { return T_; }
+
+    /// access cached dynamic amplitude (const)
+    const std::shared_ptr<ComplexCachedDataValue> T() const
+    { return const_cast<MassShape*>(this)->T(); }
+    
 private:
 
     /// raw pointer to resonance that owns this mass shape
     Resonance* Resonance_;
 
+    /// cached dynamic amplitude
+    std::shared_ptr<ComplexCachedDataValue> T_;
+    
 };
 
 }

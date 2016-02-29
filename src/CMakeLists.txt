@@ -20,6 +20,7 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
   MassShape.cxx
+  MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
   Model.cxx
 	ParticleCombination.cxx

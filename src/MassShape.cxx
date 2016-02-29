@@ -2,9 +2,17 @@
 
 #include "Exceptions.h"
 #include "logging.h"
+#include "ParticleCombination.h"
 #include "Resonance.h"
 
 namespace yap {
+
+//-------------------------
+MassShape::MassShape() :
+    DataAccessor(&ParticleCombination::equivByOrderlessContent),
+    Resonance_(nullptr),
+    T_(ComplexCachedDataValue::create(this))
+{}
 
 //-------------------------
 bool MassShape::consistent() const
@@ -36,7 +44,7 @@ void MassShape::setResonance(Resonance* r)
     Resonance_ = r;
 
     if (Resonance_)
-        borrowParametersFromResonance();
+        setDependenciesFromResonance();
 }
 
 //-------------------------

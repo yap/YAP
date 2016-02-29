@@ -22,7 +22,7 @@
 #define yap_Flatte_h
 
 #include "CachedValue.h"
-#include "MassShape.h"
+#include "MassShapeWithNominalMass.h"
 
 #include <complex>
 #include <memory>
@@ -40,7 +40,7 @@ class ParticleCombination;
 /// Amplitude is 1 / (mass^2 - s - i * sum_channels(coupling * phase-space factor)\n\n
 /// phase space factor := 2 * breakup-momentum / m; may be complex
 
-class Flatte : public MassShape
+class Flatte : public MassShapeWithNominalMass
 {
 public:
 
@@ -56,8 +56,7 @@ public:
     };
 
     /// Constructor
-    /// \param mass Mass of resonance [GeV]
-    Flatte(double mass = -1);
+    Flatte();
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
@@ -65,35 +64,18 @@ public:
     /// \param dataPartitionIndex partition index for parallelization
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
 
-    /// Set parameters from ParticleTableEntry
-    /// \param entry ParticleTableEntry containing information to create mass shape object
-    virtual void setParameters(const ParticleTableEntry& entry) override;
-
     /// Add FlatteChannel
     void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);
 
     /// Add FlatteChannel
     void addChannel(double coupling, double mass);
 
-    /// \name Getters
-    /// @{
-
-    /// Get mass
-    std::shared_ptr<RealParameter> mass() const
-    { return Mass_; }
-
     /// Get FlatteChannel's
     const std::vector<FlatteChannel>& channels() const
     { return FlatteChannels_; }
 
-    /// @}
-
-    /// \name Bookkeeping related
-    /// @{
-
+    /// Check consistency of object
     virtual bool consistent() const override;
-
-    /// @}
 
     virtual std::string data_accessor_type() const override
     {return "Flatte"; }
@@ -103,19 +85,10 @@ protected:
     /// borrow dependencies from model
     virtual void setDependenciesFromModel() override;
 
-    /// set owning resonance, borrow mass from owner
-    virtual void borrowParametersFromResonance() override;
-
-    /// mass [GeV]
-    std::shared_ptr<RealParameter> Mass_;
-
     std::vector<FlatteChannel> FlatteChannels_;
 
     /// width-like term := i 2 / m * sum_channels coupling * breakup momentum(m -> mass + mass)
     std::shared_ptr<ComplexCachedDataValue> WidthTerm_;
-
-    /// dynamic amplitude
-    std::shared_ptr<ComplexCachedDataValue> T_;
 
 };
 

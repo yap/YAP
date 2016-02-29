@@ -18,14 +18,11 @@
 
 /// \file
 
-#ifndef yap_PoleMass_h
-#define yap_PoleMass_h
+#ifndef yap_MassShapeWithNominalMass_h
+#define yap_MassShapeWithNominalMass_h
 
-#include "CachedValue.h"
 #include "MassShape.h"
-#include "Parameter.h"
 
-#include <complex>
 #include <memory>
 
 namespace yap {
@@ -33,56 +30,38 @@ namespace yap {
 class DataPoint;
 class ParticleCombination;
 
-/// \class PoleMass
-/// \brief Class for pole-mass resonance shape
+/// \class MassShapeWithNominalMass
+/// \brief Class for MassShape that gets its nominal mass from its owning resonance
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
-///
-/// Amplitude is 1 / (mass^2 - s)\n\n
-/// mass is complex
-
-class PoleMass : public MassShape
+class MassShapeWithNominalMass : public MassShape
 {
 public:
 
     /// Constructor
-    /// \param mass Mass of resonance [GeV]
-    PoleMass(std::complex<double> mass = std::complex<double>(-1, -1));
+    MassShapeWithNominalMass() : MassShape() {}
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
-
-    /// Set parameters from ParticleTableEntry;
-    /// If width is available, sets M = mass + i/2 * width
+    /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;
 
     /// Get mass
-    std::shared_ptr<ComplexParameter> mass() const
-    { return Mass_; }
+    std::shared_ptr<RealParameter> mass();
 
-    /// Check consistency of object
-    virtual bool consistent() const override;
+    /// Get mass (const)
+    const std::shared_ptr<RealParameter> mass() const
+    { return const_cast<MassShapeWithNominalMass*>(this)->mass(); }
 
     virtual std::string data_accessor_type() const override
-    {return "PoleMass"; }
+    {return "MassShapeWithNominalMass"; }
 
 protected:
 
-    /// borrow mass from owner
+    /// set dependency on resonance's mass
     virtual void setDependenciesFromResonance() override;
 
     /// set dependency on masses from model
     virtual void setDependenciesFromModel() override;
-
-    /// Complex mass [GeV]
-    std::shared_ptr<ComplexParameter> Mass_;
-
-    /// Cached dynamic amplitude
-    std::shared_ptr<ComplexCachedDataValue> T_;
 
 };
 
