@@ -22,22 +22,22 @@ HelicityAngles::HelicityAngles(Model* m) :
 }
 
 //-------------------------
-void HelicityAngles::calculate(DataPoint& d, unsigned dataPartitionIndex)
+void HelicityAngles::calculate(DataPoint& d, StatusManager& sm) const
 {
-    Phi_->setCalculationStatus(kUncalculated, dataPartitionIndex);
-    Theta_->setCalculationStatus(kUncalculated, dataPartitionIndex);
+    // set angles uncalculated
+    sm.set(*this, kUncalculated);
 
-    // call an ISP PC's
+    // call on ISP PC's
     // \todo allow for designating the boost that takes from the data frame to the lab frame (possibly event dependent)
     for (auto& kv : symmetrizationIndices())
         if (kv.first->indices().size() == model()->finalStateParticles().size())
-            calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), dataPartitionIndex);
+            calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), sm);
 }
 
 //-------------------------
 void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
-                                     unsigned dataPartitionIndex)
+                                     StatusManager& sm) const
 {
     // terminate recursion
     if (pc->isFinalStateParticle())
@@ -60,18 +60,16 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         const auto p = b * model()->fourMomenta()->p(d, daughter);
 
         // if unset, set angles of parent to first daughter's
-        if (Phi_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated or
-                Theta_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated ) {
+        if (sm.status(*Phi_, symIndex) == kUncalculated or sm.status(*Theta_, symIndex) == kUncalculated) {
 
             const auto phi_theta = angles<double>(vect<double>(p), cP);
 
-            Phi_->setValue(phi_theta[0], d, symIndex, dataPartitionIndex);
-            Theta_->setValue(phi_theta[1], d, symIndex, dataPartitionIndex);
-
+            Phi_->setValue(phi_theta[0], d, symIndex, sm);
+            Theta_->setValue(phi_theta[1], d, symIndex, sm);
         }
 
         // continue down the decay tree
-        calculateAngles(d, daughter, cP, b, dataPartitionIndex);
+        calculateAngles(d, daughter, cP, b, sm);
     }
 }
 

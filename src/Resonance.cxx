@@ -3,6 +3,7 @@
 #include "Exceptions.h"
 #include "logging.h"
 #include "MassShape.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -18,9 +19,9 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 }
 
 //-------------------------
-std::complex<double> Resonance::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const
+std::complex<double> Resonance::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
 {
-    return DecayingParticle::amplitude(d, pc, two_m, dataPartitionIndex) * MassShape_->amplitude(d, pc, dataPartitionIndex);
+    return DecayingParticle::amplitude(d, pc, two_m, sm) * MassShape_->amplitude(d, pc, sm);
 }
 
 //-------------------------

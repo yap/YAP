@@ -22,25 +22,97 @@
 #define yap_DataSet_h
 
 #include "DataPoint.h"
+#include "DataPartition.h"
+#include "FourVector.h"
+#include "ReportsModel.h"
 
 #include <vector>
 
 namespace yap {
 
+class Model;
+
 /// \class DataSet
 /// \brief Class holding a set of DataPoint objects.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-
-class DataSet : public std::vector<DataPoint>
+class DataSet :
+    public DataPartitionBlock,
+    public ReportsModel
 {
 public:
 
+    /// Constructor
+    DataSet(const Model& m);
+
     /// Check if data point is consisent with data set
-    bool consistent(const DataPoint& d) const
-    {
-        return empty() or equalStructure(front(), d);
-    }
+    bool consistent(const DataPoint& d) const;
+
+    /// add empty data points
+    /// \param n number of points to add
+    void addEmptyPoints(size_t n);
+
+    /// add single empty data point
+    void addEmptyPoint();
+
+    /// Add data point
+    /// \param P vector of four momenta
+    void add(const std::vector<FourVector<double> >& P);
+
+    /// \return iterator to front of set
+    const DataIterator& begin() const override
+    { return const_cast<DataSet*>(this)->setBegin(const_cast<DataPointVector*>(&DataPoints_)->begin()); }
+
+    /// \return iterator to end of set
+    const DataIterator& end() const override
+    { return const_cast<DataSet*>(this)->setEnd(const_cast<DataPointVector*>(&DataPoints_)->end()); }
+
+    /// access by index
+    DataPoint& operator[](size_t i)
+    { return DataPoints_[i]; }
+
+    /// access by index (with check)
+    DataPoint& at(size_t i)
+    { return DataPoints_.at(i); }
+
+    /// access back
+    DataPoint& back()
+    { return DataPoints_.back(); }
+
+    /// const access to DataPoints_
+    const DataPointVector& points() const
+    { return DataPoints_; }
+
+    /// reserve storage space
+    void reserve(size_t n)
+    { DataPoints_.reserve(n); }
+
+    /// call shrink to fit on DataPoints_
+    void shrink_to_fit()
+    { DataPoints_.shrink_to_fit(); }
+
+    const Model* model() const
+    { return Model_; }
+
+    /// equality operator
+    friend bool operator==(const DataSet& lhs, const DataSet& rhs);
+
+    /// grant friend status to DataPartitionBase to access non-const points()
+    friend DataPartitionBase;
+
+protected:
+
+    /// non-const access to DataPoints_
+    DataPointVector& dataPoints()
+    { return DataPoints_; }
+
+private:
+
+    /// vector of data points contained in set
+    DataPointVector DataPoints_;
+
+    /// Associated model
+    const Model* Model_;
 
 };
 

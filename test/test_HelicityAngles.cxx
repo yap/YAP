@@ -118,6 +118,9 @@ TEST_CASE( "HelicityAngles" )
 
     REQUIRE( M.consistent() );
 
+    // create DataSet
+    auto data = M.dataSet();
+
     // create pseudo data
     TLorentzVector P(0., 0., 0., D->mass()->value());
     std::vector<double> masses = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value() };
@@ -134,8 +137,8 @@ TEST_CASE( "HelicityAngles" )
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
         }
 
-        M.addDataPoint(momenta);
-        auto dp = M.dataSet().back();
+        data.add(momenta);
+        const auto dp = data.points().back();
 
         auto Pisp = std::accumulate(momenta.begin(), momenta.end(), yap::FourVector_0);
         momenta = lorentzTransformation(-Pisp) * momenta;

@@ -5,6 +5,7 @@
 #include "logging.h"
 #include "Model.h"
 #include "Resonance.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -42,27 +43,27 @@ void Flatte::setDependenciesFromModel()
 }
 
 //-------------------------
-std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (WidthTerm_->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*WidthTerm_, symIndex) == kUncalculated) {
         auto w = Complex_0;
         // sum of coupling * complex-breakup-momentum
         for (const auto& fc : FlatteChannels_)
             w += fc.Coupling->value() * std::sqrt(std::complex<double>(model()->fourMomenta()->m2(d, pc) / 4. - pow(fc.Mass->value(), 2), 0));
         // sum * i * 2 / mass
         w *= Complex_i * 2. / model()->fourMomenta()->m(d, pc);
-        WidthTerm_->setValue(w, d, symIndex, dataPartitionIndex);
+        WidthTerm_->setValue(w, d, symIndex, sm);
     }
 
     // recalculate, cache, & return, if necessary
-    if (T()->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*T(), symIndex) == kUncalculated) {
 
         // T = 1 / (M^2 - m^2 - width-term)
         std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - WidthTerm_->value(d, symIndex));
 
-        T()->setValue(t, d, symIndex, dataPartitionIndex);
+        T()->setValue(t, d, symIndex, sm);
 
         FDEBUG("calculated T = " << t << " and stored it in the cache");
         return t;

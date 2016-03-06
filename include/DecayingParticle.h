@@ -39,6 +39,7 @@ class FinalStateParticle;
 class Model;
 class ParticleCombination;
 class QuantumNumbers;
+class StatusManager;
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay
@@ -72,8 +73,8 @@ public:
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override;
+    /// \param sm StatusManager to update
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -128,8 +129,11 @@ public:
 
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
+    /// include non-const access to model
+    using ReportsModel::model;
+
     /// \return raw pointer to Model through first DecayChannel
-    Model* model() override
+    const Model* model() const override
     { return Channels_.empty() ? nullptr : Channels_[0]->model(); }
 
     /// \return string denoting DataAccessor type

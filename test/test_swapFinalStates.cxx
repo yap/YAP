@@ -57,8 +57,6 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     piK2->addChannel({piPlus, kMinus});
     D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
 
-    M.initializeForMonteCarloGeneration(1);
-
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
@@ -71,12 +69,12 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
     if (P.empty())
         return std::numeric_limits<double>::quiet_NaN();
 
-    M.setFinalStateMomenta(M.dataSet()[0], P, 0);
-
-    // calculate
-    M.resetCalculationStatuses(0);
-
-    return M.amplitude(M.dataSet()[0], 0);
+    // create new data set
+    auto data = M.dataSet();
+    // add point
+    data.add(P);
+    // return amplitude
+    return M.amplitude(data[0], data);
 }
 
 TEST_CASE( "swapFinalStates" )

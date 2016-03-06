@@ -72,8 +72,11 @@ public:
         return C;
     }
 
+    /// include non-const access to model
+    using ReportsModel::model;
+
     /// \return raw pointer to owning Model
-    Model* model() override
+    const Model* model() const override
     { return Model_; }
 
     /// grant friend status to Model to set itself owner

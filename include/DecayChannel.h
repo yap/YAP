@@ -41,6 +41,7 @@ class DataPoint;
 class DecayingParticle;
 class FinalStateParticle;
 class ParticleCombination;
+class StatusManager;
 
 /// \class DecayChannel
 /// \brief Class implementing a decay channel.
@@ -78,9 +79,9 @@ public:
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
+    /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                           int two_m, unsigned dataPartitionIndex) const;
+                                           int two_m, StatusManager& sm) const;
 
     /// check consistency of object
     virtual bool consistent() const override;
@@ -115,8 +116,11 @@ public:
     /// \return the set of TotalAmplitudes_ values
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
+    /// include non-const access to model
+    using ReportsModel::model;
+
     /// \return raw pointer to model through first Daughter
-    Model* model() override
+    const Model* model() const override
     { return Daughters_[0]->model(); }
 
     /// \return raw pointer to owning DecayingParticle

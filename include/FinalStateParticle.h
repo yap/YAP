@@ -58,7 +58,7 @@ public:
     /// Calculate complex amplitude.
     /// All parameters are ignored. See particle::amplitude() for info.
     /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, unsigned) const override
+    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, StatusManager&) const override
     { return Complex_1; }
 
     /// Check consistency
@@ -69,16 +69,11 @@ public:
     { return ParticleCombinations_; }
 
     /// \return owning Model
-    Model* model() override
+    const Model* model() const override
     { return Model_; }
-
-    /// \name Friends
-    /// @{
 
     /// Grant friend status to Model to set FSP's indices
     friend class Model;
-
-    /// @}
 
 protected:
 

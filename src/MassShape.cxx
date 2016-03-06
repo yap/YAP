@@ -56,7 +56,7 @@ void MassShape::replaceResonanceMass(std::shared_ptr<RealParameter> m)
 }
 
 //-------------------------
-Model* MassShape::model()
+const Model* MassShape::model() const
 { return (Resonance_) ? Resonance_->model() : nullptr; }
 
 }

@@ -43,28 +43,9 @@ class DataAccessor :
 {
 public:
 
-    /// \name Constructors, destructor, & operators
-    /// @{
-
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
-
-    /// Copy constructor is deleted, since we don't need it and implementing it for all deriving classes would be too complicated
-    DataAccessor(const DataAccessor& other) = delete;
-    /// Copy operator is deleted
-    DataAccessor& operator=(const DataAccessor& other) = delete;
-
-    /// Destructor
-    virtual ~DataAccessor() = default;
-
-    // Defaulted move constructor
-    DataAccessor(DataAccessor&& other) = default;
-
-    // Defaulted move assignment operator
-    DataAccessor& operator=(DataAccessor&& other) = default;
-
-    /// @}
 
     /// \name Access to indices
     /// @{
@@ -103,14 +84,13 @@ public:
 
     /// @}
 
+    /// \return CachedDataValueSet
+    const CachedDataValueSet cachedDataValues() const
+    { return CachedDataValues_; }
+
     /// \return size of storage in data point (number of real values)
     unsigned size() const
     { return Size_; }
-
-    /// Increase storage
-    /// \param n number of elements to increase by
-    void increaseSize(unsigned n)
-    { Size_ += n; }
 
     /// Check consistency of object
     bool consistent() const;
@@ -119,7 +99,7 @@ public:
     /// \todo REMOVE
     virtual std::string data_accessor_type() const = 0;
 
-    /// grant friend status to Model
+    /// grant friend status to Model to access CachedDataValues_
     friend class Model;
 
     /// grant friend status to CachedDataValue to call addCachedDataValue
@@ -131,8 +111,12 @@ protected:
     void virtual addToModel();
 
     /// add CachedDataValue
-    void addCachedDataValue(std::shared_ptr<CachedDataValue> c)
-    { CachedDataValues_.insert(c); }
+    void addCachedDataValue(std::shared_ptr<CachedDataValue> c);
+
+    /// Increase storage
+    /// \param n number of elements to increase by
+    void increaseSize(unsigned n)
+    { Size_ += n; }
 
     /// add ParticleCombination to SymmetrizationIndices_
     virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
@@ -143,22 +127,6 @@ protected:
     /// set storage index used in DataPoint. Must be unique.
     void setIndex(size_t i)
     { Index_ = i; }
-
-    /// set number of data partitions into all members of CachedDataValues_
-    virtual void setNumberOfDataPartitions(unsigned n);
-
-    /// Update global calculation statuses of all CachedDataValues
-    virtual void updateGlobalCalculationStatuses();
-
-    /// resets CalculationStatus'es for all CachedDataValues_
-    virtual void resetCalculationStatuses(unsigned dataPartitionIndex);
-
-    /// set all VariableStatus flags to kUnchanged (or leave at kFixed) for CachedDataValues_
-    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
-
-    /// set all VariableStatus flags to kUnchanged (or leave at
-    /// kFixed) for all Parameters that CachedDataValues_ depend on
-    virtual void setParameterFlagsToUnchanged();
 
 private:
 

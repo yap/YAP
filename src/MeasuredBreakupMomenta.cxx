@@ -14,19 +14,20 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
     if (!model()->fourMomenta())
         throw exceptions::Exception("Model's FourMomenta unset", "MeasuredBreakupMomenta::MeasuredBreakupMomenta");
     Q2_->addDependency(model()->fourMomenta()->mass());
-    Q2_->addDependency(std::make_pair(model()->fourMomenta()->mass(), 0));
-    Q2_->addDependency(std::make_pair(model()->fourMomenta()->mass(), 1));
+    Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
+    Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
 }
 
 //-------------------------
-void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
+void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
 {
-    Q2_->setCalculationStatus(kUncalculated, dataPartitionIndex);
+    // set Q2 uncalculated
+    sm.set(*Q2_, kUncalculated);
 
     for (auto& kv : symmetrizationIndices()) {
 
-        // check if calculation necessary
-        if (Q2_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
+        // check if calculation unnecessary
+        if (sm.status(*Q2_, kv.second) == kUncalculated)
             continue;
 
         if (kv.first->daughters().size() != 2)
@@ -38,7 +39,7 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex
         double m_a  = model()->fourMomenta()->m(d, kv.first->daughters()[0]);
         double m_b  = model()->fourMomenta()->m(d, kv.first->daughters()[1]);
 
-        Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, dataPartitionIndex);
+        Q2_->setValue(calcQ2(m2_R, m_a, m_b), d, kv.second, sm);
     }
 }
 

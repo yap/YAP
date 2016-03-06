@@ -12,6 +12,7 @@ set(YAP_SOURCES
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
+  DataSet.cxx
 	DecayChannel.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx
@@ -31,6 +32,7 @@ set(YAP_SOURCES
 	QuantumNumbers.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
+  StatusManager.cxx
 	WignerD.cxx
   ZemachFormalism.cxx
 )

@@ -56,8 +56,8 @@ ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsign
 //-------------------------
 void ZemachSpinAmplitude::setDependencies(std::shared_ptr<CachedDataValue> a)
 {
-    a->addDependency(std::make_pair(model()->fourMomenta()->momentum(), 0));
-    a->addDependency(std::make_pair(model()->fourMomenta()->momentum(), 1));
+    a->addDependency(DaughterCachedDataValue(model()->fourMomenta()->momentum(), 0));
+    a->addDependency(DaughterCachedDataValue(model()->fourMomenta()->momentum(), 1));
 }
 
 //-------------------------

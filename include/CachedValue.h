@@ -60,7 +60,7 @@ public:
 
     /// update (depending on Parameters and CachedValueBase's it
     /// depends) and return CalculationStatus_
-    CalculationStatus calculationStatus();
+    const CalculationStatus& calculationStatus();
 
 protected:
 

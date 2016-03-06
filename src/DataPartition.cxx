@@ -1,5 +1,6 @@
 #include "DataPartition.h"
 
+#include "DataPoint.h"
 #include "DataSet.h"
 #include "logging.h"
 #include "make_unique.h"
@@ -7,96 +8,125 @@
 namespace yap {
 
 //-------------------------
+DataIterator::DataIterator(DataPartitionBase* p) :
+    Partition_(p)
+{
+    if (!Partition_)
+        throw exceptions::Exception("Partition is unset", "DataIterator::DataIterator");
+}
+
+//-------------------------
+DataIterator::DataIterator(DataPartitionBase* p, const DataPointVector::iterator& it) :
+    Partition_(p), Iterator_(it)
+{
+    if (!Partition_)
+        throw exceptions::Exception("Partition is unset", "DataIterator::DataIterator");
+}
+
+//-------------------------
 DataIterator& DataIterator::operator++()
 {
-    Owner_->increment(*this);
+    Partition_->increment(*this);
     return *this;
 }
 
 //-------------------------
-DataPartitionBase::DataPartitionBase(std::vector<DataPoint>::iterator begin, std::vector<DataPoint>::iterator end) :
-    Begin_(this, begin),
-    End_(this, end),
-    DataPartitionIndex_(0)
+DataPointVector::iterator DataPartitionBase::begin(DataSet& ds)
 {
+    return ds.dataPoints().begin();
+}
 
+//-------------------------
+DataPointVector::iterator DataPartitionBase::end(DataSet& ds)
+{
+    return ds.dataPoints().end();
 }
 
 //-------------------------
 void DataPartitionWeave::increment(DataIterator& it)
 {
-    // check that iterator belongs to this partition
-    if (!it.ownedBy(this)) {
-        LOG(FATAL) << "DataPartition::increment - called with DataIterator belonging to different partition!";
-        it = End_;
-        return;
-    }
-
-    for (unsigned i = 0; i < Spacing_ && it != End_; ++i)
+    auto it_e = end();
+    for (unsigned i = 0; i < Spacing_ && it != it_e; ++i)
         ++rawIterator(it);
 }
 
 //-------------------------
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsWeave(DataSet& dataSet, unsigned nPartitions)
+DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 {
-    LOG(INFO) << "Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " interweaved partitions";
+    if (n == 0)
+        throw exceptions::Exception("number of partitions is zero", "DataParitionWeave::create");
 
-    std::vector<std::unique_ptr<DataPartitionBase> > partitions;
-    partitions.reserve(nPartitions);
+    auto N = dataSet.points().size();
 
-    for (unsigned i = 0; i < nPartitions; ++i) {
-        LOG(INFO) << "Create DataPartitionWeave with size " << unsigned(0.5 + double(std::distance(dataSet.begin() + i, dataSet.end())) / nPartitions);
-        partitions.push_back(std::make_unique<DataPartitionWeave>(dataSet.begin() + i, dataSet.end(), nPartitions));
+    LOG(INFO) << "Partitioning data set of size " << N << " into " << n << " interwoven partitions";
+
+    DataPartitionVector P;
+    P.reserve(n);
+
+    for (unsigned i = 0; i < n; ++i) {
+        LOG(INFO) << "Creating DataPartitionWeave with size " << std::ceil((N - i) / n);
+        P.push_back(std::make_unique<DataPartitionWeave>(dataSet, begin(dataSet) + i, end(dataSet), n));
     }
 
-    return partitions;
+    return P;
 }
 
 //-------------------------
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocksBySize(DataSet& dataSet, unsigned maxBlockSize)
+DataPartitionVector DataPartitionBlock::create(DataSet& dataSet, unsigned n)
 {
-    LOG(INFO) << "Partition dataSet of size " << dataSet.size() << " into blocks with a maximum size of " << maxBlockSize;
+    if (n == 0)
+        throw exceptions::Exception("number of partitions is zero", "DataParitionBlock::create");
 
-    std::vector<std::unique_ptr<DataPartitionBase> > partitions;
-    unsigned dataSetSize = dataSet.size();
+    auto N = dataSet.points().size();
 
-    maxBlockSize = std::min(dataSetSize, maxBlockSize);
-    maxBlockSize = std::max(dataSetSize / unsigned(double(dataSetSize) / maxBlockSize + 0.5), maxBlockSize);
+    if (n > N)
+        n = N;
 
-    partitions.reserve(dataSetSize / maxBlockSize + 1);
+    LOG(INFO) << "Partitioning data set of size " << N << " into " << n << " contiguous blocks";
 
-    auto begin = dataSet.begin();
-    auto end   = dataSet.begin() + maxBlockSize;
+    unsigned p_size = std::round(N / n);
 
-    while (true) {
-        LOG(INFO) << "Create DataPartitionBlock with size " << std::distance(begin, end);
-        partitions.push_back(std::make_unique<DataPartitionBlock>(begin, end));
+    DataPartitionVector P;
+    P.reserve(n);
 
-        if (end >= dataSet.end())
-            break;
+    auto it_b = begin(dataSet);
 
-        begin = end;
-        end += maxBlockSize;
-        if (end >= dataSet.end())
-            end = dataSet.end();
+    for (unsigned i = 0; i < n - 1; ++i) {
+        auto it_e = it_b + p_size;
+        LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
+        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
+        it_b = it_e;
     }
+    P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, end(dataSet)));
 
-    return partitions;
+    return P;
 }
 
 //-------------------------
-std::vector<std::unique_ptr<DataPartitionBase> > createDataPartitionsBlocks(DataSet& dataSet, unsigned nPartitions)
+DataPartitionVector DataPartitionBlock::createBySize(DataSet& dataSet, size_t s)
 {
-    LOG(INFO) << "Partition dataSet of size " << dataSet.size() << " into " << nPartitions << " partition blocks";
+    if (s == 0)
+        throw exceptions::Exception("block size is zero", "DataPartitionBlock::createBySize");
 
-    unsigned partitionSize(dataSet.size());
+    auto N = dataSet.points().size();
 
-    if (nPartitions < dataSet.size())
-        partitionSize = 0.5 + double(dataSet.size()) / nPartitions;
+    if (s > N)
+        s = N;
 
-    partitionSize = std::max(1u, partitionSize);
+    LOG(INFO) << "Partitioning data set of size " << N << " into blocks with a maximum size of " << s;
 
-    return createDataPartitionsBlocksBySize(dataSet, partitionSize);
+    DataPartitionVector P;
+    P.reserve(std::ceil(N / s));
+
+    auto it_b = begin(dataSet);
+    while (it_b != end(dataSet)) {
+        auto it_e = it_b + s;
+        LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
+        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
+        it_b = it_e;
+    }
+
+    return P;
 }
 
 }

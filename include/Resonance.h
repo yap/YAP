@@ -33,6 +33,7 @@ class DataPoint;
 class MassShape;
 class ParticleCombination;
 class QuantumNumbers;
+class StatusManager;
 
 /// \class Resonance
 /// \brief Class for a particle that will decay and has a mass shape
@@ -61,8 +62,8 @@ public:
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const override;
+    /// \param sm StatusManager to update
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

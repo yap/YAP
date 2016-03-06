@@ -2,6 +2,7 @@
 
 #include "Exceptions.h"
 #include "spin.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -37,11 +38,10 @@ void SpinAmplitude::setModel(Model* m)
 }
 
 //-------------------------
-void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
+void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 {
-    // set calculation statuses uncalc'ed
-    for (auto& a : amplitudeSet())
-        a->setCalculationStatus(kUncalculated, dataPartitionIndex);
+    // set all amplitudes Uncalculated
+    sm.set(*this, kUncalculated);
 
     // loop over particle combinations
     for (auto& pc : particleCombinations()) {
@@ -50,18 +50,21 @@ void SpinAmplitude::calculate(DataPoint& d, unsigned dataPartitionIndex)
 
         // loop over mapping of parent spin projection to AmplitudeSubmap
         for (auto& aM_kv : Amplitudes_) {
+
             const auto& two_M = aM_kv.first; // parent spin projection
+
             // loop over mappin of daughter spin projection pairs to amplitudes
             for (auto& aSM_kv : aM_kv.second)
+
                 // if yet uncalculated
-                if (aSM_kv.second->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+                if (sm.status(*aSM_kv.second, symIndex) == kUncalculated) {
 
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 
                     auto val = calc(two_M, spp[0], spp[1], d, pc);
                     FDEBUG(*this << " := " << val << ", for " << *pc << " for " << two_M << " -> " << spp[0] << " + " << spp[1]);
 
-                    aSM_kv.second->setValue(val, d, symIndex, dataPartitionIndex);
+                    aSM_kv.second->setValue(val, d, symIndex, sm);
 
                 }
         }
