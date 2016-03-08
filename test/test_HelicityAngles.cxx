@@ -69,12 +69,12 @@ void calculate_helicity_angles(const yap::Model& M,
             phi_theta[pc] = hAngles;
         else {
             // check that results would be the same within numerical uncertainty
-            for (unsigned i=0; i<2; ++i) {
+            for (unsigned i = 0; i < 2; ++i) {
                 /*std::cout << "i " << i << " new " << hAngles[i] << "; old " << phi_theta[pc][i] << std::endl;
                 std::cout << fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) << std::endl;
                 std::cout << fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) << std::endl;*/
-                assert((i==0 && fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) ||
-                       (i==1 && fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) );
+                assert((i == 0 && fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) ||
+                       (i == 1 && fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) );
             }
         }
 
@@ -169,7 +169,7 @@ TEST_CASE( "HelicityAngles" )
             /*std::cout << yap::to_string(*kv.first) << "\n";
             std::cout << "M.helicityAngles(): (" <<  M.helicityAngles()->phi(dp, kv.first) << ", " << M.helicityAngles()->theta(dp, kv.first) << ")\n";
             std::cout << "helicityAngles:     (" <<  kv.second[0] << ", " << kv.second[1] << ")\n";
-*/
+            */
             REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
             REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
         }
