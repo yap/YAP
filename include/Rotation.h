@@ -45,5 +45,23 @@ ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
     return ((T)1 - cosTheta) * outer(U, U) + cosTheta * unitMatrix<T, 3>() + (T)sin(theta) * skewSymmetric(U);
 }
 
+/// \return a 3D rotation matrix
+/// Construct from Euler angles:
+/// rotate by alpha around z axis, rotate by beta around x' axis, rotate by gamma around z'' axis
+template <typename T>
+ThreeMatrix<T> eulerRotationZXZ(const T& alpha, const T& beta, const T& gamma)
+{
+    return rotation(ThreeAxis_Z, gamma) * rotation(ThreeAxis_X, beta) * rotation(ThreeAxis_Z, alpha);
+}
+
+/// \return a 3D rotation matrix
+/// Construct from Euler angles:
+/// rotate by alpha around z axis, rotate by beta around y' axis, rotate by gamma around z'' axis
+template <typename T>
+ThreeMatrix<T> eulerRotationZYZ(const T& alpha, const T& beta, const T& gamma)
+{
+    return rotation(ThreeAxis_Z, gamma) * rotation(ThreeAxis_Y, beta) * rotation(ThreeAxis_Z, alpha);
+}
+
 }
 #endif
