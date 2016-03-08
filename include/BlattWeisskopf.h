@@ -33,6 +33,7 @@ class DecayingParticle;
 class Model;
 class ParticleCombination;
 class RealCachedDataValue;
+class StatusManager;
 
 /// \class BlattWeisskopf
 /// \brief Class implementing BlattWeisskopf barrier factors
@@ -58,7 +59,10 @@ public:
     { return L_; }
 
     /// Calculate amplitude
-    virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const;
+    /// \param d DataPoint to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    /// \param sm StatusManager to update
+    virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const;
 
     /// check consistency of object
     virtual bool consistent() const override
@@ -67,11 +71,11 @@ public:
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override
     { return {Fq_r, Fq_ab}; }
 
-    /// include const access to Model
+    /// include non-const access to Model
     using DataAccessor::model;
 
     /// \return raw pointer to Model through owning DecayingParticle
-    Model* model() override;
+    const Model* model() const override;
 
     virtual std::string data_accessor_type() const override
     {return "BlattWeisskopf"; }

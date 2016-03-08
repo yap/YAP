@@ -31,8 +31,7 @@ public:
     bat_gen(std::string name, std::unique_ptr<yap::Model> M,
             std::vector<std::vector<unsigned> > pcs);
 
-    void initialize(unsigned n)
-    { M_->initializeForMonteCarloGeneration(n); }
+    void MCMCUserInitialize() override;
 
     // Overload LogLikelihood to implement model
     double LogLikelihood(const std::vector<double>& parameters);
@@ -42,7 +41,9 @@ public:
 
 protected:
     yap::MassAxes MassAxes_;
-    std::shared_ptr<yap::Model> M_;
+    std::unique_ptr<yap::Model> Model_;
+    std::vector<yap::DataSet> Data_;
+    /* yap::DataPartitionVector Partitions_; */
 
 };
 // ---------------------------------------------------------

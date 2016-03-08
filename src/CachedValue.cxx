@@ -20,7 +20,7 @@ void CachedValueBase::removeDependency(std::shared_ptr<ParameterBase> dep)
 }
 
 //-------------------------
-CalculationStatus CachedValueBase::calculationStatus()
+const CalculationStatus& CachedValueBase::calculationStatus()
 {
     // if uncalculated, return without further checking
     if (CalculationStatus_ == kUncalculated)

@@ -1,13 +1,54 @@
 #include "DataPoint.h"
 
+#include "DataSet.h"
+#include "Exceptions.h"
+#include "FourMomenta.h"
+#include "Model.h"
+#include "StaticDataAccessor.h"
+
 namespace yap {
 
 //-------------------------
-DataPoint::DataPoint(const DataAccessorSet& S) :
-    Data_(S.size())
+DataPoint::DataPoint(DataSet* dataSet) :
+    ReportsModel(),
+    DataSet_(dataSet)
 {
-    for (auto da : S)
+    if (!DataSet_)
+        throw exceptions::Exception("DataSet unset", "DataPoint::DataPoint");
+    Data_.resize(model()->dataAccessors().size());
+    for (auto da : model()->dataAccessors())
         Data_[da->index()].assign(da->maxSymmetrizationIndex() + 1, std::vector<double>(da->size(), 0));
+}
+
+//-------------------------
+const Model* DataPoint::model() const
+{
+    return DataSet_->model();
+}
+
+//-------------------------
+void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P, StatusManager& sm)
+{
+    if (!model())
+        throw exceptions::Exception("Model unset", "DataPoint::setFinalStateMomenta");
+
+    model()->fourMomenta()->setFinalStateMomenta(*this, P, sm);
+    // call calculate on four momenta first
+    model()->fourMomenta()->calculate(*this, sm);
+    // call calculate on all other static data accessors in model
+    for (auto& sda : model()->dataAccessors()) {
+        // FourMomenta already calculated above
+        if (sda == model()->fourMomenta().get())
+            continue;
+        if (dynamic_cast<StaticDataAccessor*>(sda))
+            static_cast<StaticDataAccessor*>(sda)->calculate(*this, sm);
+    }
+}
+
+//-------------------------
+void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P)
+{
+    setFinalStateMomenta(P, *DataSet_);
 }
 
 //-------------------------

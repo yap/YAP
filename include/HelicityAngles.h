@@ -34,6 +34,7 @@ namespace yap {
 class RealCachedDataValue;
 class Model;
 class ParticleCombination;
+class StatusManager;
 
 /// \class HelicityAngles
 /// \brief Calculates, stores and gives access to helicity angles
@@ -67,11 +68,8 @@ public:
 
     /// Calculate helicity angles for all possible symmetrization indices
     /// \param d DataPoint to calculate into
-    /// \param dataPartitionIndex for status tracking
-    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
-
-    // /// add symmetrizationIndex to SymmetrizationIndices_
-    // virtual void addSymmetrizationIndex(std::shared_ptr<ParticleCombination> c);
+    /// \param sm StatusManager to update
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// get azimuthal angle
     double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
@@ -108,7 +106,7 @@ protected:
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
-                         unsigned dataPartitionIndex);
+                         StatusManager& sm) const;
 
     /// override to throw on adding final-state PC
     unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;

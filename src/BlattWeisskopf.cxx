@@ -41,8 +41,8 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(std::make_pair(model()->fourMomenta()->mass(), 0));
-    Fq_r->addDependency(std::make_pair(model()->fourMomenta()->mass(), 1));
+    Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
+    Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
     Fq_r->addDependency(DecayingParticle_->mass());
     Fq_r->addDependency(DecayingParticle_->radialSize());
 
@@ -54,11 +54,11 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
 }
 
 //-------------------------
-double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
+double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (Fq_r->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*Fq_r, symIndex) == kUncalculated) {
         // nominal breakup momentum
         double m2_R = pow(DecayingParticle_->mass()->value(), 2);
         double m_a = model()->fourMomenta()->m(d, pc->daughters().at(0));
@@ -67,18 +67,18 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
-        Fq_r->setValue(f, d, symIndex, dataPartitionIndex);
+        Fq_r->setValue(f, d, symIndex, sm);
 
         DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
 
-    if (Fq_ab->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*Fq_ab, symIndex) == kUncalculated) {
         // measured breakup momentum
         double q2 = model()->measuredBreakupMomenta()->q2(d, pc);
 
         double R = DecayingParticle_->radialSize()->value();
         double f = sqrt(F2(L_, R * R * q2));
-        Fq_ab->setValue(f, d, symIndex, dataPartitionIndex);
+        Fq_ab->setValue(f, d, symIndex, sm);
 
         DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
     }
@@ -87,7 +87,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 }
 
 //-------------------------
-Model* BlattWeisskopf::model()
+const Model* BlattWeisskopf::model() const
 {
     return DecayingParticle_->model();
 }

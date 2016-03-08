@@ -68,45 +68,16 @@ bool DataAccessor::hasParticleCombination(const std::shared_ptr<ParticleCombinat
 //-------------------------
 bool DataAccessor::consistent() const
 {
-    if (SymmetrizationIndices_.empty()) {
-        FLOG(ERROR) << "SymmetrizationIndices_ is empty.";
-        return false;
-    }
-
-    bool result = true;
-
-    for (auto& kv : SymmetrizationIndices_)
-        result &= kv.first->consistent();
+    bool C = true;
 
     // check CachedDataValues_
-    for (auto& c : CachedDataValues_) {
-        if (c->CalculationStatus_.size() == 0) {
-            FLOG(ERROR) << "c->CalculationStatus_.size() == 0";
-            result = false;
-        }
-        if (c->CalculationStatus_.size() != c->VariableStatus_.size()) {
-            FLOG(ERROR) << "c->CalculationStatus_.size() != c->VariableStatus_.size()";
-            result = false;
+    for (auto& c : CachedDataValues_)
+        if (c->owner() != this) {
+            FLOG(ERROR) << "CachedDataValue's owner != this";
+            C &= false;
         }
 
-        for (unsigned i = 0; i < c->CalculationStatus_.size(); ++i) {
-            if (int(c->CalculationStatus_[i].size()) != maxSymmetrizationIndex() + 1) {
-                FLOG(ERROR) << "c->CalculationStatus_[i].size() != maxSymmetrizationIndex() + 1 ("
-                            << c->CalculationStatus_.size() << " != " << maxSymmetrizationIndex() + 1 << ")";
-                DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
-                result = false;
-            }
-            if (int(c->VariableStatus_[i].size()) != maxSymmetrizationIndex() + 1) {
-                LOG(ERROR) << "DataAccessor::consistent() - c->VariableStatus_[i].size() != maxSymmetrizationIndex() + 1";
-                LOG(ERROR) << c->VariableStatus_.size() << " != " << maxSymmetrizationIndex() + 1;
-                DEBUG("c's Owner " << c->owner() << " " << typeid(*c->owner()).name());
-                result = false;
-            }
-        }
-
-    }
-
-    return result;
+    return C;
 }
 
 //-------------------------
@@ -130,9 +101,6 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
     // else assign to current size = highest current index + 1
     unsigned size = maxSymmetrizationIndex() + 1;
     SymmetrizationIndices_[c] = size;
-
-    for (auto& c : CachedDataValues_)
-        c->setNumberOfSymmetrizations(size + 1);
 
     return size;
 }
@@ -186,10 +154,6 @@ void DataAccessor::pruneSymmetrizationIndices()
             index += 1;
 
     }
-
-    unsigned size = maxSymmetrizationIndex() + 1;
-    for (auto& c : CachedDataValues_)
-        c->setNumberOfSymmetrizations(size);
 }
 
 //-------------------------
@@ -201,44 +165,21 @@ void DataAccessor::addToModel()
 }
 
 //-------------------------
-void DataAccessor::updateGlobalCalculationStatuses()
+void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
 {
-    for (auto& c : CachedDataValues_) {
-        for (auto& kv : SymmetrizationIndices_) {
-            DEBUG("updateGlobalCalculationStatuses for " << typeid(*this).name() << " " << dynamic_cast<DataAccessor*>(this) << " for " << * (kv.first));
-            c->updateGlobalCalculationStatus(kv.first, kv.second);
-        }
+    // add CachedDataValue
+    if (CachedDataValues_.insert(c).second) {
+        // if insertion was successful
+
+        // set its index
+        c->setIndex(CachedDataValues_.size() - 1);
+
+        // set its position
+        c->setPosition(size());
+
+        // increase data size to accommodate CachedDataValue
+        increaseSize(c->size());
     }
-}
-
-//-------------------------
-void DataAccessor::setNumberOfDataPartitions(unsigned n)
-{
-    for (auto& c : CachedDataValues_)
-        c->setNumberOfDataPartitions(n);
-}
-
-//-------------------------
-void DataAccessor::resetCalculationStatuses(unsigned dataPartitionIndex)
-{
-    for (auto& c : CachedDataValues_)
-        c->resetCalculationStatus(dataPartitionIndex);
-}
-
-//-------------------------
-void DataAccessor::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
-{
-    for (auto& c : CachedDataValues_)
-        c->setVariableStatus(kUnchanged, dataPartitionIndex);
-}
-
-//-------------------------
-void DataAccessor::setParameterFlagsToUnchanged()
-{
-    for (auto& c : CachedDataValues_)
-        for (auto& p : c->ParametersItDependsOn_)
-            if (p->variableStatus() == kChanged)
-                p->setVariableStatus(kUnchanged);
 }
 
 //-------------------------

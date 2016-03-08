@@ -41,6 +41,7 @@ class HelicityAngles;
 class MassAxes;
 class MeasuredBreakupMomenta;
 class SpinAmplitudeCache;
+class StatusManager;
 
 /// \class Model
 /// \brief Class implementing a PWA model
@@ -60,34 +61,29 @@ public:
     /// \return amplitude with a sum over all particle combinations of ISP
     /// \param d DataPoint to calculate with
     /// \param two_m 2 * the spin projection of ISP to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    std::complex<double> amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const;
+    /// \param sm StatusManager to update
+    std::complex<double> amplitude(DataPoint& d, int two_m, StatusManager& sm) const;
 
     /// \return amplitude with a sum over all particle combinations and spin projections of ISP
     /// \param d DataPoint to calculate with
-    /// \param dataPartitionIndex partition index for parallelization
-    std::complex<double> amplitude(DataPoint& d, unsigned dataPartitionIndex) const;
-
-    /// \return ln(|amplitude|^2), with sum over all particle combinations in amp. calculation
-    /// calls resetCalculationStatuses before calculation
-    double logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex);
+    /// \param sm StatusManager to update
+    std::complex<double> amplitude(DataPoint& d, StatusManager& sm) const;
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
-    /// \param D Pointer to a #DataPartitionBase object
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D);
+    /// \param D pointer to DataPartition to evalue over
+    /// \param global StatusManager to reset partition's statuses to
+    double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const StatusManager& global) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
-    double sumOfLogsOfSquaredAmplitudes();
+    /// \param DS DataSet to evaluate over
+    /// \param DP DataPartitionVector of partitions to use
+    double sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const;
+
+    /// Calculate the sum of the logs of the squared amplitudes
+    /// \param DS DataSet to evaluate over
+    double sumOfLogsOfSquaredAmplitudes(DataSet& DS) const;
 
     /// @}
-
-    /// call before looping over all DataPartitions
-    void updateGlobalCalculationStatuses();
-
-    /// calculate StaticDataAccessors
-    /// \param d DataPoint to calculate on
-    /// \param dataPartitionIndex for tracking statuses
-    void calculate(DataPoint& d, unsigned dataPartitionIndex = 0);
 
     /// Check consistency of object
     virtual bool consistent() const;
@@ -97,10 +93,6 @@ public:
 
     /// \name Getters
     /// @{
-
-    /// \return coordinate system
-    CoordinateSystem<double, 3>& coordinateSystem()
-    { return CoordinateSystem_; }
 
     /// \return coordinate system (const)
     const CoordinateSystem<double, 3>& coordinateSystem() const
@@ -158,6 +150,10 @@ public:
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
+    /// \return set of DataAccessors
+    const DataAccessorSet dataAccessors() const
+    { return DataAccessors_; }
+
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
@@ -186,38 +182,8 @@ public:
 
     /// @}
 
-    /// \name Data set and partitions
-    /// @{
-
-    /// \return DataSet
-    DataSet& dataSet()
-    { return DataSet_; }
-
-    /// \return the data partitions
-    std::vector<DataPartitionBase*> dataPartitions();
-
-    /// set data partitions
-    /// ownership over DataPartitionBase objects will be taken
-    void setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions);
-
-    /// @}
-
-    /// \name DataPoints
-    /// @{
-
-    /// Add data point via four-momenta
-    /// This method is faster since it avoids unneccessary copying of objects
-    /// and resizing of the DataPoint's storage
-    void addDataPoint(const std::vector<FourVector<double> >& fourMomenta);
-
-    /// @}
-
     /// \name Monte Carlo Generation
     /// @{
-
-    /// Initialize DataSet for MC Generation
-    /// \param n Number of simultaneous streams for MC generation
-    void initializeForMonteCarloGeneration(unsigned n);
 
     /// Build vector of mass axes for coordinates in phase space.
     /// Currently only supports two-particle masses; the PCs put into
@@ -231,20 +197,14 @@ public:
     /// \param squared_masses phase-space coordinate
     std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const;
 
-    /// Set fsp four-momenta of data point
-    /// \param d DataPoint to set into
-    /// \param P Final-state four momenta
-    /// \param dataPartitionIndex for tracking status
-    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
-
     /// @}
+
+    /// create an empty data set
+    /// \param n Number of empty data points to place inside data set
+    DataSet dataSet(size_t n = 0);
 
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);
-
-    /// reset all CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
-    /// call before calculating the amplitude for a new dataPoint
-    void resetCalculationStatuses(unsigned dataPartitionIndex);
 
     /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
@@ -266,20 +226,6 @@ protected:
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
 
 private:
-
-    /// check if d is in DataPartitions_
-    bool hasDataPartition(DataPartitionBase* d);
-
-    /// set number of data partitions of all #CachedDataValue's
-    void setNumberOfDataPartitions(unsigned n);
-
-    /// set all parameter flags to kUnchanged (or leave at kFixed)
-    /// call after looping over a DataPartition
-    void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex);
-
-    /// set all parameter flags to kUnchanged (or leave at kFixed)
-    /// call after looping over ALL DataPartitions
-    void setParameterFlagsToUnchanged();
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
@@ -307,12 +253,6 @@ private:
 
     /// helicity angles manager
     std::shared_ptr<HelicityAngles> HelicityAngles_;
-
-    /// Data set
-    DataSet DataSet_;
-
-    /// Data partitions
-    std::vector<std::unique_ptr<DataPartitionBase> > DataPartitions_;
 
 };
 

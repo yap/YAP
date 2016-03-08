@@ -26,35 +26,19 @@ int main()
 {
     yap::plainLogs(el::Level::Info);
 
-    // set nicer style for drawing than the ROOT default
-    BCAux::SetStyle();
-
     // open log file
     BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    //bat_gen m("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
+    // bat_gen m("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
     bat_gen m("DKSPIPI", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
-    //bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
+    // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
     // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}});
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
     m.SetNChains(4);
 
-    BCLog::OutSummary("Initializing for MC Generation");
-    m.initialize(m.GetNChains());
-
-    m.SetNIterationsRun(static_cast<int>(5e6 / m.GetNChains()));
-
-    m.GetObservables().FillHistograms(true, true);
-
-    BCLog::OutSummary("Test model created");
-
-    //////////////////////////////
-    // perform your analysis here
-
-    // Normalize the posterior by integrating it over the full par. space
-    // m.Normalize();
+    m.SetNIterationsRun(static_cast<int>(1e6 / m.GetNChains()));
 
     m.WriteMarkovChain(m.GetSafeName() + "_mcmc.root", "RECREATE");
 
@@ -67,26 +51,14 @@ int main()
     // end timing
     auto end = std::chrono::steady_clock::now();
 
-    // run mode finding; by default using Minuit
-    // m.FindMode(m.GetGlobalMode());
-
-    // draw all marginalized distributions into a PDF file
-    m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
-
-    // print summary plots
-    // m.PrintParameterPlot(m.GetSafeName() + "_parameters.pdf");
-    // m.PrintCorrelationPlot(m.GetSafeName() + "_correlation.pdf");
-    // m.PrintCorrelationMatrix(m.GetSafeName() + "_correlationMatrix.pdf");
-    // m.PrintKnowledgeUpdatePlots(m.GetSafeName() + "_update.pdf");
-
-    // print results of the analysis into a text file
-    m.PrintSummary();
+    // m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
 
     // timing:
     auto diff = end - start;
     auto ms = std::chrono::duration<double, std::micro>(diff).count();
-    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(m.GetNIterationsRun() * m.GetNChains()) + " events");
-    BCLog::OutSummary(std::to_string(ms / m.GetNIterationsRun() / m.GetNChains()) + " microsec / event");
+    auto nevents = (m.GetNIterationsPreRun() + m.GetNIterationsRun()) * m.GetNChains();
+    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(nevents) + " calls");
+    BCLog::OutSummary(std::to_string(ms / nevents) + " microsec / event");
 
     // close log file
     BCLog::OutSummary("Exiting");

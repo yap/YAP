@@ -4,6 +4,7 @@
 #include "logging.h"
 #include "Model.h"
 #include "Resonance.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -49,17 +50,17 @@ void PoleMass::setDependenciesFromModel()
 }
 
 //-------------------------
-std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const
+std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
     // recalculate, cache, & return, if necessary
-    if (T()->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*T(), symIndex) == kUncalculated) {
 
         // T = 1 / (M^2 - m^2)
         std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));
 
-        T()->setValue(t, d, symIndex, dataPartitionIndex);
+        T()->setValue(t, d, symIndex, sm);
 
         FDEBUG("calculated T = " << t << " and stored it in the cache");
         return t;

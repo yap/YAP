@@ -31,6 +31,7 @@ namespace yap {
 class Model;
 class ParticleCombination;
 class RealCachedDataValue;
+class StatusManager;
 
 /// \class MeasuredBreakupMomenta
 /// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
@@ -46,8 +47,8 @@ public:
 
     /// Calculate breakup momenta for all possible symmetrization indices
     /// \param d DataPoint to caluclate into
-    /// \param dataPartitionIndex for tracking status
-    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
+    /// \param sm StatusManager to update
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from

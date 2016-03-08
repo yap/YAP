@@ -31,6 +31,7 @@ namespace yap {
 
 class DataPoint;
 class ParticleCombination;
+class StatusManager;
 
 /// \class Flatte
 /// \brief Class for Flatte resonance shape
@@ -39,7 +40,6 @@ class ParticleCombination;
 ///
 /// Amplitude is 1 / (mass^2 - s - i * sum_channels(coupling * phase-space factor)\n\n
 /// phase space factor := 2 * breakup-momentum / m; may be complex
-
 class Flatte : public MassShapeWithNominalMass
 {
 public:
@@ -61,8 +61,8 @@ public:
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// \param sm StatusManager to update
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
 
     /// Add FlatteChannel
     void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);

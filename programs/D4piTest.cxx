@@ -108,6 +108,9 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "create dataPoints";
 
+    // create data set
+    auto data = M.dataSet();
+
     for (unsigned int iEvt = 0; iEvt < 4; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
@@ -121,24 +124,23 @@ int main( int argc, char** argv)
             DEBUG(yap::to_string(momenta.back()));
         }
 
-        M.addDataPoint(momenta);
+        data.add(momenta);
 
     }
 
     LOG(INFO) << "done creating dataPoints";
 
-    LOG(INFO) << M.dataSet()[0].dataSizeString();
+    LOG(INFO) << data[0].dataSizeString();
 
     LOG(INFO) << "Printing data:";
-    for (unsigned d = 0; d < M.dataSet().size(); ++d) {
+    for (unsigned d = 0; d < data.points().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
-        for (auto& v : M.fourMomenta()->finalStateMomenta(M.dataSet()[d]))
+        for (auto& v : M.fourMomenta()->finalStateMomenta(data[d]))
             LOG(INFO) << yap::to_string(v);
     }
 
-
-    // create data partitions
-    M.setDataPartitions(yap::createDataPartitionsBlocks(M.dataSet(), 1));
+    // create data partitions of 1 point each
+    auto parts = yap::DataPartitionBlock::createBySize(data, 1);
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = M.freeAmplitudes();
@@ -158,8 +160,7 @@ int main( int argc, char** argv)
             a->setValue(0.9 * a->value());
         DEBUG("===================================================================================================================== ");
 
-        double logA = M.partialSumOfLogsOfSquaredAmplitudes(M.dataPartitions()[0]);
-        // double logA = D->sumOfLogsOfSquaredAmplitudes();
+        double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
 
         LOG(INFO) << "logA = " << logA;
     }

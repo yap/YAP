@@ -127,6 +127,9 @@ TEST_CASE( "HelicityAngles" )
 
     REQUIRE( M.consistent() );
 
+    // create DataSet
+    auto data = M.dataSet();
+
     // create pseudo data
     TLorentzVector P(0., 0., 0., D->mass()->value());
     std::vector<double> masses = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value() };
@@ -153,9 +156,8 @@ TEST_CASE( "HelicityAngles" )
         //momenta = lorentzTransformation( yap::eulerRotationZXZ<double>(0.1, 0.5, 0.) ) * momenta;
         //momenta = lorentzTransformation( yap::rotation<double>(yap::ThreeAxis_Z, 2.355) ) * momenta;
 
-
-        M.addDataPoint(momenta);
-        auto dp = M.dataSet().back();
+        data.add(momenta);
+        const auto dp = data.points().back();
 
         std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
 

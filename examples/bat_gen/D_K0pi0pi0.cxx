@@ -59,8 +59,8 @@ std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> 
     // f_0(1500)
     // auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_shared<yap::BreitWigner>());
     // f_0_1500->addChannel({piZero, piZero});
-    // D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(Complex_0);
-    // D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(std::polar(20.9, yap::rad(281.4)));
+    // // D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(Complex_0);
+    // // D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(std::polar(20.9, yap::rad(281.4)));
 
     // f_2(1270)
     auto f_2_1270 = F.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());

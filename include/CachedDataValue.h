@@ -37,21 +37,37 @@ class CachedDataValue;
 class DataAccessor;
 class DataPoint;
 class ParticleCombination;
+class StatusManager;
 
 /// \typedef CachedDataValueSet
 /// \ingroup Data
 /// \ingroup Cache
 using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
 
-/// \typedef CachedDataValueDaughterIndexPair
+/// \struct DaughterCachedDataValue
+/// \brief Stores a shared_ptr to a CachedDataValue and the index of
+/// the daughter within a Particle Combination to pass to it
 /// \ingroup Data
 /// \ingroup Cache
-using CachedDataValueDaughterIndexPair = std::pair<std::shared_ptr<CachedDataValue>, unsigned>;
+struct DaughterCachedDataValue {
+    /// constructor
+    DaughterCachedDataValue(std::shared_ptr<CachedDataValue> cdv, size_t index)
+        : CDV(cdv), Daughter(index) {}
 
-/// \typedef CachedDataValueDaughterIndexPairSet
+    /// CachedDataValue
+    std::shared_ptr<CachedDataValue> CDV;
+
+    /// index of daughter to pass to it
+    size_t Daughter;
+
+    friend bool operator<(const DaughterCachedDataValue& A, const DaughterCachedDataValue& B)
+    { return (A.CDV < B.CDV) or (A.Daughter < B.Daughter); }
+};
+
+/// \typedef DaughterCachedDataValueSet
 /// \ingroup Data
 /// \ingroup Cache
-using CachedDataValueDaughterIndexPairSet = std::set<CachedDataValueDaughterIndexPair>;
+using DaughterCachedDataValueSet = std::set<DaughterCachedDataValue>;
 
 /// \class CachedDataValueBase
 /// \brief Class for managing cached values inside a #DataPoint
@@ -62,8 +78,41 @@ class CachedDataValue : public std::enable_shared_from_this<CachedDataValue>
 {
 public:
 
-    /// check consistency of object
-    bool consistent() const;
+    /// \struct stores calculation and variable statuses for a CachedDataValue
+    struct Status {
+        /// constructor
+        Status();
+
+        /// Calculation status
+        CalculationStatus Calculation;
+
+        /// Variable status
+        VariableStatus Variable;
+
+        /// assignment of Calculation
+        void operator=(const CalculationStatus& s)
+        { Calculation = s; }
+
+        /// assignment of Variable
+        void operator=(const VariableStatus& s)
+        { Variable = s; }
+
+        /// equality operator for checking the CalculationStatus
+        friend bool operator==(const Status& S, const CalculationStatus& s)
+        { return S.Calculation == s; }
+
+        /// inequality operator for checking the CalculationStatus
+        friend bool operator!=(const Status& S, const CalculationStatus& s)
+        { return S.Calculation != s; }
+
+        /// equality operator for checking the VariableStatus
+        friend bool operator==(const Status& S, const VariableStatus& s)
+        { return S.Variable == s; }
+
+        /// inequality operator for checking the VariableStatus
+        friend bool operator!=(const Status& S, const VariableStatus& s)
+        { return S.Variable != s; }
+    };
 
     /// \name Managing dependencies
     /// @{
@@ -81,7 +130,7 @@ public:
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue's of a daughter this CachedDataValue depends on
-    void addDependencies(CachedDataValueDaughterIndexPairSet deps)
+    void addDependencies(DaughterCachedDataValueSet deps)
     { for (auto& dep : deps) addDependency(dep); }
 
     /// add CachedDataValue this CachedDataValue depends on
@@ -89,12 +138,7 @@ public:
     { CachedDataValuesItDependsOn_.insert(dep); }
 
     /// add CachedDataValue of a daughter this CachedDataValue depends on
-    /// \param pcDaughterIndex Index of the daughter in the list of ParticleCombination's daughters
-    void addDependency(std::shared_ptr<CachedDataValue> dep, unsigned pcDaughterIndex)
-    { DaughterCachedDataValuesItDependsOn_.insert(std::make_pair(dep, pcDaughterIndex)); }
-
-    /// add CachedDataValue of a daughter this CachedDataValue depends on
-    void addDependency(CachedDataValueDaughterIndexPair dep)
+    void addDependency(DaughterCachedDataValue dep)
     { DaughterCachedDataValuesItDependsOn_.insert(dep); }
 
     /// remove dependency
@@ -121,130 +165,47 @@ public:
     DataAccessor* owner() const
     { return Owner_; }
 
-    /// overload and hide #CachedValue::calculationStatus
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc shared pointer to #ParticleCombination to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    virtual CalculationStatus calculationStatus(const std::shared_ptr<ParticleCombination>& pc, unsigned symmetrizationIndex,  unsigned dataPartitionIndex) const
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    { return CalculationStatus_[dataPartitionIndex][symmetrizationIndex]; }
-#else
-    { return CalculationStatus_.at(dataPartitionIndex).at(symmetrizationIndex); }
-#endif
-
-    /// get global CalculationStatus
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param symmetrization index
-    CalculationStatus globalCalculationStatus(unsigned symmetrizationIndex)
-    { return GlobalCalculationStatus_[symmetrizationIndex]; }
-
-    /// get global CalculationStatus
-    /// \return #CalculationStatus of symmetrization index and data-partition index
-    /// \param pc shared pointer to #ParticleCombination to check status of
-    CalculationStatus globalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc);
-
-    /// \return VariableStatus for symmetrization index and data-partition index
-    /// \param symmetrizationIndex index of symmetrization to check status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to check status of
-    VariableStatus variableStatus(unsigned symmetrizationIndex, unsigned dataPartitionIndex) const
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    { return VariableStatus_[dataPartitionIndex][symmetrizationIndex]; }
-#else
-    { return VariableStatus_.at(dataPartitionIndex).at(symmetrizationIndex); }
-#endif
+    /// \return index within owner
+    int index() const
+    { return Index_; }
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param index index of value to get from within cached value (must be less than #Size_)
     /// \param d #DataPoint to get value from
-    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(unsigned index, const DataPoint& d, unsigned symmetrizationIndex) const;
+    double value(unsigned index, const DataPoint& d, unsigned sym_index) const;
 
     /// \return Size of cached value (number of real elements)
     virtual unsigned size() const
     { return Size_; }
 
-    /// \return number of Symmetrizations
-    unsigned numberOfSymmetrizations() const
-    { return GlobalCalculationStatus_.size(); }
+    /// \return set of Parameters on which this object depends
+    const ParameterSet& parameterDependencies() const
+    { return ParametersItDependsOn_; }
 
-    /// \return number DataPartitions
-    unsigned numberOfDataPartitions() const
-    { return CalculationStatus_.size(); }
+    /// \return set of CachedDataValues on which this object depends
+    const CachedDataValueSet& cachedDataValueDependencies() const
+    { return CachedDataValuesItDependsOn_; }
+
+    /// \return set of DaughterCachedDataValues on which this object depends
+    const DaughterCachedDataValueSet daughterCachedDataValueDependencies() const
+    { return DaughterCachedDataValuesItDependsOn_; }
 
     /// @}
 
     /// \name Setters
     /// @{
 
-    /// set VariableStatus for symmetrization index and data-partition index
-    /// \param stat VariableStatus to set to
-    /// \param symmetrizationIndex index of symmetrization to set status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setVariableStatus(VariableStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
-    { VariableStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
-
-    /// set all variable statuses
-    /// \param stat VariableStatus to set to
-    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setVariableStatus(VariableStatus stat, unsigned dataPartitionIndex)
-    { for (VariableStatus& s : VariableStatus_[dataPartitionIndex]) s = stat; }
-
-
-    /// set CalculationStatus for symmetrization index and data-partition index
-    /// \param stat VariableStatus to set to
-    /// \param symmetrizationIndex index of symmetrization to set status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
-    { CalculationStatus_[dataPartitionIndex][symmetrizationIndex] = stat; }
-
-    /// set CalculationStatus for ParticleCombination and data-partition index
-    /// \param stat VariableStatus to set to
-    /// \param ParticleCombination to set status of
-    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex);
-
-    /// set all calculation statuses
-    /// \param stat CalculationStatus to set to
-    /// \param dataPartitionIndex index of dataPartitionIndex to set status of
-    void setCalculationStatus(CalculationStatus stat, unsigned dataPartitionIndex)
-    { for (CalculationStatus& s : CalculationStatus_[dataPartitionIndex]) s = stat; }
-
-
-    /// set global CalculationStatus for symmetrization index
-    /// \param stat VariableStatus to set to
-    /// \param symmetrizationIndex index of symmetrization to set status of
-    void setGlobalCalculationStatus(CalculationStatus stat,  unsigned symmetrizationIndex)
-    { GlobalCalculationStatus_[symmetrizationIndex] = stat; }
-
-    /// set global CalculationStatus for symmetrization index
-    /// \param stat VariableStatus to set to
-    /// \param ParticleCombination to set status of
-    void setGlobalCalculationStatus(CalculationStatus stat, const std::shared_ptr<ParticleCombination>& pc);
-
     /// Set value into #DataPoint for particular symmetrization
     /// (No update to VariableStatus or CalculationStatus is made!)
     /// \param index index of value to get from within cached value (must be less than #Size_)
     /// \param val Value to set to
     /// \param d #DataPoint to update
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    void setValue(unsigned index, double val, DataPoint& d, unsigned symmetrizationIndex) const;
+    /// \param sym_index index of symmetrization to apply to
+    void setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const;
 
     /// @}
-
-    /// update the global calculation status, depending on everything it depends on
-    /// \param pc Shared pointer (const reference) to a Particle combination
-    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc);
-
-    /// update the global calculation status, depending on everything it depends on
-    /// \param pc Shared pointer (const reference) to a Particle combination
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    void updateGlobalCalculationStatus(const std::shared_ptr<ParticleCombination>& pc, unsigned symmetrizationIndex);
-
-    /// reset the CalculationStatus'es for the dataPartitionIndex to the GlobalCalculationStatus_
-    /// to be called before calculating the amplitude for a new dataPoint
-    void resetCalculationStatus(unsigned dataPartitionIndex)
-    { CalculationStatus_[dataPartitionIndex] = GlobalCalculationStatus_; }
 
     /// grant friend status to DataAccessor to set itself owner
     friend class DataAccessor;
@@ -257,33 +218,31 @@ protected:
     /// set the owning DataAccessor
     void setDataAccessor(DataAccessor* owner);
 
-    /// resize status vectors for number of symmetrizations
-    void setNumberOfSymmetrizations(unsigned n);
+    /// set index
+    void setIndex(int i)
+    { Index_ = i; }
 
-    /// resize status vectors for number of data partitions
-    void setNumberOfDataPartitions(unsigned n);
+    /// set position
+    void setPosition(int p)
+    { Position_ = p; }
 
 private:
 
-    DataAccessor* Owner_;       ///< Owning #DataAccessor
-    int Position_;              ///< Position of first element of cached value within data vector
-    unsigned Size_;             ///< Size of cached value (number of real elements)
+    /// Owning DataAccessor
+    DataAccessor* Owner_;
+
+    /// index within owner
+    int Index_;
+
+    /// Position of first element of cached value within data vector
+    int Position_;
+
+    /// Size of cached value (number of real elements)
+    unsigned Size_;
 
     ParameterSet ParametersItDependsOn_;
     CachedDataValueSet CachedDataValuesItDependsOn_;
-    CachedDataValueDaughterIndexPairSet DaughterCachedDataValuesItDependsOn_;
-
-    /// CalculationStatus'es for the current DataPoint
-    /// first index is for data partion
-    /// second index is for symmetrization
-    std::vector<std::vector<CalculationStatus> > CalculationStatus_;
-
-    /// index is for symmetrization
-    std::vector<CalculationStatus> GlobalCalculationStatus_;
-
-    /// first index is for data partion
-    /// second index is for symmetrization
-    std::vector<std::vector<VariableStatus> > VariableStatus_;
+    DaughterCachedDataValueSet DaughterCachedDataValuesItDependsOn_;
 
 };
 
@@ -306,16 +265,16 @@ public:
     /// update VariableStatus for symm. and partition index
     /// \param val Value to set to
     /// \param d #DataPoint to update
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(double val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    /// \param sym_index index of symmetrization to apply to
+    /// \param sm StatusManager
+    void setValue(double val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
-    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(const DataPoint& d, unsigned symmetrizationIndex) const
-    { return CachedDataValue::value(0, d, symmetrizationIndex); }
+    double value(const DataPoint& d, unsigned sym_index) const
+    { return CachedDataValue::value(0, d, sym_index); }
 
 private:
 
@@ -344,26 +303,26 @@ public:
     /// update VariableStatus for symm. and partition index
     /// \param val Value to set to
     /// \param d #DataPoint to update
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(std::complex<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex)
-    { setValue(real(val), imag(val), d, symmetrizationIndex, dataPartitionIndex); }
+    /// \param sym_index index of symmetrization to apply to
+    /// \param sm StatusManager
+    void setValue(std::complex<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
+    { setValue(real(val), imag(val), d, sym_index, sm); }
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
     /// \param val_re real part of value to set to
     /// \param val_im imaginary part of value to set to
     /// \param d #DataPoint to update
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(double val_re, double val_im, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    /// \param sym_index index of symmetrization to apply to
+    /// \param sm StatusManager
+    void setValue(double val_re, double val_im, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
-    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    std::complex<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
-    { return std::complex<double>(CachedDataValue::value(0, d, symmetrizationIndex), CachedDataValue::value(1, d, symmetrizationIndex)); }
+    std::complex<double> value(const DataPoint& d, unsigned  sym_index) const
+    { return std::complex<double>(CachedDataValue::value(0, d, sym_index), CachedDataValue::value(1, d, sym_index)); }
 
 private:
 
@@ -394,20 +353,20 @@ public:
     /// update VariableStatus for symm. and partition index
     /// \param val Value to set to
     /// \param d #DataPoint to update
-    /// \param symmetrizationIndex index of symmetrization to apply to
-    /// \param dataPartitionIndex index of data partition being worked on
-    void setValue(FourVector<double> val, DataPoint& d, unsigned symmetrizationIndex, unsigned dataPartitionIndex);
+    /// \param sym_index index of symmetrization to apply to
+    /// \param sm StatusManager
+    void setValue(FourVector<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
-    /// \param symmetrizationIndex index of symmetrization to grab from
+    /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    FourVector<double> value(const DataPoint& d, unsigned  symmetrizationIndex) const
+    FourVector<double> value(const DataPoint& d, unsigned  sym_index) const
     {
-        return FourVector<double>( { CachedDataValue::value(0, d, symmetrizationIndex),
-                                     CachedDataValue::value(1, d, symmetrizationIndex),
-                                     CachedDataValue::value(2, d, symmetrizationIndex),
-                                     CachedDataValue::value(3, d, symmetrizationIndex)
+        return FourVector<double>( { CachedDataValue::value(0, d, sym_index),
+                                     CachedDataValue::value(1, d, sym_index),
+                                     CachedDataValue::value(2, d, sym_index),
+                                     CachedDataValue::value(3, d, sym_index)
                                    });
     }
 

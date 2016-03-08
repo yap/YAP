@@ -27,6 +27,8 @@
 
 namespace yap {
 
+class StatusManager;
+
 class Model;
 
 /// \name StaticDataAccessor
@@ -39,9 +41,7 @@ public:
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
     StaticDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), Model_(nullptr)
-    {
-    }
+        : DataAccessor(equiv), Model_(nullptr) {}
 
     /// Constructor
     /// \param model Raw pointer to owning Model
@@ -56,36 +56,21 @@ public:
     virtual void setModel(Model* m)
     {
         Model_ = m;
+
         if (!model())
             throw exceptions::Exception("Model unset", "StaticDataAccessor::StaticDataAccessor");
+
         // register with Model
         addToModel();
     }
 
-    /// calculate cachedDataValues and store to DataPoint.
+    /// calculate cachedDataValues, store to DataPoint, and update StatusManager.
     /// Must be overriden in derived classes.
-    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) = 0;
-
-    /// does nothing since StaticDataAccessor's never update
-    virtual void updateGlobalCalculationStatuses() override {}
-
-    /// include const access to Model
-    using DataAccessor::model;
+    virtual void calculate(DataPoint& d, StatusManager& sm) const = 0;
 
     /// \return Raw pointer to owning Model
-    Model* model() override
+    const Model* model() const override
     { return Model_; }
-
-protected:
-
-    /// does nothing, since StaticDataAccessor's never update
-    virtual void resetCalculationStatuses(unsigned dataPartitionIndex) override {}
-
-    /// does nothing, since StaticDataAccessor's never change
-    virtual void setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex) override {}
-
-    /// does nothing, since StaticDataAccessor's never change
-    virtual void setParameterFlagsToUnchanged() override {}
 
 private:
 

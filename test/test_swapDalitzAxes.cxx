@@ -82,8 +82,8 @@ TEST_CASE( "swapDalitzAxes" )
                     piK2->addChannel({piPlus, kMinus});
                     D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
 
-                    M->initializeForMonteCarloGeneration(1);
-
+                    // create data set with 1 empty data point
+                    auto data = M->dataSet(1);
 
                     // Dalitz coordinates
                     yap::MassAxes massAxes;
@@ -128,9 +128,9 @@ TEST_CASE( "swapDalitzAxes" )
                         continue;
                     }
 
-                    M->setFinalStateMomenta(M->dataSet()[0], P, 0);
+                    data[0].setFinalStateMomenta(P);
 
-                    resultingAmplitudes[i] = M->logOfSquaredAmplitude(M->dataSet()[0], 0);
+                    resultingAmplitudes[i] = log(norm(M->amplitude(data[0], data)));
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 
