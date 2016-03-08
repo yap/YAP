@@ -21,6 +21,7 @@
 #include <TLorentzVector.h>
 #include <TRandom.h>
 
+#include <assert.h>
 #include <cmath>
 
 /*
@@ -58,16 +59,24 @@ void calculate_helicity_angles(const yap::Model& M,
     // loop over daughters
     for (const auto& d : pc->daughters()) {
 
-        if (d->daughters().empty())
-            continue;
-
         // construct 4-vector of daughter
         auto p = yap::FourVector_0;
         for (const auto& i : d->indices())
             p += momenta[i];
 
+        auto hAngles = angles(vect(p), yap::ThreeAxes);
         if (phi_theta.find(pc) == phi_theta.end())
-            phi_theta[pc] = angles(vect(p), yap::ThreeAxes);
+            phi_theta[pc] = hAngles;
+        else {
+            // check that results would be the same within numerical uncertainty
+            for (unsigned i=0; i<2; ++i) {
+                /*std::cout << "i " << i << " new " << hAngles[i] << "; old " << phi_theta[pc][i] << std::endl;
+                std::cout << fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) << std::endl;
+                std::cout << fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) << std::endl;*/
+                assert((i==0 && fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) ||
+                       (i==1 && fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) );
+            }
+        }
 
         // next helicity frame
         const auto L = transformation_to_helicityFrame(p);
@@ -122,7 +131,7 @@ TEST_CASE( "HelicityAngles" )
     TLorentzVector P(0., 0., 0., D->mass()->value());
     std::vector<double> masses = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value() };
 
-    for (unsigned int iEvt = 0; iEvt < 1; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < 100; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, masses.size(), &masses[0]);
         event.Generate();
@@ -134,11 +143,19 @@ TEST_CASE( "HelicityAngles" )
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
         }
 
+        //auto Pisp = std::accumulate(momenta.begin(), momenta.end(), yap::FourVector_0);
+        //momenta = lorentzTransformation(-Pisp) * momenta;
+
+        // \todo if this line is enabled, the results are different and NOT consistent
+        //momenta = lorentzTransformation( yap::ThreeVector<double>({0.1, 0., 0.}) ) * momenta;
+
+        // \todo if this line is enabled, the results are different but consistent
+        //momenta = lorentzTransformation( yap::eulerRotationZXZ<double>(0.1, 0.5, 0.) ) * momenta;
+        //momenta = lorentzTransformation( yap::rotation<double>(yap::ThreeAxis_Z, 2.355) ) * momenta;
+
+
         M.addDataPoint(momenta);
         auto dp = M.dataSet().back();
-
-        auto Pisp = std::accumulate(momenta.begin(), momenta.end(), yap::FourVector_0);
-        momenta = lorentzTransformation(-Pisp) * momenta;
 
         std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
 
@@ -149,9 +166,16 @@ TEST_CASE( "HelicityAngles" )
 
         // compare results
         for (auto& kv : phi_theta) {
+            /*std::cout << yap::to_string(*kv.first) << "\n";
+            std::cout << "M.helicityAngles(): (" <<  M.helicityAngles()->phi(dp, kv.first) << ", " << M.helicityAngles()->theta(dp, kv.first) << ")\n";
+            std::cout << "helicityAngles:     (" <<  kv.second[0] << ", " << kv.second[1] << ")\n";
+*/
             REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
             REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
         }
+
+
+        std::cout << "\n";
 
 
     }
