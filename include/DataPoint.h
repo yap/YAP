@@ -92,6 +92,9 @@ public:
     /// grant friend status to CachedDataValue to access Data_
     friend class CachedDataValue;
 
+    /// grant friend status to DataSet to set itself owner
+    friend DataSet;
+
 private:
 
     /// raw pointer to owning DataSet

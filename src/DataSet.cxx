@@ -15,6 +15,63 @@ DataSet::DataSet(const Model& m) :
 }
 
 //-------------------------
+DataSet::DataSet(const DataSet& other) :
+    DataPartitionBlock(other),
+    ReportsModel(),
+    DataPoints_(other.DataPoints_),
+    Model_(other.Model_)
+{
+    assertDataPointOwnership();
+}
+
+//-------------------------
+DataSet::DataSet(DataSet&& other) :
+    DataPartitionBlock(std::move(other)),
+    ReportsModel(),
+    DataPoints_(std::move(other.DataPoints_)),
+    Model_(std::move(other.Model_))
+{
+    assertDataPointOwnership();
+}
+
+//-------------------------
+DataSet& DataSet::operator=(const DataSet& other)
+{
+    DataPartitionBlock::operator=(other);
+    Model_ = other.Model_;
+    DataPoints_ = other.DataPoints_;
+    assertDataPointOwnership();
+    return *this;
+}
+
+//-------------------------
+DataSet& DataSet::operator=(DataSet&& other)
+{
+    DataPartitionBlock::operator=(std::move(other));
+    Model_ = std::move(other.Model_);
+    DataPoints_ = std::move(other.DataPoints_);
+    assertDataPointOwnership();
+    return *this;
+}
+
+//-------------------------
+void swap(DataSet& A, DataSet& B)
+{
+    std::swap(static_cast<DataPartitionBlock&>(A), static_cast<DataPartitionBlock&>(B));
+    std::swap(A.Model_, B.Model_);
+    std::swap(A.DataPoints_, B.DataPoints_);
+    A.assertDataPointOwnership();
+    B.assertDataPointOwnership();
+}
+
+//-------------------------
+void DataSet::assertDataPointOwnership()
+{
+    for (auto& d : DataPoints_)
+        d.DataSet_ = this;
+}
+
+//-------------------------
 bool DataSet::consistent(const DataPoint& d) const
 {
     return points().empty() or equalStructure(points().front(), d);
