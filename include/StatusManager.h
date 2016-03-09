@@ -94,8 +94,6 @@ public:
     /// \param sm StatusManager to copy from
     void copyCalculationStatuses(const StatusManager& sm);
 
-protected:
-
     /// update CalculationStatus'es
     void updateCalculationStatuses(const DataAccessorSet& sDA);
 
