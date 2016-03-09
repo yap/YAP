@@ -114,31 +114,66 @@ TEST_CASE( "Matrix" )
     }
 
     SECTION("rotations") {
-        double alpha = 2.355;
 
-        const yap::FourVector<double> a({6.2, 0., -1.1, 2.5});
-        const yap::FourVector<double> b({8.6, -0.2, 1.15, 1.5});
-        const yap::FourVector<double> c({6.9, 0.55, 2., -2.3});
+        for (double alpha = 0; alpha < 3.5; alpha += 0.2) {
 
-        const yap::FourVector<double> x({6.2, 1., 0., 0.});
-        const yap::FourVector<double> z({6.9, 0., 0., 1.});
+            unsigned i = 0;
+            for (auto axis : yap::ThreeAxes) {
 
-        auto rot = yap::rotation<double>(yap::ThreeAxis_Z, alpha);
-        auto trans = lorentzTransformation( rot );
+                const yap::FourVector<double> a({6.2, 0., -1.1, 2.5});
+                const yap::FourVector<double> b({8.6, -0.2, 1.15, 1.5});
+                const yap::FourVector<double> c({6.9, 0.55, 2., -2.3});
 
-        auto a_trans = trans * a;
-        auto b_trans = trans * b;
-        auto c_trans = trans * c;
+                const yap::FourVector<double> x({6.2, 1., 0., 0.});
+                const yap::FourVector<double> y({6.2, 0., 1., 0.});
+                const yap::FourVector<double> z({6.9, 0., 0., 1.});
 
-        REQUIRE( norm(a_trans) == Approx(norm(a)) );
-        REQUIRE( norm(b_trans) == Approx(norm(b)) );
-        REQUIRE( norm(c_trans) == Approx(norm(c)) );
+                const auto trans = lorentzTransformation( yap::rotation<double>(axis, alpha) );
 
-        REQUIRE( angle(vect(a_trans), vect(b_trans)) == Approx(angle(vect(a), vect(b))) );
-        REQUIRE( angle(vect(a_trans), vect(c_trans)) == Approx(angle(vect(a), vect(c))) );
-        REQUIRE( angle(vect(b_trans), vect(c_trans)) == Approx(angle(vect(b), vect(c))) );
+                const auto a_trans = trans * a;
+                const auto b_trans = trans * b;
+                const auto c_trans = trans * c;
 
-        REQUIRE( angle(vect(trans * z), vect(z)) == Approx(0.) );
-        REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+                REQUIRE( norm(a_trans) == Approx(norm(a)) );
+                REQUIRE( norm(b_trans) == Approx(norm(b)) );
+                REQUIRE( norm(c_trans) == Approx(norm(c)) );
+
+                REQUIRE( angle(vect(a_trans), vect(b_trans)) == Approx(angle(vect(a), vect(b))) );
+                REQUIRE( angle(vect(a_trans), vect(c_trans)) == Approx(angle(vect(a), vect(c))) );
+                REQUIRE( angle(vect(b_trans), vect(c_trans)) == Approx(angle(vect(b), vect(c))) );
+
+                switch (i) {
+                case 0:
+                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(0.) );
+                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
+                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
+                    break;
+
+                case 1:
+                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(0.) );
+                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
+                    break;
+
+                case 2:
+                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
+                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(0.) );
+                    break;
+                }
+
+
+                const auto zeroTrans = lorentzTransformation( yap::rotation<double>(axis, 0) );
+
+                REQUIRE ( a == zeroTrans*a );
+                REQUIRE ( b == zeroTrans*b );
+                REQUIRE ( c == zeroTrans*c );
+
+                ++i;
+
+                //std::cout << "ok";
+            }
+        }
+
     }
 }
