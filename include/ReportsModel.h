@@ -33,12 +33,12 @@ class ReportsModel
 {
 public:
 
-    /// get raw pointer to Model
-    virtual Model* model() = 0;
-
     /// get raw pointer to Model (const)
-    const Model* model() const
-    { return const_cast<ReportsModel*>(this)->model(); }
+    virtual const Model* model() const = 0;
+
+    /// get raw pointer to Model
+    Model* model()
+    { return const_cast<Model*>(const_cast<const ReportsModel*>(this)->model()); }
 
     /// Default constructor
     ReportsModel() {}

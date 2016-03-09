@@ -12,6 +12,7 @@
 #include "spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -193,7 +194,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
         for (int i = 0; i < int(Daughters_.size()); ++i)
             if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
                 for (auto& c : d->cachedDataValuesItDependsOn())
-                    ap.Fixed->addDependency(c, i);
+                    ap.Fixed->addDependency(DaughterCachedDataValue(c, i));
 
         // add to TotalAmplitudes_[two_m]'s dependencies
         TotalAmplitudes_[two_m]->addDependency(ap.Free);
@@ -229,14 +230,13 @@ ComplexParameterVector DecayChannel::freeAmplitudes()
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-        int two_m, unsigned dataPartitionIndex) const
+std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
 {
     const unsigned symIndex = symmetrizationIndex(pc);
 
     auto& totAmp = TotalAmplitudes_.at(two_m);
 
-    if (totAmp->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
+    if (sm.status(*totAmp, symIndex) != kUncalculated) {
         FDEBUG("\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex));
         return totAmp->value(d, symIndex);
     }
@@ -251,7 +251,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         // if already calculated
 
-        if (ap.Fixed->calculationStatus(pc, symIndex, dataPartitionIndex) != kUncalculated) {
+        if (sm.status(*ap.Fixed, symIndex) != kUncalculated) {
             // Fixed is already calculated, simply retrieve from cache
             A += ap.Free->value() * ap.Fixed->value(d, symIndex);
             // DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
@@ -262,8 +262,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         auto sa = kvA.first; // SpinAmplitude
 
-        DEBUG("DecayChannel::amplitude :: Calculating " << *this << " for two_m = " << two_m
-              << " and pc = " << *pc << " for sp.amp. = " << *sa);
+        DEBUG("DecayChannel::amplitude :: Calculating " << *this << " for two_m = " << two_m << " and pc = " << *pc << " for sp.amp. = " << *sa);
 
         // get map of SpinProjectionPair's to cached spin amplitudes
         const auto& m = sa->amplitudes().at(two_m);
@@ -277,12 +276,12 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
             // retrieve cached spin amplitude from data point
             auto amp = kvM.second->value(d, sa_symIndex);
 
-            FDEBUG("amp(" << sa_symIndex << " of " << kvM.second->numberOfSymmetrizations()  << ") := " << amp);
+            FDEBUG("amp(" << sa_symIndex << " of " << kvM.second->owner()->symmetrizationIndices().size()  << ") := " << amp);
 
             // loop over daughters, multiplying by their amplitudes for their spin projections
             const auto& spp = kvM.first; // SpinProjectionPair
             for (size_t i = 0; i < spp.size(); ++i)
-                amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], dataPartitionIndex);
+                amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], sm);
 
             FDEBUG("amp -> " << amp);
 
@@ -293,12 +292,12 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
         FDEBUG("a = " << a);
 
         // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
-        a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, dataPartitionIndex);
+        a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, sm);
 
         FDEBUG("a * bl = " << a);
 
         // store result
-        ap.Fixed->setValue(a, d, symIndex, dataPartitionIndex);
+        ap.Fixed->setValue(a, d, symIndex, sm);
 
         // add into total amplitude A
         A += a * ap.Free->value();
@@ -307,7 +306,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     }
 
     // store result
-    totAmp->setValue(A, d, symIndex, dataPartitionIndex);
+    totAmp->setValue(A, d, symIndex, sm);
 
     FDEBUG("return " << A);
 

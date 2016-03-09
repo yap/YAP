@@ -4,6 +4,7 @@
 #include "container_utils.h"
 #include "Model.h"
 #include "logging.h"
+#include "StatusManager.h"
 
 #include <iomanip>
 #include <memory>
@@ -20,14 +21,14 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 }
 
 //-------------------------
-std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, unsigned dataPartitionIndex) const
+std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
     // get cached amplitude object for spin projection two_m
     auto A = Amplitudes_.at(two_m);
 
-    if (A->calculationStatus(pc, symIndex, dataPartitionIndex) == kUncalculated) {
+    if (sm.status(*A, symIndex) == kUncalculated) {
 
         std::complex<double> a = Complex_0;
 
@@ -35,17 +36,10 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 
         // sum up DecayChannel::amplitude over each channel
         for (auto& c : channels())
-            if (c->hasParticleCombination(pc)) {
-                // DEBUG(name() << "\tDecayingParticle::amplitude :: calculating for two_m = " << two_m << " and pc = " << *pc << " on channel = " << *c);
-                // auto b = a; // \todo only needed in debug mode
-                auto b = c->amplitude(d, pc, two_m, dataPartitionIndex);
-                FDEBUG("a = " << a << " -> " << (a + b));
-                a += b;
-                FDEBUG("a := " << a);
-                // DEBUG(name() << "\ta = " << b << " -> " << a);
-            }
+            if (c->hasParticleCombination(pc))
+                a += c->amplitude(d, pc, two_m, sm);
 
-        A->setValue(a, d, symIndex, dataPartitionIndex);
+        A->setValue(a, d, symIndex, sm);
 
         DEBUG("DecayingParticle::amplitude - calculated amplitude for " << name() << " " << *pc << " = " << a);
         return a;

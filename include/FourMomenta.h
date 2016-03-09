@@ -35,6 +35,7 @@ class FourVectorCachedDataValue;
 class Model;
 class ParticleCombination;
 class RealCachedDataValue;
+class StatusManager;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses
@@ -51,8 +52,8 @@ public:
 
     /// Fill 4-momenta
     /// \param d DataPoint to fill
-    /// \param dataPartitionIndex for status tracking
-    virtual void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
+    /// \param sm StatusManager to update
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// \name Getters
     /// @{
@@ -105,13 +106,19 @@ public:
     virtual std::string data_accessor_type() const override
     {return "FourMomenta"; }
 
-    /// grant friend status to Model to call setFourMomenta and addParticleCombination
+    /// grant friend status to Model to call addParticleCombination
     friend class Model;
+
+    /// grant friend status to DataPoint to call setFourMomenta
+    friend class DataPoint;
 
 protected:
 
     /// set final-state four-momenta
-    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex = 0);
+    /// \param d DataPoint to set into
+    /// \param P Four-momenta to set
+    /// \param sm StatusManager to be updated
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const;
 
     /// looks for ISP when adding ParticleCombination's
     unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;

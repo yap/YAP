@@ -35,7 +35,7 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
 }
 
 //-------------------------
-std::complex<double> Model::amplitude(DataPoint& d, int two_m, unsigned dataPartitionIndex) const
+std::complex<double> Model::amplitude(DataPoint& d, int two_m, StatusManager& sm) const
 {
     if (!InitialStateParticle_)
         throw exceptions::Exception("Initial state unset", "Model::amplitude");
@@ -45,14 +45,14 @@ std::complex<double> Model::amplitude(DataPoint& d, int two_m, unsigned dataPart
     // sum up ISP's amplitude over each particle combination
     for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
         FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
-        a += InitialStateParticle_->amplitude(d, kv.first, two_m, dataPartitionIndex);
+        a += InitialStateParticle_->amplitude(d, kv.first, two_m, sm);
     }
 
     return a;
 }
 
 //-------------------------
-std::complex<double> Model::amplitude(DataPoint& d, unsigned dataPartitionIndex) const
+std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
 {
     if (!InitialStateParticle_)
         throw exceptions::Exception("Initial state unset", "Model::amplitude");
@@ -62,7 +62,7 @@ std::complex<double> Model::amplitude(DataPoint& d, unsigned dataPartitionIndex)
     for (int two_m = -InitialStateParticle_->quantumNumbers().twoJ(); two_m <= (int)InitialStateParticle_->quantumNumbers().twoJ(); two_m += 2) {
         for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
             FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
-            a += InitialStateParticle_->amplitude(d, kv.first, two_m, dataPartitionIndex);
+            a += InitialStateParticle_->amplitude(d, kv.first, two_m, sm);
         }
     }
 
@@ -70,50 +70,63 @@ std::complex<double> Model::amplitude(DataPoint& d, unsigned dataPartitionIndex)
 }
 
 //-------------------------
-double Model::logOfSquaredAmplitude(DataPoint& d, unsigned dataPartitionIndex)
+double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const StatusManager& global) const
 {
-    resetCalculationStatuses(dataPartitionIndex);
-    return log(norm(amplitude(d, dataPartitionIndex)));
-}
-
-//-------------------------
-double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D)
-{
-    if (!hasDataPartition(D))
-        return 0;
-
     double L = 0;
 
     // loop over data points in partition
     for (DataIterator d = D->begin(); d != D->end(); ++d) {
         DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-        L += logOfSquaredAmplitude(*d, D->index());
+        D->copyCalculationStatuses(global);
+        L += log(norm(amplitude(*d, *D)));
     }
 
-    setCachedDataValueFlagsToUnchanged(D->index());
+    // set all variable statuses to Unchanged
+    D->setAll(kUnchanged);
 
     return L;
 }
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes()
+double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS) const
 {
-    // update global caclulationStatus's before looping over partitions
-    updateGlobalCalculationStatuses();
+    // update data set's calculation statuses
+    DS.updateCalculationStatuses(dataAccessors());
 
-    // create thread for calculation on each partition
-    std::vector<std::future<double> > L;
-    for (auto& D : DataPartitions_)
-        L.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, D.get()));
+    return partialSumOfLogsOfSquaredAmplitudes(&DS, StatusManager(DS));
+}
+//-------------------------
+double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const
+{
+    if (DP.empty())
+        throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
 
-    // wait for each partition to finish calculating
-    double sum = 0;
-    for (auto& l : L)
-        sum += l.get();
+    // update global calculation statuses (managed by data set)
+    DS.updateCalculationStatuses(dataAccessors());
 
-    setParameterFlagsToUnchanged();
+    double log_L = 0;
 
-    return sum;
+    if (DP.size() == 1) {
+
+        log_L = partialSumOfLogsOfSquaredAmplitudes(DP[0].get(), DS);
+
+    } else {
+
+        std::vector<std::future<double> > partial_sums;
+
+        // create thread for calculation on each partition
+        for (auto& P : DP)
+            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), DS));
+
+        // wait for each partition to finish calculating
+        for (auto& s : partial_sums)
+            log_L  += s.get();
+    }
+
+    // Set all variable statuses to Unchanged
+    DS.setAll(kUnchanged);
+
+    return log_L;
 }
 
 //-------------------------
@@ -121,16 +134,11 @@ bool Model::consistent() const
 {
     bool C = true;
 
-    C &= FourMomenta_->consistent();
-    C &= MeasuredBreakupMomenta_->consistent();
-    C &= HelicityAngles_->consistent();
     C &= ParticleCombinationCache_.consistent();
     C &= SpinAmplitudeCache_->consistent();
 
-    if (!isRightHanded(CoordinateSystem_)) {
-        FLOG(ERROR) << "Coordinate system is not right handed.";
-        C &= false;
-    }
+    for (const auto& da : dataAccessors())
+        C &= da->consistent();
 
     /// \todo: is this necessary to check?
     /// @{
@@ -266,54 +274,6 @@ ComplexParameterVector Model::freeAmplitudes() const
 }
 
 //-------------------------
-std::vector<DataPartitionBase*> Model::dataPartitions()
-{
-    std::vector<DataPartitionBase*> partitions;
-    partitions.reserve(DataPartitions_.size());
-
-    for (auto& d : DataPartitions_)
-        partitions.push_back(d.get());
-
-    return partitions;
-}
-
-//-------------------------
-void Model::setDataPartitions(std::vector<std::unique_ptr<DataPartitionBase> > partitions)
-{
-    DataPartitions_ = std::move(partitions);
-
-    for (unsigned i = 0; i < DataPartitions_.size(); ++i)
-        DataPartitions_[i]->setIndex(i);
-
-    setNumberOfDataPartitions(DataPartitions_.size());
-}
-
-//-------------------------
-void Model::addDataPoint(const std::vector<FourVector<double> >& fourMomenta)
-{
-    // if adding first data point
-    if (DataSet_.empty()) {
-        // prepare data accessors
-        prepareDataAccessors();
-        // and add first point
-    }
-
-    DataSet_.emplace_back(DataAccessors_);
-    auto& d = DataSet_.back();
-
-#ifndef ELPP_DISABLE_DEBUG_LOGS
-    if (DataSet_.size() == 1)
-        for (const auto& da : DataAccessors_)
-            FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
-#endif
-
-    if (!DataSet_.consistent(d))
-        throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
-
-    setFinalStateMomenta(d, fourMomenta);
-}
-
-//-------------------------
 void Model::addDataAccessor(DataAccessorSet::value_type da)
 {
     // check if already in DataAccessors_
@@ -324,9 +284,12 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
     if (da->model() != this)
         throw exceptions::Exception("DataAccessor's Model is not this", "Model::addDataAccessor");
 
-    if (DataAccessors_.insert(da).second)
+    // add DataAccessor
+    if (DataAccessors_.insert(da).second) {
         // if insertion was successful
+        // set its index
         da->setIndex(DataAccessors_.size() - 1);
+    }
 }
 
 //-------------------------
@@ -376,30 +339,6 @@ void Model::prepareDataAccessors()
     }
 #endif
 
-}
-
-//-------------------------
-void Model::initializeForMonteCarloGeneration(unsigned n)
-{
-    if (!DataSet_.empty())
-        throw exceptions::Exception("DataSet isn't empty", "Model::initializeForMonteCarloGeneration");
-
-    prepareDataAccessors();
-
-    // create data point
-    auto d = DataPoint(DataAccessors_);
-
-#ifndef ELPP_DISABLE_DEBUG_LOGS
-    for (const auto& da : DataAccessors_)
-        FDEBUG("assigned  " << da->data_accessor_type() << " at index " << da->index() << " a vector of size " << d.nElements(da->index()));
-#endif
-
-    // add n (empty) data points
-    for (unsigned i = 0; i < n; ++i)
-        DataSet_.emplace_back(DataPoint(d));
-
-    // set data partitions (1 for each data point)
-    setDataPartitions(createDataPartitionsBlocksBySize(DataSet_, 1));
 }
 
 //-------------------------
@@ -592,13 +531,17 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 }
 
 //-------------------------
-void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
+DataSet Model::dataSet(size_t n)
 {
-    FDEBUG("1");
-    FourMomenta_->setFinalStateMomenta(d, P, dataPartitionIndex);
-    FDEBUG("2");
-    calculate(d, dataPartitionIndex);
-    FDEBUG("3");
+    // prepare DataAccessors
+    prepareDataAccessors();
+
+    // create empty data set
+    DataSet D(*this);
+
+    D.addEmptyPoints(n);
+
+    return D;
 }
 
 //-------------------------
@@ -630,73 +573,6 @@ void Model::printDataAccessors(bool printParticleCombinations)
         std::cout << std::endl;
     }
     std::cout << std::endl;
-}
-
-//-------------------------
-bool Model::hasDataPartition(DataPartitionBase* d)
-{
-    for (auto& dp : DataPartitions_)
-        if (d == dp.get())
-            return true;
-
-    return false;
-}
-
-//-------------------------
-void Model::calculate(DataPoint& d, unsigned dataPartitionIndex)
-{
-    // these need to be calculated in order!
-    FourMomenta_->calculate(d, dataPartitionIndex);
-    MeasuredBreakupMomenta_->calculate(d, dataPartitionIndex);
-    HelicityAngles_->calculate(d, dataPartitionIndex);
-
-    // \todo find a nicer solution
-
-    // call calculate on static data accessors
-    for (auto& sda : DataAccessors_) {
-        if (sda == static_cast<StaticDataAccessor*>(FourMomenta_.get()) or
-                sda == static_cast<StaticDataAccessor*>(MeasuredBreakupMomenta_.get()) or
-                sda == static_cast<StaticDataAccessor*>(HelicityAngles_.get()))
-            continue;
-
-        if (dynamic_cast<StaticDataAccessor*>(sda))
-            static_cast<StaticDataAccessor*>(sda)->calculate(d, dataPartitionIndex);
-    }
-}
-
-//-------------------------
-void Model::setNumberOfDataPartitions(unsigned n)
-{
-    for (auto& d : DataAccessors_)
-        d->setNumberOfDataPartitions(n);
-}
-
-//-------------------------
-void Model::updateGlobalCalculationStatuses()
-{
-    for (auto& d : DataAccessors_)
-        d->updateGlobalCalculationStatuses();
-}
-
-//-------------------------
-void Model::resetCalculationStatuses(unsigned dataPartitionIndex)
-{
-    for (auto& d : DataAccessors_)
-        d->resetCalculationStatuses(dataPartitionIndex);
-}
-
-//-------------------------
-void Model::setCachedDataValueFlagsToUnchanged(unsigned dataPartitionIndex)
-{
-    for (auto& d : DataAccessors_)
-        d->setCachedDataValueFlagsToUnchanged(dataPartitionIndex);
-}
-
-//-------------------------
-void Model::setParameterFlagsToUnchanged()
-{
-    for (auto& d : DataAccessors_)
-        d->setParameterFlagsToUnchanged();
 }
 
 }

@@ -31,11 +31,12 @@
 
 namespace yap {
 
+class StatusManager;
+
 /// \class SpinAmplitude
 /// \brief Abstract base class implementing a spin amplitude.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup SpinAmplitude Spin Amplitudes
-
 class SpinAmplitude : public StaticDataAccessor
 {
 public:
@@ -115,8 +116,8 @@ public:
     /// Loops over particle combinations (pc) and all (M, m1, m2) combinations
     /// and call calc(M, m1, m2, d, pc) when necessary
     /// \param d DataPoint to calculate into
-    /// \param dataPartitionIndex for tracking status
-    void calculate(DataPoint& d, unsigned dataPartitionIndex = 0) override;
+    /// \param sm StatusManager to update
+    void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// \return precalculated complex amplitude
     /// \param d DataPoint to retrieve value from

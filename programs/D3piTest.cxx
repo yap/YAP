@@ -23,27 +23,31 @@ int main( int argc, char** argv)
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
+    LOG(INFO) << "Start";
+
     yap::Model M(std::make_unique<yap::ZemachFormalism>());
 
-    LOG(DEBUG) << "1";
+    LOG(INFO) << "Model created";
 
     yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+
+    LOG(INFO) << "factory created";
 
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
-    LOG(DEBUG) << "2";
+    LOG(INFO) << "D created";
 
     // final state particles
     auto piPlus = factory.fsp(211);
     auto piMinus = factory.fsp(-211);
 
-    LOG(DEBUG) << "3";
+    LOG(INFO) << "fsp's created";
 
     // set final state
     M.setFinalState({piPlus, piMinus, piPlus});
 
-    LOG(DEBUG) << "4";
+    LOG(INFO) << "final state set";
 
     // rho
     auto rho = yap::Resonance::create(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
@@ -104,16 +108,16 @@ int main( int argc, char** argv)
     std::cout << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
-    // initialize for 5 streams
-    M.initializeForMonteCarloGeneration(5);
-
     // choose Dalitz coordinates m^2_12 and m^2_23
     const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
     std::vector<double> m2 = {1, 1};//{0.9, 1.1}; //{0.1, 4};
 
+    // create data set with 1 empty data point
+    auto data = M.dataSet(1);
+
     LOG(INFO) << "BEFORE";
-    M.fourMomenta()->printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(data[0]);
 
     LOG(INFO) << "setting squared mass ...";
     auto P = M.calculateFourMomenta(massAxes, m2);
@@ -121,17 +125,16 @@ int main( int argc, char** argv)
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        M.setFinalStateMomenta(M.dataSet()[0], P);
+        data[0].setFinalStateMomenta(P);
     }
 
     LOG(INFO) << "AFTER";
-    M.fourMomenta()->printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(data[0]);
 
-    for (auto p : M.fourMomenta()->finalStateMomenta(M.dataSet()[0]))
+    for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
         LOG(INFO) << p;
 
-    M.resetCalculationStatuses(0);
-    auto A = M.amplitude(M.dataSet()[0], 0);
+    auto A = M.amplitude(data[0], data);
     LOG(INFO) << "A = " << A;
 
     LOG(INFO) << "alright!";

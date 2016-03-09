@@ -48,20 +48,24 @@ ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
 /// \return a 3D rotation matrix
 /// Construct from Euler angles:
 /// rotate by alpha around z axis, rotate by beta around x' axis, rotate by gamma around z'' axis
+/// \param C Coordinate system defining rotation axes
+/// \param alpha angle of initial rotation around z axis [rad]
+/// \param beta angle of rotation around x' axis [rad]
+/// \param gamma angle of final rotation around z'' axis [rad]
 template <typename T>
-ThreeMatrix<T> eulerRotationZXZ(const T& alpha, const T& beta, const T& gamma)
-{
-    return rotation(ThreeAxis_Z, gamma) * rotation(ThreeAxis_X, beta) * rotation(ThreeAxis_Z, alpha);
-}
+ThreeMatrix<T> eulerRotationZXZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
+{ return rotation(C[2], gamma) * rotation(C[0], beta) * rotation(C[2], alpha); }
 
 /// \return a 3D rotation matrix
 /// Construct from Euler angles:
 /// rotate by alpha around z axis, rotate by beta around y' axis, rotate by gamma around z'' axis
+/// \param C Coordinate system defining rotation axes
+/// \param alpha angle of initial rotation around z axis [rad]
+/// \param beta angle of rotation around y' axis [rad]
+/// \param gamma angle of final rotation around z'' axis [rad]
 template <typename T>
-ThreeMatrix<T> eulerRotationZYZ(const T& alpha, const T& beta, const T& gamma)
-{
-    return rotation(ThreeAxis_Z, gamma) * rotation(ThreeAxis_Y, beta) * rotation(ThreeAxis_Z, alpha);
-}
+ThreeMatrix<T> eulerRotationZYZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
+{ return rotation(C[2], gamma) * rotation(C[1], beta) * rotation(C[2], alpha); }
 
 }
 #endif

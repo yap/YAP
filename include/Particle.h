@@ -34,16 +34,16 @@
 namespace yap {
 
 class DataPoint;
-class ParticleCombination;
 class FinalStateParticle;
+class ParticleCombination;
+class StatusManager;
 
 /// \class Particle
 /// \brief Abstract Particle base class.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
-
-// keyword virtual is needed to solve diamond problem in DecayingParticle
 class Particle :
+// keyword virtual is needed to solve diamond problem in DecayingParticle
     public virtual AmplitudeComponent,
     public virtual ReportsModel,
     public virtual ReportsParticleCombinations,
@@ -64,9 +64,9 @@ public:
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param two_m 2 * the spin projection to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
+    /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                           int two_m, unsigned dataPartitionIndex) const = 0;
+                                           int two_m, StatusManager& sm) const = 0;
 
     /// Check consitency of object
     virtual bool consistent() const override;

@@ -40,7 +40,7 @@ public:
     virtual ParticleCombinationVector particleCombinations() const = 0;
 
     /// Default constructor
-    ReportsParticleCombinations() {}
+    ReportsParticleCombinations() = default;
 
     /// virtual destructor
     virtual ~ReportsParticleCombinations() = default;

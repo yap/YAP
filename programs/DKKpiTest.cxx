@@ -66,16 +66,16 @@ int main( int argc, char** argv)
     std::cout << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
-    // initialize for 5 streams
-    M.initializeForMonteCarloGeneration(5);
-
     // choose Dalitz coordinates m^2_12 and m^2_23
     const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
     std::vector<double> m2(massAxes.size(), 1);
 
+    // create data set with one empty data point
+    auto data = M.dataSet(1);
+
     DEBUG("BEFORE");
-    M.fourMomenta()->printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(data[0]);
 
     LOG(INFO) << "setting squared mass ...";
     auto P = M.calculateFourMomenta(massAxes, m2);
@@ -83,11 +83,11 @@ int main( int argc, char** argv)
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        M.setFinalStateMomenta(M.dataSet()[0], P);
+        data[0].setFinalStateMomenta(P);
     }
 
     DEBUG("AFTER");
-    M.fourMomenta()->printMasses(M.dataSet()[0]);
+    M.fourMomenta()->printMasses(data[0]);
 
     std::cout << "alright! \n";
 }

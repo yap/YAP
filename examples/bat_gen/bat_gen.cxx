@@ -8,23 +8,23 @@
 
 #include <DataSet.h>
 #include <ParticleCombination.h>
+#include <CalculationStatus.h>
 
 #include <limits>
 
 // -----------------------
-bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M,
-                 std::vector<std::vector<unsigned> > pcs)
+bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<std::vector<unsigned> > pcs)
     : BCModel(name),
-      M_(std::move(M))
+      Model_(std::move(M))
 {
-    if (!M_ or !M_->consistent())
+    if (!Model_ or !Model_->consistent())
         throw std::exception();
 
-    MassAxes_ = M_->massAxes(pcs);
+    MassAxes_ = Model_->massAxes(pcs);
 
     for (auto& pc : MassAxes_) {
         std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
-        auto mrange = M_->massRange(pc);
+        auto mrange = Model_->massRange(pc);
         AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
         std::cout << "Added parameter " << axis_label
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
@@ -33,23 +33,36 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M,
 }
 
 // ---------------------------------------------------------
+void bat_gen::MCMCUserInitialize()
+{
+    Data_.clear();
+    Data_.assign(GetNChains(), Model_->dataSet());
+    for (auto& d : Data_)
+        d.addEmptyPoint();
+
+    // // create a data partition for each chain
+    // Partitions_ = yap::DataPartitionBlock::createBySize(Data_, 1);
+}
+
+// ---------------------------------------------------------
 double bat_gen::LogLikelihood(const std::vector<double>& parameters)
 {
     unsigned c = GetCurrentChain();
-    return M_->logOfSquaredAmplitude(M_->dataSet()[c], c);
+    return Model_->sumOfLogsOfSquaredAmplitudes(Data_[c]);
+    // return Model_->partialSumOfLogsOfSquaredAmplitudes(Partitions_[c].get(), Data_);
 }
 
 // ---------------------------------------------------------
 double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
 {
     // calculate four-momenta
-    auto P = M_->calculateFourMomenta(MassAxes_, parameters);
+    auto P = Model_->calculateFourMomenta(MassAxes_, parameters);
 
     // if failed, outside phase space
     if (P.empty())
         return -std::numeric_limits<double>::infinity();
 
     unsigned c = GetCurrentChain();
-    M_->setFinalStateMomenta(M_->dataSet()[c], P, c);
+    Data_[c][0].setFinalStateMomenta(P);
     return 0;
 }

@@ -21,28 +21,38 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include <DataAccessor.h>
+#include "DataAccessor.h"
+#include "FourVector.h"
+#include "ReportsModel.h"
 
 #include <string>
 #include <vector>
 
 namespace yap {
 
+class DataSet;
+class Model;
+
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Data Data-related classes
-
-class DataPoint
+class DataPoint : public ReportsModel
 {
 public:
 
-    /// \name Constructors
-    /// @{
+    /// Constructor
+    /// \param S DataAccessorSet to initialize data structure from
+    DataPoint(DataSet* dataSet);
 
-    DataPoint(const DataAccessorSet& S);
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    /// \param sm StatusManager to update
+    void setFinalStateMomenta(const std::vector<FourVector<double> >& P, StatusManager& sm);
 
-    /// @}
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    void setFinalStateMomenta(const std::vector<FourVector<double> >& P);
 
     /// \return number of data accessor rows
     size_t nDataAccessors() const
@@ -73,10 +83,19 @@ public:
     friend bool operator==(const DataPoint& lhs, const DataPoint& rhs)
     { return lhs.Data_ == rhs.Data_; }
 
+    const DataSet* dataSet() const
+    { return DataSet_; }
+
+    /// \return model to which DataPoint belongs
+    const Model* model() const;
+
     /// grant friend status to CachedDataValue to access Data_
     friend class CachedDataValue;
 
 private:
+
+    /// raw pointer to owning DataSet
+    DataSet* DataSet_;
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
@@ -85,6 +104,10 @@ private:
     std::vector<std::vector<std::vector<double> > > Data_;
 
 };
+
+/// \typedef DataPointVector
+/// \brief stl vector of DataPoint's
+using DataPointVector = std::vector<DataPoint>;
 
 }
 

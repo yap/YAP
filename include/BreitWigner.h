@@ -50,8 +50,8 @@ public:
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const override;
+    /// \param sm StatusManager to update
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object

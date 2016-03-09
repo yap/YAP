@@ -109,6 +109,17 @@ template <typename T>
 constexpr FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& V)
 { return FourVector<T>(V[0], R * vect(V)); }
 
+/// multiply a 3x3 matrix times the spacial components of each of a vector of FourVector's
+template <typename T>
+std::vector<FourVector<T> > operator*(const ThreeMatrix<T>& R, const std::vector<FourVector<T> >& V)
+{
+    std::vector<FourVector<T> > result;
+    result.reserve(V.size());
+    for (auto& v : V)
+        result.push_back(R * v);
+    return result;
+}
+
 /// Calculate helicity frame of V transformed from C,
 /// with z = unit(V), y = C.z X z, x = y X z
 /// \param V Fourector defining new Z direction

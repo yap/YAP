@@ -53,8 +53,8 @@ public:
     /// Must be overrided in derived classes.
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param dataPartitionIndex partition index for parallelization
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, unsigned dataPartitionIndex) const = 0;
+    /// \param sm StatusManager to update
+    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const = 0;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
@@ -73,7 +73,7 @@ public:
     using DataAccessor::model;
 
     /// get raw pointer to Model through resonance
-    Model* model() override;
+    const Model* model() const override;
 
     virtual std::string data_accessor_type() const override
     {return "MassShape"; }

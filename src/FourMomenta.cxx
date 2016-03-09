@@ -25,14 +25,14 @@ FourMomenta::FourMomenta(Model* m) :
 }
 
 //-------------------------
-void FourMomenta::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, unsigned dataPartitionIndex)
+void FourMomenta::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const
 {
     if (P.size() != FSPIndices_.size())
         throw exceptions::Exception("Wrong number of momenta provided (" + std::to_string(P.size()) + " != " + std::to_string(FSPIndices_.size()) + ")",
                                     "FourMomenta::setFinalStateMomenta");
 
     for (size_t i = 0; i < P.size(); ++i)
-        P_->setValue(P[i], d, FSPIndices_[i], dataPartitionIndex);
+        P_->setValue(P[i], d, FSPIndices_[i], sm);
 }
 
 //-------------------------
@@ -107,30 +107,25 @@ double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombinat
 }
 
 //-------------------------
-void FourMomenta::calculate(DataPoint& d, unsigned dataPartitionIndex)
+void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
 {
-    M_->setCalculationStatus(kUncalculated, dataPartitionIndex);
+    // set all masses as uncalculated
+    sm.set(*M_, kUncalculated);
 
     // get fsp four momenta:
     auto fsp = finalStateMomenta(d);
 
     for (auto& kv : symmetrizationIndices()) {
 
-        // check if calculation necessary
-        if (M_->calculationStatus(kv.first, kv.second, dataPartitionIndex) == kCalculated)
+        // check if calculation unnecessary
+        if (sm.status(*M_, kv.second) == kCalculated)
             continue;
 
         const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector_0,
         [&](const FourVector<double>& V, unsigned i) {return V + fsp[i];});
 
-        P_->setValue(P, d, kv.second, dataPartitionIndex);
-
-        FDEBUG(*kv.first << " = " << P);
-
-        M_->setValue(abs(P), d, kv.second, dataPartitionIndex);
-
-        //DEBUG("FourMomenta::calculate - 4-momentum " << * (kv.first) << ": " << to_string(d.FourMomenta_.at(kv.second)) );
-        //DEBUG("FourMomenta::calculate - Set mass for " << * (kv.first) << " to " << M_->value(d, kv.second));
+        P_->setValue(P, d, kv.second, sm);
+        M_->setValue(abs(P), d, kv.second, sm);
     }
 }
 
