@@ -4,6 +4,7 @@
 #include <logging.h>
 #include <LorentzTransformation.h>
 #include <Matrix.h>
+#include <Rotation.h>
 #include <Vector.h>
 
 #include <cmath>
@@ -112,4 +113,32 @@ TEST_CASE( "Matrix" )
         }
     }
 
+    SECTION("rotations") {
+        double alpha = 2.355;
+
+        const yap::FourVector<double> a({6.2, 0., -1.1, 2.5});
+        const yap::FourVector<double> b({8.6, -0.2, 1.15, 1.5});
+        const yap::FourVector<double> c({6.9, 0.55, 2., -2.3});
+
+        const yap::FourVector<double> x({6.2, 1., 0., 0.});
+        const yap::FourVector<double> z({6.9, 0., 0., 1.});
+
+        auto rot = yap::rotation<double>(yap::ThreeAxis_Z, alpha);
+        auto trans = lorentzTransformation( rot );
+
+        auto a_trans = trans * a;
+        auto b_trans = trans * b;
+        auto c_trans = trans * c;
+
+        REQUIRE( norm(a_trans) == Approx(norm(a)) );
+        REQUIRE( norm(b_trans) == Approx(norm(b)) );
+        REQUIRE( norm(c_trans) == Approx(norm(c)) );
+
+        REQUIRE( angle(vect(a_trans), vect(b_trans)) == Approx(angle(vect(a), vect(b))) );
+        REQUIRE( angle(vect(a_trans), vect(c_trans)) == Approx(angle(vect(a), vect(c))) );
+        REQUIRE( angle(vect(b_trans), vect(c_trans)) == Approx(angle(vect(b), vect(c))) );
+
+        REQUIRE( angle(vect(trans * z), vect(z)) == Approx(0.) );
+        REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+    }
 }
