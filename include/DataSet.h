@@ -45,6 +45,21 @@ public:
     /// Constructor
     DataSet(const Model& m);
 
+    /// Copy constructor
+    DataSet(const DataSet& other);
+
+    /// Move constructor
+    DataSet(DataSet&& other);
+
+    /// Copy assignment operator
+    DataSet& operator=(const DataSet& other);
+
+    /// Move assignment operator
+    DataSet& operator=(DataSet&& other);
+
+    /// Swap
+    friend void swap(DataSet& A, DataSet& B);
+
     /// Check if data point is consisent with data set
     bool consistent(const DataPoint& d) const;
 
@@ -107,6 +122,9 @@ protected:
     { return DataPoints_; }
 
 private:
+
+    /// sets this as owner of all its data points
+    void assertDataPointOwnership();
 
     /// vector of data points contained in set
     DataPointVector DataPoints_;

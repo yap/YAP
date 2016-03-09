@@ -35,20 +35,20 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 // ---------------------------------------------------------
 void bat_gen::MCMCUserInitialize()
 {
-    Data_.clear();
-    Data_.assign(GetNChains(), Model_->dataSet());
-    for (auto& d : Data_)
-        d.addEmptyPoint();
-
-    // // create a data partition for each chain
-    // Partitions_ = yap::DataPartitionBlock::createBySize(Data_, 1);
+    Data_.assign(GetNChains(), Model_->dataSet(1));
+    LikelihoodCalls_.assign(GetNChains(), 0);
 }
 
 // ---------------------------------------------------------
 double bat_gen::LogLikelihood(const std::vector<double>& parameters)
 {
     unsigned c = GetCurrentChain();
-    return Model_->sumOfLogsOfSquaredAmplitudes(Data_[c]);
+    Data_[c].updateCalculationStatuses(Model_->dataAccessors());
+    auto L = log(norm(Model_->amplitude(Data_[c][0], Data_[c])));
+    Data_[c].setAll(yap::kUnchanged);
+    ++LikelihoodCalls_[c];
+    return L;
+    // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);
     // return Model_->partialSumOfLogsOfSquaredAmplitudes(Partitions_[c].get(), Data_);
 }
 

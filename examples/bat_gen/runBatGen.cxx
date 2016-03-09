@@ -37,6 +37,8 @@ int main()
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
     m.SetNChains(4);
+    m.SetMinimumEfficiency(0.85);
+    m.SetMaximumEfficiency(0.99);
 
     m.SetNIterationsRun(static_cast<int>(1e6 / m.GetNChains()));
 
@@ -57,8 +59,9 @@ int main()
     auto diff = end - start;
     auto ms = std::chrono::duration<double, std::micro>(diff).count();
     auto nevents = (m.GetNIterationsPreRun() + m.GetNIterationsRun()) * m.GetNChains();
-    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(nevents) + " calls");
-    BCLog::OutSummary(std::to_string(ms / nevents) + " microsec / event");
+    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(nevents) + " iterations, " + std::to_string(m.likelihoodCalls()) + " calls");
+    BCLog::OutSummary(std::to_string(ms / nevents) + " microsec / iteration");
+    BCLog::OutSummary(std::to_string(ms / m.likelihoodCalls()) + " microsec / call");
 
     // close log file
     BCLog::OutSummary("Exiting");

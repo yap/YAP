@@ -14,6 +14,7 @@
 #include <ParticleFactory.h>
 #include <SpinAmplitudeCache.h>
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -39,12 +40,15 @@ public:
     // Overload LogAprioriProbability if not using built-in 1D priors
     double LogAPrioriProbability(const std::vector<double>& parameters);
 
+    unsigned likelihoodCalls() const
+    { return std::accumulate(LikelihoodCalls_.begin(), LikelihoodCalls_.end(), 0); }
+
 protected:
     yap::MassAxes MassAxes_;
     std::unique_ptr<yap::Model> Model_;
     std::vector<yap::DataSet> Data_;
-    /* yap::DataPartitionVector Partitions_; */
 
+    std::vector<unsigned> LikelihoodCalls_;
 };
 // ---------------------------------------------------------
 
