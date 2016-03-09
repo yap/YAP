@@ -81,22 +81,30 @@ void transformDaughters(const yap::Model& M,
 // YAP version
 yap::FourMatrix<double> transformation_to_helicityFrame(yap::FourVector<double> daughter)
 {
+    std::cout << "daughter 4mom original:      " << yap::to_string(daughter) << "\n";
+
     // inherit Z axis
     const auto Z = yap::ThreeAxes[2];
 
     // Y := Z x daughter
     const auto Y = cross(Z, vect(daughter));
 
+    std::cout << "Y:                           " << yap::to_string(Y) << "\n";
+
     // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
-    auto R = rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>())
-             * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+    auto R = /*rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>())
+             **/ rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
 
     // apply rotation to daughter
     daughter = R * daughter;
 
+    std::cout << "daughter 4mom after 1st rot: " << yap::to_string(daughter) << "\n";
+
     // rotate about Y so that daughter momentum along Z
     auto R2 = rotation(yap::ThreeAxes[1], -yap::signum(daughter[1]) * theta(vect(daughter), yap::ThreeAxes));
     daughter = R2 * daughter;
+
+    std::cout << "daughter 4mom after 2nd rot: " << yap::to_string(daughter) << "\n";
 
     // return boost * rotations
     return lorentzTransformation(-daughter) * lorentzTransformation(R2 * R);
@@ -197,19 +205,18 @@ TEST_CASE( "HelicityAngles" )
         for (unsigned i = 0; i < masses.size(); ++i) {
             TLorentzVector p = *event.GetDecay(i);
 
+            // just testing
+            //p.Boost(0.1, 0., 0.); // changes YAP and ROOT in the same way, downstream angles are the SAME as unboosted. M is wrong.
+
+            //p.RotateX(0.25); // changes YAP and ROOT in the same way, downstream angles are NOT the same as unrotated. M is wrong
+            p.RotateY(0.25); // changes YAP and ROOT in the same way, downstream angles are NOT the same as unrotated. M is wrong
+
+            //p.RotateZ(0.25); // changes M, YAP and ROOT in the same way, downstream angles are the SAME as unrotated.
+
             rootMomenta.push_back(p);
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
         }
 
-        // auto Pisp = std::accumulate(momenta.begin(), momenta.end(), yap::FourVector_0);
-        // momenta = lorentzTransformation(-Pisp) * momenta;
-
-        // \todo if this line is enabled, the results are different and NOT consistent
-        // momenta = lorentzTransformation( yap::ThreeVector<double>({0.1, 0., 0.}) ) * momenta;
-
-        // \todo if this line is enabled, the results are different but consistent
-        momenta = lorentzTransformation( yap::eulerRotationZXZ<double>(0.1, 0.5, 0.) ) * momenta;
-        //momenta = lorentzTransformation( yap::rotation<double>(yap::ThreeAxis_Z, 2.355) ) * momenta;
 
 
         data.add(momenta);
@@ -230,8 +237,10 @@ TEST_CASE( "HelicityAngles" )
         for (auto& kv : phi_theta) {
             std::cout << yap::to_string(*kv.first) << "\n";
             std::cout << "M.helicityAngles():  (" <<  M.helicityAngles()->phi(dp, kv.first) << ", " << M.helicityAngles()->theta(dp, kv.first) << ")\n";
-            std::cout << "helicityAngles:      (" <<  kv.second[0] << ", " << kv.second[1] << ")\n";
-            std::cout << "root helicityAngles: (" <<  phi_thetaRoot[kv.first][0] << ", " << phi_thetaRoot[kv.first][1] << ")\n";
+            std::cout << "YAP  helicityAngles: (" <<  kv.second[0] << ", " << kv.second[1] << ")\n";
+            std::cout << "root helicityAngles: (" <<  phi_thetaRoot[kv.first][0] << ", " << phi_thetaRoot[kv.first][1] <<
+                    ") equiv (" << ((phi_thetaRoot[kv.first][0] > yap::pi<double>()/2.) ? (phi_thetaRoot[kv.first][0] - yap::pi<double>()) : (phi_thetaRoot[kv.first][0] + yap::pi<double>())) <<
+                            ", " <<  yap::pi<double>() - phi_thetaRoot[kv.first][1] << ")\n";
 
             //REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
             //REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
