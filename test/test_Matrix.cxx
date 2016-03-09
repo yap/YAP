@@ -113,7 +113,71 @@ TEST_CASE( "Matrix" )
         }
     }
 
-    SECTION("rotations") {
+    SECTION("ThreeVector rotations") {
+
+        for (double alpha = 0; alpha < 3.5; alpha += 0.2) {
+
+            unsigned i = 0;
+            for (auto axis : yap::ThreeAxes) {
+
+                const yap::ThreeVector<double> a({0., -1.1, 2.5});
+                const yap::ThreeVector<double> b({-0.2, 1.15, 1.5});
+                const yap::ThreeVector<double> c({0.55, 2., -2.3});
+
+                const yap::ThreeVector<double> x({1., 0., 0.});
+                const yap::ThreeVector<double> y({0., 1., 0.});
+                const yap::ThreeVector<double> z({0., 0., 1.});
+
+                const auto trans = yap::rotation<double>(axis, alpha);
+
+                const auto a_trans = trans * a;
+                const auto b_trans = trans * b;
+                const auto c_trans = trans * c;
+
+                REQUIRE( norm(a_trans) == Approx(norm(a)) );
+                REQUIRE( norm(b_trans) == Approx(norm(b)) );
+                REQUIRE( norm(c_trans) == Approx(norm(c)) );
+
+                REQUIRE( angle((a_trans), (b_trans)) == Approx(angle((a), (b))) );
+                REQUIRE( angle((a_trans), (c_trans)) == Approx(angle((a), (c))) );
+                REQUIRE( angle((b_trans), (c_trans)) == Approx(angle((b), (c))) );
+
+                switch (i) {
+                case 0:
+                    REQUIRE( angle((trans * x), (x)) == Approx(0.) );
+                    REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
+                    REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
+                    break;
+
+                case 1:
+                    REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
+                    REQUIRE( angle((trans * y), (y)) == Approx(0.) );
+                    REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
+                    break;
+
+                case 2:
+                    REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
+                    REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
+                    REQUIRE( angle((trans * z), (z)) == Approx(0.) );
+                    break;
+                }
+
+
+                const auto zeroTrans = yap::rotation<double>(axis, 0);
+
+                REQUIRE ( a == zeroTrans*a );
+                REQUIRE ( b == zeroTrans*b );
+                REQUIRE ( c == zeroTrans*c );
+
+                ++i;
+
+                //std::cout << "ok";
+            }
+        }
+
+    }
+
+    SECTION("FourVector rotations") {
 
         for (double alpha = 0; alpha < 3.5; alpha += 0.2) {
 
