@@ -115,7 +115,7 @@ TEST_CASE( "Matrix" )
 
     SECTION("ThreeVector rotations") {
 
-        for (double alpha = 0; alpha < 3.5; alpha += 0.2) {
+        for (double alpha = 0; alpha < 3.14; alpha += 0.2) {
 
             unsigned i = 0;
             for (auto axis : yap::ThreeAxes) {
@@ -179,7 +179,7 @@ TEST_CASE( "Matrix" )
 
     SECTION("FourVector rotations") {
 
-        for (double alpha = 0; alpha < 3.5; alpha += 0.2) {
+        for (double alpha = 0; alpha < 3.14; alpha += 0.2) {
 
             unsigned i = 0;
             for (auto axis : yap::ThreeAxes) {

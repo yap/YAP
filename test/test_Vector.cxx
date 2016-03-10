@@ -85,6 +85,23 @@ TEST_CASE( "Vector" )
             REQUIRE(yap::angle(a, c) == 0.5 * yap::pi<double>());
             REQUIRE(std::isnan(yap::angle(a, z)));
 
+            REQUIRE( yap::theta(c, yap::ThreeAxes) == Approx(0.) );
+            REQUIRE( yap::theta(a, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
+            REQUIRE( yap::theta(b, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
+
+            REQUIRE( yap::phi(a, yap::ThreeAxes) == Approx(0.) );
+            REQUIRE( yap::phi(b, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
+        }
+
+        SECTION( "cross product" ) {
+            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Y) == yap::ThreeAxis_Z);
+            REQUIRE( cross(yap::ThreeAxis_Y, yap::ThreeAxis_X) == -yap::ThreeAxis_Z);
+
+            REQUIRE( cross(yap::ThreeAxis_Y, yap::ThreeAxis_Z) == yap::ThreeAxis_X);
+            REQUIRE( cross(yap::ThreeAxis_Z, yap::ThreeAxis_Y) == -yap::ThreeAxis_X);
+
+            REQUIRE( cross(yap::ThreeAxis_Z, yap::ThreeAxis_X) == yap::ThreeAxis_Y);
+            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Z) == -yap::ThreeAxis_Y);
         }
 
         SECTION( "constants" ) {
