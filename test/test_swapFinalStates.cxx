@@ -2,6 +2,7 @@
 #include <catch_capprox.hpp>
 
 #include <BreitWigner.h>
+#include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FourVector.h>
@@ -60,7 +61,7 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
-std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2)
+std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
     // calculate four-momenta
     auto P = M.calculateFourMomenta(A, m2);
@@ -69,10 +70,11 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
     if (P.empty())
         return std::numeric_limits<double>::quiet_NaN();
 
-    // create new data set
-    auto data = M.dataSet();
+    // reset data set
+    data = M.dataSet();
     // add point
     data.add(P);
+
     // return amplitude
     return M.amplitude(data[0], data);
 }
@@ -89,8 +91,11 @@ TEST_CASE( "swapFinalStates" )
     // create models
     std::vector<yap::Model*> Z;     // Zemach
     std::vector<yap::MassAxes> mZ; // always (pi+, K-), (K-, K+)
+    std::vector<yap::DataSet> dZ;
+
     std::vector<yap::Model*> H;     // Helicity
     std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
+    std::vector<yap::DataSet> dH;
 
     std::vector<int> FSP = {F.pdgCode("K-"), F.pdgCode("pi+"), F.pdgCode("K+")};
     std::sort(FSP.begin(), FSP.end());
@@ -99,10 +104,12 @@ TEST_CASE( "swapFinalStates" )
         // Zemach
         Z.emplace_back(new yap::Model(std::make_unique<yap::ZemachFormalism>()));
         mZ.push_back(populate_model(*Z.back(), F, FSP));
+        dZ.push_back(Z.back()->dataSet(1));
 
         // Helicity
         H.emplace_back(new yap::Model(std::make_unique<yap::HelicityFormalism>()));
         mH.push_back(populate_model(*H.back(), F, FSP));
+        dH.push_back(H.back()->dataSet(1));
 
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 
@@ -111,6 +118,7 @@ TEST_CASE( "swapFinalStates" )
     auto m2_KK_range  = Z[0]->massRange(mZ[0][1]);
 
     const unsigned N = 20;
+    // loop over phase space
     for (double m2_piK = m2_piK_range[0]; m2_piK <= m2_piK_range[1]; m2_piK += (m2_piK_range[1] - m2_piK_range[0]) / N) {
         for (double m2_KK = m2_KK_range[0]; m2_KK <= m2_KK_range[1]; m2_KK += (m2_KK_range[1] - m2_KK_range[0]) / N) {
 
@@ -118,45 +126,25 @@ TEST_CASE( "swapFinalStates" )
             std::vector<std::complex<double> > amps_H(H.size(), 0.);
 
             for (size_t i = 0; i < Z.size(); ++i) {
-                amps_Z[i] = calculate_model(*Z[i], mZ[i], {m2_piK, m2_KK});
-                amps_H[i] = calculate_model(*H[i], mH[i], {m2_piK, m2_KK});
+                amps_Z[i] = calculate_model(*Z[i], mZ[i], {m2_piK, m2_KK}, dZ[i]);
+                amps_H[i] = calculate_model(*H[i], mH[i], {m2_piK, m2_KK}, dH[i]);
 
                 // check equality between Zemach and Helicity
                 // REQUIRE( amps_Z[i] == CApprox( amps_H[i] ) );
             }
 
-            std::cout << m2_piK << ", " << m2_KK << " is "
-                      << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
+            std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
-            // if (!std::isnan(real(amps_Z[0]))) {
-
-            //     for (size_t i = 0; i < H.size(); ++i)  {
-            //         std::cout << *mH[i][0] << std::flush;
-            //         std::cout << " = " << H[i]->helicityAngles()->symmetrizationIndex(mH[i][0]) << std::endl;
-            //     }
-            //     //     std::cout << "("  << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], mH[i][0])
-            //     //               << ", " << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], mH[i][0])
-            //     //               << "    ";
-            //     // std::cout << std::endl;
-            //     // for (size_t i = 0; i < H.size(); ++i)
-            //     //     std::cout << "("  << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], mH[i][1])
-            //     //               << ", " << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], mH[i][1])
-            //     //               << "    ";
-            //     // std::cout << std::endl;
-
-            // }
-
-            // print
-            // std::cout << "Zemach:                  Helicity:" << std::endl;
-            // for (size_t i = 0; i < amps_Z.size(); ++i)
-            //     std::cout << amps_Z[i] << "    " << amps_H[i] << std::endl;
             for (size_t i = 0; i < H.size(); ++i) {
+
                 auto PCs = H[i]->helicityAngles()->particleCombinations();
+
                 std::cout << "piK = " << *mH[i][0];
+
                 for (size_t j = 0; j < PCs.size(); ++j) {
                     std::cout << "\t :: " << *PCs[j] << ": "
-                              << "(" << H[i]->helicityAngles()->phi(H[i]->dataSet()[0], PCs[j]) * yap::deg_per_rad<double>()
-                              << ", " << H[i]->helicityAngles()->theta(H[i]->dataSet()[0], PCs[j]) * yap::deg_per_rad<double>()
+                              << "("  << H[i]->helicityAngles()->phi(dH[i][0], PCs[j]) * yap::deg_per_rad<double>()
+                              << ", " << H[i]->helicityAngles()->theta(dH[i][0], PCs[j]) * yap::deg_per_rad<double>()
                               << ")";
                 }
                 std::cout << std::endl;
