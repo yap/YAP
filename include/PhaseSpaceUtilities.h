@@ -28,7 +28,7 @@
 
 namespace yap {
 
-    /// \returns all combinations of n numbers in range [0, N-1]
+/// \returns all combinations of n numbers in range [0, N-1]
 /// \todo Find better place to put this function
 std::vector<std::vector<size_t> > combinations(size_t N, size_t n, const std::vector<std::vector<size_t> >& C = std::vector<std::vector<size_t> >())
 {
