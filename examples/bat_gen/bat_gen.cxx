@@ -6,9 +6,12 @@
 
 #include "bat_gen.h"
 
-#include <DataSet.h>
-#include <ParticleCombination.h>
 #include <CalculationStatus.h>
+#include <DataSet.h>
+#include <DecayingParticle.h>
+#include <FinalStateParticle.h>
+#include <FourMomenta.h>
+#include <ParticleCombination.h>
 
 #include <limits>
 
@@ -30,6 +33,8 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
                   << std::endl;
     }
+    for (size_t i = 0; i < Model_->finalStateParticles().size(); ++i)
+        AddObservable(std::string("T") + std::to_string(i), 0, 1);
 }
 
 // ---------------------------------------------------------
@@ -40,7 +45,7 @@ void bat_gen::MCMCUserInitialize()
 }
 
 // ---------------------------------------------------------
-double bat_gen::LogLikelihood(const std::vector<double>& parameters)
+double bat_gen::LogLikelihood(const std::vector<double>&)
 {
     unsigned c = GetCurrentChain();
     Data_[c].updateCalculationStatuses(Model_->dataAccessors());
@@ -50,6 +55,19 @@ double bat_gen::LogLikelihood(const std::vector<double>& parameters)
     return L;
     // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);
     // return Model_->partialSumOfLogsOfSquaredAmplitudes(Partitions_[c].get(), Data_);
+}
+
+// ---------------------------------------------------------
+void bat_gen::CalculateObservables(const std::vector<double>& )
+{
+    unsigned c = GetCurrentChain();
+    auto P = Model_->fourMomenta()->finalStateMomenta(Data_[c][0]);
+    std::vector<double> E(P.size(), 0);
+    for (size_t i = 0; i < P.size(); ++i)
+        E[i] = P[i][0] - abs(P[i]);
+    auto Esum = std::accumulate(E.begin(), E.end(), 0.);
+    for (size_t i = 0; i < E.size(); ++i)
+        GetObservable(i) = E[i]/Esum;
 }
 
 // ---------------------------------------------------------

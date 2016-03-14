@@ -37,7 +37,7 @@ TLorentzRotation hfTransform(const TLorentzVector& daughterLv)
     // rotate so that yHfAxis becomes parallel to y-axis and zHfAxis ends up in (x, z)-plane
     TRotation rot1;
     rot1.RotateZ(0.5*yap::pi<double>() - yHfAxis.Phi());
-    rot1.RotateX(yHfAxis.Theta() - yap::pi<double>());
+    //rot1.RotateX(yHfAxis.Theta() - yap::pi<double>() / 2.);
     daughter *= rot1;
     // rotate about yHfAxis so that daughter momentum is along z-axis
     TRotation rot2;
@@ -92,8 +92,9 @@ yap::FourMatrix<double> transformation_to_helicityFrame(yap::FourVector<double> 
     std::cout << "Y:                           " << yap::to_string(Y) << "\n";
 
     // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
-    auto R = /*rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>())
-             **/ rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+    // auto R = rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>() / 2.)
+    //     * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+    auto R = rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
 
     // apply rotation to daughter
     daughter = R * daughter;
