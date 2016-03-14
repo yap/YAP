@@ -37,7 +37,8 @@ TLorentzRotation hfTransform(const TLorentzVector& daughterLv)
     const TVector3 yHfAxis = zAxisParent.Cross(daughter.Vect());  // y-axis of helicity frame
     // rotate so that yHfAxis becomes parallel to y-axis and zHfAxis ends up in (x, z)-plane
     TRotation rot1;
-    rot1.RotateX(yHfAxis.Theta() - 0.5*yap::pi<double>());
+    rot1.RotateZ(0.5*yap::pi<double>() - yHfAxis.Phi());
+    //rot1.RotateX(yHfAxis.Theta() - yap::pi<double>() / 2.);
     daughter *= rot1;
     // rotate about yHfAxis so that daughter momentum is along z-axis
     TRotation rot2;
@@ -89,8 +90,26 @@ yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<do
     auto R = rotation(yap::ThreeAxis_Y, -yap::theta(vect(daughter), yap::ThreeAxes))
             * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
 
-    std::cout << "daughter 4mom after rot: " << yap::to_string(R * daughter) << "\n";
-    std::cout << "Y after rot:             " << yap::to_string(R * cross(yap::ThreeAxes[2], vect(daughter))) << "\n";
+    // Y := Z x daughter
+    const auto Y = cross(Z, vect(daughter));
+
+    std::cout << "Y:                           " << yap::to_string(Y) << "\n";
+
+    // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
+    // auto R = rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>() / 2.)
+    //     * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+    auto R = rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
+
+    // apply rotation to daughter
+    daughter = R * daughter;
+
+    std::cout << "daughter 4mom after 1st rot: " << yap::to_string(daughter) << "\n";
+
+    // rotate about Y so that daughter momentum along Z
+    auto R2 = rotation(yap::ThreeAxes[1], -yap::signum(daughter[1]) * theta(vect(daughter), yap::ThreeAxes));
+    daughter = R2 * daughter;
+
+    std::cout << "daughter 4mom after 2nd rot: " << yap::to_string(daughter) << "\n";
 
     // return boost * rotations
     return lorentzTransformation(-(R * daughter)) * lorentzTransformation(R);

@@ -34,11 +34,11 @@ public:
 
     void MCMCUserInitialize() override;
 
-    // Overload LogLikelihood to implement model
-    double LogLikelihood(const std::vector<double>& parameters);
+    double LogLikelihood(const std::vector<double>&) override;
 
-    // Overload LogAprioriProbability if not using built-in 1D priors
-    double LogAPrioriProbability(const std::vector<double>& parameters);
+    double LogAPrioriProbability(const std::vector<double>& parameters) override;
+
+    void CalculateObservables(const std::vector<double>&) override;
 
     unsigned likelihoodCalls() const
     { return std::accumulate(LikelihoodCalls_.begin(), LikelihoodCalls_.end(), 0); }
