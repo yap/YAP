@@ -67,7 +67,7 @@ TEST_CASE( "FourMomentaCalculation" )
             double m_c = 0;
             for (unsigned i = 0; i < M.finalStateParticles().size(); ++i) {
                 if (std::find(massAxes[0]->indices().begin(), massAxes[0]->indices().end(), i) != massAxes[0]->indices().end()) {
-                    if (std::find(massAxes[1]->indices().begin(), massAxes[1]->indices().end(), i) == massAxes[0]->indices().end())
+                    if (std::find(massAxes[1]->indices().begin(), massAxes[1]->indices().end(), i) == massAxes[1]->indices().end())
                         m_a = M.finalStateParticles()[i]->mass()->value();
                     else
                         m_b = M.finalStateParticles()[i]->mass()->value();
