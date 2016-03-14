@@ -31,18 +31,19 @@
 // copied from rootPWA
 TLorentzRotation hfTransform(const TLorentzVector& daughterLv)
 {
+    std::cout << "original daughter: "; daughterLv.Print();
     TLorentzVector daughter = daughterLv;
     const TVector3 zAxisParent(0, 0, 1);  // take z-axis as defined in parent frame
     const TVector3 yHfAxis = zAxisParent.Cross(daughter.Vect());  // y-axis of helicity frame
     // rotate so that yHfAxis becomes parallel to y-axis and zHfAxis ends up in (x, z)-plane
     TRotation rot1;
-    rot1.RotateZ(0.5*yap::pi<double>() - yHfAxis.Phi());
-    rot1.RotateX(yHfAxis.Theta() - yap::pi<double>());
+    rot1.RotateX(yHfAxis.Theta() - 0.5*yap::pi<double>());
     daughter *= rot1;
     // rotate about yHfAxis so that daughter momentum is along z-axis
     TRotation rot2;
     rot2.RotateY(-yap::signum(daughter.X()) * daughter.Theta());
     daughter *= rot2;
+    std::cout << "rotated daughter: "; daughter.Print();
     // boost to daughter RF
     rot1.Transform(rot2);
     TLorentzRotation hfTransform(rot1);
@@ -79,35 +80,20 @@ void transformDaughters(const yap::Model& M,
 
 
 // YAP version
-yap::FourMatrix<double> transformation_to_helicityFrame(yap::FourVector<double> daughter)
+yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<double>& daughter)
 {
-    std::cout << "daughter 4mom original:      " << yap::to_string(daughter) << "\n";
+    std::cout << "\ndaughter 4mom original:      " << yap::to_string(daughter) << "\n";
 
-    // inherit Z axis
-    const auto Z = yap::ThreeAxes[2];
+    // rotate to put x-y component of daughter in y direction
+    // rotate to put daughter in z direction
+    auto R = rotation(yap::ThreeAxis_Y, -yap::theta(vect(daughter), yap::ThreeAxes))
+            * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
 
-    // Y := Z x daughter
-    const auto Y = cross(Z, vect(daughter));
-
-    std::cout << "Y:                           " << yap::to_string(Y) << "\n";
-
-    // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
-    auto R = /*rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>())
-             **/ rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
-
-    // apply rotation to daughter
-    daughter = R * daughter;
-
-    std::cout << "daughter 4mom after 1st rot: " << yap::to_string(daughter) << "\n";
-
-    // rotate about Y so that daughter momentum along Z
-    auto R2 = rotation(yap::ThreeAxes[1], -yap::signum(daughter[1]) * theta(vect(daughter), yap::ThreeAxes));
-    daughter = R2 * daughter;
-
-    std::cout << "daughter 4mom after 2nd rot: " << yap::to_string(daughter) << "\n";
+    std::cout << "daughter 4mom after rot: " << yap::to_string(R * daughter) << "\n";
+    std::cout << "Y after rot:             " << yap::to_string(R * cross(yap::ThreeAxes[2], vect(daughter))) << "\n";
 
     // return boost * rotations
-    return lorentzTransformation(-daughter) * lorentzTransformation(R2 * R);
+    return lorentzTransformation(-(R * daughter)) * lorentzTransformation(R);
 }
 
 void calculate_helicity_angles(const yap::Model& M,
@@ -118,30 +104,43 @@ void calculate_helicity_angles(const yap::Model& M,
     // loop over daughters
     for (const auto& d : pc->daughters()) {
 
-        // construct 4-vector of daughter
         auto p = yap::FourVector_0;
+        // construct 4-vector of daughter
         for (const auto& i : d->indices())
             p += momenta[i];
 
-        auto hAngles = angles(vect(p), yap::ThreeAxes);
+        // if not yet calculated
+        if (phi_theta.find(pc) == phi_theta.end()) {
+            std::cout << "calculate angles for daughter " << to_string(*d) << ": " << to_string(p) <<"\n";
+            phi_theta[pc] = angles(vect(p), yap::ThreeAxes);
 
-        if (phi_theta.find(pc) == phi_theta.end())
-            phi_theta[pc] = hAngles;
-        else {
+            std::cout << "(phi, theta) = (" << phi_theta[pc][0] << ", " << phi_theta[pc][1] << ")\n";
+        }
+
+        /*else {
             // check that results would be the same within numerical uncertainty
             for (unsigned i = 0; i < 2; ++i) {
-                /*std::cout << "i " << i << " new " << hAngles[i] << "; old " << phi_theta[pc][i] << std::endl;
+                std::cout << "i " << i << " new " << hAngles[i] << "; old " << phi_theta[pc][i] << std::endl;
                 std::cout << fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) << std::endl;
-                std::cout << fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) << std::endl;*/
+                std::cout << fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) << std::endl;
                 assert((i == 0 && fabs(fabs(hAngles[i] - phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) ||
                        (i == 1 && fabs(fabs(hAngles[i] + phi_theta[pc][i]) - yap::pi<double>()) < 1e-10) );
             }
-        }
+        }*/
+
+        if (d->daughters().empty())
+            continue;
 
         // next helicity frame
         const auto L = transformation_to_helicityFrame(p);
-        for (unsigned i : d->indices())
+
+        std::cout << "transforming for    " << to_string(*d) << "\n";
+        std::cout << "with transformation " << to_string(L) << "\n";
+        for (unsigned i : d->indices()) {
+            std::cout << i << " before: " << to_string(momenta[i]) << "\n";
             momenta[i] = L * momenta[i];
+            std::cout << i << " after:  " << to_string(momenta[i]) << "\n";
+        }
 
         calculate_helicity_angles(M, phi_theta, d, momenta);
     }
@@ -205,11 +204,14 @@ TEST_CASE( "HelicityAngles" )
         for (unsigned i = 0; i < masses.size(); ++i) {
             TLorentzVector p = *event.GetDecay(i);
 
-            // just testing
-            //p.Boost(0.1, 0., 0.); // changes YAP and ROOT in the same way, downstream angles are the SAME as unboosted. M is wrong.
+            // just testing. Theta of downstream helicity angles must stay the same
+            // Phi can change, since it only affects the phase of the amplitude, and it will change in the same way for all amplitudes
+
+            p.Boost(0.1, 0., 0.); // changes YAP and ROOT in the same way, downstream angles are the SAME as unboosted. M is wrong.
+            //p.Boost(-0.1, 0., 0.);
 
             //p.RotateX(0.25); // changes YAP and ROOT in the same way, downstream angles are NOT the same as unrotated. M is wrong
-            p.RotateY(0.25); // changes YAP and ROOT in the same way, downstream angles are NOT the same as unrotated. M is wrong
+            //p.RotateY(0.25); // changes YAP and ROOT in the same way, downstream angles are NOT the same as unrotated. M is wrong
 
             //p.RotateZ(0.25); // changes M, YAP and ROOT in the same way, downstream angles are the SAME as unrotated.
 
@@ -217,6 +219,11 @@ TEST_CASE( "HelicityAngles" )
             momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
         }
 
+        TLorentzVector p;
+        for (auto& m : rootMomenta) {
+            p += m;
+        }
+        std::cout << "ISP momentum = "; p.Print();
 
 
         data.add(momenta);
