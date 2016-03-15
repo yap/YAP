@@ -1,0 +1,24 @@
+\form#0:$ \vec{p} $
+\form#1:$ z $
+\form#2:$ \hat{z}_0 $
+\form#3:$ \hat{z} \equiv \hat{p} $
+\form#4:$ \hat{y} \equiv \hat{z}_0 \times \hat{z} $
+\form#5:$ \hat{x} \equiv \hat{y} \times \hat{z} $
+\form#6:$ \vec{q} $
+\form#7:$ \cos\theta \equiv \hat{q} \cdot \hat{z} $
+\form#8:$ \cos\phi \equiv \hat{q} \cdot \hat{x} / \sin\theta $
+\form#9:$ \hat{p} = \hat{z}_0 $
+\form#10:$ \hat{z} \equiv \hat{z}_0 $
+\form#11:$ \hat{y} \equiv \hat{y}_0 $
+\form#12:$ \hat{x} \equiv \hat{x}_0 $
+\form#13:$ \Delta(abc) $
+\form#14:$ D^{J}_{MN}(\alpha, \beta, \gamma) \equiv \exp(-iM\alpha) d^{J}_{MN}(\beta) \exp(-iN\gamma)$
+\form#15:$ d^{J}_{MN}(\beta) \equiv \sum_{K} A (-)^{K+M-N} B_{K} (\cos\frac{\beta}{2})^{2J+N-M-2K} (\sin\frac{\beta}{2})^{M-N+2K} $
+\form#16:$ A \equiv (J+N)!(J-N)!(J+M)!(J-M)!$
+\form#17:$ B_{K} \equiv (J-M-K)!((J+N-K)!(K+M-N)!K!$
+\form#18:$ (1 / X!) = 0 $
+\form#19:$ X < 0$
+\form#20:$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{NM}(\beta)$
+\form#21:$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{-N-M}(\beta)$
+\form#22:$ d^{J}_{M N}(\beta) $
+\form#23:$ D^{J}_{M N}(\alpha, \beta, \gamma) $
