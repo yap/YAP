@@ -103,3 +103,6 @@ bool check_deltas(const SquareMatrix<T, N>& M)
 }
 
 }
+
+#endif
+
