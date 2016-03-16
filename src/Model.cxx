@@ -8,6 +8,7 @@
 #include "logging.h"
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
+#include "PhaseSpaceUtilities.h"
 #include "SpinAmplitudeCache.h"
 
 /// \todo Find better place for this
@@ -456,11 +457,13 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
             // first check if m_ij > (M - sum_m + m_i + m_j)
             if (pp[i][j] > pow(m_sum_1 + finalStateParticles()[i]->mass()->value() + finalStateParticles()[j]->mass()->value(), 2))
                 return std::vector<FourVector<double> >();
+
             // P_i * P_j = (m^2_ij - m^2_i - m^2_j) / 2
             pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
             // equivalent to: if m^2_ij < (m_i + m_j)^2
             if (pp[i][j] < finalStateParticles()[i]->mass()->value() * finalStateParticles()[j]->mass()->value())
                 return std::vector<FourVector<double> >();
+
             pp[j][i] = pp[i][j];
         }
 
@@ -500,6 +503,10 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
                 P[i][2] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
 
                 if (!std::isfinite(P[i][2]))
+                    return std::vector<FourVector<double> >();
+
+                // phasespace check for special case: p0 and p1 are at rest in m01 rest frame
+                if (n_fsp == 3 and P[0][3] == 0 and !checkInvariantMasses(axes, squared_masses, P))
                     return std::vector<FourVector<double> >();
 
             } else {
@@ -573,6 +580,17 @@ void Model::printDataAccessors(bool printParticleCombinations)
         std::cout << std::endl;
     }
     std::cout << std::endl;
+}
+
+//-------------------------
+bool Model::checkInvariantMasses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta) const
+{
+    for (size_t i = 0; i < axes.size(); ++i) {
+        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector_0, [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
+        if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
+            return false;
+    }
+    return true;
 }
 
 }

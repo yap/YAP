@@ -227,6 +227,9 @@ protected:
 
 private:
 
+    // check if the fourMomenta produce the given invariant masses
+    bool checkInvariantMasses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta) const;
+
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
 
