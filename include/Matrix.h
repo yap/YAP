@@ -299,26 +299,5 @@ T trace(const SquareMatrix<T, N>& M)
     return t;
 }
 
-/// delta
-/// defined as (-)^(n-1) * sum over all n-by-n diagonal minors
-template <typename T, size_t N>
-T delta(const SquareMatrix<T, N>& M, size_t n)
-{
-    if (n > N)
-        throw exceptions::Exception("delta undefined for n larger than matrix size", "delta");
-    if (n == 0)
-        throw exceptions::Exception("delta undefined for n = 0", "delta");
-    if (n == N)
-        return determinant(M);
-    if (n == 1)
-        return trace(M);
-
-    // recursively call on diagonal minors
-    T d(0);
-    for (size_t i = 0; i < N; ++i)
-        d += delta(minor_matrix(M, i, i), n);
-    return d;
-}
-
 }
 #endif
