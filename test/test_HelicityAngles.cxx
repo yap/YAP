@@ -83,33 +83,10 @@ void transformDaughters(const yap::Model& M,
 // YAP version
 yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<double>& daughter)
 {
-    std::cout << "\ndaughter 4mom original:      " << yap::to_string(daughter) << "\n";
-
     // rotate to put x-y component of daughter in y direction
     // rotate to put daughter in z direction
     auto R = rotation(yap::ThreeAxis_Y, -yap::theta(vect(daughter), yap::ThreeAxes))
             * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
-
-    // Y := Z x daughter
-    const auto Y = cross(Z, vect(daughter));
-
-    std::cout << "Y:                           " << yap::to_string(Y) << "\n";
-
-    // rotate to put Y parallel to ThreeAxes[1] and Z in the 0-2 plane
-    // auto R = rotation(yap::ThreeAxes[0], theta(Y, yap::ThreeAxes) - yap::pi<double>() / 2.)
-    //     * rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
-    auto R = rotation(yap::ThreeAxes[2], yap::pi<double>() / 2. - phi(Y, yap::ThreeAxes));
-
-    // apply rotation to daughter
-    daughter = R * daughter;
-
-    std::cout << "daughter 4mom after 1st rot: " << yap::to_string(daughter) << "\n";
-
-    // rotate about Y so that daughter momentum along Z
-    auto R2 = rotation(yap::ThreeAxes[1], -yap::signum(daughter[1]) * theta(vect(daughter), yap::ThreeAxes));
-    daughter = R2 * daughter;
-
-    std::cout << "daughter 4mom after 2nd rot: " << yap::to_string(daughter) << "\n";
 
     // return boost * rotations
     return lorentzTransformation(-(R * daughter)) * lorentzTransformation(R);
