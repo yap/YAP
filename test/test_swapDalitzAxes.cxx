@@ -52,7 +52,7 @@ TEST_CASE( "swapDalitzAxes" )
             // loop over SpinFormalisms
             for (unsigned i_formalism = 0; i_formalism < 2; ++i_formalism) {
 
-                std::vector<double> resultingAmplitudes(6, 0.);
+                std::vector<std::complex<double> > resultingAmplitudes(6, 0.);
 
                 // loop over axis swaps
                 for (unsigned i = 0; i < 6; ++i) {
@@ -130,13 +130,14 @@ TEST_CASE( "swapDalitzAxes" )
 
                     data[0].setFinalStateMomenta(P);
 
-                    resultingAmplitudes[i] = log(norm(M->amplitude(data[0], data)));
+                    resultingAmplitudes[i] = M->amplitude(data[0], data);
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 
-                REQUIRE( std::isfinite(resultingAmplitudes[0]) );
+                REQUIRE( std::isfinite(resultingAmplitudes[0].real()) );
+                REQUIRE( std::isfinite(resultingAmplitudes[0].imag()) );
                 for (unsigned i = 1; i < resultingAmplitudes.size(); ++i)
-                    REQUIRE( resultingAmplitudes[0] == Approx(resultingAmplitudes[i]) );
+                    REQUIRE( resultingAmplitudes[0] == Catch::Detail::CApprox(resultingAmplitudes[i]) );
 
                 //std::cout<<"\n";
 
