@@ -149,7 +149,7 @@ constexpr Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
 /// matrix multiplication
 template <typename T, size_t R, size_t K, size_t C>
 typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
-operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
+operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
 {
     Matrix<T, R, C> res = zeroMatrix<T, R, C>();
     for (size_t r = 0; r < R; ++r)
@@ -161,7 +161,7 @@ operator*(const Matrix<T, R, K> A, const Matrix<T, K, C> B)
 
 /// matrix multiplication yielding single value
 template <typename T, size_t K>
-T operator*(const Matrix<T, 1, K> A, const Matrix<T, K, 1> B)
+T operator*(const Matrix<T, 1, K>& A, const Matrix<T, K, 1>& B)
 {
     T res({});
     for (size_t k = 0; k < K; ++k)
