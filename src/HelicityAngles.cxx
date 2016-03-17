@@ -62,10 +62,18 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
         // if unset, set angles of parent to first daughter's
         if (sm.status(*Phi_, symIndex) == kUncalculated or sm.status(*Theta_, symIndex) == kUncalculated) {
 
-            const auto phi_theta = angles<double>(vect<double>(p), cP);
+            auto phi_theta = angles<double>(vect<double>(p), cP);
+
+            // if theta == 0 or pi, set ambiguous phi to theta
+            if (std::isnan(phi_theta[0]) and
+                (phi_theta[1] == 0. or phi_theta[1] == pi<double>()) )
+                phi_theta[0] = phi_theta[1];
 
             Phi_->setValue(phi_theta[0], d, symIndex, sm);
             Theta_->setValue(phi_theta[1], d, symIndex, sm);
+
+            FDEBUG("calculated helicity angles for " << to_string(*daughter)
+                    << ": (phi, theta) = (" << phi_theta[0] << ", " << phi_theta[1] << ")");
         }
 
         // continue down the decay tree
