@@ -135,9 +135,21 @@ TEST_CASE( "swapFinalStates" )
 
             std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
+
+            // print
+            std::cout << "Zemach:                        Helicity:" << std::endl;
+            for (size_t i = 0; i < amps_Z.size(); ++i)
+                std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i]) << std::endl;
+
             for (size_t i = 0; i < H.size(); ++i) {
 
                 auto PCs = H[i]->helicityAngles()->particleCombinations();
+
+                // print fsp 4 momenta
+                for (auto& pc : PCs) {
+                    std::cout << "FSP 4mom for " << to_string(*pc) << " = "
+                            << to_string(H[i]->fourMomenta()->p(dH[i][0], pc)) << "\n";
+                }
 
                 std::cout << "piK = " << *mH[i][0];
 
