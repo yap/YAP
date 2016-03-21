@@ -89,11 +89,11 @@ TEST_CASE( "swapFinalStates" )
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // create models
-    std::vector<yap::Model*> Z;     // Zemach
+    std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach
     std::vector<yap::MassAxes> mZ; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dZ;
 
-    std::vector<yap::Model*> H;     // Helicity
+    std::vector<std::unique_ptr<yap::Model> > H;     // Helicity
     std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dH;
 
@@ -117,7 +117,7 @@ TEST_CASE( "swapFinalStates" )
     auto m2_piK_range = Z[0]->massRange(mZ[0][0]);
     auto m2_KK_range  = Z[0]->massRange(mZ[0][1]);
 
-    const unsigned N = 20;
+    const unsigned N = 30;
     // loop over phase space
     for (double m2_piK = m2_piK_range[0]; m2_piK <= m2_piK_range[1]; m2_piK += (m2_piK_range[1] - m2_piK_range[0]) / N) {
         for (double m2_KK = m2_KK_range[0]; m2_KK <= m2_KK_range[1]; m2_KK += (m2_KK_range[1] - m2_KK_range[0]) / N) {
@@ -126,17 +126,21 @@ TEST_CASE( "swapFinalStates" )
             std::vector<std::complex<double> > amps_H(H.size(), 0.);
 
             for (size_t i = 0; i < Z.size(); ++i) {
+                FDEBUG("Calculate Zemach for FinalState combination " << i);
                 amps_Z[i] = calculate_model(*Z[i], mZ[i], {m2_piK, m2_KK}, dZ[i]);
+
+                FDEBUG("Calculate Helicity for FinalState combination " << i);
                 amps_H[i] = calculate_model(*H[i], mH[i], {m2_piK, m2_KK}, dH[i]);
 
                 // check equality between Zemach and Helicity
                 // REQUIRE( amps_Z[i] == CApprox( amps_H[i] ) );
             }
 
-            std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
 
             // print
+            /*std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
+
             std::cout << "Zemach:                        Helicity:" << std::endl;
             for (size_t i = 0; i < amps_Z.size(); ++i)
                 std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i]) << std::endl;
@@ -160,15 +164,28 @@ TEST_CASE( "swapFinalStates" )
                               << ")";
                 }
                 std::cout << std::endl;
+            }*/
+
+            // if nan, check that all are nan
+            if (amps_Z[0] != amps_Z[0]) {
+                for (size_t i = 1; i < amps_Z.size(); ++i)
+                     REQUIRE ( amps_Z[i] != amps_Z[i] );
+                for (size_t i = 0; i < amps_H.size(); ++i)
+                     REQUIRE ( amps_H[i] != amps_H[i] );
+            }
+            // otherwise check that amplitudes are approximately the same
+            else {
+                // // check equality for Zemach
+                for (size_t i = 1; i < amps_Z.size(); ++i)
+                     REQUIRE ( amps_Z[i - 1] == Catch::Detail::CApprox( amps_Z[i] ) );
+
+                // check equality for Helicity
+                for (size_t i = 1; i < amps_H.size(); ++i)
+                     REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
+
+                /// \todo check if Zemach and Helicity are equal
             }
 
-            // // check equality for Zemach
-            // for (size_t i = 1; i < amps_Z.size(); ++i)
-            //     REQUIRE ( amps_Z[i - 1] == CApprox( amps_Z[i] ) );
-
-            // // check equality for Helicity
-            // for (size_t i = 1; i < amps_H.size(); ++i)
-            //     REQUIRE ( amps_H[i - 1] == CApprox( amps_H[i] ) );
         }
     }
 
