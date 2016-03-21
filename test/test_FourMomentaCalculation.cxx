@@ -317,7 +317,9 @@ TEST_CASE( "FourMomentaCalculation" )
         }
 
         // check that phasespace determination failed only for a small percentage of points
-        REQUIRE( double(wrong)/pow(N, 5) < 3.E-4 );
+        double errRate = double(wrong)/pow(N, 5);
+        std::cout << "phasespace determination error rate is " << errRate << "\n";
+        REQUIRE( errRate < 3.E-4 );
     }
 
 }
