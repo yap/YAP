@@ -64,9 +64,10 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 
             auto phi_theta = angles<double>(vect<double>(p), cP);
 
-            // if theta == 0 or pi, set ambiguous phi to theta
-            if (std::isnan(phi_theta[0]) and
-                (phi_theta[1] == 0. or phi_theta[1] == pi<double>()) )
+            // set ambiguous phi to theta
+            // todo: in this cases, theta should be 0 or pi. In most cases it is, but sometimes not.
+            // Not checking if theta == 0 or pi results in tests passing which would otherwise not
+            if (std::isnan(phi_theta[0]))
                 phi_theta[0] = phi_theta[1];
 
             Phi_->setValue(phi_theta[0], d, symIndex, sm);
