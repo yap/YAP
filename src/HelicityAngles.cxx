@@ -50,17 +50,17 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
     const CoordinateSystem<double, 3> cP = helicityFrame(boosts * P, C);
 
     // calculate boost from data frame into pc rest frame
-    const FourMatrix<double> boost = lorentzTransformation(-P);
+    const FourMatrix<double> boost = lorentzTransformation(-(boosts*P));
 
     const unsigned symIndex = symmetrizationIndex(pc);
 
     for (auto& daughter : pc->daughters()) {
 
-        // if unset, set angles of parent to first daughter's
+        // if unset, calculate and set angles of parent to first daughter's
         if (sm.status(*Phi_, symIndex) == kUncalculated or sm.status(*Theta_, symIndex) == kUncalculated) {
 
             // boost daughter momentum from data frame into pc rest frame
-            const FourVector<double> p = boost * model()->fourMomenta()->p(d, daughter);
+            const FourVector<double> p = boost * boosts * model()->fourMomenta()->p(d, daughter);
 
             auto phi_theta = angles<double>(vect<double>(p), cP);
 
@@ -76,7 +76,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
                     << ": (phi, theta) = (" << phi_theta[0] << ", " << phi_theta[1] << ")");
         }
 
-        // continue down the decay tree
+        // recurse down the decay tree
         calculateAngles(d, daughter, cP, boost, sm);
     }
 }
