@@ -41,7 +41,7 @@ TEST_CASE( "swapDalitzAxes" )
                            + pow(F.fsp(PDGs[1])->mass()->value(), 2)
                            + pow(F.fsp(PDGs[2])->mass()->value(), 2)
                            + pow(F.fsp(PDGs[3])->mass()->value(), 2)
-                           - m2_ab - m2_bc;
+                           - (m2_ab + m2_bc);
 
             if (m2_ac < 0.) {
                 //std::cout << "m2_ac < 0.\n";
@@ -81,9 +81,6 @@ TEST_CASE( "swapDalitzAxes" )
                     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
                     piK2->addChannel({piPlus, kMinus});
                     D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
-
-                    // create data set with 1 empty data point
-                    auto data = M->dataSet(1);
 
                     // Dalitz coordinates
                     yap::MassAxes massAxes;
@@ -128,7 +125,10 @@ TEST_CASE( "swapDalitzAxes" )
                         continue;
                     }
 
-                    data[0].setFinalStateMomenta(P);
+                    // reset data set
+                    auto data = M->createDataSet();
+                    // add point
+                    data.add(P);
 
                     resultingAmplitudes[i] = M->amplitude(data[0], data);
                     //std::cout<<resultingAmplitudes[i]<<"   ";

@@ -54,7 +54,8 @@ std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_
     DEBUG("HelicitySpinAmplitude::calc : "
           << spin_to_string(initialTwoJ()) << ", " << spin_to_string(two_M)
           << " -> " << spin_to_string(two_m1) << " + " << spin_to_string(two_m2)
-          << " for pc = " << *pc);
+          << " for pc = " << *pc << " with CG coeff " << Coefficients_.at(two_m1).at(two_m2)
+          << " and helicity angles (" << phi << ", " << theta << ")");
 
     return std::conj(DFunction(initialTwoJ(), two_M, two_m1 - two_m2, phi, theta, 0))
            * Coefficients_.at(two_m1).at(two_m2);

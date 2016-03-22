@@ -72,7 +72,7 @@ int main( int argc, char** argv)
     std::vector<double> m2(massAxes.size(), 1);
 
     // create data set with one empty data point
-    auto data = M.dataSet(1);
+    auto data = M.createDataSet(1);
 
     DEBUG("BEFORE");
     M.fourMomenta()->printMasses(data[0]);

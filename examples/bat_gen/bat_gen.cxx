@@ -40,7 +40,7 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 // ---------------------------------------------------------
 void bat_gen::MCMCUserInitialize()
 {
-    Data_.assign(GetNChains(), Model_->dataSet(1));
+    Data_.assign(GetNChains(), Model_->createDataSet(1));
     LikelihoodCalls_.assign(GetNChains(), 0);
 }
 

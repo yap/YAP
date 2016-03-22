@@ -201,7 +201,7 @@ public:
 
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
-    DataSet dataSet(size_t n = 0);
+    DataSet createDataSet(size_t n = 0);
 
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true);

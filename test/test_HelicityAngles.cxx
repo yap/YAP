@@ -111,7 +111,7 @@ TEST_CASE( "HelicityAngles" )
     REQUIRE( M.consistent() );
 
     // create DataSet
-    auto data = M.dataSet();
+    auto data = M.createDataSet();
 
     // create pseudo data
     TLorentzVector P(0., 0., 0., D->mass()->value());

@@ -71,7 +71,7 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
         return std::numeric_limits<double>::quiet_NaN();
 
     // reset data set
-    data = M.dataSet();
+    data = M.createDataSet();
     // add point
     data.add(P);
 
@@ -104,12 +104,12 @@ TEST_CASE( "swapFinalStates" )
         // Zemach
         Z.emplace_back(new yap::Model(std::make_unique<yap::ZemachFormalism>()));
         mZ.push_back(populate_model(*Z.back(), F, FSP));
-        dZ.push_back(Z.back()->dataSet(1));
+        dZ.push_back(Z.back()->createDataSet(1));
 
         // Helicity
         H.emplace_back(new yap::Model(std::make_unique<yap::HelicityFormalism>()));
         mH.push_back(populate_model(*H.back(), F, FSP));
-        dH.push_back(H.back()->dataSet(1));
+        dH.push_back(H.back()->createDataSet(1));
 
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 

@@ -538,7 +538,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 }
 
 //-------------------------
-DataSet Model::dataSet(size_t n)
+DataSet Model::createDataSet(size_t n)
 {
     // prepare DataAccessors
     prepareDataAccessors();

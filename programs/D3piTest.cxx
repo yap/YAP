@@ -114,7 +114,7 @@ int main( int argc, char** argv)
     std::vector<double> m2 = {1, 1};//{0.9, 1.1}; //{0.1, 4};
 
     // create data set with 1 empty data point
-    auto data = M.dataSet(1);
+    auto data = M.createDataSet(1);
 
     LOG(INFO) << "BEFORE";
     M.fourMomenta()->printMasses(data[0]);

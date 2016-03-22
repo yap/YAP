@@ -109,7 +109,7 @@ int main( int argc, char** argv)
     LOG(INFO) << "create dataPoints";
 
     // create data set
-    auto data = M.dataSet();
+    auto data = M.createDataSet();
 
     for (unsigned int iEvt = 0; iEvt < 4; ++iEvt) {
         TGenPhaseSpace event;
