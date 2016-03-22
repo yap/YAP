@@ -3,6 +3,7 @@
 #include "DataSet.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
+#include "HelicityAngles.h"
 #include "Model.h"
 #include "StaticDataAccessor.h"
 
@@ -33,16 +34,19 @@ void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P, 
         throw exceptions::Exception("Model unset", "DataPoint::setFinalStateMomenta");
 
     model()->fourMomenta()->setFinalStateMomenta(*this, P, sm);
-    // call calculate on four momenta first
+    // call calculate on four momenta and helicity angles first
     model()->fourMomenta()->calculate(*this, sm);
+    /// \todo calculate only if needed (i.e. if HelicityFormalism is used)
+    model()->helicityAngles()->calculate(*this, sm);
     // call calculate on all other static data accessors in model
     for (auto& sda : model()->dataAccessors()) {
         // FourMomenta already calculated above
-        if (sda == model()->fourMomenta().get())
+        if (sda == model()->fourMomenta().get() or sda == model()->helicityAngles().get())
             continue;
         if (dynamic_cast<StaticDataAccessor*>(sda))
             static_cast<StaticDataAccessor*>(sda)->calculate(*this, sm);
     }
+    FDEBUG("set final state momenta and calculated StaticDataAccessors")
 }
 
 //-------------------------
