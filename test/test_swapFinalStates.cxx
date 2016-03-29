@@ -45,19 +45,20 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     auto D = F.decayingParticle(F.pdgCode("D+"), 3.);
 
     // create resonances
-
+    /*
     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK0->addChannel({piPlus, kMinus});
     D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5 * yap::Complex_1);
+*/
 
     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK1->addChannel({piPlus, kMinus});
     D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1. * yap::Complex_1);
-
+/*
     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK2->addChannel({piPlus, kMinus});
     D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
-
+*/
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
@@ -131,20 +132,24 @@ TEST_CASE( "swapFinalStates" )
 
                 FDEBUG("Calculate Helicity for FinalState combination " << i);
                 amps_H[i] = calculate_model(*H[i], mH[i], {m2_piK, m2_KK}, dH[i]);
-
-                // check equality between Zemach and Helicity
-                // REQUIRE( amps_Z[i] == CApprox( amps_H[i] ) );
             }
 
 
 
             // print
-            /*std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
+            std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
             std::cout << "Zemach:                        Helicity:" << std::endl;
-            for (size_t i = 0; i < amps_Z.size(); ++i)
-                std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i]) << std::endl;
+            //for (size_t i = 0; i < amps_Z.size(); ++i)
+            for (size_t i = 0; i < 1; ++i) {
+                double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
 
+                std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
+                << "      ratio Z/H = " <<  norm(amps_Z[i])/norm(amps_H[i])
+                << "      rel. phase = " << phaseDiff * yap::rad_per_deg<double>() << "°"
+                << std::endl;
+            }
+            /*
             for (size_t i = 0; i < H.size(); ++i) {
 
                 auto PCs = H[i]->helicityAngles()->particleCombinations();
@@ -183,7 +188,16 @@ TEST_CASE( "swapFinalStates" )
                 for (size_t i = 1; i < amps_H.size(); ++i)
                      REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
 
-                /// \todo check if Zemach and Helicity are equal
+                // check if Zemach and Helicity have tha same phase
+                double phaseDiff = arg(amps_Z[0]) - arg(amps_H[0]);
+                if (phaseDiff > yap::pi<double>()/2.)
+                    phaseDiff -= yap::pi<double>();
+                if (phaseDiff < -yap::pi<double>()/2.)
+                    phaseDiff += yap::pi<double>();
+                REQUIRE( phaseDiff == Approx(0) );
+
+                /// \todo check if Zemach and Helicity have same magnitude
+                //REQUIRE( norm(amps_Z[i]) == Approx(norm(amps_H[i])) );
             }
 
         }
