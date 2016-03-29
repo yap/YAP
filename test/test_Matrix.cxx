@@ -143,31 +143,31 @@ TEST_CASE( "Matrix" )
                 REQUIRE( angle((b_trans), (c_trans)) == Approx(angle((b), (c))) );
 
                 switch (i) {
-                case 0:
-                    REQUIRE( angle((trans * x), (x)) == Approx(0.) );
-                    REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
-                    REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
-                    break;
+                    case 0:
+                        REQUIRE( angle((trans * x), (x)) == Approx(0.) );
+                        REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
+                        REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
+                        break;
 
-                case 1:
-                    REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
-                    REQUIRE( angle((trans * y), (y)) == Approx(0.) );
-                    REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
-                    break;
+                    case 1:
+                        REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
+                        REQUIRE( angle((trans * y), (y)) == Approx(0.) );
+                        REQUIRE( angle((trans * z), (z)) == Approx(alpha) );
+                        break;
 
-                case 2:
-                    REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
-                    REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
-                    REQUIRE( angle((trans * z), (z)) == Approx(0.) );
-                    break;
+                    case 2:
+                        REQUIRE( angle((trans * x), (x)) == Approx(alpha) );
+                        REQUIRE( angle((trans * y), (y)) == Approx(alpha) );
+                        REQUIRE( angle((trans * z), (z)) == Approx(0.) );
+                        break;
                 }
 
 
                 const auto zeroTrans = yap::rotation<double>(axis, 0);
 
-                REQUIRE ( a == zeroTrans*a );
-                REQUIRE ( b == zeroTrans*b );
-                REQUIRE ( c == zeroTrans*c );
+                REQUIRE ( a == zeroTrans * a );
+                REQUIRE ( b == zeroTrans * b );
+                REQUIRE ( c == zeroTrans * c );
 
                 ++i;
 
@@ -207,31 +207,31 @@ TEST_CASE( "Matrix" )
                 REQUIRE( angle(vect(b_trans), vect(c_trans)) == Approx(angle(vect(b), vect(c))) );
 
                 switch (i) {
-                case 0:
-                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(0.) );
-                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
-                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
-                    break;
+                    case 0:
+                        REQUIRE( angle(vect(trans * x), vect(x)) == Approx(0.) );
+                        REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
+                        REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
+                        break;
 
-                case 1:
-                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
-                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(0.) );
-                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
-                    break;
+                    case 1:
+                        REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+                        REQUIRE( angle(vect(trans * y), vect(y)) == Approx(0.) );
+                        REQUIRE( angle(vect(trans * z), vect(z)) == Approx(alpha) );
+                        break;
 
-                case 2:
-                    REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
-                    REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
-                    REQUIRE( angle(vect(trans * z), vect(z)) == Approx(0.) );
-                    break;
+                    case 2:
+                        REQUIRE( angle(vect(trans * x), vect(x)) == Approx(alpha) );
+                        REQUIRE( angle(vect(trans * y), vect(y)) == Approx(alpha) );
+                        REQUIRE( angle(vect(trans * z), vect(z)) == Approx(0.) );
+                        break;
                 }
 
 
                 const auto zeroTrans = lorentzTransformation( yap::rotation<double>(axis, 0) );
 
-                REQUIRE ( a == zeroTrans*a );
-                REQUIRE ( b == zeroTrans*b );
-                REQUIRE ( c == zeroTrans*c );
+                REQUIRE ( a == zeroTrans * a );
+                REQUIRE ( b == zeroTrans * b );
+                REQUIRE ( c == zeroTrans * c );
 
                 ++i;
 

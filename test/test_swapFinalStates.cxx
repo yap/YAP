@@ -49,16 +49,16 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK0->addChannel({piPlus, kMinus});
     D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5 * yap::Complex_1);
-*/
+    */
 
     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK1->addChannel({piPlus, kMinus});
     D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1. * yap::Complex_1);
-/*
-    auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK2->addChannel({piPlus, kMinus});
-    D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
-*/
+    /*
+        auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
+        piK2->addChannel({piPlus, kMinus});
+        D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
+    */
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
@@ -145,9 +145,9 @@ TEST_CASE( "swapFinalStates" )
                 double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
 
                 std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
-                << "      ratio Z/H = " <<  norm(amps_Z[i])/norm(amps_H[i])
-                << "      rel. phase = " << phaseDiff * yap::rad_per_deg<double>() << "°"
-                << std::endl;
+                          << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
+                          << "      rel. phase = " << phaseDiff* yap::rad_per_deg<double>() << "°"
+                          << std::endl;
             }
             /*
             for (size_t i = 0; i < H.size(); ++i) {
@@ -174,25 +174,25 @@ TEST_CASE( "swapFinalStates" )
             // if nan, check that all are nan
             if (amps_Z[0] != amps_Z[0]) {
                 for (size_t i = 1; i < amps_Z.size(); ++i)
-                     REQUIRE ( amps_Z[i] != amps_Z[i] );
+                    REQUIRE ( amps_Z[i] != amps_Z[i] );
                 for (size_t i = 0; i < amps_H.size(); ++i)
-                     REQUIRE ( amps_H[i] != amps_H[i] );
+                    REQUIRE ( amps_H[i] != amps_H[i] );
             }
             // otherwise check that amplitudes are approximately the same
             else {
                 // // check equality for Zemach
                 for (size_t i = 1; i < amps_Z.size(); ++i)
-                     REQUIRE ( amps_Z[i - 1] == Catch::Detail::CApprox( amps_Z[i] ) );
+                    REQUIRE ( amps_Z[i - 1] == Catch::Detail::CApprox( amps_Z[i] ) );
 
                 // check equality for Helicity
                 for (size_t i = 1; i < amps_H.size(); ++i)
-                     REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
+                    REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
 
                 // check if Zemach and Helicity have tha same phase
                 double phaseDiff = arg(amps_Z[0]) - arg(amps_H[0]);
-                if (phaseDiff > yap::pi<double>()/2.)
+                if (phaseDiff > yap::pi<double>() / 2.)
                     phaseDiff -= yap::pi<double>();
-                if (phaseDiff < -yap::pi<double>()/2.)
+                if (phaseDiff < -yap::pi<double>() / 2.)
                     phaseDiff += yap::pi<double>();
                 REQUIRE( phaseDiff == Approx(0) );
 

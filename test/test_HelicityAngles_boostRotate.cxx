@@ -81,7 +81,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
         event.SetDecay(P, masses.size(), &masses[0]);
         event.Generate();
 
-        for (unsigned iTrans=0; iTrans<7; ++iTrans) {
+        for (unsigned iTrans = 0; iTrans < 7; ++iTrans) {
 
             std::vector<yap::FourVector<double> > momenta;
             std::vector<TLorentzVector> root_momenta;
@@ -94,27 +94,27 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
                 // testing. Theta of downstream helicity angles must stay the same
                 switch (iTrans) {
-                case 0:
-                default:
-                    break;
-                case 1:
-                    p.RotateX(angle);
-                    break;
-                case 2:
-                    p.RotateY(angle);
-                    break;
-                case 3:
-                    p.RotateZ(angle);
-                    break;
-                case 4:
-                    p.Boost(boost, 0., 0.);
-                    break;
-                case 5:
-                    p.Boost(0., boost, 0.);
-                    break;
-                case 6:
-                    p.Boost(0., 0., boost);
-                    break;
+                    case 0:
+                    default:
+                        break;
+                    case 1:
+                        p.RotateX(angle);
+                        break;
+                    case 2:
+                        p.RotateY(angle);
+                        break;
+                    case 3:
+                        p.RotateZ(angle);
+                        break;
+                    case 4:
+                        p.Boost(boost, 0., 0.);
+                        break;
+                    case 5:
+                        p.Boost(0., boost, 0.);
+                        break;
+                    case 6:
+                        p.Boost(0., 0., boost);
+                        break;
                 }
 
                 momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));

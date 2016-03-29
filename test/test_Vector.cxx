@@ -86,11 +86,11 @@ TEST_CASE( "Vector" )
             REQUIRE(std::isnan(yap::angle(a, z)));
 
             REQUIRE( yap::theta(c, yap::ThreeAxes) == Approx(0.) );
-            REQUIRE( yap::theta(a, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
-            REQUIRE( yap::theta(b, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
+            REQUIRE( yap::theta(a, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::theta(b, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
 
             REQUIRE( yap::phi(a, yap::ThreeAxes) == Approx(0.) );
-            REQUIRE( yap::phi(b, yap::ThreeAxes) == Approx(yap::pi<double>()/2.) );
+            REQUIRE( yap::phi(b, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
         }
 
         SECTION( "cross product" ) {
