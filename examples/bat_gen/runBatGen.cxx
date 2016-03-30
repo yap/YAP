@@ -26,46 +26,50 @@ int main()
 {
     yap::plainLogs(el::Level::Info);
 
-    // open log file
-    BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
+    for (bat_gen* m : {
+        // new bat_gen("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+        new bat_gen("DKSPIPI_Zemach", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+        new bat_gen("DKSPIPI_Helicity", std::move(D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
+        // new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+        //new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
+    }) {
 
-    // bat_gen m("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
-    bat_gen m("DKSPIPI", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
-    // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}});
-    // bat_gen m("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}});
+        // open log file
+        BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
 
-    // set precision
-    m.SetPrecision(BCEngineMCMC::kMedium);
-    m.SetNChains(4);
-    m.SetMinimumEfficiency(0.85);
-    m.SetMaximumEfficiency(0.99);
+        // set precision
+        m->SetPrecision(BCEngineMCMC::kMedium);
+        m->SetNChains(4);
+        m->SetMinimumEfficiency(0.85);
+        m->SetMaximumEfficiency(0.99);
 
-    m.SetNIterationsRun(static_cast<int>(1e6 / m.GetNChains()));
+        m->SetNIterationsRun(static_cast<int>(5e6 / m->GetNChains()));
 
-    m.WriteMarkovChain(m.GetSafeName() + "_mcmc.root", "RECREATE");
+        m->WriteMarkovChain(m->GetSafeName() + "_mcmc.root", "RECREATE");
 
-    // start timing:
-    auto start = std::chrono::steady_clock::now();
+        // start timing:
+        auto start = std::chrono::steady_clock::now();
 
-    // run MCMC, marginalizing posterior
-    m.MarginalizeAll(BCIntegrate::kMargMetropolis);
+        // run MCMC, marginalizing posterior
+        m->MarginalizeAll(BCIntegrate::kMargMetropolis);
 
-    // end timing
-    auto end = std::chrono::steady_clock::now();
+        // end timing
+        auto end = std::chrono::steady_clock::now();
 
-    // m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
+        // m->PrintAllMarginalized(m->GetSafeName() + "_plots.pdf");
 
-    // timing:
-    auto diff = end - start;
-    auto ms = std::chrono::duration<double, std::micro>(diff).count();
-    auto nevents = (m.GetNIterationsPreRun() + m.GetNIterationsRun()) * m.GetNChains();
-    BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(nevents) + " iterations, " + std::to_string(m.likelihoodCalls()) + " calls");
-    BCLog::OutSummary(std::to_string(ms / nevents) + " microsec / iteration");
-    BCLog::OutSummary(std::to_string(ms / m.likelihoodCalls()) + " microsec / call");
+        // timing:
+        auto diff = end - start;
+        auto ms = std::chrono::duration<double, std::micro>(diff).count();
+        auto nevents = (m->GetNIterationsPreRun() + m->GetNIterationsRun()) * m->GetNChains();
+        BCLog::OutSummary(std::string("Seconds = ") + std::to_string(ms / 1.e6) + " for " + std::to_string(nevents) + " iterations, " + std::to_string(m->likelihoodCalls()) + " calls");
+        BCLog::OutSummary(std::to_string(ms / nevents) + " microsec / iteration");
+        BCLog::OutSummary(std::to_string(ms / m->likelihoodCalls()) + " microsec / call");
 
-    // close log file
-    BCLog::OutSummary("Exiting");
-    BCLog::CloseLog();
+        // close log file
+        BCLog::OutSummary("Exiting");
+        BCLog::CloseLog();
+    }
 
     return 0;
 }
