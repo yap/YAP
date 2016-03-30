@@ -50,7 +50,7 @@ double bat_gen::LogLikelihood(const std::vector<double>&)
     unsigned c = GetCurrentChain();
     Data_[c].updateCalculationStatuses(Model_->dataAccessors());
     auto L = log(norm(Model_->amplitude(Data_[c][0], Data_[c])));
-    Data_[c].setAll(yap::kUnchanged);
+    Data_[c].setAll(yap::VariableStatus::unchanged);
     ++LikelihoodCalls_[c];
     return L;
     // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);
@@ -81,6 +81,8 @@ double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
         return -std::numeric_limits<double>::infinity();
 
     unsigned c = GetCurrentChain();
+    Data_[c].setAll(yap::VariableStatus::changed);
+    //Data_[c].setAll(yap::CalculationStatus::uncalculated);
     Data_[c][0].setFinalStateMomenta(P);
     return 0;
 }
