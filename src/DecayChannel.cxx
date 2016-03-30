@@ -3,6 +3,7 @@
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "CachedDataValue.h"
+#include "CalculationStatus.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"

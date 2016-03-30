@@ -1,5 +1,6 @@
 #include "SpinAmplitude.h"
 
+#include "CalculationStatus.h"
 #include "Exceptions.h"
 #include "spin.h"
 #include "StatusManager.h"

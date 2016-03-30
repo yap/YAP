@@ -1,5 +1,6 @@
 #include "FourMomenta.h"
 
+#include "CalculationStatus.h"
 #include "container_utils.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"

@@ -1,5 +1,6 @@
 #include "HelicityAngles.h"
 
+#include "CalculationStatus.h"
 #include "CoordinateSystem.h"
 #include "FourMomenta.h"
 #include "FourVector.h"

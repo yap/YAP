@@ -1,10 +1,12 @@
 #include "CachedDataValue.h"
 
+#include "CalculationStatus.h"
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "StatusManager.h"
+#include "VariableStatus.h"
 
 namespace yap {
 

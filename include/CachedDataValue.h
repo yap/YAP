@@ -21,10 +21,8 @@
 #ifndef yap_CachedDataValue_h
 #define yap_CachedDataValue_h
 
-#include "CalculationStatus.h"
 #include "FourVector.h"
 #include "Parameter.h"
-#include "VariableStatus.h"
 
 #include <memory>
 #include <set>
@@ -34,10 +32,12 @@
 namespace yap {
 
 class CachedDataValue;
+enum class CalculationStatus : bool;
 class DataAccessor;
 class DataPoint;
 class ParticleCombination;
 class StatusManager;
+enum class VariableStatus;
 
 /// \typedef CachedDataValueSet
 /// \ingroup Data

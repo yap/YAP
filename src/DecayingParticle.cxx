@@ -1,6 +1,7 @@
 #include "DecayingParticle.h"
 
 #include "BlattWeisskopf.h"
+#include "CalculationStatus.h"
 #include "container_utils.h"
 #include "Model.h"
 #include "logging.h"

@@ -1,5 +1,6 @@
 #include "MeasuredBreakupMomenta.h"
 
+#include "CalculationStatus.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "Model.h"

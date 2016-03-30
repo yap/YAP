@@ -21,13 +21,13 @@
 #ifndef yap_StatusManager_h
 #define yap_StatusManager_h
 
-#include "CalculationStatus.h"
 #include "DataAccessor.h"
-#include "VariableStatus.h"
 
 namespace yap {
 
 class CachedDataValue;
+enum class CalculationStatus : bool;
+enum class VariableStatus;
 
 class StatusManager
 {
