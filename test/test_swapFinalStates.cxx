@@ -143,9 +143,9 @@ TEST_CASE( "swapFinalStates" )
                 double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
 
                 std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
-                << "      ratio Z/H = " <<  norm(amps_Z[i])/norm(amps_H[i])
-                << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
-                << std::endl;
+                          << "      ratio Z/H = " <<  norm(amps_Z[i])/norm(amps_H[i])
+                          << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
+                          << std::endl;
             }
             /*
             for (size_t i = 0; i < H.size(); ++i) {
@@ -172,19 +172,19 @@ TEST_CASE( "swapFinalStates" )
             // if nan, check that all are nan
             if (amps_Z[0] != amps_Z[0]) {
                 for (size_t i = 1; i < amps_Z.size(); ++i)
-                     REQUIRE ( amps_Z[i] != amps_Z[i] );
+                    REQUIRE ( amps_Z[i] != amps_Z[i] );
                 for (size_t i = 0; i < amps_H.size(); ++i)
-                     REQUIRE ( amps_H[i] != amps_H[i] );
+                    REQUIRE ( amps_H[i] != amps_H[i] );
             }
             // otherwise check that amplitudes are approximately the same
             else {
                 // // check equality for Zemach
                 for (size_t i = 1; i < amps_Z.size(); ++i)
-                     REQUIRE ( amps_Z[i - 1] == Catch::Detail::CApprox( amps_Z[i] ) );
+                    REQUIRE ( amps_Z[i - 1] == Catch::Detail::CApprox( amps_Z[i] ) );
 
                 // check equality for Helicity
                 for (size_t i = 1; i < amps_H.size(); ++i)
-                     REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
+                    REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
 
                 // todo check if Zemach and Helicity have the same phase
                 double phaseDiff = arg(amps_Z[0]) - arg(amps_H[0]);

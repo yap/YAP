@@ -67,7 +67,7 @@ void bat_gen::CalculateObservables(const std::vector<double>& )
         E[i] = P[i][0] - abs(P[i]);
     auto Esum = std::accumulate(E.begin(), E.end(), 0.);
     for (size_t i = 0; i < E.size(); ++i)
-        GetObservable(i) = E[i]/Esum;
+        GetObservable(i) = E[i] / Esum;
 }
 
 // ---------------------------------------------------------

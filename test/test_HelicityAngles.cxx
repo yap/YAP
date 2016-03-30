@@ -34,7 +34,7 @@ yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<do
     // rotate to put x-y component of daughter in y direction
     // rotate to put daughter in z direction
     auto R = rotation(yap::ThreeAxis_Y, -yap::theta(vect(daughter), yap::ThreeAxes))
-            * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
+             * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
 
     // return boost * rotations
     return lorentzTransformation(-(R * daughter)) * lorentzTransformation(R);
