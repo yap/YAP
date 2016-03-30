@@ -75,7 +75,7 @@ void StatusManager::setAll(const VariableStatus& stat)
 void StatusManager::updateCalculationStatus(const CachedDataValue& cdv, const std::shared_ptr<ParticleCombination>& pc, size_t sym_index)
 {
     // if already marked uncalculated, continue
-    if (status(cdv, sym_index) == kUncalculated)
+    if (status(cdv, sym_index) == CalculationStatus::uncalculated)
         return;
 
     // check CachedDataValue dependencies
@@ -85,22 +85,22 @@ void StatusManager::updateCalculationStatus(const CachedDataValue& cdv, const st
 
             updateCalculationStatus(*c, pc, sym_index);
 
-            if (status(*c, sym_index) == kUncalculated or status(*c, sym_index) == kChanged) {
-                status(cdv, sym_index) = kUncalculated;
+            if (status(*c, sym_index) == CalculationStatus::uncalculated or status(*c, sym_index) == VariableStatus::changed) {
+                status(cdv, sym_index) = CalculationStatus::uncalculated;
                 return;
             }
         } else if (c->owner()->hasParticleCombination(pc)) {
             auto s = c->owner()->symmetrizationIndex(pc);
             updateCalculationStatus(*c, pc, s);
-            if (status(*c, s) == kUncalculated or status(*c, s) == kChanged) {
-                status(cdv, sym_index) = kUncalculated;
+            if (status(*c, s) == CalculationStatus::uncalculated or status(*c, s) == VariableStatus::changed) {
+                status(cdv, sym_index) = CalculationStatus::uncalculated;
                 return;
             }
         }
     }
 
     // if changed above, continue
-    if (status(cdv, sym_index) == kUncalculated)
+    if (status(cdv, sym_index) == CalculationStatus::uncalculated)
         return;
 
     // check CachedDataValue daughter dependencies
@@ -115,8 +115,8 @@ void StatusManager::updateCalculationStatus(const CachedDataValue& cdv, const st
 
         updateCalculationStatus(*dcdv.CDV, dpc, s);
 
-        if (status(*dcdv.CDV, s) == kUncalculated or status(*dcdv.CDV, s) == kChanged) {
-            status(cdv, sym_index) = kUncalculated;
+        if (status(*dcdv.CDV, s) == CalculationStatus::uncalculated or status(*dcdv.CDV, s) == VariableStatus::changed) {
+            status(cdv, sym_index) = CalculationStatus::uncalculated;
             return;
         }
     }
@@ -128,8 +128,8 @@ void StatusManager::updateCalculationStatuses(const CachedDataValue& cdv)
     // check parameter dependencies first,
     // since they don't depend on ParticleCombinations
     for (const auto& p : cdv.parameterDependencies())
-        if (p->variableStatus() == kChanged) {
-            set(cdv, kUncalculated);
+        if (p->variableStatus() == VariableStatus::changed) {
+            set(cdv, CalculationStatus::uncalculated);
             return;
         }
 

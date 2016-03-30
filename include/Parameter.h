@@ -42,7 +42,7 @@ class ParameterBase
 public:
 
     // \param size Number of real components in variable
-    ParameterBase() : VariableStatus_(kChanged)
+    ParameterBase() : VariableStatus_(VariableStatus::changed)
     {}
 
     /// \return VariableStatus
@@ -110,12 +110,12 @@ public:
     /// set value
     virtual void setValue(T val)
     {
-        if (variableStatus() == kFixed)
+        if (variableStatus() == VariableStatus::fixed)
             throw exceptions::ParameterIsFixed("", "Parameter::setValue");
         if (ParameterValue_ == val)
             return;
         ParameterValue_ = val;
-        setVariableStatus(kChanged);
+        setVariableStatus(VariableStatus::changed);
     }
 
 protected:
@@ -163,12 +163,12 @@ public:
     /// set value by accessing parent
     void setValue(double val) override
     {
-        if (variableStatus() == kFixed)
+        if (variableStatus() == VariableStatus::fixed)
             throw exceptions::ParameterIsFixed("", "ComplexComponentParameter::setValue");
         if (value() == val)
             return;
         Parent_->setValue(setComponent(Parent_->value(), val));
-        setVariableStatus(kChanged);
+        setVariableStatus(VariableStatus::changed);
     }
 
     /// \return shared_ptr to parent

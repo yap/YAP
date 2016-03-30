@@ -83,7 +83,7 @@ double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const St
     }
 
     // set all variable statuses to Unchanged
-    D->setAll(kUnchanged);
+    D->setAll(VariableStatus::unchanged);
 
     return L;
 }
@@ -125,7 +125,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
     }
 
     // Set all variable statuses to Unchanged
-    DS.setAll(kUnchanged);
+    DS.setAll(VariableStatus::unchanged);
 
     return log_L;
 }

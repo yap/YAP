@@ -55,7 +55,7 @@ std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<Par
     unsigned symIndex = symmetrizationIndex(pc);
 
     // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == kUncalculated) {
+    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
 
         // T = 1 / (M^2 - m^2)
         std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));

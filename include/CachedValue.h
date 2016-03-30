@@ -91,9 +91,9 @@ public:
         : CachedValueBase(pars), Parameter<T>()
     {}
 
-    /// set value and set CalculationStatus_ to kCalculated
+    /// set value and set CalculationStatus_ to calculated
     void setValue(T val)
-    { Parameter<T>::setValue(val); CalculationStatus_ = kCalculated; }
+    { Parameter<T>::setValue(val); CalculationStatus_ = CalculationStatus::calculated; }
 
 };
 

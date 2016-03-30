@@ -33,7 +33,7 @@ std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<
     unsigned symIndex = symmetrizationIndex(pc);
 
     // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == kUncalculated) {
+    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
 
         // T = 1 / (M^2 - m^2 - iMG)
         std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - Complex_i * mass()->value() * width()->value());

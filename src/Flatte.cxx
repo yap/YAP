@@ -47,7 +47,7 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (sm.status(*WidthTerm_, symIndex) == kUncalculated) {
+    if (sm.status(*WidthTerm_, symIndex) == CalculationStatus::uncalculated) {
         auto w = Complex_0;
         // sum of coupling * complex-breakup-momentum
         for (const auto& fc : FlatteChannels_)
@@ -58,7 +58,7 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
     }
 
     // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == kUncalculated) {
+    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
 
         // T = 1 / (M^2 - m^2 - width-term)
         std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - WidthTerm_->value(d, symIndex));

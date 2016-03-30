@@ -24,21 +24,21 @@
 namespace yap {
 
 /// \enum VariableStatus
-enum VariableStatus {
-    kChanged   = -1,        ///< Parameter is free and has been changed
-    kFixed     = 0,         ///< Parameter is fixed
-    kUnchanged = +1,        ///< Parameter is free but has not been changed
+enum class VariableStatus {
+    changed   = -1,        ///< Parameter is free and has been changed
+    fixed     = 0,         ///< Parameter is fixed
+    unchanged = +1,        ///< Parameter is free but has not been changed
 };
 
 inline std::ostream& operator<<(std::ostream& str, VariableStatus s)
 {
     switch (s) {
-        case kChanged:
-            return str << "kChanged";
-        case kFixed:
-            return str << "kFixed";
-        case kUnchanged:
-            return str << "kUnchanged";
+        case VariableStatus::changed:
+            return str << "changed";
+        case VariableStatus::fixed:
+            return str << "fixed";
+        case VariableStatus::unchanged:
+            return str << "unchanged";
         default:
             return str << (int) s;
     }

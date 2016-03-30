@@ -236,7 +236,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
     auto& totAmp = TotalAmplitudes_.at(two_m);
 
-    if (sm.status(*totAmp, symIndex) != kUncalculated) {
+    if (sm.status(*totAmp, symIndex) != CalculationStatus::uncalculated) {
         FDEBUG("\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex));
         return totAmp->value(d, symIndex);
     }
@@ -251,7 +251,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         // if already calculated
 
-        if (sm.status(*ap.Fixed, symIndex) != kUncalculated) {
+        if (sm.status(*ap.Fixed, symIndex) != CalculationStatus::uncalculated) {
             // Fixed is already calculated, simply retrieve from cache
             A += ap.Free->value() * ap.Fixed->value(d, symIndex);
             // DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));

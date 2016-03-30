@@ -10,8 +10,8 @@ namespace yap {
 
 //-------------------------
 CachedDataValue::Status::Status() :
-    Calculation(kUncalculated),
-    Variable(kChanged)
+    Calculation(CalculationStatus::uncalculated),
+    Variable(VariableStatus::changed)
 {}
 
 
@@ -88,10 +88,10 @@ void RealCachedDataValue::setValue(double val, DataPoint& d, unsigned sym_index,
 {
     if (val != CachedDataValue::value(0, d, sym_index)) {
         CachedDataValue::setValue(0, val, d, sym_index);
-        sm.status(owner()->index(), index(), sym_index).Variable = kChanged;
+        sm.status(owner()->index(), index(), sym_index) = VariableStatus::changed;
     }
 
-    sm.status(owner()->index(), index(), sym_index).Calculation = kCalculated;
+    sm.status(owner()->index(), index(), sym_index) = CalculationStatus::calculated;
 }
 
 //-------------------------
@@ -107,15 +107,15 @@ void ComplexCachedDataValue::setValue(double val_re, double val_im, DataPoint& d
 {
     if (val_re != CachedDataValue::value(0, d, sym_index)) {
         CachedDataValue::setValue(0, val_re, d, sym_index);
-        sm.status(owner()->index(), index(), sym_index).Variable = kChanged;
+        sm.status(owner()->index(), index(), sym_index) = VariableStatus::changed;
     }
 
     if (val_im != CachedDataValue::value(1, d, sym_index)) {
         CachedDataValue::setValue(1, val_im, d, sym_index);
-        sm.status(owner()->index(), index(), sym_index).Variable = kChanged;
+        sm.status(owner()->index(), index(), sym_index) = VariableStatus::changed;
     }
 
-    sm.status(owner()->index(), index(), sym_index).Calculation = kCalculated;
+    sm.status(owner()->index(), index(), sym_index) = CalculationStatus::calculated;
 }
 
 //-------------------------
@@ -132,10 +132,10 @@ void FourVectorCachedDataValue::setValue(FourVector<double> val, DataPoint& d, u
     for (size_t i = 0; i < val.size(); ++i) {
         if (val[i] != CachedDataValue::value(i, d, sym_index)) {
             CachedDataValue::setValue(i, val[i], d, sym_index);
-            sm.status(owner()->index(), index(), sym_index).Variable = kChanged;
+            sm.status(owner()->index(), index(), sym_index) = VariableStatus::changed;
         }
     }
-    sm.status(owner()->index(), index(), sym_index).Calculation = kCalculated;
+    sm.status(owner()->index(), index(), sym_index) = CalculationStatus::calculated;
 }
 
 }

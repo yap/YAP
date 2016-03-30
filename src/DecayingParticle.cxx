@@ -28,7 +28,7 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
     // get cached amplitude object for spin projection two_m
     auto A = Amplitudes_.at(two_m);
 
-    if (sm.status(*A, symIndex) == kUncalculated) {
+    if (sm.status(*A, symIndex) == CalculationStatus::uncalculated) {
 
         std::complex<double> a = Complex_0;
 

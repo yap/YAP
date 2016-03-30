@@ -5,7 +5,7 @@ namespace yap {
 //-------------------------
 CachedValueBase::CachedValueBase(ParameterSet pars) :
     ParametersItDependsOn_(pars),
-    CalculationStatus_(kUncalculated)
+    CalculationStatus_(CalculationStatus::uncalculated)
 {
 }
 
@@ -23,14 +23,14 @@ void CachedValueBase::removeDependency(std::shared_ptr<ParameterBase> dep)
 const CalculationStatus& CachedValueBase::calculationStatus()
 {
     // if uncalculated, return without further checking
-    if (CalculationStatus_ == kUncalculated)
+    if (CalculationStatus_ == CalculationStatus::uncalculated)
         return CalculationStatus_;
 
     // else check if any dependencies are changed
     for (auto& p : ParametersItDependsOn_) {
-        if (p->variableStatus() == kChanged) {
+        if (p->variableStatus() == VariableStatus::changed) {
             // if so, update to uncalculated and return
-            CalculationStatus_ = kUncalculated;
+            CalculationStatus_ = CalculationStatus::uncalculated;
             return CalculationStatus_;
         }
     }

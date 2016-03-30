@@ -25,7 +25,7 @@ HelicityAngles::HelicityAngles(Model* m) :
 void HelicityAngles::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set angles uncalculated
-    sm.set(*this, kUncalculated);
+    sm.set(*this, CalculationStatus::uncalculated);
 
     // call on ISP PC's
     // \todo allow for designating the boost that takes from the data frame to the lab frame (possibly event dependent)
@@ -57,7 +57,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
     for (auto& daughter : pc->daughters()) {
 
         // if unset, calculate and set angles of parent to first daughter's
-        if (sm.status(*Phi_, symIndex) == kUncalculated or sm.status(*Theta_, symIndex) == kUncalculated) {
+        if (sm.status(*Phi_, symIndex) == CalculationStatus::uncalculated or sm.status(*Theta_, symIndex) == CalculationStatus::uncalculated) {
 
             // boost daughter momentum from data frame into pc rest frame
             const FourVector<double> p = boost * boosts * model()->fourMomenta()->p(d, daughter);

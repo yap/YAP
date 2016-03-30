@@ -110,7 +110,7 @@ double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombinat
 void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set all masses as uncalculated
-    sm.set(*M_, kUncalculated);
+    sm.set(*M_, CalculationStatus::uncalculated);
 
     // get fsp four momenta:
     auto fsp = finalStateMomenta(d);
@@ -118,7 +118,7 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation unnecessary
-        if (sm.status(*M_, kv.second) == kCalculated)
+        if (sm.status(*M_, kv.second) == CalculationStatus::calculated)
             continue;
 
         const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector_0,

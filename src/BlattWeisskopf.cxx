@@ -58,7 +58,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (sm.status(*Fq_r, symIndex) == kUncalculated) {
+    if (sm.status(*Fq_r, symIndex) == CalculationStatus::uncalculated) {
         // nominal breakup momentum
         double m2_R = pow(DecayingParticle_->mass()->value(), 2);
         double m_a = model()->fourMomenta()->m(d, pc->daughters().at(0));
@@ -72,7 +72,7 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
         DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
     }
 
-    if (sm.status(*Fq_ab, symIndex) == kUncalculated) {
+    if (sm.status(*Fq_ab, symIndex) == CalculationStatus::uncalculated) {
         // measured breakup momentum
         double q2 = model()->measuredBreakupMomenta()->q2(d, pc);
 

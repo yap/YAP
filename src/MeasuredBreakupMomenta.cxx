@@ -22,12 +22,12 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
 void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set Q2 uncalculated
-    sm.set(*Q2_, kUncalculated);
+    sm.set(*Q2_, CalculationStatus::uncalculated);
 
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation unnecessary
-        if (sm.status(*Q2_, kv.second) == kUncalculated)
+        if (sm.status(*Q2_, kv.second) == CalculationStatus::uncalculated)
             continue;
 
         if (kv.first->daughters().size() != 2)

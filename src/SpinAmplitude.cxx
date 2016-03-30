@@ -41,7 +41,7 @@ void SpinAmplitude::setModel(Model* m)
 void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set all amplitudes Uncalculated
-    sm.set(*this, kUncalculated);
+    sm.set(*this, CalculationStatus::uncalculated);
 
     // loop over particle combinations
     for (auto& pc : particleCombinations()) {
@@ -57,7 +57,7 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
             for (auto& aSM_kv : aM_kv.second)
 
                 // if yet uncalculated
-                if (sm.status(*aSM_kv.second, symIndex) == kUncalculated) {
+                if (sm.status(*aSM_kv.second, symIndex) == CalculationStatus::uncalculated) {
 
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 

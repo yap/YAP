@@ -26,18 +26,18 @@
 namespace yap {
 
 /// \enum CalculationStatus
-enum CalculationStatus : bool {
-    kCalculated = true,
-    kUncalculated = false
+enum class CalculationStatus : bool {
+    calculated = true,
+    uncalculated = false
 };
 
 inline std::ostream& operator<<(std::ostream& str, CalculationStatus c)
 {
     switch (c) {
-        case kCalculated:
-            return str << "kCalculated";
-        case kUncalculated:
-            return str << "kUncalculated";
+        case CalculationStatus::calculated:
+            return str << "calculated";
+        case CalculationStatus::uncalculated:
+            return str << "uncalculated";
         default:
             return str << (int) c;
     }
