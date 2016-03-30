@@ -21,11 +21,11 @@
 #ifndef yap_StatusManager_h
 #define yap_StatusManager_h
 
+#include "CachedDataValue.h"
 #include "DataAccessor.h"
 
 namespace yap {
 
-class CachedDataValue;
 enum class CalculationStatus : bool;
 enum class VariableStatus;
 
@@ -71,24 +71,40 @@ public:
 
     /// @}
 
-    /* /// set all variable statuses for a particular CachedDataValue */
-    /* /// \param cdv CachedDataValue */
-    /* /// \param stat VariableStatus to set to */
-    /* void set(std::shared_ptr<CachedDataValue> cdv, const VariableStatus& stat); */
-
-    /// set all calculation statuses for a particular CachedDataValue
+    /// set all statuses for a particular CachedDataValue
     /// \param cdv CachedDataValue
-    /// \param stat CalculationStatus to set to
-    void set(const CachedDataValue& cdv, const CalculationStatus& stat);
+    /// \param stat status to set to
+    /// \tparam T type of status
+    template <class T>
+    void set(const CachedDataValue& cdv, const T& stat)
+    {
+        for (auto& s : Statuses_[cdv.owner()->index()][cdv.index()])
+            s = stat;
+    }
 
-    /// set all calculation statuses for all CachedDataValue's of a DataAccessor
+    /// set all statuses for all CachedDataValue's of a DataAccessor
     /// \param da DataAccessor
-    /// \param stat CalculationStatus to set to
-    void set(const DataAccessor& da, const CalculationStatus& stat);
+    /// \param stat status to set to
+    /// \tparam T type of status
+    template <class T>
+    void set(const DataAccessor& da, const T& stat)
+    {
+        for (auto& v : Statuses_[da.index()])
+            for (auto& s : v)
+                s = stat;
+    }
 
-    /// set all variable statuses to value
-    /// \param stat VariableStatus to set to
-    void setAll(const VariableStatus& stat);
+    /// set all statuses to a value
+    /// \param stat value to set all statuses to
+    /// \tparam T type of status
+    template <class T>
+    void setAll(const T& stat)
+    {
+        for (auto& v1 : Statuses_)
+            for (auto& v2 : v1)
+                for (auto& s : v2)
+                    s = stat;
+    }
 
     /// copy all calculation statuses from another manager
     /// \param sm StatusManager to copy from

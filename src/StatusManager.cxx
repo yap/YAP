@@ -24,28 +24,6 @@ CachedDataValue::Status& StatusManager::status(const CachedDataValue& cdv, size_
     return status(cdv.owner()->index(), cdv.index(), sym_index);
 }
 
-// //-------------------------
-// void StatusManager::set(std::shared_ptr<CachedDataValue> cdv, const VariableStatus& stat)
-// {
-//     for (auto& s : Statuses_[cdv->owner()->index()][cdv->index()])
-//         s.Variable = stat;
-// }
-
-//-------------------------
-void StatusManager::set(const CachedDataValue& cdv, const CalculationStatus& stat)
-{
-    for (auto& s : Statuses_[cdv.owner()->index()][cdv.index()])
-        s.Calculation = stat;
-}
-
-//-------------------------
-void StatusManager::set(const DataAccessor& da, const CalculationStatus& stat)
-{
-    for (auto& v : Statuses_[da.index()])
-        for (auto& s : v)
-            s.Calculation = stat;
-}
-
 //-------------------------
 void StatusManager::copyCalculationStatuses(const StatusManager& sm)
 {
@@ -61,15 +39,6 @@ void StatusManager::copyCalculationStatuses(const StatusManager& sm)
                 Statuses_[i][j][k].Calculation = sm.Statuses_[i][j][k].Calculation;
         }
     }
-}
-
-//-------------------------
-void StatusManager::setAll(const VariableStatus& stat)
-{
-    for (auto& v1 : Statuses_)
-        for (auto& v2 : v1)
-            for (auto& s : v2)
-                s.Variable = stat;
 }
 
 //-------------------------
