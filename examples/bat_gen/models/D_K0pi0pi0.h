@@ -4,21 +4,28 @@
 // BAT can be downloaded from http://mpp.mpg.de/bat
 // ***************************************************************
 
-#include "D_K0pi0pi0.h"
+#ifndef __BAT__DKSPI0PI0__H
+#define __BAT__DKSPI0PI0__H
+
 
 #include <BreitWigner.h>
 #include <Constants.h>
+#include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
+#include <Model.h>
 #include <ParticleCombination.h>
+#include <ParticleFactory.h>
 #include <PoleMass.h>
 #include <QuantumNumbers.h>
 #include <Resonance.h>
+#include <SpinAmplitudeCache.h>
 
 #include <complex>
+#include <memory>
 
-// ---------------------------------------------------------
-std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+
+inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
@@ -118,3 +125,5 @@ std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> 
 
     return M;
 }
+
+#endif

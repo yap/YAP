@@ -4,19 +4,24 @@
 // BAT can be downloaded from http://mpp.mpg.de/bat
 // ***************************************************************
 
-#include "d3pi.h"
+#ifndef __BAT__D3PI__H
+#define __BAT__D3PI__H
 
 #include <BreitWigner.h>
 #include <Constants.h>
+#include <DecayingParticle.h>
 #include <FinalStateParticle.h>
+#include <Model.h>
 #include <ParticleCombination.h>
+#include <ParticleFactory.h>
 #include <QuantumNumbers.h>
 #include <Resonance.h>
+#include <SpinAmplitudeCache.h>
 
 #include <complex>
+#include <memory>
 
-// ---------------------------------------------------------
-std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+inline std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
@@ -77,3 +82,5 @@ std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 
     return M;
 }
+
+#endif

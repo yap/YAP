@@ -15,9 +15,9 @@
 #include <ZemachFormalism.h>
 
 #include "bat_gen.h"
-#include "d3pi.h"
-#include "dkkpi.h"
-#include "D_K0pi0pi0.h"
+#include "models/d3pi.h"
+#include "models/dkkpi.h"
+#include "models/D_K0pi0pi0.h"
 
 #include <chrono>
 #include <ratio>
@@ -27,15 +27,15 @@ int main()
     yap::plainLogs(el::Level::Info);
 
     for (bat_gen* m : {
-        // new bat_gen("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
-        new bat_gen("DKSPIPI_Zemach", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
-        new bat_gen("DKSPIPI_Helicity", std::move(D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
-        // new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
-        //new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
-    }) {
+            // new bat_gen("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+            new bat_gen("DKSPIPI_Zemach", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+                new bat_gen("DKSPIPI_Helicity", std::move(D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
+// new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
+//new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
+        }) {
 
         // open log file
-        BCLog::OpenLog("log.txt", BCLog::detail, BCLog::detail);
+        BCLog::OpenLog("output/" + m->GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);
 
         // set precision
         m->SetPrecision(BCEngineMCMC::kMedium);
@@ -45,7 +45,7 @@ int main()
 
         m->SetNIterationsRun(static_cast<int>(1e6 / m->GetNChains()));
 
-        m->WriteMarkovChain(m->GetSafeName() + "_mcmc.root", "RECREATE");
+        m->WriteMarkovChain("output/" + m->GetSafeName() + "_mcmc.root", "RECREATE");
 
         // start timing:
         auto start = std::chrono::steady_clock::now();

@@ -38,7 +38,7 @@ public:
 
     double LogAPrioriProbability(const std::vector<double>& parameters) override;
 
-    void CalculateObservables(const std::vector<double>&) override;
+    /* void CalculateObservables(const std::vector<double>&) override; */
 
     unsigned likelihoodCalls() const
     { return std::accumulate(LikelihoodCalls_.begin(), LikelihoodCalls_.end(), 0); }

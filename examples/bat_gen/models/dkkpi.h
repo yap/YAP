@@ -4,21 +4,26 @@
 // BAT can be downloaded from http://mpp.mpg.de/bat
 // ***************************************************************
 
-#include "dkkpi.h"
+#ifndef __BAT__DKKPI__H
+#define __BAT__DKKPI__H
 
 #include "BreitWigner.h"
 #include "Constants.h"
+#include "DecayingParticle.h"
 #include "FinalStateParticle.h"
 #include "make_unique.h"
+#include <Model.h>
 #include "ParticleCombination.h"
+#include "ParticleFactory.h"
 #include "QuantumNumbers.h"
 #include "Resonance.h"
+#include <SpinAmplitudeCache.h>
 
 #include <complex>
+#include <memory>
 
-std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
-
     auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
@@ -62,3 +67,5 @@ std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 
     return M;
 }
+
+#endif

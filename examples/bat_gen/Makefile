@@ -1,28 +1,15 @@
 ###################################################################
-# This Makefile was created using the bat-project script
-# for project yap_test
-# bat-project is part of Bayesian Analysis Toolkit (BAT).
-# BAT can be downloaded from http://mpp.mpg.de/bat
-###################################################################
 #
 # Run 'make' to compile the program and 'make clean' to remove
 # all compiled parts and 'clean' the directory.
 #
-# You might need to adjust the CXXFLAGS and LIBS based on
-# the BAT installation on your system. Consult the gmake manual
-# for details.
-#
 ###################################################################
 
-# List of all class (models) sources used in the program
-# Add classes to the end. Backslash indicates continuation
-# on the next line
-CXXSRCS = bat_gen.cxx d3pi.cxx dkkpi.cxx D_K0pi0pi0.cxx
+OBJSDIR = obj
+OUTPUTDIR = output
 
-# List of all program sources used in the program
-# Add classes to the end. Backslash indicates continuation
-# on the next line
-PRGSRCS = runBatGen.cxx
+CXXSRCS := bat_gen.cxx
+PRGSRCS := runBatGen.cxx
 
 # compiler and flags
 CXX       = g++
@@ -35,16 +22,14 @@ LDFLAGS   = -g -O2  #-fopenmp
 # available in $PATH. If BAT is not installed in the standard system
 # directories, update $PATH accordingly.
 
-CXXFLAGS += `bat-config --cflags` -I$(YAPDIR)/include -I$(ROOTSYS)/include
-LIBS := `bat-config --libs` $(YAPDIR)/build/src/libYAP.a $(ROOTSYS)/lib/libPhysics.so
+CXXFLAGS += $(shell bat-config --cflags) -I$(YAPDIR)/include -I$(ROOTSYS)/include
+LIBS := $(shell bat-config --libs) $(YAPDIR)/build/src/libYAP.a $(ROOTSYS)/lib/libPhysics.so
 
-# ----------------------------------------------------------------------
-# don't change lines below unless you know what you're doing
-#
-
-CXXOBJS = $(addsuffix .o,$(basename $(CXXSRCS)))
+CXXOBJS := $(addprefix $(OBJSDIR)/,$(addsuffix .o,$(basename $(CXXSRCS))))
+PRGOBJS := $(addprefix $(OBJSDIR)/,$(addsuffix .o,$(basename $(PRGSRCS))))
 MYPROGS = $(basename $(PRGSRCS))
-PRGOBJS = $(addsuffix .o,$(basename $(PRGSRCS)))
+
+VPATH = $(OBJSDIR)
 
 GARBAGE = $(CXXOBJS) $(PRGOBJS) link.d $(MYPROGS)
 
@@ -53,20 +38,29 @@ all : $(MYPROGS)
 
 .PHONY : all clean print
 
+$(OBJSDIR):
+	@mkdir $(OBJSDIR)
+
+$(OUTPUTDIR):
+	@mkdir $(OUTPUTDIR)
+
 link.d : $(addsuffix .h,$(basename $(CXXSRCS))) $(CXXSRCS) $(PRGSRCS)
-	$(CXX) -MM $(CXXFLAGS) $(filter-out %.h,$^) > link.d;
-	@$(foreach prog,$(MYPROGS), echo $(prog) : $(prog).o >> link.d;)
+	@echo " " > link.d
+	@$(foreach src,$(filter-out %.h,$^), $(CXX) -MM -MT $(OBJSDIR)/$(notdir $(basename $(src))).o $(CXXFLAGS) $(src) >> link.d;)
+	@$(foreach prog,$(MYPROGS), echo $(prog) : $(OBJSDIR)/$(prog).o >> link.d;)
 
 -include link.d
 
-$(CXXOBJS) $(PRGOBJS) :
-	$(CXX) $(CXXFLAGS) -c $(filter $(basename $@).%,$(filter-out %.h,$^)) -o $@
+$(CXXOBJS) $(PRGOBJS) : | $(OBJSDIR)
+	$(CXX) $(CXXFLAGS) -c $(filter $(basename $(@F)).%,$(filter-out %.h,$^)) -o $@
 
-$(MYPROGS) : $(CXXOBJS)
+$(MYPROGS) : $(CXXOBJS) | $(OUTPUTDIR)
 	$(CXX) $(LDFLAGS) $^ $(LIBS) -o $@
 
 clean :
 	rm -f $(GARBAGE)
+	rmdir $(OBJSDIR)
+	rmdir --ignore-fail-on-non-empty $(OUTPUTDIR)
 
 print :
 	@echo compiler  : $(CXX)

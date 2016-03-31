@@ -33,8 +33,8 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
                   << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
                   << std::endl;
     }
-    for (size_t i = 0; i < Model_->finalStateParticles().size(); ++i)
-        AddObservable(std::string("T") + std::to_string(i), 0, 1);
+    // for (size_t i = 0; i < Model_->finalStateParticles().size(); ++i)
+    //     AddObservable(std::string("T") + std::to_string(i), 0, 1);
 }
 
 // ---------------------------------------------------------
@@ -57,18 +57,18 @@ double bat_gen::LogLikelihood(const std::vector<double>&)
     // return Model_->partialSumOfLogsOfSquaredAmplitudes(Partitions_[c].get(), Data_);
 }
 
-// ---------------------------------------------------------
-void bat_gen::CalculateObservables(const std::vector<double>& )
-{
-    unsigned c = GetCurrentChain();
-    auto P = Model_->fourMomenta()->finalStateMomenta(Data_[c][0]);
-    std::vector<double> E(P.size(), 0);
-    for (size_t i = 0; i < P.size(); ++i)
-        E[i] = P[i][0] - abs(P[i]);
-    auto Esum = std::accumulate(E.begin(), E.end(), 0.);
-    for (size_t i = 0; i < E.size(); ++i)
-        GetObservable(i) = E[i] / Esum;
-}
+// // ---------------------------------------------------------
+// void bat_gen::CalculateObservables(const std::vector<double>& )
+// {
+//     unsigned c = GetCurrentChain();
+//     auto P = Model_->fourMomenta()->finalStateMomenta(Data_[c][0]);
+//     std::vector<double> E(P.size(), 0);
+//     for (size_t i = 0; i < P.size(); ++i)
+//         E[i] = P[i][0] - abs(P[i]);
+//     auto Esum = std::accumulate(E.begin(), E.end(), 0.);
+//     for (size_t i = 0; i < E.size(); ++i)
+//         GetObservable(i) = E[i] / Esum;
+// }
 
 // ---------------------------------------------------------
 double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
@@ -82,7 +82,7 @@ double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
 
     unsigned c = GetCurrentChain();
     Data_[c].setAll(yap::VariableStatus::changed);
-    //Data_[c].setAll(yap::CalculationStatus::uncalculated);
+    Data_[c].setAll(yap::CalculationStatus::uncalculated);
     Data_[c][0].setFinalStateMomenta(P);
     return 0;
 }
