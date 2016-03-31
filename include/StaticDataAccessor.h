@@ -78,6 +78,17 @@ private:
 
 };
 
+/// \typedef StaticDataAccessorSet
+using StaticDataAccessorSet = std::set<StaticDataAccessor*>;
+
+/// remove expired elements of set
+inline void removeExpiredStatic(StaticDataAccessorSet& S)
+{
+    for (auto it = S.begin(); it != S.end(); )
+        if (!*it) it = S.erase(it);
+        else ++it;
+}
+
 }
 
 #endif

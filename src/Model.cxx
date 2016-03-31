@@ -291,6 +291,10 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // set its index
         da->setIndex(DataAccessors_.size() - 1);
     }
+
+    // if StaticDataAccessor, add to StaticDataAccessors_
+    if (dynamic_cast<StaticDataAccessor*>(da))
+        StaticDataAccessors_.insert(static_cast<StaticDataAccessor*>(da));
 }
 
 //-------------------------
@@ -298,6 +302,7 @@ void Model::prepareDataAccessors()
 {
     // remove expired elements of DataAccessors_
     removeExpired(DataAccessors_);
+    removeExpiredStatic(StaticDataAccessors_);
 
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
@@ -334,6 +339,12 @@ void Model::prepareDataAccessors()
     }
 
 #ifndef ELPP_DISABLE_DEBUG_LOGS
+    std::cout << "StaticDataAccessors:\n";
+    for (auto& D : StaticDataAccessors_) {
+        std::cout << std::endl;
+        D->printParticleCombinations();
+    }
+    std::cout << "DataAccessors:\n";
     for (auto& D : DataAccessors_) {
         std::cout << std::endl;
         D->printParticleCombinations();

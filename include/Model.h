@@ -26,6 +26,7 @@
 #include "DataSet.h"
 #include "FourVector.h"
 #include "ParticleCombinationCache.h"
+#include "StaticDataAccessor.h"
 
 #include <complex>
 #include <memory>
@@ -154,6 +155,10 @@ public:
     const DataAccessorSet dataAccessors() const
     { return DataAccessors_; }
 
+    /// \return set of DataAccessors
+    const StaticDataAccessorSet staticDataAccessors() const
+    { return StaticDataAccessors_; }
+
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
@@ -241,6 +246,9 @@ private:
 
     /// Set of all DataAccessor's registered to this model
     DataAccessorSet DataAccessors_;
+
+    /// Set of all StaticDataAccessor's registered to this model
+    StaticDataAccessorSet StaticDataAccessors_;
 
     /// Raw pointer to initial-state particle
     std::shared_ptr<DecayingParticle> InitialStateParticle_;
