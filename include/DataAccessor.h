@@ -85,7 +85,7 @@ public:
     /// @}
 
     /// \return CachedDataValueSet
-    const CachedDataValueSet cachedDataValues() const
+    const CachedDataValueSet& cachedDataValues() const
     { return CachedDataValues_; }
 
     /// \return size of storage in data point (number of real values)

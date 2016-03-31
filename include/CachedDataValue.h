@@ -189,7 +189,7 @@ public:
     { return CachedDataValuesItDependsOn_; }
 
     /// \return set of DaughterCachedDataValues on which this object depends
-    const DaughterCachedDataValueSet daughterCachedDataValueDependencies() const
+    const DaughterCachedDataValueSet& daughterCachedDataValueDependencies() const
     { return DaughterCachedDataValuesItDependsOn_; }
 
     /// @}

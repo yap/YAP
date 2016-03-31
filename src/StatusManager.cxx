@@ -74,7 +74,7 @@ void StatusManager::updateCalculationStatus(const CachedDataValue& cdv, const st
         return;
 
     // check CachedDataValue daughter dependencies
-    for (const auto dcdv : cdv.daughterCachedDataValueDependencies()) {
+    for (const auto& dcdv : cdv.daughterCachedDataValueDependencies()) {
 
         const auto& dpc = pc->daughters()[dcdv.Daughter];
 

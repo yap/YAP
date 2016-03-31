@@ -152,11 +152,11 @@ public:
     { return FinalStateParticles_; }
 
     /// \return set of DataAccessors
-    const DataAccessorSet dataAccessors() const
+    const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
 
     /// \return set of DataAccessors
-    const StaticDataAccessorSet staticDataAccessors() const
+    const StaticDataAccessorSet& staticDataAccessors() const
     { return StaticDataAccessors_; }
 
     /// \return (min, max) array[2] of mass range for particle combination
