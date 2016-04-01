@@ -65,7 +65,7 @@ public:
     virtual bool consistent() const override;
 
     /// \return list of all ParticleCombinations
-    ParticleCombinationVector particleCombinations() const override
+    const ParticleCombinationVector& particleCombinations() const override
     { return ParticleCombinations_; }
 
     /// \return owning Model

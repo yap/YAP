@@ -37,7 +37,7 @@ class ReportsParticleCombinations
 public:
 
     /// \return vector of ParticleCombinations
-    virtual ParticleCombinationVector particleCombinations() const = 0;
+    virtual const ParticleCombinationVector& particleCombinations() const = 0;
 
     /// Default constructor
     ReportsParticleCombinations() = default;

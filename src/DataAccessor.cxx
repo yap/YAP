@@ -29,18 +29,6 @@ int DataAccessor::maxSymmetrizationIndex() const
 }
 
 //-------------------------
-ParticleCombinationVector DataAccessor::particleCombinations() const
-{
-    ParticleCombinationVector particleCombinations;
-    particleCombinations.reserve(SymmetrizationIndices_.size());
-
-    for (auto& kv : SymmetrizationIndices_)
-        particleCombinations.push_back(kv.first);
-
-    return particleCombinations;
-}
-
-//-------------------------
 void DataAccessor::printParticleCombinations() const
 {
     LOG(INFO) << data_accessor_type();
@@ -77,6 +65,12 @@ bool DataAccessor::consistent() const
             C &= false;
         }
 
+    if (SymmetrizationIndices_.size() != ParticleCombinations_.size()) {
+        FLOG(ERROR) << "SymmetrizationIndices_.size() " << SymmetrizationIndices_.size()
+                    << " != ParticleCombinations_.size() " << ParticleCombinations_.size();
+        C &= false;
+    }
+
     return C;
 }
 
@@ -95,12 +89,18 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
         if ((*Equiv_)(kv.first, c)) {
             // equating member found; set index; return
             SymmetrizationIndices_[c] = kv.second;
+            // and also add to ParticleCombinations_
+            ParticleCombinations_.push_back(c);
+
             return kv.second;
         }
 
     // else assign to current size = highest current index + 1
     unsigned size = maxSymmetrizationIndex() + 1;
     SymmetrizationIndices_[c] = size;
+
+    // and also add to ParticleCombinations_
+    ParticleCombinations_.push_back(c);
 
     return size;
 }
@@ -154,6 +154,13 @@ void DataAccessor::pruneSymmetrizationIndices()
             index += 1;
 
     }
+
+    // (re)fill ParticleCombinations_
+    ParticleCombinations_.clear();
+    ParticleCombinations_.reserve(SymmetrizationIndices_.size());
+
+    for (auto& kv : SymmetrizationIndices_)
+        ParticleCombinations_.push_back(kv.first);
 }
 
 //-------------------------

@@ -77,7 +77,8 @@ public:
     int maxSymmetrizationIndex() const;
 
     /// \return vector of ParticleCombination's
-    ParticleCombinationVector particleCombinations() const override;
+    const ParticleCombinationVector& particleCombinations() const override
+    { return ParticleCombinations_; }
 
     /// print ParticleCombination map
     void printParticleCombinations() const;
@@ -135,6 +136,10 @@ private:
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
+
+    /// Vector of particle combinations. This is a cache kept for performance reasons,
+    /// it must always be in sync with SymmetrizationIndices_
+    ParticleCombinationVector ParticleCombinations_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
     CachedDataValueSet CachedDataValues_;
