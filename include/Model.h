@@ -116,10 +116,12 @@ public:
     { return MeasuredBreakupMomenta_; }
 
     /// \return HelicityAngles accessor
+    /// is nullptr if not using helicity formalism
     std::shared_ptr<HelicityAngles> helicityAngles()
     { return HelicityAngles_; }
 
     /// \return HelicityAngles accessor (const)
+    /// is nullptr if not using helicity formalism
     const std::shared_ptr<HelicityAngles> helicityAngles() const
     { return HelicityAngles_; }
 

@@ -5,6 +5,7 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
+#include "HelicityFormalism.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
@@ -23,7 +24,8 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
     MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
-    HelicityAngles_(std::make_shared<HelicityAngles>(this))
+    // Helicity angles are only needed when using Helicity formalism
+    HelicityAngles_(dynamic_cast<HelicityFormalism*>(SAC.get()) ? std::make_shared<HelicityAngles>(this) : nullptr)
 {
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
@@ -173,7 +175,8 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
     FourMomenta_->addParticleCombination(pc);
 
     if (!pc->isFinalStateParticle()) {
-        HelicityAngles_->addParticleCombination(pc);
+        if (HelicityAngles_)
+            HelicityAngles_->addParticleCombination(pc);
         MeasuredBreakupMomenta_->addParticleCombination(pc);
     }
 
