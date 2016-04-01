@@ -21,6 +21,7 @@
 #ifndef yap_HelicityFormalism_h
 #define yap_HelicityFormalism_h
 
+#include "RequiresHelicityAngles.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 
@@ -37,7 +38,7 @@ class ParticleCombination;
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup SpinAmplitude
-class HelicitySpinAmplitude : public SpinAmplitude
+class HelicitySpinAmplitude : public SpinAmplitude, public RequiresHelicityAngles
 {
 public:
 

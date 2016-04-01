@@ -35,18 +35,10 @@ void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P, 
 
     model()->fourMomenta()->setFinalStateMomenta(*this, P, sm);
 
-    // call calculate on four momenta and helicity angles (if using helicity formalism) first
-    model()->fourMomenta()->calculate(*this, sm);
-    if (model()->helicityAngles())
-        model()->helicityAngles()->calculate(*this, sm);
-
-    // call calculate on all other static data accessors in model
-    for (auto& sda : model()->staticDataAccessors()) {
-        // FourMomenta already calculated above
-        if (sda == model()->fourMomenta().get() or sda == model()->helicityAngles().get())
-            continue;
+    // call calculate on all static data accessors in model
+    for (auto& sda : model()->staticDataAccessors())
         sda->calculate(*this, sm);
-    }
+
     FDEBUG("set final state momenta and calculated StaticDataAccessors")
 }
 

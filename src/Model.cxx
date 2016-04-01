@@ -23,10 +23,13 @@ namespace yap {
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
     FourMomenta_(std::make_shared<FourMomenta>(this)),
-    MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this)),
-    // Helicity angles are only needed when using Helicity formalism
-    HelicityAngles_(dynamic_cast<HelicityFormalism*>(SAC.get()) ? std::make_shared<HelicityAngles>(this) : nullptr)
+    MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this))
 {
+    // order of initializers above is important for the StaticDataAccessors,
+    // since FourMomenta_ must be the first calculated before or else.
+    // This order should not be changes ever (also by access to StaticDataAccessors_)
+    // HelicityAngles, if needed, is added later,
+
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
@@ -293,11 +296,20 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // if insertion was successful
         // set its index
         da->setIndex(DataAccessors_.size() - 1);
-    }
 
-    // if StaticDataAccessor, add to StaticDataAccessors_
-    if (dynamic_cast<StaticDataAccessor*>(da))
-        StaticDataAccessors_.insert(static_cast<StaticDataAccessor*>(da));
+        // if HelicityAngles is empty and DataAccessor requires
+        // HelicityAngles, create HelicityAngles. Calling before
+        // adding to StaticDataAccessorVector insures that
+        // HelicityAngles are called before any newly created
+        // StaticDataAccessors
+        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da))
+            HelicityAngles_ = std::make_shared<HelicityAngles>(this);
+
+        // if StaticDataAccessor, add to StaticDataAccessors_
+        if (dynamic_cast<StaticDataAccessor*>(da))
+            StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
+
+    }
 }
 
 //-------------------------

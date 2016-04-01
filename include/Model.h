@@ -158,7 +158,7 @@ public:
     { return DataAccessors_; }
 
     /// \return set of DataAccessors
-    const StaticDataAccessorSet& staticDataAccessors() const
+    const StaticDataAccessorVector& staticDataAccessors() const
     { return StaticDataAccessors_; }
 
     /// \return (min, max) array[2] of mass range for particle combination
@@ -249,8 +249,9 @@ private:
     /// Set of all DataAccessor's registered to this model
     DataAccessorSet DataAccessors_;
 
-    /// Set of all StaticDataAccessor's registered to this model
-    StaticDataAccessorSet StaticDataAccessors_;
+    /// Vector of raw pointers to all StaticDataAccessor's registered
+    /// to this model, in order in which they need be calculated
+    StaticDataAccessorVector StaticDataAccessors_;
 
     /// Raw pointer to initial-state particle
     std::shared_ptr<DecayingParticle> InitialStateParticle_;
