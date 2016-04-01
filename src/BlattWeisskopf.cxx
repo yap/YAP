@@ -29,11 +29,11 @@ double BlattWeisskopf::F2(unsigned l, double z)
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
+    AmplitudeComponent(),
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
+    RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
-    L_(L),
-    Fq_r(RealCachedDataValue::create(this)),
-    Fq_ab(RealCachedDataValue::create(this))
+    L_(L)
 {
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");
@@ -41,21 +41,36 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
-    Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
-    Fq_r->addDependency(DecayingParticle_->mass());
-    Fq_r->addDependency(DecayingParticle_->radialSize());
+    if (L_ > 2)
+        throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(L_),
+                                    "BlattWeisskopf::BlattWeisskopf");
 
-    Fq_ab->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
-    Fq_ab->addDependency(DecayingParticle_->radialSize());
+    if (L_ > 0) {
+        // register with model
+        addToModel();
 
-    // register with model
-    addToModel();
+        Fq_r = RealCachedDataValue::create(this);
+        Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
+        Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
+        Fq_r->addDependency(DecayingParticle_->mass());
+        Fq_r->addDependency(DecayingParticle_->radialSize());
+
+        Fq_ab = RealCachedDataValue::create(this);
+        Fq_ab->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
+        Fq_ab->addDependency(DecayingParticle_->radialSize());
+    }
+
+    // if L == 0, values are all always 1, no storage in DataPoint necessary
+
 }
 
 //-------------------------
 double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
 {
+    // spin 0 always has factors 1
+    if (L() == 0)
+        return 1.;
+
     unsigned symIndex = symmetrizationIndex(pc);
 
     if (sm.status(*Fq_r, symIndex) == CalculationStatus::uncalculated) {

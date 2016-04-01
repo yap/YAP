@@ -10,6 +10,8 @@
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
 #include "PhaseSpaceUtilities.h"
+#include "RequiresHelicityAngles.h"
+#include "RequiresMeasuredBreakupMomenta.h"
 #include "SpinAmplitudeCache.h"
 
 /// \todo Find better place for this
@@ -22,8 +24,7 @@ namespace yap {
 //-------------------------
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
-    FourMomenta_(std::make_shared<FourMomenta>(this)),
-    MeasuredBreakupMomenta_(std::make_shared<MeasuredBreakupMomenta>(this))
+    FourMomenta_(std::make_shared<FourMomenta>(this))
 {
     // order of initializers above is important for the StaticDataAccessors,
     // since FourMomenta_ must be the first calculated before or else.
@@ -180,7 +181,8 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
     if (!pc->isFinalStateParticle()) {
         if (HelicityAngles_)
             HelicityAngles_->addParticleCombination(pc);
-        MeasuredBreakupMomenta_->addParticleCombination(pc);
+        if (MeasuredBreakupMomenta_)
+            MeasuredBreakupMomenta_->addParticleCombination(pc);
     }
 
     // call recursively on daughters
@@ -305,10 +307,14 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da))
             HelicityAngles_ = std::make_shared<HelicityAngles>(this);
 
+        // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
+        if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
+                and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta())
+            MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(this);
+
         // if StaticDataAccessor, add to StaticDataAccessors_
         if (dynamic_cast<StaticDataAccessor*>(da))
             StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
-
     }
 }
 

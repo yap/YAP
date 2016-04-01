@@ -23,8 +23,10 @@
 
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
+#include "RequiresMeasuredBreakupMomenta.h"
 
 #include <memory>
+#include <string>
 
 namespace yap {
 
@@ -39,7 +41,7 @@ class StatusManager;
 /// \brief Class implementing BlattWeisskopf barrier factors
 /// \author Johannes Rauch, Daniel Greenwald
 
-class BlattWeisskopf : public AmplitudeComponent, public DataAccessor
+class BlattWeisskopf : public AmplitudeComponent, public DataAccessor, public RequiresMeasuredBreakupMomenta
 {
 public:
 
