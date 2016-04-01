@@ -18,8 +18,9 @@ void checkDSymmetries(unsigned twoJ, int twoM, int twoN, double alpha, double be
 TEST_CASE( "WignerD" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
+    //yap::plainLogs(el::Level::Debug);
 
     // choose arbitrary angles to test with
     double alpha = 0.4 * yap::pi<double>();

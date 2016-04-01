@@ -12,8 +12,9 @@
 TEST_CASE( "Matrix" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
+    //yap::plainLogs(el::Level::Debug);
 
     const yap::ThreeMatrix<double> zero({0, 0, 0, 0, 0, 0, 0, 0, 0});
     const yap::ThreeMatrix<double> unit({1, 0, 0, 0, 1, 0, 0, 0, 1});

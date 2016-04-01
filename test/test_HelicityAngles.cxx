@@ -74,8 +74,8 @@ void calculate_helicity_angles(const yap::Model& M,
 TEST_CASE( "HelicityAngles" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
     // init random generator

@@ -10,8 +10,9 @@
 TEST_CASE( "Vector" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
+    //yap::plainLogs(el::Level::Debug);
 
     SECTION( "Initialization" ) {
         yap::Vector<double, 3> v = {};

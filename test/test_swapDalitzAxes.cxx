@@ -21,9 +21,9 @@
 TEST_CASE( "swapDalitzAxes" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
-    //yap::plainLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
+    //yap::plainLogs(el::Level::Debug);
 
     std::array<double, 4> PDGs = {411, 321, -321, 211}; // D+ -> K+ K- pi+
     std::array<double, 2> m2_ab_range = {0.4, 1.9};

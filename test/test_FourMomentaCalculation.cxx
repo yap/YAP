@@ -127,9 +127,9 @@ TEST_CASE( "FourMomentaCalculation" )
 
     SECTION("3 final state particles") {
 
-
-        // disable logs in text
-        yap::disableLogs(el::Level::Global);
+        // disable debug logs in test
+        yap::disableLogs(el::Level::Debug);
+        //yap::plainLogs(el::Level::Debug);
 
         // load particle factory
         yap::ParticleFactory factory("../data/evt.pdl");

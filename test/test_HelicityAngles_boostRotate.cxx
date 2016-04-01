@@ -33,8 +33,8 @@
 TEST_CASE( "HelicityAngles_boostRotate" )
 {
 
-    // disable logs in text
-    yap::disableLogs(el::Level::Global);
+    // disable debug logs in test
+    yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
     // init random generator
