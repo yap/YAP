@@ -1,6 +1,7 @@
 #include "SpinAmplitude.h"
 
 #include "CalculationStatus.h"
+#include "Constants.h"
 #include "Exceptions.h"
 #include "spin.h"
 #include "StatusManager.h"
@@ -44,6 +45,10 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
     // set all amplitudes Uncalculated
     sm.set(*this, CalculationStatus::uncalculated);
 
+    // overall normalization constant
+    double NJ = 1;              // no normalization
+    // double NJ = sqrt((initialTwoJ() + 1) / 4. / pi<double>()); // sqrt((2J+1)/4pi)
+
     // loop over particle combinations
     for (auto& pc : particleCombinations()) {
 
@@ -62,7 +67,8 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 
                     const auto& spp = aSM_kv.first; // SpinProjectionPair of daughters
 
-                    auto val = calc(two_M, spp[0], spp[1], d, pc);
+                    auto val = calc(two_M, spp[0], spp[1], d, pc) * NJ;
+
                     FDEBUG(*this << " := " << val << ", for " << *pc << " for " << two_M << " -> " << spp[0] << " + " << spp[1]);
 
                     aSM_kv.second->setValue(val, d, symIndex, sm);
