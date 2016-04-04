@@ -25,15 +25,7 @@ namespace yap {
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     Locked_(false),
     CoordinateSystem_(ThreeAxes),
-    ParticleCombinationCache_(),
-    SpinAmplitudeCache_(),
-    DataAccessors_(),
-    StaticDataAccessors_(),
-    InitialStateParticle_(nullptr),
-    FinalStateParticles_(),
-    FourMomenta_(std::make_shared<FourMomenta>(this)),
-    MeasuredBreakupMomenta_(nullptr),
-    HelicityAngles_(nullptr)
+    FourMomenta_(std::make_shared<FourMomenta>(this))
 {
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
