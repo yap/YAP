@@ -10,7 +10,8 @@ namespace yap {
 DataSet::DataSet(const Model& m) :
     DataPartitionBlock(m.dataAccessors()),
     ReportsModel(),
-    Model_(&m)
+    Model_(&m),
+    GlobalStatusManager_(m.dataAccessors())
 {
 }
 
@@ -19,7 +20,8 @@ DataSet::DataSet(const DataSet& other) :
     DataPartitionBlock(other),
     ReportsModel(),
     DataPoints_(other.DataPoints_),
-    Model_(other.Model_)
+    Model_(other.Model_),
+    GlobalStatusManager_(other.GlobalStatusManager_)
 {
     assertDataPointOwnership();
 }
@@ -29,7 +31,8 @@ DataSet::DataSet(DataSet&& other) :
     DataPartitionBlock(std::move(other)),
     ReportsModel(),
     DataPoints_(std::move(other.DataPoints_)),
-    Model_(std::move(other.Model_))
+    Model_(std::move(other.Model_)),
+    GlobalStatusManager_(std::move(other.GlobalStatusManager_))
 {
     assertDataPointOwnership();
 }
@@ -40,6 +43,7 @@ DataSet& DataSet::operator=(const DataSet& other)
     DataPartitionBlock::operator=(other);
     Model_ = other.Model_;
     DataPoints_ = other.DataPoints_;
+    GlobalStatusManager_ = other.GlobalStatusManager_;
     assertDataPointOwnership();
     return *this;
 }
@@ -50,6 +54,7 @@ DataSet& DataSet::operator=(DataSet&& other)
     DataPartitionBlock::operator=(std::move(other));
     Model_ = std::move(other.Model_);
     DataPoints_ = std::move(other.DataPoints_);
+    GlobalStatusManager_ = std::move(other.GlobalStatusManager_);
     assertDataPointOwnership();
     return *this;
 }

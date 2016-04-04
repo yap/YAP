@@ -14,9 +14,9 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
 {
     // angular momentum normalization factor
     /// \todo check which is the right one
-    double c = sqrt(2. * L() + 1);
+    // double c = sqrt(2. * L() + 1);
     //double c = sqrt((2. * L() + 1) / 4. / pi<double>() );
-    //double c  = sqrt((2. * L() + 1) / (initialTwoJ() + 1.));
+    double c  = sqrt((2. * L() + 1) / (initialTwoJ() + 1.));
 
     // cache coefficients
     for (int two_m1 = -finalTwoJ()[0]; two_m1 <= (int)finalTwoJ()[0]; two_m1 += 2)

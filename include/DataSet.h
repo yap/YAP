@@ -31,6 +31,7 @@
 namespace yap {
 
 class Model;
+class StatusManager;
 
 /// \class DataSet
 /// \brief Class holding a set of DataPoint objects.
@@ -106,8 +107,13 @@ public:
     void shrink_to_fit()
     { DataPoints_.shrink_to_fit(); }
 
+    /// \return raw pointer to associated model
     const Model* model() const
     { return Model_; }
+
+    /// \return global status manager
+    StatusManager& globalStatusManager()
+    { return GlobalStatusManager_; }
 
     /// equality operator
     friend bool operator==(const DataSet& lhs, const DataSet& rhs);
@@ -132,6 +138,8 @@ private:
     /// Associated model
     const Model* Model_;
 
+    /// Global StatusManager
+    StatusManager GlobalStatusManager_;
 };
 
 }

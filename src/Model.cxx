@@ -23,6 +23,7 @@ namespace yap {
 
 //-------------------------
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
+    Locked_(false),
     CoordinateSystem_(ThreeAxes),
     ParticleCombinationCache_(),
     SpinAmplitudeCache_(),
@@ -34,11 +35,6 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     MeasuredBreakupMomenta_(nullptr),
     HelicityAngles_(nullptr)
 {
-    // order of initializers above is important for the StaticDataAccessors,
-    // since FourMomenta_ must be the first calculated before or else.
-    // This order should not be changes ever (also by access to StaticDataAccessors_)
-    // HelicityAngles, if needed, is added later,
-
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
@@ -72,6 +68,9 @@ std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
     if (!InitialStateParticle_)
         throw exceptions::Exception("Initial state unset", "Model::amplitude");
 
+    if (d.model() != this)
+        throw exceptions::Exception("DataPoint is not associated with this model.", "Model::amplitude");
+
     std::complex<double> a = Complex_0;
 
     for (int two_m = -InitialStateParticle_->quantumNumbers().twoJ(); two_m <= (int)InitialStateParticle_->quantumNumbers().twoJ(); two_m += 2) {
@@ -96,34 +95,39 @@ double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const St
         L += log(norm(amplitude(*d, *D)));
     }
 
-    // set all variable statuses to Unchanged
-    D->setAll(VariableStatus::unchanged);
-
     return L;
 }
 
 //-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS) const
 {
-    // update data set's calculation statuses
-    DS.updateCalculationStatuses(dataAccessors());
+    // update global calculation statuses (managed by data set)
+    DS.globalStatusManager().updateCalculationStatuses(dataAccessors());
 
-    return partialSumOfLogsOfSquaredAmplitudes(&DS, StatusManager(DS));
+    auto log_L = partialSumOfLogsOfSquaredAmplitudes(&DS, DS.globalStatusManager());
+
+    // Set all variable statuses to Unchanged
+    DS.globalStatusManager().setAll(VariableStatus::unchanged);
+
+    return log_L;
 }
+
+
 //-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const
 {
+    // if DataPartitionVector is empty, run over whole data set
     if (DP.empty())
         throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
 
     // update global calculation statuses (managed by data set)
-    DS.updateCalculationStatuses(dataAccessors());
+    DS.globalStatusManager().updateCalculationStatuses(dataAccessors());
 
     double log_L = 0;
 
     if (DP.size() == 1) {
-
-        log_L = partialSumOfLogsOfSquaredAmplitudes(DP[0].get(), DS);
+        // if threading is unnecessary
+        log_L = partialSumOfLogsOfSquaredAmplitudes(DP[0].get(), DS.globalStatusManager());
 
     } else {
 
@@ -131,7 +135,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
 
         // create thread for calculation on each partition
         for (auto& P : DP)
-            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), DS));
+            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), DS.globalStatusManager()));
 
         // wait for each partition to finish calculating
         for (auto& s : partial_sums)
@@ -139,7 +143,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
     }
 
     // Set all variable statuses to Unchanged
-    DS.setAll(VariableStatus::unchanged);
+    DS.globalStatusManager().setAll(VariableStatus::unchanged);
 
     return log_L;
 }
@@ -293,6 +297,9 @@ ComplexParameterVector Model::freeAmplitudes() const
 //-------------------------
 void Model::addDataAccessor(DataAccessorSet::value_type da)
 {
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addDataAccessor");
+
     // check if already in DataAccessors_
     if (DataAccessors_.find(da) != DataAccessors_.end())
         // do nothing
@@ -329,6 +336,9 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
 //-------------------------
 void Model::prepareDataAccessors()
 {
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::prepareDataAcessors");
+
     // remove expired elements of DataAccessors_
     removeExpired(DataAccessors_);
     removeExpiredStatic(StaticDataAccessors_);
@@ -380,6 +390,7 @@ void Model::prepareDataAccessors()
     }
 #endif
 
+    lock();
 }
 
 //-------------------------
@@ -580,8 +591,12 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 //-------------------------
 DataSet Model::createDataSet(size_t n)
 {
-    // prepare DataAccessors
-    prepareDataAccessors();
+    if (!locked())
+        // prepare DataAccessors (locks model)
+        prepareDataAccessors();
+
+    if (!locked())
+        throw exceptions::Exception("data sets cannot be generated from an unlocked model.", "Model::createDataSet");
 
     // create empty data set
     DataSet D(*this);
