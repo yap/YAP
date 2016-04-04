@@ -24,7 +24,15 @@ namespace yap {
 //-------------------------
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     CoordinateSystem_(ThreeAxes),
-    FourMomenta_(std::make_shared<FourMomenta>(this))
+    ParticleCombinationCache_(),
+    SpinAmplitudeCache_(),
+    DataAccessors_(),
+    StaticDataAccessors_(),
+    InitialStateParticle_(nullptr),
+    FinalStateParticles_(),
+    FourMomenta_(std::make_shared<FourMomenta>(this)),
+    MeasuredBreakupMomenta_(nullptr),
+    HelicityAngles_(nullptr)
 {
     // order of initializers above is important for the StaticDataAccessors,
     // since FourMomenta_ must be the first calculated before or else.
