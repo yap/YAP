@@ -149,7 +149,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         Amplitudes_[kv.first]->addDependency(kv.second);
     }
 
-    FLOG(INFO) << *Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size();
+    FDEBUG(*Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size());
     return Channels_.back();
 }
 
