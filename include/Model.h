@@ -80,7 +80,7 @@ public:
     /// \param DP DataPartitionVector of partitions to use
     double sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const;
 
-    /// Calculate the sum of the logs of the squared amplitudes
+    /// Calculate the sum of the logs of the squared amplitudes evaluated over the whole data set
     /// \param DS DataSet to evaluate over
     double sumOfLogsOfSquaredAmplitudes(DataSet& DS) const;
 
@@ -88,6 +88,9 @@ public:
 
     /// Check consistency of object
     virtual bool consistent() const;
+
+    bool locked() const
+    { return Locked_; }
 
     /// removes expired DataAccessor's, prune's remaining, and assigns them indices
     void prepareDataAccessors();
@@ -236,6 +239,14 @@ private:
 
     // check if the fourMomenta produce the given invariant masses
     bool checkInvariantMasses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta) const;
+
+    /// lock model
+    void lock()
+    { Locked_ = true; }
+
+    /// stores whether model structure can be modified
+    /// (whether DataAccessors can be added or not)
+    bool Locked_;
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
