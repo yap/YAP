@@ -109,9 +109,10 @@ int main( int argc, char** argv)
     LOG(INFO) << "create dataPoints";
 
     // create data set
-    auto data = M.createDataSet();
+    unsigned nPoints = 64;
+    yap::DataSet data = M.createDataSet(nPoints);
 
-    for (unsigned int iEvt = 0; iEvt < 4; ++iEvt) {
+    for (unsigned int iEvt = 0; iEvt < nPoints; ++iEvt) {
         TGenPhaseSpace event;
         event.SetDecay(P, 4, masses);
         event.Generate();
@@ -124,7 +125,7 @@ int main( int argc, char** argv)
             DEBUG(yap::to_string(momenta.back()));
         }
 
-        data.add(momenta);
+        data[iEvt].setFinalStateMomenta(momenta);
 
     }
 
@@ -140,7 +141,8 @@ int main( int argc, char** argv)
     }
 
     // create data partitions of 1 point each
-    auto parts = yap::DataPartitionBlock::createBySize(data, 1);
+    unsigned nChains = 4;
+    auto parts = yap::DataPartitionWeave::create(data, nChains);
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = M.freeAmplitudes();
@@ -153,11 +155,11 @@ int main( int argc, char** argv)
     //CALLGRIND_START_INSTRUMENTATION
 
     // do several loops over all dataPartitions
-    for (unsigned i = 0; i < 2; ++i) {
+    for (unsigned i = 0; i < 100; ++i) {
 
         // change amplitudes
         for (auto& a : freeAmps)
-            a->setValue(0.9 * a->value());
+            a->setValue(0.99 * a->value());
         DEBUG("===================================================================================================================== ");
 
         double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
