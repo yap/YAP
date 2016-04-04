@@ -127,7 +127,8 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
 
         // create thread for calculation on each partition
         for (auto& P : DP)
-            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), DS.globalStatusManager()));
+            // since std::async copies its arguments, even if they are supposed to be references, we need to use std::cref
+            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), std::cref(DS.globalStatusManager())));
 
         // wait for each partition to finish calculating
         for (auto& s : partial_sums)
