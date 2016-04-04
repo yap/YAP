@@ -64,7 +64,7 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
     P.reserve(n);
 
     for (unsigned i = 0; i < n; ++i) {
-        LOG(INFO) << "Creating DataPartitionWeave with size " << std::ceil((N - i) / n);
+        LOG(INFO) << "Creating DataPartitionWeave with size " << std::ceil(1.*(N - i) / n);
         P.push_back(std::make_unique<DataPartitionWeave>(dataSet, begin(dataSet) + i, end(dataSet), n));
     }
 
