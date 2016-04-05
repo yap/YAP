@@ -11,7 +11,8 @@ namespace yap {
 MassShape::MassShape() :
     DataAccessor(&ParticleCombination::equivByOrderlessContent),
     Resonance_(nullptr),
-    T_(ComplexCachedDataValue::create(this))
+    T_(ComplexCachedDataValue::create(this)),
+    Model_(nullptr)
 {}
 
 //-------------------------
@@ -57,6 +58,10 @@ void MassShape::replaceResonanceMass(std::shared_ptr<RealParameter> m)
 
 //-------------------------
 const Model* MassShape::model() const
-{ return (Resonance_) ? Resonance_->model() : nullptr; }
+{
+    if (!Model_ and Resonance_)
+        Model_ = Resonance_->model();
+    return Model_;
+}
 
 }

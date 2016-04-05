@@ -117,6 +117,8 @@ private:
     /// cached dynamic amplitude
     std::shared_ptr<ComplexCachedDataValue> T_;
 
+    /// Cached pointer to model
+    mutable Model* Model_;
 };
 
 }

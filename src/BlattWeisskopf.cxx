@@ -33,7 +33,8 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
-    L_(L)
+    L_(L),
+    Model_(nullptr)
 {
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");
@@ -104,7 +105,9 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 //-------------------------
 const Model* BlattWeisskopf::model() const
 {
-    return DecayingParticle_->model();
+    if (!Model_)
+        Model_ = DecayingParticle_->model();
+    return Model_;
 }
 
 }

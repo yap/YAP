@@ -98,6 +98,9 @@ private:
 
     /// Blatt-Weisskopf factor at data mass
     std::shared_ptr<RealCachedDataValue> Fq_ab;
+
+    /// Cached pointer to model
+    mutable Model* Model_;
 };
 
 }
