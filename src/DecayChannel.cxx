@@ -246,9 +246,9 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
     // LOOP_0 = sum_{L, S} BlattWeisskopf_L * free_amp(L, S, m) * LOOP_1
     // kvA = pair< shared_ptr<SpinAmplitude>, vector<AmplitudePair> >
     std::complex<double> A = Complex_0;
-    for (auto& kvA : Amplitudes_) {
+    for (const auto& kvA : Amplitudes_) {
 
-        auto ap = kvA.second.at(two_m); // AmplitudePair for spin projection m
+        const auto& ap = kvA.second.at(two_m); // AmplitudePair for spin projection m
 
         // if already calculated
 
@@ -261,7 +261,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 
         // else calculate
 
-        auto sa = kvA.first; // SpinAmplitude
+        const auto& sa = kvA.first; // SpinAmplitude
 
         DEBUG("DecayChannel::amplitude :: Calculating " << *this << " for two_m = " << two_m << " and pc = " << *pc << " for sp.amp. = " << *sa);
 
@@ -273,7 +273,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
         // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
         // kvM = pair <SpinProjectionPair, ComplexCachedDataValue>
         std::complex<double> a = Complex_0;
-        for (auto& kvM : m) {
+        for (const auto& kvM : m) {
             // retrieve cached spin amplitude from data point
             auto amp = kvM.second->value(d, sa_symIndex);
 

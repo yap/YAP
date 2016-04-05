@@ -27,7 +27,7 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
     unsigned symIndex = symmetrizationIndex(pc);
 
     // get cached amplitude object for spin projection two_m
-    auto A = Amplitudes_.at(two_m);
+    auto& A = Amplitudes_.at(two_m);
 
     if (sm.status(*A, symIndex) == CalculationStatus::uncalculated) {
 
@@ -36,7 +36,7 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
         /// \todo Is this the best way to do it? (loop over pc's then channels. or channels then pc's?)
 
         // sum up DecayChannel::amplitude over each channel
-        for (auto& c : channels())
+        for (const auto& c : channels())
             if (c->hasParticleCombination(pc))
                 a += c->amplitude(d, pc, two_m, sm);
 
