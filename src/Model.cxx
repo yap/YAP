@@ -600,6 +600,16 @@ DataSet Model::createDataSet(size_t n)
 }
 
 //-------------------------
+void Model::setParameterFlagsToUnchanged()
+{
+    for (auto& d : DataAccessors_)
+        for (auto& c : d->cachedDataValues())
+            for (auto& p : c->parameterDependencies())
+                if (p->variableStatus() == VariableStatus::changed)
+                    p->setVariableStatus(VariableStatus::unchanged);
+}
+
+//-------------------------
 void Model::printDataAccessors(bool printParticleCombinations)
 {
     // header
