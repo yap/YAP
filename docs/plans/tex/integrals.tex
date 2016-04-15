@@ -1,0 +1,174 @@
+\documentclass[a4paper]{article}
+
+\usepackage[landscape,margin=1cm]{geometry}
+\usepackage{amsmath}
+
+\newcommand{\decPar}{\ensuremath{\textsc{dp}}}
+\newcommand{\decChan}{\ensuremath{\textsc{dc}}}
+\newcommand{\parComb}{\ensuremath{\textsc{pc}}}
+\newcommand{\dataPt}{\ensuremath{\textsc{d}}}
+
+\newcommand{\diff}{\ensuremath{\textrm{d}}}
+
+\newcommand{\isp}{\ensuremath{\textsc{isp}}}
+\newcommand{\fsp}{\ensuremath{\textsc{fsp}}}
+
+\newcommand{\DPC}{\ensuremath{(\dataPt; \parComb)}}
+\newcommand{\DPCi}{\ensuremath{(\dataPt; \parComb_i)}}
+\newcommand{\amplitude}[2]{\ensuremath{A_{#1}^{#2}\DPC}}
+\newcommand{\amplitudei}[2]{\ensuremath{A_{{#1}_i}^{{#2}_i}\DPCi}}
+
+\begin{document}
+
+\begin{eqnarray}
+\amplitude{\textrm{P}}{M} &=& T_P\DPC \times \sum_{\vec{d}} \sum_{LS}\left(\alpha^{LSM}_{P\to\vec{d}}\times B^{L}_{\vec{d}}\DPC\sum_{\vec{m}}\left(\Omega_{LS}^{M\vec{m}}\DPC \prod_{d_i\in\vec{d}} \amplitudei{d}{m} \right)\right) \\
+%
+&=& T_P\DPC \times \sum_{LS\vec{d}} \alpha^{LSM}_{P\to\vec{d}}\cdot\beta^{LSM}_{P\to\vec{d}}\DPC
+\end{eqnarray}
+where $\vec{d}$ is a possible decay channel (a vector of the daughters
+decayed into in that channel). $\alpha$ is a free (in the fit)
+amplitude; $\beta$ is a fixed amplitude (governmed by the model). So:
+\begin{equation}
+  \beta^{LSM}_{P\to\vec{d}} = B^{L}_{\vec{d}}\DPC \times \sum_{\vec{m}} \left\{ \Omega^{M\vec{m}}_{LS}\DPC \prod_{d_i\in\vec{d}} \left(T_{d_i}\DPCi\sum_{L_iS_i\vec{\delta}_i} \alpha^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\cdot\beta^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\DPCi  \right)\right\}
+\end{equation}
+If we define $\beta'^{LSM}_{P\to\vec{d}} \equiv T_P\beta^{LSM}_{P\to\vec{d}}$, then
+\begin{eqnarray}
+  \beta'^{LSM}_{P\to\vec{d}} &=& T_P\DPC B^{L}_{\vec{d}}\DPC \times \sum_{\vec{m}} \left\{ \Omega^{M\vec{m}}_{LS}\DPC \prod_{d_i\in\vec{d}} \left(\sum_{L_iS_i\vec{\delta}_i} \alpha^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\cdot\beta'^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\DPCi  \right)\right\}\\
+  %
+  &=& \sum_{\vec{m}} \left\{ [T_PB^{L}_{\vec{d}}\Omega^{M\vec{m}}_{LS}]\DPC \prod_{d_i\in\vec{d}} \left(\sum_{L_iS_i\vec{\delta}_i} \alpha^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\cdot\beta'^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\DPCi  \right)\right\}\\ 
+\end{eqnarray}
+Define
+\begin{equation}
+  \tau_{P\to\vec{d}}^{LSM\vec{m}} = T_P \times B^{L}_{\vec{d}} \times \Omega^{M\vec{m}}_{LS}.
+\end{equation}
+So:
+\begin{equation}
+  \beta'^{LSM}_{P\to\vec{d}} =  \sum_{\vec{m}} \left\{ \tau_{P\to\vec{d}}^{LSM\vec{m}}\DPC \prod_{d_i\in\vec{d}} \left[\sum_{L_iS_i\vec{\delta}_i}\left( \alpha^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\cdot\beta'^{L_iS_im_i}_{d_i\to\vec{\delta}_i}\DPCi  \right)\right]\right\}\\ 
+\end{equation}
+For a final-state particle:
+\begin{equation}
+\beta'^{LSM}_{\fsp} =  \sum_{\vec{m}} \tau_{P\to\vec{d}}^{LSM\vec{m}}\DPC = 2J + 1 = 1 \textrm{ for spinless \fsp's}
+\end{equation}
+
+For example, three-particle decay of spin-0 initial state: $P \to Rc$, $R \to ab$, $abc$ all spinless:
+\begin{equation}
+  A_{\isp}\DPC = \sum_{R} \alpha_{P\to Rc} \underbrace{\tau_{P\to Rc}\DPC}_{B_{P\to Rc}\cdot\Omega_{P\to Rc}} \times \underbrace{\alpha_{R\to ab}}_{1} \underbrace{\tau_{R\to ab}\DPCi}_{T_{R\to ab}\cdot B_{R\to ab}}
+\end{equation}
+So
+\begin{eqnarray}
+  A_{\isp}(\dataPt) & = & \sum_{\parComb}\sum_{R} \alpha_{P\to Rc} \underbrace{\tau_{P\to Rc}\DPC \tau_{R\to ab}\DPCi}_{\tau_{P\to Rc\to abc}}\\
+  \left|A_{\isp}(\dataPt)\right|^2 & = & \sum_{R,R'} \left(\alpha_{P\to Rc}\alpha^{*}_{P\to R'c} \underbrace{\sum_{\parComb,\parComb'} \tau_{P\to Rc \to abc}(\dataPt,\parComb) \tau_{P\to R'c \to abc}(\dataPt,\parComb')}_{|\tau|^2_{RR'}}\right )
+\end{eqnarray}
+So
+\begin{equation}
+  \int |A_{\isp}|^2 = \sum_{R,R'} \alpha_R\alpha^*_{R'} \int|\tau|^2_{RR'}
+\end{equation}
+
+A tougher example---Decay of spinles $P$ into four spinless particles:
+\begin{equation}
+  A^{M}_{\isp}\DPC = \sum_{\decChan}\sum_{LS} \left(\alpha^{LSM}_{\decChan} \sum_{\vec{m}} \tau^{LSM\vec{m}}_{\decChan} A^{\vec{m}}_{\decChan}\right),
+\end{equation}
+where
+\begin{equation}
+  A^{\vec{m}}_{\decChan} \equiv \prod_{d\in\decChan}\sum_{\decChan_d}\sum_{L_dS_d}\left(\alpha^{L_dS_dm_d}_{\decChan_d} \sum_{\vec{\mu}_d} \tau^{L_dS_dm_d\vec{\mu}_d}_{\decChan_d}A^{\vec{\mu}_d}_{\decChan_d}\right)
+\end{equation}
+We group together each $\tau^{LSM\vec{m}}_{\decChan}$ with its
+corresponding $A^{\vec{m}}_{\decChan}$, calling the pair
+$\phi^{LSM\vec{m}}_{\decChan}$.\\ We group together the set of those
+pairings, $\Phi^{LSM}_{\decChan}$, with the corresponding free
+amplitude $\alpha^{LSM}_{\decChan}$, calling the pair $\theta^{LSM}_{\decChan}$.\\
+Each decaying particle then has a set of these pairs, $\Theta_{\decPar}$.\\
+Then
+\begin{equation}
+  A_{P}^{M}\DPC & = & \sum_{\theta\in\Theta^{M}_{P}} \left\{\alpha_\theta \left[\sum_{\phi\in\Phi_{\theta}}\left(\tau_\phi\DPC \prod_{d\in\theta} \underbrace{A^{m_d}_d\DPC}_{\textrm{recursive}}\right)\right]\right\}
+\end{equation}
+with $\Theta^{M}_{P}$ denoting the subset of $\Theta_{P}$ with the
+spin projection equal to $M$;\\ the product over daughters $d$ of the
+decay channel in $\theta$, and $m_d$ being the spin projection of that
+daughter in $\theta$.
+
+\begin{equation}
+  |A_{P}(\dataPt)|^2 = \sum_{\theta,\theta' \in \Theta_P} \left[\alpha_\theta\alpha^*_{\theta'}\right]\left\{ \sum_{\parComb, \parComb'} \sum_{\phi\in\Phi_\theta\atop\phi'\in\Phi'_{\theta'}} \left(\left[\tau_\phi\DPC\tau^*_{\phi'}(\dataPt;\parComb')\right]
+  \prod_{d\in\theta\atop d'\in\theta'}\left[A^{m_d}_{d}\DPC A^{m_{d'}*}_{d'}(\dataPt; \parComb')\right]\right)\right\}
+\end{equation}
+And
+\begin{equation}
+  A^{m_d}_{d}\DPC A^{m_{d'}*}_{d'}(\dataPt; \parComb') =
+  \sum_{\theta_d\in\Theta^{m_d}_d \atop \theta_{d'}\in\Theta^{m_{d'}}_{d'}}
+      {
+        \left[\alpha_{\theta_d}\alpha^*_{\theta_{d'}}\right]
+        \left\{{
+          \sum_{\phi_d\in\Phi_{\theta_d} \atop \phi_{d'}\in\Phi_{\theta_{d'}}}
+          \left({
+            \left[ \tau_{\phi_d}\DPC \tau^*_{\phi_{d'}}(\dataPt;\parComb') \right]
+            \prod_{\delta\in\theta_{d} \atop \delta'\in\theta_{d'}}{
+              \left[ A^{m_\delta}_\delta\DPC A^{m_{\delta'}*}_{\delta'}(\dataPt;\parComb') \right]
+            }
+          }\right)
+        }\right\}
+      }
+\end{equation}
+Where eventually $A_{\fsp} = 2j_{\fsp}+1$, which is 1 for a spinless particle.
+
+\pagebreak
+
+Now we label a possible decay tree $\mathcal{T}$
+\begin{eqnarray}
+  |A_{\isp}(\dataPt)|^2 & = &
+  \sum_{\mathcal{T},\mathcal{T}'\in\vec{\mathcal{T}}}
+  \left\{{
+    \left[\prod_{\alpha\in\mathcal{T}}\alpha\right]
+    \left[\prod_{\alpha'\in\mathcal{T}'}\alpha'^*\right]
+    \sum_{\parComb,\parComb'}
+    \left({
+      \left[\prod_{\tau\in\mathcal{T}}\tau\DPC\right]
+      \left[\prod_{\tau'\in\mathcal{T}'}\tau^*(\dataPt;\parComb')\right]
+    }\right)
+  }\right\}\\
+%
+  \int_{\mathcal{D}}|A_{\isp}(\dataPt)|^2\diff\dataPt & = & 
+  \sum_{\mathcal{T},\mathcal{T}'\in\vec{\mathcal{T}}}
+  \left\{{
+    \left[\prod_{\alpha\in\mathcal{T}}\alpha\right]
+    \left[\prod_{\alpha'\in\mathcal{T}'}\alpha'^*\right]
+    \int_{\mathcal{D}}
+    \sum_{\parComb,\parComb'}
+    \left({
+      \left[\prod_{\tau\in\mathcal{T}}\tau\DPC\right]
+      \left[\prod_{\tau'\in\mathcal{T}'}\tau^*(\dataPt;\parComb')\right]
+    }\right)
+    \diff\dataPt
+  }\right\}
+\end{eqnarray}
+  
+So \dots we need a matrix of combinations of decay trees.
+
+\pagebreak
+The model is
+\begin{equation}
+\mathcal{M}(\dataPt) = \left| \sum_M \sum_{\parComb} A\isp^{M}(\dataPt;\parComb)\right|^2
+\end{equation}
+
+For convenience, define:
+\begin{equation}
+  A_{\vec{d}}^{\vec{m}}\DPC \equiv \prod_{d_i\in\vec{d}} \amplitudei{d}{m}
+\end{equation}
+
+So, the integral:
+\begin{eqnarray}
+I & = & \int_{\mathcal{D}} \mathcal{M}(\dataPt)\, \diff\dataPt\\
+%
+I & = & \int_{\mathcal{D}} \left| \sum_M \sum_{\parComb} \amplitude{\isp}{M}{\parComb} \right|^2\, \diff\dataPt\\
+%
+I & = & \int_{\mathcal{D}} \left| \sum_M \sum_{\parComb} \sum_{\vec{d}} \sum_{LS}\left( \alpha^{LSM}_{\vec{d}} B^{L}_{\vec{d}}\DPC \sum_{\vec{m}} \left(\Omega_{LS}^{M\vec{m}}\DPC A_{\vec{d}}^{\vec{m}}\DPC \right)\right) \right|^2\,\diff\dataPt\\
+%
+I & = & \int_{\mathcal{D}} \left| \sum_{LSM\vec{d}} \left(\alpha^{LSM}_{\vec{d}} \sum_{\parComb} \left(B^{L}_{\vec{d}}\DPC \sum_{\vec{m}} \left(\Omega_{LS}^{M\vec{m}}\DPC A_{\vec{d}}^{\vec{m}}\DPC \right) \right)\right)\right|^2\,\diff\dataPt\\
+%
+I & = & \int_{\mathcal{D}} \sum_{LSM\vec{d},\atop L'S'M'\vec{d}'} \left\{\left[\alpha^{LSM}_{\vec{d}}\alpha^{*L'S'M'}_{\vec{d}'}\right]
+\left(\sum_{\parComb} B^{L}_{\vec{d}}\DPC \sum_{\vec{m}} \left(\Omega_{LS}^{M\vec{m}}\DPC A_{\vec{d}}^{\vec{m}}\DPC \right) \right)\\
+&& \times \left.\left. \left(\sum_{\parComb} B^{*L'}_{\vec{d}'}\DPC \sum_{\vec{m'}} \left(\Omega_{L'S'}^{*M'\vec{m}}\DPC A_{\vec{d'}}^{*\vec{m}}\DPC \right) \right) \right\}\right|^2\,\diff\dataPt\\
+%
+\end{eqnarray}
+
+
+\end{document}
