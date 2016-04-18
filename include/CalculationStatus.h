@@ -31,7 +31,7 @@ enum class CalculationStatus : bool {
     uncalculated = false
 };
 
-inline std::ostream& operator<<(std::ostream& str, CalculationStatus c)
+inline std::ostream& operator<<(std::ostream& str, const CalculationStatus& c)
 {
     switch (c) {
         case CalculationStatus::calculated:

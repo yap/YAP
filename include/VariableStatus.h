@@ -30,7 +30,7 @@ enum class VariableStatus {
     unchanged = +1,        ///< Parameter is free but has not been changed
 };
 
-inline std::ostream& operator<<(std::ostream& str, VariableStatus s)
+inline std::ostream& operator<<(std::ostream& str, const VariableStatus& s)
 {
     switch (s) {
         case VariableStatus::changed:
