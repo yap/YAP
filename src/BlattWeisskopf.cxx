@@ -102,6 +102,17 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
     return Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
 }
 
+CachedDataValueSet BlattWeisskopf::cachedDataValuesItDependsOn()
+{
+    // Fq_r and Fq_ab are only created if L_ is 0
+    CachedDataValueSet set;
+    if (Fq_r)
+        set.insert(Fq_r);
+    if (Fq_ab)
+        set.insert(Fq_ab);
+    return set;
+}
+
 //-------------------------
 const Model* BlattWeisskopf::model() const
 {

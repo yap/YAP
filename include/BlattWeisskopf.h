@@ -70,8 +70,7 @@ public:
     virtual bool consistent() const override
     { return DataAccessor::consistent(); }
 
-    virtual CachedDataValueSet cachedDataValuesItDependsOn() override
-    { return {Fq_r, Fq_ab}; }
+    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// include non-const access to Model
     using DataAccessor::model;
