@@ -18,7 +18,9 @@
 
 #include <TGenPhaseSpace.h>
 #include <TLorentzVector.h>
+#include <TRandom.h>
 
+#include <assert.h>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -109,8 +111,9 @@ int main( int argc, char** argv)
     LOG(INFO) << "create dataPoints";
 
     // create data set
-    unsigned nPoints = 64;
+    unsigned nPoints = 1;
     yap::DataSet data = M.createDataSet(nPoints);
+    yap::DataSet dataTest = M.createDataSet(nPoints);
 
     for (unsigned int iEvt = 0; iEvt < nPoints; ++iEvt) {
         TGenPhaseSpace event;
@@ -126,6 +129,7 @@ int main( int argc, char** argv)
         }
 
         data[iEvt].setFinalStateMomenta(momenta);
+        dataTest[iEvt].setFinalStateMomenta(momenta);
 
     }
 
@@ -140,9 +144,10 @@ int main( int argc, char** argv)
             LOG(INFO) << yap::to_string(v);
     }
 
-    // create data partitions of 1 point each
-    unsigned nChains = 4;
+    // create data partitions
+    unsigned nChains = 1;
     auto parts = yap::DataPartitionWeave::create(data, nChains);
+    auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
     // to test amplitude calculation, set all free amps to 1
     auto freeAmps = M.freeAmplitudes();
@@ -158,13 +163,37 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 100; ++i) {
 
         // change amplitudes
-        for (auto& a : freeAmps)
-            a->setValue(0.99 * a->value());
+        if (gRandom->Uniform()>0.5) {
+            for (auto& a : freeAmps) {
+                if (gRandom->Uniform()>0.5)
+                    a->setValue(gRandom->Uniform(0.95, 1.052631579) * a->value());
+            }
+        }
         DEBUG("===================================================================================================================== ");
 
+        std::cout << "Variable status after changing:    \n";
+        M.printFlags(data.globalStatusManager());
+
         double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
+        M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
+
+        std::cout << "Variable status after calculating:    \n";
+        M.printFlags(data.globalStatusManager());
+
+        /*if (gRandom->Uniform()>0.5) {
+            double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
+            LOG(INFO) << "logATest = " << logATest;
+            assert (logA == logATest);
+
+            std::cout << "Variable status after calculating test:    \n";
+            M.printFlags(data.globalStatusManager());
+
+        }*/
+
+
+
     }
 
     //CALLGRIND_STOP_INSTRUMENTATION
