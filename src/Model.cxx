@@ -1,5 +1,6 @@
 #include "Model.h"
 
+#include "CalculationStatus.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
 #include "FinalStateParticle.h"
@@ -135,8 +136,11 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
             log_L  += s.get();
     }
 
-    // Set all variable statuses to Unchanged
+    // Set all variable statuses to unchanged
     DS.globalStatusManager().setAll(VariableStatus::unchanged);
+
+    // Set all calculation statuses to calculated
+    DS.globalStatusManager().setAll(CalculationStatus::calculated);
 
     return log_L;
 }
@@ -610,7 +614,7 @@ void Model::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-void Model::printDataAccessors(bool printParticleCombinations)
+void Model::printDataAccessors(bool printParticleCombinations) const
 {
     // header
     std::cout << "DataAccessors of \n"
@@ -637,6 +641,42 @@ void Model::printDataAccessors(bool printParticleCombinations)
 
         std::cout << std::endl;
     }
+    std::cout << std::endl;
+}
+
+//-------------------------
+void Model::printFlags(const StatusManager& sm) const
+{
+    for (auto& d : DataAccessors_) {
+        std::cout << d->data_accessor_type() << "  ";
+        if (dynamic_cast<Particle*>(d))
+            std::cout << dynamic_cast<Particle*>(d)->name();
+        else if (dynamic_cast<DecayChannel*>(d))
+            std::cout << *dynamic_cast<DecayChannel*>(d);
+
+        std::cout << std::endl;
+
+        for (auto& c : d->cachedDataValues()) {
+            std::cout << "  CachedDataValue " << c << ": ";
+            for (size_t i = 0; i <= d->maxSymmetrizationIndex(); ++i)
+                std::cout << sm.status(*c, i) << "; ";
+            std::cout << "\n";
+
+            for (auto& p : c->parameterDependencies())
+                std::cout << "    depends on Parameter " << p << ": " << p->variableStatus() << "\n";
+
+            for (auto& p : c->cachedDataValueDependencies()) {
+                std::cout << "    depends on CachedDataValue " << p << ": ";
+                for (size_t i = 0; i <= p->owner()->maxSymmetrizationIndex(); ++i)
+                    std::cout << sm.status(*p, i) << "; ";
+                std::cout << "\n";
+            }
+
+            for (auto& d : c->daughterCachedDataValueDependencies())
+                std::cout << "    depends on daughterCachedDataValue " << d.CDV << ": " << sm.status(*d.CDV, 0) << "; ...\n";
+        }
+    }
+
     std::cout << std::endl;
 }
 
