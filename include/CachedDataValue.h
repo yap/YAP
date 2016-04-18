@@ -94,8 +94,8 @@ public:
         { Calculation = s; }
 
         /// assignment of Variable
-        void operator=(const VariableStatus& s)
-        { Variable = s; }
+        /// Does not change Variable if it is fixed!
+        void operator=(const VariableStatus& s);
 
         /// equality operator for checking the CalculationStatus
         friend bool operator==(const Status& S, const CalculationStatus& s)
@@ -112,6 +112,8 @@ public:
         /// inequality operator for checking the VariableStatus
         friend bool operator!=(const Status& S, const VariableStatus& s)
         { return S.Variable != s; }
+
+        friend std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
     };
 
     /// \name Managing dependencies

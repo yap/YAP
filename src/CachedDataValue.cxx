@@ -16,6 +16,18 @@ CachedDataValue::Status::Status() :
     Variable(VariableStatus::changed)
 {}
 
+void CachedDataValue::Status::operator=(const VariableStatus& s)
+{
+    if (Variable != VariableStatus::fixed)
+        Variable = s;
+}
+
+//-------------------------
+std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S)
+{
+    return str << S.Calculation << ", " << S.Variable;
+}
+
 
 //-------------------------
 CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataValueSet vals) :
