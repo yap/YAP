@@ -24,8 +24,8 @@
 #include "FourVector.h"
 #include "StaticDataAccessor.h"
 
+#include <iostream>
 #include <memory>
-#include <ostream>
 #include <vector>
 
 namespace yap {

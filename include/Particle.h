@@ -27,6 +27,7 @@
 #include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>

@@ -658,7 +658,7 @@ void Model::printFlags(const StatusManager& sm) const
 
         for (auto& c : d->cachedDataValues()) {
             std::cout << "  CachedDataValue " << c << ": ";
-            for (size_t i = 0; i <= d->maxSymmetrizationIndex(); ++i)
+            for (int i = 0; i <= d->maxSymmetrizationIndex(); ++i)
                 std::cout << sm.status(*c, i) << "; ";
             std::cout << "\n";
 
@@ -667,7 +667,7 @@ void Model::printFlags(const StatusManager& sm) const
 
             for (auto& p : c->cachedDataValueDependencies()) {
                 std::cout << "    depends on CachedDataValue " << p << ": ";
-                for (size_t i = 0; i <= p->owner()->maxSymmetrizationIndex(); ++i)
+                for (int i = 0; i <= p->owner()->maxSymmetrizationIndex(); ++i)
                     std::cout << sm.status(*p, i) << "; ";
                 std::cout << "\n";
             }

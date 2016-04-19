@@ -4,6 +4,7 @@
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
+#include "logging.h"
 #include "Model.h"
 #include "StaticDataAccessor.h"
 

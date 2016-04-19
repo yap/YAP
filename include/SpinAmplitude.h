@@ -21,16 +21,17 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
-#include "CachedDataValue.h"
 #include "MathUtilities.h"
 #include "StaticDataAccessor.h"
 
 #include <array>
 #include <cstdlib>
+#include <iostream>
 #include <memory>
 
 namespace yap {
 
+class ComplexCachedDataValue;
 class StatusManager;
 
 /// \class SpinAmplitude

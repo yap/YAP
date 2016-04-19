@@ -3,6 +3,7 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "Exceptions.h"
+#include "logging.h"
 #include "spin.h"
 #include "StatusManager.h"
 

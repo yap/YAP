@@ -1,5 +1,6 @@
 #include "BreitWigner.h"
 
+#include "CachedValue.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"

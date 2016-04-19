@@ -1,6 +1,7 @@
 #include "ClebschGordan.h"
 
 #include "Exceptions.h"
+#include "MathUtilities.h"
 #include "spin.h"
 
 #include <algorithm>
@@ -122,6 +123,12 @@ double ClebschGordan::couple(unsigned two_j1, int two_lambda1, unsigned two_j2, 
 
     // l_s_coupling * s_s_coupling
     return l_s_coupling * s_s_coupling;
+}
+
+//-------------------------
+bool ClebschGordan::consistent(unsigned two_J, int two_M)
+{
+    return (std::abs(two_M) <= (int)two_J) and is_even(two_J + two_M);
 }
 
 }

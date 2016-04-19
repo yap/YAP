@@ -19,9 +19,6 @@
 #ifndef yap_ClebschGordan_h
 #define yap_ClebschGordan_h
 
-#include "Exceptions.h"
-#include "MathUtilities.h"
-
 #include <cstdlib>
 #include <string>
 
@@ -112,8 +109,7 @@ double couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2
 /// \return consistency of spin and spin projection
 /// \param two_J 2*spin
 /// \param two_M 2*spin-projection
-inline bool consistent(unsigned two_J, int two_M)
-{ return (std::abs(two_M) <= (int)two_J) and is_even(two_J + two_M); }
+bool consistent(unsigned two_J, int two_M);
 
 } // ClebschGordon namespace
 

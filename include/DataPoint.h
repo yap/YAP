@@ -21,7 +21,6 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include "DataAccessor.h"
 #include "FourVector.h"
 #include "ReportsModel.h"
 
@@ -32,6 +31,7 @@ namespace yap {
 
 class DataSet;
 class Model;
+class StatusManager;
 
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
@@ -42,7 +42,7 @@ class DataPoint : public ReportsModel
 public:
 
     /// Constructor
-    /// \param S DataAccessorSet to initialize data structure from
+    /// \param dataSet DataSet this DataPoint belongs to
     DataPoint(DataSet* dataSet);
 
     /// set four momenta of data point

@@ -21,7 +21,6 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
-#include "CachedValue.h"
 #include "MassShapeWithNominalMass.h"
 
 #include <complex>

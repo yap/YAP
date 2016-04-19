@@ -22,7 +22,6 @@
 #define yap_Parameter_h
 
 #include "Exceptions.h"
-#include "logging.h"
 #include "VariableStatus.h"
 
 #include <complex>

@@ -2,6 +2,7 @@
 
 #include "ClebschGordan.h"
 #include "HelicityAngles.h"
+#include "logging.h"
 #include "Model.h"
 #include "spin.h"
 #include "WignerD.h"
