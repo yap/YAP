@@ -147,15 +147,11 @@ int main( int argc, char** argv)
     // create data partitions
     unsigned nChains = 1;
     auto parts = yap::DataPartitionWeave::create(data, nChains);
-    auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
+    //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
-    // to test amplitude calculation, set all free amps to 1
     auto freeAmps = M.freeAmplitudes();
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
-
-    for (auto& a : freeAmps)
-        a->setValue(yap::Complex_1);
 
     //CALLGRIND_START_INSTRUMENTATION
 
@@ -165,7 +161,7 @@ int main( int argc, char** argv)
         // change amplitudes
         if (gRandom->Uniform()>0.5) {
             for (auto& a : freeAmps) {
-                if (gRandom->Uniform()>0.5)
+                if (a->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform()>0.5)
                     a->setValue(gRandom->Uniform(0.95, 1.052631579) * a->value());
             }
         }
