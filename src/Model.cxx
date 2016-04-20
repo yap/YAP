@@ -344,6 +344,21 @@ void Model::prepareDataAccessors()
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
 
+    // fix amplitudes when they are for the only possible decay chain
+    for (auto& D : DataAccessors_) {
+        if (!dynamic_cast<DecayingParticle*>(D))
+            continue;
+        // if a decaying particle
+        auto C = dynamic_cast<DecayingParticle*>(D)->channels();
+        if (C.size() != 1)
+            continue;
+        // if decaying particle has only one decay channel
+        auto A = C[0]->freeAmplitudes().size();
+        if (A.size() == 1)
+            // if only one free amplitude in decay channel
+            A[0]->setVariableStatus(VariableStatus::fixed);
+    }
+
     // fix indices
 
     // collect used indices
