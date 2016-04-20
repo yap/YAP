@@ -22,11 +22,6 @@ DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double
     Fixed(ComplexCachedDataValue::create(dc)),
     Free(std::make_shared<ComplexParameter>(free))
 {
-    // set to fixed by default.
-    // Will be set to changed for all DecayChannels of a DecayingParticle
-    // when being added to the DecayingParticle.
-    // Will be set to changed if this DecayChannel has more than one AmplitudePair
-    Free->setVariableStatus(VariableStatus::fixed);
 }
 
 //-------------------------
@@ -154,18 +149,6 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
             // add SpinAmplitude retrieved from cache
             addSpinAmplitude(model()->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 
-    // if the DecayingParticle has several channels, the free amplitudes cannot be fixed anymore
-    if (DecayingParticle_->nChannels() > 1)
-        for (auto& c : DecayingParticle_->channels())
-            c->unfixFreeAmplitudes();
-}
-
-//-------------------------
-void DecayChannel::unfixFreeAmplitudes()
-{
-    for (auto& kv : Amplitudes_)
-        for (auto& kv2 : kv.second)
-            kv2.second.Free->setVariableStatus(VariableStatus::changed);
 }
 
 //-------------------------
@@ -223,15 +206,6 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
     // add to Amplitudes_
     Amplitudes_.insert(std::make_pair(sa, std::move(apM)));
 
-    // check if free amplitudes need to be unfixed
-    if (Amplitudes_.size() > 1)
-        unfixFreeAmplitudes();
-    else
-        for (auto& kv : Amplitudes_)
-            if (kv.second.size() > 1) {
-                unfixFreeAmplitudes();
-                break;
-            }
 }
 
 //-------------------------

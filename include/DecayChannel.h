@@ -154,9 +154,6 @@ protected:
 
 private:
 
-    /// set free amplitudes to unfixed
-    void unfixFreeAmplitudes();
-
     /// daughters of the decay
     ParticleVector Daughters_;
 

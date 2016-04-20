@@ -353,7 +353,7 @@ void Model::prepareDataAccessors()
         if (C.size() != 1)
             continue;
         // if decaying particle has only one decay channel
-        auto A = C[0]->freeAmplitudes().size();
+        auto A = C[0]->freeAmplitudes();
         if (A.size() == 1)
             // if only one free amplitude in decay channel
             A[0]->setVariableStatus(VariableStatus::fixed);
