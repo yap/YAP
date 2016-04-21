@@ -68,9 +68,9 @@ public:
     double operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Calculate barrier factor for and store into each data point in a partition
-    /// \param d DataPartition to calculate on
+    /// \param D DataPartition to calculate on
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// check consistency of object
     virtual bool consistent() const override
