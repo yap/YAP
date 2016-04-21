@@ -52,6 +52,23 @@ std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<
 }
 
 //-------------------------
+void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    unsigned symIndex = symmetrizationIndex(pc);
+
+    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
+
+        for (auto& d : D) {
+            // T = 1 / (M^2 - m^2 - iMG)
+            std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - Complex_i * mass()->value() * width()->value());
+            T()->setValue(t, d, symIndex, D);
+        }
+
+        D.status(*T(), symIndex) = CalculationStatus::calculated;
+    }
+}
+
+//-------------------------
 bool BreitWigner::consistent() const
 {
     bool C = MassShapeWithNominalMass::consistent();

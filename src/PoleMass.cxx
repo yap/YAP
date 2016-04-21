@@ -73,6 +73,24 @@ std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<Par
 }
 
 //-------------------------
+void PoleMass::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    unsigned symIndex = symmetrizationIndex(pc);
+
+    // recalculate, cache, & return, if necessary
+    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
+
+        for (auto& d : D) {
+            // T = 1 / (M^2 - m^2)
+            std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));
+            T()->setValue(t, d, symIndex, D);
+        }
+
+        D.status(*T(), symIndex) = CalculationStatus::calculated;
+    }
+}
+
+//-------------------------
 bool PoleMass::consistent() const
 {
     bool C = MassShape::consistent();
