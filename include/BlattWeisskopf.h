@@ -45,12 +45,6 @@ class BlattWeisskopf : public AmplitudeComponent, public DataAccessor, public Re
 {
 public:
 
-    /// \todo this is the inverse square, no?
-    /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
-    /// \param l orbital angular momentum
-    /// \param z square of (radial size * breakup momentum)
-    static double F2(unsigned l, double z);
-
     /// Constructor
     /// \param L angular momentum of Blatt-Weisskopf barrier factor
     /// \param dp raw pointer to owning DecayingParticle
@@ -92,11 +86,8 @@ private:
     /// angular momentum
     unsigned L_;
 
-    /// Blatt-Weisskopf factor at nominal mass
-    std::shared_ptr<RealCachedDataValue> Fq_r;
-
-    /// Blatt-Weisskopf factor at data mass
-    std::shared_ptr<RealCachedDataValue> Fq_ab;
+    /// Blatt-Weisskopf barrier factor
+    std::shared_ptr<RealCachedDataValue> BarrierFactor_;
 
     /// Cached pointer to model
     mutable Model* Model_;

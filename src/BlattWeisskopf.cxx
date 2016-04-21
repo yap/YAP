@@ -11,7 +11,7 @@
 namespace yap {
 
 //-------------------------
-double BlattWeisskopf::F2(unsigned l, double z)
+double f_inverse_square(unsigned l, double z)
 {
     switch (l) {
         case 0:
@@ -19,11 +19,11 @@ double BlattWeisskopf::F2(unsigned l, double z)
         case 1:
             return 1. + z;
         case 2:
-            return 9. + 3.*z + z * z;
+            return 9. + 3. * z + z * z;
         default:
             /// \todo put in generic formula for L > 2
             throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(l) + " > 2",
-                                        "BlattWeisskopf::F2");
+                                        "f_inverse_square");
     }
 }
 
@@ -50,15 +50,12 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
         // register with model
         addToModel();
 
-        Fq_r = RealCachedDataValue::create(this);
-        Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
-        Fq_r->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
-        Fq_r->addDependency(DecayingParticle_->mass());
-        Fq_r->addDependency(DecayingParticle_->radialSize());
-
-        Fq_ab = RealCachedDataValue::create(this);
-        Fq_ab->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
-        Fq_ab->addDependency(DecayingParticle_->radialSize());
+        BarrierFactor_ = RealCachedDataValue::create(this);
+        BarrierFactor_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
+        BarrierFactor_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
+        BarrierFactor_->addDependency(DecayingParticle_->mass());
+        BarrierFactor_->addDependency(DecayingParticle_->radialSize());
+        BarrierFactor_->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
     }
 
     // if L == 0, values are all always 1, no storage in DataPoint necessary
@@ -74,42 +71,38 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
 
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (sm.status(*Fq_r, symIndex) == CalculationStatus::uncalculated) {
-        // nominal breakup momentum
+    if (sm.status(*BarrierFactor_, symIndex) == CalculationStatus::uncalculated) {
+
         double m2_R = pow(DecayingParticle_->mass()->value(), 2);
         double m_a = model()->fourMomenta()->m(d, pc->daughters().at(0));
         double m_b = model()->fourMomenta()->m(d, pc->daughters().at(1));
-        double q2 = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
-        double R = DecayingParticle_->radialSize()->value();
-        double f = sqrt(F2(L_, R * R * q2));
-        Fq_r->setValue(f, d, symIndex, sm);
+        // nominal breakup momentum
+        double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
 
-        DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_r (L = " << L_ << ") = " << Fq_r->value(d, symIndex));
-    }
-
-    if (sm.status(*Fq_ab, symIndex) == CalculationStatus::uncalculated) {
         // measured breakup momentum
-        double q2 = model()->measuredBreakupMomenta()->q2(d, pc);
+        double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc);
 
-        double R = DecayingParticle_->radialSize()->value();
-        double f = sqrt(F2(L_, R * R * q2));
-        Fq_ab->setValue(f, d, symIndex, sm);
+        double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
+        double f2_nomi = f_inverse_square(L_, r2 * q2_nomi);
+        double f2_meas = f_inverse_square(L_, r2 * q2_meas);
 
-        DEBUG("BlattWeisskopf::amplitude :: calculated barrier factor Fq_ab (L = " << L_ << ") = " << Fq_ab->value(d, symIndex));
+        double barrier_factor = sqrt(f2_nomi / f2_meas);
+
+        BarrierFactor_->setValue(barrier_factor, d, symIndex, sm);
+
+        return barrier_factor;
     }
 
-    return Fq_r->value(d, symIndex) / Fq_ab->value(d, symIndex);
+    return BarrierFactor_->value(d, symIndex);
 }
 
 CachedDataValueSet BlattWeisskopf::cachedDataValuesItDependsOn()
 {
-    // Fq_r and Fq_ab are only created if L_ is 0
+    /// \todo replace with actual dependencies of BarrierFactor_?
     CachedDataValueSet set;
-    if (Fq_r)
-        set.insert(Fq_r);
-    if (Fq_ab)
-        set.insert(Fq_ab);
+    if (BarrierFactor_)
+        set.insert(BarrierFactor_);
     return set;
 }
 
