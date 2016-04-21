@@ -49,7 +49,7 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 
     for (unsigned i = 0; i < n; ++i) {
         LOG(INFO) << "Creating DataPartitionWeave with size " << std::ceil(1.*(N - i) / n);
-        P.push_back(DataPartitionWeave(dataSet, begin(dataSet) + i, end(dataSet), n));
+        P.push_back(std::make_unique<DataPartitionWeave>(dataSet, begin(dataSet) + i, end(dataSet), n));
     }
 
     return P;
@@ -78,10 +78,10 @@ DataPartitionVector DataPartitionBlock::create(DataSet& dataSet, unsigned n)
     for (unsigned i = 0; i < n - 1; ++i) {
         auto it_e = it_b + p_size;
         LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
-        P.push_back(DataPartitionBlock(dataSet, it_b, it_e));
+        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
         it_b = it_e;
     }
-    P.push_back(DataPartitionBlock(dataSet, it_b, end(dataSet)));
+    P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, end(dataSet)));
 
     return P;
 }
@@ -106,7 +106,7 @@ DataPartitionVector DataPartitionBlock::createBySize(DataSet& dataSet, size_t s)
     while (it_b != end(dataSet)) {
         auto it_e = it_b + s;
         LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
-        P.push_back(DataPartitionBlock(dataSet, it_b, it_e));
+        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
         it_b = it_e;
     }
 

@@ -174,8 +174,8 @@ private:
 };
 
 /// \typedef DataPartitionVector
-/// \brief Vector of DataPartition
-using DataPartitionVector = std::vector<DataPartition>;
+/// \brief Vector of unique_ptr's to DataPartition
+using DataPartitionVector = std::vector<std::unique_ptr<DataPartition> >;
 
 /// \class DataPartitionBlock
 /// \brief A contiguous block of data
