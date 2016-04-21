@@ -282,7 +282,7 @@ SquareMatrix<T, M> diagonal_minor(const SquareMatrix<T, N> m, std::vector<size_t
     if (indices.size() != M)
         throw exceptions::Exception("wrong number of indices provided", "diagonal_minor");
 
-    SquareMatrix<T, M> dm();
+    SquareMatrix<T, M> dm;
     for (size_t r = 0; r < indices.size(); ++r)
         for (size_t c = 0; c < indices.size(); ++c)
             dm[indices[r]][indices[c]] = m[r][c];
