@@ -31,11 +31,11 @@
 
 namespace yap {
 
-class DataPartitionBase;
+class DataPartition;
 class DataSet;
 
 /// \class DataIterator
-/// \brief Class for iterating over a #DataPartitionBase
+/// \brief Class for iterating over a #DataPartition
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 
@@ -58,26 +58,28 @@ public:
     bool operator!=(const DataIterator& it) const
     { return Iterator_ != it.Iterator_; }
 
-    /// \return owning DataPartitionBase
-    bool ownedBy(DataPartitionBase* dpb) const
-    { return Partition_ == dpb; }
+    /// check ownership
+    bool ownedBy(const DataPartition& dp) const
+    { return Partition_ == &dp; }
 
-    /// grant friend status to DataPartitionBase to access Iterator_
-    friend DataPartitionBase;
+    /// grant friend status to DataPartition to access Iterator_
+    friend DataPartition;
 
 protected:
 
     /// constructor with defaulted iterator
-    /// \param p raw pointer to owning DataPartitionBase
-    DataIterator(DataPartitionBase* p);
+    /// \param p owning DataPartition
+    DataIterator(const DataPartition& p)
+        : Partition_(&p) {}
 
     /// constructor
-    /// \param p raw pointer to owning DataPartitionBase
+    /// \param p owning DataPartition
     /// \param it vector<DataPoint> iterator to contain
-    DataIterator(DataPartitionBase* p, const DataPointVector::iterator& it);
+    DataIterator(const DataPartition& p, const DataPointVector::iterator& it)
+        : Partition_(&p), Iterator_(it) {}
 
-    /// raw pointer to owning DataPartitionBase
-    DataPartitionBase* Partition_;
+    /// owning DataPartition
+    const DataPartition* Partition_;
 
     /// iterator within vector<DataPoint>
     DataPointVector::iterator Iterator_;
@@ -89,31 +91,38 @@ protected:
 /// \brief Class defining a partition of the DataSet
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-class DataPartitionBase : public StatusManager
+class DataPartition : public StatusManager
 {
-public:
+protected:
 
     /// Constructor
     /// \param sm StatusManager to copy StatusManager structure from
     /// \param begin vector<DataPoint>::iterator of start
     /// \param end vector<DataPoint>::iterator of end
-    DataPartitionBase(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end)
-        : StatusManager(sm), Begin_(this, begin), End_(this, end) {}
+    DataPartition(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end)
+        : StatusManager(sm), Begin_(*this, begin), End_(*this, end) {}
+
+    /// constructor taking a DataAccessorSet
+    /// \param sDA DataAccessorSet to initialize StatusManager from
+    DataPartition(const DataAccessorSet& sDA)
+        : StatusManager(sDA), Begin_(*this), End_(*this) {}
+
+public:
 
     /// virtual destructor (defaulted)
-    virtual ~DataPartitionBase() = default;
+    virtual ~DataPartition() = default;
 
     /// copy constructor (defaulted)
-    DataPartitionBase(const DataPartitionBase&) = default;
+    DataPartition(const DataPartition&) = default;
 
     /// move constructor (defaulted)
-    DataPartitionBase(DataPartitionBase&&) = default;
+    DataPartition(DataPartition&&) = default;
 
     /// copy assignment operator (defaulted)
-    DataPartitionBase& operator=(const DataPartitionBase&) = default;
+    DataPartition& operator=(const DataPartition&) = default;
 
     /// move assignment operator (defaulted)
-    DataPartitionBase& operator=(DataPartitionBase&&) = default;
+    DataPartition& operator=(DataPartition&&) = default;
 
     /// \return begin iterator
     virtual const DataIterator& begin() const
@@ -131,26 +140,22 @@ public:
 
 protected:
 
-    /// constructor taking a DataAccessorSet
-    /// \param sDA DataAccessorSet to initialize StatusManager from
-    DataPartitionBase(const DataAccessorSet& sDA)
-        : StatusManager(sDA), Begin_(this), End_(this) {}
-
     /// increment iterator;
     /// Must be overloaded in derived classes
-    virtual void increment(DataIterator& it) = 0;
+    virtual void increment(DataIterator& it) const
+    { it = End_; }
 
     /// \return vector<DataPoint> iterator inside DataIterator
-    DataPointVector::iterator& rawIterator(DataIterator& it)
+    DataPointVector::iterator& rawIterator(DataIterator& it) const
     { return it.Iterator_; }
 
     /// set begin
     const DataIterator& setBegin(const DataPointVector::iterator& it)
-    { Begin_ = DataIterator(this, it); return Begin_; }
+    { Begin_ = DataIterator(*this, it); return Begin_; }
 
     /// set end
     const DataIterator& setEnd(const DataPointVector::iterator& it)
-    { End_ = DataIterator(this, it); return End_; }
+    { End_ = DataIterator(*this, it); return End_; }
 
     /// get non-const begin from DataSet
     static DataPointVector::iterator begin(DataSet& ds);
@@ -169,51 +174,14 @@ private:
 };
 
 /// \typedef DataPartitionVector
-/// \brief Vector of unique_ptr's to DataPartitionBase
-using DataPartitionVector = std::vector<std::unique_ptr<DataPartitionBase> >;
-
-/// \class DataPartitionWeave
-/// \brief A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E)
-/// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup Data
-class DataPartitionWeave : public DataPartitionBase
-{
-public:
-
-    /// Constructor
-    /// \param sm StatusManager to copy StatusManager structure from
-    /// \param begin vector<DataPoint>::iterator of start
-    /// \param end vector<DataPoint>::iterator of end
-    /// \param spacing Spacing between consecutively evaluated points
-    DataPartitionWeave(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end, unsigned spacing)
-        : DataPartitionBase(sm, begin, end), Spacing_(spacing) {}
-
-    /// \return DataParitionVector covering DataSet as a weave
-    /// \param dataSet The dataSet
-    /// \param n number of partitions to divide the dataSet into
-    static DataPartitionVector create(DataSet& dataSet, unsigned n);
-
-protected:
-
-    /// constructor taking a DataAccessorSet
-    /// \param sDA DataAccessorSet to initialize StatusManager from
-    /// \param spacing for weave
-    DataPartitionWeave(const DataAccessorSet& sDA, unsigned spacing)
-        : DataPartitionBase(sDA), Spacing_(spacing) {}
-
-    /// increment DataIterator
-    /// \param it DataIterator to iterate
-    virtual void increment(DataIterator& it) override;
-
-    /// spacing between data points for the weaving
-    unsigned Spacing_;
-};
+/// \brief Vector of DataPartition
+using DataPartitionVector = std::vector<DataPartition>;
 
 /// \class DataPartitionBlock
 /// \brief A contiguous block of data
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-class DataPartitionBlock : public DataPartitionWeave
+class DataPartitionBlock : public DataPartition
 {
 public:
 
@@ -222,7 +190,7 @@ public:
     /// \param begin vector<DataPoint>::iterator of start
     /// \param end vector<DataPoint>::iterator of end
     DataPartitionBlock(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end)
-        : DataPartitionWeave(sm, begin, end, 1) {}
+        : DataPartition(sm, begin, end) {}
 
     /// \return DataParitionVector covering DataSet as contiguous blocks
     /// \param dataSet The dataSet
@@ -239,8 +207,49 @@ protected:
     /// constructor taking a DataAccessorSet
     /// \param sDA DataAccessorSet to initialize StatusManager from
     DataPartitionBlock(const DataAccessorSet& sDA)
-        : DataPartitionWeave(sDA, 1) {}
+        : DataPartition(sDA) {}
 
+    /// increment DataIterator
+    /// \param it DataIterator to iterate
+    virtual void increment(DataIterator& it) const override
+    { ++rawIterator(it); }
+};
+
+/// \class DataPartitionWeave
+/// \brief A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E)
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
+class DataPartitionWeave : public DataPartition
+{
+public:
+
+    /// Constructor
+    /// \param sm StatusManager to copy StatusManager structure from
+    /// \param begin vector<DataPoint>::iterator of start
+    /// \param end vector<DataPoint>::iterator of end
+    /// \param spacing Spacing between consecutively evaluated points
+    DataPartitionWeave(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end, unsigned spacing)
+        : DataPartition(sm, begin, end), Spacing_(spacing) {}
+
+    /// \return DataParitionVector covering DataSet as a weave
+    /// \param dataSet The dataSet
+    /// \param n number of partitions to divide the dataSet into
+    static DataPartitionVector create(DataSet& dataSet, unsigned n);
+
+protected:
+
+    /// constructor taking a DataAccessorSet
+    /// \param sDA DataAccessorSet to initialize StatusManager from
+    /// \param spacing for weave
+    DataPartitionWeave(const DataAccessorSet& sDA, unsigned spacing)
+        : DataPartition(sDA), Spacing_(spacing) {}
+
+    /// increment DataIterator
+    /// \param it DataIterator to iterate
+    virtual void increment(DataIterator& it) const override;
+
+    /// spacing between data points for the weaving
+    unsigned Spacing_;
 };
 
 }

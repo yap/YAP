@@ -77,15 +77,15 @@ std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const StatusManager& global) const
+double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const
 {
     double L = 0;
 
     // loop over data points in partition
-    for (DataIterator d = D->begin(); d != D->end(); ++d) {
+    for (DataIterator d = D.begin(); d != D.end(); ++d) {
         DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-        D->copyCalculationStatuses(global);
-        L += log(norm(amplitude(*d, *D)));
+        D.copyCalculationStatuses(global);
+        L += log(norm(amplitude(*d, D)));
     }
 
     return L;
@@ -97,7 +97,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS) const
     // update global calculation statuses (managed by data set)
     DS.globalStatusManager().updateCalculationStatuses(dataAccessors());
 
-    auto log_L = partialSumOfLogsOfSquaredAmplitudes(&DS, DS.globalStatusManager());
+    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DS, DS.globalStatusManager());
 
     // Set all variable statuses to Unchanged
     DS.globalStatusManager().setAll(VariableStatus::unchanged);
@@ -120,7 +120,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
 
     if (DP.size() == 1) {
         // if threading is unnecessary
-        log_L = partialSumOfLogsOfSquaredAmplitudes(DP[0].get(), DS.globalStatusManager());
+        log_L = partialSumOfLogsOfSquaredAmplitudes(DP[0], DS.globalStatusManager());
 
     } else {
 
@@ -128,8 +128,8 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP)
 
         // create thread for calculation on each partition
         for (auto& P : DP)
-            // since std::async copies its arguments, even if they are supposed to be references, we need to use std::cref
-            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, P.get(), std::cref(DS.globalStatusManager())));
+            // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
+            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(P), std::cref(DS.globalStatusManager())));
 
         // wait for each partition to finish calculating
         for (auto& s : partial_sums)

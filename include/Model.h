@@ -71,9 +71,9 @@ public:
     std::complex<double> amplitude(DataPoint& d, StatusManager& sm) const;
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
-    /// \param D pointer to DataPartition to evalue over
+    /// \param D DataPartition to evalue over
     /// \param global StatusManager to reset partition's statuses to
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartitionBase* D, const StatusManager& global) const;
+    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
     /// \param DS DataSet to evaluate over
