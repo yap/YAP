@@ -21,15 +21,13 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
-#include <CachedDataValue.h>
-#include <Parameter.h>
+#include <DecayChannel.h>
 
+#include <algorithm>
+#include <string>
 #include <vector>
 
 namespace yap {
-
-class CachedDataValue;
-class Parameter;
 
 /// \class DecayTree
 /// \brief Class holding vectors of fixed and free amplitudes that define a decay tree
@@ -42,33 +40,60 @@ public:
     DecayTree() {}
 
     /// constructor
-    DecayTree(const CachedDataValueVector& fixedAmplitudes, const ComplexParameterVector& freeAmplitudes) :
-        fixedAmplitudes_(fixedAmplitudes), freeAmplitudes_(freeAmplitudes)
+    DecayTree(const std::vector<AmplitudePair>& amplitudes) :
+        Amplitudes_(amplitudes)
     {}
+
+    /// constructor
+    DecayTree(const AmplitudePair& ap) :
+        Amplitudes_(1, ap)
+    {}
+
+    /// constructor
+    DecayTree(const AmplitudePair& ap, const DecayTree& tree) :
+        Amplitudes_()
+    {
+        Amplitudes_.reserve(tree.Amplitudes_.size() + 1);
+        Amplitudes_.push_back(ap);
+        Amplitudes_.insert(Amplitudes_.end(), tree.Amplitudes_.begin(), tree.Amplitudes_.end());
+    }
 
     /// \name Getters
     /// @{
 
-    const CachedDataValueVector& fixedAmplitudes() const
-    { return fixedAmplitudes_; }
+    const std::vector<AmplitudePair>&  amplitudes() const
+    { return Amplitudes_; }
 
-    CachedDataValueVector fixedAmplitudes()
-    { return fixedAmplitudes_; }
-
-    const ComplexParameterVector& freeAmplitudes() const
-    { return freeAmplitudes_; }
-
-    ComplexParameterVector freeAmplitudes()
-    { return freeAmplitudes_; }
+    std::vector<AmplitudePair>&  amplitudes()
+    { return Amplitudes_; }
 
     /// @}
 
+
 private:
 
-    CachedDataValueVector fixedAmplitudes_;
-    ComplexParameterVector freeAmplitudes_;
+    std::vector<AmplitudePair> Amplitudes_;
 
 };
+
+/// \typedef DecayTreeVector
+using DecayTreeVector = std::vector<DecayTree>;
+
+/// convert to string
+inline std::string to_string(const DecayTree& t)
+{
+    std::string s("DecayTree with DecayChannels ");
+    for (auto& ap : t.amplitudes()) {
+        if (dynamic_cast<DecayChannel*>(ap.Fixed->owner()))
+            s += to_string(*static_cast<DecayChannel*>(ap.Fixed->owner()));
+        else
+            s += "???";
+        s += "; ";
+    }
+    s.erase(s.size() - 2, 2);
+
+    return s;
+}
 
 }
 

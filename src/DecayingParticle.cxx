@@ -253,13 +253,12 @@ ComplexParameterVector DecayingParticle::freeAmplitudes() const
 {
     ComplexParameterVector V;
     for (auto& c : Channels_) {
-        // add channel
         auto vC = c->freeAmplitudes();
         V.insert(V.end(), vC.begin(), vC.end());
-        // add channels below
+        // channels below
         for (auto& d : c->daughters())
             if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-                auto vD = std::dynamic_pointer_cast<DecayingParticle>(d)->freeAmplitudes();
+                auto vD = std::static_pointer_cast<DecayingParticle>(d)->freeAmplitudes();
                 V.insert(V.end(), vD.begin(), vD.end());
             }
     }
@@ -268,6 +267,33 @@ ComplexParameterVector DecayingParticle::freeAmplitudes() const
     V.erase(ordered_unique(V.begin(), V.end()), V.end());
 
     return V;
+}
+
+//-------------------------
+DecayTreeVector DecayingParticle::decayTrees() const
+{
+    DecayTreeVector decayTrees;
+
+    for (auto& c : Channels_) {
+        // loop over spinAmplitudes
+        for (auto& sa : c->spinAmplitudes())
+            // loop over AmplitudePairs
+            for (auto& kv : c->amplitudes(sa)) {
+                // loop over daughters
+                bool hadDaughter(false);
+                for (auto& d : c->daughters())
+                    if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
+                        // loop over decayTrees of daughter
+                        for (auto& dt : std::static_pointer_cast<DecayingParticle>(d)->decayTrees())
+                            decayTrees.emplace_back(kv.second, dt);
+                        hadDaughter = true;
+                    }
+                if (not hadDaughter)
+                    decayTrees.emplace_back(kv.second);
+            }
+    }
+
+    return decayTrees;
 }
 
 }

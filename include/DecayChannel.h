@@ -22,6 +22,7 @@
 #define yap_DecayChannel_h
 
 #include "AmplitudeComponent.h"
+#include "AmplitudePair.h"
 #include "Constants.h"
 #include "DataAccessor.h"
 #include "Parameter.h"
@@ -49,13 +50,6 @@ class StatusManager;
 class DecayChannel : public AmplitudeComponent, public DataAccessor
 {
 public:
-
-    /// \class AmplitudePair
-    struct AmplitudePair {
-        AmplitudePair(DecayChannel* dc, std::complex<double> free = Complex_1);
-        std::shared_ptr<ComplexCachedDataValue> Fixed;
-        std::shared_ptr<ComplexParameter> Free;
-    };
 
     /// \typedef AmplitudePairMap
     /// \brief maps spin projection to AmplitudePair

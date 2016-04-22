@@ -23,6 +23,7 @@
 
 #include "DataAccessor.h"
 #include "DecayChannel.h"
+#include "DecayTree.h"
 #include "make_unique.h"
 #include "Particle.h"
 
@@ -154,7 +155,10 @@ protected:
     void printDecayChainLevel(int level) const;
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
-    virtual ComplexParameterVector freeAmplitudes() const;
+    ComplexParameterVector freeAmplitudes() const;
+
+    /// \return vector od DecayTree's from this point in decay tree and down
+    DecayTreeVector decayTrees() const;
 
 private:
 

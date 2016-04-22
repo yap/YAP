@@ -3,6 +3,7 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "DecayingParticle.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
@@ -616,6 +617,12 @@ DataSet Model::createDataSet(size_t n)
     D.addEmptyPoints(n);
 
     return D;
+}
+
+//-------------------------
+DecayTreeVector Model::decayTrees()
+{
+    return InitialStateParticle_->decayTrees();
 }
 
 //-------------------------

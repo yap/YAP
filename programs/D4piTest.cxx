@@ -149,6 +149,9 @@ int main( int argc, char** argv)
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
+    for (auto& dt : M.decayTrees())
+        LOG(INFO) << to_string(dt);
+
     auto freeAmps = M.freeAmplitudes();
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";

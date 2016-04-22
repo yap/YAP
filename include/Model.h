@@ -24,6 +24,7 @@
 #include "CoordinateSystem.h"
 #include "DataPartition.h"
 #include "DataSet.h"
+#include "DecayTree.h"
 #include "FourVector.h"
 #include "ParticleCombinationCache.h"
 #include "StaticDataAccessor.h"
@@ -212,6 +213,9 @@ public:
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
+
+    /// create a vector of all possible DecayTree's
+    DecayTreeVector decayTrees();
 
     /// Set VariableStatus'es of all Parameter's to calculated, or leave as fixed
     void setParameterFlagsToUnchanged();

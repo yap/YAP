@@ -18,13 +18,6 @@
 namespace yap {
 
 //-------------------------
-DecayChannel::AmplitudePair::AmplitudePair(DecayChannel* dc, std::complex<double> free) :
-    Fixed(ComplexCachedDataValue::create(dc)),
-    Free(std::make_shared<ComplexParameter>(free))
-{
-}
-
-//-------------------------
 DecayChannel::DecayChannel(const ParticleVector& daughters) :
     DataAccessor(),
     Daughters_(daughters),
