@@ -1,5 +1,7 @@
 #include "Flatte.h"
 
+#include "DataPoint.h"
+#include "DataPartition.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "logging.h"
@@ -10,14 +12,6 @@
 namespace yap {
 
 //-------------------------
-Flatte::Flatte() :
-    MassShapeWithNominalMass(),
-    WidthTerm_(ComplexCachedDataValue::create(this))
-{
-    T()->addDependency(WidthTerm_);
-}
-
-//-------------------------
 void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
 {
     if (!coupling)
@@ -25,8 +19,8 @@ void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr
     if (!mass)
         throw exceptions::Exception("Mass is unset", "Flatte::addChannel");
     FlatteChannels_.push_back(FlatteChannel(coupling, mass));
-    WidthTerm_->addDependency(FlatteChannels_.back().Coupling);
-    WidthTerm_->addDependency(FlatteChannels_.back().Mass);
+    T()->addDependency(FlatteChannels_.back().Coupling);
+    T()->addDependency(FlatteChannels_.back().Mass);
 }
 
 //-------------------------
@@ -39,7 +33,7 @@ void Flatte::addChannel(double coupling, double mass)
 void Flatte::setDependenciesFromModel()
 {
     MassShapeWithNominalMass::setDependenciesFromModel();
-    WidthTerm_->addDependency(model()->fourMomenta()->mass());
+    T()->addDependency(model()->fourMomenta()->mass());
 }
 
 //-------------------------
@@ -47,21 +41,18 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
 {
     unsigned symIndex = symmetrizationIndex(pc);
 
-    if (sm.status(*WidthTerm_, symIndex) == CalculationStatus::uncalculated) {
+    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
+
+        // calculate width term
         auto w = Complex_0;
         // sum of coupling * complex-breakup-momentum
         for (const auto& fc : FlatteChannels_)
             w += fc.Coupling->value() * std::sqrt(std::complex<double>(model()->fourMomenta()->m2(d, pc) / 4. - pow(fc.Mass->value(), 2), 0));
         // sum * i * 2 / mass
         w *= Complex_i * 2. / model()->fourMomenta()->m(d, pc);
-        WidthTerm_->setValue(w, d, symIndex, sm);
-    }
-
-    // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
 
         // T = 1 / (M^2 - m^2 - width-term)
-        std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - WidthTerm_->value(d, symIndex));
+        std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - w);
 
         T()->setValue(t, d, symIndex, sm);
 
@@ -73,6 +64,33 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
 
     // else return cached value
     return T()->value(d, symIndex);
+}
+
+//-------------------------
+void Flatte::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    unsigned symIndex = symmetrizationIndex(pc);
+
+    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
+
+        for (auto& d : D) {
+
+            // calculate width term
+            auto w = Complex_0;
+            // sum of coupling * complex-breakup-momentum
+            for (const auto& fc : FlatteChannels_)
+                w += fc.Coupling->value() * std::sqrt(std::complex<double>(model()->fourMomenta()->m2(d, pc) / 4. - pow(fc.Mass->value(), 2), 0));
+            // sum * i * 2 / mass
+            w *= Complex_i * 2. / model()->fourMomenta()->m(d, pc);
+
+            // T = 1 / (M^2 - m^2 - width-term)
+            std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - w);
+
+            T()->setValue(t, d, symIndex, D);
+        }
+
+        D.status(*T(), symIndex) = CalculationStatus::calculated;
+    }
 }
 
 //-------------------------

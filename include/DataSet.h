@@ -121,8 +121,8 @@ public:
     /// equality operator
     friend bool operator==(const DataSet& lhs, const DataSet& rhs);
 
-    /// grant friend status to DataPartitionBase to access non-const points()
-    friend DataPartitionBase;
+    /// grant friend status to DataPartition to access non-const points()
+    friend DataPartition;
 
 protected:
 

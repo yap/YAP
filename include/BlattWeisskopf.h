@@ -30,6 +30,7 @@
 
 namespace yap {
 
+class DataPartition;
 class DataPoint;
 class DecayingParticle;
 class Model;
@@ -45,12 +46,6 @@ class BlattWeisskopf : public AmplitudeComponent, public DataAccessor, public Re
 {
 public:
 
-    /// \todo this is the inverse square, no?
-    /// Calculate square of Blatt-Weisskopf factor (NOT the ratio of two Blatt-Weisskopf factors)
-    /// \param l orbital angular momentum
-    /// \param z square of (radial size * breakup momentum)
-    static double F2(unsigned l, double z);
-
     /// Constructor
     /// \param L angular momentum of Blatt-Weisskopf barrier factor
     /// \param dp raw pointer to owning DecayingParticle
@@ -65,6 +60,17 @@ public:
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param sm StatusManager to update
     virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const;
+
+    /// functor
+    /// \return Blatt-Weisskopf barrier factor for data point and particle combination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    double operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+
+    /// Calculate barrier factor for and store into each data point in a partition
+    /// \param D DataPartition to calculate on
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// check consistency of object
     virtual bool consistent() const override
@@ -92,11 +98,8 @@ private:
     /// angular momentum
     unsigned L_;
 
-    /// Blatt-Weisskopf factor at nominal mass
-    std::shared_ptr<RealCachedDataValue> Fq_r;
-
-    /// Blatt-Weisskopf factor at data mass
-    std::shared_ptr<RealCachedDataValue> Fq_ab;
+    /// Blatt-Weisskopf barrier factor
+    std::shared_ptr<RealCachedDataValue> BarrierFactor_;
 
     /// Cached pointer to model
     mutable Model* Model_;

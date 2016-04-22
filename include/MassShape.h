@@ -30,6 +30,8 @@
 
 namespace yap {
 
+class ComplexCachedDataValue;
+class DataPartition;
 class Model;
 class ParticleCombination;
 class Resonance;
@@ -55,6 +57,18 @@ public:
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const = 0;
+
+    /// functor
+    /// \return dynamic amplitude for data point and particle combination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    virtual std::complex<double> operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+
+    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition
+    /// Must be overrided in derived classes.
+    /// \param D DataPartition to calculate on
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes

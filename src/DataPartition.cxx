@@ -8,22 +8,6 @@
 namespace yap {
 
 //-------------------------
-DataIterator::DataIterator(DataPartitionBase* p) :
-    Partition_(p)
-{
-    if (!Partition_)
-        throw exceptions::Exception("Partition is unset", "DataIterator::DataIterator");
-}
-
-//-------------------------
-DataIterator::DataIterator(DataPartitionBase* p, const DataPointVector::iterator& it) :
-    Partition_(p), Iterator_(it)
-{
-    if (!Partition_)
-        throw exceptions::Exception("Partition is unset", "DataIterator::DataIterator");
-}
-
-//-------------------------
 DataIterator& DataIterator::operator++()
 {
     Partition_->increment(*this);
@@ -31,19 +15,19 @@ DataIterator& DataIterator::operator++()
 }
 
 //-------------------------
-DataPointVector::iterator DataPartitionBase::begin(DataSet& ds)
+DataPointVector::iterator DataPartition::begin(DataSet& ds)
 {
     return ds.dataPoints().begin();
 }
 
 //-------------------------
-DataPointVector::iterator DataPartitionBase::end(DataSet& ds)
+DataPointVector::iterator DataPartition::end(DataSet& ds)
 {
     return ds.dataPoints().end();
 }
 
 //-------------------------
-void DataPartitionWeave::increment(DataIterator& it)
+void DataPartitionWeave::increment(DataIterator& it) const
 {
     auto it_e = end();
     for (unsigned i = 0; i < Spacing_ && it != it_e; ++i)

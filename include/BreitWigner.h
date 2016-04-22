@@ -28,6 +28,7 @@
 
 namespace yap {
 
+class DataPartition;
 class DataPoint;
 class ParticleCombination;
 
@@ -51,6 +52,11 @@ public:
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
+
+    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition
+    /// Must be overrided in derived classes.
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object

@@ -143,7 +143,7 @@ TEST_CASE( "swapFinalStates" )
                 double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
 
                 std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
-                          << "      ratio Z/H = " <<  norm(amps_Z[i])/norm(amps_H[i])
+                          << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
                           << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
                           << std::endl;
             }

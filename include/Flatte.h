@@ -29,6 +29,7 @@
 
 namespace yap {
 
+class DataPartition;
 class DataPoint;
 class ParticleCombination;
 class StatusManager;
@@ -56,13 +57,18 @@ public:
     };
 
     /// Constructor
-    Flatte();
+    Flatte() : MassShapeWithNominalMass() {}
 
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
+
+    /// Calculate complex amplitude for and store into each DataPoint in a DataPartition
+    /// \param D DataPartition to calculate with
+    /// \param pc (shared_ptr to) ParticleCombination to calculate for
+    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// Add FlatteChannel
     void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);

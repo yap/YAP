@@ -159,9 +159,9 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 100; ++i) {
 
         // change amplitudes
-        if (gRandom->Uniform()>0.5) {
+        if (gRandom->Uniform() > 0.5) {
             for (auto& a : freeAmps) {
-                if (a->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform()>0.5)
+                if (a->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform() > 0.5)
                     a->setValue(gRandom->Uniform(0.95, 1.052631579) * a->value());
             }
         }
