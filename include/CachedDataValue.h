@@ -44,6 +44,11 @@ enum class VariableStatus;
 /// \ingroup Cache
 using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
 
+/// \typedef CachedDataValueVector
+/// \ingroup Data
+/// \ingroup Cache
+using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
+
 /// \struct DaughterCachedDataValue
 /// \brief Stores a shared_ptr to a CachedDataValue and the index of
 /// the daughter within a Particle Combination to pass to it
