@@ -78,9 +78,6 @@ public:
 
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
-    /// include non-const access to Model
-    using DataAccessor::model;
-
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;
 
@@ -101,8 +98,6 @@ private:
     /// Blatt-Weisskopf barrier factor
     std::shared_ptr<RealCachedDataValue> BarrierFactor_;
 
-    /// Cached pointer to model
-    mutable Model* Model_;
 };
 
 }

@@ -85,7 +85,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 
             // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
             // setting the parents of both to the newly created ParticleCombination
-            addParticleCombination(model()->particleCombinationCache().composite({PCA, PCB}));
+            addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
         }
     }
 
@@ -140,7 +140,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
         // loop over possible L: |J-s| <= L <= (J+s)
         for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
             // add SpinAmplitude retrieved from cache
-            addSpinAmplitude(model()->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+            addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 
 }
 

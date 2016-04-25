@@ -34,8 +34,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     DataAccessor(&ParticleCombination::equivDownByOrderlessContent),
     RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
-    L_(L),
-    Model_(nullptr)
+    L_(L)
 {
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle unset", "BlattWeisskopf::BlattWeisskopf");
@@ -153,9 +152,7 @@ CachedDataValueSet BlattWeisskopf::cachedDataValuesItDependsOn()
 //-------------------------
 const Model* BlattWeisskopf::model() const
 {
-    if (!Model_)
-        Model_ = DecayingParticle_->model();
-    return Model_;
+    return DecayingParticle_->model();
 }
 
 }

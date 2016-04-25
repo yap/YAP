@@ -110,9 +110,6 @@ public:
     /// \return the set of TotalAmplitudes_ values
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
-    /// include non-const access to model
-    using ReportsModel::model;
-
     /// \return raw pointer to model through first Daughter
     const Model* model() const override
     { return Daughters_[0]->model(); }

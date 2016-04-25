@@ -33,10 +33,8 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
         throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
-    if (SAC->model())
-        throw exceptions::Exception("SpinAmplitudeCache already has owner", "Model::Model");
+    SAC->setModel(this);
     SpinAmplitudeCache_ = std::move(SAC);
-    SpinAmplitudeCache_->setModel(this);
 }
 
 //-------------------------

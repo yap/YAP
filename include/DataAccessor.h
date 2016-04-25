@@ -22,7 +22,6 @@
 #define yap_DataAccessor_h
 
 #include "CachedDataValue.h"
-#include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
@@ -32,13 +31,13 @@
 namespace yap {
 
 class DataPoint;
+class Model;
 
 /// \name DataAccessor
 /// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 
 class DataAccessor :
-    public virtual ReportsModel,
     public virtual ReportsParticleCombinations
 {
 public:
@@ -95,6 +94,9 @@ public:
 
     /// Check consistency of object
     bool consistent() const;
+
+    /// get raw pointer to Model (const)
+    virtual const Model* model() const = 0;
 
     /// \return string denoting DataAccessor type
     /// \todo REMOVE

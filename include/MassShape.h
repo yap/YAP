@@ -83,9 +83,6 @@ public:
     Resonance* resonance() const
     { return Resonance_; }
 
-    /// include const access to ISP
-    using DataAccessor::model;
-
     /// get raw pointer to Model through resonance
     const Model* model() const override;
 
@@ -131,8 +128,6 @@ private:
     /// cached dynamic amplitude
     std::shared_ptr<ComplexCachedDataValue> T_;
 
-    /// Cached pointer to model
-    mutable Model* Model_;
 };
 
 }

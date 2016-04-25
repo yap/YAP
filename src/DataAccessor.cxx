@@ -7,7 +7,6 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
-    ReportsModel(),
     ReportsParticleCombinations(),
     Equiv_(equiv),
     Size_(0),
@@ -168,7 +167,7 @@ void DataAccessor::addToModel()
 {
     if (!model())
         throw exceptions::Exception("Model unset", "DataAccessor::addToModel");
-    model()->addDataAccessor(this);
+    const_cast<Model*>(static_cast<const DataAccessor*>(this)->model())->addDataAccessor(this);
 }
 
 //-------------------------

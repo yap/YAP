@@ -21,6 +21,7 @@
 #ifndef yap_SpinAmplitudeCache_h
 #define yap_SpinAmplitudeCache_h
 
+#include "Exceptions.h"
 #include "SpinAmplitude.h"
 #include "WeakPtrCache.h"
 
@@ -56,7 +57,7 @@ public:
     std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S)
     {
         auto retVal = operator[](create(two_J, two_j1, two_j2, L, two_S));
-        retVal->setModel(model());
+        retVal->setModel(Model_);
         return retVal;
     }
 
@@ -70,14 +71,6 @@ public:
         return C;
     }
 
-    /// \return raw pointer to owning Model (const)
-    const Model* model() const
-    { return Model_; }
-
-    /// \return raw pointer to owning Model
-    Model* model()
-    { return const_cast<Model*>(static_cast<const SpinAmplitudeCache*>(this)->model()); }
-
     /// grant friend status to Model to set itself owner
     friend class Model;
 
@@ -85,7 +78,11 @@ protected:
 
     /// set raw pointer to owning Model
     void setModel(Model* model)
-    { Model_ = model; }
+    {
+        if (Model_ != nullptr and Model_ != model)
+            throw exceptions::Exception("Model already set.", "SpinAmplitudeCache::setModel");
+        Model_ = model;
+    }
 
 private:
 

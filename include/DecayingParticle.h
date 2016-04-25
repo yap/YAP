@@ -130,9 +130,6 @@ public:
 
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
-    /// include non-const access to model
-    using ReportsModel::model;
-
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override
     { return Channels_.empty() ? nullptr : Channels_[0]->model(); }

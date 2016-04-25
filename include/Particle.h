@@ -24,7 +24,6 @@
 #include "AmplitudeComponent.h"
 #include "Parameter.h"
 #include "QuantumNumbers.h"
-#include "ReportsModel.h"
 #include "ReportsParticleCombinations.h"
 
 #include <iostream>
@@ -36,6 +35,7 @@ namespace yap {
 
 class DataPoint;
 class FinalStateParticle;
+class Model;
 class ParticleCombination;
 class StatusManager;
 
@@ -46,7 +46,6 @@ class StatusManager;
 class Particle :
 // keyword virtual is needed to solve diamond problem in DecayingParticle
     public virtual AmplitudeComponent,
-    public virtual ReportsModel,
     public virtual ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
@@ -95,6 +94,9 @@ public:
     /// Get name
     std::string& name()
     { return Name_; }
+
+    /// get raw pointer to Model (const)
+    virtual const Model* model() const = 0;
 
     /// @}
 
