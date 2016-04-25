@@ -21,7 +21,6 @@
 #ifndef yap_SpinAmplitudeCache_h
 #define yap_SpinAmplitudeCache_h
 
-#include "ReportsModel.h"
 #include "SpinAmplitude.h"
 #include "WeakPtrCache.h"
 
@@ -35,8 +34,7 @@ class Model;
 /// \brief Caches SpinAmplitudes
 /// \author Johannes Rauch, Daniel Greenwald
 class SpinAmplitudeCache :
-    public WeakPtrCache<SpinAmplitude>,
-    public ReportsModel
+    public WeakPtrCache<SpinAmplitude>
 {
 public:
 
@@ -72,12 +70,13 @@ public:
         return C;
     }
 
-    /// include non-const access to model
-    using ReportsModel::model;
+    /// \return raw pointer to owning Model (const)
+    const Model* model() const
+    { return Model_; }
 
     /// \return raw pointer to owning Model
-    const Model* model() const override
-    { return Model_; }
+    Model* model()
+    { return const_cast<Model*>(static_cast<const SpinAmplitudeCache*>(this)->model()); }
 
     /// grant friend status to Model to set itself owner
     friend class Model;
