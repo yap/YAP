@@ -41,8 +41,8 @@ public:
     /// Constructor
     constexpr Matrix(const std::array<std::array<T, C>, R>& m) noexcept : std::array<std::array<T, C>, R>(m) {}
 
-    /// Default constructor
-    /// zeroed
+    /// Default constructor;
+    /// produces a zero matrix
     Matrix()
     {
         for (size_t i = 0; i < this->size(); ++i)
@@ -149,7 +149,7 @@ constexpr Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
 /// matrix multiplication
 template <typename T, size_t R, size_t K, size_t C>
 typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
-operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
+const operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
 {
     Matrix<T, R, C> res = zeroMatrix<T, R, C>();
     for (size_t r = 0; r < R; ++r)
@@ -161,9 +161,9 @@ operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
 
 /// matrix multiplication yielding single value
 template <typename T, size_t K>
-T operator*(const Matrix<T, 1, K>& A, const Matrix<T, K, 1>& B)
+const T operator*(const Matrix<T, 1, K>& A, const Matrix<T, K, 1>& B)
 {
-    T res({});
+    T res(0);
     for (size_t k = 0; k < K; ++k)
         res += A[0][k] * B[k][0];
     return res;
@@ -181,12 +181,12 @@ Matrix<T, R, C>& operator*=(Matrix<T, R, C>& M, const T& c)
 
 /// multiplication by a single element
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> operator*(const T& c, const Matrix<T, R, C>& M)
+const Matrix<T, R, C> operator*(const T& c, const Matrix<T, R, C>& M)
 { auto m = M; m *= c; return m; }
 
 /// multiplication by a single element
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> operator*(const Matrix<T, R, C>& M, const T& c)
+const Matrix<T, R, C> operator*(const Matrix<T, R, C>& M, const T& c)
 { return c * M; }
 
 /// addition assignment
@@ -201,7 +201,7 @@ Matrix<T, R, C>& operator+=(Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 
 /// addition
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> operator+(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
+const Matrix<T, R, C> operator+(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 { auto m = lhs; m += rhs; return m; }
 
 /// subtraction assignment
@@ -216,16 +216,16 @@ Matrix<T, R, C>& operator-=(Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 
 /// subtraction
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
+const Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs)
 { auto m = lhs; m -= rhs; return m; }
 
 /// Minor matrix
 /// \param r row
 /// \param c column
 template <typename T, size_t N>
-SquareMatrix < T, N - 1 > minor_matrix(const SquareMatrix<T, N>& M, size_t r, size_t c)
+const SquareMatrix < T, N - 1 > minor_matrix(const SquareMatrix<T, N>& M, size_t r, size_t c)
 {
-    SquareMatrix < T, N - 1 > m({});
+    SquareMatrix < T, N - 1 > m;
     for (size_t i = 0; i < N; ++i)
         if (i != r)
             for (size_t j = 0; j < N; ++j)
@@ -238,20 +238,20 @@ SquareMatrix < T, N - 1 > minor_matrix(const SquareMatrix<T, N>& M, size_t r, si
 /// \param r row
 /// \param c column
 template <typename T, size_t N>
-T minor_det(const SquareMatrix<T, N>& M, size_t r, size_t c)
+const T minor_det(const SquareMatrix<T, N>& M, size_t r, size_t c)
 { return det(minor_matrix(M, r, c)); }
 
 /// cofactor
 /// \param r row
 /// \param c column
 template <typename T, size_t N>
-T cofactor(const SquareMatrix<T, N>& M, size_t r, size_t c)
+const T cofactor(const SquareMatrix<T, N>& M, size_t r, size_t c)
 { return pow_negative_one(r + c) * M[r][c] * minor_det(M, r, c); }
 
 /// Determinant
 /// This algorithm is simple, and should not be used for large matrices
 template <typename T, size_t N>
-T det(SquareMatrix<T, N> M)
+const T det(SquareMatrix<T, N> M)
 {
     switch (N) {
         case 0:
@@ -277,7 +277,7 @@ T det(SquareMatrix<T, N> M)
 
 /// diagonal minor matrix
 template <typename T, size_t M, size_t N>
-SquareMatrix<T, M> diagonal_minor(const SquareMatrix<T, N> m, std::vector<size_t> indices)
+const SquareMatrix<T, M> diagonal_minor(const SquareMatrix<T, N> m, std::vector<size_t> indices)
 {
     if (indices.size() != M)
         throw exceptions::Exception("wrong number of indices provided", "diagonal_minor");
@@ -291,7 +291,7 @@ SquareMatrix<T, M> diagonal_minor(const SquareMatrix<T, N> m, std::vector<size_t
 
 /// trace
 template <typename T, size_t N>
-T trace(const SquareMatrix<T, N>& M)
+const T trace(const SquareMatrix<T, N>& M)
 {
     T t(0);
     for (size_t i = 0; i < N; ++i)
