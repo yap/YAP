@@ -42,7 +42,7 @@ public:
 
     /// Constructor
     /// \param dataSet DataSet this DataPoint belongs to
-    DataPoint(DataSet* dataSet);
+    DataPoint(DataSet& dataSet);
 
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta

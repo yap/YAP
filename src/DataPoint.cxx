@@ -11,11 +11,12 @@
 namespace yap {
 
 //-------------------------
-DataPoint::DataPoint(DataSet* dataSet) :
-    DataSet_(dataSet)
+DataPoint::DataPoint(DataSet& dataSet) :
+    DataSet_(&dataSet)
 {
-    if (!DataSet_)
-        throw exceptions::Exception("DataSet unset", "DataPoint::DataPoint");
+    if (!model())
+        throw exceptions::Exception("Model unset", "DataPoint::DataPoint");
+
     Data_.resize(model()->dataAccessors().size());
     for (auto da : model()->dataAccessors())
         Data_[da->index()].assign(da->maxSymmetrizationIndex() + 1, std::vector<double>(da->size(), 0));

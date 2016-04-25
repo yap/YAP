@@ -88,7 +88,7 @@ void DataSet::addEmptyPoint()
     if (!model())
         throw exceptions::Exception("Model unset or deleted", "DataSet::add");
 
-    DataPoints_.emplace_back(this);
+    DataPoints_.emplace_back(*this);
     auto& d = DataPoints_.back();
 
     if (!consistent(d))
