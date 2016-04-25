@@ -22,7 +22,6 @@
 #define yap_DataPoint_h
 
 #include "FourVector.h"
-#include "ReportsModel.h"
 
 #include <string>
 #include <vector>
@@ -37,7 +36,7 @@ class StatusManager;
 /// \brief Class for holding data and cached values per data point for fast calculation
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Data Data-related classes
-class DataPoint : public ReportsModel
+class DataPoint
 {
 public:
 

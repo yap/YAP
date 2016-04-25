@@ -12,7 +12,6 @@ namespace yap {
 
 //-------------------------
 DataPoint::DataPoint(DataSet* dataSet) :
-    ReportsModel(),
     DataSet_(dataSet)
 {
     if (!DataSet_)
