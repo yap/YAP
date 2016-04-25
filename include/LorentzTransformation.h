@@ -32,7 +32,7 @@ namespace yap {
 /// \return a 4D Lorentz-transformation matrix for a pure rotation
 /// \param R #ThreeMatrix defining the rotation
 template <typename T>
-FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R)
+const FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R)
 {
     FourMatrix<T> L = unitMatrix<T, 4>();
     for (unsigned i = 0; i < R.size(); ++i)
@@ -43,7 +43,7 @@ FourMatrix<T> lorentzTransformation(const ThreeMatrix<T>& R)
 /// \return a 4D Lorentz-transformation matrix for a pure boost
 /// \param V #FourVector of four-momentum defining boost
 template <typename T>
-FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
+const FourMatrix<T> lorentzTransformation(const FourVector<T>& V)
 {
     auto gamma = V[0] / abs(V); // E / m
     auto b = FourVector<T>((gamma + 1), gamma * vect(V) / V[0]) / sqrt(gamma + 1); // vect(V)/V[0] = beta

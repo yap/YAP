@@ -125,7 +125,7 @@ const std::vector<FourVector<T> > operator*(const ThreeMatrix<T>& R, const std::
 /// \param V Fourector defining new Z direction
 /// \param C CoordinateSystem aiding in defining new Y direction
 template <typename T>
-CoordinateSystem<T, 3> helicityFrame(const FourVector<T>& V, const CoordinateSystem<T, 3>& C)
+const CoordinateSystem<T, 3> helicityFrame(const FourVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return helicityFrame(vect<T>(V), C); }
 
 }

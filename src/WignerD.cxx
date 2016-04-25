@@ -26,7 +26,7 @@ static std::vector<dMatrix> CachedMatrices_;
 }
 
 //-------------------------
-double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
+const double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
 {
     // d^J_MN = (-)^(M-N) * d^J_NM
     if (twoN > twoM)
@@ -122,7 +122,7 @@ void dMatrix::cache(unsigned twoJ)
 }
 
 //-------------------------
-unsigned dMatrix::cacheSize()
+const unsigned dMatrix::cacheSize()
 {
     unsigned totSize = sizeof(CachedMatrices_);
     for (const auto& dJ : CachedMatrices_) {

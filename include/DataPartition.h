@@ -75,7 +75,7 @@ protected:
     /// constructor
     /// \param p owning DataPartition
     /// \param it vector<DataPoint> iterator to contain
-    DataIterator(const DataPartition& p, const DataPointVector::iterator& it)
+    DataIterator(const DataPartition& p, DataPointVector::iterator it)
         : Partition_(&p), Iterator_(it) {}
 
     /// owning DataPartition
@@ -99,7 +99,7 @@ protected:
     /// \param sm StatusManager to copy StatusManager structure from
     /// \param begin vector<DataPoint>::iterator of start
     /// \param end vector<DataPoint>::iterator of end
-    DataPartition(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end)
+    DataPartition(const StatusManager& sm, DataPointVector::iterator begin, DataPointVector::iterator end)
         : StatusManager(sm), Begin_(*this, begin), End_(*this, end) {}
 
     /// constructor taking a DataAccessorSet
@@ -150,11 +150,11 @@ protected:
     { return it.Iterator_; }
 
     /// set begin
-    const DataIterator& setBegin(const DataPointVector::iterator& it)
+    const DataIterator& setBegin(DataPointVector::iterator it)
     { Begin_ = DataIterator(*this, it); return Begin_; }
 
     /// set end
-    const DataIterator& setEnd(const DataPointVector::iterator& it)
+    const DataIterator& setEnd(DataPointVector::iterator it)
     { End_ = DataIterator(*this, it); return End_; }
 
     /// get non-const begin from DataSet
@@ -189,7 +189,7 @@ public:
     /// \param sm StatusManager to copy StatusManager structure from
     /// \param begin vector<DataPoint>::iterator of start
     /// \param end vector<DataPoint>::iterator of end
-    DataPartitionBlock(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end)
+    DataPartitionBlock(const StatusManager& sm, DataPointVector::iterator begin, DataPointVector::iterator end)
         : DataPartition(sm, begin, end) {}
 
     /// \return DataParitionVector covering DataSet as contiguous blocks
@@ -228,7 +228,7 @@ public:
     /// \param begin vector<DataPoint>::iterator of start
     /// \param end vector<DataPoint>::iterator of end
     /// \param spacing Spacing between consecutively evaluated points
-    DataPartitionWeave(const StatusManager& sm, const DataPointVector::iterator& begin, const DataPointVector::iterator& end, unsigned spacing)
+    DataPartitionWeave(const StatusManager& sm, DataPointVector::iterator begin, DataPointVector::iterator end, unsigned spacing)
         : DataPartition(sm, begin, end), Spacing_(spacing) {}
 
     /// \return DataParitionVector covering DataSet as a weave

@@ -30,7 +30,7 @@ namespace yap {
 /// \param V vector to rotate about
 /// \param theta angle to rotate through
 template <typename T>
-ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
+const ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
 {
     T v = abs(V);
 
@@ -53,7 +53,7 @@ ThreeMatrix<T> rotation(const ThreeVector<T>& V, const T& theta)
 /// \param beta angle of rotation around x' axis [rad]
 /// \param gamma angle of final rotation around z'' axis [rad]
 template <typename T>
-ThreeMatrix<T> eulerRotationZXZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
+const ThreeMatrix<T> eulerRotationZXZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
 { return rotation(C[2], gamma) * rotation(C[0], beta) * rotation(C[2], alpha); }
 
 /// \return a 3D rotation matrix
@@ -64,7 +64,7 @@ ThreeMatrix<T> eulerRotationZXZ(const CoordinateSystem<T, 3>& C, const T& alpha,
 /// \param beta angle of rotation around y' axis [rad]
 /// \param gamma angle of final rotation around z'' axis [rad]
 template <typename T>
-ThreeMatrix<T> eulerRotationZYZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
+const ThreeMatrix<T> eulerRotationZYZ(const CoordinateSystem<T, 3>& C, const T& alpha, const T& beta, const T& gamma)
 { return rotation(C[2], gamma) * rotation(C[1], beta) * rotation(C[2], alpha); }
 
 }

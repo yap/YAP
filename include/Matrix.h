@@ -89,7 +89,7 @@ std::string to_string(const Matrix<T, R, C>& M)
 
 /// zero square matrix
 template <typename T, size_t N>
-SquareMatrix<T, N> zeroMatrix()
+const SquareMatrix<T, N> zeroMatrix()
 {
     SquareMatrix<T, N> u;
     for (size_t i = 0; i < N; ++i)
@@ -100,7 +100,7 @@ SquareMatrix<T, N> zeroMatrix()
 
 /// zero matrix
 template <typename T, size_t R, size_t C>
-Matrix<T, R, C> zeroMatrix()
+const Matrix<T, R, C> zeroMatrix()
 {
     Matrix<T, R, C> u;
     for (size_t r = 0; r < R; ++r)
@@ -111,7 +111,7 @@ Matrix<T, R, C> zeroMatrix()
 
 /// unit matrix
 template <typename T, size_t N>
-SquareMatrix<T, N> unitMatrix()
+const SquareMatrix<T, N> unitMatrix()
 {
     SquareMatrix<T, N> u;
     for (size_t i = 0; i < N; ++i)
@@ -122,7 +122,7 @@ SquareMatrix<T, N> unitMatrix()
 
 /// diagonal matrix
 template <typename T, size_t N>
-SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
+const SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
 {
     SquareMatrix<T, N> D = zeroMatrix<T, N, N>();
     for (size_t i = 0; i < N; ++i)
@@ -132,7 +132,7 @@ SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
 
 /// transpose a matrix
 template <typename T, size_t R, size_t C>
-Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
+const Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
 {
     Matrix<T, C, R> res;
     for (size_t r = 0; r < R; ++r)

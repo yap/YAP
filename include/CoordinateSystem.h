@@ -52,7 +52,7 @@ std::string to_string(const CoordinateSystem<T, N>& C)
 /// \return CoordinateSystem with vectors of unit norm
 /// \param C CoordinateSystem to base on
 template <typename T, size_t N>
-CoordinateSystem<T, N> unit(const CoordinateSystem<T, N>& C)
+const CoordinateSystem<T, N> unit(const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> uC;
     std::transform(C.begin(), C.end(), uC.begin(), [](const Vector<T, N>& c) {return yap::unit<T, N>(c);});
@@ -62,7 +62,7 @@ CoordinateSystem<T, N> unit(const CoordinateSystem<T, N>& C)
 /// multiply a SquareMatrix times each coorindate vector.
 /// Useful for rotating coordinate frames
 template <typename T, size_t N>
-CoordinateSystem<T, N> operator*(const SquareMatrix<T, N>& M, const CoordinateSystem<T, N>& C)
+const CoordinateSystem<T, N> operator*(const SquareMatrix<T, N>& M, const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> MC;
     std::transform(C.begin(), C.end(), MC.begin(), [&](const Vector<T, N>& c) {return M * c; });

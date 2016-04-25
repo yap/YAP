@@ -81,7 +81,7 @@ Vector<T, N>& operator+=(Vector<T, N>& A, const Vector<T, N>& B)
 
 /// addition
 template <typename T, size_t N>
-Vector<T, N> operator+(const Vector<T, N>& A, const Vector<T, N>& B)
+const Vector<T, N> operator+(const Vector<T, N>& A, const Vector<T, N>& B)
 { auto v = A; v += B; return v; }
 
 /// unary minus
@@ -96,7 +96,7 @@ Vector<T, N>& operator-=(Vector<T, N>& A, const Vector<T, N>& B)
 
 /// subtraction
 template <typename T, size_t N>
-Vector<T, N> operator-(const Vector<T, N>& A, const Vector<T, N>& B)
+const Vector<T, N> operator-(const Vector<T, N>& A, const Vector<T, N>& B)
 { auto v = A; v -= B; return v; }
 
 /// (assignment) multiplication by a single element
@@ -106,7 +106,7 @@ Vector<T, N>& operator*=(Vector<T, N>& A, const T& B)
 
 /// multiplication: #Vector<T> * T
 template <typename T, size_t N>
-Vector<T, N> operator*(const Vector<T, N>& A, const T& c)
+const Vector<T, N> operator*(const Vector<T, N>& A, const T& c)
 { auto v = A; v *= c; return v; }
 
 /// multiplication: T * #Vector<T>
@@ -121,7 +121,7 @@ Vector<T, N>& operator/=(Vector<T, N>& A, const T& B)
 
 /// division: #Vector<T> / T
 template <typename T, size_t N>
-Vector<T, N> operator/(const Vector<T, N>& A, const T& c)
+const Vector<T, N> operator/(const Vector<T, N>& A, const T& c)
 { auto v = A; v /= c; return v; }
 
 /// \return squared magnitude of #Vector (using associated inner product)
@@ -137,12 +137,12 @@ constexpr T abs(const Vector<T, N>& A)
 /// \return unit vector in direction of vector
 /// \param V Vector to use for direction of unit vector
 template <typename T, size_t N>
-Vector<T, N> unit(const Vector<T, N>& V)
+const Vector<T, N> unit(const Vector<T, N>& V)
 { T a = abs(V); return (a == 0) ? V : (T(1) / abs(V)) * V; }
 
 /// Matrix * Vector
 template <typename T, size_t R, size_t C>
-Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
+const Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
 {
     Vector<T, R> v = {};
     for (size_t r = 0; r < R; ++r)
@@ -153,7 +153,7 @@ Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
 
 /// outer product
 template <typename T, size_t N>
-SquareMatrix<T, N> outer(const Vector<T, N>& A, const Vector<T, N>& B)
+const SquareMatrix<T, N> outer(const Vector<T, N>& A, const Vector<T, N>& B)
 {
     SquareMatrix<T, N> m;
     for (size_t r = 0; r < N; ++r)

@@ -54,7 +54,7 @@ inline std::string to_string(unsigned two_j1, int two_m1, unsigned two_j2, int t
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
 /// \param two_M  2*spin-projection of composite system
-bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
+const bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
 
 /// \return Whether Clebsch-Gordan coefficient is nonzero, with M := m1 + m2.
 /// \param two_j1 2*spin of first particle
@@ -62,7 +62,7 @@ bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2
 /// \param two_j2 2*spin of second particle
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
-inline bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
+inline const bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
 { return nonzeroCoefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_m1 + two_m2); }
 
 /// \return Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M)
@@ -73,7 +73,7 @@ inline bool nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
 /// \param two_M  2*spin-projection of composite system
-double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
+const double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M);
 
 /// \return Clebsch-Gordan coefficient (j1 m1 j2 m2 | J M), with M := m1 + m2
 /// \param two_j1 2*spin of first particle
@@ -81,7 +81,7 @@ double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, uns
 /// \param two_j2 2*spin of second particle
 /// \param two_m2 2*spin-projection of second particle
 /// \param two_J  2*spin of composite system
-inline double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
+inline const double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J)
 { return coefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_m1 + two_m2); }
 
 /// \return whether coupling of helicity state to l-s state, <J lambda1 lambda2 | J l s>, is nonzero
@@ -92,7 +92,7 @@ inline double coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_
 /// \param two_lambda2 2 * helicity of second particle
 /// \param l orbital angular momentum to couple to
 /// \param two_S 2 * total spin to couple to
-inline bool nonzeroCoupling(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J)
+inline const bool nonzeroCoupling(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J)
 { return nonzeroCoefficient(2 * l, 0, two_s, two_lambda1 - two_lambda2, two_J) and nonzeroCoefficient(two_j1, two_lambda1, two_j2, -two_lambda2, two_s); }
 
 /// \return coefficieny for coupling helicity state to l-s state: <J lambda1 lambda2 | J l s>,
@@ -104,12 +104,12 @@ inline bool nonzeroCoupling(unsigned two_j1, int two_lambda1, unsigned two_j2, i
 /// \param l orbital angular momentum to couple to
 /// \param two_S 2 * total spin to couple to
 /// \param two_J 2 * spin of parent
-double couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J);
+double const couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J);
 
 /// \return consistency of spin and spin projection
 /// \param two_J 2*spin
 /// \param two_M 2*spin-projection
-bool consistent(unsigned two_J, int two_M);
+const bool consistent(unsigned two_J, int two_M);
 
 } // ClebschGordon namespace
 

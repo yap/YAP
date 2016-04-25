@@ -18,7 +18,7 @@ std::string ClebschGordan::to_string(unsigned two_j1, int two_m1, unsigned two_j
 }
 
 //-------------------------
-bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
+const bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
 {
     // and that (j1+j2) and J are consistent
     if (is_odd(two_J + two_j1 + two_j2))
@@ -69,7 +69,7 @@ bool ClebschGordan::nonzeroCoefficient(unsigned two_j1, int two_m1, unsigned two
 
 
 //-------------------------
-double ClebschGordan::coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
+const double ClebschGordan::coefficient(unsigned two_j1, int two_m1, unsigned two_j2, int two_m2, unsigned two_J, int two_M)
 {
     if (!nonzeroCoefficient(two_j1, two_m1, two_j2, two_m2, two_J, two_M))
         return 0;
@@ -111,7 +111,7 @@ double ClebschGordan::coefficient(unsigned two_j1, int two_m1, unsigned two_j2, 
 }
 
 //-------------------------
-double ClebschGordan::couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J)
+const double ClebschGordan::couple(unsigned two_j1, int two_lambda1, unsigned two_j2, int two_lambda2, unsigned l, unsigned two_s, unsigned two_J)
 {
     if (!nonzeroCoupling(two_j1, two_lambda1, two_j2, two_lambda2, l, two_s, two_J))
         return 0;
@@ -126,7 +126,7 @@ double ClebschGordan::couple(unsigned two_j1, int two_lambda1, unsigned two_j2, 
 }
 
 //-------------------------
-bool ClebschGordan::consistent(unsigned two_J, int two_M)
+const bool ClebschGordan::consistent(unsigned two_J, int two_M)
 {
     return (std::abs(two_M) <= (int)two_J) and is_even(two_J + two_M);
 }

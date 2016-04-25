@@ -38,7 +38,7 @@ constexpr ThreeVector<T> cross(const ThreeVector<T>& A, const ThreeVector<T>& B)
 
 /// \return angle between two 3D vectors
 template <typename T>
-T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
+const T angle(const ThreeVector<T>& A, const ThreeVector<T>& B)
 {
     T arg = A * B / abs(A) / abs(B);
 

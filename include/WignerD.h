@@ -52,10 +52,10 @@ namespace yap {
 /// \param twoM twice the first spin projection
 /// \param twoN twice the second spin projection
 /// \param beta rotation angle
-double dFunction(unsigned twoJ, int twoM, int twoN, double beta);
+const double dFunction(unsigned twoJ, int twoM, int twoN, double beta);
 
 /// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
-inline std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
+inline const std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
 { return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
 
 namespace dMatrix {
@@ -65,7 +65,7 @@ namespace dMatrix {
 void cache(unsigned int twoJ);
 
 /// \return cache size in bytes
-unsigned cacheSize();
+const unsigned cacheSize();
 
 }
 
