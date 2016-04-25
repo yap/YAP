@@ -24,7 +24,6 @@
 #include "DataPoint.h"
 #include "DataPartition.h"
 #include "FourVector.h"
-#include "ReportsModel.h"
 
 #include <vector>
 
@@ -38,8 +37,7 @@ class StatusManager;
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 class DataSet :
-    public DataPartitionBlock,
-    public ReportsModel
+    public DataPartitionBlock
 {
 public:
 

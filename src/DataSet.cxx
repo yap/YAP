@@ -9,7 +9,6 @@ namespace yap {
 //-------------------------
 DataSet::DataSet(const Model& m) :
     DataPartitionBlock(m.dataAccessors()),
-    ReportsModel(),
     Model_(&m),
     GlobalStatusManager_(m.dataAccessors())
 {
@@ -18,7 +17,6 @@ DataSet::DataSet(const Model& m) :
 //-------------------------
 DataSet::DataSet(const DataSet& other) :
     DataPartitionBlock(other),
-    ReportsModel(),
     DataPoints_(other.DataPoints_),
     Model_(other.Model_),
     GlobalStatusManager_(other.GlobalStatusManager_)
@@ -29,7 +27,6 @@ DataSet::DataSet(const DataSet& other) :
 //-------------------------
 DataSet::DataSet(DataSet&& other) :
     DataPartitionBlock(std::move(other)),
-    ReportsModel(),
     DataPoints_(std::move(other.DataPoints_)),
     Model_(std::move(other.Model_)),
     GlobalStatusManager_(std::move(other.GlobalStatusManager_))
