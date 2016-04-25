@@ -79,7 +79,7 @@ constexpr FourVector<T> operator-(const FourVector<T>& V)
 /// unary minus for a vector of 4-vectors,
 /// does not change sign of zero'th components
 template <typename T>
-std::vector<FourVector<T> > operator-(const std::vector<FourVector<T> >& V)
+const std::vector<FourVector<T> > operator-(const std::vector<FourVector<T> >& V)
 {
     std::vector<FourVector<T> > result;
     result.reserve(V.size());
@@ -95,7 +95,7 @@ constexpr FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V
 
 /// multiply a 4x4 matrix times each of a vector of FourVector's
 template <typename T>
-std::vector<FourVector<T> > operator*(const FourMatrix<T>& R, const std::vector<FourVector<T> >& V)
+const std::vector<FourVector<T> > operator*(const FourMatrix<T>& R, const std::vector<FourVector<T> >& V)
 {
     std::vector<FourVector<T> > result;
     result.reserve(V.size());
@@ -111,7 +111,7 @@ constexpr FourVector<T> operator*(const ThreeMatrix<T>& R, const FourVector<T>& 
 
 /// multiply a 3x3 matrix times the spacial components of each of a vector of FourVector's
 template <typename T>
-std::vector<FourVector<T> > operator*(const ThreeMatrix<T>& R, const std::vector<FourVector<T> >& V)
+const std::vector<FourVector<T> > operator*(const ThreeMatrix<T>& R, const std::vector<FourVector<T> >& V)
 {
     std::vector<FourVector<T> > result;
     result.reserve(V.size());
