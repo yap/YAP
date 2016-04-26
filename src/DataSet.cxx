@@ -57,13 +57,14 @@ DataSet& DataSet::operator=(DataSet&& other)
 }
 
 //-------------------------
-void swap(DataSet& A, DataSet& B)
+void DataSet::swap(DataSet& other)
 {
-    std::swap(static_cast<DataPartitionBlock&>(A), static_cast<DataPartitionBlock&>(B));
-    std::swap(A.Model_, B.Model_);
-    std::swap(A.DataPoints_, B.DataPoints_);
-    A.assertDataPointOwnership();
-    B.assertDataPointOwnership();
+    using std::swap;
+    swap(static_cast<DataPartitionBlock&>(*this), static_cast<DataPartitionBlock&>(other));
+    swap(Model_, other.Model_);
+    swap(DataPoints_, other.DataPoints_);
+    assertDataPointOwnership();
+    other.assertDataPointOwnership();
 }
 
 //-------------------------

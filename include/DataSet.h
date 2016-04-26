@@ -57,7 +57,7 @@ public:
     DataSet& operator=(DataSet&& other);
 
     /// Swap
-    friend void swap(DataSet& A, DataSet& B);
+    void swap(DataSet& other);
 
     /// Check if data point is consisent with data set
     bool consistent(const DataPoint& d) const;
@@ -142,6 +142,19 @@ private:
     /// Global StatusManager
     StatusManager GlobalStatusManager_;
 };
+
+/// swap
+inline void swap(DataSet& A, DataSet& B)
+{ A.swap(B); }
+
+}
+
+namespace std {
+
+/// swap
+template <>
+inline void swap<yap::DataSet>(yap::DataSet& A, yap::DataSet& B)
+{ A.swap(B); }
 
 }
 
