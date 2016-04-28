@@ -107,8 +107,4 @@ void DataSet::add(const std::vector<FourVector<double> >& P)
     DataPoints_.back().setFinalStateMomenta(P);
 }
 
-//-------------------------
-bool operator==(const DataSet& lhs, const DataSet& rhs)
-{ return lhs.Model_ == rhs.Model_ and lhs.DataPoints_ == rhs.DataPoints_; }
-
 }

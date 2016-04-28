@@ -116,10 +116,7 @@ public:
     StatusManager& globalStatusManager()
     { return GlobalStatusManager_; }
 
-    /// equality operator
-    friend bool operator==(const DataSet& lhs, const DataSet& rhs);
-
-    /// grant friend status to DataPartition to access non-const points()
+    /// grant friend status to DataPartition to access non-const dataPoints()
     friend DataPartition;
 
 protected:
