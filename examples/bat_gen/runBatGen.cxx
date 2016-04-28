@@ -11,6 +11,7 @@
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <HelicityFormalism.h>
+#include <logging.h>
 #include <make_unique.h>
 #include <ZemachFormalism.h>
 
