@@ -49,7 +49,7 @@ ParticleCombinationVector ParticleCombination::leaves()
         return ParticleCombinationVector(1, shared_from_this());
 
     ParticleCombinationVector V;
-    for (auto& d : Daughters_) {
+    for (const auto& d : Daughters_) {
         auto v = d->leaves();
         V.insert(V.end(), v.begin(), v.end());
     }

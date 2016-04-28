@@ -348,7 +348,7 @@ void Model::prepareDataAccessors()
         if (!dynamic_cast<DecayingParticle*>(D))
             continue;
         // if a decaying particle
-        auto C = dynamic_cast<DecayingParticle*>(D)->channels();
+        auto C = static_cast<DecayingParticle*>(D)->channels();
         if (C.size() != 1)
             continue;
         // if decaying particle has only one decay channel
@@ -645,12 +645,12 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 
     std::cout << std::endl;
 
-    for (auto& d : DataAccessors_) {
+    for (const auto& d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1 << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
-        if (dynamic_cast<Particle*>(d))
-            std::cout << dynamic_cast<Particle*>(d)->name();
-        else if (dynamic_cast<DecayChannel*>(d))
-            std::cout << *dynamic_cast<DecayChannel*>(d);
+        if (dynamic_cast<const Particle*>(d))
+            std::cout << dynamic_cast<const Particle*>(d)->name();
+        else if (dynamic_cast<const DecayChannel*>(d))
+            std::cout << *static_cast<const DecayChannel*>(d);
 
         if (printParticleCombinations) {
             std::cout << " \t";
@@ -667,12 +667,12 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 //-------------------------
 void Model::printFlags(const StatusManager& sm) const
 {
-    for (auto& d : DataAccessors_) {
+    for (const auto& d : DataAccessors_) {
         std::cout << d->data_accessor_type() << "  ";
-        if (dynamic_cast<Particle*>(d))
-            std::cout << dynamic_cast<Particle*>(d)->name();
-        else if (dynamic_cast<DecayChannel*>(d))
-            std::cout << *dynamic_cast<DecayChannel*>(d);
+        if (dynamic_cast<const Particle*>(d))
+            std::cout << dynamic_cast<const Particle*>(d)->name();
+        else if (dynamic_cast<const DecayChannel*>(d))
+            std::cout << *static_cast<const DecayChannel*>(d);
 
         std::cout << std::endl;
 
