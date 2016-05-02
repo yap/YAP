@@ -21,16 +21,16 @@
 #ifndef yap_AmplitudePair_h
 #define yap_AmplitudePair_h
 
+#include "fwd/CachedDataValue.h"
+#include "fwd/DecayChannel.h"
+#include "fwd/Parameter.h"
+
 #include "Constants.h"
-#include "Parameter.h"
 
 #include <complex>
 #include <memory>
 
 namespace yap {
-
-class ComplexCachedDataValue;
-class DecayChannel;
 
 /// \name AmplitudePair
 /// \brief Pair of a free an fixed amplitude of a DecayChannel

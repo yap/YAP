@@ -1,11 +1,14 @@
 #include "Flatte.h"
 
+#include "CalculationStatus.h"
+#include "Constants.h"
 #include "DataPoint.h"
 #include "DataPartition.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
+#include "Parameter.h"
 #include "Resonance.h"
 #include "StatusManager.h"
 

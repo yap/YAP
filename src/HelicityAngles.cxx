@@ -1,14 +1,14 @@
 #include "HelicityAngles.h"
 
+#include "CachedDataValue.h"
 #include "CalculationStatus.h"
-#include "CoordinateSystem.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "logging.h"
 #include "LorentzTransformation.h"
 #include "Model.h"
 #include "ParticleCombination.h"
-#include "ThreeVector.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -21,6 +21,18 @@ HelicityAngles::HelicityAngles(Model* m) :
     /// \todo add check that FourMomenta exists, after changing to return shared_ptr
     Phi_->addDependency(model()->fourMomenta()->momentum());
     Theta_->addDependency(model()->fourMomenta()->momentum());
+}
+
+//-------------------------
+double HelicityAngles::phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return Phi_->value(d, symmetrizationIndex(pc));
+}
+
+//-------------------------
+double HelicityAngles::theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return Theta_->value(d, symmetrizationIndex(pc));
 }
 
 //-------------------------

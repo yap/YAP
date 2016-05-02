@@ -2,19 +2,24 @@
 
 #include "CalculationStatus.h"
 #include "Constants.h"
+#include "DataAccessor.h"
+#include "DataPartition.h"
+#include "DataPoint.h"
+#include "DataSet.h"
 #include "DecayingParticle.h"
 #include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
-#include "HelicityFormalism.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
+#include "Parameter.h"
 #include "PhaseSpaceUtilities.h"
 #include "RequiresHelicityAngles.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 #include "SpinAmplitudeCache.h"
+#include "VariableStatus.h"
 
 /// \todo Find better place for this
 INITIALIZE_EASYLOGGINGPP

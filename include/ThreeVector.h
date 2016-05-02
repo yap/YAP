@@ -21,15 +21,12 @@
 #ifndef yap_ThreeVector_h
 #define yap_ThreeVector_h
 
+#include "fwd/ThreeVector.h"
+
 #include "Matrix.h"
 #include "Vector.h"
 
 namespace yap {
-
-/// \typedef ThreeVector
-/// \ingroup VectorAlgebra
-template <typename T>
-using ThreeVector = Vector<T, 3>;
 
 /// \return cross product
 template <typename T>

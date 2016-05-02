@@ -4,6 +4,7 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Exceptions.h"
+#include "FourVector.h"
 #include "logging.h"
 #include "StatusManager.h"
 #include "VariableStatus.h"
@@ -141,7 +142,24 @@ std::shared_ptr<FourVectorCachedDataValue> FourVectorCachedDataValue::create(Dat
 }
 
 //-------------------------
-void FourVectorCachedDataValue::setValue(FourVector<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
+const FourVector<double> FourVectorCachedDataValue::value(const DataPoint& d, unsigned  sym_index) const
+{
+    return FourVector<double>( {CachedDataValue::value(0, d, sym_index),
+                                CachedDataValue::value(1, d, sym_index),
+                                CachedDataValue::value(2, d, sym_index),
+                                CachedDataValue::value(3, d, sym_index)
+                               });
+}
+
+//-------------------------
+void FourVectorCachedDataValue::setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index) const
+{
+    for (size_t i = 0; i < val.size(); ++i)
+        CachedDataValue::setValue(i, val[i], d, sym_index);
+}
+
+//-------------------------
+void FourVectorCachedDataValue::setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
 {
     for (size_t i = 0; i < val.size(); ++i) {
         if (val[i] != CachedDataValue::value(i, d, sym_index)) {

@@ -21,7 +21,11 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
-#include <DecayChannel.h>
+#include "fwd/DecayTree.h"
+
+#include "AmplitudePair.h"
+#include "CachedDataValue.h"
+#include "DecayChannel.h"
 
 #include <algorithm>
 #include <string>
@@ -75,9 +79,6 @@ private:
     std::vector<AmplitudePair> Amplitudes_;
 
 };
-
-/// \typedef DecayTreeVector
-using DecayTreeVector = std::vector<DecayTree>;
 
 /// convert to string
 inline std::string to_string(const DecayTree& t)

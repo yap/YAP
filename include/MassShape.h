@@ -21,20 +21,21 @@
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
+#include "fwd/CachedDataValue.h"
+#include "fwd/DataPartition.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/ParticleFactory.h"
+#include "fwd/Resonance.h"
+#include "fwd/StatusManager.h"
+
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
-#include "ParticleFactory.h"
 
 #include <memory>
 #include <string>
 
 namespace yap {
-
-class ComplexCachedDataValue;
-class DataPartition;
-class Model;
-class ParticleCombination;
-class Resonance;
 
 /// \class MassShape
 /// \brief Abstract base class for all mass shapes

@@ -21,18 +21,21 @@
 #ifndef yap_SpinAmplitude_h
 #define yap_SpinAmplitude_h
 
+#include "fwd/SpinAmplitude.h"
+
+#include "fwd/CachedDataValue.h"
+#include "fwd/StatusManager.h"
+
 #include "MathUtilities.h"
 #include "StaticDataAccessor.h"
 
 #include <array>
+#include <complex>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
 
 namespace yap {
-
-class ComplexCachedDataValue;
-class StatusManager;
 
 /// \class SpinAmplitude
 /// \brief Abstract base class implementing a spin amplitude.
@@ -127,8 +130,7 @@ public:
     /// \param two_m1 2 * spin projection of first daughter
     /// \param two_m2 2 * spin projection of second daughter
     std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                   int two_M, int two_m1, int two_m2) const
-    { return amplitude(two_M, two_m1, two_m2)->value(d, symmetrizationIndex(pc)); }
+                                   int two_M, int two_m1, int two_m2) const;
 
     /// access cached spin amplitude
     /// \param two_M 2 * spin projection of parent
@@ -226,17 +228,8 @@ inline std::string to_string(const SpinAmplitude& sa)
 inline std::ostream& operator<< (std::ostream& os, const SpinAmplitude& sa)
 { os << to_string(sa); return os; }
 
-/// \typedef SpinAmplitudeVector
-using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
-
 /// convert to string
 std::string to_string(const SpinAmplitudeVector& saV);
-
-/// \typedef SpinAmplitudeMap
-/// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key
-template<typename T>
-using SpinAmplitudeMap = std::map<std::shared_ptr<SpinAmplitude>, T,
-      std::owner_less<std::shared_ptr<SpinAmplitude> > >;
 
 }
 

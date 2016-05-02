@@ -21,13 +21,21 @@
 #ifndef yap_DecayChannel_h
 #define yap_DecayChannel_h
 
+#include "fwd/DecayChannel.h"
+
+#include "fwd/AmplitudePair.h"
+#include "fwd/CachedDataValue.h"
+#include "fwd/DataPoint.h"
+#include "fwd/DecayingParticle.h"
+#include "fwd/FinalStateParticle.h"
+#include "fwd/Parameter.h"
+#include "fwd/Particle.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/SpinAmplitude.h"
+#include "fwd/StatusManager.h"
+
 #include "AmplitudeComponent.h"
-#include "AmplitudePair.h"
-#include "Constants.h"
 #include "DataAccessor.h"
-#include "Parameter.h"
-#include "Particle.h"
-#include "SpinAmplitude.h"
 
 #include <complex>
 #include <map>
@@ -36,13 +44,6 @@
 #include <vector>
 
 namespace yap {
-
-class ComplexCachedDataValue;
-class DataPoint;
-class DecayingParticle;
-class FinalStateParticle;
-class ParticleCombination;
-class StatusManager;
 
 /// \class DecayChannel
 /// \brief Class implementing a decay channel.
@@ -111,8 +112,7 @@ public:
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to model through first Daughter
-    const Model* model() const override
-    { return Daughters_[0]->model(); }
+    const Model* model() const override;
 
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const
@@ -171,9 +171,6 @@ std::string to_string(const DecayChannel& dc);
 /// << operator
 inline std::ostream& operator<< (std::ostream& os, const DecayChannel& dc)
 { os << to_string(dc); return os; }
-
-/// \typedef DecayChannelVector
-using DecayChannelVector = std::vector<std::shared_ptr<DecayChannel> >;
 
 }
 

@@ -21,6 +21,9 @@
 #ifndef yap_HelicityFormalism_h
 #define yap_HelicityFormalism_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/ParticleCombination.h"
+
 #include "RequiresHelicityAngles.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
@@ -30,9 +33,6 @@
 #include <memory>
 
 namespace yap {
-
-class DataPoint;
-class ParticleCombination;
 
 /// \class HelicitySpinAmplitude
 /// \brief Class implementing a canonical spin amplitude, i.e. with defined relative angular momentum.

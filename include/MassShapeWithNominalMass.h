@@ -21,14 +21,16 @@
 #ifndef yap_MassShapeWithNominalMass_h
 #define yap_MassShapeWithNominalMass_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/Parameter.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/ParticleFactory.h"
+
 #include "MassShape.h"
 
 #include <memory>
 
 namespace yap {
-
-class DataPoint;
-class ParticleCombination;
 
 /// \class MassShapeWithNominalMass
 /// \brief Class for MassShape that gets its nominal mass from its owning resonance

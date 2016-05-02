@@ -21,23 +21,23 @@
 #ifndef yap_Particle_h
 #define yap_Particle_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/FinalStateParticle.h"
+#include "fwd/Model.h"
+#include "fwd/Parameter.h"
+#include "fwd/Particle.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "AmplitudeComponent.h"
-#include "Parameter.h"
 #include "QuantumNumbers.h"
 #include "ReportsParticleCombinations.h"
 
 #include <iostream>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace yap {
-
-class DataPoint;
-class FinalStateParticle;
-class Model;
-class ParticleCombination;
-class StatusManager;
 
 /// \class Particle
 /// \brief Abstract Particle base class.
@@ -121,13 +121,8 @@ private:
 
 };
 
-/// \typedef ParticleVector
-/// \ingroup Particle
-using ParticleVector = std::vector<std::shared_ptr<Particle> >;
-
 /// convert to string
-inline std::string to_string(const Particle& p)
-{ return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value()); }
+std::string to_string(const Particle& p);
 
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const Particle& p)

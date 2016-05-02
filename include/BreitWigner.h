@@ -21,16 +21,17 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
+#include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "MassShapeWithNominalMass.h"
 
 #include <complex>
 #include <memory>
 
 namespace yap {
-
-class DataPartition;
-class DataPoint;
-class ParticleCombination;
 
 /// \class BreitWigner
 /// \brief Class for Breit-Wigner resonance shape

@@ -21,8 +21,6 @@
 #ifndef yap_RequiresMeasuredBreakupMomenta_h
 #define yap_RequiresMeasuredBreakupMomenta_h
 
-#include "RequiresMeasuredBreakupMomenta.h"
-
 namespace yap {
 
 /// \class RequiresMeasuredBreakupMomenta

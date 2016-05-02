@@ -21,6 +21,8 @@
 #ifndef yap_Matrix_h
 #define yap_Matrix_h
 
+#include "fwd/Matrix.h"
+
 #include "Exceptions.h"
 #include "MathUtilities.h"
 
@@ -52,21 +54,6 @@ public:
     /// Use std::array's assignment operators
     using std::array<std::array<T, C>, R>::operator=;
 };
-
-/// \typedef SquareMatrix
-/// \ingroup VectorAlgebra
-template <typename T, size_t N>
-using SquareMatrix = Matrix<T, N, N>;
-
-/// \typedef ThreeMatrix
-/// \ingroup VectorAlgebra
-template <typename T>
-using ThreeMatrix = SquareMatrix<T, 3>;
-
-/// \typedef FourMatrix
-/// \ingroup VectorAlgebra
-template <typename T>
-using FourMatrix = SquareMatrix<T, 4>;
 
 /// \return string
 template <typename T, size_t R, size_t C>

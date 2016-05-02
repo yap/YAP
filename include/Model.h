@@ -21,13 +21,25 @@
 #ifndef yap_Model_h
 #define yap_Model_h
 
+#include "fwd/DataAccessor.h"
+#include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
+#include "fwd/DataSet.h"
+#include "fwd/DecayingParticle.h"
+#include "fwd/DecayTree.h"
+#include "fwd/FourVector.h"
+#include "fwd/FinalStateParticle.h"
+#include "fwd/FourMomenta.h"
+#include "fwd/HelicityAngles.h"
+#include "fwd/MassAxes.h"
+#include "fwd/MeasuredBreakupMomenta.h"
+#include "fwd/Parameter.h"
+#include "fwd/SpinAmplitudeCache.h"
+#include "fwd/StaticDataAccessor.h"
+#include "fwd/StatusManager.h"
+
 #include "CoordinateSystem.h"
-#include "DataPartition.h"
-#include "DataSet.h"
-#include "DecayTree.h"
-#include "FourVector.h"
 #include "ParticleCombinationCache.h"
-#include "StaticDataAccessor.h"
 
 #include <complex>
 #include <memory>
@@ -35,20 +47,9 @@
 
 namespace yap {
 
-class DecayingParticle;
-class DataPoint;
-class FinalStateParticle;
-class FourMomenta;
-class HelicityAngles;
-class MassAxes;
-class MeasuredBreakupMomenta;
-class SpinAmplitudeCache;
-class StatusManager;
-
 /// \class Model
 /// \brief Class implementing a PWA model
 /// \author Johannes Rauch, Daniel Greenwald
-
 class Model
 {
 public:

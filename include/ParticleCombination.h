@@ -21,24 +21,14 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
-#include <map>
+#include "fwd/ParticleCombination.h"
+
 #include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
 namespace yap {
-
-class ParticleCombination;
-
-/// \typedef ParticleCombinationVector
-using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
-
-/// \typedef ParticleCombinationMap
-/// \tparam T Object to store in map, with shared_ptr to ParticleCombination as key
-template<typename T>
-using ParticleCombinationMap = std::map<std::shared_ptr<ParticleCombination>, T,
-      std::owner_less<std::shared_ptr<ParticleCombination> > >;
 
 /// \class ParticleCombination
 /// \brief Stores combinations of particle indices

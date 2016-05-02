@@ -4,14 +4,17 @@
 #include <logging.h>
 #include <BreitWigner.h>
 #include <Constants.h>
+#include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
 #include <LorentzTransformation.h>
+#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
+#include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
 #include <Resonance.h>

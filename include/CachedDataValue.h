@@ -21,8 +21,15 @@
 #ifndef yap_CachedDataValue_h
 #define yap_CachedDataValue_h
 
-#include "FourVector.h"
-#include "Parameter.h"
+#include "fwd/CachedDataValue.h"
+#include "fwd/CalculationStatus.h"
+#include "fwd/DataAccessor.h"
+#include "fwd/DataPoint.h"
+#include "fwd/FourVector.h"
+#include "fwd/Parameter.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+#include "fwd/VariableStatus.h"
 
 #include <memory>
 #include <set>
@@ -30,24 +37,6 @@
 #include <vector>
 
 namespace yap {
-
-class CachedDataValue;
-enum class CalculationStatus : bool;
-class DataAccessor;
-class DataPoint;
-class ParticleCombination;
-class StatusManager;
-enum class VariableStatus;
-
-/// \typedef CachedDataValueSet
-/// \ingroup Data
-/// \ingroup Cache
-using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
-
-/// \typedef CachedDataValueVector
-/// \ingroup Data
-/// \ingroup Cache
-using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
 
 /// \struct DaughterCachedDataValue
 /// \brief Stores a shared_ptr to a CachedDataValue and the index of
@@ -57,7 +46,7 @@ using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
 struct DaughterCachedDataValue {
     /// constructor
     DaughterCachedDataValue(std::shared_ptr<CachedDataValue> cdv, size_t index)
-       : CDV(cdv), Daughter(index) {}
+        : CDV(cdv), Daughter(index) {}
 
     /// CachedDataValue
     std::shared_ptr<CachedDataValue> CDV;
@@ -69,11 +58,6 @@ struct DaughterCachedDataValue {
 /// less-than comparison operator
 inline bool operator<(const DaughterCachedDataValue& A, const DaughterCachedDataValue& B)
 { return (A.CDV < B.CDV) or (A.Daughter < B.Daughter); }
-
-/// \typedef DaughterCachedDataValueSet
-/// \ingroup Data
-/// \ingroup Cache
-using DaughterCachedDataValueSet = std::set<DaughterCachedDataValue>;
 
 /// \class CachedDataValueBase
 /// \brief Class for managing cached values inside a #DataPoint
@@ -327,7 +311,7 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     /// \param sm StatusManager
-    void setValue(std::complex<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
+    void setValue(const std::complex<double>& val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
     { setValue(real(val), imag(val), d, sym_index, sm); }
 
     /// Set value into #DataPoint for particular symmetrization, and
@@ -344,7 +328,7 @@ public:
     /// \param val Value to set to
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
-    void setValue(std::complex<double> val, DataPoint& d, unsigned sym_index) const
+    void setValue(const std::complex<double>& val, DataPoint& d, unsigned sym_index) const
     { setValue(real(val), imag(val), d, sym_index); }
 
     /// Set value into #DataPoint for particular symmetrization
@@ -392,28 +376,20 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     /// \param sm StatusManager
-    void setValue(FourVector<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
+    void setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
     /// Set value into #DataPoint for particular symmetrization;
     /// does not update any statuses.
     /// \param val Value to set to
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
-    void setValue(FourVector<double> val, DataPoint& d, unsigned sym_index) const
-    { for (size_t i = 0; i < val.size(); ++i) CachedDataValue::setValue(i, val[i], d, sym_index); }
+    void setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index) const;
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    const FourVector<double> value(const DataPoint& d, unsigned  sym_index) const
-    {
-        return FourVector<double>( { CachedDataValue::value(0, d, sym_index),
-                                     CachedDataValue::value(1, d, sym_index),
-                                     CachedDataValue::value(2, d, sym_index),
-                                     CachedDataValue::value(3, d, sym_index)
-                                   });
-    }
+    const FourVector<double> value(const DataPoint& d, unsigned  sym_index) const;
 
 private:
 

@@ -21,8 +21,8 @@
 #ifndef yap_AmplitudeComponent_h
 #define yap_AmplitudeComponent_h
 
-#include "CachedDataValue.h"
-#include "Parameter.h"
+#include "fwd/CachedDataValue.h"
+#include "fwd/Parameter.h"
 
 namespace yap {
 

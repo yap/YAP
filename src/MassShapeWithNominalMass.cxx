@@ -1,8 +1,11 @@
 #include "MassShapeWithNominalMass.h"
 
+#include "CachedDataValue.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
+#include "Parameter.h"
+#include "ParticleFactory.h"
 #include "Resonance.h"
 
 namespace yap {

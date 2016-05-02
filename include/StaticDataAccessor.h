@@ -21,15 +21,15 @@
 #ifndef yap_StaticDataAccessor_h
 #define yap_StaticDataAccessor_h
 
+#include "fwd/Model.h"
+#include "fwd/StaticDataAccessor.h"
+#include "fwd/StatusManager.h"
+
 #include "DataAccessor.h"
 #include "Exceptions.h"
 #include "ParticleCombination.h"
 
 namespace yap {
-
-class StatusManager;
-
-class Model;
 
 /// \name StaticDataAccessor
 /// \brief Base class for all data accessors that will only write to DataPoint once at initial data loading
@@ -77,9 +77,6 @@ private:
     Model* Model_;
 
 };
-
-/// \typedef StaticDataAccessorVector
-using StaticDataAccessorVector = std::vector<StaticDataAccessor*>;
 
 /// remove expired elements of set
 inline void removeExpiredStatic(StaticDataAccessorVector& S)

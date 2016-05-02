@@ -21,6 +21,9 @@
 #ifndef yap_ZemachFormalism_h
 #define yap_ZemachFormalism_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/ParticleCombination.h"
+
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 
@@ -28,9 +31,6 @@
 #include <memory>
 
 namespace yap {
-
-class DataPoint;
-class ParticleCombination;
 
 /// \class ZemachSpinAmplitude
 /// \brief Class implementing Zemach tensors

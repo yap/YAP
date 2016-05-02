@@ -1,10 +1,16 @@
 #include "DecayingParticle.h"
 
+#include "AmplitudePair.h"
 #include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
+#include "Constants.h"
 #include "container_utils.h"
-#include "Model.h"
+#include "DecayChannel.h"
+#include "DecayTree.h"
 #include "logging.h"
+#include "Model.h"
+#include "Parameter.h"
+#include "SpinAmplitude.h"
 #include "StatusManager.h"
 
 #include <iomanip>
@@ -152,6 +158,20 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     FDEBUG(*Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size());
     return Channels_.back();
 }
+
+//-------------------------
+std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector& daughters)
+{
+    return addChannel(std::make_shared<DecayChannel>(daughters));
+}
+
+//-------------------------
+const Model* DecayingParticle::model() const
+{
+    return Channels_.empty() ? nullptr : Channels_[0]->model();
+}
+
+
 
 //-------------------------
 unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)

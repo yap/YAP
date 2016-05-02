@@ -21,17 +21,18 @@
 #ifndef yap_MeasuredBreakupMomenta_h
 #define yap_MeasuredBreakupMomenta_h
 
+#include "fwd/CachedDataValue.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "StaticDataAccessor.h"
 
+#include <cmath>
 #include <memory>
 #include <string>
 
 namespace yap {
-
-class Model;
-class ParticleCombination;
-class RealCachedDataValue;
-class StatusManager;
 
 /// \class MeasuredBreakupMomenta
 /// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
@@ -53,8 +54,7 @@ public:
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return Q2_->value(d, symmetrizationIndex(pc)); }
+    double q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from

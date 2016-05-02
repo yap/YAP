@@ -12,6 +12,7 @@
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <ParticleCombination.h>
+#include <VariableStatus.h>
 
 #include <limits>
 

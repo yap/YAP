@@ -21,6 +21,10 @@
 #ifndef yap_FinalStateParticle_h
 #define yap_FinalStateParticle_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+
 #include "Constants.h"
 #include "Particle.h"
 
@@ -28,10 +32,6 @@
 #include <memory>
 
 namespace yap {
-
-class DataPoint;
-class Model;
-class ParticleCombination;
 
 /// \class FinalStateParticle
 /// \brief Class representing a final-state particle

@@ -21,23 +21,22 @@
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
+#include "fwd/FourVector.h"
+#include "fwd/Model.h"
+#include "fwd/StatusManager.h"
+
 #include "DataPoint.h"
 #include "DataPartition.h"
-#include "FourVector.h"
 
 #include <vector>
 
 namespace yap {
 
-class Model;
-class StatusManager;
-
 /// \class DataSet
 /// \brief Class holding a set of DataPoint objects.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-class DataSet :
-    public DataPartitionBlock
+class DataSet : public DataPartitionBlock
 {
 public:
 

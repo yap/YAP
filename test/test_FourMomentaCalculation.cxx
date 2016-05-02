@@ -10,6 +10,7 @@
 #include <MassAxes.h>
 #include <make_unique.h>
 #include <Model.h>
+#include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
 #include <ZemachFormalism.h>
