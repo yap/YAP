@@ -16,10 +16,11 @@ CachedDataValue::Status::Status() :
     Variable(VariableStatus::changed)
 {}
 
-void CachedDataValue::Status::operator=(const VariableStatus& s)
+CachedDataValue::Status& CachedDataValue::Status::operator=(const VariableStatus& s)
 {
     if (Variable != VariableStatus::fixed)
         Variable = s;
+    return *this;
 }
 
 //-------------------------
@@ -27,7 +28,6 @@ std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S)
 {
     return str << S.Calculation << ", " << S.Variable;
 }
-
 
 //-------------------------
 CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataValueSet vals) :
@@ -44,7 +44,7 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
 }
 
 //-------------------------
-double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
+const double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
 {
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     return d.Data_[Owner_->index()][sym_index][Position_ + index];

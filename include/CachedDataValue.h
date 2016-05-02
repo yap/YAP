@@ -57,17 +57,18 @@ using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
 struct DaughterCachedDataValue {
     /// constructor
     DaughterCachedDataValue(std::shared_ptr<CachedDataValue> cdv, size_t index)
-        : CDV(cdv), Daughter(index) {}
+       : CDV(cdv), Daughter(index) {}
 
     /// CachedDataValue
     std::shared_ptr<CachedDataValue> CDV;
 
     /// index of daughter to pass to it
     size_t Daughter;
-
-    friend bool operator<(const DaughterCachedDataValue& A, const DaughterCachedDataValue& B)
-    { return (A.CDV < B.CDV) or (A.Daughter < B.Daughter); }
 };
+
+/// less-than comparison operator
+inline bool operator<(const DaughterCachedDataValue& A, const DaughterCachedDataValue& B)
+{ return (A.CDV < B.CDV) or (A.Daughter < B.Daughter); }
 
 /// \typedef DaughterCachedDataValueSet
 /// \ingroup Data
@@ -85,6 +86,7 @@ public:
 
     /// \struct stores calculation and variable statuses for a CachedDataValue
     struct Status {
+
         /// constructor
         Status();
 
@@ -95,30 +97,12 @@ public:
         VariableStatus Variable;
 
         /// assignment of Calculation
-        void operator=(const CalculationStatus& s)
-        { Calculation = s; }
+        Status& operator=(const CalculationStatus& s)
+        { Calculation = s; return *this; }
 
-        /// assignment of Variable
-        /// Does not change Variable if it is fixed!
-        void operator=(const VariableStatus& s);
-
-        /// equality operator for checking the CalculationStatus
-        friend bool operator==(const Status& S, const CalculationStatus& s)
-        { return S.Calculation == s; }
-
-        /// inequality operator for checking the CalculationStatus
-        friend bool operator!=(const Status& S, const CalculationStatus& s)
-        { return S.Calculation != s; }
-
-        /// equality operator for checking the VariableStatus
-        friend bool operator==(const Status& S, const VariableStatus& s)
-        { return S.Variable == s; }
-
-        /// inequality operator for checking the VariableStatus
-        friend bool operator!=(const Status& S, const VariableStatus& s)
-        { return S.Variable != s; }
-
-        friend std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
+        /// assignment of Variable;
+        /// does not change Variable if it is fixed!
+        Status& operator=(const VariableStatus& s);
     };
 
     /// \name Managing dependencies
@@ -173,7 +157,7 @@ public:
     { return Owner_; }
 
     /// \return index within owner
-    int index() const
+    const int index() const
     { return Index_; }
 
     /// Get value from #DataPoint for particular symmetrization
@@ -181,10 +165,10 @@ public:
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(unsigned index, const DataPoint& d, unsigned sym_index) const;
+    const double value(unsigned index, const DataPoint& d, unsigned sym_index) const;
 
     /// \return Size of cached value (number of real elements)
-    virtual unsigned size() const
+    virtual const unsigned size() const
     { return Size_; }
 
     /// \return set of Parameters on which this object depends
@@ -247,11 +231,34 @@ private:
     /// Size of cached value (number of real elements)
     unsigned Size_;
 
+    /// Set of Parameter's on which CachedDataValue depends
     ParameterSet ParametersItDependsOn_;
-    CachedDataValueSet CachedDataValuesItDependsOn_;
-    DaughterCachedDataValueSet DaughterCachedDataValuesItDependsOn_;
 
+    /// Set of CachedDataValue's on which CachedDataValue depends
+    CachedDataValueSet CachedDataValuesItDependsOn_;
+
+    /// Set of DaughterCahcedDataValue's on which CachedDataValue depends
+    DaughterCachedDataValueSet DaughterCachedDataValuesItDependsOn_;
 };
+
+/// equality operator for checking the CalculationStatus
+inline bool operator==(const CachedDataValue::Status& S, const CalculationStatus& s)
+{ return S.Calculation == s; }
+
+/// inequality operator for checking the CalculationStatus
+inline bool operator!=(const CachedDataValue::Status& S, const CalculationStatus& s)
+{ return S.Calculation != s; }
+
+/// equality operator for checking the VariableStatus
+inline bool operator==(const CachedDataValue::Status& S, const VariableStatus& s)
+{ return S.Variable == s; }
+
+/// inequality operator for checking the VariableStatus
+inline bool operator!=(const CachedDataValue::Status& S, const VariableStatus& s)
+{ return S.Variable != s; }
+
+/// streaming operator for CachedDataValue::Status
+std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
 
 /// \class RealCachedDataValue
 /// \brief Class for managing a single real cached value inside a #DataPoint
@@ -276,11 +283,19 @@ public:
     /// \param sm StatusManager
     void setValue(double val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
+    /// Set value into #DataPoint for particular symmetrization;
+    /// does not update any statuses
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param sym_index index of symmetrization to apply to
+    void setValue(double val, DataPoint& d, unsigned sym_index) const
+    { CachedDataValue::setValue(0, val, d, sym_index); }
+
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    double value(const DataPoint& d, unsigned sym_index) const
+    const double value(const DataPoint& d, unsigned sym_index) const
     { return CachedDataValue::value(0, d, sym_index); }
 
 private:
@@ -324,11 +339,28 @@ public:
     /// \param sm StatusManager
     void setValue(double val_re, double val_im, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
+    /// Set value into #DataPoint for particular symmetrization;
+    /// does not update any statuses
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param sym_index index of symmetrization to apply to
+    void setValue(std::complex<double> val, DataPoint& d, unsigned sym_index) const
+    { setValue(real(val), imag(val), d, sym_index); }
+
+    /// Set value into #DataPoint for particular symmetrization
+    /// does not update any statuses
+    /// \param val_re real part of value to set to
+    /// \param val_im imaginary part of value to set to
+    /// \param d #DataPoint to update
+    /// \param sym_index index of symmetrization to apply to
+    void setValue(double val_re, double val_im, DataPoint& d, unsigned sym_index) const
+    { CachedDataValue::setValue(0, val_re, d, sym_index); CachedDataValue::setValue(1, val_im, d, sym_index); }
+
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    std::complex<double> value(const DataPoint& d, unsigned  sym_index) const
+    const std::complex<double> value(const DataPoint& d, unsigned  sym_index) const
     { return std::complex<double>(CachedDataValue::value(0, d, sym_index), CachedDataValue::value(1, d, sym_index)); }
 
 private:
@@ -337,8 +369,6 @@ private:
     /// see #create for details
     ComplexCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
         : CachedDataValue(2, pars, vals) {}
-
-
 };
 
 /// \class FourVectorCachedDataValue
@@ -364,11 +394,19 @@ public:
     /// \param sm StatusManager
     void setValue(FourVector<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const;
 
+    /// Set value into #DataPoint for particular symmetrization;
+    /// does not update any statuses.
+    /// \param val Value to set to
+    /// \param d #DataPoint to update
+    /// \param sym_index index of symmetrization to apply to
+    void setValue(FourVector<double> val, DataPoint& d, unsigned sym_index) const
+    { for (size_t i = 0; i < val.size(); ++i) CachedDataValue::setValue(i, val[i], d, sym_index); }
+
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    FourVector<double> value(const DataPoint& d, unsigned  sym_index) const
+    const FourVector<double> value(const DataPoint& d, unsigned  sym_index) const
     {
         return FourVector<double>( { CachedDataValue::value(0, d, sym_index),
                                      CachedDataValue::value(1, d, sym_index),
