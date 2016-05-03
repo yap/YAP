@@ -1,13 +1,10 @@
 # setup ROOT includes and libraries
 find_package(ROOT)
 
-#include_directories(${BellePWA_SOURCE_DIR}/include ${ROOT_INCLUDE_DIR} ${BAT_INCLUDE_DIR})
 include_directories(${YAP_SOURCE_DIR}/include ${ROOT_INCLUDE_DIR})
 
-#make_executable(test test.cxx BellePWA "${ROOT_LIBS}" "{BAT_LIBS}")
-make_executable(D4piTest D4piTest YAP "${ROOT_LIBS}")
-make_executable(D3piTest D3piTest YAP "${ROOT_LIBS}")
-make_executable(DKKpiTest DKKpiTest YAP "${ROOT_LIBS}")
-
-#make_executable(GeneratorTest GeneratorTest YAP "${ROOT_LIBS}")
-
+set(PROGRAMS D4piTest D3piTest DKKpiTest)
+foreach(program ${PROGRAMS})
+	add_executable(${program} ${program}.cxx)
+	target_link_libraries(${program} YAP ${ROOT_LIBS})
+endforeach(program)
