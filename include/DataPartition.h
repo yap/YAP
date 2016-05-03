@@ -38,7 +38,7 @@ namespace yap {
 /// \brief Class for iterating over a #DataPartition
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-class DataIterator : virtual public std::forward_iterator_tag
+class DataIterator : public std::iterator<std::forward_iterator_tag, DataPoint>
 {
 public:
 
