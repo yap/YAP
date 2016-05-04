@@ -24,7 +24,7 @@
 
 namespace yap {
 
-class AmplitudePair;
+struct AmplitudePair;
 
 }
 

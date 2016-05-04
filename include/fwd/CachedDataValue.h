@@ -28,7 +28,7 @@
 namespace yap {
 
 class CachedDataValue;
-class DaughterCachedDataValue;
+struct DaughterCachedDataValue;
 class RealCachedDataValue;
 class ComplexCachedDataValue;
 class FourVectorCachedDataValue;

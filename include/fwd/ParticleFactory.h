@@ -24,8 +24,7 @@
 
 namespace yap {
 
-class ParticleTableEntry;
-
+struct ParticleTableEntry;
 class ParticleFactory;
 
 }
