@@ -21,39 +21,180 @@
 #ifndef yap_Vector_h
 #define yap_Vector_h
 
+#include "fwd/Vector.h"
+
 #include "Matrix.h"
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <iterator>
 #include <numeric>
 #include <ostream>
 #include <string>
 
 namespace yap {
 
+/// \class VectorIterator
+/// \brief Iterator for Vector class
+/// \author Daniel Greenwald
+/// \ingroup VectorAlgebra
+template <typename T, size_t N>
+class VectorIterator : public std::iterator<std::random_access_iterator_tag, T, typename std::array<T, N>::difference_type>
+{
+public:
+
+    /// Constructor
+    VectorIterator(typename std::array<T, N>::iterator it)
+        : Iterator_(it)
+    {}
+
+    /// inequality operator
+    bool operator!=(VectorIterator b) const
+    { return this->Iterator_ != b.Iterator_; }
+
+    /// dereference operator
+    T& operator*()
+    { return *(this->Iterator_); }
+
+    /// pointer operator
+    T* operator->()
+    { return std::array<T, N>::operator->(this->Iterator_); }
+
+    /// pre-increment operator
+    VectorIterator& operator++()
+    { ++(this->Iterator_); return *this; }
+
+    /// post-increment operator
+    VectorIterator operator++(int)
+    { VectorIterator it(*this); (this->Iterator_)++; return it; }
+
+    /// pre-decrement operator
+    VectorIterator& operator--()
+    { --(this->Iterator_); return *this; }
+
+    /// post-decrement operator
+    VectorIterator operator--(int)
+    { VectorIterator it(*this); (this->Iterator_)--; return it; }
+
+    /// addition assignment operator
+    VectorIterator& operator+=(typename VectorIterator::difference_type n)
+    { this->Iterator_ += n; return *this; }
+
+    /// subtraction assignment operator
+    VectorIterator& operator-=(typename VectorIterator::difference_type n)
+    { this->Iterator_ -= n; return *this; }
+
+    /// difference operator
+    typename VectorIterator::difference_type operator-(VectorIterator a) const
+    { return this->Iterator_ - a.Iterator_; }
+
+    /// access operator
+    VectorIterator operator[](typename VectorIterator::difference_type n) const
+    { VectorIterator it(Iterator_[n]); return it; }
+
+    /// less-than operator
+    bool operator<(VectorIterator b) const
+    { return this->Iterator_ < b.Iterator_; }
+
+    /// greater-than operator
+    bool operator>(VectorIterator b) const
+    { return this->Iterator_ > b.Iterator_; }
+
+private:
+
+    /// internal iterator
+    typename std::array<T, N>::iterator Iterator_;
+};
+
+/// addition operator
+template <typename T, size_t N>
+VectorIterator<T, N> operator+(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
+{ VectorIterator<T, N> it(a); it += n; return it; }
+
+/// addition operator
+template <typename T, size_t N>
+VectorIterator<T, N> operator+(typename VectorIterator<T, N>::difference_type n, VectorIterator<T, N> a)
+{ return a + n; }
+
+/// subtraction operator
+template <typename T, size_t N>
+VectorIterator<T, N> operator-(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
+{ VectorIterator<T, N> it(a); it -= n; return it; }
+
+/// greater-than-or-equal operator
+template <typename T, size_t N>
+bool operator>=(VectorIterator<T, N> a, VectorIterator<T, N> b)
+{ return !(a < b); }
+
+/// less-than-or-equal operator
+template <typename T, size_t N>
+bool operator<=(VectorIterator<T, N> a, VectorIterator<T, N> b)
+{ return !(b > a); }
+
 /// \class Vector
 /// \brief N-dimensional column vector
-/// ATTENTION: You have to take care about initialization of vectors!!!
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup VectorAlgebra
 template <typename T, size_t N>
-class Vector : public std::array<T, N>
+class Vector
 {
 public:
     /// Constructor
-    constexpr Vector(const std::array<T, N>& v) noexcept : std::array<T, N>(v) {}
+    constexpr Vector(const std::array<T, N>& v) noexcept : Elements_(v) {}
 
     /// Default constructor
     Vector()
-    { this->fill(T(0)); }
+    { Elements_.fill(T(0)); }
 
-    /// Use std::array's assignment operators
-    using std::array<T, N>::operator=;
+    /// \return size of Vector
+    constexpr size_t size() const
+    { return N; }
+
+    /// equality operator
+    bool operator==(const Vector<T, N>& rhs) const
+    { return this->Elements_ == rhs.Elements_; }
+
+    /// element access operator
+    T& operator[](size_t i)
+    { return Elements_[i]; }
+
+    /// element access operator
+    const T operator[](size_t i) const
+    { return Elements_[i]; }
+
+    /// access to front
+    T& front()
+    { return Elements_.front(); }
+
+    /// access to front
+    const T& front() const
+    { return Elements_.front(); }
+
+    /// access to begin
+    VectorIterator<T, N> begin()
+    { return VectorIterator<T, N>(Elements_.begin()); }
+
+    /// access to begin
+    VectorIterator<const T, N> begin() const
+    { return VectorIterator<const T, N>(Elements_.begin()); }
+
+    /// access to end
+    VectorIterator<T, N> end()
+    { return VectorIterator<T, N>(Elements_.end()); }
+
+    /// access to end
+    VectorIterator<const T, N> end() const
+    { return VectorIterator<const T, N>(Elements_.end()); }
 
     /// inner (dot) product of #Vector's
     virtual T operator*(const Vector<T, N>& B) const
-    { return std::inner_product(this->begin(), this->end(), B.begin(), T(0)); }
+    { return std::inner_product(Elements_.begin(), Elements_.end(), B.Elements_.begin(), T(0)); }
+
+private:
+
+    /// internal storage
+    std::array<T, N> Elements_;
 };
 
 /// \return string

@@ -27,6 +27,9 @@
 namespace yap {
 
 template <typename T, size_t N>
+class VectorIterator;
+    
+template <typename T, size_t N>
 class Vector;
 
 }
