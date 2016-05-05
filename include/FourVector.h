@@ -55,7 +55,7 @@ public:
     /// Default constructor
     FourVector() = default;
 
-    /// Use std::array's assignment operators
+    /// Use assignment operators
     using Vector<T, 4>::operator=;
 
     /// \return inner (dot) product for 4-vectors

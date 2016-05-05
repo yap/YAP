@@ -132,28 +132,52 @@ template <typename T, size_t N>
 bool operator<=(VectorIterator<T, N> a, VectorIterator<T, N> b)
 { return !(b > a); }
 
+/// \class VectorExpression
+/// \brief Class for holding vector expressions
+/// \author Daniel Greenwald
+/// \ingroup VectorAlgebra
+template <typename T, size_t N, typename E>
+class VectorExpression
+{
+public:
+
+    /// access operator
+    constexpr T operator[](size_t i) const
+    { return static_cast<const E&>(*this)[i]; }
+
+    /// \return size
+    constexpr size_t size() const
+    { return N; }
+
+    /// cast to E
+    operator E& ()
+    { return static_cast<E&>(*this); }
+
+    /// cast to E
+    constexpr operator const E& () const
+    { return static_cast<const E&>(*this); }
+
+};
+
 /// \class Vector
 /// \brief N-dimensional column vector
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup VectorAlgebra
 template <typename T, size_t N>
-class Vector
+class Vector : public VectorExpression<T, N, Vector<T, N> >
 {
 public:
     /// Constructor
     constexpr Vector(const std::array<T, N>& v) noexcept : Elements_(v) {}
 
+    /// expression constructor
+    template <typename E>
+    Vector(const VectorExpression<T, N, E>& V)
+    { for (size_t i = 0; i < V.size(); ++i) Elements_[i] = V[i]; }
+
     /// Default constructor
     Vector()
     { Elements_.fill(T(0)); }
-
-    /// \return size of Vector
-    constexpr size_t size() const
-    { return N; }
-
-    /// equality operator
-    bool operator==(const Vector<T, N>& rhs) const
-    { return this->Elements_ == rhs.Elements_; }
 
     /// element access operator
     T& operator[](size_t i)
@@ -191,11 +215,96 @@ public:
     virtual T operator*(const Vector<T, N>& B) const
     { return std::inner_product(Elements_.begin(), Elements_.end(), B.Elements_.begin(), T(0)); }
 
+    /// equality operator
+    friend bool operator==(const Vector<T, N>& lhs, const Vector<T, N>& rhs)
+    { return lhs.Elements_ == rhs.Elements_; }
+
+    /// Calculate the angle between two vectors
+    friend const T angle(const Vector<T, N>& A, const Vector<T, N>& B)
+    {
+        T arg = A * B / abs(A) / abs(B);
+
+        // correct for arg just outside boundary (by numerical precision)
+        if (std::isfinite(arg) and fabs(arg) > 1)
+            arg = (arg > 0) ? (T)1 : (T) - 1;
+
+        return acos(arg);
+    }
+
+    /// \return squared magnitude of #Vector (using associated inner product)
+    friend constexpr T norm(const Vector<T, N>& A)
+    { return A * A; }
+
+
 private:
 
     /// internal storage
     std::array<T, N> Elements_;
 };
+
+/// \class VectorAddition
+/// \brief Expression for addition of two VectorExpressions
+/// \author Daniel Greenwald
+/// \ingroup VectorAlgebra
+template <typename T, size_t N, typename E1, typename E2>
+class VectorAddition : public VectorExpression<T, N, VectorAddition<T, N, E1, E2> >
+{
+public:
+    /// Constructor
+    constexpr VectorAddition(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
+        : VectorExpression<T, N, VectorAddition<T, N, E1, E2> >(), A_(a), B_(b)
+    {}
+
+    /// access operator
+    constexpr T operator[](size_t i) const
+    { return A_[i] + B_[i]; }
+
+private:
+
+    /// lhs expression
+    const E1& A_;
+
+    /// rhs expression
+    const E2& B_;
+
+};
+
+/// addition of two vectors
+template <typename T, size_t N, typename E1, typename E2>
+constexpr VectorAddition<T, N, E1, E2> operator+(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
+{ return VectorAddition<T, N, E1, E2>(a, b); }
+
+/// \class VectorSubtraction
+/// \brief Expression for subtraction of two VectorExpressions
+/// \author Daniel Greenwald
+/// \ingroup VectorAlgebra
+template <typename T, size_t N, typename E1, typename E2>
+class VectorSubtraction : public VectorExpression<T, N, VectorSubtraction<T, N, E1, E2> >
+{
+public:
+    /// Constructor
+    constexpr VectorSubtraction(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
+        : VectorExpression<T, N, VectorSubtraction<T, N, E1, E2> >(), A_(a), B_(b)
+    {}
+
+    /// access operator
+    constexpr T operator[](size_t i) const
+    { return A_[i] - B_[i]; }
+
+private:
+
+    /// lhs expression
+    const E1& A_;
+
+    /// rhs expression
+    const E2& B_;
+
+};
+
+/// subtraction of two vectors
+template <typename T, size_t N, typename E1, typename E2>
+constexpr VectorSubtraction<T, N, E1, E2> operator-(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
+{ return VectorSubtraction<T, N, E1, E2>(a, b); }
 
 /// \return string
 template <typename T, size_t N>
@@ -220,11 +329,6 @@ template <typename T, size_t N>
 Vector<T, N>& operator+=(Vector<T, N>& A, const Vector<T, N>& B)
 { std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a + b;}); return A; }
 
-/// addition
-template <typename T, size_t N>
-const Vector<T, N> operator+(const Vector<T, N>& A, const Vector<T, N>& B)
-{ auto v = A; v += B; return v; }
-
 /// unary minus
 template <typename T, size_t N>
 constexpr Vector<T, N> operator-(const Vector<T, N>& V)
@@ -234,11 +338,6 @@ constexpr Vector<T, N> operator-(const Vector<T, N>& V)
 template <typename T, size_t N>
 Vector<T, N>& operator-=(Vector<T, N>& A, const Vector<T, N>& B)
 { std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a - b;}); return A; }
-
-/// subtraction
-template <typename T, size_t N>
-const Vector<T, N> operator-(const Vector<T, N>& A, const Vector<T, N>& B)
-{ auto v = A; v -= B; return v; }
 
 /// (assignment) multiplication by a single element
 template <typename T, size_t N>
@@ -264,11 +363,6 @@ Vector<T, N>& operator/=(Vector<T, N>& A, const T& B)
 template <typename T, size_t N>
 const Vector<T, N> operator/(const Vector<T, N>& A, const T& c)
 { auto v = A; v /= c; return v; }
-
-/// \return squared magnitude of #Vector (using associated inner product)
-template <typename T, size_t N>
-constexpr T norm(const Vector<T, N>& A)
-{ return A * A; }
 
 /// \return magnitude of #Vector (using associated inner product)
 template <typename T, size_t N>
