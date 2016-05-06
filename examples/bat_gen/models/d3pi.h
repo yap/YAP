@@ -7,11 +7,14 @@
 #ifndef __BAT__D3PI__H
 #define __BAT__D3PI__H
 
+#include <AmplitudePair.h>
 #include <BreitWigner.h>
 #include <Constants.h>
+#include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Model.h>
+#include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
 #include <QuantumNumbers.h>

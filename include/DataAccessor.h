@@ -21,22 +21,22 @@
 #ifndef yap_DataAccessor_h
 #define yap_DataAccessor_h
 
-#include "CachedDataValue.h"
+#include "fwd/DataAccessor.h"
+
+#include "fwd/CachedDataValue.h"
+#include "fwd/DataPoint.h"
+#include "fwd/Model.h"
+
 #include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
 #include <memory>
-#include <set>
 
 namespace yap {
-
-class DataPoint;
-class Model;
 
 /// \name DataAccessor
 /// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
-
 class DataAccessor :
     public virtual ReportsParticleCombinations
 {
@@ -103,10 +103,10 @@ public:
     virtual std::string data_accessor_type() const = 0;
 
     /// grant friend status to Model to access CachedDataValues_
-    friend class Model;
+    friend Model;
 
     /// grant friend status to CachedDataValue to call addCachedDataValue
-    friend class CachedDataValue;
+    friend CachedDataValue;
 
 protected:
 
@@ -153,10 +153,6 @@ private:
     int Index_;
 
 };
-
-/// \typedef DataAccessorSet
-using DataAccessorSet = std::set<DataAccessor*>;
-// using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
 
 /// remove expired elements of set
 void removeExpired(DataAccessorSet& S);

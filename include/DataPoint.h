@@ -21,16 +21,17 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include "FourVector.h"
+#include "fwd/DataPoint.h"
+
+#include "fwd/DataSet.h"
+#include "fwd/FourVector.h"
+#include "fwd/Model.h"
+#include "fwd/StatusManager.h"
 
 #include <string>
 #include <vector>
 
 namespace yap {
-
-class DataSet;
-class Model;
-class StatusManager;
 
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
@@ -107,9 +108,6 @@ private:
 
 };
 
-/// \typedef DataPointVector
-/// \brief stl vector of DataPoint's
-using DataPointVector = std::vector<DataPoint>;
 
 }
 

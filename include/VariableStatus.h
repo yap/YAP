@@ -24,7 +24,7 @@
 namespace yap {
 
 /// \enum VariableStatus
-enum class VariableStatus {
+enum class VariableStatus : int {
     changed   = -1,        ///< Parameter is free and has been changed
     fixed     = 0,         ///< Parameter is fixed
     unchanged = +1,        ///< Parameter is free but has not been changed

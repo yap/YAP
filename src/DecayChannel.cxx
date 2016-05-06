@@ -1,5 +1,6 @@
 #include "DecayChannel.h"
 
+#include "AmplitudePair.h"
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "CachedDataValue.h"
@@ -9,6 +10,7 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "Model.h"
+#include "Parameter.h"
 #include "ParticleCombinationCache.h"
 #include "spin.h"
 #include "SpinAmplitude.h"
@@ -142,6 +144,12 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
             // add SpinAmplitude retrieved from cache
             addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
 
+}
+
+//-------------------------
+const Model* DecayChannel::model() const
+{
+    return Daughters_[0]->model();
 }
 
 //-------------------------

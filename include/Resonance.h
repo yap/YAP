@@ -21,6 +21,12 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
+#include "fwd/DataPoint.h"
+#include "fwd/MassShape.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/QuantumNumbers.h"
+#include "fwd/StatusManager.h"
+
 #include "DecayingParticle.h"
 
 #include <complex>
@@ -28,12 +34,6 @@
 #include <string>
 
 namespace yap {
-
-class DataPoint;
-class MassShape;
-class ParticleCombination;
-class QuantumNumbers;
-class StatusManager;
 
 /// \class Resonance
 /// \brief Class for a particle that will decay and has a mass shape

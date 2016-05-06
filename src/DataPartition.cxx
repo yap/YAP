@@ -2,6 +2,7 @@
 
 #include "DataPoint.h"
 #include "DataSet.h"
+#include "Exceptions.h"
 #include "logging.h"
 #include "make_unique.h"
 
@@ -53,6 +54,12 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
     }
 
     return P;
+}
+
+//-------------------------
+void DataPartitionBlock::increment(DataIterator& it) const
+{
+    ++rawIterator(it);
 }
 
 //-------------------------

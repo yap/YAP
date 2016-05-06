@@ -21,17 +21,16 @@
 #ifndef yap_PoleMass_h
 #define yap_PoleMass_h
 
-#include "CachedValue.h"
+#include "fwd/DataPoint.h"
+#include "fwd/Parameter.h"
+#include "fwd/ParticleCombination.h"
+
 #include "MassShape.h"
-#include "Parameter.h"
 
 #include <complex>
 #include <memory>
 
 namespace yap {
-
-class DataPoint;
-class ParticleCombination;
 
 /// \class PoleMass
 /// \brief Class for pole-mass resonance shape

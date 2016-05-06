@@ -1,10 +1,16 @@
 #include "BreitWigner.h"
 
+#include "CachedDataValue.h"
 #include "CachedValue.h"
+#include "Constants.h"
+#include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
+#include "Parameter.h"
+#include "ParticleFactory.h"
 #include "Resonance.h"
+#include "StatusManager.h"
 
 namespace yap {
 

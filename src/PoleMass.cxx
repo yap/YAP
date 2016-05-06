@@ -1,8 +1,12 @@
 #include "PoleMass.h"
 
+#include "CalculationStatus.h"
+#include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
+#include "Parameter.h"
+#include "ParticleFactory.h"
 #include "Resonance.h"
 #include "StatusManager.h"
 

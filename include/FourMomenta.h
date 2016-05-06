@@ -21,21 +21,21 @@
 #ifndef yap_FourMomenta_
 #define yap_FourMomenta_
 
-#include "FourVector.h"
+#include "fwd/CachedDataValue.h"
+#include "fwd/DataPoint.h"
+#include "fwd/FourVector.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "StaticDataAccessor.h"
 
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <vector>
 
 namespace yap {
-
-class DataPoint;
-class FourVectorCachedDataValue;
-class Model;
-class ParticleCombination;
-class RealCachedDataValue;
-class StatusManager;
 
 /// \class FourMomenta
 /// \brief Stores and gives access to four-momenta and invariant masses

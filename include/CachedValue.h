@@ -21,8 +21,10 @@
 #ifndef yap_CachedValue_h
 #define yap_CachedValue_h
 
+#include "fwd/CachedValue.h"
+#include "fwd/Parameter.h"
+
 #include "CalculationStatus.h"
-#include "Parameter.h"
 
 #include <memory>
 #include <set>
@@ -34,7 +36,6 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 /// \defgroup Cache
-
 class CachedValueBase
 {
 public:
@@ -69,17 +70,11 @@ protected:
 
 };
 
-/// \typedef CachedValueSet
-/// \ingroup Parameters
-/// \ingroup Cache
-using CachedValueSet = std::set<std::shared_ptr<CachedValueBase> >;
-
 /// \class CachedValue
 /// \brief Class for linking CachedValueBase and Parameter
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 /// \ingroup Cache
-
 template <typename T>
 class CachedValue : public CachedValueBase, public Parameter<T>
 {
@@ -96,16 +91,6 @@ public:
     { Parameter<T>::setValue(val); CalculationStatus_ = CalculationStatus::calculated; }
 
 };
-
-/// \typedef ComplexCachedValue
-/// \ingroup Parameters
-/// \ingroup Cache
-using ComplexCachedValue = CachedValue<std::complex<double> >;
-
-/// \typedef RealCachedValue
-/// \ingroup Parameters
-/// \ingroup Cache
-using RealCachedValue = CachedValue<double>;
 
 }
 

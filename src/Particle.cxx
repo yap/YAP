@@ -1,6 +1,7 @@
 #include "Particle.h"
 
 #include "logging.h"
+#include "Parameter.h"
 
 namespace yap {
 
@@ -32,5 +33,12 @@ bool Particle::consistent() const
 
     return true;
 }
+
+//-------------------------
+std::string to_string(const Particle& p)
+{
+    return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value());
+}
+
 
 }

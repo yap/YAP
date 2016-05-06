@@ -44,6 +44,9 @@ public:
     /// intializer_list constructor
     constexpr FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
 
+    /// Vector<T, 4> constructor
+    constexpr FourVector(const Vector<T, 4>& V) : Vector<T, 4>(V) {}
+
     /// energy + ThreeVector constructor
     /// \param E 0th component
     /// \param P #ThreeVector component
@@ -52,7 +55,7 @@ public:
     /// Default constructor
     FourVector() = default;
 
-    /// Use std::array's assignment operators
+    /// Use assignment operators
     using Vector<T, 4>::operator=;
 
     /// \return inner (dot) product for 4-vectors
@@ -91,7 +94,7 @@ const std::vector<FourVector<T> > operator-(const std::vector<FourVector<T> >& V
 /// multiply a 4x4 matrix times a FourVector
 template <typename T>
 constexpr FourVector<T> operator*(const FourMatrix<T>& R, const FourVector<T>& V)
-{ return FourVector<T>(R * static_cast<Vector<T, 4> >(V)); }
+{ return FourVector<T>(R * static_cast<const Vector<T, 4> >(V)); }
 
 /// multiply a 4x4 matrix times each of a vector of FourVector's
 template <typename T>

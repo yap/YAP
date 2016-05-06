@@ -21,7 +21,7 @@
 #ifndef yap_ReportsParticleCombinations_h
 #define yap_ReportsParticleCombinations_h
 
-#include "ParticleCombination.h"
+#include "fwd/ParticleCombination.h"
 
 #include <memory>
 

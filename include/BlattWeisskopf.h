@@ -21,6 +21,14 @@
 #ifndef yap_BlattWeisskopf_h
 #define yap_BlattWeisskopf_h
 
+#include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
+#include "fwd/DecayingParticle.h"
+#include "fwd/CachedDataValue.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "AmplitudeComponent.h"
 #include "DataAccessor.h"
 #include "RequiresMeasuredBreakupMomenta.h"
@@ -29,14 +37,6 @@
 #include <string>
 
 namespace yap {
-
-class DataPartition;
-class DataPoint;
-class DecayingParticle;
-class Model;
-class ParticleCombination;
-class RealCachedDataValue;
-class StatusManager;
 
 /// \class BlattWeisskopf
 /// \brief Class implementing BlattWeisskopf barrier factors

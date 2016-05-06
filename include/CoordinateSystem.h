@@ -21,6 +21,8 @@
 #ifndef yap_CoordinateSystem_h
 #define yap_CoordinateSystem_h
 
+#include "fwd/CoordinateSystem.h"
+
 #include "Vector.h"
 #include "Matrix.h"
 #include "ThreeVector.h"
@@ -32,11 +34,6 @@
 #define VECTOREPSILON 1e-10
 
 namespace yap {
-
-/// \typedef CoordinateSystem
-/// \ingroup VectorAlgebra
-template <typename T, size_t N>
-using CoordinateSystem = std::array<Vector<T, N>, N>;
 
 /// \return string
 template <typename T, size_t N>

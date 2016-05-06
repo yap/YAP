@@ -8,6 +8,7 @@
 #include "logging.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
+#include "Parameter.h"
 
 namespace yap {
 

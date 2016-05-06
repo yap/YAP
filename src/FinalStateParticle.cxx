@@ -2,6 +2,7 @@
 
 #include "Exceptions.h"
 #include "logging.h"
+#include "Parameter.h"
 #include "ParticleCombination.h"
 
 namespace yap {

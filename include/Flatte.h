@@ -21,18 +21,18 @@
 #ifndef yap_Flatte_h
 #define yap_Flatte_h
 
-#include "CachedValue.h"
+#include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
+#include "fwd/Parameter.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "MassShapeWithNominalMass.h"
 
 #include <complex>
 #include <memory>
 
 namespace yap {
-
-class DataPartition;
-class DataPoint;
-class ParticleCombination;
-class StatusManager;
 
 /// \class Flatte
 /// \brief Class for Flatte resonance shape

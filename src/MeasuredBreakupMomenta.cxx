@@ -1,9 +1,11 @@
 #include "MeasuredBreakupMomenta.h"
 
+#include "CachedDataValue.h"
 #include "CalculationStatus.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "Model.h"
+#include "StatusManager.h"
 
 namespace yap {
 
@@ -18,6 +20,13 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
     Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
     Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
 }
+
+//-------------------------
+double MeasuredBreakupMomenta::q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return Q2_->value(d, symmetrizationIndex(pc));
+}
+
 
 //-------------------------
 void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const

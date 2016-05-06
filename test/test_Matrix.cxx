@@ -122,7 +122,7 @@ TEST_CASE( "Matrix" )
             for (auto axis : yap::ThreeAxes) {
 
                 const yap::ThreeVector<double> a({0., -1.1, 2.5});
-                const yap::ThreeVector<double> b({-0.2, 1.15, 1.5});
+                const yap::ThreeVector<double> b({ -0.2, 1.15, 1.5});
                 const yap::ThreeVector<double> c({0.55, 2., -2.3});
 
                 const yap::ThreeVector<double> x({1., 0., 0.});

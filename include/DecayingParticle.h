@@ -21,10 +21,17 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
+#include "fwd/BlattWeisskopf.h"
+#include "fwd/DataPoint.h"
+#include "fwd/DecayChannel.h"
+#include "fwd/DecayTree.h"
+#include "fwd/FinalStateParticle.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/QuantumNumbers.h"
+#include "fwd/StatusManager.h"
+
 #include "DataAccessor.h"
-#include "DecayChannel.h"
-#include "DecayTree.h"
-#include "make_unique.h"
 #include "Particle.h"
 
 #include <complex>
@@ -33,14 +40,6 @@
 #include <vector>
 
 namespace yap {
-
-class BlattWeisskopf;
-class DataPoint;
-class FinalStateParticle;
-class Model;
-class ParticleCombination;
-class QuantumNumbers;
-class StatusManager;
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay
@@ -88,8 +87,7 @@ public:
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters)
-    { return addChannel(std::make_shared<DecayChannel>(daughters)); }
+    virtual std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -131,8 +129,7 @@ public:
     virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to Model through first DecayChannel
-    const Model* model() const override
-    { return Channels_.empty() ? nullptr : Channels_[0]->model(); }
+    const Model* model() const override;
 
     /// \return string denoting DataAccessor type
     virtual std::string data_accessor_type() const

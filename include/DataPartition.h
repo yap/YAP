@@ -21,25 +21,24 @@
 #ifndef yap_DataPartition_h
 #define yap_DataPartition_h
 
-#include "DataPoint.h"
+#include "fwd/DataPartition.h"
+
+#include "fwd/DataPoint.h"
+#include "fwd/DataSet.h"
+
 #include "StatusManager.h"
 
 #include <algorithm>
 #include <iterator>
 #include <memory>
-#include <vector>
 
 namespace yap {
-
-class DataPartition;
-class DataSet;
 
 /// \class DataIterator
 /// \brief Class for iterating over a #DataPartition
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-
-class DataIterator : virtual public std::forward_iterator_tag
+class DataIterator : public std::iterator<std::forward_iterator_tag, DataPoint>
 {
 public:
 
@@ -173,10 +172,6 @@ private:
 
 };
 
-/// \typedef DataPartitionVector
-/// \brief Vector of unique_ptr's to DataPartition
-using DataPartitionVector = std::vector<std::unique_ptr<DataPartition> >;
-
 /// \class DataPartitionBlock
 /// \brief A contiguous block of data
 /// \author Johannes Rauch, Daniel Greenwald
@@ -211,8 +206,8 @@ protected:
 
     /// increment DataIterator
     /// \param it DataIterator to iterate
-    virtual void increment(DataIterator& it) const override
-    { ++rawIterator(it); }
+    virtual void increment(DataIterator& it) const override;
+
 };
 
 /// \class DataPartitionWeave

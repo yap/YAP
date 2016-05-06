@@ -1,13 +1,18 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
+#include <AmplitudePair.h>
 #include <BreitWigner.h>
+#include <DataSet.h>
+#include <DecayChannel.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <logging.h>
 #include <HelicityFormalism.h>
+#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
+#include <Parameter.h>
 #include <ParticleFactory.h>
 #include <Resonance.h>
 #include <ZemachFormalism.h>

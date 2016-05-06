@@ -4,6 +4,7 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 #include "Exceptions.h"
+#include "FourVector.h"
 #include "logging.h"
 #include "StatusManager.h"
 #include "VariableStatus.h"
@@ -16,10 +17,11 @@ CachedDataValue::Status::Status() :
     Variable(VariableStatus::changed)
 {}
 
-void CachedDataValue::Status::operator=(const VariableStatus& s)
+CachedDataValue::Status& CachedDataValue::Status::operator=(const VariableStatus& s)
 {
     if (Variable != VariableStatus::fixed)
         Variable = s;
+    return *this;
 }
 
 //-------------------------
@@ -27,7 +29,6 @@ std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S)
 {
     return str << S.Calculation << ", " << S.Variable;
 }
-
 
 //-------------------------
 CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataValueSet vals) :
@@ -44,7 +45,7 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
 }
 
 //-------------------------
-double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
+const double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
 {
 #ifdef ELPP_DISABLE_DEBUG_LOGS
     return d.Data_[Owner_->index()][sym_index][Position_ + index];
@@ -141,7 +142,24 @@ std::shared_ptr<FourVectorCachedDataValue> FourVectorCachedDataValue::create(Dat
 }
 
 //-------------------------
-void FourVectorCachedDataValue::setValue(FourVector<double> val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
+const FourVector<double> FourVectorCachedDataValue::value(const DataPoint& d, unsigned  sym_index) const
+{
+    return FourVector<double>( {CachedDataValue::value(0, d, sym_index),
+                                CachedDataValue::value(1, d, sym_index),
+                                CachedDataValue::value(2, d, sym_index),
+                                CachedDataValue::value(3, d, sym_index)
+                               });
+}
+
+//-------------------------
+void FourVectorCachedDataValue::setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index) const
+{
+    for (size_t i = 0; i < val.size(); ++i)
+        CachedDataValue::setValue(i, val[i], d, sym_index);
+}
+
+//-------------------------
+void FourVectorCachedDataValue::setValue(const FourVector<double>& val, DataPoint& d, unsigned sym_index, StatusManager& sm) const
 {
     for (size_t i = 0; i < val.size(); ++i) {
         if (val[i] != CachedDataValue::value(i, d, sym_index)) {

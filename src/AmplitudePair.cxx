@@ -2,6 +2,7 @@
 
 #include "CachedDataValue.h"
 #include "DecayChannel.h"
+#include "Parameter.h"
 
 namespace yap {
 

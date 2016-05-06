@@ -21,13 +21,13 @@
 #ifndef yap_Parameter_h
 #define yap_Parameter_h
 
+#include "fwd/Parameter.h"
+
 #include "Exceptions.h"
 #include "VariableStatus.h"
 
 #include <complex>
 #include <memory>
-#include <set>
-#include <vector>
 
 namespace yap {
 
@@ -35,7 +35,6 @@ namespace yap {
 /// \brief Class holding basic properties of a parameter, but not a value!
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Parameters
-
 class ParameterBase
 {
 public:
@@ -58,16 +57,6 @@ private:
     VariableStatus VariableStatus_;
 
 };
-
-/// \typedef ParameterVector
-/// \ingroup Parameters
-/// Use when order of parameters must be kept constant
-using ParameterVector = std::vector<std::shared_ptr<ParameterBase> >;
-
-/// \typedef ParameterSet
-/// \ingroup Parameters
-/// Use when enforcement of no duplicates is required, and order does not matter
-using ParameterSet = std::set<std::shared_ptr<ParameterBase> >;
 
 /// \class Parameter
 /// \brief Template class holding also a value for a parameter
@@ -123,22 +112,6 @@ protected:
     T ParameterValue_;
 
 };
-
-/// \typedef ComplexParameter
-/// \ingroup Parameters
-using ComplexParameter = Parameter<std::complex<double> >;
-
-/// \typedef RealParameter
-/// \ingroup Parameters
-using RealParameter = Parameter<double>;
-
-/// \typedef ComplexParameterVector
-/// \ingroup Parameters
-using ComplexParameterVector = std::vector<std::shared_ptr<ComplexParameter> >;
-
-/// \typedef RealParameterVector
-/// \ingroup Parameters
-using RealParameterVector = std::vector<std::shared_ptr<RealParameter> >;
 
 /// \class ComplexComponentParameter
 /// \brief Abstract base allowing access to the components of a ComplexParameter as a RealParameter

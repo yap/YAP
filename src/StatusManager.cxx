@@ -3,6 +3,8 @@
 #include "CachedDataValue.h"
 #include "CalculationStatus.h"
 #include "DataAccessor.h"
+#include "Exceptions.h"
+#include "Parameter.h"
 #include "VariableStatus.h"
 
 namespace yap {

@@ -1,5 +1,7 @@
 #include "CachedValue.h"
 
+#include "Parameter.h"
+
 namespace yap {
 
 //-------------------------

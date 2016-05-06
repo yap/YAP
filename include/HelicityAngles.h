@@ -21,6 +21,11 @@
 #ifndef yap_HelicityAngles_h
 #define yap_HelicityAngles_h
 
+#include "fwd/CachedDataValue.h"
+#include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/StatusManager.h"
+
 #include "Constants.h"
 #include "CoordinateSystem.h"
 #include "Rotation.h"
@@ -30,11 +35,6 @@
 #include <memory>
 
 namespace yap {
-
-class RealCachedDataValue;
-class Model;
-class ParticleCombination;
-class StatusManager;
 
 /// \class HelicityAngles
 /// \brief Calculates, stores and gives access to helicity angles
@@ -72,8 +72,7 @@ public:
     virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// get azimuthal angle
-    double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return Phi_->value(d, symmetrizationIndex(pc)); }
+    double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// access azimuthal angle
     std::shared_ptr<RealCachedDataValue>& phi()
@@ -84,8 +83,7 @@ public:
     { return Phi_; }
 
     /// get polar angle
-    double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return Theta_->value(d, symmetrizationIndex(pc)); }
+    double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// access polar angle
     std::shared_ptr<RealCachedDataValue>& theta()

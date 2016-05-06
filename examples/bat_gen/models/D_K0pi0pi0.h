@@ -10,6 +10,7 @@
 
 #include <BreitWigner.h>
 #include <Constants.h>
+#include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
@@ -19,6 +20,7 @@
 #include <PoleMass.h>
 #include <QuantumNumbers.h>
 #include <Resonance.h>
+#include <Parameter.h>
 #include <SpinAmplitudeCache.h>
 
 #include <complex>
