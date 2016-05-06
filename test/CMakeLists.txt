@@ -1,5 +1,5 @@
 #find_package(ROOT) # Checked for in ${YAPDIR}/CMakeLists.txt
-find_package(Git REQUIRED)
+find_package(Git)
 
 include(ExternalProject)
 set(CATCH_SOURCE_DIR ${YAP_SOURCE_DIR}/external/catch)

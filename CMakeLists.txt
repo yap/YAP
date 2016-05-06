@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" 
 
 # Look for ROOT and BAT before including subdirectories
 find_package(ROOT)
-find_package(BAT)
+find_package(BAT )
 
 # Add subdirectories
 add_subdirectory(src)
