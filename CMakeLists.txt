@@ -29,5 +29,8 @@ find_package(BAT )
 
 # Add subdirectories
 add_subdirectory(src)
-add_subdirectory(examples)
 add_subdirectory(test)
+
+# Examples are not part of the `all` target and need to
+# be explicitly built when using `make`ing
+add_subdirectory(examples)
