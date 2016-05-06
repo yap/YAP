@@ -8,5 +8,5 @@ set(SOURCES
 	bat_gen.cxx
 	)
 
-add_executable(runBatGen ${SOURCES})
+add_executable(runBatGen EXCLUDE_FROM_ALL ${SOURCES})
 target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
