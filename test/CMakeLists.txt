@@ -15,7 +15,8 @@ ExternalProject_Add(
 )
 
 ExternalProject_Get_Property(catch source_dir)
-message(STATUS ${source_dir})
+
+#message(STATUS ${source_dir})
 
 include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools ${ROOT_INCLUDE_DIR})
 

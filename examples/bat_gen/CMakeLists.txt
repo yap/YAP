@@ -8,7 +8,5 @@ set(SOURCES
 	bat_gen.cxx
 	)
 
-message(STATUS "ROOT_INCLUDE_DIR ${ROOT_INCLUDE_DIR}")
 add_executable(runBatGen ${SOURCES})
-message(STATUS "${ROOT_LIBRARIES} ${BAT_LIBS} YAP")
 target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
