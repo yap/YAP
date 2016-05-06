@@ -13,13 +13,10 @@ ExternalProject_Add(
     INSTALL_COMMAND   ""
 	LOG_DOWNLOAD      ON
 )
-
+set_target_properties(catch PROPERTIES EXCLUDE_FROM_ALL TRUE)
 ExternalProject_Get_Property(catch source_dir)
 
-#message(STATUS ${source_dir})
-
 include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools ${ROOT_INCLUDE_DIR})
-
 set(YAP_TEST_SOURCES
   test_ClebschGordan.cxx
   test_FourMomentaCalculation.cxx
@@ -34,5 +31,6 @@ set(YAP_TEST_SOURCES
   yap_test.cxx
 )
 
-add_executable(yap_test ${YAP_TEST_SOURCES})
+add_executable(yap_test EXCLUDE_FROM_ALL ${YAP_TEST_SOURCES})
+add_dependencies(yap_test catch)
 target_link_libraries(yap_test YAP ${ROOT_LIBS})
