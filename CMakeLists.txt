@@ -11,10 +11,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-miss
 set(EXT_PROJECTS_DIR  ${YAP_SOURCE_DIR}/external)
 
 # Default build type is 'Release' (cmake default one is '')
-if("${CMAKE_BUILD_TYPE}" STREQUAL "")
-	set(CMAKE_BUILD_TYPE Release)
-endif()
-message(STATUS "Building ${CMAKE_BUILD_TYPE} project")
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Release CACHE STRING
+		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+		FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
 
 # build with cmake -DCMAKE_BUILD_TYPE=Debug
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g2" )
