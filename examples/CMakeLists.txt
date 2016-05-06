@@ -1,2 +1,2 @@
 add_subdirectory(programs)
-#add_subdirectory(bat_gen)
+add_subdirectory(bat_gen)
