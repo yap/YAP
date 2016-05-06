@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-miss
 
 set(EXT_PROJECTS_DIR  ${YAP_SOURCE_DIR}/external)
 
+# Default build type is 'Release' (cmake default one is '')
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
 	set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -21,7 +22,11 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g2" )
 # build with cmake -DCMAKE_BUILD_TYPE=Release
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
 
+# Look for ROOT and BAT before including subdirectories
+find_package(ROOT)
+find_package(BAT)
+
 # Add subdirectories
 add_subdirectory(src)
 add_subdirectory(examples)
-#add_subdirectory(test)
+add_subdirectory(test)
