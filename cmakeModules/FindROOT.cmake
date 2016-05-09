@@ -15,37 +15,33 @@ else()
 		OUTPUT_VARIABLE ROOTSYS
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --arch
-		OUTPUT_VARIABLE ROOT_TARGET
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --f77
-		OUTPUT_VARIABLE ROOT_F77
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --cc
-		OUTPUT_VARIABLE ROOT_CC
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --cxx
-		OUTPUT_VARIABLE ROOT_CPP
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
+#	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --arch
+#		OUTPUT_VARIABLE ROOT_TARGET
+#		OUTPUT_STRIP_TRAILING_WHITESPACE)
+#
+#	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --f77
+#		OUTPUT_VARIABLE ROOT_F77
+#		OUTPUT_STRIP_TRAILING_WHITESPACE)
+#
+#	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --cc
+#		OUTPUT_VARIABLE ROOT_CC
+#		OUTPUT_STRIP_TRAILING_WHITESPACE)
+#
+#	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --cxx
+#		OUTPUT_VARIABLE ROOT_CPP
+#		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --version
 		OUTPUT_VARIABLE ROOT_VERSION
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --svn-revision
-		OUTPUT_VARIABLE ROOT_SVN_REVISION
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --bindir
-		OUTPUT_VARIABLE ROOT_BIN_DIR
-		OUTPUT_STRIP_TRAILING_WHITESPACE)
-	if(NOT EXISTS "${ROOT_BIN_DIR}")
-		set(ROOT_FOUND FALSE)
-		set(ROOT_ERROR_REASON "${ROOT_ERROR_REASON} ROOT executable directory '${ROOT_BIN_DIR}' does not exist.")
-	endif()
+#	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --bindir
+#		OUTPUT_VARIABLE ROOT_BIN_DIR
+#		OUTPUT_STRIP_TRAILING_WHITESPACE)
+#	if(NOT EXISTS "${ROOT_BIN_DIR}")
+#		set(ROOT_FOUND FALSE)
+#		set(ROOT_ERROR_REASON "${ROOT_ERROR_REASON} ROOT executable directory '${ROOT_BIN_DIR}' does not exist.")
+#	endif()
 
 	execute_process(COMMAND ${ROOT_CONFIG_EXECUTABLE} --incdir
 		OUTPUT_VARIABLE ROOT_INCLUDE_DIR
@@ -79,11 +75,11 @@ else()
 		OUTPUT_VARIABLE ROOT_AUX_LIBRARIES
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	find_program(ROOTCINT_EXECUTABLE rootcint)
-	if(NOT ROOTCINT_EXECUTABLE)
-		set(ROOT_FOUND FALSE)
-		set(ROOT_ERROR_REASON "${ROOT_ERROR_REASON} Cannot find rootcint. Make sure ROOT is setup correctly.")
-	endif()
+#	find_program(ROOTCINT_EXECUTABLE rootcint)
+#	if(NOT ROOTCINT_EXECUTABLE)
+#		set(ROOT_FOUND FALSE)
+#		set(ROOT_ERROR_REASON "${ROOT_ERROR_REASON} Cannot find rootcint. Make sure ROOT is setup correctly.")
+#	endif()
 
 	# parse version string
 	string(REGEX REPLACE "^([0-9]+)\\.[0-9][0-9]+\\/[0-9][0-9]+.*" "\\1"
@@ -225,7 +221,7 @@ mark_as_advanced(
 
 # report result
 if(ROOT_FOUND)
-	message(STATUS "Found ROOT version ${ROOT_VERSION} r${ROOT_SVN_REVISION} in '${ROOTSYS}'.")
+	message(STATUS "Found ROOT version ${ROOT_VERSION} in '${ROOTSYS}'.")
 	message(STATUS "Using ROOT include directory '${ROOT_INCLUDE_DIR}'.")
 	message(STATUS "Using ROOT library directory '${ROOT_LIBRARY_DIR}'.")
 	message(STATUS "Using ROOT libraries ${ROOT_LIBRARIES}.")
@@ -241,64 +237,64 @@ else()
 endif()
 
 
-# function that generates ROOT dictionary
-function(root_generate_dictionary DICT_FILE INCLUDE_DIRS HEADER_FILES LINKDEF_FILE)
-
-	if(DEBUG_OUTPUT)
-		message(STATUS "root_generate_dictionary was called with the following arguments:
-        DICT_FILE    = '${DICT_FILE}'
-        INCLUDE_DIRS = '${INCLUDE_DIRS}'
-        HEADER_FILES = '${HEADER_FILES}'
-        LINKDEF_FILE = '${LINKDEF_FILE}'")
-	endif()
-
-	if(NOT ROOT_FOUND)
-		message(FATAL_ERROR "Impossible to generate dictionary '${DICT_FILE}', "
-			"because no ROOT installation was found.")
-	endif()
-
-	# prepare command line argument for compiler definitions (put -D in front)
-	set(_DEFINITIONS)
-	get_property(_DEFS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
-	foreach(_DEF ${_DEFS})
-		set(_DEFINITIONS "${_DEFINITIONS} -D${_DEF}")
-	endforeach()
-	unset(_DEF)
-	separate_arguments(_DEFINITIONS)
-
-	# prepare command line argument for include directories (put -I in front)
-	set(_INCLUDES)
-	foreach(_FILE ${INCLUDE_DIRS})
-		set(_INCLUDES ${_INCLUDES} -I${_FILE})
-	endforeach()
-	unset(_FILE)
-
-	# strip paths from header file names
-	set(_HEADERS)
-	foreach(_FILE ${HEADER_FILES})
-		get_filename_component(_NAME ${_FILE} NAME)
-		set(_HEADERS ${_HEADERS} ${_NAME})
-	endforeach()
-	unset(_FILE)
-
-	# add dictionary header file to output files
-	string(REGEX REPLACE "^(.*)\\.(.*)$" "\\1.h" _DICT_HEADER "${DICT_FILE}")
-	set(OUTPUT_FILES ${DICT_FILE} ${_DICT_HEADER})
-	if(DEBUG_OUTPUT)
-		message(STATUS "root_generate_dictionary will create output files '${OUTPUT_FILES}'")
-	endif()
-
-	add_custom_command(OUTPUT ${OUTPUT_FILES}
-		COMMAND ${ROOTCINT_EXECUTABLE}
-		ARGS -f ${DICT_FILE} -c -DHAVE_CONFIG_H ${_DEFINITIONS} ${_INCLUDES} ${_HEADERS} ${LINKDEF_FILE}
-		DEPENDS ${HEADER_FILES} ${LINKDEF_FILE}
-		)
-	if(DEBUG_OUTPUT)
-		message(STATUS "root_generate_dictionary will execute
-        '${ROOTCINT_EXECUTABLE} -f ${DICT_FILE} -c -DHAVE_CONFIG_H ${_DEFINITIONS} ${_INCLUDES} ${_HEADERS} ${LINKDEF_FILE}'")
-	endif()
-	unset(_DEFINITIONS)
-	unset(_INCLUDES)
-	unset(_HEADERS)
-
-endfunction(root_generate_dictionary)
+## function that generates ROOT dictionary
+#function(root_generate_dictionary DICT_FILE INCLUDE_DIRS HEADER_FILES LINKDEF_FILE)
+#
+#	if(DEBUG_OUTPUT)
+#		message(STATUS "root_generate_dictionary was called with the following arguments:
+#        DICT_FILE    = '${DICT_FILE}'
+#        INCLUDE_DIRS = '${INCLUDE_DIRS}'
+#        HEADER_FILES = '${HEADER_FILES}'
+#        LINKDEF_FILE = '${LINKDEF_FILE}'")
+#	endif()
+#
+#	if(NOT ROOT_FOUND)
+#		message(FATAL_ERROR "Impossible to generate dictionary '${DICT_FILE}', "
+#			"because no ROOT installation was found.")
+#	endif()
+#
+#	# prepare command line argument for compiler definitions (put -D in front)
+#	set(_DEFINITIONS)
+#	get_property(_DEFS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY COMPILE_DEFINITIONS)
+#	foreach(_DEF ${_DEFS})
+#		set(_DEFINITIONS "${_DEFINITIONS} -D${_DEF}")
+#	endforeach()
+#	unset(_DEF)
+#	separate_arguments(_DEFINITIONS)
+#
+#	# prepare command line argument for include directories (put -I in front)
+#	set(_INCLUDES)
+#	foreach(_FILE ${INCLUDE_DIRS})
+#		set(_INCLUDES ${_INCLUDES} -I${_FILE})
+#	endforeach()
+#	unset(_FILE)
+#
+#	# strip paths from header file names
+#	set(_HEADERS)
+#	foreach(_FILE ${HEADER_FILES})
+#		get_filename_component(_NAME ${_FILE} NAME)
+#		set(_HEADERS ${_HEADERS} ${_NAME})
+#	endforeach()
+#	unset(_FILE)
+#
+#	# add dictionary header file to output files
+#	string(REGEX REPLACE "^(.*)\\.(.*)$" "\\1.h" _DICT_HEADER "${DICT_FILE}")
+#	set(OUTPUT_FILES ${DICT_FILE} ${_DICT_HEADER})
+#	if(DEBUG_OUTPUT)
+#		message(STATUS "root_generate_dictionary will create output files '${OUTPUT_FILES}'")
+#	endif()
+#
+#	add_custom_command(OUTPUT ${OUTPUT_FILES}
+#		COMMAND ${ROOTCINT_EXECUTABLE}
+#		ARGS -f ${DICT_FILE} -c -DHAVE_CONFIG_H ${_DEFINITIONS} ${_INCLUDES} ${_HEADERS} ${LINKDEF_FILE}
+#		DEPENDS ${HEADER_FILES} ${LINKDEF_FILE}
+#		)
+#	if(DEBUG_OUTPUT)
+#		message(STATUS "root_generate_dictionary will execute
+#        '${ROOTCINT_EXECUTABLE} -f ${DICT_FILE} -c -DHAVE_CONFIG_H ${_DEFINITIONS} ${_INCLUDES} ${_HEADERS} ${LINKDEF_FILE}'")
+#	endif()
+#	unset(_DEFINITIONS)
+#	unset(_INCLUDES)
+#	unset(_HEADERS)
+#
+#endfunction(root_generate_dictionary)
