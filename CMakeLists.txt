@@ -5,7 +5,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakeModules)
 
 # Default C++ flags
 # TODO -std=c++11 is supported only since gcc 4.7: check compiler version!
-set(CMAKE_CXX_FLAGS "-std=c++11 -fdiagnostics-color=always")
+# set(CMAKE_CXX_FLAGS "-std=c++11 -fdiagnostics-color=always")
+set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-missing-braces -Werror=overloaded-virtual -pthread" )
 
 set(EXT_PROJECTS_DIR  ${YAP_SOURCE_DIR}/external)
