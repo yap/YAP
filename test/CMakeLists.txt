@@ -31,6 +31,6 @@ set(YAP_TEST_SOURCES
   yap_test.cxx
 )
 
-add_executable(yap_test EXCLUDE_FROM_ALL ${YAP_TEST_SOURCES})
-add_dependencies(yap_test catch)
-target_link_libraries(yap_test YAP ${ROOT_LIBS})
+add_executable(tests EXCLUDE_FROM_ALL ${YAP_TEST_SOURCES})
+add_dependencies(tests catch)
+target_link_libraries(tests YAP ${ROOT_LIBS})
