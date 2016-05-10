@@ -42,7 +42,10 @@ namespace yap {
 /// \brief Class implementing BlattWeisskopf barrier factors
 /// \author Johannes Rauch, Daniel Greenwald
 
-class BlattWeisskopf : public AmplitudeComponent, public DataAccessor, public RequiresMeasuredBreakupMomenta
+class BlattWeisskopf :
+    public AmplitudeComponent,
+    public DataAccessor,
+    public RequiresMeasuredBreakupMomenta
 {
 public:
 
@@ -61,16 +64,15 @@ public:
     /// \param sm StatusManager to update
     virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const;
 
-    /// functor
-    /// \return Blatt-Weisskopf barrier factor for data point and particle combination
-    /// \param d DataPoint
-    /// \param pc shared_ptr to ParticleCombination
-    double operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    /* /// functor */
+    /* /// \return Blatt-Weisskopf barrier factor for data point and particle combination */
+    /* /// \param d DataPoint */
+    /* /// \param pc shared_ptr to ParticleCombination */
+    /* double operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const; */
 
-    /// Calculate barrier factor for and store into each data point in a partition
-    /// \param D DataPartition to calculate on
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const;
+    /// Calculate barrier factors for and store into each data point in a data partition
+    /// \param D DataPartition to calculate over
+    virtual void calculate(DataPartition& D) const;
 
     /// check consistency of object
     virtual bool consistent() const override
