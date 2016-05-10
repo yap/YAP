@@ -19,7 +19,7 @@ DataPoint::DataPoint(DataSet& dataSet) :
 
     Data_.resize(model()->dataAccessors().size());
     for (auto da : model()->dataAccessors())
-        Data_[da->index()].assign(da->maxSymmetrizationIndex() + 1, std::vector<double>(da->size(), 0));
+        Data_[da->index()].assign(da->nSymmetrizationIndices(), std::vector<double>(da->size(), 0));
 }
 
 //-------------------------

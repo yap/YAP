@@ -71,9 +71,9 @@ public:
     const ParticleCombinationMap<unsigned>& symmetrizationIndices() const
     { return SymmetrizationIndices_; }
 
-    /// \return maximum index of SymmetrizationIndices_
-    /// -1 means empty
-    int maxSymmetrizationIndex() const;
+    /// \return number of independent indices in SymmetrizationIndices_
+    const unsigned nSymmetrizationIndices() const
+    { return NIndices_; }
 
     /// \return vector of ParticleCombination's
     const ParticleCombinationVector& particleCombinations() const override
@@ -138,6 +138,9 @@ private:
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
+
+    /// Number of independent indices stored in SymmetrizationIndices_
+    unsigned NIndices_;
 
     /// Vector of particle combinations. This is a cache kept for performance reasons,
     /// it must always be in sync with SymmetrizationIndices_

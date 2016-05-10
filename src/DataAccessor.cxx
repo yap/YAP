@@ -10,22 +10,10 @@ namespace yap {
 DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
     ReportsParticleCombinations(),
     Equiv_(equiv),
+    NIndices_(0),
     Size_(0),
     Index_(-1)
 {
-}
-
-//-------------------------
-int DataAccessor::maxSymmetrizationIndex() const
-{
-    /// I don't know why, but std::max_element returns wrong numbers sometimes!
-    //return std::max_element(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(), SymmetrizationIndices_.value_comp())->second;
-    int max(-1);
-    for (auto& kv : SymmetrizationIndices_)
-        if (int(kv.second) > max)
-            max = kv.second;
-
-    return max;
 }
 
 //-------------------------
@@ -65,12 +53,6 @@ bool DataAccessor::consistent() const
             C &= false;
         }
 
-    if (SymmetrizationIndices_.size() != ParticleCombinations_.size()) {
-        FLOG(ERROR) << "SymmetrizationIndices_.size() " << SymmetrizationIndices_.size()
-                    << " != ParticleCombinations_.size() " << ParticleCombinations_.size();
-        C &= false;
-    }
-
     return C;
 }
 
@@ -84,25 +66,37 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
         // c is already in map
         return symmetrizationIndex(c);
 
+    // object for recording successing of emplacement
+    auto it_b = std::make_pair(SymmetrizationIndices_.end(), false);
+
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
-        if ((*Equiv_)(kv.first, c)) {
+        if ((*Equiv_)(kv.first, c))
             // equating member found; set index; return
-            SymmetrizationIndices_[c] = kv.second;
-            // and also add to ParticleCombinations_
-            ParticleCombinations_.push_back(c);
+            it_b = SymmetrizationIndices_.emplace(c, kv.second);
+    // if c is new but equates to existing member, it_b.first != end and it_b.second is true
+    // if c is existing member, it_b.first != end and it_b.second is false
+    // if c does not equate to existing member, it_b.first = end, it_b.second is false
 
-            return kv.second;
-        }
+    // else assign to one higher than current highest index
+    if (it_b.first == SymmetrizationIndices_.end()) {
+        it_b = SymmetrizationIndices_.emplace(c, static_cast<unsigned>(NIndices_));
+        // if emplacement successful, it_b.first != end, it_b.second = true
 
-    // else assign to current size = highest current index + 1
-    unsigned size = maxSymmetrizationIndex() + 1;
-    SymmetrizationIndices_[c] = size;
+        // if successfully emplaced, increase NIndices_
+        if (it_b.second)
+            ++NIndices_;
+    }
 
-    // and also add to ParticleCombinations_
-    ParticleCombinations_.push_back(c);
+    if (it_b.first == SymmetrizationIndices_.end())
+        throw exceptions::Exception("Failed to emplace new SymmetrizationIndices element.", "DataAccessor::addParticleCombination");
 
-    return size;
+    if (it_b.second)
+        // add to ParticleCombinations_
+        ParticleCombinations_.push_back(c);
+
+    // return c's index in map
+    return it_b.first->second;
 }
 
 //-------------------------
@@ -161,6 +155,11 @@ void DataAccessor::pruneSymmetrizationIndices()
 
     for (auto& kv : SymmetrizationIndices_)
         ParticleCombinations_.push_back(kv.first);
+
+    // reset NIndices_
+    NIndices_ = 0;
+    for (const auto& kv : SymmetrizationIndices_)
+        NIndices_ = std::max(kv.second + 1, NIndices_);
 }
 
 //-------------------------

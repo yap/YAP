@@ -651,7 +651,7 @@ void Model::printDataAccessors(bool printParticleCombinations) const
     std::cout << std::endl;
 
     for (const auto& d : DataAccessors_) {
-        std::cout << d->index() << "  \t" << d->maxSymmetrizationIndex() + 1 << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+        std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
         if (dynamic_cast<const Particle*>(d))
             std::cout << dynamic_cast<const Particle*>(d)->name();
         else if (dynamic_cast<const DecayChannel*>(d))
@@ -683,7 +683,7 @@ void Model::printFlags(const StatusManager& sm) const
 
         for (auto& c : d->cachedDataValues()) {
             std::cout << "  CachedDataValue " << c << ": ";
-            for (int i = 0; i <= d->maxSymmetrizationIndex(); ++i)
+            for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
                 std::cout << sm.status(*c, i) << "; ";
             std::cout << "\n";
 
@@ -692,7 +692,7 @@ void Model::printFlags(const StatusManager& sm) const
 
             for (auto& p : c->cachedDataValueDependencies()) {
                 std::cout << "    depends on CachedDataValue " << p << ": ";
-                for (int i = 0; i <= p->owner()->maxSymmetrizationIndex(); ++i)
+                for (unsigned i = 0; i < p->owner()->nSymmetrizationIndices(); ++i)
                     std::cout << sm.status(*p, i) << "; ";
                 std::cout << "\n";
             }
