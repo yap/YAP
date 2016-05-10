@@ -81,6 +81,18 @@ std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
+void Model::calculate(DataPartition& D) const
+{
+    if (!initialStateParticle())
+        throw exceptions::Exception("Initial state unset", "Model::calculate");
+
+    // if (D.model() != this)
+    //     throw exceptions::Exception("DataPartition is not associated with this model.", "Model::calculate");
+
+    initialStateParticle()->calculate(D);
+}
+
+//-------------------------
 double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const
 {
     double L = 0;

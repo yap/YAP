@@ -72,6 +72,11 @@ public:
     /// \param sm StatusManager to update
     std::complex<double> amplitude(DataPoint& d, StatusManager& sm) const;
 
+    /// Calculate model for each data point in the data partition
+    /// \param D DataPartition to calculate over
+    /// \todo This need not be a member function!
+    void calculate(DataPartition& D) const;
+
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D DataPartition to evalue over
     /// \param global StatusManager to reset partition's statuses to

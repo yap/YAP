@@ -57,6 +57,18 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 }
 
 //-------------------------
+void DecayingParticle::calculate(DataPartition& D) const
+{
+    // call calculate for each Blatt-Weisskopf factor
+    for (auto& L_B : BlattWeisskopfs_)
+        L_B.second->calculate(D);
+
+    // call calculate for each decay channel
+    for (auto& dc : Channels_)
+        dc->calculate(D);
+}
+
+//-------------------------
 bool DecayingParticle::consistent() const
 {
     bool C = DataAccessor::consistent();
@@ -124,7 +136,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
         // if BW is not already stored for L, add it
         if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
-            BlattWeisskopfs_.insert(std::make_pair(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this)));
+            BlattWeisskopfs_.emplace(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this));
 
         // add BW to Fixed amplitudes for all spin projections
         auto& apM = Channels_.back()->amplitudes(sa);

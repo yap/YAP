@@ -22,6 +22,7 @@
 #define yap_DecayingParticle_h
 
 #include "fwd/BlattWeisskopf.h"
+#include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
@@ -75,6 +76,11 @@ public:
     /// \param two_m 2 * the spin projection to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
+
+    /// Calculate components of model from this decaying particle (and
+    /// its daughters) for each data point in a data partition
+    /// \param D DataPartition to calculate over
+    virtual void calculate(DataPartition& D) const;
 
     /// Check consistency of object
     virtual bool consistent() const override;
