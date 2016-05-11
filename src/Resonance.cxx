@@ -25,6 +25,13 @@ std::complex<double> Resonance::amplitude(DataPoint& d, const std::shared_ptr<Pa
 }
 
 //-------------------------
+void Resonance::calculate(DataPartition& D) const
+{
+    DecayingParticle::calculate(D);
+    MassShape_->calculate(D);
+}
+
+//-------------------------
 bool Resonance::consistent() const
 {
     bool C = DecayingParticle::consistent();

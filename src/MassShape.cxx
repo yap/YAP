@@ -1,6 +1,8 @@
 #include "MassShape.h"
 
 #include "CachedDataValue.h"
+#include "CalculationStatus.h"
+#include "DataPartition.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "ParticleCombination.h"
@@ -15,6 +17,20 @@ MassShape::MassShape() :
     T_(ComplexCachedDataValue::create(this))
 {}
 
+//-------------------------
+void MassShape::calculate(DataPartition& D) const
+{
+    // loop over (ParticleCombination --> symmetrization index) map
+    for (const auto& pc_si : symmetrizationIndices()) {
+
+        // recalculate & cache, if necessary
+        if (D.status(*T(), pc_si.second) == CalculationStatus::uncalculated) {
+            calculateT(D, pc_si.first, pc_si.second);
+            D.status(*T(), pc_si.second) = CalculationStatus::calculated;
+        }
+
+    }
+}
 //-------------------------
 std::complex<double> MassShape::operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {

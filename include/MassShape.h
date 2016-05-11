@@ -65,11 +65,10 @@ public:
     /// \param pc shared_ptr to ParticleCombination
     virtual std::complex<double> operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition
-    /// Must be overrided in derived classes.
+    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
+    /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+    virtual void calculate(DataPartition& D) const;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
@@ -120,6 +119,12 @@ protected:
     /// access cached dynamic amplitude (const)
     const std::shared_ptr<ComplexCachedDataValue> T() const
     { return const_cast<MassShape*>(this)->T(); }
+
+    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
+    /// \param D DataPartition to calculate on
+    /// \param pc ParticleCombination to calculate for
+    /// \param si SymmetrizationIndec to calculate for
+    virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const = 0;
 
 private:
 
