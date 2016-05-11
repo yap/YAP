@@ -6,6 +6,7 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "DataSet.h"
+#include "DecayChannel.h"
 #include "DecayingParticle.h"
 #include "DecayTree.h"
 #include "FinalStateParticle.h"
@@ -16,6 +17,7 @@
 #include "MeasuredBreakupMomenta.h"
 #include "Parameter.h"
 #include "PhaseSpaceUtilities.h"
+#include "RecalculableDataAccessor.h"
 #include "RequiresHelicityAngles.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 #include "SpinAmplitudeCache.h"
@@ -89,7 +91,11 @@ void Model::calculate(DataPartition& D) const
     // if (D.model() != this)
     //     throw exceptions::Exception("DataPartition is not associated with this model.", "Model::calculate");
 
-    initialStateParticle()->calculate(D);
+    // call calculate on all DecayingParticle's
+    // each calls calculate on its Blatt-Weisskopf factors
+    // and, if a resonance, on its dynamic amplitude (MassShape)
+    for (const auto& rda : RecalculableDataAccessors_)
+        rda->calculate(D);
 }
 
 //-------------------------
@@ -343,6 +349,10 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // if StaticDataAccessor, add to StaticDataAccessors_
         if (dynamic_cast<StaticDataAccessor*>(da))
             StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
+        
+        // if RecalculableDataAccessor, add to RecalculableDataAccessors_
+        if (dynamic_cast<RecalculableDataAccessor*>(da))
+            RecalculableDataAccessors_.insert(static_cast<RecalculableDataAccessor*>(da));
     }
 }
 

@@ -30,7 +30,7 @@
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "RecalculableDataAccessor.h"
 
 #include <memory>
 #include <string>
@@ -44,8 +44,9 @@ namespace yap {
 ///
 /// Inheriting classes (mass shapes) must implement
 /// #AmplitudeComponent's amplitude(...) function.
-
-class MassShape : public AmplitudeComponent, public DataAccessor
+class MassShape :
+    public AmplitudeComponent,
+    public RecalculableDataAccessor
 {
 public:
 
@@ -68,7 +69,7 @@ public:
     /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
     /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
-    virtual void calculate(DataPartition& D) const;
+    virtual void calculate(DataPartition& D) const override;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes

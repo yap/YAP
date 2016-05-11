@@ -66,11 +66,6 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
 
-    /// Calculate components of model from this decaying particle (and
-    /// its daughters) for each data point in a data partition
-    /// \param D DataPartition to calculate over
-    virtual void calculate(DataPartition& D) const override;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 

@@ -30,7 +30,7 @@
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "RecalculableDataAccessor.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 
 #include <memory>
@@ -44,7 +44,7 @@ namespace yap {
 
 class BlattWeisskopf :
     public AmplitudeComponent,
-    public DataAccessor,
+    public RecalculableDataAccessor,
     public RequiresMeasuredBreakupMomenta
 {
 public:
@@ -72,7 +72,7 @@ public:
 
     /// Calculate barrier factors for and store into each data point in a data partition
     /// \param D DataPartition to calculate over
-    virtual void calculate(DataPartition& D) const;
+    virtual void calculate(DataPartition& D) const override;
 
     /// check consistency of object
     virtual bool consistent() const override

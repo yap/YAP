@@ -53,7 +53,9 @@ namespace yap {
 /// A_c = a_c * Blatt-Weisskopf(P->D1+D2) * SpinAmplitude(P->D1+D2) * A(D1->xx) * A(D2->xx)\n
 /// with free amplitude a_c.
 
-class DecayingParticle : public Particle, public DataAccessor
+class DecayingParticle :
+    public Particle,
+    public DataAccessor
 {
 protected:
 
@@ -76,11 +78,6 @@ public:
     /// \param two_m 2 * the spin projection to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
-
-    /// Calculate components of model from this decaying particle (and
-    /// its daughters) for each data point in a data partition
-    /// \param D DataPartition to calculate over
-    virtual void calculate(DataPartition& D) const;
 
     /// Check consistency of object
     virtual bool consistent() const override;

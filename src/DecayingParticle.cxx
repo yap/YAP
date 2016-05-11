@@ -57,18 +57,6 @@ std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared
 }
 
 //-------------------------
-void DecayingParticle::calculate(DataPartition& D) const
-{
-    // call calculate for each Blatt-Weisskopf factor
-    for (auto& L_B : BlattWeisskopfs_)
-        L_B.second->calculate(D);
-
-    // call calculate for each decay channel
-    for (auto& dc : Channels_)
-        dc->calculate(D);
-}
-
-//-------------------------
 bool DecayingParticle::consistent() const
 {
     bool C = DataAccessor::consistent();

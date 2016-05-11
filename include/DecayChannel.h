@@ -23,7 +23,6 @@
 
 #include "fwd/DecayChannel.h"
 
-#include "fwd/AmplitudePair.h"
 #include "fwd/CachedDataValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
@@ -36,7 +35,8 @@
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "AmplitudePair.h"
+#include "RecalculableDataAccessor.h"
 
 #include <complex>
 #include <map>
@@ -49,7 +49,9 @@ namespace yap {
 /// \class DecayChannel
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
-class DecayChannel : public AmplitudeComponent, public DataAccessor
+class DecayChannel :
+    public AmplitudeComponent,
+    public DataAccessor
 {
 public:
 
@@ -78,10 +80,6 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                            int two_m, StatusManager& sm) const;
-
-    /// Calculate components and store into each data point in a data partition
-    /// \param D DataPartition to calculate over
-    virtual void calculate(DataPartition& D) const;
 
     /// check consistency of object
     virtual bool consistent() const override;

@@ -34,6 +34,7 @@
 #include "fwd/MassAxes.h"
 #include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
+#include "fwd/RecalculableDataAccessor.h"
 #include "fwd/SpinAmplitudeCache.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
@@ -280,7 +281,10 @@ private:
     /// to this model, in order in which they need be calculated
     StaticDataAccessorVector StaticDataAccessors_;
 
-    /// Raw pointer to initial-state particle
+    /// set of pointers to RecalculableDataAccessors
+    RecalculableDataAccessorSet RecalculableDataAccessors_;
+
+    /// pointer to initial-state particle
     std::shared_ptr<DecayingParticle> InitialStateParticle_;
 
     /// vector of final state particles
