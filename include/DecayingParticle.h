@@ -25,7 +25,6 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
-#include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -153,9 +152,6 @@ protected:
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
     ComplexParameterVector freeAmplitudes() const;
-
-    /// \return vector od DecayTree's from this point in decay tree and down
-    DecayTreeVector decayTrees() const;
 
 private:
 

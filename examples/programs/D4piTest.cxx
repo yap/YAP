@@ -2,7 +2,6 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "DataSet.h"
-#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
@@ -151,9 +150,6 @@ int main( int argc, char** argv)
     unsigned nChains = 1;
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
-
-    for (auto& dt : M.decayTrees())
-        LOG(INFO) << to_string(dt);
 
     auto freeAmps = M.freeAmplitudes();
 

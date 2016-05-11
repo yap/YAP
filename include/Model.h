@@ -26,7 +26,6 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
-#include "fwd/DecayTree.h"
 #include "fwd/FourVector.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
@@ -220,9 +219,6 @@ public:
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
-
-    /// create a vector of all possible DecayTree's
-    DecayTreeVector decayTrees();
 
     /// Set VariableStatus'es of all Parameter's to calculated, or leave as fixed
     void setParameterFlagsToUnchanged();
