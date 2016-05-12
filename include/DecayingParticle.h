@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
+#include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -137,7 +138,8 @@ public:
     virtual std::string data_accessor_type() const
     { return "DecayingParticle"; }
 
-    /// grant friend status to DecayChannel to see BlattWeiskopffs_
+    /// grant friend status to DecayChannel to call
+    /// modifyDecayTree and see BlattWeiskopffs_
     friend DecayChannel;
 
     /// grant friend status to Model to see freeAmplitudes
@@ -149,6 +151,13 @@ protected:
     virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     void printDecayChainLevel(int level) const;
+
+    /// \return vector of DecayTree's for spin projection m
+    DecayTreeVector decayTrees(int two_m) const;
+
+    /// modify a DecayTree
+    /// \param dt shared_ptr to DecayTree to modify
+    virtual void modifyDecayTree(std::shared_ptr<DecayTree> dt) const;
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
     ComplexParameterVector freeAmplitudes() const;

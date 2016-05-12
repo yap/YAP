@@ -27,6 +27,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayingParticle.h"
+#include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
@@ -137,6 +138,7 @@ public:
     {return "DecayChannel"; }
 
     /// Grant friend status to DecayingParticle to set itself as owner
+    /// and access DecayTrees
     friend DecayingParticle;
 
 protected:
@@ -150,6 +152,9 @@ private:
 
     /// daughters of the decay
     ParticleVector Daughters_;
+
+    /// DecayTrees map of (twice parent spin project) -> (map of (SpinAmplitude) -> (DecayTreeVector))
+    std::map<int, SpinAmplitudeMap<DecayTreeVector> > DecayTrees_;
 
     /// Map of SpinAmplitude (by shared_ptr) to AmplitudePairMap
     map_type Amplitudes_;

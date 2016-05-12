@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "container_utils.h"
 #include "DecayChannel.h"
+#include "DecayTree.h"
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
@@ -265,6 +266,49 @@ std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& da
     if (it == Channels_.end())
         throw exceptions::Exception("Channel not found", "DecayingParticle::channel");
     return *it;
+}
+
+//-------------------------
+DecayTreeVector DecayingParticle::decayTrees(int two_m) const
+{
+    DecayTreeVector dtv;
+
+    // loop over decay channels
+    for (const auto& c : Channels_) {
+        // loop over entries in map (spin amplitude -> decay tree vector) for spin projection
+        for (const auto& sa_dtv : c->DecayTrees_[two_m]) {
+            // insert DecayTree's
+            dtv.insert(dtv.end(), sa_dtv.second.begin(), sa_dtv.second.end());
+        }
+    }
+
+    return dtv;
+}
+
+//-------------------------
+void DecayingParticle::modifyDecayTree(std::shared_ptr<DecayTree> dt) const
+{
+    if (!dt)
+        throw exceptions::Exception("DecayTree is nullptr", "DecayingParticle::modifyDecayTree");
+
+    // find SpinAmplitude in DecayTree
+    const SpinAmplitude* sa = nullptr;
+    for (const auto& sda : dt->StaticDataAccessors_)
+        if (dynamic_cast<const SpinAmplitude*>(sda)) {
+            sa = static_cast<const SpinAmplitude*>(sda);
+            break;
+        }
+    if (!sa)
+        throw exceptions::Exception("DecayTree has no SpinAmplitude", "DecayingParticle::modifyDecayTree");
+
+    // // find BlattWeisskopf object
+    // auto bw = BlattWeisskopfs_.find(sa->L());
+    // if (bw == BlattWeisskopfs_.end())
+    //     throw exceptions::Exception("No Blatt-Weisskopf factor found for L = " + std::to_string(sa->L()),
+    //                                 "DecayingParticle::modifyDecayTree");
+
+    // // Add BlattWeisskopf object
+    // dt->addDataAccessor(bw->second.get());
 }
 
 //-------------------------

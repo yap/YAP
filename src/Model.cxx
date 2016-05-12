@@ -348,7 +348,7 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // if StaticDataAccessor, add to StaticDataAccessors_
         if (dynamic_cast<StaticDataAccessor*>(da))
             StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
-        
+
         // if RecalculableDataAccessor, add to RecalculableDataAccessors_
         if (dynamic_cast<RecalculableDataAccessor*>(da))
             RecalculableDataAccessors_.insert(static_cast<RecalculableDataAccessor*>(da));

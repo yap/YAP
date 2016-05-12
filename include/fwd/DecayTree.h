@@ -21,6 +21,7 @@
 #ifndef yap_DecayTreeFwd_h
 #define yap_DecayTreeFwd_h
 
+#include <memory>
 #include <vector>
 
 namespace yap {
@@ -28,7 +29,7 @@ namespace yap {
 class DecayTree;
 
 /// \typedef DecayTreeVector
-using DecayTreeVector = std::vector<DecayTree>;
+using DecayTreeVector = std::vector<std::shared_ptr<DecayTree> >;
 
 }
 

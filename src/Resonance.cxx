@@ -1,5 +1,6 @@
 #include "Resonance.h"
 
+#include "DecayTree.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "MassShape.h"
@@ -54,6 +55,13 @@ unsigned Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> 
     unsigned index = DecayingParticle::addParticleCombination(c);
     MassShape_->addParticleCombination(c);
     return index;
+}
+
+//-------------------------
+void Resonance::modifyDecayTree(std::shared_ptr<DecayTree> dt) const
+{
+    DecayingParticle::modifyDecayTree(dt);
+    dt->addDataAccessor(MassShape_.get());
 }
 
 }

@@ -97,6 +97,10 @@ protected:
     /// also add to MassShape_
     virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
+    /// modify a DecayTree
+    /// \param dt shared_ptr to DecayTree to modify
+    virtual void modifyDecayTree(std::shared_ptr<DecayTree> dt) const;
+
 private:
 
     /// MassShape object

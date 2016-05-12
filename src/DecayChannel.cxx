@@ -6,6 +6,7 @@
 #include "CachedDataValue.h"
 #include "CalculationStatus.h"
 #include "DecayingParticle.h"
+#include "DecayTree.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "logging.h"
@@ -129,21 +130,30 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
                                     "DecayChannel::setDecayingParticle");
 
     // if SpinAmplitude's have already been added by hand, don't add automatically
-    if (!Amplitudes_.empty())
-        return;
+    if (Amplitudes_.empty()) {
 
-    auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-    auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
-    auto two_j2 = Daughters_[1]->quantumNumbers().twoJ();
+        auto two_J = DecayingParticle_->quantumNumbers().twoJ();
+        auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
+        auto two_j2 = Daughters_[1]->quantumNumbers().twoJ();
 
-    // create spin amplitudes
-    // loop over possible S: |j1-j2| <= S <= (j1+j2)
-    for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2)
-        // loop over possible L: |J-s| <= L <= (J+s)
-        for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
-            // add SpinAmplitude retrieved from cache
-            addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+        // create spin amplitudes
+        // loop over possible S: |j1-j2| <= S <= (j1+j2)
+        for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2)
+            // loop over possible L: |J-s| <= L <= (J+s)
+            for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
+                // add SpinAmplitude retrieved from cache
+                addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+    }
 
+    // Have DecayingParticle_ add DataAccessors to DecayTree's
+    // loop over mappings (spin projection) -> (map of spin amplitude -> decay tree vector)
+    for (auto& m__sa_dtv : DecayTrees_)
+        // loop over mappings (spin amplitude) -> (decay tree vector)
+        for (auto& sa_dtv : m__sa_dtv.second)
+            // loop over decay trees
+            for (auto& dt : sa_dtv.second)
+                DecayingParticle_->modifyDecayTree(dt);
+    //LSM_dtv.back().RecalculableDataAccessors_.push_back(DecayingParticle_->BlattWeisskopfs_[sa->L()]);
 }
 
 //-------------------------
@@ -178,6 +188,82 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
     // add this' ParticleCombination's to it
     for (auto& pc : particleCombinations())
         sa -> addParticleCombination(pc);
+
+    // loop over possible combinations of parent and daughter spin
+    // projections from SpinAmplitude
+    for (const auto& M_m1m2 : sa->amplitudes()) {
+
+        // retrieve DecayTreeVector for LSM
+        // creating entry for parent spin projection M in map, if it doesn't exist
+        // and entry for SpinAmplitude(LS) in M's entry's map, it it doesn't exist
+        // creating it if it doesn't yet exist
+        auto& LSM_dtv = DecayTrees_[M_m1m2.first][sa];
+
+        // if LSM_dtv is empty, create new free amplitude for this LSM
+        // else retrieve first entry's free amplitude
+        auto LSM_freeAmp = LSM_dtv.empty() ? std::make_shared<ComplexParameter>(Complex_1) : LSM_dtv[0]->freeAmplitude();
+
+        // for each m1m2 combination create a new DecayTree
+        for (const auto& m1m2_cdv : M_m1m2.second) {
+            // create DecayTree for M -> m1 m2
+            auto dt = std::make_shared<DecayTree>(M_m1m2.first, m1m2_cdv.first, LSM_freeAmp);
+            // Add SpinAmplitude object to StaticDataAccessors_
+            dt->StaticDataAccessors_.push_back(sa.get());
+
+            // Get vectors of DecayTree's of daughters
+            std::vector<DecayTreeVector> v_dtv;
+            v_dtv.reserve(Daughters_.size());
+            for (size_t d = 0; d < Daughters_.size(); ++d) {
+                // if daughter is a decaying particle
+                if (std::dynamic_pointer_cast<DecayingParticle>(Daughters_[d]))
+                    // Get DecayTree's for spin projection of d'th daugther in m1m2
+                    v_dtv.push_back(std::static_pointer_cast<DecayingParticle>(Daughters_[d])->decayTrees(m1m2_cdv.first[d]));
+                else
+                    v_dtv.push_back(DecayTreeVector());
+            }
+            /// \todo remove hard-coding for two-body decay?
+            // Create copy of dt for each possible combination of daughter trees
+            // and add to LSM_dtv
+            LSM_dtv.reserve(LSM_dtv.size() + (v_dtv[0].size() + (int)v_dtv[0].empty()) * (v_dtv[1].size() + (int)v_dtv[1].empty()));
+            if (v_dtv[0].empty() and v_dtv[1].empty()) {
+                // daughters are not decaying particles, only one possible decay tree
+                // simply use dt
+                LSM_dtv.push_back(dt);
+            } else if (v_dtv[1].empty()) {
+                // second daughter is not decaying particle
+                // loop over daughter 0's DecayTree's
+                for (const auto& d0_dt : v_dtv[0]) {
+                    // Add copy of dt to LSM_dtv
+                    LSM_dtv.push_back(std::make_shared<DecayTree>(*dt));
+                    // Set first daughter decay tree
+                    LSM_dtv.back()->setDaughterDecayTree(0, d0_dt);
+                }
+            } else if (v_dtv[0].empty()) {
+                // first daughter is not decaying particle
+                // loop over daughter 1's DecayTree's
+                for (const auto& d1_dt : v_dtv[1]) {
+                    // Add copy of dt to LSM_dtv
+                    LSM_dtv.push_back(std::make_shared<DecayTree>(*dt));
+                    // Set second daughter decay tree
+                    LSM_dtv.back()->setDaughterDecayTree(1, d1_dt);
+                }
+            } else {
+                // both daughters are decaying particles
+                // loop over daughter 0's DecayTree's
+                for (const auto& d0_dt : v_dtv[0]) {
+                    // loop over daughter 1's DecayTree's
+                    for (const auto& d1_dt : v_dtv[1]) {
+                        // Add copy of dt to LSM_dtv
+                        LSM_dtv.push_back(std::make_shared<DecayTree>(*dt));
+                        // Set first daughter decay tree
+                        LSM_dtv.back()->setDaughterDecayTree(0, d0_dt);
+                        // Set second daughter decay tree
+                        LSM_dtv.back()->setDaughterDecayTree(1, d1_dt);
+                    }
+                }
+            }
+        }
+    }
 
     // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
     AmplitudePairMap apM;

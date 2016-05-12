@@ -31,6 +31,10 @@ class RecalculableDataAccessor;
 /// \brief Set of raw pointers to RecalculableDataAccessor's
 using RecalculableDataAccessorSet = std::set<RecalculableDataAccessor*>;
 
+/// \typedef RecalculableDataAccessorVector
+/// \brief Vector of raw pointers to RecalculableDataAccessor's
+using RecalculableDataAccessorVector = std::vector<RecalculableDataAccessor*>;
+
 }
 
 #endif

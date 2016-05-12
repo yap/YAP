@@ -22,8 +22,14 @@
 #define yap_DecayTree_h
 
 #include "fwd/DataAccessor.h"
-#include "fwd/DecayTree.h"
 #include "fwd/Parameter.h"
+#include "fwd/RecalculableDataAccessor.h"
+#include "fwd/StaticDataAccessor.h"
+
+#include <array>
+#include <map>
+#include <memory>
+#include <vector>
 
 namespace yap {
 
@@ -32,13 +38,62 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayTree
 {
+public:
+
+    /// Constructor
+    /// \param two_M (twice) the spin projection of the parent particle
+    /// \param two_m array of (twice) the spin projections of the daughters
+    /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
+    DecayTree(int two_M, const std::array<int, 2>& two_m,
+              const std::shared_ptr<ComplexParameter>& free_amp);
+
+    /// \return FreeAmplitude_
+    const std::shared_ptr<ComplexParameter>& freeAmplitude() const
+    { return FreeAmplitude_; }
+
+    /// grant friend status to DecayChannel to call addDataAccessor
+    friend class DecayChannel;
+
+    /// grant friend status to DecayingParticle to call addDataAccessor
+    friend class DecayingParticle;
+
+    /// grant friend status to Resonance to call addDataAccessor
+    friend class Resonance;
+
+protected:
+
+    /// Set the DecayTree of the i'th daughter
+    /// \param i index of daughter to set decay tree for
+    /// \param dt shared_ptr to DecayTree to set
+    void setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt);
+
+    /// Add a StaticDataAccessor
+    void addDataAccessor(const StaticDataAccessor* sda)
+    { StaticDataAccessors_.push_back(sda); }
+
+    /// Add a StaticDataAccessor
+    void addDataAccessor(const RecalculableDataAccessor* rda)
+    { RecalculableDataAccessors_.push_back(rda); }
+
 private:
 
-    /// ComplexParameterVector of the free amplitudes in the decay tree
-    ComplexParameterVector FreeAmplitudes_;
+    /// (twice) parent spin projection
+    int TwoM_;
 
-    /// DataAccessorVector of model-dependent components in the decay tree
-    DataAccessorVector FixedAmplitudes_;
+    /// (twice) daughter spin projections
+    std::array<int, 2> DaughtersTwoM_;
+
+    /// ComplexParameter of the free amplitude for the decay
+    std::shared_ptr<ComplexParameter> FreeAmplitude_;
+
+    /// vector of StaticDataAccessors
+    std::vector<const StaticDataAccessor*> StaticDataAccessors_;
+
+    /// vector of RecalculableDataAccessor's
+    std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;
+
+    /// map of daughter index -> daughter DecayTree
+    std::map<unsigned, std::shared_ptr<DecayTree> > DaughterDecayTrees_;
 
 };
 

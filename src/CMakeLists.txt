@@ -14,6 +14,7 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
+  DecayTree.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
