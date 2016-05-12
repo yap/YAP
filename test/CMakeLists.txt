@@ -1,4 +1,4 @@
-#find_package(ROOT) # Checked for in ${YAPDIR}/CMakeLists.txt
+find_package(ROOT) 
 find_package(Git)
 
 include(ExternalProject)

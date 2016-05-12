@@ -1,5 +1,5 @@
-#find_package(ROOT) # Done in the ${YAPDIR}/CMakeLists.txt
-#find_package(BAT)  #  ""
+find_package(ROOT)
+find_package(BAT )
 
 include_directories(${YAP_SOURCE_DIR}/include ${BAT_INCLUDE_DIR} ${ROOT_INCLUDE_DIR})
 
