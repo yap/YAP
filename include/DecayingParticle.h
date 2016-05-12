@@ -152,6 +152,10 @@ protected:
 
     void printDecayChainLevel(int level) const;
 
+    /// tell DecayingParticle to store a BlattWeisskopf object for L
+    /// \param l orbital angular momentum of breakup
+    void storeBlattWeisskopf(unsigned l);
+
     /// \return vector of DecayTree's for spin projection m
     DecayTreeVector decayTrees(int two_m) const;
 

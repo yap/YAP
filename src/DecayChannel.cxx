@@ -138,11 +138,24 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
 
         // create spin amplitudes
         // loop over possible S: |j1-j2| <= S <= (j1+j2)
-        for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2)
+        for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2) {
             // loop over possible L: |J-s| <= L <= (J+s)
-            for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L)
+            for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L) {
                 // add SpinAmplitude retrieved from cache
                 addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+            }
+        }
+    }
+
+    // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
+    // loop over mapping of (spin amplitude) -> (amplitude pair map)
+    for (auto& sa_apm : Amplitudes_) {
+        DecayingParticle_->storeBlattWeisskopf(sa_apm.first->L());
+        // add as dependency to fixed amplitudes
+        for (auto& ap : sa_apm.second) {
+            ap.second.Fixed->addDependencies(DecayingParticle_->BlattWeisskopfs_[sa_apm.first->L()]->parametersItDependsOn());
+            ap.second.Fixed->addDependencies(DecayingParticle_->BlattWeisskopfs_[sa_apm.first->L()]->cachedDataValuesItDependsOn());
+        }
     }
 
     // Have DecayingParticle_ add DataAccessors to DecayTree's
@@ -153,7 +166,6 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
             // loop over decay trees
             for (auto& dt : sa_dtv.second)
                 DecayingParticle_->modifyDecayTree(dt);
-    //LSM_dtv.back().RecalculableDataAccessors_.push_back(DecayingParticle_->BlattWeisskopfs_[sa->L()]);
 }
 
 //-------------------------

@@ -118,22 +118,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     Channels_.push_back(c);
     Channels_.back()->setDecayingParticle(this);
 
-    // insert necessary Blatt-Weisskopf barrier factor
-    // and set dependencies for DecayChannel dependent on it
-    for (auto& sa : Channels_.back()->spinAmplitudes()) {
-
-        // if BW is not already stored for L, add it
-        if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
-            BlattWeisskopfs_.emplace(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this));
-
-        // add BW to Fixed amplitudes for all spin projections
-        auto& apM = Channels_.back()->amplitudes(sa);
-        for (auto& ap : apM) {
-            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->parametersItDependsOn());
-            ap.second.Fixed->addDependencies(BlattWeisskopfs_[sa->L()]->cachedDataValuesItDependsOn());
-        }
-    }
-
     // now that Model is set, register with Model (repeated registration has no effect)
     addToModel();
 
@@ -269,6 +253,14 @@ std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& da
 }
 
 //-------------------------
+void DecayingParticle::storeBlattWeisskopf(unsigned l)
+{
+    // if BW is not already stored for L, add it
+    if (BlattWeisskopfs_.find(l) == BlattWeisskopfs_.end())
+        BlattWeisskopfs_.emplace(l, std::make_shared<BlattWeisskopf>(l, this));
+}
+
+//-------------------------
 DecayTreeVector DecayingParticle::decayTrees(int two_m) const
 {
     DecayTreeVector dtv;
@@ -301,14 +293,14 @@ void DecayingParticle::modifyDecayTree(std::shared_ptr<DecayTree> dt) const
     if (!sa)
         throw exceptions::Exception("DecayTree has no SpinAmplitude", "DecayingParticle::modifyDecayTree");
 
-    // // find BlattWeisskopf object
-    // auto bw = BlattWeisskopfs_.find(sa->L());
-    // if (bw == BlattWeisskopfs_.end())
-    //     throw exceptions::Exception("No Blatt-Weisskopf factor found for L = " + std::to_string(sa->L()),
-    //                                 "DecayingParticle::modifyDecayTree");
+    // find BlattWeisskopf object
+    auto bw = BlattWeisskopfs_.find(sa->L());
+    if (bw == BlattWeisskopfs_.end())
+        throw exceptions::Exception("No Blatt-Weisskopf factor found for L = " + std::to_string(sa->L()),
+                                    "DecayingParticle::modifyDecayTree");
 
-    // // Add BlattWeisskopf object
-    // dt->addDataAccessor(bw->second.get());
+    // Add BlattWeisskopf object
+    dt->addDataAccessor(bw->second.get());
 }
 
 //-------------------------
