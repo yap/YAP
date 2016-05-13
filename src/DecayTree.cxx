@@ -27,6 +27,16 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 }
 
 //-------------------------
+std::string to_string(const DecayTree& dt, std::string offset)
+{
+    auto s = to_string(dt.freeAmplitude());
+    offset += "   ";
+    for (const auto& d_dt : dt.DaughterDecayTrees_)
+        s += "\n" + offset + std::to_string(d_dt.first) + " --> " + to_string(*d_dt.second, offset);
+    return s;
+}
+
+//-------------------------
 // std::complex<double> operator()(DataPoint& d) const
 // {
 //     auto A = Complex_1;

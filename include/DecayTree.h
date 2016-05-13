@@ -30,6 +30,7 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace yap {
@@ -65,6 +66,10 @@ public:
         return lhs.FreeAmplitude_ == rhs.FreeAmplitude_
                and lhs.DaughterDecayTrees_ == rhs.DaughterDecayTrees_;
     }
+
+    /// convert to (multiline) string
+    friend std::string to_string(const DecayTree& dt, std::string offset = "");
+
 
 protected:
 
