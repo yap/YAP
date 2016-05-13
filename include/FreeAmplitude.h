@@ -28,6 +28,7 @@
 #include "Parameter.h"
 
 #include <complex>
+#include <string>
 
 namespace yap {
 
@@ -76,6 +77,9 @@ private:
     /// (twice) spin projection of decaying particle
     int TwoM_;
 };
+
+/// convert to string
+std::string to_string(const FreeAmplitude& fa);
 
 }
 
