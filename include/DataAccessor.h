@@ -54,7 +54,7 @@ public:
     { return Index_; }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const
+    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const override
     { return SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end(); }
 
     /// \return if the given ParticleCombination is in SymmetrizationIndices_
