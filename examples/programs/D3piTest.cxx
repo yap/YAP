@@ -139,5 +139,7 @@ int main( int argc, char** argv)
     auto A = M.amplitude(data[0], data);
     LOG(INFO) << "A = " << A;
 
+    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+
     LOG(INFO) << "alright!";
 }

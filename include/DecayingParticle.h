@@ -138,6 +138,8 @@ public:
     virtual std::string data_accessor_type() const
     { return "DecayingParticle"; }
 
+    std::string printDecayTrees() const;
+
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
     friend DecayChannel;
 
