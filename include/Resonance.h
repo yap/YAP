@@ -98,8 +98,8 @@ protected:
     virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     /// modify a DecayTree
-    /// \param dt shared_ptr to DecayTree to modify
-    virtual void modifyDecayTree(std::shared_ptr<DecayTree> dt) const;
+    /// \param dt DecayTree to modify
+    virtual void modifyDecayTree(DecayTree& dt) const;
 
 private:
 

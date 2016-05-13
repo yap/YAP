@@ -138,8 +138,7 @@ public:
     virtual std::string data_accessor_type() const
     { return "DecayingParticle"; }
 
-    /// grant friend status to DecayChannel to call
-    /// modifyDecayTree and see BlattWeiskopffs_
+    /// grant friend status to DecayChannel to see BlattWeiskopffs_
     friend DecayChannel;
 
     /// grant friend status to Model to see freeAmplitudes
@@ -156,12 +155,9 @@ protected:
     /// \param l orbital angular momentum of breakup
     void storeBlattWeisskopf(unsigned l);
 
-    /// \return vector of DecayTree's for spin projection m
-    DecayTreeVector decayTrees(int two_m) const;
-
     /// modify a DecayTree
-    /// \param dt shared_ptr to DecayTree to modify
-    virtual void modifyDecayTree(std::shared_ptr<DecayTree> dt) const;
+    /// \param dt DecayTree to modify
+    virtual void modifyDecayTree(DecayTree& dt) const;
 
     /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
     ComplexParameterVector freeAmplitudes() const;
@@ -176,6 +172,9 @@ private:
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;
+
+    /// Map of spin projection to DecayTreeVector
+    std::map<int, DecayTreeVector> DecayTrees_;
 
     /// Cached amplitudes for each spin projection
     /// key = 2 * spin projection

@@ -22,6 +22,7 @@
 #define yap_DecayTree_h
 
 #include "fwd/DataAccessor.h"
+#include "fwd/FreeAmplitude.h"
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StaticDataAccessor.h"
@@ -44,11 +45,10 @@ public:
     /// \param two_M (twice) the spin projection of the parent particle
     /// \param two_m array of (twice) the spin projections of the daughters
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
-    DecayTree(int two_M, const std::array<int, 2>& two_m,
-              const std::shared_ptr<ComplexParameter>& free_amp);
+    DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
 
     /// \return FreeAmplitude_
-    const std::shared_ptr<ComplexParameter>& freeAmplitude() const
+    const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
     { return FreeAmplitude_; }
 
     /// grant friend status to DecayChannel to call addDataAccessor
@@ -60,12 +60,23 @@ public:
     /// grant friend status to Resonance to call addDataAccessor
     friend class Resonance;
 
+    friend bool operator==(const DecayTree& lhs, const DecayTree& rhs)
+    {
+        return lhs.FreeAmplitude_ == rhs.FreeAmplitude_
+               and lhs.DaughterDecayTrees_ == rhs.DaughterDecayTrees_;
+    }
+
 protected:
 
     /// Set the DecayTree of the i'th daughter
     /// \param i index of daughter to set decay tree for
     /// \param dt shared_ptr to DecayTree to set
     void setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt);
+
+    /// set daughter spin projection
+    /// \param two_m (twice) the spin projection
+    void setDaughterSpinProjection(unsigned i, int two_m)
+    { DaughtersTwoM_.at(i) = two_m; }
 
     /// Add a StaticDataAccessor
     void addDataAccessor(const StaticDataAccessor* sda)
@@ -77,14 +88,11 @@ protected:
 
 private:
 
-    /// (twice) parent spin projection
-    int TwoM_;
-
     /// (twice) daughter spin projections
     std::array<int, 2> DaughtersTwoM_;
 
     /// ComplexParameter of the free amplitude for the decay
-    std::shared_ptr<ComplexParameter> FreeAmplitude_;
+    std::shared_ptr<FreeAmplitude> FreeAmplitude_;
 
     /// vector of StaticDataAccessors
     std::vector<const StaticDataAccessor*> StaticDataAccessors_;

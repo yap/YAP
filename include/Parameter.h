@@ -68,8 +68,7 @@ class Parameter : public ParameterBase
 public:
 
     /// Default constructor
-    Parameter() : ParameterBase()
-    { }
+    Parameter() = default;
 
     /// Value-assigning constructor
     Parameter(T t) : ParameterBase(), ParameterValue_(t)

@@ -1,13 +1,12 @@
 #include "DecayTree.h"
 
 #include "Exceptions.h"
+#include "FreeAmplitude.h"
 
 namespace yap {
 
 //-------------------------
-DecayTree::DecayTree(int two_M, const std::array<int, 2>& two_m, const std::shared_ptr<ComplexParameter>& free_amp) :
-    TwoM_(two_M),
-    DaughtersTwoM_(two_m),
+DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
     FreeAmplitude_(free_amp)
 {}
 
@@ -17,13 +16,14 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
     if (i >= DaughtersTwoM_.size())
         throw exceptions::Exception("index exceeds number of daughters", "DecayTree::setDaughterDecayTree");
 
-    if (dt->TwoM_ != DaughtersTwoM_[i])
-        throw exceptions::Exception("Spin projection mismatch", "DecayTree::setDaughterDecayTree");
+    if (!dt->freeAmplitude())
+        throw exceptions::Exception("DecayTree's free amplitude is nullptr", "DecayTree:setDaughterDecayTree");
 
     if (DaughterDecayTrees_.find(i) != DaughterDecayTrees_.end())
         throw exceptions::Exception("DecayTree for this daughter already set", "DecayTree::setDaughterDecayTree");
 
     DaughterDecayTrees_[i] = dt;
+    setDaughterSpinProjection(i, dt->freeAmplitude()->twoM());
 }
 
 //-------------------------

@@ -58,10 +58,10 @@ unsigned Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> 
 }
 
 //-------------------------
-void Resonance::modifyDecayTree(std::shared_ptr<DecayTree> dt) const
+void Resonance::modifyDecayTree(DecayTree& dt) const
 {
     DecayingParticle::modifyDecayTree(dt);
-    dt->addDataAccessor(MassShape_.get());
+    dt.addDataAccessor(MassShape_.get());
 }
 
 }
