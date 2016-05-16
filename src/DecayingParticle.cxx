@@ -119,6 +119,17 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     Channels_.push_back(c);
     Channels_.back()->setDecayingParticle(this);
 
+    // now that Model is set, register with Model (repeated registration has no effect)
+    addToModel();
+
+    // if this is to be the initial state particle
+    if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
+        const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->setInitialStateParticle(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
+
+    // add particle combinations
+    for (auto pc : Channels_.back()->particleCombinations())
+        addParticleCombination(pc);
+
     /// create decay trees for channel:
 
     FLOG(INFO) << "creating decay trees for " << to_string(*Channels_.back());
@@ -214,18 +225,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
             } // ends loop over spin projections of daughters
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
-
-    // now that Model is set, register with Model (repeated registration has no effect)
-    addToModel();
-
-    // if this is to be the initial state particle
-    if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
-        const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->setInitialStateParticle(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
-
-    // add particle combinations
-    for (auto pc : Channels_.back()->particleCombinations()) {
-        addParticleCombination(pc);
-    }
 
     // Add DecayChannel's TotalAmplitude's as dependencies for this object's Amplitudes
     // by spin projection (key in TotalAmplitudes_)
