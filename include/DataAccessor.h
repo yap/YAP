@@ -43,11 +43,12 @@ class DataAccessor :
 public:
 
     /// Constructor
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+    /// \param equiv ParticleCombination equatility struct for determining index assignments
+    DataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer);
 
-    /// \name Access to indices
-    /// @{
+    /// \return Equality struct
+    const ParticleCombination::Equiv& equiv() const
+    { return Equiv_; }
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
     int index() const
@@ -81,8 +82,6 @@ public:
 
     /// print ParticleCombination map
     void printParticleCombinations() const;
-
-    /// @}
 
     /// \return CachedDataValueSet
     const CachedDataValueSet& cachedDataValues() const
@@ -134,7 +133,7 @@ protected:
 private:
 
     /// Object to check equality of symmetrizations for determining storage indices
-    ParticleCombination::Equiv* Equiv_;
+    const ParticleCombination::Equiv& Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;

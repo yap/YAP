@@ -32,7 +32,7 @@ double f_inverse_square(unsigned l, double z)
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     AmplitudeComponent(),
-    RecalculableDataAccessor(&ParticleCombination::equivDownByOrderlessContent),
+    RecalculableDataAccessor(ParticleCombination::equivDownByOrderlessContent),
     RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
     L_(L)

@@ -33,7 +33,7 @@ class RecalculableDataAccessor : public DataAccessor
 public:
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    RecalculableDataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer)
+    RecalculableDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
         : DataAccessor(equiv) {}
 
     /// calculate for every data point in a data partition

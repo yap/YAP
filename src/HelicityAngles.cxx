@@ -14,7 +14,7 @@ namespace yap {
 
 //-------------------------
 HelicityAngles::HelicityAngles(Model* m) :
-    StaticDataAccessor(m, &ParticleCombination::equivUpAndDown),
+    StaticDataAccessor(m, ParticleCombination::equivUpAndDown),
     Phi_(RealCachedDataValue::create(this)),
     Theta_(RealCachedDataValue::create(this))
 {

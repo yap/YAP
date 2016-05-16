@@ -7,7 +7,7 @@
 namespace yap {
 
 //-------------------------
-DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
+DataAccessor::DataAccessor(const ParticleCombination::Equiv& equiv) :
     ReportsParticleCombinations(),
     Equiv_(equiv),
     NIndices_(0),
@@ -71,7 +71,7 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
 
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
-        if ((*Equiv_)(kv.first, c))
+        if (Equiv_(kv.first, c))
             // equating member found; set index; return
             it_b = SymmetrizationIndices_.emplace(c, kv.second);
     // if c is new but equates to existing member, it_b.first != end and it_b.second is true
