@@ -68,7 +68,7 @@ public:
     }
 
     /// convert to (multiline) string
-    friend std::string to_string(const DecayTree& dt, std::string offset = "");
+    std::string asString(std::string offset = "") const;
 
 
 protected:

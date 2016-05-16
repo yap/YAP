@@ -405,7 +405,7 @@ std::string DecayingParticle::printDecayTrees() const
     for (const auto& m_dtv : DecayTrees_) {
         s += std::to_string(m_dtv.first) + "\n";
         for (const auto& dt : m_dtv.second)
-            s += to_string(*dt) + "\n";
+            s += dt->asString() + "\n";
     }
     return s;
 }
