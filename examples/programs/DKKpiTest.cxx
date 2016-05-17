@@ -27,7 +27,8 @@ int main( int argc, char** argv)
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
-    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+//    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleFactory factory("../../../data/evt.pdl");
 
     // create final state particles
     auto kPlus  = factory.fsp(+321);
