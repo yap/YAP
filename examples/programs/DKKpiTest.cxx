@@ -58,9 +58,9 @@ int main( int argc, char** argv)
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
 
-    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
+    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
 
     D->printDecayChain();
     std::cout << "\n";

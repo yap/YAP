@@ -16,7 +16,7 @@ StatusManager::StatusManager(const DataAccessorSet& sDA)
     for (const auto& da : sDA) {
         Statuses_[da->index()].resize(da->cachedDataValues().size());
         for (const auto& cdv : da->cachedDataValues())
-            Statuses_[da->index()][cdv->index()].resize(da->maxSymmetrizationIndex() + 1);
+            Statuses_[da->index()][cdv->index()].resize(da->nSymmetrizationIndices());
     }
 }
 
