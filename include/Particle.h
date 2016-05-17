@@ -29,7 +29,6 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
 #include "QuantumNumbers.h"
 #include "ReportsParticleCombinations.h"
 
@@ -44,8 +43,6 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
 class Particle :
-// keyword virtual is needed to solve diamond problem in DecayingParticle
-    public AmplitudeComponent,
     public ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
@@ -69,7 +66,7 @@ public:
                                            int two_m, StatusManager& sm) const = 0;
 
     /// Check consitency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
     /// \name Getters
     /// @{

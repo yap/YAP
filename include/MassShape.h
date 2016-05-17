@@ -24,14 +24,15 @@
 #include "fwd/CachedDataValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/Model.h"
+#include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/ParticleFactory.h"
 #include "fwd/Resonance.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
 #include "RecalculableDataAccessor.h"
 
+#include <complex>
 #include <memory>
 #include <string>
 
@@ -41,11 +42,7 @@ namespace yap {
 /// \brief Abstract base class for all mass shapes
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
-///
-/// Inheriting classes (mass shapes) must implement
-/// #AmplitudeComponent's amplitude(...) function.
 class MassShape :
-    public AmplitudeComponent,
     public RecalculableDataAccessor
 {
 public:
@@ -78,7 +75,7 @@ public:
     { }
 
     /// Check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
     /// get raw pointer to owning resonance
     Resonance* resonance() const

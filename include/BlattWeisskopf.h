@@ -29,7 +29,6 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
 #include "RecalculableDataAccessor.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 
@@ -43,7 +42,6 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 
 class BlattWeisskopf :
-    public AmplitudeComponent,
     public RecalculableDataAccessor,
     public RequiresMeasuredBreakupMomenta
 {
@@ -75,10 +73,10 @@ public:
     virtual void calculate(DataPartition& D) const override;
 
     /// check consistency of object
-    virtual bool consistent() const override
+    virtual bool consistent() const
     { return DataAccessor::consistent(); }
 
-    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
+    virtual CachedDataValueSet cachedDataValuesItDependsOn();
 
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;

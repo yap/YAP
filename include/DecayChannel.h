@@ -35,7 +35,6 @@
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
 #include "ReportsParticleCombinations.h"
 
 #include <complex>
@@ -50,7 +49,6 @@ namespace yap {
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayChannel :
-    public AmplitudeComponent,
     public ReportsParticleCombinations
 {
 public:
@@ -78,7 +76,7 @@ public:
                                            int two_m, StatusManager& sm) const;
 
     /// check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
     /// \return vector of shared_ptr's to final-state particles of channel (recursively checked)
     std::vector<std::shared_ptr<FinalStateParticle> > finalStateParticles() const;

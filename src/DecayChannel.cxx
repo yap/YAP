@@ -20,7 +20,6 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(const ParticleVector& daughters) :
-    AmplitudeComponent(),
     ReportsParticleCombinations(),
     Daughters_(daughters),
     DecayingParticle_(nullptr)
