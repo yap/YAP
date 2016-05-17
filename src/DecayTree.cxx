@@ -37,6 +37,15 @@ std::string DecayTree::asString(std::string offset) const
 }
 
 //-------------------------
+unsigned depth(const DecayTree& DT)
+{
+    unsigned d = 0;
+    for (const auto& i_dt : DT.daughterDecayTrees())
+        d = std::max(d, depth(*i_dt.second));
+    return d + 1;
+}
+
+//-------------------------
 // std::complex<double> operator()(DataPoint& d) const
 // {
 //     auto A = Complex_1;

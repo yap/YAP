@@ -42,6 +42,10 @@ class DecayTree
 {
 public:
 
+    /// \typedef DaughterDecayTreeMap
+    /// key is daughter index, value is decay tree of daughter
+    using DaughterDecayTreeMap = std::map<unsigned, std::shared_ptr<DecayTree> >;
+
     /// Constructor
     /// \param two_M (twice) the spin projection of the parent particle
     /// \param two_m array of (twice) the spin projections of the daughters
@@ -52,6 +56,9 @@ public:
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
     { return FreeAmplitude_; }
 
+    const DaughterDecayTreeMap daughterDecayTrees() const
+    { return DaughterDecayTrees_; }
+
     /// grant friend status to DecayChannel to call addDataAccessor
     friend class DecayChannel;
 
@@ -60,12 +67,6 @@ public:
 
     /// grant friend status to Resonance to call addDataAccessor
     friend class Resonance;
-
-    friend bool operator==(const DecayTree& lhs, const DecayTree& rhs)
-    {
-        return lhs.FreeAmplitude_ == rhs.FreeAmplitude_
-               and lhs.DaughterDecayTrees_ == rhs.DaughterDecayTrees_;
-    }
 
     /// convert to (multiline) string
     std::string asString(std::string offset = "") const;
@@ -106,9 +107,16 @@ private:
     std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;
 
     /// map of daughter index -> daughter DecayTree
-    std::map<unsigned, std::shared_ptr<DecayTree> > DaughterDecayTrees_;
+    DaughterDecayTreeMap DaughterDecayTrees_;
 
 };
+
+/// equality operator
+inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
+{ return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
+
+/// \return Depth of DecayTree
+unsigned depth(const DecayTree& DT);
 
 }
 

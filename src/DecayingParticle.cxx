@@ -402,7 +402,7 @@ std::string DecayingParticle::printDecayTrees() const
     std::string s;
     for (const auto& m_dtv : DecayTrees_) {
         for (const auto& dt : m_dtv.second)
-            s += "\n" + dt->asString() + "\n";
+            s += "\ndepth = " + std::to_string(depth(*dt)) + "\n" + dt->asString() + "\n";
     }
     return s;
 }
