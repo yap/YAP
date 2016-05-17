@@ -84,13 +84,14 @@ protected:
     void setDaughterSpinProjection(unsigned i, int two_m)
     { DaughtersTwoM_.at(i) = two_m; }
 
-    /// Add a StaticDataAccessor
-    void addDataAccessor(const StaticDataAccessor* sda)
-    { StaticDataAccessors_.push_back(sda); }
+    /// check DataAccessor's ParticleCombination's against FreeAmplitude
+    bool checkDataAccessor(const DataAccessor& da) const;
 
     /// Add a StaticDataAccessor
-    void addDataAccessor(const RecalculableDataAccessor* rda)
-    { RecalculableDataAccessors_.push_back(rda); }
+    void addDataAccessor(const StaticDataAccessor& sda);
+
+    /// Add a StaticDataAccessor
+    void addDataAccessor(const RecalculableDataAccessor& rda);
 
 private:
 

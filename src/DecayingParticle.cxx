@@ -342,8 +342,11 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
                                     + std::to_string(dt.freeAmplitude()->spinAmplitude()->L()),
                                     "DecayingParticle::modifyDecayTree");
 
+    if (!bw->second)
+        throw exceptions::Exception("BlattWeisskopf is nullptr", "DecayingParticle::modifyDecayTree");
+
     // Add BlattWeisskopf object
-    dt.addDataAccessor(bw->second.get());
+    dt.addDataAccessor(*bw->second);
 }
 
 //-------------------------

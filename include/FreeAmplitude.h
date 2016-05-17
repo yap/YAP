@@ -22,6 +22,7 @@
 #define yap_FreeAmplitude_h
 
 #include "fwd/DecayChannel.h"
+#include "fwd/ReportsParticleCombinations.h"
 #include "fwd/SpinAmplitude.h"
 
 #include "Constants.h"
@@ -51,8 +52,7 @@ public:
     /// \param two_m (twice) the parent spin projection
     /// \param a value to initialize to
     FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<SpinAmplitude> sa,
-                  int two_m, std::complex<double> a = Complex_1)
-        : ComplexParameter(a), DecayChannel_(dc), SpinAmplitude_(sa), TwoM_(two_m) {}
+                  int two_m, std::complex<double> a = Complex_1);
 
     /// \return DecayChannel_
     const std::shared_ptr<DecayChannel>& decayChannel() const
@@ -65,6 +65,11 @@ public:
     /// \return (twice) the spin projection of the decaying particle
     const int twoM() const
     { return TwoM_; }
+
+    /// check that object reporting ParticleCombinations has all
+    /// particle combinations required by DecayChannel
+    /// \param PC object inheriting from ReportsParticleCombinations
+    bool checkParticleCombinations(const ReportsParticleCombinations& da) const;
 
 private:
 
