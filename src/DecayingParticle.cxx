@@ -132,7 +132,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
     /// create decay trees for channel:
 
-    FLOG(INFO) << "creating decay trees for " << to_string(*Channels_.back());
     /// loop over spin amplitudes of channel
     for (auto& sa_apm : Channels_.back()->Amplitudes_) {
 
@@ -402,9 +401,8 @@ std::string DecayingParticle::printDecayTrees() const
 {
     std::string s;
     for (const auto& m_dtv : DecayTrees_) {
-        s += std::to_string(m_dtv.first) + "\n";
         for (const auto& dt : m_dtv.second)
-            s += dt->asString() + "\n";
+            s += "\n" + dt->asString() + "\n";
     }
     return s;
 }

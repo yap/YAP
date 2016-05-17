@@ -30,9 +30,9 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 std::string DecayTree::asString(std::string offset) const
 {
     auto s = to_string(*FreeAmplitude_);
-    offset += "   ";
+    offset += "    ";
     for (const auto& d_dt : DaughterDecayTrees_)
-        s += "\n" + offset + std::to_string(d_dt.first) + " --> " + d_dt.second->asString(offset);
+        s += "\n" + offset + "d[" + std::to_string(d_dt.first) + "] --> " + d_dt.second->asString(offset);
     return s;
 }
 

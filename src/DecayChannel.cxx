@@ -100,7 +100,7 @@ unsigned DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombinatio
 {
     unsigned index = DataAccessor::addParticleCombination(pc);
 
-    // add to pc's daughters to daughter particles;
+    // add pc's daughters to daughter particles;
     // pc's daughters have their parents set correctly.
     for (size_t i = 0; i < pc->daughters().size(); ++i)
         Daughters_[i]->addParticleCombination(pc->daughters()[i]);

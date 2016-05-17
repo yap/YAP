@@ -169,16 +169,16 @@ int main( int argc, char** argv)
         }
         DEBUG("===================================================================================================================== ");
 
-        std::cout << "Variable status after changing:    \n";
-        M.printFlags(data.globalStatusManager());
+        // std::cout << "Variable status after changing:    \n";
+        // M.printFlags(data.globalStatusManager());
 
         double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
 
-        std::cout << "Variable status after calculating:    \n";
-        M.printFlags(data.globalStatusManager());
+        // std::cout << "Variable status after calculating:    \n";
+        // M.printFlags(data.globalStatusManager());
 
         /*if (gRandom->Uniform()>0.5) {
             double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
@@ -225,6 +225,8 @@ int main( int argc, char** argv)
         D->logLikelihood(d);
     */
 
+
+    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 
     std::cout << "alright! \n";
 }
