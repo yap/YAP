@@ -1,6 +1,5 @@
 #include "DecayingParticle.h"
 
-#include "AmplitudePair.h"
 #include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
 #include "Constants.h"

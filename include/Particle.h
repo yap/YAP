@@ -114,7 +114,7 @@ protected:
 
     /// add ParticleCombination to ParticleCombinationVector_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
-    
+
 private:
 
     /// Quantum numbers of particle

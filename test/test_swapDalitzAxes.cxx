@@ -1,7 +1,6 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
-#include <AmplitudePair.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayChannel.h>

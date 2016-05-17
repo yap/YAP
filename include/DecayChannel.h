@@ -35,7 +35,6 @@
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
-#include "AmplitudePair.h"
 #include "RecalculableDataAccessor.h"
 
 #include <complex>
@@ -55,13 +54,9 @@ class DecayChannel :
 {
 public:
 
-    /// \typedef AmplitudePairMap
-    /// \brief maps spin projection to AmplitudePair
-    using AmplitudePairMap = std::map<int, AmplitudePair>;
-
     /// \typedef map_type
-    /// \brief maps shared_ptr's to SpinAmplitude's to AmplitudePairMap's
-    using map_type = SpinAmplitudeMap<AmplitudePairMap>;
+    /// \brief maps SpinAmplitude-shared_ptr -> (map of spin projection -> free amplitude)
+    using map_type = SpinAmplitudeMap<std::map<int, std::shared_ptr<ComplexParameter> > >;
 
     /// \name Constructors
     /// @{
@@ -101,18 +96,15 @@ public:
     const SpinAmplitudeVector spinAmplitudes() const
     { return const_cast<DecayChannel*>(this)->spinAmplitudes(); }
 
-    /// Get AmplitudePairMap object corresponding to SpinAmplitude
-    AmplitudePairMap& amplitudes(const std::shared_ptr<SpinAmplitude>& sa)
+    /// Get map of (spin projection)->(free amplitude) for spin amplitude
+    map_type::mapped_type& amplitudes(const std::shared_ptr<SpinAmplitude>& sa)
     { return Amplitudes_.at(sa); }
 
-    /// Get AmplitudePairMap object corresponding to SpinAmplitude (const)
-    const AmplitudePairMap& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
+    /// Get map of (spin projection)->(free amplitude) for spin amplitude (const)
+    const map_type::mapped_type& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
     { return Amplitudes_.at(sa); }
 
     /// @}
-
-    /// \return the set of TotalAmplitudes_ values
-    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to model through first Daughter
     const Model* model() const override;
@@ -156,11 +148,8 @@ private:
     /// daughters of the decay
     ParticleVector Daughters_;
 
-    /// Map of SpinAmplitude (by shared_ptr) to AmplitudePairMap
+    /// Map of SpinAmplitude (by shared_ptr) to map(spin projection -> free amplitude)
     map_type Amplitudes_;
-
-    /// Map of spin projection to total amplitude for that spin projection
-    std::map<int, std::shared_ptr<ComplexCachedDataValue> > TotalAmplitudes_;
 
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;

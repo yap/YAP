@@ -1,6 +1,5 @@
 #include "DecayChannel.h"
 
-#include "AmplitudePair.h"
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "CachedDataValue.h"
@@ -41,6 +40,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     if (Daughters_[0]->model() == nullptr)
         throw exceptions::Exception(std::string("Model unset in ") + to_string(*Daughters_[0]),
                                     "DecayChannel::DecayChannel");
+
     // check that all daughters have same Model (trivially checks first daughter against itself)
     for (auto& d : Daughters_)
         if (d->model() != Daughters_[0]->model())
@@ -154,14 +154,8 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
 
     // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
     // loop over mapping of (spin amplitude) -> (amplitude pair map)
-    for (auto& sa_apm : Amplitudes_) {
+    for (auto& sa_apm : Amplitudes_)
         DecayingParticle_->storeBlattWeisskopf(sa_apm.first->L());
-        // add as dependency to fixed amplitudes
-        for (auto& ap : sa_apm.second) {
-            ap.second.Fixed->addDependencies(DecayingParticle_->BlattWeisskopfs_[sa_apm.first->L()]->parametersItDependsOn());
-            ap.second.Fixed->addDependencies(DecayingParticle_->BlattWeisskopfs_[sa_apm.first->L()]->cachedDataValuesItDependsOn());
-        }
-    }
 }
 
 //-------------------------
@@ -177,7 +171,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
     if (sa->finalTwoJ().size() != Daughters_.size())
         throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
 
-    // \todo see what needs to be checked
+    /// \todo see what needs to be checked
     // check against daughter quantum numbers
     for (size_t i = 0; i < Daughters_.size(); ++i)
         if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
@@ -197,33 +191,14 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
     for (auto& pc : particleCombinations())
         sa -> addParticleCombination(pc);
 
-    // create vector of amplitude pairs, one for each spin projection in the SpinAmplitude
-    AmplitudePairMap apM;
-    for (auto& two_m : sa->twoM()) {
-
-        // add TotalAmplitude for two_m if needed
-        if (TotalAmplitudes_.find(two_m) == TotalAmplitudes_.end())
-            TotalAmplitudes_[two_m] = ComplexCachedDataValue::create(this);
-
-        // insert new AmplitudePair into map, retaining the added Amplitude pair
-        auto ap = (apM.insert(std::make_pair(two_m, std::move(AmplitudePair(this))))).first->second;
-
-        /// add SpinAmplitude's cached amplitudes as a dependency for the Fixed amplitude
-        ap.Fixed->addDependencies(sa->amplitudeSet());
-
-        // add daughter dependencies to the fixed amplitude
-        for (int i = 0; i < int(Daughters_.size()); ++i)
-            if (auto d = std::dynamic_pointer_cast<DecayingParticle>(Daughters_[i]))
-                for (auto& c : d->cachedDataValuesItDependsOn())
-                    ap.Fixed->addDependency(DaughterCachedDataValue(c, i));
-
-        // add to TotalAmplitudes_[two_m]'s dependencies
-        TotalAmplitudes_[two_m]->addDependency(ap.Free);
-        TotalAmplitudes_[two_m]->addDependency(ap.Fixed);
-    }
+    // create new map_type::mapped_type (map of spin projection -> free amplitude)
+    map_type::mapped_type m_fa;
+    // create free amplitude for each spin projection
+    for (auto& two_m : sa->twoM())
+        m_fa.emplace(two_m, std::make_shared<ComplexParameter>(Complex_1));
 
     // add to Amplitudes_
-    Amplitudes_.insert(std::make_pair(sa, std::move(apM)));
+    Amplitudes_.emplace(sa, std::move(m_fa));
 
 }
 
@@ -238,99 +213,60 @@ std::shared_ptr<ComplexParameter> DecayChannel::freeAmplitude(int two_M, unsigne
     if (it2 == it1->second.end())
         throw exceptions::Exception("No amplitude found for spin projection = " + spin_to_string(two_M), "DecayChannel::freeAmplitude");
 
-    return it2->second.Free;
+    return it2->second;
 }
 
 //-------------------------
 ComplexParameterVector DecayChannel::freeAmplitudes()
 {
     ComplexParameterVector V;
-    for (auto& apM_kv : Amplitudes_)
-        for (auto& ap_kv : apM_kv.second)
-            V.push_back(ap_kv.second.Free);
+    for (auto& sa_mfa : Amplitudes_)
+        for (auto& m_fa : sa_mfa.second)
+            V.push_back(m_fa.second);
     return V;
 }
 
 //-------------------------
 std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
 {
-    const unsigned symIndex = symmetrizationIndex(pc);
-
-    auto& totAmp = TotalAmplitudes_.at(two_m);
-
-    if (sm.status(*totAmp, symIndex) != CalculationStatus::uncalculated) {
-        FDEBUG("\nused cached fixed amplitude for " << *this << " for " << *pc << " : " << totAmp->value(d, symIndex));
-        return totAmp->value(d, symIndex);
-    }
+    std::complex<double> A = Complex_0;
 
     // sum over L-S combinations
     // LOOP_0 = sum_{L, S} BlattWeisskopf_L * free_amp(L, S, m) * LOOP_1
-    // kvA = pair< shared_ptr<SpinAmplitude>, vector<AmplitudePair> >
-    std::complex<double> A = Complex_0;
-    for (const auto& kvA : Amplitudes_) {
+    // sa_mfa = pair< shared_ptr<SpinAmplitude>, map<spin projection, free amplitude> >
+    for (const auto& sa_mfa : Amplitudes_) {
 
-        const auto& ap = kvA.second.at(two_m); // AmplitudePair for spin projection m
-
-        // if already calculated
-
-        if (sm.status(*ap.Fixed, symIndex) != CalculationStatus::uncalculated) {
-            // Fixed is already calculated, simply retrieve from cache
-            A += ap.Free->value() * ap.Fixed->value(d, symIndex);
-            // DEBUG("DecayChannel::amplitude - use cached fixed amplitude for " << *this << " " << *pc << " = " << ap.Fixed->value(d, symIndex));
-            continue;
-        }
-
-        // else calculate
-
-        const auto& sa = kvA.first; // SpinAmplitude
-
-        DEBUG("DecayChannel::amplitude :: Calculating " << *this << " for two_m = " << two_m << " and pc = " << *pc << " for sp.amp. = " << *sa);
+        const auto& sa = sa_mfa.first; // SpinAmplitude
+        const auto& fa = sa_mfa.second.at(two_m); // free amplitude for spin projection m
 
         // get map of SpinProjectionPair's to cached spin amplitudes
-        const auto& m = sa->amplitudes().at(two_m);
+        const auto& m_cdv_map = sa->amplitudes().at(two_m);
         const auto sa_symIndex = sa->symmetrizationIndex(pc);
 
         // sum over daughter spin projection combinations (m1, m2)
         // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
-        // kvM = pair <SpinProjectionPair, ComplexCachedDataValue>
+        // m_cdv = pair <SpinProjectionPair, ComplexCachedDataValue>
         std::complex<double> a = Complex_0;
-        for (const auto& kvM : m) {
+        for (const auto& m_cdv : m_cdv_map) {
             // retrieve cached spin amplitude from data point
-            auto amp = kvM.second->value(d, sa_symIndex);
-
-            FDEBUG("amp(" << sa_symIndex << " of " << kvM.second->owner()->symmetrizationIndices().size()  << ") := " << amp);
+            auto amp = m_cdv.second->value(d, sa_symIndex);
 
             // loop over daughters, multiplying by their amplitudes for their spin projections
-            const auto& spp = kvM.first; // SpinProjectionPair
+            const auto& spp = m_cdv.first; // SpinProjectionPair
             for (size_t i = 0; i < spp.size(); ++i)
                 amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], sm);
 
-            FDEBUG("amp -> " << amp);
-
             // add into total amplitude thus far
             a += amp;
-            FDEBUG("a -> " << a);
         }
-        FDEBUG("a = " << a);
 
         // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
         a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, sm);
 
-        FDEBUG("a * bl = " << a);
-
-        // store result
-        ap.Fixed->setValue(a, d, symIndex, sm);
-
         // add into total amplitude A
-        A += a * ap.Free->value();
+        A += a * fa->value();
 
-        FDEBUG("A -> " << A);
     }
-
-    // store result
-    totAmp->setValue(A, d, symIndex, sm);
-
-    FDEBUG("return " << A);
 
     // and return it
     return A;
@@ -447,15 +383,6 @@ SpinAmplitudeVector DecayChannel::spinAmplitudes()
     for (auto& kv : Amplitudes_)
         V.push_back(kv.first);
     return V;
-}
-
-//-------------------------
-CachedDataValueSet DecayChannel::cachedDataValuesItDependsOn()
-{
-    CachedDataValueSet S;
-    for (auto& kv : TotalAmplitudes_)
-        S.insert(kv.second);
-    return S;
 }
 
 //-------------------------
