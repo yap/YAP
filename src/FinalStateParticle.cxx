@@ -38,7 +38,7 @@ unsigned FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleComb
 
     // look for pc in ParticleCombinations_
     auto it = std::find_if(ParticleCombinations_.begin(), ParticleCombinations_.end(),
-    [&](const std::shared_ptr<ParticleCombination>& p) {return p->indices() == pc->indices();});
+                           [&](const std::shared_ptr<ParticleCombination>& p) {return ParticleCombination::equivUpAndDown(p,pc);});
     // if pc already contained, do nothing
     if (it == ParticleCombinations_.end())
         ParticleCombinations_.push_back(pc);
