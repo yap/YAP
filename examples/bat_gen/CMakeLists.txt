@@ -8,5 +8,10 @@ set(SOURCES
 	bat_gen.cxx
 	)
 
+#add_custom_target(create-examples-run_gen-output COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/output)
+
+message(STATUS ${CMAKE_CURRENT_BINARY_DIR} )
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output)
+
 add_executable(runBatGen EXCLUDE_FROM_ALL ${SOURCES})
 target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
