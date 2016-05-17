@@ -76,8 +76,6 @@ public:
     virtual bool consistent() const
     { return DataAccessor::consistent(); }
 
-    virtual CachedDataValueSet cachedDataValuesItDependsOn();
-
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;
 

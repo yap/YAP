@@ -146,16 +146,6 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 }
 
 //-------------------------
-CachedDataValueSet BlattWeisskopf::cachedDataValuesItDependsOn()
-{
-    /// \todo replace with actual dependencies of BarrierFactor_?
-    CachedDataValueSet set;
-    if (BarrierFactor_)
-        set.insert(BarrierFactor_);
-    return set;
-}
-
-//-------------------------
 const Model* BlattWeisskopf::model() const
 {
     return DecayingParticle_->model();
