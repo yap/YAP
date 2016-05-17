@@ -82,7 +82,7 @@ public:
 protected:
 
     /// override to throw on adding final-state PC
-    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// squared breakup momentum [GeV^2]
     std::shared_ptr<RealCachedDataValue> Q2_;

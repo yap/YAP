@@ -21,9 +21,7 @@ namespace yap {
 
 //-------------------------
 DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-    AmplitudeComponent(),
     Particle(q, mass, name),
-    DataAccessor(ParticleCombination::equivUpAndDown),
     RadialSize_(std::make_shared<RealParameter>(radialSize))
 {
 }
@@ -31,37 +29,20 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 //-------------------------
 std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
 {
-    unsigned symIndex = symmetrizationIndex(pc);
+    auto A = Complex_0;
 
-    // get cached amplitude object for spin projection two_m
-    auto& A = Amplitudes_.at(two_m);
+    // sum up DecayChannel::amplitude over each channel
+    for (const auto& c : channels())
+        if (c->hasParticleCombination(pc))
+            A += c->amplitude(d, pc, two_m, sm);
 
-    if (sm.status(*A, symIndex) == CalculationStatus::uncalculated) {
-
-        std::complex<double> a = Complex_0;
-
-        /// \todo Is this the best way to do it? (loop over pc's then channels. or channels then pc's?)
-
-        // sum up DecayChannel::amplitude over each channel
-        for (const auto& c : channels())
-            if (c->hasParticleCombination(pc))
-                a += c->amplitude(d, pc, two_m, sm);
-
-        A->setValue(a, d, symIndex, sm);
-
-        DEBUG("DecayingParticle::amplitude - calculated amplitude for " << name() << " " << *pc << " = " << a);
-        return a;
-    }
-
-    DEBUG("DecayingParticle::amplitude - used cached amplitude for " << name() << " " << *pc << " = " << A->value(d, symIndex));
-    return A->value(d, symIndex);
+    return A;
 }
 
 //-------------------------
 bool DecayingParticle::consistent() const
 {
-    bool C = DataAccessor::consistent();
-    C &= Particle::consistent();
+    bool C = Particle::consistent();
 
     if (RadialSize_->value() <= 0.) {
         FLOG(ERROR) << "Radial size not positive.";
@@ -120,7 +101,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     Channels_.back()->setDecayingParticle(this);
 
     // now that Model is set, register with Model (repeated registration has no effect)
-    addToModel();
+    registerWithModel();
 
     // if this is to be the initial state particle
     if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
@@ -225,15 +206,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
 
-    // Add DecayChannel's TotalAmplitude's as dependencies for this object's Amplitudes
-    // by spin projection (key in TotalAmplitudes_)
-    for (auto& kv : Channels_.back()->TotalAmplitudes_) {
-        // if spin projection not yet in Amplitudes_, add it
-        if (Amplitudes_.find(kv.first) == Amplitudes_.end())
-            Amplitudes_[kv.first] = ComplexCachedDataValue::create(this);
-        Amplitudes_[kv.first]->addDependency(kv.second);
-    }
-
     FDEBUG(*Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size());
     return Channels_.back();
 }
@@ -250,12 +222,10 @@ const Model* DecayingParticle::model() const
     return Channels_.empty() ? nullptr : Channels_[0]->model();
 }
 
-
-
 //-------------------------
-unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    unsigned index = DataAccessor::addParticleCombination(pc);
+    Particle::addParticleCombination(pc);
 
     // add also to all BlattWeiskopf barrier factors
     for (auto& kv : BlattWeisskopfs_)
@@ -272,8 +242,18 @@ unsigned DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombin
     // check if also model's initial state particle
     if (model() and model()->initialStateParticle() == shared_from_this())
         const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->addParticleCombination(pc);
+}
 
-    return index;
+//-------------------------
+void DecayingParticle::fixSolitaryFreeAmplitudes()
+{
+    // loop over entries in map of (spin projection) -> (decay tree vector)
+    for (auto& m_dtv : DecayTrees_)
+        // if only available decay tree
+        if (m_dtv.second.size() == 1)
+            m_dtv.second[0]->freeAmplitude()->setVariableStatus(VariableStatus::fixed);
+    for (auto& c : Channels_)
+        c->fixSolitaryFreeAmplitudes();
 }
 
 //-------------------------
@@ -327,15 +307,6 @@ void DecayingParticle::printDecayChainLevel(int level) const
 
     if (level == 0)
         std::cout << "\n";
-}
-
-//-------------------------
-CachedDataValueSet DecayingParticle::cachedDataValuesItDependsOn()
-{
-    CachedDataValueSet S;
-    for (auto& kv : Amplitudes_)
-        S.insert(kv.second);
-    return S;
 }
 
 //-------------------------

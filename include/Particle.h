@@ -45,8 +45,8 @@ namespace yap {
 /// \defgroup Particle Particle-related classes
 class Particle :
 // keyword virtual is needed to solve diamond problem in DecayingParticle
-    public virtual AmplitudeComponent,
-    public virtual ReportsParticleCombinations,
+    public AmplitudeComponent,
+    public ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
 protected:
@@ -98,6 +98,10 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
+    /// \return ParticleCombinationVector
+    const ParticleCombinationVector& particleCombinations() const override
+    { return ParticleCombinations_; }
+
     /// @}
 
     /// grant friend status to DecayChannel to call addParticleCombination
@@ -105,9 +109,12 @@ public:
 
 protected:
 
-    // set mass parameter
+    /// set mass parameter
     void setMass(std::shared_ptr<RealParameter> m);
 
+    /// add ParticleCombination to ParticleCombinationVector_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
+    
 private:
 
     /// Quantum numbers of particle
@@ -118,6 +125,9 @@ private:
 
     /// Name of particle
     std::string Name_;
+
+    /// vector of ParticleCombinations that can comprise this particle
+    ParticleCombinationVector ParticleCombinations_;
 
 };
 

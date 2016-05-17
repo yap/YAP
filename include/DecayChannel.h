@@ -137,11 +137,16 @@ public:
     {return "DecayChannel"; }
 
     /// Grant friend status to DecayingParticle to set itself as owner
+    /// and to call fixSolitaryFreeAmplitudes()
     friend DecayingParticle;
 
 protected:
 
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c);
+    /// Add particle combination
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c);
+
+    /// call fixSolitaryFreeAmplitudes() on each daughter
+    void fixSolitaryFreeAmplitudes();
 
     /// set raw pointer to owning DecayingParticle
     void setDecayingParticle(DecayingParticle* dp);

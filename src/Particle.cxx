@@ -26,12 +26,25 @@ void Particle::setMass(std::shared_ptr<RealParameter> m)
 //-------------------------
 bool Particle::consistent() const
 {
+    bool C = true;
+
     if (Mass_->value() < 0.) {
         FLOG(ERROR) << "mass is negative";
-        return false;
+        C &= false;
     }
 
-    return true;
+    if (ParticleCombinations_.empty()) {
+        FLOG(ERROR) << "ParticleCombinations_ is empty";
+        C &= false;
+    }
+
+    return C;
+}
+
+//-------------------------
+void Particle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    ParticleCombinations_.push_back(pc);
 }
 
 //-------------------------

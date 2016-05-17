@@ -57,14 +57,13 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
     if (hasParticleCombination(c))
-        // c is already in map
-        return symmetrizationIndex(c);
+        return;
 
     // object for recording successing of emplacement
     auto it_b = std::make_pair(SymmetrizationIndices_.end(), false);
@@ -94,9 +93,6 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
     if (it_b.second)
         // add to ParticleCombinations_
         ParticleCombinations_.push_back(c);
-
-    // return c's index in map
-    return it_b.first->second;
 }
 
 //-------------------------

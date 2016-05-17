@@ -121,7 +121,7 @@ protected:
     { Size_ += n; }
 
     /// add ParticleCombination to SymmetrizationIndices_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneSymmetrizationIndices();

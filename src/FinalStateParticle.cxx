@@ -17,33 +17,18 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::s
 }
 
 //-------------------------
-bool FinalStateParticle::consistent() const
-{
-    bool C = Particle::consistent();
-
-    if (ParticleCombinations_.empty()) {
-        FLOG(ERROR) << "ParticleCombinations_ are empty!";
-        C &= false;
-    }
-
-    return C;
-}
-
-//-------------------------
-unsigned FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // pc must be final state particle
     if (!pc->isFinalStateParticle())
         throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
     // look for pc in ParticleCombinations_
-    auto it = std::find_if(ParticleCombinations_.begin(), ParticleCombinations_.end(),
+    auto it = std::find_if(particleCombinations().begin(), particleCombinations().end(),
                            [&](const std::shared_ptr<ParticleCombination>& p) {return ParticleCombination::equivUpAndDown(p,pc);});
     // if pc already contained, do nothing
-    if (it == ParticleCombinations_.end())
-        ParticleCombinations_.push_back(pc);
-
-    return pc->indices()[0];
+    if (it == particleCombinations().end())
+        Particle::addParticleCombination(pc);
 }
 
 }

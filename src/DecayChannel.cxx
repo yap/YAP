@@ -96,9 +96,9 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 }
 
 //-------------------------
-unsigned DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    unsigned index = DataAccessor::addParticleCombination(pc);
+    DataAccessor::addParticleCombination(pc);
 
     // add pc's daughters to daughter particles;
     // pc's daughters have their parents set correctly.
@@ -108,8 +108,14 @@ unsigned DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombinatio
     // add to SpinAmplitude's (keys of Amplitudes_)
     for (auto& kv : Amplitudes_)
         kv.first->addParticleCombination(pc);
+}
 
-    return index;
+//-------------------------
+void DecayChannel::fixSolitaryFreeAmplitudes()
+{
+    for (auto& d : Daughters_)
+        if (std::dynamic_pointer_cast<DecayingParticle>(d))
+            std::static_pointer_cast<DecayingParticle>(d)->fixSolitaryFreeAmplitudes();
 }
 
 //-------------------------

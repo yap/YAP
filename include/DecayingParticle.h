@@ -53,9 +53,7 @@ namespace yap {
 /// A_c = a_c * Blatt-Weisskopf(P->D1+D2) * SpinAmplitude(P->D1+D2) * A(D1->xx) * A(D2->xx)\n
 /// with free amplitude a_c.
 
-class DecayingParticle :
-    public Particle,
-    public DataAccessor
+class DecayingParticle : public Particle
 {
 protected:
 
@@ -129,8 +127,6 @@ public:
     void printDecayChain() const
     { printDecayChainLevel(0); }
 
-    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
-
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
@@ -141,6 +137,7 @@ public:
     std::string printDecayTrees() const;
 
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
+    /// and to call fixSolitaryFreeAmplitudes()
     friend DecayChannel;
 
     /// grant friend status to Model to see freeAmplitudes
@@ -148,8 +145,15 @@ public:
 
 protected:
 
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel()
+    {}
+
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+
+    /// if only one decay channel is available, fix its free amplitude to the current value
+    void fixSolitaryFreeAmplitudes();
 
     void printDecayChainLevel(int level) const;
 
@@ -177,10 +181,6 @@ private:
 
     /// Map of spin projection to DecayTreeVector
     std::map<int, DecayTreeVector> DecayTrees_;
-
-    /// Cached amplitudes for each spin projection
-    /// key = 2 * spin projection
-    std::map<int, std::shared_ptr<ComplexCachedDataValue> > Amplitudes_;
 
 };
 

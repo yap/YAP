@@ -52,9 +52,9 @@ std::complex<double> Model::amplitude(DataPoint& d, int two_m, StatusManager& sm
     std::complex<double> a = Complex_0;
 
     // sum up ISP's amplitude over each particle combination
-    for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
-        FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
-        a += InitialStateParticle_->amplitude(d, kv.first, two_m, sm);
+    for (const auto& pc : InitialStateParticle_->particleCombinations()) {
+        FDEBUG("calculating for two_m = " << two_m << " and pc = " << *pc);
+        a += InitialStateParticle_->amplitude(d, pc, two_m, sm);
     }
 
     return a;
@@ -72,9 +72,9 @@ std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
     std::complex<double> a = Complex_0;
 
     for (int two_m = -InitialStateParticle_->quantumNumbers().twoJ(); two_m <= (int)InitialStateParticle_->quantumNumbers().twoJ(); two_m += 2) {
-        for (auto& kv : InitialStateParticle_->symmetrizationIndices()) {
-            FDEBUG("calculating for two_m = " << two_m << " and pc = " << *kv.first);
-            a += InitialStateParticle_->amplitude(d, kv.first, two_m, sm);
+        for (const auto& pc : InitialStateParticle_->particleCombinations()) {
+            FDEBUG("calculating for two_m = " << two_m << " and pc = " << *pc);
+            a += InitialStateParticle_->amplitude(d, pc, two_m, sm);
         }
     }
 
@@ -370,22 +370,9 @@ void Model::prepareDataAccessors()
         D->pruneSymmetrizationIndices();
 
     // fix amplitudes when they are for the only possible decay chain
-    for (auto& D : DataAccessors_) {
-        if (!dynamic_cast<DecayingParticle*>(D))
-            continue;
-        // if a decaying particle
-        auto C = static_cast<DecayingParticle*>(D)->channels();
-        if (C.size() != 1)
-            continue;
-        // if decaying particle has only one decay channel
-        auto A = C[0]->freeAmplitudes();
-        if (A.size() == 1)
-            // if only one free amplitude in decay channel
-            A[0]->setVariableStatus(VariableStatus::fixed);
-    }
+    InitialStateParticle_->fixSolitaryFreeAmplitudes();
 
-    // fix indices
-
+    // fix indices:
     // collect used indices
     std::set<unsigned> used;
     for (const auto& da : DataAccessors_)

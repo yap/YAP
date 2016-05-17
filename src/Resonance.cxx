@@ -43,18 +43,17 @@ bool Resonance::consistent() const
 }
 
 //-------------------------
-void Resonance::addToModel()
+void Resonance::registerWithModel()
 {
-    DecayingParticle::addToModel();
+    DecayingParticle::registerWithModel();
     MassShape_->addToModel();
 }
 
 //-------------------------
-unsigned Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    unsigned index = DecayingParticle::addParticleCombination(c);
+    DecayingParticle::addParticleCombination(c);
     MassShape_->addParticleCombination(c);
-    return index;
 }
 
 //-------------------------

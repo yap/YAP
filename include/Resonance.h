@@ -90,12 +90,12 @@ public:
 
 protected:
 
-    /// overrides DataAccessor's function to also register MassShape_ with Model
-    virtual void addToModel() override;
+    /// overrides DecayingParticle's function to register MassShape_ with Model
+    virtual void registerWithModel() override;
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
     /// modify a DecayTree
     /// \param dt DecayTree to modify

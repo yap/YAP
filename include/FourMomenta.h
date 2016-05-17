@@ -121,7 +121,7 @@ protected:
     void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const;
 
     /// looks for ISP when adding ParticleCombination's
-    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// override to do nothing, since FourMomenta doesn't rely on parents being set.
     void pruneSymmetrizationIndices() override
