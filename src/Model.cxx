@@ -654,10 +654,6 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 
     for (const auto& d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
-        if (dynamic_cast<const Particle*>(d))
-            std::cout << dynamic_cast<const Particle*>(d)->name();
-        else if (dynamic_cast<const DecayChannel*>(d))
-            std::cout << *static_cast<const DecayChannel*>(d);
 
         if (printParticleCombinations) {
             std::cout << " \t";
@@ -676,10 +672,6 @@ void Model::printFlags(const StatusManager& sm) const
 {
     for (const auto& d : DataAccessors_) {
         std::cout << d->data_accessor_type() << "  ";
-        if (dynamic_cast<const Particle*>(d))
-            std::cout << dynamic_cast<const Particle*>(d)->name();
-        else if (dynamic_cast<const DecayChannel*>(d))
-            std::cout << *static_cast<const DecayChannel*>(d);
 
         std::cout << std::endl;
 

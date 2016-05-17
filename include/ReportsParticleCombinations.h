@@ -21,32 +21,18 @@
 #ifndef yap_ReportsParticleCombinations_h
 #define yap_ReportsParticleCombinations_h
 
-#include "fwd/ParticleCombination.h"
+#include "ParticleCombination.h"
 
-#include <algorithm>
 #include <memory>
+
+namespace yap {
 
 /// \name ReportsParticleCombinations
 /// \brief Base class for all classes that report a list of particleCombinations
 /// \author Daniel Greenwald
-
-namespace yap {
-
 class ReportsParticleCombinations
 {
-
 public:
-
-    /// \return vector of ParticleCombinations
-    virtual const ParticleCombinationVector& particleCombinations() const = 0;
-
-    /// \return if the given ParticleCombination is contained in the object
-    virtual bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const
-    {
-        const auto& pcv = particleCombinations();
-        return std::find(pcv.begin(), pcv.end(), c) != pcv.end();
-    }
-
     /// Default constructor
     ReportsParticleCombinations() = default;
 
@@ -64,6 +50,13 @@ public:
 
     /// default move assignment operator
     ReportsParticleCombinations& operator=(ReportsParticleCombinations&& rhs) = default;
+
+    /// \return vector of ParticleCombinations
+    virtual const ParticleCombinationVector& particleCombinations() const = 0;
+
+    /// \return if the given ParticleCombination is contained in the object
+    virtual bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
+                                        const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer) const;
 
 protected:
 

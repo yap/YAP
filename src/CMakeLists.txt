@@ -31,6 +31,7 @@ set(YAP_SOURCES
 	ParticleFactory.cxx
 	PoleMass.cxx
 	QuantumNumbers.cxx
+  ReportsParticleCombinations.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
 	StatusManager.cxx

@@ -20,7 +20,8 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(const ParticleVector& daughters) :
-    DataAccessor(),
+    AmplitudeComponent(),
+    ReportsParticleCombinations(),
     Daughters_(daughters),
     DecayingParticle_(nullptr)
 {
@@ -80,7 +81,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
                 // get (B,A) combination from cache
                 auto b_a = model()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and hasParticleCombination(b_a.lock()))
+                if (!b_a.expired() and hasParticleCombination(b_a.lock(), ParticleCombination::equivBySharedPointer))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
             }
@@ -90,15 +91,23 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
         }
     }
-
-    // register with Model
-    addToModel();
 }
 
 //-------------------------
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    DataAccessor::addParticleCombination(pc);
+    // if pc already possessed, do nothing
+    if (hasParticleCombination(pc, ParticleCombination::equivBySharedPointer))
+        return;
+
+    // check number of daughters in pc
+    if (pc->daughters().size() != Daughters_.size())
+        throw exceptions::Exception("ParticleCombination has wrong number of daughters ("
+                                    + std::to_string(pc->daughters().size()) + " != "
+                                    + std::to_string(Daughters_.size()) + ")",
+                                    "DecayChannel::addParticleCombination");
+
+    ParticleCombinations_.push_back(pc);
 
     // add pc's daughters to daughter particles;
     // pc's daughters have their parents set correctly.
@@ -150,6 +159,12 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
                 addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
             }
         }
+    } else {
+
+        // check DecayingPartcle_'s quantum numbers against existing SpinAmplitude's
+        if (DecayingParticle_->quantumNumbers().twoJ() != Amplitudes_.begin()->first->initialTwoJ())
+            throw exceptions::Exception("Spins don't match ", "DecayChannel::setDecayingParticle");
+
     }
 
     // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
@@ -275,27 +290,7 @@ std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr
 //-------------------------
 bool DecayChannel::consistent() const
 {
-    bool C = DataAccessor::consistent();
-
-    // check number of daughters
-    if (Daughters_.size() < 2) {
-        FLOG(ERROR) << "invalid number of daughters (" << Daughters_.size() << " < 2).";
-        C &= false;
-    }
-
-    // currently only allowing exactly two daughters
-    if (Daughters_.size() > 2) {
-        FLOG(ERROR) << "invalid number of daughters (" << Daughters_.size() << " > 2).";
-        C &= false;
-    }
-
-    // compare number of daughters with sizes of ParticleCombinations
-    auto pcs = particleCombinations();
-    if (std::any_of(pcs.begin(), pcs.end(),
-    [&](ParticleCombinationVector::value_type pc) {return pc->daughters().size() != Daughters_.size();})) {
-        FLOG(ERROR) << "DecayChannel and its particleCombinations do not have the same number of daughters.";
-        C &= false;
-    }
+    bool C = true;
 
     // check no daughters is empty
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;})) {
@@ -320,27 +315,6 @@ bool DecayChannel::consistent() const
         } else {
             C &= kv.first->consistent();
 
-            // check size of SpinAmplitude's quantum numbers against size of daughters
-            if (kv.first->finalTwoJ().size() != Daughters_.size()) {
-                FLOG(ERROR) << "quantum numbers object and daughters object size mismatch";
-                C &= false;
-            }
-
-            // check if QuantumNumbers of SpinAmplitude objects match with Particles
-            if (kv.first->initialTwoJ() != decayingParticle()->quantumNumbers().twoJ()) {
-                FLOG(ERROR) << "spins of parent " << decayingParticle()->quantumNumbers().twoJ()
-                            << " and SpinAmplitude " << kv.first->initialTwoJ() << " don't match.";
-                C &= false;
-            }
-
-            for (size_t i = 0; i < Daughters_.size(); ++i) {
-                if (kv.first->finalTwoJ()[i] != Daughters_[i]->quantumNumbers().twoJ()) {
-                    FLOG(ERROR) << "spins of daughter " << i << " " << Daughters_[i]->quantumNumbers().twoJ()
-                                << " and SpinAmplitude " << kv.first->finalTwoJ()[i] << " don't match.";
-                    C &= false;
-                }
-            }
-
             // check its corresponding BlattWeisskopf
             if (DecayingParticle_) {
                 // look for BlattWeisskopf object with corresponding orbital angular momentum
@@ -353,24 +327,6 @@ bool DecayChannel::consistent() const
                 }
             }
         }
-    }
-
-    // check masses
-    // double mass_sum = std::accumulate(Daughters_.begin(), Daughters_.end(), 0.,
-    // [](double m, std::shared_ptr<Particle> d) {return m + (d ? d->mass()->value() : 0);});
-    // if (mass_sum > decayingParticle()->mass()->value()) {
-    //     FLOG(ERROR) << "sum of daughter's masses (" << mass_sum << ")"
-    //                 << "is bigger than decaying particle's mass (" << decayingParticle()->mass()->value() << ").";
-    //     C &= false;
-    // }
-
-    // check charge conservation
-    int daughtersQ(0);
-    for (auto& d : Daughters_)
-        daughtersQ += d->quantumNumbers().Q();
-    if (DecayingParticle_->quantumNumbers().Q() != daughtersQ) {
-        FLOG(ERROR) << "charge conservation violated";
-        C &= false;
     }
 
     return C;

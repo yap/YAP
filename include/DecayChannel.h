@@ -28,6 +28,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DecayingParticle.h"
 #include "fwd/FinalStateParticle.h"
+#include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
@@ -35,7 +36,7 @@
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
-#include "RecalculableDataAccessor.h"
+#include "ReportsParticleCombinations.h"
 
 #include <complex>
 #include <map>
@@ -50,7 +51,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayChannel :
     public AmplitudeComponent,
-    public DataAccessor
+    public ReportsParticleCombinations
 {
 public:
 
@@ -104,14 +105,18 @@ public:
     const map_type::mapped_type& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
     { return Amplitudes_.at(sa); }
 
-    /// @}
+    /// \return vector of ParticleCombinations
+    const ParticleCombinationVector& particleCombinations() const
+    { return ParticleCombinations_; }
 
     /// \return raw pointer to model through first Daughter
-    const Model* model() const override;
+    const Model* model() const;
 
     /// \return raw pointer to owning DecayingParticle
     DecayingParticle* decayingParticle() const
     { return DecayingParticle_; }
+
+    /// @}
 
     /// add a spin amplitude
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
@@ -124,9 +129,6 @@ public:
 
     /// \return Vector of free amplitudes
     ComplexParameterVector freeAmplitudes();
-
-    virtual std::string data_accessor_type() const override
-    {return "DecayChannel"; }
 
     /// Grant friend status to DecayingParticle to set itself as owner
     /// and to call fixSolitaryFreeAmplitudes()
@@ -154,11 +156,8 @@ private:
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;
 
-    /// list of Parameters this DecayChannel directly depends on
-    ParameterSet ParametersThisDependsOn_;
-
-    /// list of CachedDataValues this DecayChannel directly depends on
-    CachedDataValueSet CachedDataValuesThisDependsOn_;
+    /// vector of shared_ptr<ParticleCombination>
+    ParticleCombinationVector ParticleCombinations_;
 
 };
 
