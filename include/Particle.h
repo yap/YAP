@@ -56,15 +56,6 @@ protected:
 
 public:
 
-    /// Calculate complex amplitude
-    /// must be overrided in derived classes
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param two_m 2 * the spin projection to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                           int two_m, StatusManager& sm) const = 0;
-
     /// Check consitency of object
     virtual bool consistent() const;
 

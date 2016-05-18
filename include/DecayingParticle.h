@@ -70,12 +70,6 @@ public:
     static std::shared_ptr<DecayingParticle> create(const QuantumNumbers& q, double mass, std::string name, double radialSize)
     { return std::shared_ptr<DecayingParticle>(new DecayingParticle(q, mass, name, radialSize)); }
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param two_m 2 * the spin projection to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
     /// \return DecayTrees
     /// map key is spin projection
     const std::map<int, DecayTreeVector>& decayTrees() const

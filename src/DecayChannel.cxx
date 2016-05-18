@@ -241,52 +241,6 @@ ComplexParameterVector DecayChannel::freeAmplitudes()
 }
 
 //-------------------------
-std::complex<double> DecayChannel::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
-{
-    std::complex<double> A = Complex_0;
-
-    // sum over L-S combinations
-    // LOOP_0 = sum_{L, S} BlattWeisskopf_L * free_amp(L, S, m) * LOOP_1
-    // sa_mfa = pair< shared_ptr<SpinAmplitude>, map<spin projection, free amplitude> >
-    for (const auto& sa_mfa : Amplitudes_) {
-
-        const auto& sa = sa_mfa.first; // SpinAmplitude
-        const auto& fa = sa_mfa.second.at(two_m); // free amplitude for spin projection m
-
-        // get map of SpinProjectionPair's to cached spin amplitudes
-        const auto& m_cdv_map = sa->amplitudes().at(two_m);
-        const auto sa_symIndex = sa->symmetrizationIndex(pc);
-
-        // sum over daughter spin projection combinations (m1, m2)
-        // LOOP_1 = sum_{m1, m2} SpinAmplitude_{L, S, m, m1, m2}(d) * amp_{daughter1}(m1) * amp_{daughter2}(m2)
-        // m_cdv = pair <SpinProjectionPair, ComplexCachedDataValue>
-        std::complex<double> a = Complex_0;
-        for (const auto& m_cdv : m_cdv_map) {
-            // retrieve cached spin amplitude from data point
-            auto amp = m_cdv.second->value(d, sa_symIndex);
-
-            // loop over daughters, multiplying by their amplitudes for their spin projections
-            const auto& spp = m_cdv.first; // SpinProjectionPair
-            for (size_t i = 0; i < spp.size(); ++i)
-                amp *= Daughters_[i]->amplitude(d, pc->daughters()[i], spp[i], sm);
-
-            // add into total amplitude thus far
-            a += amp;
-        }
-
-        // multiply sum by Blatt-Weisskopf factor for orbital angular momentum L
-        a *= DecayingParticle_->BlattWeisskopfs_[sa->L()]->amplitude(d, pc, sm);
-
-        // add into total amplitude A
-        A += a * fa->value();
-
-    }
-
-    // and return it
-    return A;
-}
-
-//-------------------------
 bool DecayChannel::consistent() const
 {
     bool C = true;

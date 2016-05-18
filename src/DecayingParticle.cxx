@@ -26,19 +26,6 @@ DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::st
 }
 
 //-------------------------
-std::complex<double> DecayingParticle::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
-{
-    auto A = Complex_0;
-
-    // sum up DecayChannel::amplitude over each channel
-    for (const auto& c : channels())
-        if (c->hasParticleCombination(pc))
-            A += c->amplitude(d, pc, two_m, sm);
-
-    return A;
-}
-
-//-------------------------
 bool DecayingParticle::consistent() const
 {
     bool C = Particle::consistent();

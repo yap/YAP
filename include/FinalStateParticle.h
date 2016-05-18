@@ -55,12 +55,6 @@ public:
     static std::shared_ptr<FinalStateParticle> create(const QuantumNumbers& q, double m, std::string name)
     { return std::shared_ptr<FinalStateParticle>(new FinalStateParticle(q, m, name)); }
 
-    /// Calculate complex amplitude.
-    /// All parameters are ignored. See particle::amplitude() for info.
-    /// \return 1 + 0i
-    virtual std::complex<double> amplitude(DataPoint&, const std::shared_ptr<ParticleCombination>&, int, StatusManager&) const override
-    { return Complex_1; }
-
     /// \return owning Model
     const Model* model() const override
     { return Model_; }
