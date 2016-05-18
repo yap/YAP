@@ -105,18 +105,6 @@ public:
     const DecayChannelVector& channels() const
     { return Channels_;}
 
-    /// \return Number of decay channels for this object
-    unsigned int nChannels() const
-    { return Channels_.size(); }
-
-    /// Return Channel i
-    std::shared_ptr<DecayChannel> channel(unsigned i) const
-    { return Channels_.at(i); }
-
-    /// Return Channel i
-    std::shared_ptr<DecayChannel> channel(unsigned i)
-    { return Channels_.at(i); }
-
     /// \return Radial size [GeV^-1]
     std::shared_ptr<RealParameter> radialSize()
     { return RadialSize_; }
@@ -183,6 +171,9 @@ private:
     std::map<int, DecayTreeVector> DecayTrees_;
 
 };
+
+/// \return sum of all amplitudes in map of spin projection to decay tree vector
+const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d);
 
 }
 

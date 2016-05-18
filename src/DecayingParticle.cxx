@@ -68,10 +68,10 @@ bool DecayingParticle::consistent() const
 
     // check if all channels lead to same final state particles
     /// \todo This isn't necessary, we should think how to change this. Example: D -> KKpipi, with f0->KK and f0->pipi
-    std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = finalStateParticles(0);
+    std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = Channels_[0]->finalStateParticles();
     std::sort(fsps0.begin(), fsps0.end());
-    for (unsigned i = 1; i < nChannels(); ++i) {
-        std::vector<std::shared_ptr<FinalStateParticle> > fsps = finalStateParticles(i);
+    for (unsigned i = 1; i < Channels_.size(); ++i) {
+        std::vector<std::shared_ptr<FinalStateParticle> > fsps = Channels_[i]->finalStateParticles();
         std::sort(fsps.begin(), fsps.end());
         if (fsps != fsps0) {
             FLOG(ERROR) << "final state of channel " << i << " does not match.";
@@ -142,11 +142,12 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                         // if decaying particle
                         if (dp) {
 
-                            // create temp tree vector to store new copies into
-                            DecayTreeVector DTV_temp;
-
                             // check if daughter has any decay trees with spin projection
                             if (dp->DecayTrees_.find(m_cdv.first[d]) != dp->DecayTrees_.end()) {
+
+                                // create temp tree vector to store new copies into
+                                DecayTreeVector DTV_temp;
+
                                 // loop over decay trees of daughter with appropriate spin projection
                                 for (const auto& dt : dp->DecayTrees_[m_cdv.first[d]]) {
                                     // check that decay channel of free amplitude of decay tree has particle combination
@@ -159,14 +160,14 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                         }
                                     }
                                 }
+
+                                // replace DTV with DTV_temp
+                                DTV = DTV_temp;
                             }
                             // else clear DTV
-                            else {
+                            else
                                 DTV.clear();
-                            }
 
-                            // replace DTV with DTV_temp
-                            DTV = DTV_temp;
                         }
                         // else non-decaying particle
                         else {
@@ -178,9 +179,8 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                     DT->setDaughterSpinProjection(d, m_cdv.first[d]);
                             }
                             // else clear DTV
-                            else {
+                            else
                                 DTV.clear();
-                            }
                         }
 
                         // if DTV now empty, break
@@ -287,17 +287,17 @@ void DecayingParticle::printDecayChainLevel(int level) const
             return;
     }
 
-    for (unsigned int i = 0; i < nChannels(); ++i) {
+    for (size_t i = 0; i < Channels_.size(); ++i) {
         if (i > 0)
             std::cout << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
 
         std::cout << std::left << std::setw(padding) << this->name() << " ->";
-        for (std::shared_ptr<Particle> d : channel(i)->daughters())
+        for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
             std::cout << " " << std::setw(padding) << d->name();
         std::cout << std::left << std::setw(paddingSpinAmp)
-                  << to_string(channel(i)->spinAmplitudes());
+                  << to_string(Channels_[i]->spinAmplitudes());
 
-        for (std::shared_ptr<Particle> d : channel(i)->daughters())
+        for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
             if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
                 std::cout << ",  ";
                 std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(level + 1);
@@ -379,5 +379,16 @@ std::string DecayingParticle::printDecayTrees() const
     }
     return s;
 }
+
+//-------------------------
+const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d)
+{
+    auto A = Complex_0;
+    for (const auto& m_dtv : m_dtv_map)
+        for (const auto& dt : m_dtv.second)
+            A += dt->amplitude(d);
+    return A;
+}
+
 
 }
