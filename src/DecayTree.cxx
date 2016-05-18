@@ -14,7 +14,7 @@ DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
 {}
 
 //-------------------------
-std::complex<double> DecayTree::amplitude(const DataPoint& d) const
+const std::complex<double> DecayTree::amplitude(const DataPoint& d) const
 {
     auto A = Complex_0;
     for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations())
@@ -23,7 +23,16 @@ std::complex<double> DecayTree::amplitude(const DataPoint& d) const
 }
 
 //-------------------------
-std::complex<double> DecayTree::particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d)
+{
+    auto A = Complex_0;
+    for (const auto& dt : dtv)
+        A += dt->amplitude(d);
+    return A;
+}
+
+//-------------------------
+const std::complex<double> DecayTree::particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]);
@@ -37,7 +46,7 @@ std::complex<double> DecayTree::particleCombinationDependentAmplitude(const Data
 }
 
 //-------------------------
-std::complex<double> DecayTree::particleCombinationIndependentAmplitude(const DataPoint& d) const
+const std::complex<double> DecayTree::particleCombinationIndependentAmplitude(const DataPoint& d) const
 {
     // spin amplitude
     auto A = FreeAmplitude_->value();
