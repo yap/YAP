@@ -97,11 +97,11 @@ double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCom
     return BarrierFactor_->value(d, symIndex);
 }
 
-// //-------------------------
-// double BlattWeisskopf::operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-// {
-//     return (L_ == 0) ? 1 : BarrierFactor_->value(d, symmetrizationIndex(pc));
-// }
+//-------------------------
+std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return (L_ == 0) ? 1 : BarrierFactor_->value(d, symmetrizationIndex(pc));
+}
 
 //-------------------------
 void BlattWeisskopf::calculate(DataPartition& D) const

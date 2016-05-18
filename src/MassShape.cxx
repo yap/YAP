@@ -32,7 +32,7 @@ void MassShape::calculate(DataPartition& D) const
     }
 }
 //-------------------------
-std::complex<double> MassShape::operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return T_->value(d, symmetrizationIndex(pc));
 }

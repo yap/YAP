@@ -57,11 +57,10 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const = 0;
 
-    /// functor
     /// \return dynamic amplitude for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
-    virtual std::complex<double> operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
     /// calls calculateT, which must be overrided in derived classes

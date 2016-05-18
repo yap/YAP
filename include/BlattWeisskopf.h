@@ -32,6 +32,7 @@
 #include "RecalculableDataAccessor.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 
+#include <complex>
 #include <memory>
 #include <string>
 
@@ -62,11 +63,10 @@ public:
     /// \param sm StatusManager to update
     virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const;
 
-    /* /// functor */
-    /* /// \return Blatt-Weisskopf barrier factor for data point and particle combination */
-    /* /// \param d DataPoint */
-    /* /// \param pc shared_ptr to ParticleCombination */
-    /* double operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const; */
+    /// \return Blatt-Weisskopf barrier factor for data point and particle combination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// Calculate barrier factors for and store into each data point in a data partition
     /// \param D DataPartition to calculate over

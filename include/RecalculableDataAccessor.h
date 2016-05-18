@@ -23,8 +23,11 @@
 
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
 
 #include "DataAccessor.h"
+
+#include <complex>
 
 namespace yap {
 
@@ -33,11 +36,18 @@ class RecalculableDataAccessor : public DataAccessor
 public:
     /// Constructor
     /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    RecalculableDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
+    explicit RecalculableDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
         : DataAccessor(equiv) {}
 
     /// calculate for every data point in a data partition
+    /// must be overloaded in derived class
     virtual void calculate(DataPartition& D) const = 0;
+
+    /// \return value calculated for DataPoint and ParticleCombination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    /// must be overloaded in derived class
+    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
 };
 
