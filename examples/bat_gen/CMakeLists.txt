@@ -12,6 +12,12 @@ set(SOURCES
 
 message(STATUS ${CMAKE_CURRENT_BINARY_DIR} )
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output)
+add_custom_target(link-macros
+	COMMAND ${CMAKE_COMMAND} -E create_symlink
+		../../../examples/bat_gen/macros
+		macros
+	)
 
 add_executable(runBatGen EXCLUDE_FROM_ALL ${SOURCES})
+add_dependencies(runBatGen link-macros)
 target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
