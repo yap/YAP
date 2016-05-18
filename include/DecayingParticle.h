@@ -76,6 +76,10 @@ public:
     /// \param two_m 2 * the spin projection to calculate for
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
+    /// \return DecayTrees
+    /// map key is spin projection
+    const std::map<int, DecayTreeVector>& decayTrees() const
+    { return DecayTrees_; }
 
     /// Check consistency of object
     virtual bool consistent() const override;

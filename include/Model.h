@@ -61,17 +61,6 @@ public:
     /// \name Amplitude-related
     /// @{
 
-    /// \return amplitude with a sum over all particle combinations of ISP
-    /// \param d DataPoint to calculate with
-    /// \param two_m 2 * the spin projection of ISP to calculate for
-    /// \param sm StatusManager to update
-    std::complex<double> amplitude(DataPoint& d, int two_m, StatusManager& sm) const;
-
-    /// \return amplitude with a sum over all particle combinations and spin projections of ISP
-    /// \param d DataPoint to calculate with
-    /// \param sm StatusManager to update
-    std::complex<double> amplitude(DataPoint& d, StatusManager& sm) const;
-
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
     /// \todo This need not be a member function!
@@ -79,17 +68,16 @@ public:
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D DataPartition to evalue over
-    /// \param global StatusManager to reset partition's statuses to
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const;
+    /// No statuses are updated!
+    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
-    /// \param DS DataSet to evaluate over
     /// \param DP DataPartitionVector of partitions to use
-    double sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const;
+    double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over the whole data set
-    /// \param DS DataSet to evaluate over
-    double sumOfLogsOfSquaredAmplitudes(DataSet& DS) const;
+    /// \param D DataPartition to evalue over
+    double sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const;
 
     /// @}
 
@@ -247,6 +235,10 @@ protected:
 
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
+
+    /// update DataSet's status manager via DataPartition
+    /// \return DataSet found via DataPartition
+    DataSet& updateDataSetStatusManager(DataPartition& DP) const;
 
 private:
 

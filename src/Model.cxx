@@ -44,119 +44,97 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
 }
 
 //-------------------------
-std::complex<double> Model::amplitude(DataPoint& d, int two_m, StatusManager& sm) const
-{
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("Initial state unset", "Model::amplitude");
-
-    std::complex<double> a = Complex_0;
-
-    // sum up ISP's amplitude over each particle combination
-    for (const auto& pc : InitialStateParticle_->particleCombinations()) {
-        FDEBUG("calculating for two_m = " << two_m << " and pc = " << *pc);
-        a += InitialStateParticle_->amplitude(d, pc, two_m, sm);
-    }
-
-    return a;
-}
-
-//-------------------------
-std::complex<double> Model::amplitude(DataPoint& d, StatusManager& sm) const
-{
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("Initial state unset", "Model::amplitude");
-
-    if (d.model() != this)
-        throw exceptions::Exception("DataPoint is not associated with this model.", "Model::amplitude");
-
-    std::complex<double> a = Complex_0;
-
-    for (int two_m = -InitialStateParticle_->quantumNumbers().twoJ(); two_m <= (int)InitialStateParticle_->quantumNumbers().twoJ(); two_m += 2) {
-        for (const auto& pc : InitialStateParticle_->particleCombinations()) {
-            FDEBUG("calculating for two_m = " << two_m << " and pc = " << *pc);
-            a += InitialStateParticle_->amplitude(d, pc, two_m, sm);
-        }
-    }
-
-    return a;
-}
-
-//-------------------------
 void Model::calculate(DataPartition& D) const
 {
-    if (!initialStateParticle())
-        throw exceptions::Exception("Initial state unset", "Model::calculate");
-
-    // if (D.model() != this)
-    //     throw exceptions::Exception("DataPartition is not associated with this model.", "Model::calculate");
-
-    // call calculate on all DecayingParticle's
-    // each calls calculate on its Blatt-Weisskopf factors
-    // and, if a resonance, on its dynamic amplitude (MassShape)
+    // call calculate on all RecalculableDataAccessors
     for (const auto& rda : RecalculableDataAccessors_)
         rda->calculate(D);
 }
 
 //-------------------------
-double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const
+double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
 {
-    double L = 0;
+    if (!InitialStateParticle_)
+        throw exceptions::Exception("InitialStateParticle_ is nullptr", "Model::partialSumOfLogsOfSquaredAmplitudes");
 
-    // loop over data points in partition
-    for (DataIterator d = D.begin(); d != D.end(); ++d) {
-        DEBUG("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-        D.copyCalculationStatuses(global);
-        L += log(norm(amplitude(*d, D)));
-    }
+    // calculate components
+    calculate(D);
+
+    // sum log of norm of amplitudes over data points in partition
+    double L = 0;
+    for (const auto& d : D)
+        L += log(norm(amplitude(InitialStateParticle_->decayTrees(), d)));
 
     return L;
 }
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS) const
+DataSet& Model::updateDataSetStatusManager(DataPartition& DP) const
 {
-    // update global calculation statuses (managed by data set)
-    DS.globalStatusManager().updateCalculationStatuses(dataAccessors());
+    if (!(DP.begin() != DP.end()))
+        throw exceptions::Exception("DataPartition is empty", "Model::updateStatusManager");
+    // get DataSet 
+    auto DS = (*DP.begin()).DataSet_;
+    if (!DS)
+        throw exceptions::Exception("DataSet is nullptr", "Model::updateStatusManager");
 
-    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DS, DS.globalStatusManager());
+    // update global calculation statuses (managed by data set)
+    DS->globalStatusManager().updateCalculationStatuses(dataAccessors());
+
+    return *DS;
+}
+
+//-------------------------
+double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
+{
+    auto& DS = updateDataSetStatusManager(DP);
+
+    DP.copyCalculationStatuses(DS.globalStatusManager());
+
+    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
 
     // Set all variable statuses to Unchanged
     DS.globalStatusManager().setAll(VariableStatus::unchanged);
+    // Set all calculation statuses to calculated
+    DS.globalStatusManager().setAll(CalculationStatus::calculated);
 
     return log_L;
 }
 
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const
+double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
 {
     // if DataPartitionVector is empty, run over whole data set
     if (DP.empty())
         throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
 
-    // update global calculation statuses (managed by data set)
-    DS.globalStatusManager().updateCalculationStatuses(dataAccessors());
+    // check no partitions are nullptr
+    if (std::any_of(DP.begin(), DP.end(), [](const DataPartitionVector::value_type& dp){return !dp;}))
+        throw exceptions::Exception("DataPartitionVector contains nullptr","Model::sumOfLogsOfSquaredAmplitudes");
+    
+    // if threading is unnecessary
+    if (DP.size() == 1)
+        return sumOfLogsOfSquaredAmplitudes(*DP[0]);
 
-    double log_L = 0;
+    // else thread:
+    auto& DS = updateDataSetStatusManager(*DP[0]);
 
-    if (DP.size() == 1) {
-        // if threading is unnecessary
-        log_L = partialSumOfLogsOfSquaredAmplitudes(*DP[0], DS.globalStatusManager());
+    std::vector<std::future<double> > partial_sums;
 
-    } else {
-
-        std::vector<std::future<double> > partial_sums;
-
-        // create thread for calculation on each partition
-        for (auto& P : DP)
-            // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
-            partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P), std::cref(DS.globalStatusManager())));
-
-        // wait for each partition to finish calculating
-        for (auto& s : partial_sums)
-            log_L  += s.get();
+    // create thread for calculation on each partition
+    for (auto& P : DP) {
+        // copy statuses from DS's updated status manager
+        P->copyCalculationStatuses(DS.globalStatusManager());
+        // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
+        partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P)));
     }
 
+    // wait for each partition to finish calculating
+    double log_L = 0;
+    for (auto& s : partial_sums)
+        log_L  += s.get();
+    
     // Set all variable statuses to unchanged
     DS.globalStatusManager().setAll(VariableStatus::unchanged);
 

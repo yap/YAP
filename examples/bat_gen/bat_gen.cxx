@@ -49,9 +49,7 @@ void bat_gen::MCMCUserInitialize()
 double bat_gen::LogLikelihood(const std::vector<double>&)
 {
     unsigned c = GetCurrentChain();
-    Data_[c].updateCalculationStatuses(Model_->dataAccessors());
-    auto L = log(norm(Model_->amplitude(Data_[c][0], Data_[c])));
-    Data_[c].setAll(yap::VariableStatus::unchanged);
+    double L = Model_->sumOfLogsOfSquaredAmplitudes(Data_[c]);
     ++LikelihoodCalls_[c];
     return L;
     // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);

@@ -172,7 +172,7 @@ int main( int argc, char** argv)
         // std::cout << "Variable status after changing:    \n";
         // M.printFlags(data.globalStatusManager());
 
-        double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
+        double logA = M.sumOfLogsOfSquaredAmplitudes(parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
