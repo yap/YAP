@@ -21,10 +21,13 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
+#include "fwd/DataPoint.h"
 #include "fwd/FreeAmplitude.h"
+#include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
 
 #include <array>
+#include <complex>
 #include <map>
 #include <memory>
 #include <string>
@@ -47,7 +50,18 @@ public:
     /// \param two_M (twice) the spin projection of the parent particle
     /// \param two_m array of (twice) the spin projections of the daughters
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
-    DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
+    explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
+
+
+    /// \return amplitude evaluated for DataPoint over all ParticleCombinations of FreeAmplitude_'s DecayChannel
+    /// \param d DataPoint
+    std::complex<double> amplitude(const DataPoint& d) const;
+
+    /// \return amplitude evaluated for DataPoint for ParticleCombination
+    /// \param d DataPoint
+    /// \param pc ParticleCombination
+    std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    { return particleCombinationIndependentAmplitude(d) * particleCombinationDependentAmplitude(d, pc); }
 
     /// \return FreeAmplitude_
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
@@ -70,6 +84,15 @@ public:
 
 
 protected:
+
+    /// return product of all free amplitudes in this decay tree
+    /// \param d DataPoint
+    std::complex<double> particleCombinationIndependentAmplitude(const DataPoint& d) const;
+
+    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// \param d DataPoint
+    /// \param pc shared_ptr<ParticleCombination>
+    std::complex<double> particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Set the DecayTree of the i'th daughter
     /// \param i index of daughter to set decay tree for

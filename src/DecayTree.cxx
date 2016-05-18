@@ -4,6 +4,7 @@
 #include "Exceptions.h"
 #include "FreeAmplitude.h"
 #include "RecalculableDataAccessor.h"
+#include "SpinAmplitude.h"
 
 namespace yap {
 
@@ -11,6 +12,40 @@ namespace yap {
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
     FreeAmplitude_(free_amp)
 {}
+
+//-------------------------
+std::complex<double> DecayTree::amplitude(const DataPoint& d) const
+{
+    auto A = Complex_0;
+    for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations())
+        A += particleCombinationDependentAmplitude(d, pc);
+    return particleCombinationIndependentAmplitude(d) * A;
+}
+
+//-------------------------
+std::complex<double> DecayTree::particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    // spin amplitude
+    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]);
+    // recalculable amplitude
+    for (const auto& rda : RecalculableDataAccessors_)
+        A *= rda->value(d, pc);
+    // likewise for daughters
+    for (const auto& d_dt : DaughterDecayTrees_)
+        A *= d_dt.second->particleCombinationDependentAmplitude(d, pc->daughters()[d_dt.first]);
+    return A;
+}
+
+//-------------------------
+std::complex<double> DecayTree::particleCombinationIndependentAmplitude(const DataPoint& d) const
+{
+    // spin amplitude
+    auto A = FreeAmplitude_->value();
+    // likewise for daughters
+    for (const auto& d_dt : DaughterDecayTrees_)
+        A *= d_dt.second->particleCombinationIndependentAmplitude(d);
+    return A;
+}
 
 //-------------------------
 void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
