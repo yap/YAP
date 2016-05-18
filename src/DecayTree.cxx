@@ -4,10 +4,6 @@
 #include "Exceptions.h"
 #include "FreeAmplitude.h"
 #include "RecalculableDataAccessor.h"
-#include "StaticDataAccessor.h"
-
-#include <algorithm>
-#include <functional>
 
 namespace yap {
 
@@ -33,32 +29,17 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 }
 
 //-------------------------
-bool DecayTree::checkDataAccessor(const DataAccessor& da) const
-{
-    if (!FreeAmplitude_)
-        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::checkDataAccessor");
-
-    return FreeAmplitude_->checkParticleCombinations(da);
-}
-
-//-------------------------
-void DecayTree::addDataAccessor(const StaticDataAccessor& sda)
-{
-    if (!checkDataAccessor(sda))
-        throw exceptions::Exception("StaticDataAccessor doesn't have all ParticleCombinations required by FreeAmplitude",
-                                    "DecayTree::addDataAccessor");
-    StaticDataAccessors_.push_back(&sda);
-}
-
-//-------------------------
 void DecayTree::addDataAccessor(const RecalculableDataAccessor& rda)
 {
-    if (!checkDataAccessor(rda))
+    if (!FreeAmplitude_)
+        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addDataAccessor");
+
+    if (!FreeAmplitude_->checkParticleCombinations(rda))
         throw exceptions::Exception("RecalculableDataAccessor doesn't have all ParticleCombinations required by FreeAmplitude",
                                     "DecayTree::addDataAccessor");
+
     RecalculableDataAccessors_.push_back(&rda);
 }
-
 
 //-------------------------
 std::string DecayTree::asString(std::string offset) const

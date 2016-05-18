@@ -21,11 +21,8 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
-#include "fwd/DataAccessor.h"
 #include "fwd/FreeAmplitude.h"
-#include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
-#include "fwd/StaticDataAccessor.h"
 
 #include <array>
 #include <map>
@@ -84,13 +81,7 @@ protected:
     void setDaughterSpinProjection(unsigned i, int two_m)
     { DaughtersTwoM_.at(i) = two_m; }
 
-    /// check DataAccessor's ParticleCombination's against FreeAmplitude
-    bool checkDataAccessor(const DataAccessor& da) const;
-
-    /// Add a StaticDataAccessor
-    void addDataAccessor(const StaticDataAccessor& sda);
-
-    /// Add a StaticDataAccessor
+    /// Add a RecalculableDataAccessor
     void addDataAccessor(const RecalculableDataAccessor& rda);
 
 private:
@@ -100,9 +91,6 @@ private:
 
     /// ComplexParameter of the free amplitude for the decay
     std::shared_ptr<FreeAmplitude> FreeAmplitude_;
-
-    /// vector of StaticDataAccessors
-    std::vector<const StaticDataAccessor*> StaticDataAccessors_;
 
     /// vector of RecalculableDataAccessor's
     std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;
