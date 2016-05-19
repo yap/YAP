@@ -65,11 +65,6 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
 
-    /// Calculate complex amplitude for and store into each DataPoint in a DataPartition
-    /// \param D DataPartition to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const override;
-
     /// Add FlatteChannel
     void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);
 
@@ -87,6 +82,12 @@ public:
     {return "Flatte"; }
 
 protected:
+
+    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
+    /// \param D DataPartition to calculate on
+    /// \param pc ParticleCombination to calculate for
+    /// \param si SymmetrizationIndec to calculate for
+    virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const override;
 
     /// borrow dependencies from model
     virtual void setDependenciesFromModel() override;

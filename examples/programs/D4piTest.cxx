@@ -2,10 +2,10 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "DataSet.h"
-#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
+#include "FreeAmplitude.h"
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
 #include "make_unique.h"
@@ -162,10 +162,7 @@ int main( int argc, char** argv)
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
-    for (auto& dt : M.decayTrees())
-        LOG(INFO) << to_string(dt);
-
-    auto freeAmps = M.freeAmplitudes();
+    auto freeAmps = freeAmplitudes(M.initialStateParticle()->decayTrees());
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 
@@ -186,16 +183,16 @@ int main( int argc, char** argv)
         }
         DEBUG("===================================================================================================================== ");
 
-        //std::cout << "Variable status after changing:    \n";
-        //M.printFlags(data.globalStatusManager());
+        // std::cout << "Variable status after changing:    \n";
+        // M.printFlags(data.globalStatusManager());
 
-        double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
+        double logA = M.sumOfLogsOfSquaredAmplitudes(parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
 
-        //std::cout << "Variable status after calculating:    \n";
-        //M.printFlags(data.globalStatusManager());
+        // std::cout << "Variable status after calculating:    \n";
+        // M.printFlags(data.globalStatusManager());
 
         /*if (gRandom->Uniform()>0.5) {
             double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
@@ -242,6 +239,8 @@ int main( int argc, char** argv)
         D->logLikelihood(d);
     */
 
+
+    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 
     std::cout << "alright! \n";
 }

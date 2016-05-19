@@ -11,9 +11,11 @@
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
+#include <FreeAmplitude.h>
 #include <ParticleCombination.h>
 #include <VariableStatus.h>
 
+#include <complex>
 #include <limits>
 
 // -----------------------
@@ -23,6 +25,14 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 {
     if (!Model_ or !Model_->consistent())
         throw std::exception();
+
+    auto freeAmps = freeAmplitudes(Model_->initialStateParticle()->decayTrees());
+
+    std::cout << std::endl;
+    for (const auto& fa : freeAmps)
+        if (fa->variableStatus() != yap::VariableStatus::fixed)
+            std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
+    std::cout << std::endl;
 
     MassAxes_ = Model_->massAxes(pcs);
 
@@ -49,9 +59,7 @@ void bat_gen::MCMCUserInitialize()
 double bat_gen::LogLikelihood(const std::vector<double>&)
 {
     unsigned c = GetCurrentChain();
-    Data_[c].updateCalculationStatuses(Model_->dataAccessors());
-    auto L = log(norm(Model_->amplitude(Data_[c][0], Data_[c])));
-    Data_[c].setAll(yap::VariableStatus::unchanged);
+    double L = Model_->sumOfLogsOfSquaredAmplitudes(Data_[c]);
     ++LikelihoodCalls_[c];
     return L;
     // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);

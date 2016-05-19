@@ -29,7 +29,6 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
 #include "QuantumNumbers.h"
 #include "ReportsParticleCombinations.h"
 
@@ -44,9 +43,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
 class Particle :
-// keyword virtual is needed to solve diamond problem in DecayingParticle
-    public virtual AmplitudeComponent,
-    public virtual ReportsParticleCombinations,
+    public ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
 protected:
@@ -59,17 +56,8 @@ protected:
 
 public:
 
-    /// Calculate complex amplitude
-    /// must be overrided in derived classes
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param two_m 2 * the spin projection to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                           int two_m, StatusManager& sm) const = 0;
-
     /// Check consitency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
     /// \name Getters
     /// @{
@@ -98,6 +86,10 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
+    /// \return ParticleCombinationVector
+    const ParticleCombinationVector& particleCombinations() const override
+    { return ParticleCombinations_; }
+
     /// @}
 
     /// grant friend status to DecayChannel to call addParticleCombination
@@ -105,8 +97,11 @@ public:
 
 protected:
 
-    // set mass parameter
+    /// set mass parameter
     void setMass(std::shared_ptr<RealParameter> m);
+
+    /// add ParticleCombination to ParticleCombinationVector_
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
 
 private:
 
@@ -118,6 +113,9 @@ private:
 
     /// Name of particle
     std::string Name_;
+
+    /// vector of ParticleCombinations that can comprise this particle
+    ParticleCombinationVector ParticleCombinations_;
 
 };
 

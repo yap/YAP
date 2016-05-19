@@ -11,7 +11,7 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equiv* equiv) :
+SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equiv& equiv) :
     StaticDataAccessor(equiv),
     InitialTwoJ_(two_J),
     FinalTwoJ_( {two_j1, two_j2}),
@@ -128,7 +128,7 @@ void SpinAmplitude::addAmplitude(int two_M, int two_m1, int two_m2)
 }
 
 //-------------------------
-bool SpinAmplitude::equiv(const SpinAmplitude& B) const
+bool SpinAmplitude::equivalentTo(const SpinAmplitude& B) const
 {
     return // compare only spin of QuantumNumbers
         InitialTwoJ_ == B.InitialTwoJ_
@@ -142,7 +142,7 @@ bool SpinAmplitude::equiv(const SpinAmplitude& B) const
 bool SpinAmplitude::equals(const SpinAmplitude& B) const
 {
     return symmetrizationIndices() == B.symmetrizationIndices()
-           and equiv(B);
+           and equivalentTo(B);
 }
 
 //-------------------------

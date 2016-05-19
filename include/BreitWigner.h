@@ -54,11 +54,6 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
 
-    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition
-    /// Must be overrided in derived classes.
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const override;
-
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;
@@ -75,6 +70,14 @@ public:
 
     virtual std::string data_accessor_type() const override
     {return "BreitWigner"; }
+
+protected:
+
+    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
+    /// \param D DataPartition to calculate on
+    /// \param pc ParticleCombination to calculate for
+    /// \param si SymmetrizationIndec to calculate for
+    virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const override;
 
 private:
 

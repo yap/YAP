@@ -22,10 +22,12 @@
 #define yap_DecayingParticle_h
 
 #include "fwd/BlattWeisskopf.h"
+#include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
+#include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
@@ -52,7 +54,7 @@ namespace yap {
 /// A_c = a_c * Blatt-Weisskopf(P->D1+D2) * SpinAmplitude(P->D1+D2) * A(D1->xx) * A(D2->xx)\n
 /// with free amplitude a_c.
 
-class DecayingParticle : public Particle, public DataAccessor
+class DecayingParticle : public Particle
 {
 protected:
 
@@ -69,12 +71,10 @@ public:
     static std::shared_ptr<DecayingParticle> create(const QuantumNumbers& q, double mass, std::string name, double radialSize)
     { return std::shared_ptr<DecayingParticle>(new DecayingParticle(q, mass, name, radialSize)); }
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param two_m 2 * the spin projection to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
+    /// \return DecayTrees
+    /// map key is spin projection
+    const std::map<int, DecayTreeVector>& decayTrees() const
+    { return DecayTrees_; }
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -104,29 +104,17 @@ public:
     const DecayChannelVector& channels() const
     { return Channels_;}
 
-    /// \return Number of decay channels for this object
-    unsigned int nChannels() const
-    { return Channels_.size(); }
-
-    /// Return Channel i
-    std::shared_ptr<DecayChannel> channel(unsigned i) const
-    { return Channels_.at(i); }
-
-    /// Return Channel i
-    std::shared_ptr<DecayChannel> channel(unsigned i)
-    { return Channels_.at(i); }
-
     /// \return Radial size [GeV^-1]
     std::shared_ptr<RealParameter> radialSize()
     { return RadialSize_; }
+
+    FreeAmplitudeSet freeAmplitudes() const;
 
     /// @}
 
     /// Print complete decay chain
     void printDecayChain() const
     { printDecayChainLevel(0); }
-
-    virtual CachedDataValueSet cachedDataValuesItDependsOn() override;
 
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
@@ -135,24 +123,36 @@ public:
     virtual std::string data_accessor_type() const
     { return "DecayingParticle"; }
 
+    std::string printDecayTrees() const;
+
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
+    /// and to call fixSolitaryFreeAmplitudes()
     friend DecayChannel;
 
-    /// grant friend status to Model to see freeAmplitudes
-    friend class Model;
+    /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
+    friend Model;
 
 protected:
 
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel()
+    {}
+
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+
+    /// if only one decay channel is available, fix its free amplitude to the current value
+    void fixSolitaryFreeAmplitudes();
 
     void printDecayChainLevel(int level) const;
 
-    /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
-    ComplexParameterVector freeAmplitudes() const;
+    /// tell DecayingParticle to store a BlattWeisskopf object for L
+    /// \param l orbital angular momentum of breakup
+    void storeBlattWeisskopf(unsigned l);
 
-    /// \return vector od DecayTree's from this point in decay tree and down
-    DecayTreeVector decayTrees() const;
+    /// modify a DecayTree
+    /// \param dt DecayTree to modify
+    virtual void modifyDecayTree(DecayTree& dt) const;
 
 private:
 
@@ -165,11 +165,16 @@ private:
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;
 
-    /// Cached amplitudes for each spin projection
-    /// key = 2 * spin projection
-    std::map<int, std::shared_ptr<ComplexCachedDataValue> > Amplitudes_;
+    /// Map of spin projection to DecayTreeVector
+    std::map<int, DecayTreeVector> DecayTrees_;
 
 };
+
+/// \return sum of all amplitudes in map of spin projection to decay tree vector
+const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d);
+
+/// \return set of free amplitudes in map of spin projection to decay tree vector
+FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map);
 
 }
 

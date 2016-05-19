@@ -107,7 +107,7 @@ protected:
                          StatusManager& sm) const;
 
     /// override to throw on adding final-state PC
-    unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedDataValue> Phi_;

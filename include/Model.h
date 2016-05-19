@@ -26,7 +26,6 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
-#include "fwd/DecayTree.h"
 #include "fwd/FourVector.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
@@ -34,6 +33,7 @@
 #include "fwd/MassAxes.h"
 #include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
+#include "fwd/RecalculableDataAccessor.h"
 #include "fwd/SpinAmplitudeCache.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
@@ -61,30 +61,23 @@ public:
     /// \name Amplitude-related
     /// @{
 
-    /// \return amplitude with a sum over all particle combinations of ISP
-    /// \param d DataPoint to calculate with
-    /// \param two_m 2 * the spin projection of ISP to calculate for
-    /// \param sm StatusManager to update
-    std::complex<double> amplitude(DataPoint& d, int two_m, StatusManager& sm) const;
-
-    /// \return amplitude with a sum over all particle combinations and spin projections of ISP
-    /// \param d DataPoint to calculate with
-    /// \param sm StatusManager to update
-    std::complex<double> amplitude(DataPoint& d, StatusManager& sm) const;
+    /// Calculate model for each data point in the data partition
+    /// \param D DataPartition to calculate over
+    /// \todo This need not be a member function!
+    void calculate(DataPartition& D) const;
 
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D DataPartition to evalue over
-    /// \param global StatusManager to reset partition's statuses to
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D, const StatusManager& global) const;
+    /// No statuses are updated!
+    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
-    /// \param DS DataSet to evaluate over
     /// \param DP DataPartitionVector of partitions to use
-    double sumOfLogsOfSquaredAmplitudes(DataSet& DS, DataPartitionVector& DP) const;
+    double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const;
 
     /// Calculate the sum of the logs of the squared amplitudes evaluated over the whole data set
-    /// \param DS DataSet to evaluate over
-    double sumOfLogsOfSquaredAmplitudes(DataSet& DS) const;
+    /// \param D DataPartition to evalue over
+    double sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const;
 
     /// @}
 
@@ -170,9 +163,6 @@ public:
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// \return free amplitudes of DecayChannels_
-    ComplexParameterVector freeAmplitudes() const;
-
     /// @}
 
     /// \name Setters
@@ -215,9 +205,6 @@ public:
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
 
-    /// create a vector of all possible DecayTree's
-    DecayTreeVector decayTrees();
-
     /// Set VariableStatus'es of all Parameter's to calculated, or leave as fixed
     void setParameterFlagsToUnchanged();
 
@@ -245,6 +232,10 @@ protected:
 
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
+
+    /// update DataSet's status manager via DataPartition
+    /// \return DataSet found via DataPartition
+    DataSet& updateDataSetStatusManager(DataPartition& DP) const;
 
 private:
 
@@ -275,7 +266,10 @@ private:
     /// to this model, in order in which they need be calculated
     StaticDataAccessorVector StaticDataAccessors_;
 
-    /// Raw pointer to initial-state particle
+    /// set of pointers to RecalculableDataAccessors
+    RecalculableDataAccessorSet RecalculableDataAccessors_;
+
+    /// pointer to initial-state particle
     std::shared_ptr<DecayingParticle> InitialStateParticle_;
 
     /// vector of final state particles
