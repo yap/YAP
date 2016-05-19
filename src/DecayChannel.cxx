@@ -7,6 +7,7 @@
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
+#include "FreeAmplitude.h"
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
@@ -113,9 +114,9 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     for (size_t i = 0; i < pc->daughters().size(); ++i)
         Daughters_[i]->addParticleCombination(pc->daughters()[i]);
 
-    // add to SpinAmplitude's (keys of Amplitudes_)
-    for (auto& kv : Amplitudes_)
-        kv.first->addParticleCombination(pc);
+    // add to SpinAmplitude's
+    for (auto& sa : SpinAmplitudes_)
+        sa->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -143,7 +144,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
                                     "DecayChannel::setDecayingParticle");
 
     // if SpinAmplitude's have already been added by hand, don't add automatically
-    if (Amplitudes_.empty()) {
+    if (SpinAmplitudes_.empty()) {
 
         auto two_J = DecayingParticle_->quantumNumbers().twoJ();
         auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
@@ -161,15 +162,14 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     } else {
 
         // check DecayingPartcle_'s quantum numbers against existing SpinAmplitude's
-        if (DecayingParticle_->quantumNumbers().twoJ() != Amplitudes_.begin()->first->initialTwoJ())
+        if (DecayingParticle_->quantumNumbers().twoJ() != SpinAmplitudes_[0]->initialTwoJ())
             throw exceptions::Exception("Spins don't match ", "DecayChannel::setDecayingParticle");
 
     }
 
     // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
-    // loop over mapping of (spin amplitude) -> (amplitude pair map)
-    for (auto& sa_apm : Amplitudes_)
-        DecayingParticle_->storeBlattWeisskopf(sa_apm.first->L());
+    for (auto& sa : SpinAmplitudes_)
+        DecayingParticle_->storeBlattWeisskopf(sa->L());
 }
 
 //-------------------------
@@ -179,13 +179,23 @@ const Model* DecayChannel::model() const
 }
 
 //-------------------------
+FreeAmplitudeSet DecayChannel::freeAmplitudes() const
+{
+    if (!DecayingParticle_)
+        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::freeAmplitudes");
+
+    // get set from decaying particle
+    return find(DecayingParticle_->freeAmplitudes(), this);
+}
+
+//-------------------------
 void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
     // check number of daughters
     if (sa->finalTwoJ().size() != Daughters_.size())
         throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
 
-    /// \todo see what needs to be checked
+    /// \todo quantum numbers more completely?
     // check against daughter quantum numbers
     for (size_t i = 0; i < Daughters_.size(); ++i)
         if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
@@ -197,47 +207,16 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
             throw exceptions::Exception("Spins don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
     } else {
         // else check against previously added SpinAmplitude's initial quantum numbers
-        if (!Amplitudes_.empty() and Amplitudes_.begin()->first->initialTwoJ() != sa->initialTwoJ())
+        if (!SpinAmplitudes_.empty() and SpinAmplitudes_[0]->initialTwoJ() != sa->initialTwoJ())
             throw exceptions::Exception("Spins don't match previously added", "DecayChannel::addSpinAmplitude");
     }
 
+    // add to SpinAmplitudes_
+    SpinAmplitudes_.push_back(sa);
+
     // add this' ParticleCombination's to it
     for (auto& pc : particleCombinations())
-        sa -> addParticleCombination(pc);
-
-    // create new map_type::mapped_type (map of spin projection -> free amplitude)
-    map_type::mapped_type m_fa;
-    // create free amplitude for each spin projection
-    for (auto& two_m : sa->twoM())
-        m_fa.emplace(two_m, std::make_shared<ComplexParameter>(Complex_1));
-
-    // add to Amplitudes_
-    Amplitudes_.emplace(sa, std::move(m_fa));
-
-}
-
-//-------------------------
-std::shared_ptr<ComplexParameter> DecayChannel::freeAmplitude(int two_M, unsigned l, unsigned two_s)
-{
-    auto it1 = std::find_if(Amplitudes_.begin(), Amplitudes_.end(), [&](const map_type::value_type & kv) {return kv.first->L() == l and kv.first->twoS() == two_s;});
-    if (it1 == Amplitudes_.end())
-        throw exceptions::Exception("No amplitude found for L = " + std::to_string(l) + " and S = " + spin_to_string(two_s), "DecayChannel::freeAmplitude");
-
-    auto it2 = it1->second.find(two_M);
-    if (it2 == it1->second.end())
-        throw exceptions::Exception("No amplitude found for spin projection = " + spin_to_string(two_M), "DecayChannel::freeAmplitude");
-
-    return it2->second;
-}
-
-//-------------------------
-ComplexParameterVector DecayChannel::freeAmplitudes()
-{
-    ComplexParameterVector V;
-    for (auto& sa_mfa : Amplitudes_)
-        for (auto& m_fa : sa_mfa.second)
-            V.push_back(m_fa.second);
-    return V;
+        SpinAmplitudes_.back()->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -259,39 +238,17 @@ bool DecayChannel::consistent() const
         C &= false;
     }
 
-    // loop over SpinAmplitude's, which are keys (first) to Amplitudes_ map
-    for (auto& kv : Amplitudes_) {
+    // loop over SpinAmplitude's
+    for (const auto& sa : SpinAmplitudes_) {
         // check SpinAmplitude
-        if (!kv.first) {
+        if (!sa) {
             FLOG(ERROR) << "A SpinAmplitude is empty";
             C &= false;
-        } else {
-            C &= kv.first->consistent();
-
-            // check its corresponding BlattWeisskopf
-            if (DecayingParticle_) {
-                // look for BlattWeisskopf object with corresponding orbital angular momentum
-                auto it = DecayingParticle_->BlattWeisskopfs_.find(kv.first->L());
-                if (it == DecayingParticle_->BlattWeisskopfs_.end() or !it->second) {
-                    FLOG(ERROR) << "Could not find BlattWeisskopf object with L = " << kv.first->L();
-                    C &= false;
-                } else {
-                    C &= it->second->consistent();
-                }
-            }
-        }
+        } else
+            C &= sa->consistent();
     }
 
     return C;
-}
-
-//-------------------------
-SpinAmplitudeVector DecayChannel::spinAmplitudes()
-{
-    SpinAmplitudeVector V;
-    for (auto& kv : Amplitudes_)
-        V.push_back(kv.first);
-    return V;
 }
 
 //-------------------------

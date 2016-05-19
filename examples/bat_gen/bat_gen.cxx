@@ -11,9 +11,11 @@
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
+#include <FreeAmplitude.h>
 #include <ParticleCombination.h>
 #include <VariableStatus.h>
 
+#include <complex>
 #include <limits>
 
 // -----------------------
@@ -23,6 +25,14 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 {
     if (!Model_ or !Model_->consistent())
         throw std::exception();
+
+    auto freeAmps = freeAmplitudes(Model_->initialStateParticle()->decayTrees());
+
+    std::cout << std::endl;
+    for (const auto& fa : freeAmps)
+        if (fa->variableStatus() != yap::VariableStatus::fixed)
+            std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
+    std::cout << std::endl;
 
     MassAxes_ = Model_->massAxes(pcs);
 

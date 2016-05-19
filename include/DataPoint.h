@@ -97,7 +97,7 @@ public:
 
     /// grant friend status to model to access DataSet_
     friend Model;
-    
+
 private:
 
     /// raw pointer to owning DataSet

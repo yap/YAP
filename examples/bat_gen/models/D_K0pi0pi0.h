@@ -84,40 +84,40 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitude
 
         case 1:
 
-            D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.67, yap::rad(140.)));
-            D->addChannel({f_0_980, Kshort})->freeAmplitudes()[0]->setValue(std::polar(1.71, yap::rad(35.2)));
-            D->addChannel({f_0_1370, Kshort})->freeAmplitudes()[0]->setValue(std::polar(5.72, yap::rad(340.3)));
-            D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(yap::Complex_0);
-            D->addChannel({f_2_1270, Kshort})->freeAmplitudes()[0]->setValue(std::polar(1.57, yap::rad(282.)));
-            D->addChannel({Kstar_892, piZero})->freeAmplitudes()[0]->setValue(std::polar(1., 0.));
-            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes()[0]->setValue(std::polar(0.43, yap::rad(141.)));
-            D->addChannel({Kstar_1680, piZero})->freeAmplitudes()[0]->setValue(std::polar(5.65, yap::rad(55.)));
+            D->addChannel({sigma, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(0.67, yap::rad(140.)));
+            D->addChannel({f_0_980, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(1.71, yap::rad(35.2)));
+            D->addChannel({f_0_1370, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(5.72, yap::rad(340.3)));
+            D->addChannel({f_0_1500, Kshort})->freeAmplitudes().begin()->get()->setValue(yap::Complex_0);
+            D->addChannel({f_2_1270, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(1.57, yap::rad(282.)));
+            D->addChannel({Kstar_892, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(1., 0.));
+            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(0.43, yap::rad(141.)));
+            D->addChannel({Kstar_1680, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(5.65, yap::rad(55.)));
 
             break;
 
         case 2:
 
-            D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.91, yap::rad(119.)));
-            D->addChannel({f_0_980, Kshort})->freeAmplitudes()[0]->setValue(std::polar(2.13, yap::rad(65.)));
-            D->addChannel({f_0_1370, Kshort})->freeAmplitudes()[0]->setValue(yap::Complex_0);
-            D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(std::polar(11.7, yap::rad(16.)));
-            D->addChannel({f_2_1270, Kshort})->freeAmplitudes()[0]->setValue(std::polar(4.16, yap::rad(2.2)));
-            D->addChannel({Kstar_892, piZero})->freeAmplitudes()[0]->setValue(std::polar(1., 0.));
-            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes()[0]->setValue(std::polar(0.98, yap::rad(191.)));
-            D->addChannel({Kstar_1680, piZero})->freeAmplitudes()[0]->setValue(std::polar(7.6, yap::rad(45.)));
+            D->addChannel({sigma, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(0.91, yap::rad(119.)));
+            D->addChannel({f_0_980, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(2.13, yap::rad(65.)));
+            D->addChannel({f_0_1370, Kshort})->freeAmplitudes().begin()->get()->setValue(yap::Complex_0);
+            D->addChannel({f_0_1500, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(11.7, yap::rad(16.)));
+            D->addChannel({f_2_1270, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(4.16, yap::rad(2.2)));
+            D->addChannel({Kstar_892, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(1., 0.));
+            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(0.98, yap::rad(191.)));
+            D->addChannel({Kstar_1680, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(7.6, yap::rad(45.)));
 
             break;
 
         case 3:
 
-            D->addChannel({sigma, Kshort})->freeAmplitudes()[0]->setValue(std::polar(0.99, yap::rad(39.)));
-            D->addChannel({f_0_980, Kshort})->freeAmplitudes()[0]->setValue(std::polar(2.59, yap::rad(44.8)));
-            D->addChannel({f_0_1370, Kshort})->freeAmplitudes()[0]->setValue(std::polar(11.6, yap::rad(15.8)));
-            D->addChannel({f_0_1500, Kshort})->freeAmplitudes()[0]->setValue(std::polar(20.9, yap::rad(281.4)));
-            D->addChannel({f_2_1270, Kshort})->freeAmplitudes()[0]->setValue(std::polar(2.98, yap::rad(340.9)));
-            D->addChannel({Kstar_892, piZero})->freeAmplitudes()[0]->setValue(std::polar(1., 0.));
-            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes()[0]->setValue(std::polar(0.85, yap::rad(159.)));
-            D->addChannel({Kstar_1680, piZero})->freeAmplitudes()[0]->setValue(std::polar(7.07, yap::rad(18.7)));
+            D->addChannel({sigma, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(0.99, yap::rad(39.)));
+            D->addChannel({f_0_980, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(2.59, yap::rad(44.8)));
+            D->addChannel({f_0_1370, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(11.6, yap::rad(15.8)));
+            D->addChannel({f_0_1500, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(20.9, yap::rad(281.4)));
+            D->addChannel({f_2_1270, Kshort})->freeAmplitudes().begin()->get()->setValue(std::polar(2.98, yap::rad(340.9)));
+            D->addChannel({Kstar_892, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(1., 0.));
+            D->addChannel({Kstar_2_1430, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(0.85, yap::rad(159.)));
+            D->addChannel({Kstar_1680, piZero})->freeAmplitudes().begin()->get()->setValue(std::polar(7.07, yap::rad(18.7)));
 
             break;
 

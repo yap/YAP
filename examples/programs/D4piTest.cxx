@@ -5,6 +5,7 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
+#include "FreeAmplitude.h"
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
 #include "make_unique.h"
@@ -151,7 +152,7 @@ int main( int argc, char** argv)
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
-    auto freeAmps = M.freeAmplitudes();
+    auto freeAmps = freeAmplitudes(M.initialStateParticle()->decayTrees());
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 

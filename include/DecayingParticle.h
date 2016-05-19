@@ -27,6 +27,7 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
+#include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
@@ -107,6 +108,8 @@ public:
     std::shared_ptr<RealParameter> radialSize()
     { return RadialSize_; }
 
+    FreeAmplitudeSet freeAmplitudes() const;
+
     /// @}
 
     /// Print complete decay chain
@@ -126,8 +129,8 @@ public:
     /// and to call fixSolitaryFreeAmplitudes()
     friend DecayChannel;
 
-    /// grant friend status to Model to see freeAmplitudes
-    friend class Model;
+    /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
+    friend Model;
 
 protected:
 
@@ -151,9 +154,6 @@ protected:
     /// \param dt DecayTree to modify
     virtual void modifyDecayTree(DecayTree& dt) const;
 
-    /// \return vector of shared_ptr's to all free amplitudes from this point in decay tree and down
-    ComplexParameterVector freeAmplitudes() const;
-
 private:
 
     /// vector of decay channel objects
@@ -172,6 +172,9 @@ private:
 
 /// \return sum of all amplitudes in map of spin projection to decay tree vector
 const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d);
+
+/// \return set of free amplitudes in map of spin projection to decay tree vector
+FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map);
 
 }
 

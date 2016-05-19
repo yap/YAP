@@ -28,6 +28,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DecayingParticle.h"
 #include "fwd/FinalStateParticle.h"
+#include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
@@ -53,10 +54,6 @@ class DecayChannel :
 {
 public:
 
-    /// \typedef map_type
-    /// \brief maps SpinAmplitude-shared_ptr -> (map of spin projection -> free amplitude)
-    using map_type = SpinAmplitudeMap<std::map<int, std::shared_ptr<ComplexParameter> > >;
-
     /// \name Constructors
     /// @{
 
@@ -81,19 +78,8 @@ public:
     { return Daughters_; }
 
     /// Get SpinAmplitude objects
-    SpinAmplitudeVector spinAmplitudes();
-
-    /// Get SpinAmplitude objects (const)
-    const SpinAmplitudeVector spinAmplitudes() const
-    { return const_cast<DecayChannel*>(this)->spinAmplitudes(); }
-
-    /// Get map of (spin projection)->(free amplitude) for spin amplitude
-    map_type::mapped_type& amplitudes(const std::shared_ptr<SpinAmplitude>& sa)
-    { return Amplitudes_.at(sa); }
-
-    /// Get map of (spin projection)->(free amplitude) for spin amplitude (const)
-    const map_type::mapped_type& amplitudes(const std::shared_ptr<SpinAmplitude>& sa) const
-    { return Amplitudes_.at(sa); }
+    const SpinAmplitudeVector& spinAmplitudes() const
+    { return SpinAmplitudes_; }
 
     /// \return vector of ParticleCombinations
     const ParticleCombinationVector& particleCombinations() const
@@ -106,19 +92,13 @@ public:
     DecayingParticle* decayingParticle() const
     { return DecayingParticle_; }
 
+    /// \return set of FreeAmplitude's for this decay channel
+    FreeAmplitudeSet freeAmplitudes() const;
+
     /// @}
 
     /// add a spin amplitude
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
-
-    /// \return free amplitude
-    /// \param two_M twice the spin projection
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin
-    std::shared_ptr<ComplexParameter> freeAmplitude(int two_M, unsigned l, unsigned two_s);
-
-    /// \return Vector of free amplitudes
-    ComplexParameterVector freeAmplitudes();
 
     /// Grant friend status to DecayingParticle to set itself as owner
     /// and to call fixSolitaryFreeAmplitudes()
@@ -140,8 +120,8 @@ private:
     /// daughters of the decay
     ParticleVector Daughters_;
 
-    /// Map of SpinAmplitude (by shared_ptr) to map(spin projection -> free amplitude)
-    map_type Amplitudes_;
+    /// Vector of SpinAmplitudes
+    SpinAmplitudeVector SpinAmplitudes_;
 
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;

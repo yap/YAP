@@ -100,13 +100,13 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     /// create decay trees for channel:
 
     /// loop over spin amplitudes of channel
-    for (auto& sa_apm : Channels_.back()->Amplitudes_) {
+    for (auto& sa : Channels_.back()->spinAmplitudes()) {
 
         // loop over possible parent spin projections
-        for (const auto& M_m : sa_apm.first->amplitudes()) {
+        for (const auto& M_m : sa->amplitudes()) {
 
             // create DecayTree with new FreeAmplitude
-            auto DT_M = DecayTree(std::make_shared<FreeAmplitude>(Channels_.back(), sa_apm.first, M_m.first));
+            auto DT_M = DecayTree(std::make_shared<FreeAmplitude>(Channels_.back(), sa, M_m.first));
             // add BlattWeisskopf object to it
             modifyDecayTree(DT_M);
 
@@ -305,6 +305,28 @@ std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& da
 }
 
 //-------------------------
+FreeAmplitudeSet DecayingParticle::freeAmplitudes() const
+{
+    FreeAmplitudeSet S;
+    for (auto m_dtv : DecayTrees_)
+        for (auto dt : m_dtv.second)
+            if (dt->freeAmplitude())
+                S.insert(dt->freeAmplitude());
+    return S;
+}
+
+//-------------------------
+FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map)
+{
+    FreeAmplitudeSet S;
+    for (auto& m_dtv : m_dtv_map) {
+        auto s = freeAmplitudes(m_dtv.second);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
+//-------------------------
 void DecayingParticle::storeBlattWeisskopf(unsigned l)
 {
     // if BW is not already stored for L, add it
@@ -333,27 +355,6 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 
     // Add BlattWeisskopf object
     dt.addDataAccessor(*bw->second);
-}
-
-//-------------------------
-ComplexParameterVector DecayingParticle::freeAmplitudes() const
-{
-    ComplexParameterVector V;
-    for (auto& c : Channels_) {
-        auto vC = c->freeAmplitudes();
-        V.insert(V.end(), vC.begin(), vC.end());
-        // channels below
-        for (auto& d : c->daughters())
-            if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-                auto vD = std::static_pointer_cast<DecayingParticle>(d)->freeAmplitudes();
-                V.insert(V.end(), vD.begin(), vD.end());
-            }
-    }
-
-    // remove duplicates
-    V.erase(ordered_unique(V.begin(), V.end()), V.end());
-
-    return V;
 }
 
 //-------------------------

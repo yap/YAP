@@ -163,9 +163,6 @@ public:
     /// \param pc shared pointer to ParticleCombination to get mass range of
     std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// \return free amplitudes of DecayChannels_
-    ComplexParameterVector freeAmplitudes() const;
-
     /// @}
 
     /// \name Setters

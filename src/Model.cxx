@@ -73,7 +73,7 @@ DataSet& Model::updateDataSetStatusManager(DataPartition& DP) const
 {
     if (!(DP.begin() != DP.end()))
         throw exceptions::Exception("DataPartition is empty", "Model::updateStatusManager");
-    // get DataSet 
+    // get DataSet
     auto DS = (*DP.begin()).DataSet_;
     if (!DS)
         throw exceptions::Exception("DataSet is nullptr", "Model::updateStatusManager");
@@ -110,9 +110,9 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
         throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
 
     // check no partitions are nullptr
-    if (std::any_of(DP.begin(), DP.end(), [](const DataPartitionVector::value_type& dp){return !dp;}))
-        throw exceptions::Exception("DataPartitionVector contains nullptr","Model::sumOfLogsOfSquaredAmplitudes");
-    
+    if (std::any_of(DP.begin(), DP.end(), [](const DataPartitionVector::value_type & dp) {return !dp;}))
+    throw exceptions::Exception("DataPartitionVector contains nullptr", "Model::sumOfLogsOfSquaredAmplitudes");
+
     // if threading is unnecessary
     if (DP.size() == 1)
         return sumOfLogsOfSquaredAmplitudes(*DP[0]);
@@ -134,7 +134,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
     double log_L = 0;
     for (auto& s : partial_sums)
         log_L  += s.get();
-    
+
     // Set all variable statuses to unchanged
     DS.globalStatusManager().setAll(VariableStatus::unchanged);
 
@@ -282,12 +282,6 @@ std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination
             m[1] -= FinalStateParticles_[i]->mass()->value();
     }
     return m;
-}
-
-//-------------------------
-ComplexParameterVector Model::freeAmplitudes() const
-{
-    return InitialStateParticle_->freeAmplitudes();
 }
 
 //-------------------------
