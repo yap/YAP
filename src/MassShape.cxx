@@ -1,6 +1,8 @@
 #include "MassShape.h"
 
 #include "CachedDataValue.h"
+#include "CalculationStatus.h"
+#include "DataPartition.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "ParticleCombination.h"
@@ -10,13 +12,27 @@ namespace yap {
 
 //-------------------------
 MassShape::MassShape() :
-    DataAccessor(&ParticleCombination::equivByOrderlessContent),
+    RecalculableDataAccessor(ParticleCombination::equivByOrderlessContent),
     Resonance_(nullptr),
     T_(ComplexCachedDataValue::create(this))
 {}
 
 //-------------------------
-std::complex<double> MassShape::operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+void MassShape::calculate(DataPartition& D) const
+{
+    // loop over (ParticleCombination --> symmetrization index) map
+    for (const auto& pc_si : symmetrizationIndices()) {
+
+        // recalculate & cache, if necessary
+        if (D.status(*T(), pc_si.second) == CalculationStatus::uncalculated) {
+            calculateT(D, pc_si.first, pc_si.second);
+            D.status(*T(), pc_si.second) = CalculationStatus::calculated;
+        }
+
+    }
+}
+//-------------------------
+std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return T_->value(d, symmetrizationIndex(pc));
 }

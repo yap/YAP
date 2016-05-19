@@ -21,13 +21,16 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
+#include "fwd/DataPoint.h"
 #include "fwd/DecayTree.h"
+#include "fwd/FreeAmplitude.h"
+#include "fwd/ParticleCombination.h"
+#include "fwd/RecalculableDataAccessor.h"
 
-#include "AmplitudePair.h"
-#include "CachedDataValue.h"
-#include "DecayChannel.h"
-
-#include <algorithm>
+#include <array>
+#include <complex>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,61 +43,101 @@ class DecayTree
 {
 public:
 
-    /// default constructor
-    DecayTree() {}
+    /// \typedef DaughterDecayTreeMap
+    /// key is daughter index, value is decay tree of daughter
+    using DaughterDecayTreeMap = std::map<unsigned, std::shared_ptr<DecayTree> >;
 
-    /// constructor
-    DecayTree(const std::vector<AmplitudePair>& amplitudes) :
-        Amplitudes_(amplitudes)
-    {}
+    /// Constructor
+    /// \param two_M (twice) the spin projection of the parent particle
+    /// \param two_m array of (twice) the spin projections of the daughters
+    /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
+    explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
 
-    /// constructor
-    DecayTree(const AmplitudePair& ap) :
-        Amplitudes_(1, ap)
-    {}
+    /// \return amplitude evaluated for DataPoint over all ParticleCombinations of FreeAmplitude_'s DecayChannel
+    /// \param d DataPoint
+    const std::complex<double> amplitude(const DataPoint& d) const;
 
-    /// constructor
-    DecayTree(const AmplitudePair& ap, const DecayTree& tree) :
-        Amplitudes_()
-    {
-        Amplitudes_.reserve(tree.Amplitudes_.size() + 1);
-        Amplitudes_.push_back(ap);
-        Amplitudes_.insert(Amplitudes_.end(), tree.Amplitudes_.begin(), tree.Amplitudes_.end());
-    }
+    /// \return amplitude evaluated for DataPoint for ParticleCombination
+    /// \param d DataPoint
+    /// \param pc ParticleCombination
+    const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    { return particleCombinationIndependentAmplitude(d) * particleCombinationDependentAmplitude(d, pc); }
 
-    /// \name Getters
-    /// @{
+    /// \return FreeAmplitude_
+    const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
+    { return FreeAmplitude_; }
 
-    const std::vector<AmplitudePair>&  amplitudes() const
-    { return Amplitudes_; }
+    const DaughterDecayTreeMap daughterDecayTrees() const
+    { return DaughterDecayTrees_; }
 
-    std::vector<AmplitudePair>&  amplitudes()
-    { return Amplitudes_; }
+    /// grant friend status to DecayChannel to call addDataAccessor
+    friend class DecayChannel;
 
-    /// @}
+    /// grant friend status to DecayingParticle to call addDataAccessor
+    friend class DecayingParticle;
 
+    /// grant friend status to Resonance to call addDataAccessor
+    friend class Resonance;
+
+    /// convert to (multiline) string
+    std::string asString(std::string offset = "") const;
+
+
+protected:
+
+    /// return product of all free amplitudes in this decay tree
+    /// \param d DataPoint
+    const std::complex<double> particleCombinationIndependentAmplitude(const DataPoint& d) const;
+
+    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// \param d DataPoint
+    /// \param pc shared_ptr<ParticleCombination>
+    const std::complex<double> particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+
+    /// Set the DecayTree of the i'th daughter
+    /// \param i index of daughter to set decay tree for
+    /// \param dt shared_ptr to DecayTree to set
+    void setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt);
+
+    /// set daughter spin projection
+    /// \param two_m (twice) the spin projection
+    void setDaughterSpinProjection(unsigned i, int two_m)
+    { DaughtersTwoM_.at(i) = two_m; }
+
+    /// Add a RecalculableDataAccessor
+    void addDataAccessor(const RecalculableDataAccessor& rda);
 
 private:
 
-    std::vector<AmplitudePair> Amplitudes_;
+    /// (twice) daughter spin projections
+    std::array<int, 2> DaughtersTwoM_;
+
+    /// ComplexParameter of the free amplitude for the decay
+    std::shared_ptr<FreeAmplitude> FreeAmplitude_;
+
+    /// vector of RecalculableDataAccessor's
+    std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;
+
+    /// map of daughter index -> daughter DecayTree
+    DaughterDecayTreeMap DaughterDecayTrees_;
 
 };
 
-/// convert to string
-inline std::string to_string(const DecayTree& t)
-{
-    std::string s("DecayTree with DecayChannels ");
-    for (auto& ap : t.amplitudes()) {
-        if (dynamic_cast<DecayChannel*>(ap.Fixed->owner()))
-            s += to_string(*static_cast<DecayChannel*>(ap.Fixed->owner()));
-        else
-            s += "???";
-        s += "; ";
-    }
-    s.erase(s.size() - 2, 2);
+/// equality operator
+inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
+{ return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
 
-    return s;
-}
+/// \return Depth of DecayTree
+unsigned depth(const DecayTree& DT);
+
+/// \return sum of amplitudes of decay trees in a vector
+const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d);
+
+/// \return set of all free amplitudes in a DecayTree
+FreeAmplitudeSet freeAmplitudes(const DecayTree& DT);
+
+/// \return set of all free amplitudes in a DecayTreeVector
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV);
 
 }
 

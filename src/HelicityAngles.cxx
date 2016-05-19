@@ -14,7 +14,7 @@ namespace yap {
 
 //-------------------------
 HelicityAngles::HelicityAngles(Model* m) :
-    StaticDataAccessor(m, &ParticleCombination::equivUpAndDown),
+    StaticDataAccessor(m, ParticleCombination::equivUpAndDown),
     Phi_(RealCachedDataValue::create(this)),
     Theta_(RealCachedDataValue::create(this))
 {
@@ -99,7 +99,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 }
 
 //-------------------------
-unsigned HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     if (pc->isFinalStateParticle())
         throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "HelicityAngles::addParticleCombination");

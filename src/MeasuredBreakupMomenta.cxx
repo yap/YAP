@@ -11,7 +11,7 @@ namespace yap {
 
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
-    StaticDataAccessor(m, &ParticleCombination::equivDownByOrderlessContent),
+    StaticDataAccessor(m, ParticleCombination::equivDownByOrderlessContent),
     Q2_(RealCachedDataValue::create(this))
 {
     if (!model()->fourMomenta())
@@ -63,11 +63,11 @@ double MeasuredBreakupMomenta::calcQ2(double m2_R, double m_a, double m_b)
 }
 
 //-------------------------
-unsigned MeasuredBreakupMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void MeasuredBreakupMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     if (pc->isFinalStateParticle())
         throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "MeasuredBreakupMomenta::addParticleCombination");
-    return StaticDataAccessor::addParticleCombination(pc);
+    StaticDataAccessor::addParticleCombination(pc);
 }
 
 

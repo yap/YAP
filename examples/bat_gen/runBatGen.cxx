@@ -28,9 +28,9 @@ int main()
     yap::plainLogs(el::Level::Info);
 
     for (bat_gen* m : {
-                // new bat_gen("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
-    new bat_gen("DKSPIPI_Zemach", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
-new bat_gen("DKSPIPI_Helicity", std::move(D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
+    new bat_gen("D3PI", std::move(d3pi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}})
+// new bat_gen("DKSPIPI_Zemach", std::move(D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}})
+//                new bat_gen("DKSPIPI_Helicity", std::move(D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
 // new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}}),
 //new bat_gen("DKKPI", std::move(dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}),
         }) {

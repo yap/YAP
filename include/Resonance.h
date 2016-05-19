@@ -21,6 +21,7 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
+#include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/MassShape.h"
 #include "fwd/ParticleCombination.h"
@@ -58,13 +59,6 @@ public:
     static std::shared_ptr<Resonance> create(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape)
     { return std::shared_ptr<Resonance>(new Resonance(q, mass, name, radialSize, massShape)); }
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param two_m 2 * the spin projection to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const override;
-
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -89,16 +83,21 @@ public:
 
 protected:
 
-    /// overrides DataAccessor's function to also register MassShape_ with Model
-    virtual void addToModel() override;
+    /// overrides DecayingParticle's function to register MassShape_ with Model
+    virtual void registerWithModel() override;
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+
+    /// modify a DecayTree
+    /// \param dt DecayTree to modify
+    virtual void modifyDecayTree(DecayTree& dt) const;
 
 private:
 
     /// MassShape object
+    /// \todo Perhaps replace with reference to MassShape
     std::shared_ptr<MassShape> MassShape_;
 
 };

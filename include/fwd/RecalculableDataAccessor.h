@@ -17,14 +17,23 @@
 */
 
 /// \file
-/// Contains forward declarations only
 
-#ifndef yap_AmplitudeComponentFwd_h
-#define yap_AmplitudeComponentFwd_h
+#ifndef yap_RecalculableDataAccessorFwd_h
+#define yap_RecalculableDataAccessorFwd_h
+
+#include <set>
 
 namespace yap {
 
-class AmplitudeComponent;
+class RecalculableDataAccessor;
+
+/// \typedef RecalculableDataAccessorSet
+/// \brief Set of raw pointers to RecalculableDataAccessor's
+using RecalculableDataAccessorSet = std::set<RecalculableDataAccessor*>;
+
+/// \typedef RecalculableDataAccessorVector
+/// \brief Vector of raw pointers to RecalculableDataAccessor's
+using RecalculableDataAccessorVector = std::vector<RecalculableDataAccessor*>;
 
 }
 

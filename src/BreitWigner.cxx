@@ -58,20 +58,14 @@ std::complex<double> BreitWigner::amplitude(DataPoint& d, const std::shared_ptr<
 }
 
 //-------------------------
-void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+void BreitWigner::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
-    unsigned symIndex = symmetrizationIndex(pc);
+    // common factor := M^2 - i * M * Gamma
+    auto M2_iMG = pow(mass()->value(), 2) - Complex_i * mass()->value() * width()->value();
 
-    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
-
-        for (auto& d : D) {
-            // T = 1 / (M^2 - m^2 - iMG)
-            std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - Complex_i * mass()->value() * width()->value());
-            T()->setValue(t, d, symIndex, D);
-        }
-
-        D.status(*T(), symIndex) = CalculationStatus::calculated;
-    }
+    // T := 1 / (M^2 - m^2 - i * M * Gamma)
+    for (auto& d : D)
+        T()->setValue(1. / (M2_iMG - model()->fourMomenta()->m2(d, pc)), d, si, D);
 }
 
 //-------------------------

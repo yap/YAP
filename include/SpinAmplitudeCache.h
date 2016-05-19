@@ -46,7 +46,7 @@ public:
 
     /// equivalence
     bool equiv(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
-    { return (A.get() == B.get()) or A->equiv(*B); }
+    { return (A.get() == B.get()) or A->equivalentTo(*B); }
 
     /// retrieve or create SpinAmplitude
     /// \param two_J  twice the spin of Initial-state

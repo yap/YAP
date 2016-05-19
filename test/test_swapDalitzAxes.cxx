@@ -1,12 +1,12 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
-#include <AmplitudePair.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
+#include <FreeAmplitude.h>
 #include <logging.h>
 #include <HelicityFormalism.h>
 #include <make_unique.h>
@@ -77,15 +77,15 @@ TEST_CASE( "swapDalitzAxes" )
 
                     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
                     piK0->addChannel({piPlus, kMinus});
-                    D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5 * yap::Complex_1);
+                    D->addChannel({piK0, kPlus})->freeAmplitudes().begin()->get()->setValue(0.5 * yap::Complex_1);
 
                     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
                     piK1->addChannel({piPlus, kMinus});
-                    D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1. * yap::Complex_1);
+                    D->addChannel({piK1, kPlus})->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1);
 
                     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
                     piK2->addChannel({piPlus, kMinus});
-                    D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30. * yap::Complex_1);
+                    D->addChannel({piK2, kPlus})->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
 
                     // Dalitz coordinates
                     yap::MassAxes massAxes;
@@ -135,7 +135,8 @@ TEST_CASE( "swapDalitzAxes" )
                     // add point
                     data.add(P);
 
-                    resultingAmplitudes[i] = M->amplitude(data[0], data);
+                    M->calculate(data);
+                    resultingAmplitudes[i] = amplitude(M->initialStateParticle()->decayTrees(), data[0]);
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 

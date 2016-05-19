@@ -136,8 +136,11 @@ int main( int argc, char** argv)
     for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
         LOG(INFO) << p;
 
-    auto A = M.amplitude(data[0], data);
-    LOG(INFO) << "A = " << A;
+    M.calculate(data);
+    auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);
+    LOG(INFO) << "A_DT = " << A_DT;
+
+    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 
     LOG(INFO) << "alright!";
 }
