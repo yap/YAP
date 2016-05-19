@@ -31,8 +31,7 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "Model created";
 
-//    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
-    yap::ParticleFactory factory("../../../data/evt.pdl");
+    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     LOG(INFO) << "factory created";
 

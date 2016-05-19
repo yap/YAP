@@ -133,8 +133,7 @@ TEST_CASE( "FourMomentaCalculation" )
         //yap::plainLogs(el::Level::Debug);
 
         // load particle factory
-//        yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
-		yap::ParticleFactory factory("../../data/evt.pdl");
+        yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
         // create final state particles
         auto piPlus = factory.fsp(211);

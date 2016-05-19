@@ -85,8 +85,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-//    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
-    yap::ParticleFactory factory("../../data/evt.pdl");
+    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach

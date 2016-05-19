@@ -29,8 +29,7 @@ int main( int argc, char** argv)
 
     unsigned max2L(2 * 4);
 
-//    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
-    yap::ParticleFactory factory("../../../data/evt.pdl");
+    yap::ParticleFactory factory((std::string)::getenv("YAPDIR") + "/evt.pdl");
 
     // initial state particle
     double radialSize = 1.;
