@@ -69,15 +69,25 @@ int main( int argc, char** argv)
     a_1->addChannel({sigma, piPlus});
     a_1->addChannel({rho,   piPlus});
 
+    // pi pi nonresonant
+    auto pipiNonRes = factory.nonresonance(0);
+    pipiNonRes->addChannel({piPlus, piMinus});
+
+    // R pi pi channels
+    auto f_0_980 = factory.resonance(9010221, radialSize, std::make_shared<yap::BreitWigner>());
+    f_0_980->addChannel({piPlus, piMinus});
+
+    auto f_2_1270 = factory.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
+    f_2_1270->addChannel({piPlus, piMinus});
+
     // D's channels
     D->addChannel({rho, rho});
     D->addChannel({omega, omega});
     D->addChannel({rho, omega});
     D->addChannel({a_1, piMinus});
-
-    // R pi pi channels
-    //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
-    //factory.createChannel(f_0_980, piPlus, piMinus, 0);
+    D->addChannel({f_0_980, pipiNonRes});
+    D->addChannel({f_2_1270, pipiNonRes});
+    D->addChannel({pipiNonRes, pipiNonRes});
 
     // check consistency
     if (M.consistent())
@@ -159,6 +169,9 @@ int main( int argc, char** argv)
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 
+
+    //return 0;
+
     //CALLGRIND_START_INSTRUMENTATION
 
     // do several loops over all dataPartitions
@@ -173,16 +186,16 @@ int main( int argc, char** argv)
         }
         DEBUG("===================================================================================================================== ");
 
-        std::cout << "Variable status after changing:    \n";
-        M.printFlags(data.globalStatusManager());
+        //std::cout << "Variable status after changing:    \n";
+        //M.printFlags(data.globalStatusManager());
 
         double logA = M.sumOfLogsOfSquaredAmplitudes(data, parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
 
-        std::cout << "Variable status after calculating:    \n";
-        M.printFlags(data.globalStatusManager());
+        //std::cout << "Variable status after calculating:    \n";
+        //M.printFlags(data.globalStatusManager());
 
         /*if (gRandom->Uniform()>0.5) {
             double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
