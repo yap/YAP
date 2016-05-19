@@ -32,6 +32,28 @@ const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint
 }
 
 //-------------------------
+FreeAmplitudeSet freeAmplitudes(const DecayTree& DT)
+{
+    FreeAmplitudeSet S = {DT.freeAmplitude()};
+    for (auto& d_dt : DT.daughterDecayTrees()) {
+        auto s = freeAmplitudes(*d_dt.second);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
+//-------------------------
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV)
+{
+    FreeAmplitudeSet S;
+    for (auto& DT : DTV) {
+        auto s = freeAmplitudes(*DT);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
+//-------------------------
 const std::complex<double> DecayTree::particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     // spin amplitude

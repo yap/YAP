@@ -133,6 +133,12 @@ unsigned depth(const DecayTree& DT);
 /// \return sum of amplitudes of decay trees in a vector
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d);
 
+/// \return set of all free amplitudes in a DecayTree
+FreeAmplitudeSet freeAmplitudes(const DecayTree& DT);
+
+/// \return set of all free amplitudes in a DecayTreeVector
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV);
+
 }
 
 #endif

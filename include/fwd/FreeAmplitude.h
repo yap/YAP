@@ -21,9 +21,16 @@
 #ifndef yap_FreeAmplitudeFwd_h
 #define yap_FreeAmplitudeFwd_h
 
+#include <memory>
+#include <set>
+#include <vector>
+
 namespace yap {
 
 class FreeAmplitude;
+
+/// \typedef FreeAmplitudeSet
+using FreeAmplitudeSet = std::set<std::shared_ptr<FreeAmplitude> >;
 
 }
 

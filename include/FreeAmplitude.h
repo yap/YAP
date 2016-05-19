@@ -21,6 +21,8 @@
 #ifndef yap_FreeAmplitude_h
 #define yap_FreeAmplitude_h
 
+#include "fwd/FreeAmplitude.h"
+
 #include "fwd/DecayChannel.h"
 #include "fwd/ReportsParticleCombinations.h"
 #include "fwd/SpinAmplitude.h"
@@ -85,6 +87,15 @@ private:
 
 /// convert to string
 std::string to_string(const FreeAmplitude& fa);
+
+/// retrieve FreeAmplitudes with specified spin projection from set
+FreeAmplitudeSet find(const FreeAmplitudeSet& fas, int two_m);
+
+/// retrieve FreeAmplitudes with specified DecayChannel from set
+FreeAmplitudeSet find(const FreeAmplitudeSet& fas, const DecayChannel* const dc);
+
+/// retrieve FreeAmplitudes with specified SpinAmplotude from set
+FreeAmplitudeSet find(const FreeAmplitudeSet& fas, const SpinAmplitude* const sa);
 
 }
 
