@@ -374,7 +374,7 @@ const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv
     auto A = Complex_0;
     for (const auto& m_dtv : m_dtv_map)
         for (const auto& dt : m_dtv.second)
-            A += dt->amplitude(d);
+            A += amplitude(*dt, d);
     return A;
 }
 

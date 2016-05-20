@@ -53,15 +53,19 @@ public:
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
     explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
 
-    /// \return amplitude evaluated for DataPoint over all ParticleCombinations of FreeAmplitude_'s DecayChannel
+    /// return product of all free amplitudes in this decay tree
     /// \param d DataPoint
-    const std::complex<double> amplitude(const DataPoint& d) const;
+    const std::complex<double> dataIndependentAmplitude(const DataPoint& d) const;
 
-    /// \return amplitude evaluated for DataPoint for ParticleCombination
+    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// summing over particle combinations of DecayChannel inside FreeAmplitude
     /// \param d DataPoint
-    /// \param pc ParticleCombination
-    const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-    { return particleCombinationIndependentAmplitude(d) * particleCombinationDependentAmplitude(d, pc); }
+    const std::complex<double> dataDependentAmplitude(const DataPoint& d) const;
+
+    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// \param d DataPoint
+    /// \param pc shared_ptr<ParticleCombination>
+    const std::complex<double> dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return FreeAmplitude_
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
@@ -82,17 +86,7 @@ public:
     /// convert to (multiline) string
     std::string asString(std::string offset = "") const;
 
-
 protected:
-
-    /// return product of all free amplitudes in this decay tree
-    /// \param d DataPoint
-    const std::complex<double> particleCombinationIndependentAmplitude(const DataPoint& d) const;
-
-    /// return product of all particle-combination-dependent amplitudes in this tree
-    /// \param d DataPoint
-    /// \param pc shared_ptr<ParticleCombination>
-    const std::complex<double> particleCombinationDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// Set the DecayTree of the i'th daughter
     /// \param i index of daughter to set decay tree for
@@ -130,7 +124,22 @@ inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
 /// \return Depth of DecayTree
 unsigned depth(const DecayTree& DT);
 
+/// \return amplitude evaluated for DataPoint over all symmetrizations
+/// \param dt DecayTree to operate on
+/// \param d DataPoint to evaluate on
+inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d)
+{ return dt.dataIndependentAmplitude(d) * dt.dataDependentAmplitude(d); }
+
+/// \return amplitude evaluated for DataPoint for particular symmetrization
+/// \param dt DecayTree to operate on
+/// \param d DataPoint to evaluate on
+/// \param pc ParticleCombination
+inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc)
+{ return dt.dataIndependentAmplitude(d) * dt.dataDependentAmplitude(d, pc); }
+
 /// \return sum of amplitudes of decay trees in a vector
+/// \param dtv DecayTreeVector to sum over
+/// \param d DataPoint to evaluate on
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d);
 
 /// \return set of all free amplitudes in a DecayTree
