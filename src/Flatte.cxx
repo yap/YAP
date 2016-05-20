@@ -70,29 +70,33 @@ std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<Parti
 }
 
 //-------------------------
-void Flatte::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+void Flatte::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
-    unsigned symIndex = symmetrizationIndex(pc);
+    // precalculate
+    std::vector<std::complex<double> > fc_c2;
+    std::vector<std::complex<double> > fc_4m2c2;
+    fc_c2.reserve(FlatteChannels_.size());
+    fc_4m2c2.reserve(FlatteChannels_.size());
+    for (const auto& fc : FlatteChannels_) {
+        fc_4m2c2.push_back(Complex_1 * 4. * pow(fc.Mass->value() * fc.Coupling->value(), 2));
+        fc_c2.push_back(Complex_1 * pow(fc.Coupling->value(), 2));
+    }
 
-    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
+    const double M2 = pow(mass()->value(), 2);
 
-        for (auto& d : D) {
+    for (auto& d : D) {
 
-            // calculate width term
-            auto w = Complex_0;
-            // sum of coupling * complex-breakup-momentum
-            for (const auto& fc : FlatteChannels_)
-                w += fc.Coupling->value() * std::sqrt(std::complex<double>(model()->fourMomenta()->m2(d, pc) / 4. - pow(fc.Mass->value(), 2), 0));
-            // sum * i * 2 / mass
-            w *= Complex_i * 2. / model()->fourMomenta()->m(d, pc);
+        const double m2 = model()->fourMomenta()->m2(d, pc);
 
-            // T = 1 / (M^2 - m^2 - width-term)
-            std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - w);
+        // calculate width term
+        auto w = Complex_0;
 
-            T()->setValue(t, d, symIndex, D);
-        }
+        // sum of coupling * complex-breakup-momentum * 2 * i / m
+        for (size_t i = 0; i < FlatteChannels_.size(); ++i)
+            w += std::sqrt(fc_4m2c2[i] / m2 - fc_c2[i]);
 
-        D.status(*T(), symIndex) = CalculationStatus::calculated;
+        // T = 1 / (M^2 - m^2 - width-term)
+        T()->setValue(1. / (M2 - m2 - w), d, si, D);
     }
 }
 

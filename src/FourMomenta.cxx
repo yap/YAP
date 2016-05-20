@@ -19,7 +19,7 @@ namespace yap {
 
 //-------------------------
 FourMomenta::FourMomenta(Model* m) :
-    StaticDataAccessor(m, &ParticleCombination::equivByOrderlessContent),
+    StaticDataAccessor(m, ParticleCombination::equivByOrderlessContent),
     ISPIndex_(-1),
     P_(FourVectorCachedDataValue::create(this)),
     M_(RealCachedDataValue::create(this, {}, {P_}))
@@ -40,9 +40,10 @@ void FourMomenta::setFinalStateMomenta(DataPoint& d, const std::vector<FourVecto
 }
 
 //-------------------------
-unsigned FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    unsigned index = StaticDataAccessor::addParticleCombination(pc);
+    StaticDataAccessor::addParticleCombination(pc);
+    auto index = symmetrizationIndex(pc);
 
     // check for ISP
     if (ISPIndex_ < 0 and pc->indices().size() == model()->finalStateParticles().size())
@@ -55,8 +56,6 @@ unsigned FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination
         if (FSPIndices_[pc->indices()[0]] < 0)
             FSPIndices_[pc->indices()[0]] = index;
     }
-
-    return index;
 }
 
 //-------------------------

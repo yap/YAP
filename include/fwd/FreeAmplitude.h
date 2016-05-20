@@ -18,28 +18,19 @@
 
 /// \file
 
-#ifndef yap_AmplitudePair_h
-#define yap_AmplitudePair_h
+#ifndef yap_FreeAmplitudeFwd_h
+#define yap_FreeAmplitudeFwd_h
 
-#include "fwd/CachedDataValue.h"
-#include "fwd/DecayChannel.h"
-#include "fwd/Parameter.h"
-
-#include "Constants.h"
-
-#include <complex>
 #include <memory>
+#include <set>
+#include <vector>
 
 namespace yap {
 
-/// \name AmplitudePair
-/// \brief Pair of a free an fixed amplitude of a DecayChannel
-/// \author Johannes Rauch, Daniel Greenwald
-struct AmplitudePair {
-    AmplitudePair(DecayChannel* dc = nullptr, std::complex<double> free = Complex_1);
-    std::shared_ptr<ComplexCachedDataValue> Fixed;
-    std::shared_ptr<ComplexParameter> Free;
-};
+class FreeAmplitude;
+
+/// \typedef FreeAmplitudeSet
+using FreeAmplitudeSet = std::set<std::shared_ptr<FreeAmplitude> >;
 
 }
 

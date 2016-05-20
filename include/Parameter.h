@@ -68,8 +68,7 @@ class Parameter : public ParameterBase
 public:
 
     /// Default constructor
-    Parameter() : ParameterBase()
-    { }
+    Parameter() = default;
 
     /// Value-assigning constructor
     Parameter(T t) : ParameterBase(), ParameterValue_(t)
@@ -91,7 +90,7 @@ public:
     Parameter& operator=(Parameter&&) = default;
 
     /// \return value of parameter
-    virtual typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type
+    virtual typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type
     value() const
     { return ParameterValue_; }
 
@@ -129,7 +128,7 @@ public:
     }
 
     /// \return value of parameter by accessing parent
-    double value() const override
+    const double value() const override
     { return component(Parent_->value()); }
 
     /// set value by accessing parent

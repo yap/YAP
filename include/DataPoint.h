@@ -95,6 +95,9 @@ public:
     /// grant friend status to DataSet to set itself owner
     friend DataSet;
 
+    /// grant friend status to model to access DataSet_
+    friend Model;
+
 private:
 
     /// raw pointer to owning DataSet

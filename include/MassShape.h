@@ -24,14 +24,15 @@
 #include "fwd/CachedDataValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/Model.h"
+#include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/ParticleFactory.h"
 #include "fwd/Resonance.h"
 #include "fwd/StatusManager.h"
 
-#include "AmplitudeComponent.h"
-#include "DataAccessor.h"
+#include "RecalculableDataAccessor.h"
 
+#include <complex>
 #include <memory>
 #include <string>
 
@@ -41,11 +42,8 @@ namespace yap {
 /// \brief Abstract base class for all mass shapes
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup MassShapes Mass Shapes
-///
-/// Inheriting classes (mass shapes) must implement
-/// #AmplitudeComponent's amplitude(...) function.
-
-class MassShape : public AmplitudeComponent, public DataAccessor
+class MassShape :
+    public RecalculableDataAccessor
 {
 public:
 
@@ -59,17 +57,15 @@ public:
     /// \param sm StatusManager to update
     virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const = 0;
 
-    /// functor
     /// \return dynamic amplitude for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
-    virtual std::complex<double> operator()(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
-    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition
-    /// Must be overrided in derived classes.
+    /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
+    /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+    virtual void calculate(DataPartition& D) const override;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
@@ -78,7 +74,7 @@ public:
     { }
 
     /// Check consistency of object
-    virtual bool consistent() const override;
+    virtual bool consistent() const;
 
     /// get raw pointer to owning resonance
     Resonance* resonance() const
@@ -120,6 +116,12 @@ protected:
     /// access cached dynamic amplitude (const)
     const std::shared_ptr<ComplexCachedDataValue> T() const
     { return const_cast<MassShape*>(this)->T(); }
+
+    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
+    /// \param D DataPartition to calculate on
+    /// \param pc ParticleCombination to calculate for
+    /// \param si SymmetrizationIndec to calculate for
+    virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const = 0;
 
 private:
 

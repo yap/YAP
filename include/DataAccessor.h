@@ -43,11 +43,12 @@ class DataAccessor :
 public:
 
     /// Constructor
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    DataAccessor(ParticleCombination::Equiv* equiv = &ParticleCombination::equivBySharedPointer);
+    /// \param equiv ParticleCombination equatility struct for determining index assignments
+    DataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer);
 
-    /// \name Access to indices
-    /// @{
+    /// \return Equality struct
+    const ParticleCombination::Equiv& equiv() const
+    { return Equiv_; }
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
     int index() const
@@ -61,7 +62,7 @@ public:
     /// \param c ParticleCombination to look for equivalent of
     /// \param equiv ParticleCombination::Equiv object for checking equivalence
     bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
-                                const ParticleCombination::Equiv& equiv) const;
+                                const ParticleCombination::Equiv& equiv) const override;
 
     /// \return index inside row of DataPoint for the requested ParticleCombination
     unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
@@ -81,8 +82,6 @@ public:
 
     /// print ParticleCombination map
     void printParticleCombinations() const;
-
-    /// @}
 
     /// \return CachedDataValueSet
     const CachedDataValueSet& cachedDataValues() const
@@ -122,7 +121,7 @@ protected:
     { Size_ += n; }
 
     /// add ParticleCombination to SymmetrizationIndices_
-    virtual unsigned addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneSymmetrizationIndices();
@@ -134,7 +133,7 @@ protected:
 private:
 
     /// Object to check equality of symmetrizations for determining storage indices
-    ParticleCombination::Equiv* Equiv_;
+    const ParticleCombination::Equiv& Equiv_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;

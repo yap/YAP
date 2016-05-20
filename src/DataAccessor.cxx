@@ -7,7 +7,7 @@
 namespace yap {
 
 //-------------------------
-DataAccessor::DataAccessor(ParticleCombination::Equiv* equiv) :
+DataAccessor::DataAccessor(const ParticleCombination::Equiv& equiv) :
     ReportsParticleCombinations(),
     Equiv_(equiv),
     NIndices_(0),
@@ -57,21 +57,20 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
     if (hasParticleCombination(c))
-        // c is already in map
-        return symmetrizationIndex(c);
+        return;
 
     // object for recording successing of emplacement
     auto it_b = std::make_pair(SymmetrizationIndices_.end(), false);
 
     // check to see if new member equates to existing member
     for (auto& kv : SymmetrizationIndices_)
-        if ((*Equiv_)(kv.first, c))
+        if (Equiv_(kv.first, c))
             // equating member found; set index; return
             it_b = SymmetrizationIndices_.emplace(c, kv.second);
     // if c is new but equates to existing member, it_b.first != end and it_b.second is true
@@ -94,9 +93,6 @@ unsigned DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombinatio
     if (it_b.second)
         // add to ParticleCombinations_
         ParticleCombinations_.push_back(c);
-
-    // return c's index in map
-    return it_b.first->second;
 }
 
 //-------------------------

@@ -28,12 +28,6 @@ namespace yap {
 
 class DecayChannel;
 
-/// \todo Move to AmplitudePair
-// The following cannot be forward declared since they are nested
-// inside DecayChannel
-/* using DecayChannel::AmplitudePairMap = std::map<int, AmplitudePair>; */
-/* using DecayChannel::map_type = SpinAmplitudeMap<AmplitudePairMap>; */
-
 /// \typedef DecayChannelVector
 using DecayChannelVector = std::vector<std::shared_ptr<DecayChannel> >;
 

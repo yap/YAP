@@ -77,21 +77,13 @@ std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<Par
 }
 
 //-------------------------
-void PoleMass::calculate(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc) const
+void PoleMass::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
-    unsigned symIndex = symmetrizationIndex(pc);
+    auto M2 = pow(Mass_->value(), 2);
 
-    // recalculate, cache, & return, if necessary
-    if (D.status(*T(), symIndex) == CalculationStatus::uncalculated) {
-
-        for (auto& d : D) {
-            // T = 1 / (M^2 - m^2)
-            std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));
-            T()->setValue(t, d, symIndex, D);
-        }
-
-        D.status(*T(), symIndex) = CalculationStatus::calculated;
-    }
+    // T := 1 / (M^2 - m^2)
+    for (auto& d : D)
+        T()->setValue(1. / (M2 - model()->fourMomenta()->m2(d, pc)), d, si, D);
 }
 
 //-------------------------

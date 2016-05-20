@@ -21,7 +21,9 @@
 #ifndef yap_DataAccessorFwd_h
 #define yap_DataAccessorFwd_h
 
+#include <memory>
 #include <set>
+#include <vector>
 
 namespace yap {
 
@@ -30,6 +32,9 @@ class DataAccessor;
 /// \typedef DataAccessorSet
 using DataAccessorSet = std::set<DataAccessor*>;
 // using DataAccessorSet = std::set<std::shared_ptr<DataAccessor>, std::owner_less<std::shared_ptr<DataAccessor> > >;
+
+/// \typedef DataAccessorVector
+using DataAccessorVector = std::vector<std::shared_ptr<DataAccessor> >;
 
 }
 

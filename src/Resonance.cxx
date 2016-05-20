@@ -1,5 +1,6 @@
 #include "Resonance.h"
 
+#include "DecayTree.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "MassShape.h"
@@ -16,12 +17,6 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
         throw exceptions::Exception("MassShape unset", "Resonance::Resonance");
 
     MassShape_->setResonance(this);
-}
-
-//-------------------------
-std::complex<double> Resonance::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, int two_m, StatusManager& sm) const
-{
-    return DecayingParticle::amplitude(d, pc, two_m, sm) * MassShape_->amplitude(d, pc, sm);
 }
 
 //-------------------------
@@ -42,18 +37,24 @@ bool Resonance::consistent() const
 }
 
 //-------------------------
-void Resonance::addToModel()
+void Resonance::registerWithModel()
 {
-    DecayingParticle::addToModel();
+    DecayingParticle::registerWithModel();
     MassShape_->addToModel();
 }
 
 //-------------------------
-unsigned Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
 {
-    unsigned index = DecayingParticle::addParticleCombination(c);
+    DecayingParticle::addParticleCombination(c);
     MassShape_->addParticleCombination(c);
-    return index;
+}
+
+//-------------------------
+void Resonance::modifyDecayTree(DecayTree& dt) const
+{
+    DecayingParticle::modifyDecayTree(dt);
+    dt.addDataAccessor(*MassShape_);
 }
 
 }
