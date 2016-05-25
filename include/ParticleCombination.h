@@ -21,6 +21,8 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
+#include "fwd/Model.h"
+#include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
 
 #include <memory>
@@ -72,6 +74,14 @@ public:
 
     /// Checks consistency of object
     bool consistent() const;
+
+    friend std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& P, Model* m);
+
+    /// Create combinations.
+    /// Example: A = {a, b}; B = {{c}, {d}, {e}}
+    /// Result will be {{a, c}, {a, d}, {a, e},  {b, c}, {b, d}, {b, e}}
+    /// Results with overlapping indices will be omitted
+    friend std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& A, std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > B, Model* m);
 
     /// grant friend access to ParticleCombinationCache for creating ParticleCombination's
     friend class ParticleCombinationCache;
@@ -210,6 +220,18 @@ std::string indices_string(const ParticleCombination& pc);
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);
+
+/// convert ParticleCombinationVector to string
+std::string to_string(const ParticleCombinationVector& PCs);
+
+/// convert vector<ParticleCombinationVector> to string
+std::string to_string(const std::vector<ParticleCombinationVector>& PCs);
+
+std::string to_string(const std::vector<std::vector<ParticleCombinationVector>>& PCs);
+
+std::string to_string(const std::pair<std::shared_ptr<Particle>, ParticleCombinationVector>& pc);
+std::string to_string(const std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& PCs);
+std::string to_string(const std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& PCs);
 
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const ParticleCombination& PC)

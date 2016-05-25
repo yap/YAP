@@ -103,10 +103,10 @@ TEST_CASE( "HelicityAngles" )
 
     // rho
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel({piPlus, piMinus});
+    rho->addChannelSA({piPlus, piMinus});
 
     // Add channels to D
-    D->addChannel({rho,      piPlus});
+    D->addChannelSA({rho,      piPlus});
 
     // choose Dalitz coordinates m^2_12 and m^2_23
     const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});

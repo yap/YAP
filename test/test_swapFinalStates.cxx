@@ -50,16 +50,16 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
 
     // create resonances
     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK0->addChannel({piPlus, kMinus});
-    D->addChannel({piK0, kPlus})->freeAmplitudes().begin()->get()->setValue(0.5 * yap::Complex_1);
+    piK0->addChannelSA({piPlus, kMinus});
+    D->addChannelSA({piK0, kPlus})->freeAmplitudes().begin()->get()->setValue(0.5 * yap::Complex_1);
 
     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK1->addChannel({piPlus, kMinus});
-    D->addChannel({piK1, kPlus})->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1);
+    piK1->addChannelSA({piPlus, kMinus});
+    D->addChannelSA({piK1, kPlus})->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1);
 
     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK2->addChannel({piPlus, kMinus});
-    D->addChannel({piK2, kPlus})->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
+    piK2->addChannelSA({piPlus, kMinus});
+    D->addChannelSA({piK2, kPlus})->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
 
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }

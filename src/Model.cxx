@@ -309,8 +309,10 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // adding to StaticDataAccessorVector insures that
         // HelicityAngles are called before any newly created
         // StaticDataAccessors
-        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da))
+        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)) {
+            DEBUG("Create HelicityAngles");
             HelicityAngles_ = std::make_shared<HelicityAngles>(this);
+        }
 
         // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
         if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)

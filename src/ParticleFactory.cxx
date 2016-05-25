@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "MassShape.h"
+#include "Particle.h"
 #include "Resonance.h"
 
 #include <fstream>
@@ -56,12 +57,20 @@ std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, dou
 }
 
 //-------------------------
-std::shared_ptr<DecayingParticle> ParticleFactory::nonresonance(int charge) const
+std::shared_ptr<DecayingParticle> ParticleFactory::nonresonance(const ParticleVector& daughters) const
 {
     DEBUG("make nonresonance ");
+
+    int charge(0);
+    for (auto& d : daughters)
+        charge += d->quantumNumbers().Q();
+
     /// \todo check if these quantum numbers make sense
     QuantumNumbers p(0, 0, 0, 0, 0, charge);
-    return DecayingParticle::create(p, 0., "nonresonant", 0.);
+    auto dp = DecayingParticle::create(p, 0., "nonresonant", 0.);
+    dp->addChannel(daughters);
+
+    return dp;
 }
 
 //-------------------------

@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
+#include "fwd/DecayChannelSA.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
@@ -89,6 +90,11 @@ public:
     /// \return shared_ptr to DecayChannel that has been added
     virtual std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
 
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param daughters ParticleVector of daughters to create DecayChannel object from
+    /// \return shared_ptr to DecayChannel that has been added
+    virtual std::shared_ptr<DecayChannel> addChannelSA(const ParticleVector& daughters);
+
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.
@@ -128,6 +134,7 @@ public:
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
     /// and to call fixSolitaryFreeAmplitudes()
     friend DecayChannel;
+    friend DecayChannelSA;
 
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
     friend Model;

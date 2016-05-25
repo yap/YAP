@@ -21,6 +21,8 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "fwd/Particle.h"
+
 #include "QuantumNumbers.h"
 
 #include <map>
@@ -74,7 +76,7 @@ public:
     /// Create a nonresonant DecayingParticle
     /// \param charge of nonresonance
     /// \return shared pointer to new DecayingParticle object
-    std::shared_ptr<DecayingParticle> nonresonance(int charge) const;
+    std::shared_ptr<DecayingParticle> nonresonance(const ParticleVector& daughters) const;
 
     /// Create a Resonance from a PDG code and a MassShape
     /// \param PDG PDG code of particle to create

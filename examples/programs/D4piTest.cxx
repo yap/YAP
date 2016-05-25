@@ -54,40 +54,42 @@ int main( int argc, char** argv)
 
     // sigma
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel({piPlus, piMinus});
+    sigma->addChannelSA({piPlus, piMinus});
 
     // rho
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel({piPlus, piMinus});
+    rho->addChannelSA({piPlus, piMinus});
 
     // omega
     auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
-    omega->addChannel({piPlus, piMinus});
+    omega->addChannelSA({piPlus, piMinus});
 
     // a_1
     auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    a_1->addChannel({sigma, piPlus});
-    a_1->addChannel({rho,   piPlus});
+    a_1->addChannelSA({sigma, piPlus});
+    a_1->addChannelSA({rho,   piPlus});
 
     // pi pi nonresonant
-    auto pipiNonRes = factory.nonresonance(0);
-    pipiNonRes->addChannel({piPlus, piMinus});
+    //auto pipiNonRes = factory.nonresonance({piPlus, piMinus});
 
     // R pi pi channels
     auto f_0_980 = factory.resonance(9010221, radialSize, std::make_shared<yap::BreitWigner>());
-    f_0_980->addChannel({piPlus, piMinus});
+    f_0_980->addChannelSA({piPlus, piMinus});
 
     auto f_2_1270 = factory.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
-    f_2_1270->addChannel({piPlus, piMinus});
+    f_2_1270->addChannelSA({piPlus, piMinus});
 
     // D's channels
-    D->addChannel({rho, rho});
-    D->addChannel({omega, omega});
-    D->addChannel({rho, omega});
-    D->addChannel({a_1, piMinus});
-    D->addChannel({f_0_980, pipiNonRes});
-    D->addChannel({f_2_1270, pipiNonRes});
-    D->addChannel({pipiNonRes, pipiNonRes});
+    D->addChannelSA({rho, rho});
+    D->addChannelSA({omega, omega});
+    D->addChannelSA({rho, omega});
+    D->addChannelSA({a_1, piMinus});
+    //D->addChannelSA({f_0_980, pipiNonRes});
+    //D->addChannelSA({f_2_1270, pipiNonRes});
+    //D->addChannelSA({pipiNonRes, pipiNonRes});
+    D->addChannel({f_0_980, piPlus, piMinus});
+    D->addChannel({f_2_1270, piPlus, piMinus});
+    D->addChannel({piPlus, piMinus, piPlus, piMinus});
 
     // check consistency
     if (M.consistent())
