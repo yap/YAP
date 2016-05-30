@@ -47,7 +47,7 @@
 namespace yap {
 
 /// \class DecayChannel
-/// \brief Class implementing a decay channel.
+/// \brief Virtual base class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayChannel :
     public ReportsParticleCombinations
@@ -78,11 +78,7 @@ public:
     { return Daughters_; }
 
     /// Get SpinAmplitude objects
-    virtual const SpinAmplitudeVector& spinAmplitudes() const
-    {
-        static const SpinAmplitudeVector empty;
-        return empty;
-    }
+    virtual const SpinAmplitudeVector& spinAmplitudes() const = 0;
 
     /// \return vector of ParticleCombinations
     const ParticleCombinationVector& particleCombinations() const

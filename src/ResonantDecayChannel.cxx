@@ -24,7 +24,7 @@ ResonantDecayChannel::ResonantDecayChannel(const ParticleVector& daughters) :
     DecayChannel(daughters)
 {
     if (Daughters_.size() > 2)
-        throw exceptions::Exception("More than two daughters", "ResonantDecayChannel::DecayChannel");
+        throw exceptions::Exception("More than two daughters", "ResonantDecayChannel::ResonantDecayChannel");
 }
 
 //-------------------------

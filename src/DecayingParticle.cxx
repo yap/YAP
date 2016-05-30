@@ -4,12 +4,13 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "container_utils.h"
-#include "DecayChannel.h"
 #include "DecayTree.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
 #include "Model.h"
+#include "NonresonantDecayChannel.h"
 #include "Parameter.h"
+#include "ResonantDecayChannel.h"
 #include "SpinAmplitude.h"
 #include "StatusManager.h"
 
@@ -205,9 +206,9 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector&
     if (daughters.size() == 2)
         return addChannel(std::make_shared<ResonantDecayChannel>(daughters));
     else if (daughters.size() > 2)
-        return addChannel(std::make_shared<DecayChannel>(daughters));
+        return addChannel(std::make_shared<NonresonantDecayChannel>(daughters));
     else
-        throw exceptions::Exception("Cannot add DecayChannel with only one daughter", "DecayingParticle::addChannel");
+        throw exceptions::Exception("Cannot add DecayChannel less than two daughters", "DecayingParticle::addChannel");
 }
 
 //-------------------------

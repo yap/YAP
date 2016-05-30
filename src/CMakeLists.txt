@@ -13,7 +13,6 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-	ResonantDecayChannel.cxx
 	DecayTree.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx
@@ -26,6 +25,7 @@ set(YAP_SOURCES
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
+	NonresonantDecayChannel.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx
@@ -34,6 +34,7 @@ set(YAP_SOURCES
 	QuantumNumbers.cxx
 	ReportsParticleCombinations.cxx
 	Resonance.cxx
+	ResonantDecayChannel.cxx
 	SpinAmplitude.cxx
 	StatusManager.cxx
 	WignerD.cxx
