@@ -1,4 +1,4 @@
-#include "DecayChannelSA.h"
+#include "../include/ResonantDecayChannel.h"
 
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
@@ -20,7 +20,7 @@
 namespace yap {
 
 //-------------------------
-DecayChannelSA::DecayChannelSA(const ParticleVector& daughters) :
+ResonantDecayChannel::ResonantDecayChannel(const ParticleVector& daughters) :
     DecayChannel(daughters)
 {
     if (Daughters_.size() > 2)
@@ -28,7 +28,7 @@ DecayChannelSA::DecayChannelSA(const ParticleVector& daughters) :
 }
 
 //-------------------------
-void DecayChannelSA::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void ResonantDecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     DecayChannel::addParticleCombination(pc);
 
@@ -38,7 +38,7 @@ void DecayChannelSA::addParticleCombination(std::shared_ptr<ParticleCombination>
 }
 
 //-------------------------
-void DecayChannelSA::setDecayingParticle(DecayingParticle* dp)
+void ResonantDecayChannel::setDecayingParticle(DecayingParticle* dp)
 {
     DecayChannel::setDecayingParticle(dp);
 
@@ -72,7 +72,7 @@ void DecayChannelSA::setDecayingParticle(DecayingParticle* dp)
 }
 
 //-------------------------
-void DecayChannelSA::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
+void ResonantDecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
     // check number of daughters
     if (sa->finalTwoJ().size() != Daughters_.size())
@@ -105,7 +105,7 @@ void DecayChannelSA::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 }
 
 //-------------------------
-bool DecayChannelSA::consistent() const
+bool ResonantDecayChannel::consistent() const
 {
     bool C = DecayChannel::consistent();
 

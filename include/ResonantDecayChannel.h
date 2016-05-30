@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_DecayChannelSA_h
-#define yap_DecayChannelSA_h
+#ifndef yap_ResonantDecayChannel_h
+#define yap_ResonantDecayChannel_h
 
 #include "DecayChannel.h"
 
@@ -31,10 +31,10 @@
 
 namespace yap {
 
-/// \class DecayChannelSA
-/// \brief Class implementing a decay channel.
+/// \class ResonantDecayChannel
+/// \brief Class implementing a decay channel of a resonance decaying to 2 daughter particles.
 /// \author Johannes Rauch, Daniel Greenwald
-class DecayChannelSA :
+class ResonantDecayChannel :
     public DecayChannel
 {
 public:
@@ -42,10 +42,10 @@ public:
     /// \name Constructors
     /// @{
 
-    /// N-particle Constructor (at the moment only valid for 2 particles).
-    /// DecayChannelSA inherits ISP from daughters.
+    /// N-particle Constructor (only valid for 2 particles).
+    /// ResonantDecayChannel inherits ISP from daughters.
     /// \param daughters Vector of shared_ptr's to daughter Particle's
-    DecayChannelSA(const ParticleVector& daughters);
+    ResonantDecayChannel(const ParticleVector& daughters);
 
     /// @}
 

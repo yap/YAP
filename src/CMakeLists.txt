@@ -13,7 +13,7 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-	DecayChannelSA.cxx
+	ResonantDecayChannel.cxx
 	DecayTree.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx

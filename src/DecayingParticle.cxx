@@ -5,7 +5,6 @@
 #include "Constants.h"
 #include "container_utils.h"
 #include "DecayChannel.h"
-#include "DecayChannelSA.h"
 #include "DecayTree.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
@@ -17,6 +16,7 @@
 #include <assert.h>
 #include <iomanip>
 #include <memory>
+#include "../include/ResonantDecayChannel.h"
 
 namespace yap {
 
@@ -201,15 +201,13 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 //-------------------------
 std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector& daughters)
 {
-    return addChannel(std::make_shared<DecayChannel>(daughters));
-}
-
-//-------------------------
-std::shared_ptr<DecayChannel> DecayingParticle::addChannelSA(const ParticleVector& daughters)
-{
-    auto ch = addChannel(std::make_shared<DecayChannelSA>(daughters));
-    assert(std::dynamic_pointer_cast<DecayChannelSA>(ch));
-    return ch;
+    /// \todo make distinction in DecayChannel
+    if (daughters.size() == 2)
+        return addChannel(std::make_shared<ResonantDecayChannel>(daughters));
+    else if (daughters.size() > 2)
+        return addChannel(std::make_shared<DecayChannel>(daughters));
+    else
+        throw exceptions::Exception("Cannot add DecayChannel with only one daughter", "DecayingParticle::addChannel");
 }
 
 //-------------------------

@@ -18,15 +18,15 @@
 
 /// \file
 
-#ifndef yap_DecayChannelSAFwd_h
-#define yap_DecayChannelSAFwd_h
+#ifndef yap_ResonantDecayChannelFwd_h
+#define yap_ResonantDecayChannelFwd_h
 
 #include <memory>
 #include <vector>
 
 namespace yap {
 
-class DecayChannelSA;
+class ResonantDecayChannel;
 
 }
 
