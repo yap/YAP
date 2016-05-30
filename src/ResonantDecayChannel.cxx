@@ -24,7 +24,7 @@ ResonantDecayChannel::ResonantDecayChannel(const ParticleVector& daughters) :
     DecayChannel(daughters)
 {
     if (Daughters_.size() > 2)
-        throw exceptions::Exception("More than two daughters", "DecayChannelSA::DecayChannel");
+        throw exceptions::Exception("More than two daughters", "ResonantDecayChannel::DecayChannel");
 }
 
 //-------------------------
@@ -76,22 +76,22 @@ void ResonantDecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
     // check number of daughters
     if (sa->finalTwoJ().size() != Daughters_.size())
-        throw exceptions::Exception("Number of daughters doesn't match", "DecayChannelSA::addSpinAmplitude");
+        throw exceptions::Exception("Number of daughters doesn't match", "ResonantDecayChannel::addSpinAmplitude");
 
     /// \todo quantum numbers more completely?
     // check against daughter quantum numbers
     for (size_t i = 0; i < Daughters_.size(); ++i)
         if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
-            throw exceptions::Exception("Spins don't match daughter's", "DecayChannelSA::addSpinAmplitude");
+            throw exceptions::Exception("Spins don't match daughter's", "ResonantDecayChannel::addSpinAmplitude");
 
     // check against DecayingParticle_ if set
     if (DecayingParticle_) {
         if (DecayingParticle_->quantumNumbers().twoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match DecayingParticle", "DecayChannelSA::addSpinAmplitude");
+            throw exceptions::Exception("Spins don't match DecayingParticle", "ResonantDecayChannel::addSpinAmplitude");
     } else {
         // else check against previously added SpinAmplitude's initial quantum numbers
         if (!SpinAmplitudes_.empty() and SpinAmplitudes_[0]->initialTwoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match previously added", "DecayChannelSA::addSpinAmplitude");
+            throw exceptions::Exception("Spins don't match previously added", "ResonantDecayChannel::addSpinAmplitude");
     }
 
     // add to SpinAmplitudes_
