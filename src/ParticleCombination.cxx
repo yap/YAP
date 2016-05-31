@@ -3,6 +3,8 @@
 #include "container_utils.h"
 #include "Exceptions.h"
 #include "logging.h"
+#include "Model.h"
+#include "Particle.h"
 
 #include <algorithm>
 #include <set>
@@ -63,6 +65,78 @@ bool ParticleCombination::decaysToFinalStateParticles() const
         if (!leaf->isFinalStateParticle())
             return false;
     return true;
+}
+
+//-------------------------
+std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& P, Model* m)
+{
+    if (P.size() == 1)
+        return P;
+
+    DEBUG("construct combinations of: " << to_string(P));
+
+    std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > rest;
+    rest.insert(rest.end(), P.begin() + 1, P.end());
+
+    auto combiRest = combinations(rest, m);
+    return combinations(P[0], combiRest, m);
+}
+
+//-------------------------
+std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& A, std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > B, Model* m)
+{
+    std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > result;
+
+    DEBUG("A: " << to_string(A));
+    DEBUG("B: " << to_string(B));
+
+    for (auto& PCA : A) {
+        for (auto& PCBs : B) {
+
+            for (size_t i = 0; i < PCBs.size(); ++i) {
+                auto& PCB = PCBs[i];
+
+                std::vector<unsigned> indicesA;
+                for (auto& pc : PCA.second)
+                    indicesA.insert(indicesA.end(), pc->indices().begin(), pc->indices().end());
+
+                std::vector<unsigned> indicesB;
+                for (auto& pc : PCB.second)
+                    indicesB.insert(indicesB.end(), pc->indices().begin(), pc->indices().end());
+
+
+                // check that PCA and PCB don't overlap in FSP content
+                if (overlap(indicesA, indicesB)) {
+
+                    // make sure not to symmetrize for identical particles
+                    if (PCA.first and PCA.first == PCB.first) {
+                        DEBUG("same - " << to_string(PCA.second) << " - " << to_string(PCB.second));
+
+                        PCBs.erase(std::find(PCBs.begin(), PCBs.end(), PCA));
+
+                        --i;
+                    }
+
+                    continue;
+                }
+
+                ParticleCombinationVector AB;
+                for (auto& pc : PCA.second)
+                    AB.push_back(pc);
+
+                for (auto& pc : PCB.second)
+                    AB.push_back(pc);
+
+                std::shared_ptr<Particle> part = PCA.first;
+                if (part != PCB.first)
+                    part.reset();
+
+                result.push_back({std::make_pair(part, AB)});
+            }
+        }
+    }
+
+    return result;
 }
 
 //-------------------------
@@ -145,6 +219,92 @@ std::string to_string(const ParticleCombination& pc)
     for (auto& d : pc.daughters())
         if (!d->isFinalStateParticle())
             s += "; " + to_string(*d);
+    return s;
+}
+
+
+//-------------------------
+std::string to_string(const ParticleCombinationVector& PCs)
+{
+    std::string s = "[";
+    for (auto& pc : PCs) {
+        s += to_string(*pc);
+        s += "; ";
+    }
+
+    s.erase(s.size() - 2, 2);
+    s += "]";
+
+    return s;
+}
+
+//-------------------------
+std::string to_string(const std::vector<ParticleCombinationVector>& PCs)
+{
+    std::string s = "{";
+    for (auto& pc : PCs) {
+        s += to_string(pc);
+        s += "; ";
+    }
+
+    s.erase(s.size() - 2, 2);
+    s += "}";
+
+    return s;
+}
+
+//-------------------------
+std::string to_string(const std::vector<std::vector<ParticleCombinationVector>>& PCs)
+{
+    std::string s = "{ ";
+    for (auto& pc : PCs) {
+        s += to_string(pc);
+        s += "\n  ";
+    }
+
+    s.erase(s.size() - 3, 3);
+    s += " }";
+
+    return s;
+}
+
+//-------------------------
+std::string to_string(const std::pair<std::shared_ptr<Particle>, ParticleCombinationVector>& pc)
+{
+    std::string s = (pc.first) ? pc.first->name() : "nullptr";
+    s += ": ";
+    s += to_string(pc.second);
+
+    return s;
+}
+
+//-------------------------
+std::string to_string(const std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& PCs)
+{
+    std::string s = "{";
+    for (auto& pc : PCs) {
+        s += to_string(pc);
+        s += "; ";
+    }
+
+    s.erase(s.size() - 2, 2);
+    s += "}";
+
+    return s;
+}
+
+//-------------------------
+std::string to_string(const std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& PCs)
+{
+    std::string s = "{ ";
+    for (auto& pc : PCs) {
+        s += to_string(pc);
+        s += "\n  ";
+    }
+
+    s.erase(s.size() - 3, 3);
+    s += " }";
+
     return s;
 }
 

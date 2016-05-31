@@ -4,17 +4,20 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "container_utils.h"
-#include "DecayChannel.h"
 #include "DecayTree.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
 #include "Model.h"
+#include "NonresonantDecayChannel.h"
 #include "Parameter.h"
+#include "ResonantDecayChannel.h"
 #include "SpinAmplitude.h"
 #include "StatusManager.h"
 
+#include <assert.h>
 #include <iomanip>
 #include <memory>
+#include "../include/ResonantDecayChannel.h"
 
 namespace yap {
 
@@ -84,7 +87,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
     Channels_.push_back(c);
-    Channels_.back()->setDecayingParticle(this);
+    c->setDecayingParticle(this);
 
     // now that Model is set, register with Model (repeated registration has no effect)
     registerWithModel();
@@ -94,19 +97,19 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->setInitialStateParticle(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
 
     // add particle combinations
-    for (auto pc : Channels_.back()->particleCombinations())
+    for (auto pc : c->particleCombinations())
         addParticleCombination(pc);
 
     /// create decay trees for channel:
 
     /// loop over spin amplitudes of channel
-    for (auto& sa : Channels_.back()->spinAmplitudes()) {
+    for (auto& sa : c->spinAmplitudes()) {
 
         // loop over possible parent spin projections
         for (const auto& M_m : sa->amplitudes()) {
 
             // create DecayTree with new FreeAmplitude
-            auto DT_M = DecayTree(std::make_shared<FreeAmplitude>(Channels_.back(), sa, M_m.first));
+            auto DT_M = DecayTree(std::make_shared<FreeAmplitude>(c, sa, M_m.first));
             // add BlattWeisskopf object to it
             modifyDecayTree(DT_M);
 
@@ -121,10 +124,10 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                     DecayTreeVector DTV(1, std::make_shared<DecayTree>(DT_M));
 
                     // loop over daughters in channel
-                    for (size_t d = 0; d < Channels_.back()->daughters().size(); ++d) {
+                    for (size_t d = 0; d < c->daughters().size(); ++d) {
 
                         // try to cast daughter to decaying particle
-                        auto dp = std::dynamic_pointer_cast<DecayingParticle>(Channels_.back()->daughters()[d]);
+                        auto dp = std::dynamic_pointer_cast<DecayingParticle>(c->daughters()[d]);
 
                         // if decaying particle
                         if (dp) {
@@ -160,7 +163,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                         else {
 
                             // check that particle has daughter particle combination
-                            if (Channels_.back()->daughters()[d]->hasParticleCombination(pc->daughters()[d])) {
+                            if (c->daughters()[d]->hasParticleCombination(pc->daughters()[d])) {
                                 // set all elts of DTV to have proper daughter spin projection
                                 for (auto& DT : DTV)
                                     DT->setDaughterSpinProjection(d, m_cdv.first[d]);
@@ -199,7 +202,13 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 //-------------------------
 std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector& daughters)
 {
-    return addChannel(std::make_shared<DecayChannel>(daughters));
+    /// \todo make distinction in DecayChannel
+    if (daughters.size() == 2)
+        return addChannel(std::make_shared<ResonantDecayChannel>(daughters));
+    else if (daughters.size() > 2)
+        return addChannel(std::make_shared<NonresonantDecayChannel>(daughters));
+    else
+        throw exceptions::Exception("Cannot add DecayChannel less than two daughters", "DecayingParticle::addChannel");
 }
 
 //-------------------------

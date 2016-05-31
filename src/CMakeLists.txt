@@ -13,11 +13,11 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-  DecayTree.cxx
+	DecayTree.cxx
 	DecayingParticle.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
-  FreeAmplitude.cxx
+	FreeAmplitude.cxx
 	FourMomenta.cxx
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
@@ -25,14 +25,16 @@ set(YAP_SOURCES
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
+	NonresonantDecayChannel.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx
 	ParticleFactory.cxx
 	PoleMass.cxx
 	QuantumNumbers.cxx
-  ReportsParticleCombinations.cxx
+	ReportsParticleCombinations.cxx
 	Resonance.cxx
+	ResonantDecayChannel.cxx
 	SpinAmplitude.cxx
 	StatusManager.cxx
 	WignerD.cxx

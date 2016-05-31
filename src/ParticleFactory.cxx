@@ -4,6 +4,7 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "MassShape.h"
+#include "Particle.h"
 #include "Resonance.h"
 
 #include <fstream>

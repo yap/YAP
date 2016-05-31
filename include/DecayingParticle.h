@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
+#include "fwd/ResonantDecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
@@ -128,6 +129,7 @@ public:
     /// grant friend status to DecayChannel to see BlattWeiskopffs_
     /// and to call fixSolitaryFreeAmplitudes()
     friend DecayChannel;
+    friend ResonantDecayChannel;
 
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
     friend Model;

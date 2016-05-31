@@ -47,7 +47,7 @@
 namespace yap {
 
 /// \class DecayChannel
-/// \brief Class implementing a decay channel.
+/// \brief Virtual base class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
 class DecayChannel :
     public ReportsParticleCombinations
@@ -57,7 +57,7 @@ public:
     /// \name Constructors
     /// @{
 
-    /// N-particle Constructor (at the moment only valid for 2 particles).
+    /// N-particle Constructor.
     /// DecayChannel inherits ISP from daughters.
     /// \param daughters Vector of shared_ptr's to daughter Particle's
     DecayChannel(const ParticleVector& daughters);
@@ -78,8 +78,7 @@ public:
     { return Daughters_; }
 
     /// Get SpinAmplitude objects
-    const SpinAmplitudeVector& spinAmplitudes() const
-    { return SpinAmplitudes_; }
+    virtual const SpinAmplitudeVector& spinAmplitudes() const = 0;
 
     /// \return vector of ParticleCombinations
     const ParticleCombinationVector& particleCombinations() const
@@ -97,9 +96,6 @@ public:
 
     /// @}
 
-    /// add a spin amplitude
-    void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
-
     /// Grant friend status to DecayingParticle to set itself as owner
     /// and to call fixSolitaryFreeAmplitudes()
     friend DecayingParticle;
@@ -113,15 +109,10 @@ protected:
     void fixSolitaryFreeAmplitudes();
 
     /// set raw pointer to owning DecayingParticle
-    void setDecayingParticle(DecayingParticle* dp);
-
-private:
+    virtual void setDecayingParticle(DecayingParticle* dp);
 
     /// daughters of the decay
     ParticleVector Daughters_;
-
-    /// Vector of SpinAmplitudes
-    SpinAmplitudeVector SpinAmplitudes_;
 
     /// raw pointer owning DecayingParticle
     DecayingParticle* DecayingParticle_;

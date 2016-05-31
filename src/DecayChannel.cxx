@@ -30,8 +30,6 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
     if (Daughters_.size() == 1)
         throw exceptions::Exception("Only one daughter", "DecayChannel::DecayChannel");
-    if (Daughters_.size() > 2)
-        throw exceptions::Exception("More than two daughters", "DecayChannel::DecayChannel");
 
     // check no Daughters_ are empty
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;}))
@@ -68,29 +66,50 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     }
 
     // create ParticleCombination's of parent
-    /// \todo remove hardcoding for two daughters so applies to n daughters?
-    for (auto& PCA : PCs[0]) {
-        for (auto& PCB : PCs[1]) {
+    if (PCs.size() == 2) {
+        for (auto& PCA : PCs[0]) {
+            for (auto& PCB : PCs[1]) {
 
-            // check that PCA and PCB don't overlap in FSP content
-            if (overlap(PCA->indices(), PCB->indices()))
-                continue;
-
-            // for identical particles, check if swapped particle combination is already added
-            if (Daughters_[0] == Daughters_[1]) {
-                // get (B,A) combination from cache
-                auto b_a = model()->particleCombinationCache().find({PCB, PCA});
-                // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and hasParticleCombination(b_a.lock(), ParticleCombination::equivBySharedPointer))
-                    // if (B,A) already added, don't proceed to adding (A,B)
+                // check that PCA and PCB don't overlap in FSP content
+                if (overlap(PCA->indices(), PCB->indices()))
                     continue;
-            }
 
-            // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
-            // setting the parents of both to the newly created ParticleCombination
-            addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
+                // for identical particles, check if swapped particle combination is already added
+                if (Daughters_[0] == Daughters_[1]) {
+                    // get (B,A) combination from cache
+                    auto b_a = model()->particleCombinationCache().find({PCB, PCA});
+                    // if b_a is not in cache, it can't be in SymmetrizationIndices_
+                    if (!b_a.expired() and hasParticleCombination(b_a.lock(), ParticleCombination::equivBySharedPointer))
+                        // if (B,A) already added, don't proceed to adding (A,B)
+                        continue;
+                }
+
+                // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
+                // setting the parents of both to the newly created ParticleCombination
+                addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
+            }
         }
     }
+    else { // > 2 daughters
+
+        std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > PCsVec;
+        for (size_t i = 0; i < PCs.size(); ++i) {
+            std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > vec;
+            for (auto& p : PCs[i])
+                vec.push_back(std::make_pair(Daughters_[i], ParticleCombinationVector(1, p)));
+
+            PCsVec.push_back(vec);
+        }
+
+        auto possibleParents = combinations(PCsVec, const_cast<Model*>(static_cast<const DecayChannel*>(this)->model()));
+
+        for (auto& parents : possibleParents) {
+            for (auto& p : parents) {
+                DEBUG("parent: " << to_string(p.second));
+                addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite(p.second));
+            }
+        }
+    } // end else // > 2 daughters
 }
 
 //-------------------------
@@ -114,9 +133,6 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     for (size_t i = 0; i < pc->daughters().size(); ++i)
         Daughters_[i]->addParticleCombination(pc->daughters()[i]);
 
-    // add to SpinAmplitude's
-    for (auto& sa : SpinAmplitudes_)
-        sa->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -143,33 +159,6 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
                                     + " in " + to_string(*this),
                                     "DecayChannel::setDecayingParticle");
 
-    // if SpinAmplitude's have already been added by hand, don't add automatically
-    if (SpinAmplitudes_.empty()) {
-
-        auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-        auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
-        auto two_j2 = Daughters_[1]->quantumNumbers().twoJ();
-
-        // create spin amplitudes
-        // loop over possible S: |j1-j2| <= S <= (j1+j2)
-        for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2) {
-            // loop over possible L: |J-s| <= L <= (J+s)
-            for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L) {
-                // add SpinAmplitude retrieved from cache
-                addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
-            }
-        }
-    } else {
-
-        // check DecayingPartcle_'s quantum numbers against existing SpinAmplitude's
-        if (DecayingParticle_->quantumNumbers().twoJ() != SpinAmplitudes_[0]->initialTwoJ())
-            throw exceptions::Exception("Spins don't match ", "DecayChannel::setDecayingParticle");
-
-    }
-
-    // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
-    for (auto& sa : SpinAmplitudes_)
-        DecayingParticle_->storeBlattWeisskopf(sa->L());
 }
 
 //-------------------------
@@ -186,37 +175,6 @@ FreeAmplitudeSet DecayChannel::freeAmplitudes() const
 
     // get set from decaying particle
     return find(DecayingParticle_->freeAmplitudes(), this);
-}
-
-//-------------------------
-void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
-{
-    // check number of daughters
-    if (sa->finalTwoJ().size() != Daughters_.size())
-        throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
-
-    /// \todo quantum numbers more completely?
-    // check against daughter quantum numbers
-    for (size_t i = 0; i < Daughters_.size(); ++i)
-        if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
-            throw exceptions::Exception("Spins don't match daughter's", "DecayChannel::addSpinAmplitude");
-
-    // check against DecayingParticle_ if set
-    if (DecayingParticle_) {
-        if (DecayingParticle_->quantumNumbers().twoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
-    } else {
-        // else check against previously added SpinAmplitude's initial quantum numbers
-        if (!SpinAmplitudes_.empty() and SpinAmplitudes_[0]->initialTwoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match previously added", "DecayChannel::addSpinAmplitude");
-    }
-
-    // add to SpinAmplitudes_
-    SpinAmplitudes_.push_back(sa);
-
-    // add this' ParticleCombination's to it
-    for (auto& pc : particleCombinations())
-        SpinAmplitudes_.back()->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -238,16 +196,6 @@ bool DecayChannel::consistent() const
         C &= false;
     }
 
-    // loop over SpinAmplitude's
-    for (const auto& sa : SpinAmplitudes_) {
-        // check SpinAmplitude
-        if (!sa) {
-            FLOG(ERROR) << "A SpinAmplitude is empty";
-            C &= false;
-        } else
-            C &= sa->consistent();
-    }
-
     return C;
 }
 
@@ -265,10 +213,7 @@ std::string to_string(const DecayChannel& dc)
         s.erase(s.size() - 1, 1);
     }
     s += ")";
-    // auto& saV = dc.spinAmplitudes();
-    // if (saV.empty())
-    //     return s;
-    // s += " " + to_string(saV);
+
     return s;
 }
 

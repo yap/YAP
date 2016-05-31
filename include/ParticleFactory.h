@@ -21,6 +21,8 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "fwd/Particle.h"
+
 #include "QuantumNumbers.h"
 
 #include <map>

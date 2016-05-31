@@ -163,7 +163,7 @@ public:
     friend class SpinAmplitudeCache;
 
     /// grant friend access to DecayChannel to call addParticleCombination
-    friend class DecayChannel;
+    friend class ResonantDecayChannel;
 
 protected:
 
