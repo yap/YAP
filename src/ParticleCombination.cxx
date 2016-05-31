@@ -73,6 +73,8 @@ std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombination
     if (P.size() == 1)
         return P;
 
+    DEBUG("construct combinations of: " << to_string(P));
+
     std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > rest;
     rest.insert(rest.end(), P.begin() + 1, P.end());
 

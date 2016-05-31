@@ -75,11 +75,27 @@ public:
     /// Checks consistency of object
     bool consistent() const;
 
+    /// Create combinations.
+    /// Example:
+    /// P = { {f_0: [(01) -> (0) + (1)]; f_0: [(03) -> (0) + (3)]; f_0: [(21) -> (2) + (1)]; f_0: [(23) -> (2) + (3)]}
+    ///       {pi+: [(0)]; pi+: [(2)]}
+    ///       {pi-: [(1)]; pi-: [(3)]} }
+    /// Result:
+    /// { {nullptr: [(01) -> (0) + (1); (2); (3)]},
+    ///   {nullptr: [(03) -> (0) + (3); (2); (1)]},
+    ///   {nullptr: [(21) -> (2) + (1); (0); (3)]},
+    ///   {nullptr: [(23) -> (2) + (3); (0); (1)]} }
     friend std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& P, Model* m);
 
     /// Create combinations.
-    /// Example: A = {a, b}; B = {{c}, {d}, {e}}
-    /// Result will be {{a, c}, {a, d}, {a, e},  {b, c}, {b, d}, {b, e}}
+    /// Example:
+    /// A = {pi+: [(0)]; pi+: [(2)]}
+    /// B = { {pi-: [(1)]; pi-: [(3)]} }
+    /// Result:
+    /// { {nullptr: [(0); (1)]}
+    ///   {nullptr: [(0); (3)]}
+    ///   {nullptr: [(2); (1)]}
+    ///   {nullptr: [(2); (3)]} }
     /// Results with overlapping indices will be omitted
     friend std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > combinations(std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& A, std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > > B, Model* m);
 
@@ -227,10 +243,16 @@ std::string to_string(const ParticleCombinationVector& PCs);
 /// convert vector<ParticleCombinationVector> to string
 std::string to_string(const std::vector<ParticleCombinationVector>& PCs);
 
+/// convert vector<vector<ParticleCombinationVector>> to string
 std::string to_string(const std::vector<std::vector<ParticleCombinationVector>>& PCs);
 
+/// convert pair<shared_ptr<Particle>, ParticleCombinationVector> to string
 std::string to_string(const std::pair<std::shared_ptr<Particle>, ParticleCombinationVector>& pc);
+
+/// convert vector<pair<shared_ptr<Particle>, ParticleCombinationVector> > to string
 std::string to_string(const std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> >& PCs);
+
+/// convert vector<vector<pair<shared_ptr<Particle>, ParticleCombinationVector> > > to string
 std::string to_string(const std::vector<std::vector<std::pair<std::shared_ptr<Particle>, ParticleCombinationVector> > >& PCs);
 
 /// streamer
