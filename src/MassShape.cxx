@@ -8,6 +8,7 @@
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "Resonance.h"
+#include "VariableStatus.h"
 
 namespace yap {
 
@@ -47,6 +48,12 @@ void MassShape::updateCalculationStatus(StatusManager& D) const
 std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return T_->value(d, symmetrizationIndex(pc));
+}
+
+//-------------------------
+const VariableStatus MassShape::status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return sm.status(*T(), symmetrizationIndex(pc)).Variable;
 }
 
 //-------------------------

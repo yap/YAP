@@ -27,6 +27,7 @@
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
+#include "fwd/VariableStatus.h"
 
 #include "DataAccessor.h"
 #include "VariableStatus.h"
@@ -73,6 +74,10 @@ private:
 
     /// Set of parameters this RecalculableDataAccessor depends on
     ParameterSet parameters_;
+
+    /// \return VariableStatus of value
+    /// \param sm StatusManager to check for status
+    virtual const VariableStatus status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
 };
 
