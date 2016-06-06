@@ -26,6 +26,8 @@
 #include "fwd/FreeAmplitude.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
+#include "fwd/StatusManager.h"
+#include "fwd/VariableStatus.h"
 
 #include <array>
 #include <complex>
@@ -53,19 +55,28 @@ public:
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
     explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
 
-    /// return product of all free amplitudes in this decay tree
+    /// \return product of all free amplitudes in this decay tree
     /// \param d DataPoint
     const std::complex<double> dataIndependentAmplitude(const DataPoint& d) const;
 
-    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// \return product of all particle-combination-dependent amplitudes in this tree
     /// summing over particle combinations of DecayChannel inside FreeAmplitude
     /// \param d DataPoint
     const std::complex<double> dataDependentAmplitude(const DataPoint& d) const;
 
-    /// return product of all particle-combination-dependent amplitudes in this tree
+    /// \return product of all particle-combination-dependent amplitudes in this tree
     /// \param d DataPoint
     /// \param pc shared_ptr<ParticleCombination>
     const std::complex<double> dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+
+    /// \return VariableStatus of dataDependentAmplitude
+    /// \param sm StatusManager to check for statuses
+    const VariableStatus dataDependentAmplitudeStatus(const StatusManager& sm) const;
+
+    /// \return VariableStatus of dataDependentAmplitude
+    /// \param sm StatusManager to check for statuses
+    /// \param shared_ptr<ParticleCombination> to check for
+    const VariableStatus dataDependentAmplitudeStatus(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return FreeAmplitude_
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
