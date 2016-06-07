@@ -78,13 +78,27 @@ DataSet& Model::updateDataSetStatusManager(DataPartition& DP) const
     if (!DS)
         throw exceptions::Exception("DataSet is nullptr", "Model::updateStatusManager");
 
+    // update global calculation statuses (managed by data set)
+    DS->globalStatusManager().updateCalculationStatuses(dataAccessors());
+
     return *DS;
 }
 
 //-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
 {
-    return partialSumOfLogsOfSquaredAmplitudes(updateDataSetStatusManager(DP));
+    auto& DS = updateDataSetStatusManager(DP);
+
+    DP.copyCalculationStatuses(DS.globalStatusManager());
+
+    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
+
+    // Set all variable statuses to Unchanged
+    DS.globalStatusManager().setAll(VariableStatus::unchanged);
+    // Set all calculation statuses to calculated
+    DS.globalStatusManager().setAll(CalculationStatus::calculated);
+
+    return log_L;
 }
 
 
@@ -110,6 +124,8 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
 
     // create thread for calculation on each partition
     for (auto& P : DP) {
+        // copy statuses from DS's updated status manager
+        P->copyCalculationStatuses(DS.globalStatusManager());
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
         partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P)));
     }
@@ -118,6 +134,12 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
     double log_L = 0;
     for (auto& s : partial_sums)
         log_L  += s.get();
+
+    // Set all variable statuses to unchanged
+    DS.globalStatusManager().setAll(VariableStatus::unchanged);
+
+    // Set all calculation statuses to calculated
+    DS.globalStatusManager().setAll(CalculationStatus::calculated);
 
     return log_L;
 }
