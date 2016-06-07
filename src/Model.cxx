@@ -46,6 +46,10 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
 //-------------------------
 void Model::calculate(DataPartition& D) const
 {
+    // update calculation statuses
+    for (const auto& rda : RecalculableDataAccessors_)
+        rda->updateCalculationStatus(D);
+
     // call calculate on all RecalculableDataAccessors
     for (const auto& rda : RecalculableDataAccessors_)
         rda->calculate(D);
