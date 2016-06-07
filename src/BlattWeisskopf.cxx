@@ -50,6 +50,9 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
         // register with model
         addToModel();
 
+        addParameter(DecayingParticle_->mass());
+        addParameter(DecayingParticle_->radialSize());
+
         BarrierFactor_ = RealCachedDataValue::create(this);
     }
 
@@ -141,31 +144,13 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 }
 
 //-------------------------
-CalculationStatus BlattWeisskopf::updateCalculationStatus(DataPartition& D) const
+void BlattWeisskopf::updateCalculationStatus(DataPartition& D) const
 {
-    // assume that fourMomenta and measuredBreakupMomenta have not changed!
-
-    // check if DecayingParticle's mass or radialSize have changed
-    if (DecayingParticle_->mass()->variableStatus() == VariableStatus::changed
-            or DecayingParticle_->radialSize()->variableStatus() == VariableStatus::changed) {
-        // if so, set calculationStatus to uncalculated for every particleCombination
-        for (const auto& pc_symIndex : symmetrizationIndices()) {
-            D.status(*BarrierFactor_, pc_symIndex.second) = CalculationStatus::uncalculated;
-            return CalculationStatus::uncalculated;
+    for (auto& p : parameters())
+        if (p->variableStatus() == VariableStatus::changed) {
+            D.set(*BarrierFactor_, CalculationStatus::uncalculated);
+            return;
         }
-    }
-
-    return CalculationStatus::calculated;
-}
-
-//-------------------------
-void BlattWeisskopf::setParameterFlagsToUnchanged()
-{
-    if (DecayingParticle_->mass()->variableStatus() == VariableStatus::changed)
-        DecayingParticle_->mass()->setVariableStatus(VariableStatus::unchanged);
-
-    if (DecayingParticle_->radialSize()->variableStatus() == VariableStatus::changed)
-        DecayingParticle_->radialSize()->setVariableStatus(VariableStatus::unchanged);
 }
 
 //-------------------------

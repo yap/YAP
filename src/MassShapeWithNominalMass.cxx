@@ -1,7 +1,6 @@
 #include "MassShapeWithNominalMass.h"
 
 #include "CachedDataValue.h"
-#include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"
@@ -11,28 +10,6 @@
 #include "Resonance.h"
 
 namespace yap {
-
-//-------------------------
-CalculationStatus MassShapeWithNominalMass::updateCalculationStatus(DataPartition& D) const
-{
-    // check if Resonance's mass has changed
-    if (mass()->variableStatus() == VariableStatus::changed) {
-        // if so, set calculationStatus to uncalculated for every particleCombination
-        for (const auto& pc_symIndex : symmetrizationIndices()) {
-            D.status(*T(), pc_symIndex.second) = CalculationStatus::uncalculated;
-        }
-        return CalculationStatus::uncalculated;
-    }
-
-    return CalculationStatus::calculated;
-}
-
-//-------------------------
-void MassShapeWithNominalMass::setParameterFlagsToUnchanged()
-{
-    if (mass()->variableStatus() == VariableStatus::changed)
-        mass()->setVariableStatus(VariableStatus::unchanged);
-}
 
 //-------------------------
 std::shared_ptr<RealParameter> MassShapeWithNominalMass::mass()
@@ -48,6 +25,13 @@ void MassShapeWithNominalMass::setParameters(const ParticleTableEntry& entry)
     try {
         mass()->setValue(entry.Mass);
     } catch (const exceptions::ResonanceUnset&) { /* ignore */ }
+}
+
+//-------------------------
+void MassShapeWithNominalMass::setResonance(Resonance* r)
+{
+    MassShape::setResonance(r);
+    addParameter(mass());
 }
 
 }

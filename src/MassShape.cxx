@@ -5,6 +5,7 @@
 #include "DataPartition.h"
 #include "Exceptions.h"
 #include "logging.h"
+#include "Parameter.h"
 #include "ParticleCombination.h"
 #include "Resonance.h"
 
@@ -31,6 +32,17 @@ void MassShape::calculate(DataPartition& D) const
 
     }
 }
+
+//-------------------------
+void MassShape::updateCalculationStatus(DataPartition& D) const
+{
+    for (auto& p : parameters())
+        if (p->variableStatus() == VariableStatus::changed) {
+            D.set(*T(), CalculationStatus::uncalculated);
+            return;
+        }
+}
+
 //-------------------------
 std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {

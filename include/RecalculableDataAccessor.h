@@ -24,11 +24,14 @@
 #include "fwd/CalculationStatus.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
+#include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
 
 #include "DataAccessor.h"
 
 #include <complex>
+#include <memory>
+#include <set>
 
 namespace yap {
 
@@ -45,18 +48,32 @@ public:
     virtual void calculate(DataPartition& D) const = 0;
 
     /// update the calculationStatus for a DataPartition
-    /// must be overloaded in derived class
-    virtual CalculationStatus updateCalculationStatus(DataPartition& D) const = 0;
+    virtual void updateCalculationStatus(DataPartition& D) const = 0;
 
     /// set VariableStatus of all Parameters to unchanged (or leave fixed)
-    /// must be overloaded in derived class
-    virtual void setParameterFlagsToUnchanged() = 0;
+    void setParameterFlagsToUnchanged();
 
     /// \return value calculated for DataPoint and ParticleCombination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
     /// must be overloaded in derived class
     virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+
+    const ParameterSet parameters() const
+    { return parameters_; }
+
+    ParameterSet parameters()
+    { return parameters_; }
+
+protected:
+
+    void addParameter(std::shared_ptr<ParameterBase> p)
+    { parameters_.insert(p); }
+
+private:
+
+    /// Set of parameters this RecalculableDataAccessor depends on
+    ParameterSet parameters_;
 
 };
 

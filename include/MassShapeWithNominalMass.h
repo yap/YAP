@@ -21,9 +21,6 @@
 #ifndef yap_MassShapeWithNominalMass_h
 #define yap_MassShapeWithNominalMass_h
 
-#include "fwd/DataPoint.h"
-#include "fwd/Parameter.h"
-#include "fwd/ParticleCombination.h"
 #include "fwd/ParticleFactory.h"
 
 #include "MassShape.h"
@@ -43,12 +40,6 @@ public:
     /// Constructor
     MassShapeWithNominalMass() : MassShape() {}
 
-    /// update the calculationStatus for a DataPartition
-    virtual CalculationStatus updateCalculationStatus(DataPartition& D) const override;
-
-    /// set VariableStatus of all Parameters to unchanged (or leave fixed)
-    virtual void setParameterFlagsToUnchanged() override;
-
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;
@@ -61,7 +52,12 @@ public:
     { return const_cast<MassShapeWithNominalMass*>(this)->mass(); }
 
     virtual std::string data_accessor_type() const override
-    {return "MassShapeWithNominalMass"; }
+    { return "MassShapeWithNominalMass"; }
+
+protected:
+
+    /// also add mass as parameter
+    virtual void setResonance(Resonance* r) override;
 
 };
 

@@ -80,6 +80,9 @@ public:
     Resonance* resonance() const
     { return Resonance_; }
 
+    /// update the calculationStatus for a DataPartition
+    virtual void updateCalculationStatus(DataPartition& D) const override final;
+
     /// get raw pointer to Model through resonance
     const Model* model() const override;
 

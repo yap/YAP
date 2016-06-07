@@ -15,41 +15,6 @@
 namespace yap {
 
 //-------------------------
-CalculationStatus Flatte::updateCalculationStatus(DataPartition& D) const
-{
-    // check if couplings or masses have changed
-    auto varStat = VariableStatus::unchanged;
-    for (const auto& fc : FlatteChannels_)
-        if (fc.Coupling->variableStatus() == VariableStatus::changed
-                or fc.Mass->variableStatus() == VariableStatus::changed) {
-            varStat = VariableStatus::changed;
-            break;
-        }
-
-    // if so, set calculationStatus to uncalculated for every particleCombination
-    if (varStat == VariableStatus::changed)
-        for (const auto& pc_symIndex : symmetrizationIndices()) {
-            D.status(*T(), pc_symIndex.second) = CalculationStatus::uncalculated;
-            return CalculationStatus::uncalculated;
-        }
-
-    return CalculationStatus::calculated;
-}
-
-//-------------------------
-void Flatte::setParameterFlagsToUnchanged()
-{
-    for (const auto& fc : FlatteChannels_) {
-        if (fc.Coupling->variableStatus() == VariableStatus::changed)
-            fc.Coupling->setVariableStatus(VariableStatus::unchanged);
-
-
-        if (fc.Mass->variableStatus() == VariableStatus::changed)
-            fc.Mass->setVariableStatus(VariableStatus::unchanged);
-    }
-}
-
-//-------------------------
 void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
 {
     if (!coupling)
@@ -57,6 +22,9 @@ void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr
     if (!mass)
         throw exceptions::Exception("Mass is unset", "Flatte::addChannel");
     FlatteChannels_.push_back(FlatteChannel(coupling, mass));
+
+    addParameter(coupling);
+    addParameter(mass);
 }
 
 //-------------------------

@@ -41,6 +41,8 @@ void PoleMass::setResonance(Resonance* r)
 
     // replace resonance's mass with real component of pole mass
     replaceResonanceMass(std::make_shared<RealComponentParameter>(Mass_));
+
+    addParameter(mass());
 }
 
 //-------------------------
