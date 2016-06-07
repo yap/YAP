@@ -21,9 +21,10 @@
 #ifndef yap_RecalculableDataAccessor_h
 #define yap_RecalculableDataAccessor_h
 
-#include "fwd/RecalculableDataAccessor.h"
+#include "fwd/CalculationStatus.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
+#include "fwd/RecalculableDataAccessor.h"
 
 #include "DataAccessor.h"
 
@@ -39,9 +40,13 @@ public:
     explicit RecalculableDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
         : DataAccessor(equiv) {}
 
-    /// calculate for every data point in a data partition
+    /// calculate for every data point in a DataPartition
     /// must be overloaded in derived class
     virtual void calculate(DataPartition& D) const = 0;
+
+    /// update the calculationStatus for a DataPartition
+    /// must be overloaded in derived class
+    virtual CalculationStatus updateCalculationStatus(DataPartition& D) const = 0;
 
     /// \return value calculated for DataPoint and ParticleCombination
     /// \param d DataPoint

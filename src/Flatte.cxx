@@ -15,6 +15,28 @@
 namespace yap {
 
 //-------------------------
+CalculationStatus Flatte::updateCalculationStatus(DataPartition& D) const
+{
+    // check if couplings or masses have changed
+    auto varStat = VariableStatus::unchanged;
+    for (const auto& fc : FlatteChannels_)
+        if (fc.Coupling->variableStatus() == VariableStatus::changed
+                or fc.Mass->variableStatus() == VariableStatus::changed) {
+            varStat = VariableStatus::changed;
+            break;
+        }
+
+    // if so, set calculationStatus to uncalculated for every particleCombination
+    if (varStat == VariableStatus::changed)
+        for (const auto& pc_symIndex : symmetrizationIndices()) {
+            D.status(*T(), pc_symIndex.second) = CalculationStatus::uncalculated;
+            return CalculationStatus::uncalculated;
+        }
+
+    return CalculationStatus::calculated;
+}
+
+//-------------------------
 void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
 {
     if (!coupling)

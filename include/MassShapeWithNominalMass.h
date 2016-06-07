@@ -43,6 +43,9 @@ public:
     /// Constructor
     MassShapeWithNominalMass() : MassShape() {}
 
+    /// update the calculationStatus for a DataPartition
+    virtual CalculationStatus updateCalculationStatus(DataPartition& D) const override;
+
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;

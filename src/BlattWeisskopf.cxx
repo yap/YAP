@@ -146,6 +146,22 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 }
 
 //-------------------------
+CalculationStatus BlattWeisskopf::updateCalculationStatus(DataPartition& D) const
+{
+    // check if DecayingParticle's mass or radialSize have changed
+    if (DecayingParticle_->mass()->variableStatus() == VariableStatus::changed
+            or DecayingParticle_->radialSize()->variableStatus() == VariableStatus::changed) {
+        // if so, set calculationStatus to uncalculated for every particleCombination
+        for (const auto& pc_symIndex : symmetrizationIndices()) {
+            D.status(*BarrierFactor_, pc_symIndex.second) = CalculationStatus::uncalculated;
+            return CalculationStatus::uncalculated;
+        }
+    }
+
+    return CalculationStatus::calculated;
+}
+
+//-------------------------
 const Model* BlattWeisskopf::model() const
 {
     return DecayingParticle_->model();
