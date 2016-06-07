@@ -111,10 +111,6 @@ public:
     const Model* model() const
     { return Model_; }
 
-    /// \return global status manager
-    StatusManager& globalStatusManager()
-    { return GlobalStatusManager_; }
-
     /// grant friend status to DataPartition to access non-const dataPoints()
     friend DataPartition;
 
@@ -135,8 +131,6 @@ private:
     /// Associated model
     const Model* Model_;
 
-    /// Global StatusManager
-    StatusManager GlobalStatusManager_;
 };
 
 /// swap
