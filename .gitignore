@@ -5,3 +5,5 @@ docs/latex
 \#*\#
 .\#*
 lib/
+# Stuff left from merge conflicts
+*.orig
