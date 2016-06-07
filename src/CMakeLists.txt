@@ -25,6 +25,7 @@ set(YAP_SOURCES
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
+  ModelIntegral.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx
