@@ -48,9 +48,6 @@ public:
     /// \param mass Mass of resonance [GeV]
     PoleMass(std::complex<double> mass = std::complex<double>(-1, -1));
 
-    /// update the calculationStatus for a DataPartition
-    virtual CalculationStatus updateCalculationStatus(DataPartition& D) const override;
-
     /// Calculate complex amplitude
     /// \param d DataPoint to calculate with
     /// \param pc (shared_ptr to) ParticleCombination to calculate for

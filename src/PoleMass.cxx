@@ -20,20 +20,6 @@ PoleMass::PoleMass(std::complex<double> mass) :
 }
 
 //-------------------------
-CalculationStatus PoleMass::updateCalculationStatus(DataPartition& D) const
-{
-    // check if or mass has changed
-    if (mass()->variableStatus() == VariableStatus::changed)
-        // if so, set calculationStatus to uncalculated for every particleCombination
-        for (const auto& pc_symIndex : symmetrizationIndices()) {
-            D.status(*T(), pc_symIndex.second) = CalculationStatus::uncalculated;
-            return CalculationStatus::uncalculated;
-        }
-
-    return CalculationStatus::calculated;
-}
-
-//-------------------------
 void PoleMass::setParameters(const ParticleTableEntry& entry)
 {
     auto m = mass()->value();
