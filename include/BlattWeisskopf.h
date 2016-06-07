@@ -75,6 +75,9 @@ public:
     /// update the calculationStatus for a DataPartition
     virtual CalculationStatus updateCalculationStatus(DataPartition& D) const override;
 
+    /// set VariableStatus of all Parameters to unchanged (or leave fixed)
+    virtual void setParameterFlagsToUnchanged() override;
+
     /// check consistency of object
     virtual bool consistent() const
     { return DataAccessor::consistent(); }

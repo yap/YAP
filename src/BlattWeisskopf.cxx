@@ -159,6 +159,16 @@ CalculationStatus BlattWeisskopf::updateCalculationStatus(DataPartition& D) cons
 }
 
 //-------------------------
+void BlattWeisskopf::setParameterFlagsToUnchanged()
+{
+    if (DecayingParticle_->mass()->variableStatus() == VariableStatus::changed)
+        DecayingParticle_->mass()->setVariableStatus(VariableStatus::unchanged);
+
+    if (DecayingParticle_->radialSize()->variableStatus() == VariableStatus::changed)
+        DecayingParticle_->radialSize()->setVariableStatus(VariableStatus::unchanged);
+}
+
+//-------------------------
 const Model* BlattWeisskopf::model() const
 {
     return DecayingParticle_->model();

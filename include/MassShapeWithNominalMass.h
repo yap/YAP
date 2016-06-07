@@ -46,6 +46,9 @@ public:
     /// update the calculationStatus for a DataPartition
     virtual CalculationStatus updateCalculationStatus(DataPartition& D) const override;
 
+    /// set VariableStatus of all Parameters to unchanged (or leave fixed)
+    virtual void setParameterFlagsToUnchanged() override;
+
     /// Set parameters from ParticleTableEntry
     /// \param entry ParticleTableEntry containing information to create mass shape object
     virtual void setParameters(const ParticleTableEntry& entry) override;

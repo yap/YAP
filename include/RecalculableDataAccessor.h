@@ -48,6 +48,10 @@ public:
     /// must be overloaded in derived class
     virtual CalculationStatus updateCalculationStatus(DataPartition& D) const = 0;
 
+    /// set VariableStatus of all Parameters to unchanged (or leave fixed)
+    /// must be overloaded in derived class
+    virtual void setParameterFlagsToUnchanged() = 0;
+
     /// \return value calculated for DataPoint and ParticleCombination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination

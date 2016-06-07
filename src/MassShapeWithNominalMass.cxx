@@ -28,6 +28,13 @@ CalculationStatus MassShapeWithNominalMass::updateCalculationStatus(DataPartitio
 }
 
 //-------------------------
+void MassShapeWithNominalMass::setParameterFlagsToUnchanged()
+{
+    if (mass()->variableStatus() == VariableStatus::changed)
+        mass()->setVariableStatus(VariableStatus::unchanged);
+}
+
+//-------------------------
 std::shared_ptr<RealParameter> MassShapeWithNominalMass::mass()
 {
     if (!resonance())

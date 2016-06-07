@@ -37,6 +37,19 @@ CalculationStatus Flatte::updateCalculationStatus(DataPartition& D) const
 }
 
 //-------------------------
+void Flatte::setParameterFlagsToUnchanged()
+{
+    for (const auto& fc : FlatteChannels_) {
+        if (fc.Coupling->variableStatus() == VariableStatus::changed)
+            fc.Coupling->setVariableStatus(VariableStatus::unchanged);
+
+
+        if (fc.Mass->variableStatus() == VariableStatus::changed)
+            fc.Mass->setVariableStatus(VariableStatus::unchanged);
+    }
+}
+
+//-------------------------
 void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
 {
     if (!coupling)
