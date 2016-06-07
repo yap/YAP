@@ -95,13 +95,13 @@ const VariableStatus DecayTree::dataDependentAmplitudeStatus(const StatusManager
 }
 
 //-------------------------
-const std::complex<double> DecayTree::dataIndependentAmplitude(const DataPoint& d) const
+const std::complex<double> DecayTree::dataIndependentAmplitude() const
 {
     // spin amplitude
     auto A = FreeAmplitude_->value();
     // likewise for daughters
     for (const auto& d_dt : DaughterDecayTrees_)
-        A *= d_dt.second->dataIndependentAmplitude(d);
+        A *= d_dt.second->dataIndependentAmplitude();
     return A;
 }
 

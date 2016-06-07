@@ -56,8 +56,7 @@ public:
     explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
 
     /// \return product of all free amplitudes in this decay tree
-    /// \param d DataPoint
-    const std::complex<double> dataIndependentAmplitude(const DataPoint& d) const;
+    const std::complex<double> dataIndependentAmplitude() const;
 
     /// \return product of all particle-combination-dependent amplitudes in this tree
     /// summing over particle combinations of DecayChannel inside FreeAmplitude
@@ -139,14 +138,14 @@ unsigned depth(const DecayTree& DT);
 /// \param dt DecayTree to operate on
 /// \param d DataPoint to evaluate on
 inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d)
-{ return dt.dataIndependentAmplitude(d) * dt.dataDependentAmplitude(d); }
+{ return dt.dataIndependentAmplitude() * dt.dataDependentAmplitude(d); }
 
 /// \return amplitude evaluated for DataPoint for particular symmetrization
 /// \param dt DecayTree to operate on
 /// \param d DataPoint to evaluate on
 /// \param pc ParticleCombination
 inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc)
-{ return dt.dataIndependentAmplitude(d) * dt.dataDependentAmplitude(d, pc); }
+{ return dt.dataIndependentAmplitude() * dt.dataDependentAmplitude(d, pc); }
 
 /// \return sum of amplitudes of decay trees in a vector
 /// \param dtv DecayTreeVector to sum over
