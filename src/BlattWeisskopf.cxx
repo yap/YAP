@@ -51,11 +51,6 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
         addToModel();
 
         BarrierFactor_ = RealCachedDataValue::create(this);
-        BarrierFactor_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
-        BarrierFactor_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
-        BarrierFactor_->addDependency(DecayingParticle_->mass());
-        BarrierFactor_->addDependency(DecayingParticle_->radialSize());
-        BarrierFactor_->addDependency(model()->measuredBreakupMomenta()->breakupMomenta());
     }
 
     // if L == 0, values are all always 1, no storage in DataPoint necessary
@@ -148,6 +143,8 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 //-------------------------
 CalculationStatus BlattWeisskopf::updateCalculationStatus(DataPartition& D) const
 {
+    // assume that fourMomenta and measuredBreakupMomenta have not changed!
+
     // check if DecayingParticle's mass or radialSize have changed
     if (DecayingParticle_->mass()->variableStatus() == VariableStatus::changed
             or DecayingParticle_->radialSize()->variableStatus() == VariableStatus::changed) {

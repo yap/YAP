@@ -19,7 +19,6 @@ BreitWigner::BreitWigner(double w) :
     MassShapeWithNominalMass(),
     Width_(std::make_shared<RealParameter>(w))
 {
-    T()->addDependency(width());
 }
 
 //-------------------------

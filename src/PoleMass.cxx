@@ -17,7 +17,6 @@ PoleMass::PoleMass(std::complex<double> mass) :
     MassShape(),
     Mass_(std::make_shared<ComplexParameter>(mass))
 {
-    T()->addDependency(Mass_);
 }
 
 //-------------------------
@@ -46,25 +45,16 @@ void PoleMass::setParameters(const ParticleTableEntry& entry)
 }
 
 //-------------------------
-void PoleMass::setDependenciesFromResonance()
+void PoleMass::setResonance(Resonance* r)
 {
+    MassShape::setResonance(r);
+
     // set real component of mass from resonance, if yet unset
     if (real(Mass_->value()) < 0)
         Mass_->setValue(std::complex<double>(resonance()->mass()->value(), imag(Mass_->value())));
 
     // replace resonance's mass with real component of pole mass
     replaceResonanceMass(std::make_shared<RealComponentParameter>(Mass_));
-}
-
-//-------------------------
-void PoleMass::setDependenciesFromModel()
-{
-    if (!model())
-        throw exceptions::Exception("Model unset", "PoleMass::setDependenciesFromResonance");
-    if (!model()->fourMomenta())
-        throw exceptions::Exception("Model's FourMomenta unset", "PoleMass::setDependenciesFromResonance");
-
-    T()->addDependency(model()->fourMomenta()->mass());
 }
 
 //-------------------------

@@ -52,22 +52,12 @@ bool MassShape::consistent() const
 }
 
 //-------------------------
-void MassShape::addToModel()
-{
-    DataAccessor::addToModel();
-    setDependenciesFromModel();
-}
-
-//-------------------------
 void MassShape::setResonance(Resonance* r)
 {
     if (Resonance_)
         throw exceptions::Exception("MassShape already has owning Resonance", "MassShape::setResonance");
 
     Resonance_ = r;
-
-    if (Resonance_)
-        setDependenciesFromResonance();
 }
 
 //-------------------------

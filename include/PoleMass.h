@@ -80,11 +80,8 @@ protected:
     /// \param si SymmetrizationIndec to calculate for
     virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const override;
 
-    /// borrow mass from owner
-    virtual void setDependenciesFromResonance() override;
-
-    /// set dependency on masses from model
-    virtual void setDependenciesFromModel() override;
+    /// also replace real part of mass with resonance's mass
+    virtual void setResonance(Resonance* r) override;
 
     /// Complex mass [GeV]
     std::shared_ptr<ComplexParameter> Mass_;

@@ -92,9 +92,6 @@ protected:
     /// \param si SymmetrizationIndec to calculate for
     virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const override;
 
-    /// borrow dependencies from model
-    virtual void setDependenciesFromModel() override;
-
     std::vector<FlatteChannel> FlatteChannels_;
 
 };

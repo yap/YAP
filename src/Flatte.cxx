@@ -44,21 +44,12 @@ void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr
     if (!mass)
         throw exceptions::Exception("Mass is unset", "Flatte::addChannel");
     FlatteChannels_.push_back(FlatteChannel(coupling, mass));
-    T()->addDependency(FlatteChannels_.back().Coupling);
-    T()->addDependency(FlatteChannels_.back().Mass);
 }
 
 //-------------------------
 void Flatte::addChannel(double coupling, double mass)
 {
     addChannel(std::make_shared<RealParameter>(coupling), std::make_shared<RealParameter>(mass));
-}
-
-//-------------------------
-void Flatte::setDependenciesFromModel()
-{
-    MassShapeWithNominalMass::setDependenciesFromModel();
-    T()->addDependency(model()->fourMomenta()->mass());
 }
 
 //-------------------------

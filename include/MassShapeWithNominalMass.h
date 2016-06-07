@@ -60,14 +60,6 @@ public:
     virtual std::string data_accessor_type() const override
     {return "MassShapeWithNominalMass"; }
 
-protected:
-
-    /// set dependency on resonance's mass
-    virtual void setDependenciesFromResonance() override;
-
-    /// set dependency on masses from model
-    virtual void setDependenciesFromModel() override;
-
 };
 
 }

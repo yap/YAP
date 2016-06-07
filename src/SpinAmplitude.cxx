@@ -32,16 +32,6 @@ SpinAmplitude::SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, u
 }
 
 //-------------------------
-void SpinAmplitude::setModel(Model* m)
-{
-    StaticDataAccessor::setModel(m);
-
-    // set cached spin amplitudes' dependencies on helicity angles
-    for (auto& a : amplitudeSet())
-        setDependencies(a);
-}
-
-//-------------------------
 void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set all amplitudes Uncalculated
