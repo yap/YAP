@@ -34,36 +34,6 @@ void Flatte::addChannel(double coupling, double mass)
 }
 
 //-------------------------
-std::complex<double> Flatte::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
-{
-    unsigned symIndex = symmetrizationIndex(pc);
-
-    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
-
-        // calculate width term
-        auto w = Complex_0;
-        // sum of coupling * complex-breakup-momentum
-        for (const auto& fc : FlatteChannels_)
-            w += fc.Coupling->value() * std::sqrt(std::complex<double>(model()->fourMomenta()->m2(d, pc) / 4. - pow(fc.Mass->value(), 2), 0));
-        // sum * i * 2 / mass
-        w *= Complex_i * 2. / model()->fourMomenta()->m(d, pc);
-
-        // T = 1 / (M^2 - m^2 - width-term)
-        std::complex<double> t = 1. / (pow(mass()->value(), 2) - model()->fourMomenta()->m2(d, pc) - w);
-
-        T()->setValue(t, d, symIndex, sm);
-
-        FDEBUG("calculated T = " << t << " and stored it in the cache");
-        return t;
-    }
-
-    FDEBUG("using cached T = " << T()->value(d, symIndex));
-
-    // else return cached value
-    return T()->value(d, symIndex);
-}
-
-//-------------------------
 void Flatte::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
     // precalculate

@@ -61,41 +61,6 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
 }
 
 //-------------------------
-double BlattWeisskopf::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
-{
-    // spin 0 always has factors 1
-    if (L() == 0)
-        return 1.;
-
-    unsigned symIndex = symmetrizationIndex(pc);
-
-    if (sm.status(*BarrierFactor_, symIndex) == CalculationStatus::uncalculated) {
-
-        double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-        double m_a = model()->fourMomenta()->m(d, pc->daughters().at(0));
-        double m_b = model()->fourMomenta()->m(d, pc->daughters().at(1));
-
-        // nominal breakup momentum
-        double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
-
-        // measured breakup momentum
-        double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc);
-
-        double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
-        double f2_nomi = f_inverse_square(L_, r2 * q2_nomi);
-        double f2_meas = f_inverse_square(L_, r2 * q2_meas);
-
-        double barrier_factor = sqrt(f2_nomi / f2_meas);
-
-        BarrierFactor_->setValue(barrier_factor, d, symIndex, sm);
-
-        return barrier_factor;
-    }
-
-    return BarrierFactor_->value(d, symIndex);
-}
-
-//-------------------------
 std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return (L_ == 0) ? 1 : BarrierFactor_->value(d, symmetrizationIndex(pc));

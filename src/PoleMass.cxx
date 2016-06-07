@@ -46,29 +46,6 @@ void PoleMass::setResonance(Resonance* r)
 }
 
 //-------------------------
-std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
-{
-    unsigned symIndex = symmetrizationIndex(pc);
-
-    // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
-
-        // T = 1 / (M^2 - m^2)
-        std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));
-
-        T()->setValue(t, d, symIndex, sm);
-
-        FDEBUG("calculated T = " << t << " and stored it in the cache");
-        return t;
-    }
-
-    FDEBUG("using cached T = " << T()->value(d, symIndex));
-
-    // else return cached value
-    return T()->value(d, symIndex);
-}
-
-//-------------------------
 void PoleMass::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
     auto M2 = pow(Mass_->value(), 2);

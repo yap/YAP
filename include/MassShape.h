@@ -50,13 +50,6 @@ public:
     /// Constructor
     MassShape();
 
-    /// Calculate complex amplitude.
-    /// Must be overrided in derived classes.
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const = 0;
-
     /// \return dynamic amplitude for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination

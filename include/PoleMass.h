@@ -48,12 +48,6 @@ public:
     /// \param mass Mass of resonance [GeV]
     PoleMass(std::complex<double> mass = std::complex<double>(-1, -1));
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
-
     /// Set parameters from ParticleTableEntry;
     /// If width is available, sets M = mass + i/2 * width
     /// \param entry ParticleTableEntry containing information to create mass shape object
