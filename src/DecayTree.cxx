@@ -68,27 +68,20 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
     return A;
 }
 
-//-------------------------
-const VariableStatus DecayTree::dataDependentAmplitudeStatus(const StatusManager& sm) const
-{
-    // check all particle combinations, terminating as soon as one is seen to have changed
-    for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations())
-        if (dataDependentAmplitudeStatus(sm, pc) == VariableStatus::changed)
-            return VariableStatus::changed;
-    // else unchanged
-    return VariableStatus::unchanged;
-}
+/// \todo replace with code to be pulled from Johannes
+const VariableStatus variableStatus(const RecalculableDataAccessor& rda) 
+{ return VariableStatus::changed; }
 
 //-------------------------
-const VariableStatus DecayTree::dataDependentAmplitudeStatus(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const
+const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
 {
     // check status of recalculable components, terminating as soon as one is seen to have changed
     for (const auto& rda : RecalculableDataAccessors_)
-        if (rda->status(sm, pc) == VariableStatus::changed)
+        if (variableStatus(*rda) == VariableStatus::changed)
             return VariableStatus::changed;
     // check daughters, terminating as soon as one is seen to have changed
     for (const auto& d_dt : DaughterDecayTrees_)
-        if (d_dt.second->dataDependentAmplitudeStatus(sm, pc->daughters()[d_dt.first]) == VariableStatus::changed)
+        if (d_dt.second->dataDependentAmplitudeStatus() == VariableStatus::changed)
             return VariableStatus::changed;
     // else unchanged
     return VariableStatus::unchanged;

@@ -69,13 +69,7 @@ public:
     const std::complex<double> dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// \return VariableStatus of dataDependentAmplitude
-    /// \param sm StatusManager to check for statuses
-    const VariableStatus dataDependentAmplitudeStatus(const StatusManager& sm) const;
-
-    /// \return VariableStatus of dataDependentAmplitude
-    /// \param sm StatusManager to check for statuses
-    /// \param shared_ptr<ParticleCombination> to check for
-    const VariableStatus dataDependentAmplitudeStatus(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const;
+    const VariableStatus dataDependentAmplitudeStatus() const;
 
     /// \return FreeAmplitude_
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const

@@ -51,12 +51,6 @@ std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<
 }
 
 //-------------------------
-const VariableStatus MassShape::status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const
-{
-    return sm.status(*T(), symmetrizationIndex(pc)).Variable;
-}
-
-//-------------------------
 bool MassShape::consistent() const
 {
     bool C = DataAccessor::consistent();

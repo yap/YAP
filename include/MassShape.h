@@ -60,10 +60,6 @@ public:
     /// \param D DataPartition to calculate on
     virtual void calculate(DataPartition& D) const override final;
 
-    /// \return VariableStatus of amplitude
-    /// \param sm StatusManager to check for status
-    virtual const VariableStatus status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const override;
-
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
     /// \param entry ParticleTableEntry containing information to create mass shape object
