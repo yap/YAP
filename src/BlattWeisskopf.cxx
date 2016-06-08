@@ -118,12 +118,6 @@ void BlattWeisskopf::updateCalculationStatus(StatusManager& D) const
 }
 
 //-------------------------
-const VariableStatus BlattWeisskopf::status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const
-{
-    return sm.status(*BarrierFactor_, symmetrizationIndex(pc)).Variable;
-}
-
-//-------------------------
 const Model* BlattWeisskopf::model() const
 {
     return DecayingParticle_->model();

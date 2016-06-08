@@ -75,10 +75,6 @@ private:
     /// Set of parameters this RecalculableDataAccessor depends on
     ParameterSet parameters_;
 
-    /// \return VariableStatus of value
-    /// \param sm StatusManager to check for status
-    virtual const VariableStatus status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const = 0;
-
 };
 
 const VariableStatus variableStatus(const RecalculableDataAccessor&);

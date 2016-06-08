@@ -68,10 +68,6 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
     return A;
 }
 
-/// \todo replace with code to be pulled from Johannes
-const VariableStatus variableStatus(const RecalculableDataAccessor& rda) 
-{ return VariableStatus::changed; }
-
 //-------------------------
 const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
 {

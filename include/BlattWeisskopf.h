@@ -69,10 +69,6 @@ public:
     /// update the calculationStatus for a DataPartition
     virtual void updateCalculationStatus(StatusManager& D) const override;
 
-    /// \return VariableStatus of Barrier Factor
-    /// \param sm StatusManager to check for status
-    virtual const VariableStatus status(const StatusManager& sm, const std::shared_ptr<ParticleCombination>& pc) const override;
-
     /// check consistency of object
     virtual bool consistent() const
     { return DataAccessor::consistent(); }
