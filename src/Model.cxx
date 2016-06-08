@@ -46,6 +46,10 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
 //-------------------------
 void Model::calculate(DataPartition& D) const
 {
+    // update calculation statuses
+    for (const auto& rda : RecalculableDataAccessors_)
+        rda->updateCalculationStatus(D);
+
     // call calculate on all RecalculableDataAccessors
     for (const auto& rda : RecalculableDataAccessors_)
         rda->calculate(D);
@@ -605,11 +609,8 @@ DataSet Model::createDataSet(size_t n)
 //-------------------------
 void Model::setParameterFlagsToUnchanged()
 {
-    for (auto& d : DataAccessors_)
-        for (auto& c : d->cachedDataValues())
-            for (auto& p : c->parameterDependencies())
-                if (p->variableStatus() == VariableStatus::changed)
-                    p->setVariableStatus(VariableStatus::unchanged);
+    for (auto& d : RecalculableDataAccessors_)
+        d->setParameterFlagsToUnchanged();
 }
 
 //-------------------------
@@ -652,19 +653,6 @@ void Model::printFlags(const StatusManager& sm) const
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
                 std::cout << sm.status(*c, i) << "; ";
             std::cout << "\n";
-
-            for (auto& p : c->parameterDependencies())
-                std::cout << "    depends on Parameter " << p << ": " << p->variableStatus() << "\n";
-
-            for (auto& p : c->cachedDataValueDependencies()) {
-                std::cout << "    depends on CachedDataValue " << p << ": ";
-                for (unsigned i = 0; i < p->owner()->nSymmetrizationIndices(); ++i)
-                    std::cout << sm.status(*p, i) << "; ";
-                std::cout << "\n";
-            }
-
-            for (auto& d : c->daughterCachedDataValueDependencies())
-                std::cout << "    depends on daughterCachedDataValue " << d.CDV << ": " << sm.status(*d.CDV, 0) << "; ...\n";
         }
     }
 

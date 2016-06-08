@@ -42,13 +42,6 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, un
 }
 
 //-------------------------
-void HelicitySpinAmplitude::setDependencies(std::shared_ptr<CachedDataValue> a)
-{
-    a->addDependency(model()->helicityAngles()->phi());
-    a->addDependency(model()->helicityAngles()->theta());
-}
-
-//-------------------------
 std::complex<double> HelicitySpinAmplitude::calc(int two_M, int two_m1, int two_m2,
         const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {

@@ -205,7 +205,7 @@ public:
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
 
-    /// Set VariableStatus'es of all Parameter's to calculated, or leave as fixed
+    /// Set VariableStatus'es of all Parameter's to unchanged, or leave as fixed
     void setParameterFlagsToUnchanged();
 
     /// Print the list of DataAccessor's

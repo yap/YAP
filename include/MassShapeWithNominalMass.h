@@ -21,9 +21,6 @@
 #ifndef yap_MassShapeWithNominalMass_h
 #define yap_MassShapeWithNominalMass_h
 
-#include "fwd/DataPoint.h"
-#include "fwd/Parameter.h"
-#include "fwd/ParticleCombination.h"
 #include "fwd/ParticleFactory.h"
 
 #include "MassShape.h"
@@ -55,15 +52,12 @@ public:
     { return const_cast<MassShapeWithNominalMass*>(this)->mass(); }
 
     virtual std::string data_accessor_type() const override
-    {return "MassShapeWithNominalMass"; }
+    { return "MassShapeWithNominalMass"; }
 
 protected:
 
-    /// set dependency on resonance's mass
-    virtual void setDependenciesFromResonance() override;
-
-    /// set dependency on masses from model
-    virtual void setDependenciesFromModel() override;
+    /// also add mass as parameter
+    virtual void setResonance(Resonance* r) override;
 
 };
 

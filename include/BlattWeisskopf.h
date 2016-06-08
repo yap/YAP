@@ -57,12 +57,6 @@ public:
     unsigned L() const
     { return L_; }
 
-    /// Calculate amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param sm StatusManager to update
-    virtual double amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const;
-
     /// \return Blatt-Weisskopf barrier factor for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
@@ -71,6 +65,9 @@ public:
     /// Calculate barrier factors for and store into each data point in a data partition
     /// \param D DataPartition to calculate over
     virtual void calculate(DataPartition& D) const override;
+
+    /// update the calculationStatus for a DataPartition
+    virtual void updateCalculationStatus(StatusManager& D) const override;
 
     /// check consistency of object
     virtual bool consistent() const

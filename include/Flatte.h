@@ -59,12 +59,6 @@ public:
     /// Constructor
     Flatte() : MassShapeWithNominalMass() {}
 
-    /// Calculate complex amplitude
-    /// \param d DataPoint to calculate with
-    /// \param pc (shared_ptr to) ParticleCombination to calculate for
-    /// \param sm StatusManager to update
-    virtual std::complex<double> amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const override;
-
     /// Add FlatteChannel
     void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);
 
@@ -89,13 +83,7 @@ protected:
     /// \param si SymmetrizationIndec to calculate for
     virtual void calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const override;
 
-    /// borrow dependencies from model
-    virtual void setDependenciesFromModel() override;
-
     std::vector<FlatteChannel> FlatteChannels_;
-
-    /// width-like term := i 2 / m * sum_channels coupling * breakup momentum(m -> mass + mass)
-    std::shared_ptr<ComplexCachedDataValue> WidthTerm_;
 
 };
 

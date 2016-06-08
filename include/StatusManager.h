@@ -110,18 +110,7 @@ public:
     /// \param sm StatusManager to copy from
     void copyCalculationStatuses(const StatusManager& sm);
 
-    /// update CalculationStatus'es
-    void updateCalculationStatuses(const DataAccessorSet& sDA);
-
 private:
-
-    /// update CalculationStatus'es for a particular CachedDataValue;
-    /// called by updateCalculationStatuses(const DataAccessorSet&)
-    void updateCalculationStatuses(const CachedDataValue& cdv);
-
-    /// update CalculationStatus'es for a particular CachedDataValue and ParticleCombination;
-    /// called by updateCalculationStatuses(const CachedDataValue&)
-    void updateCalculationStatus(const CachedDataValue& cdv, const std::shared_ptr<ParticleCombination>& pc, size_t sym_index);
 
     /// vector of Status;
     /// first index is for DataAccessor;

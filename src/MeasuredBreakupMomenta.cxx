@@ -16,9 +16,6 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
 {
     if (!model()->fourMomenta())
         throw exceptions::Exception("Model's FourMomenta unset", "MeasuredBreakupMomenta::MeasuredBreakupMomenta");
-    Q2_->addDependency(model()->fourMomenta()->mass());
-    Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 0));
-    Q2_->addDependency(DaughterCachedDataValue(model()->fourMomenta()->mass(), 1));
 }
 
 //-------------------------
