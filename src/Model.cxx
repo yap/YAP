@@ -73,36 +73,10 @@ double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
 }
 
 //-------------------------
-DataSet& Model::updateDataSetStatusManager(DataPartition& DP) const
-{
-    if (!(DP.begin() != DP.end()))
-        throw exceptions::Exception("DataPartition is empty", "Model::updateStatusManager");
-    // get DataSet
-    auto DS = (*DP.begin()).DataSet_;
-    if (!DS)
-        throw exceptions::Exception("DataSet is nullptr", "Model::updateStatusManager");
-
-    // update global calculation statuses (managed by data set)
-    DS->globalStatusManager().updateCalculationStatuses(dataAccessors());
-
-    return *DS;
-}
-
-//-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
 {
-    auto& DS = updateDataSetStatusManager(DP);
-
-    DP.copyCalculationStatuses(DS.globalStatusManager());
-
-    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
-
-    // Set all variable statuses to Unchanged
-    DS.globalStatusManager().setAll(VariableStatus::unchanged);
-    // Set all calculation statuses to calculated
-    DS.globalStatusManager().setAll(CalculationStatus::calculated);
-
-    return log_L;
+    return partialSumOfLogsOfSquaredAmplitudes(DP);
+    /// \todo: set all unchanged here?
 }
 
 
@@ -121,15 +95,10 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
     if (DP.size() == 1)
         return sumOfLogsOfSquaredAmplitudes(*DP[0]);
 
-    // else thread:
-    auto& DS = updateDataSetStatusManager(*DP[0]);
-
     std::vector<std::future<double> > partial_sums;
 
     // create thread for calculation on each partition
     for (auto& P : DP) {
-        // copy statuses from DS's updated status manager
-        P->copyCalculationStatuses(DS.globalStatusManager());
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
         partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P)));
     }
@@ -139,11 +108,7 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
     for (auto& s : partial_sums)
         log_L  += s.get();
 
-    // Set all variable statuses to unchanged
-    DS.globalStatusManager().setAll(VariableStatus::unchanged);
-
-    // Set all calculation statuses to calculated
-    DS.globalStatusManager().setAll(CalculationStatus::calculated);
+    /// \todo: set all unchanged here?
 
     return log_L;
 }

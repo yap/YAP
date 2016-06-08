@@ -233,10 +233,6 @@ protected:
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
 
-    /// update DataSet's status manager via DataPartition
-    /// \return DataSet found via DataPartition
-    DataSet& updateDataSetStatusManager(DataPartition& DP) const;
-
 private:
 
     // check if the fourMomenta produce the given invariant masses

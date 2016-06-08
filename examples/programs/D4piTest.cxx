@@ -182,25 +182,15 @@ int main( int argc, char** argv)
         }
         DEBUG("===================================================================================================================== ");
 
-        // std::cout << "Variable status after changing:    \n";
-        // M.printFlags(data.globalStatusManager());
-
         double logA = M.sumOfLogsOfSquaredAmplitudes(parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
 
-        // std::cout << "Variable status after calculating:    \n";
-        // M.printFlags(data.globalStatusManager());
-
         /*if (gRandom->Uniform()>0.5) {
             double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
             LOG(INFO) << "logATest = " << logATest;
             assert (logA == logATest);
-
-            std::cout << "Variable status after calculating test:    \n";
-            M.printFlags(data.globalStatusManager());
-
         }*/
 
 
