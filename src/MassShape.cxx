@@ -26,6 +26,7 @@ void MassShape::calculate(DataPartition& D) const
 
         // recalculate & cache, if necessary
         if (D.status(*T(), pc_si.second) == CalculationStatus::uncalculated) {
+            DEBUG("calculate mass shape");
             calculateT(D, pc_si.first, pc_si.second);
             D.status(*T(), pc_si.second) = CalculationStatus::calculated;
         }
@@ -34,13 +35,10 @@ void MassShape::calculate(DataPartition& D) const
 }
 
 //-------------------------
-void MassShape::updateCalculationStatus(DataPartition& D) const
+void MassShape::updateCalculationStatus(StatusManager& D) const
 {
-    for (auto& p : parameters())
-        if (p->variableStatus() == VariableStatus::changed) {
-            D.set(*T(), CalculationStatus::uncalculated);
-            return;
-        }
+    if (variableStatus(*this) == VariableStatus::changed)
+        D.set(*T(), CalculationStatus::uncalculated);
 }
 
 //-------------------------

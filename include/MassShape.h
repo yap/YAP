@@ -53,12 +53,12 @@ public:
     /// \return dynamic amplitude for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
-    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override final;
 
     /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
     /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
-    virtual void calculate(DataPartition& D) const override;
+    virtual void calculate(DataPartition& D) const override final;
 
     /// Set parameters from ParticleTableEntry
     /// Can be overloaded in inheriting classes
@@ -74,7 +74,7 @@ public:
     { return Resonance_; }
 
     /// update the calculationStatus for a DataPartition
-    virtual void updateCalculationStatus(DataPartition& D) const override final;
+    virtual void updateCalculationStatus(StatusManager& D) const override final;
 
     /// get raw pointer to Model through resonance
     const Model* model() const override;

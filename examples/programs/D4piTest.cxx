@@ -2,21 +2,22 @@
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "DataSet.h"
+#include "DecayChannel.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
 #include "FreeAmplitude.h"
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
-#include "make_unique.h"
 #include "logging.h"
+#include "make_unique.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
-#include "SpinAmplitudeCache.h"
 #include "Resonance.h"
+#include "SpinAmplitudeCache.h"
 #include "WignerD.h"
 
 #include <TGenPhaseSpace.h>
@@ -167,6 +168,17 @@ int main( int argc, char** argv)
                 if (a->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform() > 0.5)
                     a->setValue(gRandom->Uniform(0.95, 1.052631579) * a->value());
             }
+        }
+
+        // change masses
+        if (gRandom->Uniform() > 0.5) {
+            for (auto& c : D->channels())
+                for (auto& d : c->daughters()) {
+                    if (d->mass()->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform() > 0.5) {
+                        DEBUG("change mass for " << to_string(*d));
+                        d->mass()->setValue(gRandom->Uniform(0.95, 1.052631579) * d->mass()->value());
+                    }
+                }
         }
         DEBUG("===================================================================================================================== ");
 

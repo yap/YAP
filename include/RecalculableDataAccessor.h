@@ -26,8 +26,10 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
+#include "fwd/StatusManager.h"
 
 #include "DataAccessor.h"
+#include "VariableStatus.h"
 
 #include <complex>
 #include <memory>
@@ -48,7 +50,7 @@ public:
     virtual void calculate(DataPartition& D) const = 0;
 
     /// update the calculationStatus for a DataPartition
-    virtual void updateCalculationStatus(DataPartition& D) const = 0;
+    virtual void updateCalculationStatus(StatusManager& D) const = 0;
 
     /// set VariableStatus of all Parameters to unchanged (or leave fixed)
     void setParameterFlagsToUnchanged();
@@ -76,6 +78,8 @@ private:
     ParameterSet parameters_;
 
 };
+
+const VariableStatus variableStatus(const RecalculableDataAccessor&);
 
 }
 

@@ -67,7 +67,7 @@ public:
     virtual void calculate(DataPartition& D) const override;
 
     /// update the calculationStatus for a DataPartition
-    virtual void updateCalculationStatus(DataPartition& D) const override;
+    virtual void updateCalculationStatus(StatusManager& D) const override;
 
     /// check consistency of object
     virtual bool consistent() const

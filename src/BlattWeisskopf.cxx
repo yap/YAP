@@ -79,6 +79,8 @@ void BlattWeisskopf::calculate(DataPartition& D) const
         // check if barrier factor is uncalculated
         if (D.status(*BarrierFactor_, pc_symIndex.second) == CalculationStatus::uncalculated) {
 
+            DEBUG("calculate BlattWeisskopf");
+
             // calculate on all data points in D
             for (auto& d : D) {
 
@@ -109,13 +111,10 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 }
 
 //-------------------------
-void BlattWeisskopf::updateCalculationStatus(DataPartition& D) const
+void BlattWeisskopf::updateCalculationStatus(StatusManager& D) const
 {
-    for (auto& p : parameters())
-        if (p->variableStatus() == VariableStatus::changed) {
-            D.set(*BarrierFactor_, CalculationStatus::uncalculated);
-            return;
-        }
+    if (variableStatus(*this) == VariableStatus::changed)
+        D.set(*BarrierFactor_, CalculationStatus::uncalculated);
 }
 
 //-------------------------
