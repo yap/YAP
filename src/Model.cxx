@@ -56,63 +56,57 @@ void Model::calculate(DataPartition& D) const
 }
 
 //-------------------------
-const double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
+// hidden helper function,
+// resolves C++ problem related to naming of functions and call to std::async below
+const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
 {
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("InitialStateParticle_ is nullptr", "Model::partialSumOfLogsOfSquaredAmplitudes");
+    if (!M.initialStateParticle())
+        throw exceptions::Exception("initialStateParticle is nullptr", "sumOfLogsOfSquaredAmplitudes");
 
     // calculate components
-    calculate(D);
+    M.calculate(D);
 
     // sum log of norm of amplitudes over data points in partition
     double L = 0;
     for (const auto& d : D)
-        L += log(norm(amplitude(InitialStateParticle_->decayTrees(), d)));
+        L += log(norm(amplitude(M.initialStateParticle()->decayTrees(), d)));
 
     return L;
 }
 
 //-------------------------
-const double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP)
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D)
 {
-    double log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
-
-    /// set all parameters to unchanged (or leave fixed)
-    setParameterFlagsToUnchanged();
-
-    return log_L;
+    return sum_of_logs_of_squared_amplitudes(M, D);
 }
 
 //-------------------------
-const double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP)
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP)
 {
     // if DataPartitionVector is empty, run over whole data set
     if (DP.empty())
-        throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
+        throw exceptions::Exception("DataPartitionVector is empty", "sumOfLogsOfSquaredAmplitudes");
 
     // check no partitions are nullptr
     if (std::any_of(DP.begin(), DP.end(), std::logical_not<DataPartitionVector::value_type>()))
-        throw exceptions::Exception("DataPartitionVector contains nullptr", "Model::sumOfLogsOfSquaredAmplitudes");
+        throw exceptions::Exception("DataPartitionVector contains nullptr", "sumOfLogsOfSquaredAmplitudes");
 
     // if threading is unnecessary
     if (DP.size() == 1)
-        return sumOfLogsOfSquaredAmplitudes(*DP[0]);
+        return sumOfLogsOfSquaredAmplitudes(M, *DP[0]);
 
     std::vector<std::future<double> > partial_sums;
 
     // create thread for calculation on each partition
     for (auto& P : DP) {
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
-        partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P)));
+        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_squared_amplitudes, std::cref(M), std::ref(*P)));
     }
 
     // wait for each partition to finish calculating
     double log_L = 0;
     for (auto& s : partial_sums)
         log_L  += s.get();
-
-    /// set all parameters to unchanged (or leave fixed)
-    setParameterFlagsToUnchanged();
 
     return log_L;
 }

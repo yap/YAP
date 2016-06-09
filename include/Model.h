@@ -58,32 +58,10 @@ public:
     /// \param SAC unique_ptr to SpinAmplitudeCache
     Model(std::unique_ptr<SpinAmplitudeCache> SAC);
 
-    /// \name Amplitude-related
-    /// @{
-
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
     /// \todo This need not be a member function!
     void calculate(DataPartition& D) const;
-
-    /// \return The sum of the logs of squared amplitudes evaluated over the data partition
-    /// \param D DataPartition to evalue over
-    /// No statuses are updated!
-    const double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
-
-    /// Calculate the sum of the logs of the squared amplitudes
-    /// evaluated over all partitions, and then call
-    /// setParameterFlagsToUnchanged
-    /// \param DP DataPartitionVector of partitions to use
-    const double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP);
-
-    /// Calculate the sum of the logs of the squared amplitudes
-    /// evaluated over the whole data set, and then call
-    /// setParameterFlagsToUnchanged
-    /// \param D DataPartition to evalue over
-    const double sumOfLogsOfSquaredAmplitudes(DataPartition& DP);
-
-    /// @}
 
     /// Check consistency of object
     virtual bool consistent() const;
@@ -285,6 +263,18 @@ private:
     std::shared_ptr<HelicityAngles> HelicityAngles_;
 
 };
+
+
+/// \return The sum of the logs of squared amplitudes evaluated over the data partition
+/// \param M Model to evaluate
+/// \param D DataPartition to evalue over
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
+
+/// \return The sum of the logs of squared amplitudes evaluated over the data partitions
+/// \param DP DataPartitionVector of partitions to use
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
+
+
 
 }
 
