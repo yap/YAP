@@ -71,13 +71,6 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-std::complex<double> SpinAmplitude::amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-        int two_M, int two_m1, int two_m2) const
-{
-    return amplitude(two_M, two_m1, two_m2)->value(d, symmetrizationIndex(pc));
-}
-
-//-------------------------
 SpinAmplitude::operator std::string() const
 {
     std::string s = spin_to_string(InitialTwoJ_) + " -> ";
