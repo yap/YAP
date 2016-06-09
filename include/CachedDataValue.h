@@ -23,13 +23,14 @@
 
 #include "fwd/CachedDataValue.h"
 #include "fwd/CalculationStatus.h"
-#include "fwd/DataAccessor.h"
-#include "fwd/DataPoint.h"
 #include "fwd/FourVector.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
+
+#include "DataAccessor.h"
+#include "DataPoint.h"
 
 #include <memory>
 #include <set>
@@ -89,50 +90,6 @@ public:
         Status& operator=(const VariableStatus& s);
     };
 
-    /// \name Managing dependencies
-    /// @{
-
-    /// add Parameters this CachedDataValue depends on
-    void addDependencies(ParameterSet deps)
-    { for (auto& dep : deps) addDependency(dep); }
-
-    /// add Parameter this CachedDataValue depends on
-    void addDependency(std::shared_ptr<ParameterBase> dep)
-    { ParametersItDependsOn_.insert(dep); }
-
-    /// add CachedDataValue's this CachedDataValue depends on
-    void addDependencies(CachedDataValueSet deps)
-    { for (auto& dep : deps) addDependency(dep); }
-
-    /// add CachedDataValue's of a daughter this CachedDataValue depends on
-    void addDependencies(DaughterCachedDataValueSet deps)
-    { for (auto& dep : deps) addDependency(dep); }
-
-    /// add CachedDataValue this CachedDataValue depends on
-    void addDependency(std::shared_ptr<CachedDataValue> dep)
-    { CachedDataValuesItDependsOn_.insert(dep); }
-
-    /// add CachedDataValue of a daughter this CachedDataValue depends on
-    void addDependency(DaughterCachedDataValue dep)
-    { DaughterCachedDataValuesItDependsOn_.insert(dep); }
-
-    /// remove dependency
-    void removeDependency(std::shared_ptr<ParameterBase> dep);
-
-    /// remove dependencies
-    void removeDependencies(ParameterSet deps)
-    { for (auto& dep : deps) removeDependency(dep); }
-
-    /// check for dependency
-    bool dependsOn(std::shared_ptr<ParameterBase> dep) const
-    { return ParametersItDependsOn_.find(dep) != ParametersItDependsOn_.end(); }
-
-    /// check for dependency
-    bool dependsOn(std::shared_ptr<CachedDataValue> dep) const
-    { return CachedDataValuesItDependsOn_.find(dep) != CachedDataValuesItDependsOn_.end(); }
-
-    /// @}
-
     /// \name Getters
     /// @{
 
@@ -149,23 +106,18 @@ public:
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    const double value(unsigned index, const DataPoint& d, unsigned sym_index) const;
+    inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
+    {
+#ifdef ELPP_DISABLE_DEBUG_LOGS
+        return d.Data_[Owner_->index()][sym_index][Position_ + index];
+#else
+        return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
+#endif
+    }
 
     /// \return Size of cached value (number of real elements)
     virtual const unsigned size() const
     { return Size_; }
-
-    /// \return set of Parameters on which this object depends
-    const ParameterSet& parameterDependencies() const
-    { return ParametersItDependsOn_; }
-
-    /// \return set of CachedDataValues on which this object depends
-    const CachedDataValueSet& cachedDataValueDependencies() const
-    { return CachedDataValuesItDependsOn_; }
-
-    /// \return set of DaughterCachedDataValues on which this object depends
-    const DaughterCachedDataValueSet& daughterCachedDataValueDependencies() const
-    { return DaughterCachedDataValuesItDependsOn_; }
 
     /// @}
 
@@ -215,14 +167,6 @@ private:
     /// Size of cached value (number of real elements)
     unsigned Size_;
 
-    /// Set of Parameter's on which CachedDataValue depends
-    ParameterSet ParametersItDependsOn_;
-
-    /// Set of CachedDataValue's on which CachedDataValue depends
-    CachedDataValueSet CachedDataValuesItDependsOn_;
-
-    /// Set of DaughterCahcedDataValue's on which CachedDataValue depends
-    DaughterCachedDataValueSet DaughterCachedDataValuesItDependsOn_;
 };
 
 /// equality operator for checking the CalculationStatus

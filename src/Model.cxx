@@ -46,100 +46,67 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
 //-------------------------
 void Model::calculate(DataPartition& D) const
 {
+    // update calculation statuses
+    for (const auto& rda : RecalculableDataAccessors_)
+        rda->updateCalculationStatus(D);
+
     // call calculate on all RecalculableDataAccessors
     for (const auto& rda : RecalculableDataAccessors_)
         rda->calculate(D);
 }
 
 //-------------------------
-double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
+// hidden helper function,
+// resolves C++ problem related to naming of functions and call to std::async below
+const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
 {
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("InitialStateParticle_ is nullptr", "Model::partialSumOfLogsOfSquaredAmplitudes");
+    if (!M.initialStateParticle())
+        throw exceptions::Exception("initialStateParticle is nullptr", "sumOfLogsOfSquaredAmplitudes");
 
     // calculate components
-    calculate(D);
+    M.calculate(D);
 
     // sum log of norm of amplitudes over data points in partition
     double L = 0;
     for (const auto& d : D)
-        L += log(norm(amplitude(InitialStateParticle_->decayTrees(), d)));
+        L += log(norm(amplitude(M.initialStateParticle()->decayTrees(), d)));
 
     return L;
 }
 
 //-------------------------
-DataSet& Model::updateDataSetStatusManager(DataPartition& DP) const
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D)
 {
-    if (!(DP.begin() != DP.end()))
-        throw exceptions::Exception("DataPartition is empty", "Model::updateStatusManager");
-    // get DataSet
-    auto DS = (*DP.begin()).DataSet_;
-    if (!DS)
-        throw exceptions::Exception("DataSet is nullptr", "Model::updateStatusManager");
-
-    // update global calculation statuses (managed by data set)
-    DS->globalStatusManager().updateCalculationStatuses(dataAccessors());
-
-    return *DS;
+    return sum_of_logs_of_squared_amplitudes(M, D);
 }
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
-{
-    auto& DS = updateDataSetStatusManager(DP);
-
-    DP.copyCalculationStatuses(DS.globalStatusManager());
-
-    auto log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
-
-    // Set all variable statuses to Unchanged
-    DS.globalStatusManager().setAll(VariableStatus::unchanged);
-    // Set all calculation statuses to calculated
-    DS.globalStatusManager().setAll(CalculationStatus::calculated);
-
-    return log_L;
-}
-
-
-//-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP)
 {
     // if DataPartitionVector is empty, run over whole data set
     if (DP.empty())
-        throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
+        throw exceptions::Exception("DataPartitionVector is empty", "sumOfLogsOfSquaredAmplitudes");
 
     // check no partitions are nullptr
-    if (std::any_of(DP.begin(), DP.end(), [](const DataPartitionVector::value_type & dp) {return !dp;}))
-    throw exceptions::Exception("DataPartitionVector contains nullptr", "Model::sumOfLogsOfSquaredAmplitudes");
+    if (std::any_of(DP.begin(), DP.end(), std::logical_not<DataPartitionVector::value_type>()))
+        throw exceptions::Exception("DataPartitionVector contains nullptr", "sumOfLogsOfSquaredAmplitudes");
 
     // if threading is unnecessary
     if (DP.size() == 1)
-        return sumOfLogsOfSquaredAmplitudes(*DP[0]);
-
-    // else thread:
-    auto& DS = updateDataSetStatusManager(*DP[0]);
+        return sumOfLogsOfSquaredAmplitudes(M, *DP[0]);
 
     std::vector<std::future<double> > partial_sums;
 
     // create thread for calculation on each partition
     for (auto& P : DP) {
-        // copy statuses from DS's updated status manager
-        P->copyCalculationStatuses(DS.globalStatusManager());
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
-        partial_sums.push_back(std::async(std::launch::async, &Model::partialSumOfLogsOfSquaredAmplitudes, this, std::ref(*P)));
+        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_squared_amplitudes, std::cref(M), std::ref(*P)));
     }
 
     // wait for each partition to finish calculating
     double log_L = 0;
     for (auto& s : partial_sums)
         log_L  += s.get();
-
-    // Set all variable statuses to unchanged
-    DS.globalStatusManager().setAll(VariableStatus::unchanged);
-
-    // Set all calculation statuses to calculated
-    DS.globalStatusManager().setAll(CalculationStatus::calculated);
 
     return log_L;
 }
@@ -605,11 +572,8 @@ DataSet Model::createDataSet(size_t n)
 //-------------------------
 void Model::setParameterFlagsToUnchanged()
 {
-    for (auto& d : DataAccessors_)
-        for (auto& c : d->cachedDataValues())
-            for (auto& p : c->parameterDependencies())
-                if (p->variableStatus() == VariableStatus::changed)
-                    p->setVariableStatus(VariableStatus::unchanged);
+    for (auto& d : RecalculableDataAccessors_)
+        d->setParameterFlagsToUnchanged();
 }
 
 //-------------------------
@@ -652,19 +616,6 @@ void Model::printFlags(const StatusManager& sm) const
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
                 std::cout << sm.status(*c, i) << "; ";
             std::cout << "\n";
-
-            for (auto& p : c->parameterDependencies())
-                std::cout << "    depends on Parameter " << p << ": " << p->variableStatus() << "\n";
-
-            for (auto& p : c->cachedDataValueDependencies()) {
-                std::cout << "    depends on CachedDataValue " << p << ": ";
-                for (unsigned i = 0; i < p->owner()->nSymmetrizationIndices(); ++i)
-                    std::cout << sm.status(*p, i) << "; ";
-                std::cout << "\n";
-            }
-
-            for (auto& d : c->daughterCachedDataValueDependencies())
-                std::cout << "    depends on daughterCachedDataValue " << d.CDV << ": " << sm.status(*d.CDV, 0) << "; ...\n";
         }
     }
 

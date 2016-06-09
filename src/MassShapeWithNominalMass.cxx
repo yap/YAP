@@ -1,6 +1,7 @@
 #include "MassShapeWithNominalMass.h"
 
 #include "CachedDataValue.h"
+#include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "Model.h"
@@ -27,23 +28,10 @@ void MassShapeWithNominalMass::setParameters(const ParticleTableEntry& entry)
 }
 
 //-------------------------
-void MassShapeWithNominalMass::setDependenciesFromResonance()
+void MassShapeWithNominalMass::setResonance(Resonance* r)
 {
-    if (!resonance())
-        throw exceptions::ResonanceUnset("MassShapeWithNominalMass::setDependenciesFromResonance");
-
-    T()->addDependency(mass());
-}
-
-//-------------------------
-void MassShapeWithNominalMass::setDependenciesFromModel()
-{
-    if (!model())
-        throw exceptions::Exception("Model unset", "MassShapeWithNominalMass::setDependenciesFromResonance");
-    if (!model()->fourMomenta())
-        throw exceptions::Exception("Model's FourMomenta unset", "MassShapeWithNominalMass::setDependenciesFromResonance");
-
-    T()->addDependency(model()->fourMomenta()->mass());
+    MassShape::setResonance(r);
+    addParameter(mass());
 }
 
 }

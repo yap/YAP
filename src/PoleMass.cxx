@@ -17,7 +17,6 @@ PoleMass::PoleMass(std::complex<double> mass) :
     MassShape(),
     Mass_(std::make_shared<ComplexParameter>(mass))
 {
-    T()->addDependency(Mass_);
 }
 
 //-------------------------
@@ -32,48 +31,18 @@ void PoleMass::setParameters(const ParticleTableEntry& entry)
 }
 
 //-------------------------
-void PoleMass::setDependenciesFromResonance()
+void PoleMass::setResonance(Resonance* r)
 {
+    MassShape::setResonance(r);
+
     // set real component of mass from resonance, if yet unset
     if (real(Mass_->value()) < 0)
         Mass_->setValue(std::complex<double>(resonance()->mass()->value(), imag(Mass_->value())));
 
     // replace resonance's mass with real component of pole mass
     replaceResonanceMass(std::make_shared<RealComponentParameter>(Mass_));
-}
 
-//-------------------------
-void PoleMass::setDependenciesFromModel()
-{
-    if (!model())
-        throw exceptions::Exception("Model unset", "PoleMass::setDependenciesFromResonance");
-    if (!model()->fourMomenta())
-        throw exceptions::Exception("Model's FourMomenta unset", "PoleMass::setDependenciesFromResonance");
-
-    T()->addDependency(model()->fourMomenta()->mass());
-}
-
-//-------------------------
-std::complex<double> PoleMass::amplitude(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc, StatusManager& sm) const
-{
-    unsigned symIndex = symmetrizationIndex(pc);
-
-    // recalculate, cache, & return, if necessary
-    if (sm.status(*T(), symIndex) == CalculationStatus::uncalculated) {
-
-        // T = 1 / (M^2 - m^2)
-        std::complex<double> t = 1. / (pow(Mass_->value(), 2) - model()->fourMomenta()->m2(d, pc));
-
-        T()->setValue(t, d, symIndex, sm);
-
-        FDEBUG("calculated T = " << t << " and stored it in the cache");
-        return t;
-    }
-
-    FDEBUG("using cached T = " << T()->value(d, symIndex));
-
-    // else return cached value
-    return T()->value(d, symIndex);
+    addParameter(mass());
 }
 
 //-------------------------

@@ -23,9 +23,9 @@
 
 #include "fwd/SpinAmplitude.h"
 
-#include "fwd/CachedDataValue.h"
 #include "fwd/StatusManager.h"
 
+#include "CachedDataValue.h"
 #include "MathUtilities.h"
 #include "StaticDataAccessor.h"
 
@@ -130,7 +130,8 @@ public:
     /// \param two_m1 2 * spin projection of first daughter
     /// \param two_m2 2 * spin projection of second daughter
     std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                   int two_M, int two_m1, int two_m2) const;
+                                   int two_M, int two_m1, int two_m2) const
+    { return amplitude(two_M, two_m1, two_m2)->value(d, symmetrizationIndex(pc)); }
 
     /// access cached spin amplitude
     /// \param two_M 2 * spin projection of parent
@@ -191,13 +192,7 @@ protected:
     SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
                   ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer);
 
-    /// set raw pointer to owning model; overrides to call setDependencies
-    virtual void setModel(Model* m) override;
-
 private:
-
-    /// set dependencies for amplitudes
-    virtual void setDependencies(std::shared_ptr<CachedDataValue> a) = 0;
 
     /// Initial-state spin * 2
     unsigned InitialTwoJ_;

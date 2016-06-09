@@ -36,22 +36,10 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
     Owner_(nullptr),
     Index_(-1),
     Position_(-1),
-    Size_(size),
-    ParametersItDependsOn_(pars),
-    CachedDataValuesItDependsOn_(vals)
+    Size_(size)
 {
     if (Size_ == 0)
         throw exceptions::Exception("zero size", "CachedDataValue::CachedDataValue");
-}
-
-//-------------------------
-const double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
-{
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    return d.Data_[Owner_->index()][sym_index][Position_ + index];
-#else
-    return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
-#endif
 }
 
 //-------------------------
@@ -62,16 +50,6 @@ void CachedDataValue::setValue(unsigned index, double val, DataPoint& d, unsigne
 #else
     d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index) = val;
 #endif
-}
-
-//-------------------------
-void CachedDataValue::removeDependency(std::shared_ptr<ParameterBase> dep)
-{
-    // look for parameter in set of dependencies
-    auto it = ParametersItDependsOn_.find(dep);
-    // if found, erase
-    if (it != ParametersItDependsOn_.end())
-        ParametersItDependsOn_.erase(it);
 }
 
 //-------------------------

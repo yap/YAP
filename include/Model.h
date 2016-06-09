@@ -58,28 +58,10 @@ public:
     /// \param SAC unique_ptr to SpinAmplitudeCache
     Model(std::unique_ptr<SpinAmplitudeCache> SAC);
 
-    /// \name Amplitude-related
-    /// @{
-
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
     /// \todo This need not be a member function!
     void calculate(DataPartition& D) const;
-
-    /// \return The sum of the logs of squared amplitudes evaluated over the data partition
-    /// \param D DataPartition to evalue over
-    /// No statuses are updated!
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
-
-    /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
-    /// \param DP DataPartitionVector of partitions to use
-    double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const;
-
-    /// Calculate the sum of the logs of the squared amplitudes evaluated over the whole data set
-    /// \param D DataPartition to evalue over
-    double sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const;
-
-    /// @}
 
     /// Check consistency of object
     virtual bool consistent() const;
@@ -205,7 +187,7 @@ public:
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
 
-    /// Set VariableStatus'es of all Parameter's to calculated, or leave as fixed
+    /// Set VariableStatus'es of all Parameter's to unchanged, or leave as fixed
     void setParameterFlagsToUnchanged();
 
     /// Print the list of DataAccessor's
@@ -232,10 +214,6 @@ protected:
 
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
-
-    /// update DataSet's status manager via DataPartition
-    /// \return DataSet found via DataPartition
-    DataSet& updateDataSetStatusManager(DataPartition& DP) const;
 
 private:
 
@@ -285,6 +263,18 @@ private:
     std::shared_ptr<HelicityAngles> HelicityAngles_;
 
 };
+
+
+/// \return The sum of the logs of squared amplitudes evaluated over the data partition
+/// \param M Model to evaluate
+/// \param D DataPartition to evalue over
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
+
+/// \return The sum of the logs of squared amplitudes evaluated over the data partitions
+/// \param DP DataPartitionVector of partitions to use
+const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
+
+
 
 }
 

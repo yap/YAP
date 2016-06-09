@@ -18,9 +18,6 @@ HelicityAngles::HelicityAngles(Model* m) :
     Phi_(RealCachedDataValue::create(this)),
     Theta_(RealCachedDataValue::create(this))
 {
-    /// \todo add check that FourMomenta exists, after changing to return shared_ptr
-    Phi_->addDependency(model()->fourMomenta()->momentum());
-    Theta_->addDependency(model()->fourMomenta()->momentum());
 }
 
 //-------------------------

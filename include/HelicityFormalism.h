@@ -76,9 +76,6 @@ private:
     virtual bool equals(const SpinAmplitude& other) const override
     { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
-    /// set dependency on helicty angles
-    virtual void setDependencies(std::shared_ptr<CachedDataValue> a) override;
-
     /// L-S * S-S coupling coefficients
     /// first map key is m1;
     /// second map key is m2;
