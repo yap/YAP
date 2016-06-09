@@ -206,7 +206,7 @@ public:
     DataSet createDataSet(size_t n = 0);
 
     /// Set VariableStatus'es of all Parameter's to unchanged, or leave as fixed
-    void setParameterFlagsToUnchanged();
+    void setParameterFlagsToUnchanged() const;
 
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true) const;

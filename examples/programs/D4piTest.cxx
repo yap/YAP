@@ -183,7 +183,6 @@ int main( int argc, char** argv)
         DEBUG("===================================================================================================================== ");
 
         double logA = M.sumOfLogsOfSquaredAmplitudes(parts);
-        M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
 
