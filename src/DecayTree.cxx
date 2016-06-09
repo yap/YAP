@@ -7,12 +7,21 @@
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
+#include <iterator>
+#include <functional>
+
 namespace yap {
 
 //-------------------------
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
     FreeAmplitude_(free_amp)
 {}
+
+//-------------------------
+const Model* DecayTree::model() const
+{
+    return (FreeAmplitude_) ? FreeAmplitude_->model() : nullptr;
+}
 
 //-------------------------
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d)
@@ -143,19 +152,17 @@ unsigned depth(const DecayTree& DT)
 }
 
 //-------------------------
-// std::complex<double> operator()(DataPoint& d) const
-// {
-//     auto A = Complex_1;
+bool has_changed(const DecayTreeVector::value_type& dt)
+{ return dt->dataDependentAmplitudeStatus() == VariableStatus::changed; }
 
-//     // multiply by all free amplitudes
-//     for (const auto& a : FreeAmplitudes_)
-//         A *= a->value();
-
-//     // multiply by all fixed amplitudes
-//     for (const auto& a : FixedAmplitudes_)
-//         A *= ;
-
-//     return A;
-// }
+//-------------------------
+const DecayTreeVector select_changed(const DecayTreeVector& dtv)
+{
+    DecayTreeVector C;
+    C.reserve(dtv.size());
+    std::copy_if(dtv.begin(), dtv.end(), std::back_inserter(C),
+                 std::function<bool(const DecayTreeVector::value_type&)>(has_changed));
+    return C;
+}
 
 }

@@ -24,6 +24,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
+#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
@@ -75,8 +76,12 @@ public:
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
     { return FreeAmplitude_; }
 
+    /// \return DaughterDecayTrees_
     const DaughterDecayTreeMap daughterDecayTrees() const
     { return DaughterDecayTrees_; }
+
+    /// \return Model this DecayTree belongs to (via FreeAmplitude)
+    const Model* model() const;
 
     /// grant friend status to DecayChannel to call addDataAccessor
     friend class DecayChannel;
@@ -151,6 +156,10 @@ FreeAmplitudeSet freeAmplitudes(const DecayTree& DT);
 
 /// \return set of all free amplitudes in a DecayTreeVector
 FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV);
+
+/// \return vector of trees whose data-dependent amplitude variable statuses are VariableStatus::changed
+/// \param vector of trees to check in
+const DecayTreeVector select_changed(const DecayTreeVector& dtv);
 
 }
 
