@@ -52,7 +52,7 @@ const RealIntegralElement operator+(const RealIntegralElement& d, const ModelInt
 const IntegralElement<double> ModelIntegral::integral() const
 {
     return std::accumulate(Diagonals_.begin(), Diagonals_.end(), RealIntegralElement())
-        + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), RealIntegralElement());
+           + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), RealIntegralElement());
 }
 
 }
