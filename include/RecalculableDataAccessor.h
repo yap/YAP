@@ -61,7 +61,7 @@ public:
     /// must be overloaded in derived class
     virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
-    const ParameterSet parameters() const
+    const ParameterSet& parameters() const
     { return parameters_; }
 
 protected:
