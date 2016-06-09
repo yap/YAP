@@ -43,16 +43,6 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
 }
 
 //-------------------------
-const double CachedDataValue::value(unsigned index, const DataPoint& d, unsigned sym_index) const
-{
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    return d.Data_[Owner_->index()][sym_index][Position_ + index];
-#else
-    return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
-#endif
-}
-
-//-------------------------
 void CachedDataValue::setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const
 {
 #ifdef ELPP_DISABLE_DEBUG_LOGS
