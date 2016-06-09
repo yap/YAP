@@ -75,10 +75,13 @@ double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
 //-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
 {
-    return partialSumOfLogsOfSquaredAmplitudes(DP);
-    /// \todo: set all unchanged here?
-}
+    double log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
 
+    /// set all parameters to unchanged (or leave fixed)
+    setParameterFlagsToUnchanged();
+
+    return log_L;
+}
 
 //-------------------------
 double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
@@ -108,7 +111,8 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
     for (auto& s : partial_sums)
         log_L  += s.get();
 
-    /// \todo: set all unchanged here?
+    /// set all parameters to unchanged (or leave fixed)
+    setParameterFlagsToUnchanged();
 
     return log_L;
 }
@@ -572,7 +576,7 @@ DataSet Model::createDataSet(size_t n)
 }
 
 //-------------------------
-void Model::setParameterFlagsToUnchanged()
+void Model::setParameterFlagsToUnchanged() const
 {
     for (auto& d : RecalculableDataAccessors_)
         d->setParameterFlagsToUnchanged();
