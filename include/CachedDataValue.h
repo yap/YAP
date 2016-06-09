@@ -23,13 +23,14 @@
 
 #include "fwd/CachedDataValue.h"
 #include "fwd/CalculationStatus.h"
-#include "fwd/DataAccessor.h"
-#include "fwd/DataPoint.h"
 #include "fwd/FourVector.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
+
+#include "DataAccessor.h"
+#include "DataPoint.h"
 
 #include <memory>
 #include <set>
@@ -105,7 +106,14 @@ public:
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
-    const double value(unsigned index, const DataPoint& d, unsigned sym_index) const;
+    inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
+    {
+    #ifdef ELPP_DISABLE_DEBUG_LOGS
+        return d.Data_[Owner_->index()][sym_index][Position_ + index];
+    #else
+        return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
+    #endif
+    }
 
     /// \return Size of cached value (number of real elements)
     virtual const unsigned size() const
