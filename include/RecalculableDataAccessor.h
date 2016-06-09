@@ -64,9 +64,6 @@ public:
     const ParameterSet parameters() const
     { return parameters_; }
 
-    ParameterSet parameters()
-    { return parameters_; }
-
 protected:
 
     void addParameter(std::shared_ptr<ParameterBase> p)
