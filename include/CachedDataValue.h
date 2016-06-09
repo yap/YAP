@@ -108,11 +108,11 @@ public:
     /// \return Value of CachedDataValue inside the data point
     inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
     {
-    #ifdef ELPP_DISABLE_DEBUG_LOGS
+#ifdef ELPP_DISABLE_DEBUG_LOGS
         return d.Data_[Owner_->index()][sym_index][Position_ + index];
-    #else
+#else
         return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
-    #endif
+#endif
     }
 
     /// \return Size of cached value (number of real elements)
