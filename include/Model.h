@@ -69,15 +69,19 @@ public:
     /// \return The sum of the logs of squared amplitudes evaluated over the data partition
     /// \param D DataPartition to evalue over
     /// No statuses are updated!
-    double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
+    const double partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const;
 
-    /// Calculate the sum of the logs of the squared amplitudes evaluated over all partitions
+    /// Calculate the sum of the logs of the squared amplitudes
+    /// evaluated over all partitions, and then call
+    /// setParameterFlagsToUnchanged
     /// \param DP DataPartitionVector of partitions to use
-    double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const;
+    const double sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP);
 
-    /// Calculate the sum of the logs of the squared amplitudes evaluated over the whole data set
+    /// Calculate the sum of the logs of the squared amplitudes
+    /// evaluated over the whole data set, and then call
+    /// setParameterFlagsToUnchanged
     /// \param D DataPartition to evalue over
-    double sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const;
+    const double sumOfLogsOfSquaredAmplitudes(DataPartition& DP);
 
     /// @}
 
@@ -206,7 +210,7 @@ public:
     DataSet createDataSet(size_t n = 0);
 
     /// Set VariableStatus'es of all Parameter's to unchanged, or leave as fixed
-    void setParameterFlagsToUnchanged() const;
+    void setParameterFlagsToUnchanged();
 
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true) const;

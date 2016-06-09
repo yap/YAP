@@ -56,7 +56,7 @@ void Model::calculate(DataPartition& D) const
 }
 
 //-------------------------
-double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
+const double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
 {
     if (!InitialStateParticle_)
         throw exceptions::Exception("InitialStateParticle_ is nullptr", "Model::partialSumOfLogsOfSquaredAmplitudes");
@@ -73,7 +73,7 @@ double Model::partialSumOfLogsOfSquaredAmplitudes(DataPartition& D) const
 }
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
+const double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP)
 {
     double log_L = partialSumOfLogsOfSquaredAmplitudes(DP);
 
@@ -84,15 +84,15 @@ double Model::sumOfLogsOfSquaredAmplitudes(DataPartition& DP) const
 }
 
 //-------------------------
-double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP) const
+const double Model::sumOfLogsOfSquaredAmplitudes(DataPartitionVector& DP)
 {
     // if DataPartitionVector is empty, run over whole data set
     if (DP.empty())
         throw exceptions::Exception("DataPartitionVector is empty", "Model::sumOfLogsOfSquaredAmplitudes");
 
     // check no partitions are nullptr
-    if (std::any_of(DP.begin(), DP.end(), [](const DataPartitionVector::value_type & dp) {return !dp;}))
-    throw exceptions::Exception("DataPartitionVector contains nullptr", "Model::sumOfLogsOfSquaredAmplitudes");
+    if (std::any_of(DP.begin(), DP.end(), std::logical_not<DataPartitionVector::value_type>()))
+        throw exceptions::Exception("DataPartitionVector contains nullptr", "Model::sumOfLogsOfSquaredAmplitudes");
 
     // if threading is unnecessary
     if (DP.size() == 1)
@@ -576,7 +576,7 @@ DataSet Model::createDataSet(size_t n)
 }
 
 //-------------------------
-void Model::setParameterFlagsToUnchanged() const
+void Model::setParameterFlagsToUnchanged()
 {
     for (auto& d : RecalculableDataAccessors_)
         d->setParameterFlagsToUnchanged();
