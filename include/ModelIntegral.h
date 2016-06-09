@@ -22,6 +22,8 @@
 #define yap_ModelIntegral_h
 
 #include "fwd/DecayTree.h"
+#include "fwd/Model.h"
+#include "fwd/ModelIntegral.h"
 
 #include <array>
 #include <complex>
@@ -29,13 +31,28 @@
 
 namespace yap {
 
+/// \class IntegralElement
+/// \brief Holds the values of a component of an integral
+/// \author Daniel Greenwald
+/// \ingroup Integration
+template <typename T>
+struct IntegralElement {
+    /// integral value
+    T value;
+
+    /// constructor
+    /// \param val initial value of integral component
+    IntegralElement(T val = 0) : value(val) {}
+};
+
 /// \class ModelIntegral
 /// \brief Stores integral components for a model
 /// \author Daniel Greenwald
+/// \defgroup Integration Classes related to model integration
 ///
 /// Each DecayTree holds a product of free amplitudes ("a", below)
 /// and a product of data-dependent amplitudes ("A", below)
-/// 
+///
 /// This class holds two types of components:\n
 ///   o Diagonal components: one for each DecayTree,
 ///     stored as |A|^2 for the tree and returned as |a|^2 * stored value
@@ -49,36 +66,41 @@ public:
     /// \param dtv DecayTreeVector to construct integral of
     ModelIntegral(const DecayTreeVector& dtv);
 
-    /// return integral calculated from components
-    const double integral() const;
+    /// \return integral calculated from components
+    const RealIntegralElement integral() const;
+
+    /// \return DecayTrees_
+    const DecayTreeVector& decayTrees() const
+    { return DecayTrees_; }
+
+    /// \return Model this integral calculates with (via DecayTrees)
+    const Model* model() const;
 
     /// \name typedefs
     /// @{
 
     /// \typedef map type for diagonal integral elements
-    using DiagonalMap = std::map<DecayTreeVector::value_type, double>;
+    using DiagonalMap = std::map<DecayTreeVector::value_type, RealIntegralElement>;
 
     /// \typdef map type for off-diagonal integral elements
-    using OffDiagonalMap = std::map<std::array<DecayTreeVector::value_type, 2>, std::complex<double> >;
+    using OffDiagonalMap = std::map<std::array<DecayTreeVector::value_type, 2>, ComplexIntegralElement>;
 
     /// @}
 
-protected:
+    /// \return Diagonals_ (const)
+    const ModelIntegral::DiagonalMap& diagonals() const
+    { return Diagonals_; }
 
-    /// \return value stored in Diagonals_ for particular DecayTree
-    /// \param dt shared_ptr to DecayTree to access diagonal integral component for
-    DiagonalMap::mapped_type& diagonalComponent(const DecayTreeVector::value_type& dt)
-    { return Diagonals_.at(dt); }
+    /// \return OffDiagonals_ (const)
+    const ModelIntegral::OffDiagonalMap& offDiagonals() const
+    { return OffDiagonals_; }
 
-    /// \return value stored in OffDiagonals_ for particular DecayTree pair
-    /// \param i shared_ptr to DecayTree to access off-diagonal integral component for
-    /// \param j shared_ptr to DecayTree to access off-diagonal integral component for
-    OffDiagonalMap::mapped_type& offDiagonalComponent(const DecayTreeVector::value_type& i, const DecayTreeVector::value_type& j)
-    { return OffDiagonals_.at(OffDiagonalMap::key_type({i, j})); }
+    /// grant friend status to ModelIntegrator to access components and DecayTrees_
+    friend class ModelIntegrator;
 
 private:
 
-    /// vector of DecayTree's to be used to calculate integral
+    /// DecayTrees to integrate
     DecayTreeVector DecayTrees_;
 
     /// diagonal element integrals:
@@ -94,11 +116,15 @@ private:
 
 };
 
+/// \return addition of two RealIntegralElements
+inline const RealIntegralElement operator+(const RealIntegralElement& A, const RealIntegralElement& B)
+{ return RealIntegralElement(A.value + B.value); }
+
 /// \return integral of diagonal element given DiagonalMap entry
-const double integral(const ModelIntegral::DiagonalMap::value_type& a_A2);
+const RealIntegralElement integral(const ModelIntegral::DiagonalMap::value_type& a_A2);
 
 /// \return integral of off-diagonal element given OffDiagonalMap entry
-const double integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA);
+const RealIntegralElement integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA);
 
 }
 

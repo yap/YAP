@@ -12,40 +12,47 @@ ModelIntegral::ModelIntegral(const DecayTreeVector& dtv)
 {
     // initialize diagonal elements
     for (const auto& dt : DecayTrees_)
-        Diagonals_.emplace(dt, 0);
+        Diagonals_.emplace(dt, DiagonalMap::mapped_type());
     // initialize off-diagonal elements
     for (size_t i = 0; i < DecayTrees_.size(); ++i)
         for (size_t j = i + 1; j < DecayTrees_.size(); ++j)
-            OffDiagonals_.emplace(OffDiagonalMap::key_type({DecayTrees_[i], DecayTrees_[j]}), 0.);
+            OffDiagonals_.emplace(OffDiagonalMap::key_type({DecayTrees_[i], DecayTrees_[j]}),
+                                  OffDiagonalMap::mapped_type());
 }
 
 //-------------------------
-const double integral(const ModelIntegral::DiagonalMap::value_type& a_A2)
+const Model* ModelIntegral::model() const
 {
-    return norm(a_A2.first->dataIndependentAmplitude()) * a_A2.second;
+    return (!DecayTrees_.empty() and DecayTrees_[0]) ? DecayTrees_[0]->model() : nullptr;
 }
 
 //-------------------------
-const double integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA)
+const RealIntegralElement integral(const ModelIntegral::DiagonalMap::value_type& a_A2)
 {
-    return 2. * real(aa_AA.first[0]->dataIndependentAmplitude() *
-                     aa_AA.first[1]->dataIndependentAmplitude() *
-                     aa_AA.second);
+    return RealIntegralElement(norm(a_A2.first->dataIndependentAmplitude()) * a_A2.second.value);
 }
 
 //-------------------------
-const double operator+(const double& d, const ModelIntegral::DiagonalMap::value_type& v)
+const RealIntegralElement integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA)
+{
+    return RealIntegralElement(real(2. * conj(aa_AA.first[0]->dataIndependentAmplitude())
+                                    * aa_AA.first[1]->dataIndependentAmplitude()
+                                    * aa_AA.second.value));
+}
+
+//-------------------------
+const RealIntegralElement operator+(const RealIntegralElement& d, const ModelIntegral::DiagonalMap::value_type& v)
 { return d + integral(v); }
 
 //-------------------------
-const double operator+(const double& d, const ModelIntegral::OffDiagonalMap::value_type& v)
+const RealIntegralElement operator+(const RealIntegralElement& d, const ModelIntegral::OffDiagonalMap::value_type& v)
 { return d + integral(v); }
 
 //-------------------------
-const double ModelIntegral::integral() const
+const IntegralElement<double> ModelIntegral::integral() const
 {
-    return std::accumulate(Diagonals_.begin(), Diagonals_.end(), 0.)
-           + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), 0.);
+    return std::accumulate(Diagonals_.begin(), Diagonals_.end(), RealIntegralElement())
+        + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), RealIntegralElement());
 }
 
 }

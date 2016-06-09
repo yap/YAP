@@ -17,14 +17,24 @@
  */
 
 /// \file
-/// Contains forward declarations only
 
 #ifndef yap_ModelIntegralFwd_h
 #define yap_ModelIntegralFwd_h
 
+#include <complex>
+
 namespace yap {
 
 class ModelIntegral;
+
+template <typename T>
+struct IntegralElement;
+
+/// \typedef RealIntegralElement
+using RealIntegralElement = IntegralElement<double>;
+
+/// \typedef ComplexIntegralElement
+using ComplexIntegralElement = IntegralElement<std::complex<double> >;
 
 }
 
