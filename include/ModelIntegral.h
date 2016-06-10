@@ -126,6 +126,14 @@ const RealIntegralElement integral(const ModelIntegral::DiagonalMap::value_type&
 /// \return integral of off-diagonal element given OffDiagonalMap entry
 const RealIntegralElement integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA);
 
+/// \return string of RealIntegralElement
+inline const std::string to_string(const RealIntegralElement& a)
+{ return std::to_string(a.value); }
+
+/// \return string of ComplexIntegralElement
+inline const std::string to_string(const ComplexIntegralElement& a)
+{ return std::to_string(real(a.value)) + " " + std::to_string(imag(a.value)) + "i"; }
+
 }
 
 #endif
