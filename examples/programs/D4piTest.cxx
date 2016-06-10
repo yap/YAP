@@ -80,6 +80,10 @@ int main( int argc, char** argv)
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
+    // background channels
+    M.addBackgroundParticle(a_1);
+    M.addBackgroundParticle(rho);
+
     // check consistency
     if (M.consistent())
         LOG(INFO) << "consistent!";

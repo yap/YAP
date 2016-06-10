@@ -68,8 +68,15 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
 
     // sum log of norm of amplitudes over data points in partition
     double L = 0;
-    for (const auto& d : D)
-        L += log(norm(amplitude(M.initialStateParticle()->decayTrees(), d)));
+    for (const auto& d : D) {
+        double l = norm(amplitude(M.initialStateParticle()->decayTrees(), d));
+        // incoherently sum in background
+        FDEBUG("incoherently sum in background");
+        for (auto& kv : M.backgroundParticles())
+            l += kv.second->value() * norm(amplitude(kv.first->decayTrees(), d));
+
+        L += log(l);
+    }
 
     return L;
 }
@@ -218,6 +225,17 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
         FinalStateParticles_.push_back(fsp);
     }
     FDEBUG("4");
+}
+
+//-------------------------
+void Model::addBackgroundParticle(std::shared_ptr<DecayingParticle> bg)
+{
+    if (BackgroundParticles_.find(bg) != BackgroundParticles_.end()) {
+        FLOG(INFO) << "DecayingParticle " << to_string(*bg) << " already added as background particle.";
+        return;
+    }
+
+    BackgroundParticles_.insert(std::make_pair(bg, std::make_shared<RealParameter>(1.)));
 }
 
 //-------------------------

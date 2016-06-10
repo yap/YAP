@@ -3,6 +3,7 @@
 #include "DecayChannel.h"
 #include "Exceptions.h"
 #include "FreeAmplitude.h"
+#include "logging.h"
 #include "RecalculableDataAccessor.h"
 #include "SpinAmplitude.h"
 
@@ -48,14 +49,19 @@ FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV)
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d) const
 {
     auto A = Complex_0;
-    for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations())
+    FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
+    for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations()) {
+        FDEBUG("pc " << to_string(*pc));
         A += dataDependentAmplitude(d, pc);
+    }
     return A;
 }
 
 //-------------------------
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
+    FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
+    FDEBUG("pc" << to_string(*pc));
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]);
     // recalculable amplitude
