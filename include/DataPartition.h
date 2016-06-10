@@ -38,12 +38,16 @@ namespace yap {
 /// \brief Class for iterating over a #DataPartition
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
-class DataIterator : public std::iterator<std::forward_iterator_tag, DataPoint>
+class DataIterator : public std::iterator<std::random_access_iterator_tag, DataPoint>
 {
 public:
 
-    /// increment operator
+    /// pre-increment operator
     DataIterator& operator++();
+
+	/// post-increment operator
+	DataIterator operator++(int)
+	{ DataIterator it(*Partition_, Iterator_); (this->Iterator_)++; return it; }
 
     /// dereference operator
     DataPoint& operator*()
@@ -52,6 +56,11 @@ public:
     /// dereference operator (const)
     const DataPoint& operator*() const
     { return *Iterator_; }
+
+	/// pointer operator
+	/// \todo Check this!
+//	DataPoint* operator->()
+//	{ return std::vector<DataPoint>::iterator::operator->(this->Iterator_); }
 
     /// inequality operator
     bool operator!=(const DataIterator& it) const
