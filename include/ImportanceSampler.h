@@ -37,12 +37,16 @@ class ImportanceSampler : public ModelIntegrator
 
 public:
 
-    /// Update calculation of ModelIntegral.
-    void calculate(ModelIntegral& I, DataPartitionVector& DPV);
+    /// Update calculation of ModelIntegral
+    static void calculate(ModelIntegral& I, DataPartitionVector& DPV);
+
+    /// Update calculation of ModelIntegral
+    static void calculate(ModelIntegral& I, DataPartition& D);
 
 private:
 
-    unsigned partialCalculation(ModelIntegral& I, DataPartition& D) const;
+    /// perform partial calculation for one data partition
+    static unsigned partialCalculation(ModelIntegral& I, DataPartition& D);
 
 };
 
