@@ -5,9 +5,11 @@
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
+#include "ImportanceSampler.h"
 #include "make_unique.h"
 #include "MassAxes.h"
 #include "Model.h"
+#include "ModelIntegral.h"
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
@@ -139,6 +141,15 @@ int main( int argc, char** argv)
     M.calculate(data);
     auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);
     LOG(INFO) << "A_DT = " << A_DT;
+
+    yap::ModelIntegral MI(M.initialStateParticle()->decayTrees().at(0));
+    yap::ImportanceSampler::calculate(MI, data);
+
+    for (const auto& kv : MI.diagonals())
+        LOG(INFO) << to_string(kv.second);
+    for (const auto& kv : MI.offDiagonals())
+        LOG(INFO) << to_string(kv.second);
+    LOG(INFO) << "integral = " << to_string(MI.integral());
 
     LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 
