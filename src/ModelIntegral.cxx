@@ -2,6 +2,7 @@
 
 #include "DecayTree.h"
 
+#include <algorithm>
 #include <numeric>
 
 namespace yap {
@@ -24,6 +25,17 @@ ModelIntegral::ModelIntegral(const DecayTreeVector& dtv)
 const Model* ModelIntegral::model() const
 {
     return (!DecayTrees_.empty() and DecayTrees_[0]) ? DecayTrees_[0]->model() : nullptr;
+}
+
+//-------------------------
+const std::vector<double> fitFractions(const ModelIntegral& MI)
+{
+    double I = MI.integral().value;
+    std::vector<double> ff;
+    ff.reserve(MI.decayTrees().size());
+    std::transform(MI.decayTrees().begin(), MI.decayTrees().end(), std::back_inserter(ff),
+    [&](const DecayTreeVector::value_type & dt) {return integral(*MI.diagonals().find(dt)).value / I;});
+    return ff;
 }
 
 //-------------------------

@@ -141,15 +141,20 @@ int main( int argc, char** argv)
     M.calculate(data);
     auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);
     LOG(INFO) << "A_DT = " << A_DT;
+    LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
     yap::ModelIntegral MI(M.initialStateParticle()->decayTrees().at(0));
     yap::ImportanceSampler::calculate(MI, data);
 
-    for (const auto& kv : MI.diagonals())
-        LOG(INFO) << to_string(kv.second);
-    for (const auto& kv : MI.offDiagonals())
-        LOG(INFO) << to_string(kv.second);
+    // for (const auto& kv : MI.diagonals())
+    //     LOG(INFO) << to_string(kv.second);
+    // for (const auto& kv : MI.offDiagonals())
+    //     LOG(INFO) << to_string(kv.second);
     LOG(INFO) << "integral = " << to_string(MI.integral());
+    auto ff = fitFractions(MI);
+    for (size_t i = 0; i < ff.size(); ++i)
+        LOG(INFO) << "fit fraction DT " << i << " = " << ff[i];
+    LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
 
     LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 

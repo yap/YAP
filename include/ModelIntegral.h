@@ -116,6 +116,9 @@ private:
 
 };
 
+/// \return vector of fit fractions of DecayTree's in ModelIntegral
+const std::vector<double> fitFractions(const ModelIntegral& MI);
+
 /// \return addition of two RealIntegralElements
 inline const RealIntegralElement operator+(const RealIntegralElement& A, const RealIntegralElement& B)
 { return RealIntegralElement(A.value + B.value); }
