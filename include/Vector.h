@@ -75,7 +75,7 @@ public:
 
     /// post-decrement operator
     VectorIterator operator--(int)
-    { VectorIterator it(*this); (this->Iterator_)--; return it; }
+    { VectorIterator it(*this); --(this->Iterator_); return it; }
 
     /// addition assignment operator
     VectorIterator& operator+=(typename VectorIterator::difference_type n)
@@ -86,20 +86,20 @@ public:
     { this->Iterator_ -= n; return *this; }
 
     /// difference operator
-    typename VectorIterator::difference_type operator-(VectorIterator a) const
-    { return this->Iterator_ - a.Iterator_; }
+    friend const typename VectorIterator::difference_type operator-(VectorIterator lhs, VectorIterator rhs)
+    { return lhs.Iterator_ - rhs.Iterator_; }
 
     /// access operator
     VectorIterator operator[](typename VectorIterator::difference_type n) const
     { VectorIterator it(Iterator_[n]); return it; }
 
     /// less-than operator
-    bool operator<(VectorIterator b) const
-    { return this->Iterator_ < b.Iterator_; }
+    friend const bool operator<(VectorIterator lhs, VectorIterator rhs)
+    { return lhs.Iterator_ < rhs.Iterator_; }
 
     /// greater-than operator
-    bool operator>(VectorIterator b) const
-    { return this->Iterator_ > b.Iterator_; }
+    friend bool operator>(VectorIterator lhs, VectorIterator rhs)
+    { return lhs.Iterator_ > rhs.Iterator_; }
 
 private:
 
@@ -109,18 +109,18 @@ private:
 
 /// addition operator
 template <typename T, size_t N>
-VectorIterator<T, N> operator+(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
-{ VectorIterator<T, N> it(a); it += n; return it; }
+const VectorIterator<T, N> operator+(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
+{ return (VectorIterator<T, N>(a) += n); }
 
 /// addition operator
 template <typename T, size_t N>
-VectorIterator<T, N> operator+(typename VectorIterator<T, N>::difference_type n, VectorIterator<T, N> a)
+const VectorIterator<T, N> operator+(typename VectorIterator<T, N>::difference_type n, VectorIterator<T, N> a)
 { return a + n; }
 
 /// subtraction operator
 template <typename T, size_t N>
-VectorIterator<T, N> operator-(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
-{ VectorIterator<T, N> it(a); it -= n; return it; }
+const VectorIterator<T, N> operator-(VectorIterator<T, N> a, typename VectorIterator<T, N>::difference_type n)
+{ return (VectorIterator<T, N>(a) -= n); }
 
 /// greater-than-or-equal operator
 template <typename T, size_t N>
@@ -347,7 +347,7 @@ Vector<T, N>& operator*=(Vector<T, N>& A, const T& B)
 /// multiplication: #Vector<T> * T
 template <typename T, size_t N>
 const Vector<T, N> operator*(const Vector<T, N>& A, const T& c)
-{ auto v = A; v *= c; return v; }
+{ auto v = A; return v *= c; return v; }
 
 /// multiplication: T * #Vector<T>
 template <typename T, size_t N>
@@ -373,7 +373,7 @@ constexpr T abs(const Vector<T, N>& A)
 /// \param V Vector to use for direction of unit vector
 template <typename T, size_t N>
 const Vector<T, N> unit(const Vector<T, N>& V)
-{ T a = abs(V); return (a == 0) ? V : (T(1) / abs(V)) * V; }
+{ T a = abs(V); return (a == 0) ? V : (T(1) / a) * V; }
 
 /// Matrix * Vector
 template <typename T, size_t R, size_t C>

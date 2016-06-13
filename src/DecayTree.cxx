@@ -5,6 +5,10 @@
 #include "FreeAmplitude.h"
 #include "RecalculableDataAccessor.h"
 #include "SpinAmplitude.h"
+#include "VariableStatus.h"
+
+#include <iterator>
+#include <functional>
 
 namespace yap {
 
@@ -12,6 +16,12 @@ namespace yap {
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
     FreeAmplitude_(free_amp)
 {}
+
+//-------------------------
+const Model* DecayTree::model() const
+{
+    return (FreeAmplitude_) ? FreeAmplitude_->model() : nullptr;
+}
 
 //-------------------------
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d)
@@ -68,13 +78,28 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
 }
 
 //-------------------------
-const std::complex<double> DecayTree::dataIndependentAmplitude(const DataPoint& d) const
+const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
+{
+    // check status of recalculable components, terminating as soon as one is seen to have changed
+    for (const auto& rda : RecalculableDataAccessors_)
+        if (variableStatus(*rda) == VariableStatus::changed)
+            return VariableStatus::changed;
+    // check daughters, terminating as soon as one is seen to have changed
+    for (const auto& d_dt : DaughterDecayTrees_)
+        if (d_dt.second->dataDependentAmplitudeStatus() == VariableStatus::changed)
+            return VariableStatus::changed;
+    // else unchanged
+    return VariableStatus::unchanged;
+}
+
+//-------------------------
+const std::complex<double> DecayTree::dataIndependentAmplitude() const
 {
     // spin amplitude
     auto A = FreeAmplitude_->value();
     // likewise for daughters
     for (const auto& d_dt : DaughterDecayTrees_)
-        A *= d_dt.second->dataIndependentAmplitude(d);
+        A *= d_dt.second->dataIndependentAmplitude();
     return A;
 }
 
@@ -127,19 +152,17 @@ unsigned depth(const DecayTree& DT)
 }
 
 //-------------------------
-// std::complex<double> operator()(DataPoint& d) const
-// {
-//     auto A = Complex_1;
+bool has_changed(const DecayTreeVector::value_type& dt)
+{ return dt->dataDependentAmplitudeStatus() == VariableStatus::changed; }
 
-//     // multiply by all free amplitudes
-//     for (const auto& a : FreeAmplitudes_)
-//         A *= a->value();
-
-//     // multiply by all fixed amplitudes
-//     for (const auto& a : FixedAmplitudes_)
-//         A *= ;
-
-//     return A;
-// }
+//-------------------------
+const DecayTreeVector select_changed(const DecayTreeVector& dtv)
+{
+    DecayTreeVector C;
+    C.reserve(dtv.size());
+    std::copy_if(dtv.begin(), dtv.end(), std::back_inserter(C),
+                 std::function<bool(const DecayTreeVector::value_type&)>(has_changed));
+    return C;
+}
 
 }

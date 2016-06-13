@@ -8,6 +8,7 @@
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "Resonance.h"
+#include "VariableStatus.h"
 
 namespace yap {
 
