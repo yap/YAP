@@ -17,7 +17,6 @@
  */
 
 /// \file
-/// Contains forward declarations only
 
 #ifndef yap_DecayingParticleFwd_h
 #define yap_DecayingParticleFwd_h

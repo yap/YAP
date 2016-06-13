@@ -141,6 +141,9 @@ protected:
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
 
+    /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
+    virtual void pruneParticleCombinations() override;
+
     /// if only one decay channel is available, fix its free amplitude to the current value
     void fixSolitaryFreeAmplitudes();
 

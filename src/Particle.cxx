@@ -1,13 +1,13 @@
 #include "Particle.h"
 
 #include "logging.h"
+#include "Model.h"
 #include "Parameter.h"
 
 namespace yap {
 
 //-------------------------
 Particle::Particle(const QuantumNumbers& q, double m, std::string name) :
-    ReportsParticleCombinations(),
     std::enable_shared_from_this<Particle>(),
     QuantumNumbers_(q),
     Mass_(new RealParameter(m)),
@@ -44,6 +44,30 @@ bool Particle::consistent() const
 void Particle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     ParticleCombinations_.push_back(pc);
+}
+
+//-------------------------
+void Particle::pruneParticleCombinations()
+{
+    if (!model())
+        throw exceptions::Exception("Model not set", "DecayChannel::pruneParticleCombinations");
+
+    // remove entries that don't trace back to the ISP
+    for (auto it = ParticleCombinations_.begin(); it != ParticleCombinations_.end(); ) {
+        // find the top-most parent
+        auto pc = *it;
+        while (pc->parent())
+            pc = pc->parent();
+        // check if it's not an ISP
+        if (pc->indices().size() != model()->finalStateParticles().size())
+            // erase
+            it = ParticleCombinations_.erase(it);
+        else
+            it++;
+    }
+
+    if (ParticleCombinations_.empty())
+        throw exceptions::Exception("ParticleCombinations empty after pruning", "Particle::pruneParticleCombinations");
 }
 
 //-------------------------

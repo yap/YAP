@@ -2,6 +2,7 @@
 
 #include "DecayChannel.h"
 #include "Exceptions.h"
+#include "ParticleCombination.h"
 #include "spin.h"
 #include "SpinAmplitude.h"
 
@@ -33,15 +34,15 @@ FreeAmplitude::FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<S
 }
 
 //-------------------------
-bool FreeAmplitude::checkParticleCombinations(const ReportsParticleCombinations& PC) const
+bool FreeAmplitude::checkParticleCombinations(const DataAccessor& da) const
 {
     if (!DecayChannel_)
         throw exceptions::Exception("DecayChannel_ is nullptr", "FreeAmplitude::checkDataAccessor");
 
     return std::all_of(DecayChannel_->particleCombinations().begin(),
                        DecayChannel_->particleCombinations().end(),
-                       [&PC](const ParticleCombinationVector::value_type & pc)
-    {return PC.hasParticleCombination(pc);});
+                       [&da](const ParticleCombinationVector::value_type & pc)
+                       {return hasParticleCombination(da.particleCombinations(), pc);});
 }
 
 //-------------------------

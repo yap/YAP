@@ -53,7 +53,7 @@ int main( int argc, char** argv)
     // Set final-state particles
     M.setFinalState({piPlus, piMinus, piPlus, piMinus});
 
-    // sigma
+    // sigma / f_0(500)
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addChannel({piPlus, piMinus});
 

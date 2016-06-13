@@ -32,11 +32,10 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
-#include "fwd/ParticleCombination.h"
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
 
-#include "ReportsParticleCombinations.h"
+#include "ParticleCombination.h"
 
 #include <complex>
 #include <map>
@@ -49,8 +48,7 @@ namespace yap {
 /// \class DecayChannel
 /// \brief Class implementing a decay channel.
 /// \author Johannes Rauch, Daniel Greenwald
-class DecayChannel :
-    public ReportsParticleCombinations
+class DecayChannel
 {
 public:
 
@@ -108,6 +106,9 @@ protected:
 
     /// Add particle combination
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c);
+
+    /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
+    virtual void pruneParticleCombinations();
 
     /// call fixSolitaryFreeAmplitudes() on each daughter
     void fixSolitaryFreeAmplitudes();

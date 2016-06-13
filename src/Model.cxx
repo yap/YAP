@@ -326,6 +326,10 @@ void Model::prepareDataAccessors()
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
 
+    InitialStateParticle_->pruneParticleCombinations();
+    for (auto& kv : BackgroundParticles_)
+        kv.first->pruneParticleCombinations();
+
     // fix amplitudes when they are for the only possible decay chain
     InitialStateParticle_->fixSolitaryFreeAmplitudes();
 
