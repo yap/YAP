@@ -56,6 +56,15 @@ std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, dou
 }
 
 //-------------------------
+std::shared_ptr<DecayingParticle> ParticleFactory::nonresonance(int charge) const
+{
+    DEBUG("make nonresonance ");
+    /// \todo check if these quantum numbers make sense
+    QuantumNumbers p(0, 0, 0, 0, 0, charge);
+    return DecayingParticle::create(p, 0., "nonresonant", 0.);
+}
+
+//-------------------------
 std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const
 {
     const auto& p = particleTableEntry(PDG);
