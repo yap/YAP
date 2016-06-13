@@ -53,7 +53,7 @@ int main( int argc, char** argv)
     // Set final-state particles
     M.setFinalState({piPlus, piMinus, piPlus, piMinus});
 
-    // sigma
+    // sigma / f_0(500)
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addChannel({piPlus, piMinus});
 
@@ -79,6 +79,10 @@ int main( int argc, char** argv)
     // R pi pi channels
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
+
+    // background channels
+    M.addBackgroundParticle(a_1);
+    M.addBackgroundParticle(rho);
 
     // check consistency
     if (M.consistent())

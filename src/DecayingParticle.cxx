@@ -138,7 +138,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                 // loop over decay trees of daughter with appropriate spin projection
                                 for (const auto& dt : dp->DecayTrees_[m_cdv.first[d]]) {
                                     // check that decay channel of free amplitude of decay tree has particle combination
-                                    if (dt->freeAmplitude()->decayChannel()->hasParticleCombination(pc->daughters()[d])) {
+                                    if (hasParticleCombination(dt->freeAmplitude()->decayChannel()->particleCombinations(), pc->daughters()[d])) {
                                         for (const auto& DT : DTV) {
                                             // add copy of DT to DTV_temp
                                             DTV_temp.push_back(std::make_shared<DecayTree>(*DT));
@@ -160,7 +160,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                         else {
 
                             // check that particle has daughter particle combination
-                            if (Channels_.back()->daughters()[d]->hasParticleCombination(pc->daughters()[d])) {
+                            if (hasParticleCombination(Channels_.back()->daughters()[d]->particleCombinations(), pc->daughters()[d])) {
                                 // set all elts of DTV to have proper daughter spin projection
                                 for (auto& DT : DTV)
                                     DT->setDaughterSpinProjection(d, m_cdv.first[d]);
@@ -193,6 +193,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     } // ends loop over spin amplitude
 
     FDEBUG(*Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size());
+
     return Channels_.back();
 }
 
@@ -221,13 +222,22 @@ void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombinatio
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (dc->hasParticleCombination(pc, ParticleCombination::equivDown))
+        if (hasParticleCombination(dc->particleCombinations(), pc, ParticleCombination::equivDown))
             dc->addParticleCombination(pc);
     }
 
     // check if also model's initial state particle
     if (model() and model()->initialStateParticle() == shared_from_this())
         const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->addParticleCombination(pc);
+}
+
+//-------------------------
+void DecayingParticle::pruneParticleCombinations()
+{
+    Particle::pruneParticleCombinations();
+
+    for (auto& c : Channels_)
+        c->pruneParticleCombinations();
 }
 
 //-------------------------

@@ -26,11 +26,10 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
-#include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
+#include "ParticleCombination.h"
 #include "QuantumNumbers.h"
-#include "ReportsParticleCombinations.h"
 
 #include <iostream>
 #include <memory>
@@ -43,7 +42,6 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
 class Particle :
-    public ReportsParticleCombinations,
     public std::enable_shared_from_this<Particle>
 {
 protected:
@@ -87,7 +85,7 @@ public:
     virtual const Model* model() const = 0;
 
     /// \return ParticleCombinationVector
-    const ParticleCombinationVector& particleCombinations() const override
+    const ParticleCombinationVector& particleCombinations() const
     { return ParticleCombinations_; }
 
     /// @}
@@ -102,6 +100,9 @@ protected:
 
     /// add ParticleCombination to ParticleCombinationVector_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
+
+    /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
+    virtual void pruneParticleCombinations();
 
 private:
 
