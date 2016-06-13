@@ -46,17 +46,39 @@ public:
     DataIterator& operator++();
 
 	/// post-increment operator
-	DataIterator operator++(int)
-	{ DataIterator it(*Partition_, Iterator_); (this->Iterator_)++; return it; }
+	/// \todo return object or reference?
+	DataIterator operator++(int);
 
-//	// TODO
-//	/// post-decrement operator
-//	DataIterator& operator--()
-//	{ }
+	/// addition assignment operator
+	DataIterator& operator+=(DataIterator::difference_type n)
+	{ this->Iterator_ += n; return *this;}
+
+	/// addition operator
+	friend DataIterator operator+(const DataIterator& lhs, DataIterator::difference_type n)
+	{ return DataIterator(*lhs.Partition_, lhs.Iterator_ + n); }
+
+	/// addition operator (make it commutative)
+	friend DataIterator operator+(DataIterator::difference_type n, const DataIterator& rhs)
+	{ return rhs + n; }
+
+	/// pre-decrement operator
+	DataIterator& operator--();
 
 	/// post-decrement operator
-	DataIterator operator--(int)
-	{ DataIterator it(*Partition_, Iterator_); (this->Iterator_)--; return it; }
+	/// \todo return object or reference?
+	DataIterator operator--(int);
+
+	/// subtraction assignment operator
+	DataIterator& operator-=(DataIterator::difference_type n)
+	{ this->Iterator_ -= n; return *this;}
+
+	/// subraction operator
+	const DataIterator operator-(DataIterator::difference_type n) const
+	{ return DataIterator(*Partition_, Iterator_ - n); }
+
+	/// subraction operator
+	friend const DataIterator::difference_type operator-(const DataIterator& lhs, const DataIterator& rhs)
+	{ return lhs.Iterator_ - rhs.Iterator_; }
 
     /// dereference operator
     DataPoint& operator*()
@@ -67,13 +89,8 @@ public:
     { return *Iterator_; }
 
 	/// pointer operator
-	/// \todo Check this!
-//	DataPoint* operator->()
-//	{ return std::vector<DataPoint>::iterator::operator->(this->Iterator_); }
-
-    /// inequality operator
-    bool operator!=(const DataIterator& it) const
-    { return Iterator_ != it.Iterator_; }
+	DataPoint operator->()
+	{ return *(this->Iterator_).operator->(); }
 
     /// check ownership
     bool ownedBy(const DataPartition& dp) const
@@ -94,6 +111,14 @@ public:
 	/// greater-than-or-equal operator
 	friend const bool operator>=(const DataIterator& lhs, const DataIterator& rhs)
 	{ return !(lhs < rhs); }
+
+	/// equality operator
+	friend const bool operator==(const DataIterator& lhs, const DataIterator& rhs)
+	{ return lhs.Iterator_ == rhs.Iterator_; }
+
+	/// inequality operator
+	friend const bool operator!=(const DataIterator& lhs, const DataIterator& rhs)
+	{ return !(lhs == rhs); }
 
 	/// access operator
 	DataPoint operator[](DataIterator::difference_type n) const
@@ -178,8 +203,13 @@ public:
 protected:
 
     /// increment iterator;
-    /// Must be overloaded in derived classes
-    virtual void increment(DataIterator& it) const
+    /// \attention Must be overloaded in derived classes
+    virtual void increment(DataIterator& it, DataIterator::difference_type n = 1) const
+    { it = End_; }
+
+    /// decrement iterator;
+    /// \attention Must be overloaded in derived classes
+    virtual void decrement(DataIterator& it, DataIterator::difference_type n = 1) const
     { it = End_; }
 
     /// \return vector<DataPoint> iterator inside DataIterator
@@ -244,8 +274,11 @@ protected:
 
     /// increment DataIterator
     /// \param it DataIterator to iterate
-    virtual void increment(DataIterator& it) const override;
+    virtual void increment(DataIterator& it, DataIterator::difference_type n = 1) const override;
 
+    /// decrement DataIterator
+    /// \param it DataIterator to iterate
+    virtual void decrement(DataIterator& it, DataIterator::difference_type n = 1) const override;
 };
 
 /// \class DataPartitionWeave
@@ -279,7 +312,11 @@ protected:
 
     /// increment DataIterator
     /// \param it DataIterator to iterate
-    virtual void increment(DataIterator& it) const override;
+    virtual void increment(DataIterator& it, DataIterator::difference_type n = 1) const override;
+
+	/// decrement DataIterator
+	/// \param it DataIterator to iterate
+	virtual void decrement(DataIterator& it, DataIterator::difference_type n = 1) const override;
 
     /// spacing between data points for the weaving
     unsigned Spacing_;
