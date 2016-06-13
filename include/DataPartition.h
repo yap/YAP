@@ -49,6 +49,15 @@ public:
 	DataIterator operator++(int)
 	{ DataIterator it(*Partition_, Iterator_); (this->Iterator_)++; return it; }
 
+//	// TODO
+//	/// post-decrement operator
+//	DataIterator& operator--()
+//	{ }
+
+	/// post-decrement operator
+	DataIterator operator--(int)
+	{ DataIterator it(*Partition_, Iterator_); (this->Iterator_)--; return it; }
+
     /// dereference operator
     DataPoint& operator*()
     { return *Iterator_; }
@@ -69,6 +78,26 @@ public:
     /// check ownership
     bool ownedBy(const DataPartition& dp) const
     { return Partition_ == &dp; }
+
+	/// less-than operator
+	friend const bool operator<(const DataIterator& lhs, const DataIterator& rhs)
+	{ return lhs.Iterator_ < rhs.Iterator_; }
+
+	/// greater-than operator
+	friend const bool operator>(const DataIterator& lhs, const DataIterator& rhs)
+	{ return lhs.Iterator_ > rhs.Iterator_; }
+
+	/// less-than-or-equal operator
+	friend const bool operator<=(const DataIterator& lhs, const DataIterator& rhs)
+	{ return !(lhs > rhs); }
+
+	/// greater-than-or-equal operator
+	friend const bool operator>=(const DataIterator& lhs, const DataIterator& rhs)
+	{ return !(lhs < rhs); }
+
+	/// access operator
+	DataPoint operator[](DataIterator::difference_type n) const
+	{ return this->Iterator_[n]; }
 
     /// grant friend status to DataPartition to access Iterator_
     friend DataPartition;
