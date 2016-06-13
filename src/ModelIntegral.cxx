@@ -28,7 +28,7 @@ const Model* ModelIntegral::model() const
 }
 
 //-------------------------
-const std::vector<double> fitFractions(const ModelIntegral& MI)
+const std::vector<double> fit_fractions(const ModelIntegral& MI)
 {
     double I = MI.integral().value;
     std::vector<double> ff;

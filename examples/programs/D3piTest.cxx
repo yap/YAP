@@ -151,7 +151,7 @@ int main( int argc, char** argv)
     // for (const auto& kv : MI.offDiagonals())
     //     LOG(INFO) << to_string(kv.second);
     LOG(INFO) << "integral = " << to_string(MI.integral());
-    auto ff = fitFractions(MI);
+    auto ff = fit_fractions(MI);
     for (size_t i = 0; i < ff.size(); ++i)
         LOG(INFO) << "fit fraction DT " << i << " = " << ff[i];
     LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
