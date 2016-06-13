@@ -56,7 +56,7 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
-    if (hasParticleCombination(particleCombinations(), c))
+    if (any_of(particleCombinations(), c))
         return;
 
     // object for recording successing of emplacement

@@ -80,7 +80,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
                 // get (B,A) combination from cache
                 auto b_a = model()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and hasParticleCombination(particleCombinations(), b_a.lock(), ParticleCombination::equivBySharedPointer))
+                if (!b_a.expired() and any_of(particleCombinations(), b_a.lock(), ParticleCombination::equivBySharedPointer))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
             }
@@ -96,7 +96,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // if pc already possessed, do nothing
-    if (hasParticleCombination(particleCombinations(), pc, ParticleCombination::equivBySharedPointer))
+    if (any_of(particleCombinations(), pc, ParticleCombination::equivBySharedPointer))
         return;
 
     // check number of daughters in pc
