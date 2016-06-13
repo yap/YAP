@@ -214,7 +214,7 @@ public:
 inline bool any_of(const ParticleCombinationVector& PCs,
                    const std::shared_ptr<ParticleCombination>& c,
                    const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
-{ return std::any_of(PCs.begin(), PCs.end(), std::bind(std::mem_fn(&ParticleCombination::Equiv::operator()), equiv, c, std::placeholders::_1));}
+{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc){return equiv(pc, c);}); }
 
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc);
