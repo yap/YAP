@@ -90,10 +90,6 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
         }
     }
-
-    DEBUG("created DecayChannel " << to_string(*this) << " with particle combinations");
-    for (auto& pc : particleCombinations())
-        DEBUG("  " << to_string(*pc));
 }
 
 //-------------------------
