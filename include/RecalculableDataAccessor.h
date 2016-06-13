@@ -27,6 +27,7 @@
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
+#include "fwd/VariableStatus.h"
 
 #include "DataAccessor.h"
 #include "VariableStatus.h"

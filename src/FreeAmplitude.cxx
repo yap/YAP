@@ -33,6 +33,12 @@ FreeAmplitude::FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<S
 }
 
 //-------------------------
+const Model* FreeAmplitude::model() const
+{
+    return (DecayChannel_) ? DecayChannel_->model() : nullptr;
+}
+
+//-------------------------
 bool FreeAmplitude::checkParticleCombinations(const ReportsParticleCombinations& PC) const
 {
     if (!DecayChannel_)
