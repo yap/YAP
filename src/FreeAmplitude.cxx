@@ -48,7 +48,7 @@ bool FreeAmplitude::checkParticleCombinations(const DataAccessor& da) const
     return std::all_of(DecayChannel_->particleCombinations().begin(),
                        DecayChannel_->particleCombinations().end(),
                        [&da](const ParticleCombinationVector::value_type & pc)
-                       {return hasParticleCombination(da.particleCombinations(), pc);});
+    {return hasParticleCombination(da.particleCombinations(), pc);});
 }
 
 //-------------------------

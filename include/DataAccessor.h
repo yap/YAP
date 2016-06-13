@@ -54,8 +54,8 @@ public:
     { return Index_; }
 
     /// \return index inside row of DataPoint for the requested ParticleCombination
-    unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const;
-    //{ return SymmetrizationIndices_.at(c); }
+    unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
+    { return SymmetrizationIndices_.at(c); }
 
     /// \return SymmetrizationIndices_
     const ParticleCombinationMap<unsigned>& symmetrizationIndices() const

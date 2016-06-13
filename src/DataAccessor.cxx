@@ -88,25 +88,6 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
 }
 
 //-------------------------
-/// \todo this is only for debugging, remove again
-unsigned DataAccessor::symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
-{
-    if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
-        return SymmetrizationIndices_.at(c);
-
-    DEBUG("DataAccessor " << data_accessor_type() << " does not have symIndex for pc " << to_string(*c) << " " << c.get());
-    if (c->parent())
-    DEBUG("    parent is " << to_string(*c->parent()));
-    for (auto& kv : SymmetrizationIndices_) {
-        DEBUG(to_string(*kv.first) << " " << kv.first.get() << ": " << kv.second);
-        if (kv.first->parent())
-            DEBUG("    parent is " << to_string(*kv.first->parent()));
-    }
-
-    return SymmetrizationIndices_.at(c);
-}
-
-//-------------------------
 void DataAccessor::pruneSymmetrizationIndices()
 {
     if (!model())
