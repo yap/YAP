@@ -182,7 +182,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                     if (!DTV.empty()) {
                         auto& dtv_M = DecayTrees_[M_m.first];
                         for (const auto& DT : DTV) {
-                            // check that DT isn't already equivalent to one in dtv_M
+                            // check that DT isn't already equal to one in dtv_M
                             if (std::none_of(dtv_M.begin(), dtv_M.end(), [&DT](const std::shared_ptr<DecayTree>& dt) {return *dt == *DT;}))
                             dtv_M.push_back(DT);
                         }
@@ -223,7 +223,7 @@ void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombinatio
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (any_of(dc->particleCombinations(), pc, ParticleCombination::equivDown))
+        if (any_of(dc->particleCombinations(), pc, ParticleCombination::equalDown))
             dc->addParticleCombination(pc);
     }
 

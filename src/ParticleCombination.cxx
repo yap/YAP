@@ -151,17 +151,17 @@ std::string to_string(const ParticleCombination& pc)
 //-------------------------
 // Comparison stuff:
 
-ParticleCombination::Equiv ParticleCombination::equivBySharedPointer;
-ParticleCombination::EquivDown ParticleCombination::equivDown;
-ParticleCombination::EquivUp ParticleCombination::equivUp;
-ParticleCombination::EquivUpAndDown ParticleCombination::equivUpAndDown;
-ParticleCombination::EquivByOrderedContent ParticleCombination::equivByOrderedContent;
-ParticleCombination::EquivByOrderlessContent ParticleCombination::equivByOrderlessContent;
-ParticleCombination::EquivDownByOrderlessContent ParticleCombination::equivDownByOrderlessContent;
-ParticleCombination::EquivZemach ParticleCombination::equivZemach;
+ParticleCombination::Equal ParticleCombination::equalBySharedPointer;
+ParticleCombination::EqualDown ParticleCombination::equalDown;
+ParticleCombination::EqualUp ParticleCombination::equalUp;
+ParticleCombination::EqualUpAndDown ParticleCombination::equalUpAndDown;
+ParticleCombination::EqualByOrderedContent ParticleCombination::equalByOrderedContent;
+ParticleCombination::EqualByOrderlessContent ParticleCombination::equalByOrderlessContent;
+ParticleCombination::EqualDownByOrderlessContent ParticleCombination::equalDownByOrderlessContent;
+ParticleCombination::EqualZemach ParticleCombination::equalZemach;
 
 //-------------------------
-bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByOrderedContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -180,7 +180,7 @@ bool ParticleCombination::EquivByOrderedContent::operator()(const std::shared_pt
 }
 
 //-------------------------
-bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -199,7 +199,7 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
         return false;
 
     for (unsigned i = 0; i < A->daughters().size(); ++i)
-        if (!equivDown(A->daughters()[i], B->daughters()[i]))
+        if (!equalDown(A->daughters()[i], B->daughters()[i]))
             return false;
 
     // a match!
@@ -207,7 +207,7 @@ bool ParticleCombination::EquivDown::operator()(const std::shared_ptr<ParticleCo
 }
 
 //-------------------------
-bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualUp::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -217,7 +217,7 @@ bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleComb
     if (A == B)
         return true;
 
-    if (!ParticleCombination::equivByOrderedContent(A, B))
+    if (!ParticleCombination::equalByOrderedContent(A, B))
         return false;
 
     // if no more parents, return true
@@ -225,13 +225,13 @@ bool ParticleCombination::EquivUp::operator()(const std::shared_ptr<ParticleComb
         return true;
 
     // else continue up
-    return ParticleCombination::equivUp(A->parent(), B->parent());
+    return ParticleCombination::equalUp(A->parent(), B->parent());
 }
 
 //-------------------------
-bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualUpAndDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
-    if (!ParticleCombination::equivDown(A, B))
+    if (!ParticleCombination::equalDown(A, B))
         return false;
 
     // if parents, return true
@@ -239,11 +239,11 @@ bool ParticleCombination::EquivUpAndDown::operator()(const std::shared_ptr<Parti
         return true;
 
     // else check up
-    return ParticleCombination::equivUp(A->parent(), B->parent());
+    return ParticleCombination::equalUp(A->parent(), B->parent());
 }
 
 //-------------------------
-bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -267,7 +267,7 @@ bool ParticleCombination::EquivByOrderlessContent::operator()(const std::shared_
 }
 
 //-------------------------
-bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualDownByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -277,7 +277,7 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::sha
     if (A == B)
         return true;
 
-    if (!ParticleCombination::equivByOrderlessContent(A, B))
+    if (!ParticleCombination::equalByOrderlessContent(A, B))
         return false;
 
     // Check daughters
@@ -288,7 +288,7 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::sha
     unsigned matches(0);
     for (unsigned i = 0; i < A->daughters().size(); ++i)
         for (unsigned j = 0; j < B->daughters().size(); ++j)
-            if (ParticleCombination::equivByOrderlessContent(A->daughters()[i], B->daughters()[j])) {
+            if (ParticleCombination::equalByOrderlessContent(A->daughters()[i], B->daughters()[j])) {
                 ++matches;
                 break;
             }
@@ -301,7 +301,7 @@ bool ParticleCombination::EquivDownByOrderlessContent::operator()(const std::sha
 }
 
 //-------------------------
-bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByReferenceFrame::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -312,14 +312,14 @@ bool ParticleCombination::EquivByReferenceFrame::operator()(const std::shared_pt
     if (A == B)
         return true;
 
-    if (!ParticleCombination::equivByOrderlessContent(A->parent(), B->parent()))
+    if (!ParticleCombination::equalByOrderlessContent(A->parent(), B->parent()))
         return false;
 
     return operator()(A->parent(), B->parent());
 }
 
 //-------------------------
-bool ParticleCombination::EquivZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
+bool ParticleCombination::EqualZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
         const std::shared_ptr<ParticleCombination>& B) const
 {
     //check if either empty
@@ -328,7 +328,7 @@ bool ParticleCombination::EquivZemach::operator()(const std::shared_ptr<Particle
 
     if (A->indices().size() > 3 or B->indices().size() > 3)
         throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
-                                    "ParticleCombination::EquivZemach::operator()");
+                                    "ParticleCombination::EqualZemach::operator()");
 
     // compare shared_ptr addresses
     if (A == B)
@@ -349,17 +349,17 @@ bool ParticleCombination::EquivZemach::operator()(const std::shared_ptr<Particle
         std::swap(sA, rA);
     if (rA->indices().size() != 2 and sA->indices().size() != 1)
         throw exceptions::Exception("could not find resonance and spectator in A",
-                                    "ParticleCombination::EquivZemach::operator()");
+                                    "ParticleCombination::EqualZemach::operator()");
     auto rB = B->daughters()[0];
     auto sB = B->daughters()[1];
     if (sB->indices().size() == 2)
         std::swap(sB, rB);
     if (rB->indices().size() != 2 and sB->indices().size() != 1)
         throw exceptions::Exception("could not find resonance and spectator in B",
-                                    "ParticleCombination::EquivZemach::operator()");
+                                    "ParticleCombination::EqualZemach::operator()");
 
-    return ParticleCombination::equivByOrderlessContent(rA, rB)
-           and ParticleCombination::equivByOrderlessContent(sA, sB);
+    return ParticleCombination::equalByOrderlessContent(rA, rB)
+           and ParticleCombination::equalByOrderlessContent(sA, sB);
 }
 
 }

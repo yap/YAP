@@ -37,9 +37,9 @@ class ParticleCombinationCache : public WeakPtrCache<ParticleCombination>
 {
 public:
 
-    /// implements equivalence checking
-    bool equiv(const shared_ptr_type& A, const shared_ptr_type& B) const override
-    { return ParticleCombination::equivUpAndDown(A, B); }
+    /// implements equality checking
+    bool equal(const shared_ptr_type& A, const shared_ptr_type& B) const override
+    { return ParticleCombination::equalUpAndDown(A, B); }
 
     /// Default constructor
     ParticleCombinationCache() = default;

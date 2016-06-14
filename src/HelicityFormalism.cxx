@@ -11,8 +11,8 @@
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equiv& equiv) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, equiv), RequiresHelicityAngles()
+HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s, ParticleCombination::Equal& equal) :
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, equal), RequiresHelicityAngles()
 {
     // angular momentum normalization factor
     /// \todo check which is the right one

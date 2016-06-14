@@ -11,7 +11,7 @@ namespace yap {
 
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
-    StaticDataAccessor(m, ParticleCombination::equivDownByOrderlessContent),
+    StaticDataAccessor(m, ParticleCombination::equalDownByOrderlessContent),
     Q2_(RealCachedDataValue::create(this))
 {
     if (!model()->fourMomenta())

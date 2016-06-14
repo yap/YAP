@@ -39,15 +39,15 @@ class StaticDataAccessor : public DataAccessor
 public:
 
     /// Constructor
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    StaticDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), Model_(nullptr) {}
+    /// \param equal ParticleCombination equality struct for determining index assignments
+    StaticDataAccessor(const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+        : DataAccessor(equal), Model_(nullptr) {}
 
     /// Constructor
     /// \param model Raw pointer to owning Model
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    StaticDataAccessor(Model* m, const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv), Model_(nullptr)
+    /// \param equal ParticleCombination equality struct for determining index assignments
+    StaticDataAccessor(Model* m, const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+        : DataAccessor(equal), Model_(nullptr)
     {
         setModel(m);
     }

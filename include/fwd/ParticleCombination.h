@@ -31,15 +31,15 @@ class ParticleCombination;
 
 // The following cannot be forward declared since they are nested
 // inside ParticleCombination:
-/* class ParticleCombination::Equiv; */
-/* class ParticleCombination::EquivByOrderedContent; */
-/* class ParticleCombination::EquivDown; */
-/* class ParticleCombination::EquivUp; */
-/* class ParticleCombination::EquivUpAndDown; */
-/* class ParticleCombination::EquivByOrderlessContent; */
-/* class ParticleCombination::EquivDownByOrderlessContent; */
-/* class ParticleCombination::EquivByReferenceFrame; */
-/* class ParticleCombination::EquivZemach; */
+/* class ParticleCombination::Equal; */
+/* class ParticleCombination::EqualByOrderedContent; */
+/* class ParticleCombination::EqualDown; */
+/* class ParticleCombination::EqualUp; */
+/* class ParticleCombination::EqualUpAndDown; */
+/* class ParticleCombination::EqualByOrderlessContent; */
+/* class ParticleCombination::EqualDownByOrderlessContent; */
+/* class ParticleCombination::EqualByReferenceFrame; */
+/* class ParticleCombination::EqualZemach; */
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
