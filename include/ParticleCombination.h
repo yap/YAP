@@ -213,7 +213,7 @@ public:
 inline bool any_of(const ParticleCombinationVector& PCs,
                    const std::shared_ptr<ParticleCombination>& c,
                    const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
-{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc){return equal(pc, c);}); }
+{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
 
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc);

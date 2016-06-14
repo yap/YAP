@@ -140,7 +140,7 @@ TEST_CASE( "HelicityAngles" )
 
         std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
 
-        for (auto pc : D->particleCombinations()) {
+        for (auto& pc : D->particleCombinations()) {
             REQUIRE( M.fourMomenta()->m(dp, pc) == Approx(D->mass()->value()) );
 
             calculate_helicity_angles(M, phi_theta, pc, momenta); // YAP

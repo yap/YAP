@@ -1,6 +1,7 @@
 #include "FreeAmplitude.h"
 
 #include "DecayChannel.h"
+#include "container_utils.h"
 #include "Exceptions.h"
 #include "ParticleCombination.h"
 #include "spin.h"
@@ -45,10 +46,11 @@ bool FreeAmplitude::checkParticleCombinations(const DataAccessor& da) const
     if (!DecayChannel_)
         throw exceptions::Exception("DecayChannel_ is nullptr", "FreeAmplitude::checkDataAccessor");
 
-    return std::all_of(DecayChannel_->particleCombinations().begin(),
-                       DecayChannel_->particleCombinations().end(),
-                       [&da](const ParticleCombinationVector::value_type & pc)
-                       {return any_of(da.particleCombinations(), pc);});
+    // check DataAccessor contains all particle combination of DecayChannel
+    return contains(da.symmetrizationIndices().begin(), da.symmetrizationIndices().end(),
+                    DecayChannel_->particleCombinations().begin(), DecayChannel_->particleCombinations().end(),
+                    [&](const ParticleCombinationMap<unsigned>::value_type & pc_i, const ParticleCombinationVector::value_type & pc)
+    {return pc_i.first == pc;});
 }
 
 //-------------------------

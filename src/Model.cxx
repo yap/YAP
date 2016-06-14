@@ -616,8 +616,8 @@ void Model::printDataAccessors(bool printParticleCombinations) const
         if (printParticleCombinations) {
             std::cout << " \t";
 
-            for (auto& pc : d->particleCombinations())
-                std::cout << *pc << ":" << d->symmetrizationIndex(pc) << ";  ";
+            for (const auto& pc_i : d->symmetrizationIndices())
+                std::cout << *pc_i.first << ":" << pc_i.second << ";  ";
         }
 
         std::cout << std::endl;

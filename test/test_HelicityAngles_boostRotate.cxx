@@ -128,9 +128,9 @@ TEST_CASE( "HelicityAngles_boostRotate" )
             const auto dp = data.points().back();
 
             // compare results
-            for (auto& pc : M.helicityAngles()->particleCombinations())
-                if (pc->indices().size() < M.finalStateParticles().size())
-                    resultingThetas[pc].push_back(M.helicityAngles()->theta(dp, pc));
+            for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
+                if (pc_i.first->indices().size() < M.finalStateParticles().size())
+                    resultingThetas[pc_i.first].push_back(M.helicityAngles()->theta(dp, pc_i.first));
         }
 
         // check if thetas are equal

@@ -42,11 +42,6 @@ bool DataAccessor::consistent() const
             C &= false;
         }
 
-    if (ParticleCombinationsCache_.size() != SymmetrizationIndices_.size()) {
-        FLOG(ERROR) << "ParticleCombinationsCache_.size() != SymmetrizationIndices_.size()";
-        C &= false;
-    }
-
     return C;
 }
 
@@ -56,35 +51,25 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
-    if (any_of(particleCombinations(), c))
+    // check if c is already key in SymmetrizationIndices_
+    if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
         return;
 
-    // object for recording successing of emplacement
-    auto it_b = std::make_pair(SymmetrizationIndices_.end(), false);
+    // search for match using Equal
+    auto it = std::find_if(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(),
+                           [&](const ParticleCombinationMap<unsigned>::value_type & kv)
+    {return Equal_(c, kv.first);});
 
-    // check to see if new member equates to existing member
-    for (auto& kv : SymmetrizationIndices_)
-        if (Equal_(kv.first, c))
-            // equating member found; set index; return
-            it_b = SymmetrizationIndices_.emplace(c, kv.second);
-    // if c is new but equates to existing member, it_b.first != end and it_b.second is true
-    // if c is existing member, it_b.first != end and it_b.second is false
-    // if c does not equate to existing member, it_b.first = end, it_b.second is false
-
-    // else assign to one higher than current highest index
-    if (it_b.first == SymmetrizationIndices_.end()) {
-        it_b = SymmetrizationIndices_.emplace(c, static_cast<unsigned>(NIndices_));
-        // if emplacement successful, it_b.first != end, it_b.second = true
-
-        // if successfully emplaced, increase NIndices_
-        if (it_b.second)
-            ++NIndices_;
+    // if found, use found index
+    if (it != SymmetrizationIndices_.end()) {
+        SymmetrizationIndices_.emplace(c, it->second);
+        return;
     }
 
-    if (it_b.first == SymmetrizationIndices_.end())
-        throw exceptions::Exception("Failed to emplace new SymmetrizationIndices element.", "DataAccessor::addParticleCombination");
-
-    rebuildParticleCombinations();
+    // else assign to one higher than current highest index
+    SymmetrizationIndices_.emplace(c, static_cast<unsigned>(NIndices_));
+    // and increase current highest index
+    ++NIndices_;
 }
 
 //-------------------------
@@ -141,9 +126,6 @@ void DataAccessor::pruneSymmetrizationIndices()
     NIndices_ = 0;
     for (const auto& kv : SymmetrizationIndices_)
         NIndices_ = std::max(kv.second + 1, NIndices_);
-
-    // (re)fill ParticleCombinations_
-    rebuildParticleCombinations();
 }
 
 //-------------------------
@@ -170,16 +152,6 @@ void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
         // increase data size to accommodate CachedDataValue
         increaseSize(c->size());
     }
-}
-
-//-------------------------
-void DataAccessor::rebuildParticleCombinations()
-{
-    ParticleCombinationsCache_.clear();
-    ParticleCombinationsCache_.reserve(SymmetrizationIndices_.size());
-
-    for (auto& kv : SymmetrizationIndices_)
-        ParticleCombinationsCache_.push_back(kv.first);
 }
 
 //-------------------------

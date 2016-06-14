@@ -26,7 +26,7 @@ void FinalStateParticle::addParticleCombination(std::shared_ptr<ParticleCombinat
     // look for pc in ParticleCombinations_
     auto it = std::find_if(particleCombinations().begin(), particleCombinations().end(),
     [&](const std::shared_ptr<ParticleCombination>& p) {return ParticleCombination::equalUpAndDown(p, pc);});
-    // if pc already contained, do nothing
+    // if pc not found, add it
     if (it == particleCombinations().end())
         Particle::addParticleCombination(pc);
 }

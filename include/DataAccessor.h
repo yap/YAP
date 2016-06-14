@@ -65,10 +65,6 @@ public:
     const unsigned nSymmetrizationIndices() const
     { return NIndices_; }
 
-    /// \return vector of ParticleCombination's
-    const ParticleCombinationVector& particleCombinations() const
-    { return ParticleCombinationsCache_; }
-
     /// print ParticleCombination map
     void printParticleCombinations() const;
 
@@ -121,9 +117,6 @@ protected:
 
 private:
 
-    /// rebuild ParticleCombinations_
-    void rebuildParticleCombinations();
-
     /// Object to check equality of symmetrizations for determining storage indices
     const ParticleCombination::Equal& Equal_;
 
@@ -132,10 +125,6 @@ private:
 
     /// Number of independent indices stored in SymmetrizationIndices_
     unsigned NIndices_;
-
-    /// Vector of particle combinations. This is a cache kept for performance reasons,
-    /// it must always be in sync with SymmetrizationIndices_
-    ParticleCombinationVector ParticleCombinationsCache_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
     CachedDataValueSet CachedDataValues_;

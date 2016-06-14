@@ -152,27 +152,6 @@ TEST_CASE( "swapFinalStates" )
                           << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
                           << std::endl;
             }
-            /*
-            for (size_t i = 0; i < H.size(); ++i) {
-
-                auto PCs = H[i]->helicityAngles()->particleCombinations();
-
-                // print fsp 4 momenta
-                for (auto& pc : PCs) {
-                    std::cout << "FSP 4mom for " << to_string(*pc) << " = "
-                            << to_string(H[i]->fourMomenta()->p(dH[i][0], pc)) << "\n";
-                }
-
-                std::cout << "piK = " << *mH[i][0];
-
-                for (size_t j = 0; j < PCs.size(); ++j) {
-                    std::cout << "\t :: " << *PCs[j] << ": "
-                              << "("  << H[i]->helicityAngles()->phi(dH[i][0], PCs[j]) * yap::deg_per_rad<double>()
-                              << ", " << H[i]->helicityAngles()->theta(dH[i][0], PCs[j]) * yap::deg_per_rad<double>()
-                              << ")";
-                }
-                std::cout << std::endl;
-            }*/
 
             // if nan, check that all are nan
             if (amps_Z[0] != amps_Z[0]) {
