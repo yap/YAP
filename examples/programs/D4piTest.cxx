@@ -81,9 +81,12 @@ int main( int argc, char** argv)
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
-    // background channels
-    M.addBackgroundParticle(a_1);
-    M.addBackgroundParticle(rho);
+    // InitialStateParticles
+    // add D and fix its amplitude
+    M.addInitialStateParticle(D)->second->setVariableStatus(yap::VariableStatus::fixed);
+    // add other background particles
+    M.addInitialStateParticle(a_1);
+    M.addInitialStateParticle(rho);
 
     // check consistency
     if (M.consistent())
@@ -153,7 +156,7 @@ int main( int argc, char** argv)
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
-    auto freeAmps = freeAmplitudes(M.initialStateParticle()->decayTrees());
+    auto freeAmps = freeAmplitudes(D->decayTrees());
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 
@@ -225,7 +228,7 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+    LOG(INFO) << D->printDecayTrees();
 
     std::cout << "alright! \n";
 }

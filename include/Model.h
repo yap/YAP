@@ -26,9 +26,9 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
-#include "fwd/FourVector.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
+#include "fwd/FourVector.h"
 #include "fwd/HelicityAngles.h"
 #include "fwd/MassAxes.h"
 #include "fwd/MeasuredBreakupMomenta.h"
@@ -46,6 +46,9 @@
 #include <vector>
 
 namespace yap {
+
+/// map initial state particle to free (real) amplitude (for incoherent summing over initial state particles)
+using initialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
 
 /// \class Model
 /// \brief Class implementing a PWA model
@@ -121,20 +124,12 @@ public:
     const SpinAmplitudeCache* spinAmplitudeCache() const
     { return SpinAmplitudeCache_.get(); }
 
-    /// \return Initial-state particle
-    std::shared_ptr<DecayingParticle> initialStateParticle()
-    { return InitialStateParticle_; }
-
-    /// \return Initial-state particle (const)
-    std::shared_ptr<DecayingParticle> initialStateParticle() const
-    { return InitialStateParticle_; }
-
     /// \return vector of shared pointers to final state particles
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
-    const std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >& backgroundParticles() const
-    { return BackgroundParticles_; }
+    const initialStateParticleMap& initialStateParticles() const
+    { return InitialStateParticles_; }
 
     /// \return set of DataAccessors
     const DataAccessorSet& dataAccessors() const
@@ -146,16 +141,13 @@ public:
 
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
-    std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc) const;
+    /// \param p Initial state particle to get the mass range for
+    std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc, std::shared_ptr<DecayingParticle> initialStateParticle) const;
 
     /// @}
 
     /// \name Setters
     /// @{
-
-    /// Set initial-state particle
-    /// \param isp shared pointer to initial-state particle
-    void setInitialStateParticle(std::shared_ptr<DecayingParticle> isp);
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
@@ -174,8 +166,8 @@ public:
     { std::vector<std::shared_ptr<FinalStateParticle> > V{FSPs...}; setFinalState(V); }
     /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
 
-    /// add a background particle
-    void addBackgroundParticle(std::shared_ptr<DecayingParticle> bg);
+    /// add an initial state particle
+    initialStateParticleMap::const_iterator addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
@@ -195,7 +187,8 @@ public:
     /// Calculate four-momenta for final-state particles for phase-space coordinate
     /// \param axes phase-space axes
     /// \param squared_masses phase-space coordinate
-    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const;
+    /// \param p Initial state particle to calculate the four momenta with (its mass will be used)
+    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, std::shared_ptr<DecayingParticle> initialStateParticle) const;
 
     /// @}
 
@@ -260,12 +253,9 @@ private:
     /// set of pointers to RecalculableDataAccessors
     RecalculableDataAccessorSet RecalculableDataAccessors_;
 
-    /// pointer to initial-state particle
-    std::shared_ptr<DecayingParticle> InitialStateParticle_;
-
-    /// pointers to background particles
+    /// pointers to initial particles
     /// they will be summed in incoherently
-    std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> > BackgroundParticles_;
+    initialStateParticleMap InitialStateParticles_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;

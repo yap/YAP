@@ -60,8 +60,8 @@ void Model::calculate(DataPartition& D) const
 // resolves C++ problem related to naming of functions and call to std::async below
 const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
 {
-    if (!M.initialStateParticle())
-        throw exceptions::Exception("initialStateParticle is nullptr", "sumOfLogsOfSquaredAmplitudes");
+    if (M.initialStateParticles().empty())
+        throw exceptions::Exception("Model has no initialStateParticles", "sumOfLogsOfSquaredAmplitudes");
 
     // calculate components
     M.calculate(D);
@@ -69,13 +69,9 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
     // sum log of norm of amplitudes over data points in partition
     double L = 0;
     for (const auto& d : D) {
-        double l = norm(amplitude(M.initialStateParticle()->decayTrees(), d));
-        // incoherently sum in background
-        FDEBUG("incoherently sum in background");
-        for (auto& kv : M.backgroundParticles())
-            l += kv.second->value() * norm(amplitude(kv.first->decayTrees(), d));
-
-        L += log(l);
+        // incoherently sum over initialStateParticles
+        for (auto& kv : M.initialStateParticles())
+            L += log(kv.second->value() * norm(amplitude(kv.first->decayTrees(), d)));
     }
 
     return L;
@@ -129,20 +125,8 @@ bool Model::consistent() const
     for (const auto& da : dataAccessors())
         C &= da->consistent();
 
-    /// \todo: is this necessary to check?
-    /// @{
-    std::vector<std::shared_ptr<FinalStateParticle> > A = FinalStateParticles_;
-    sort(A.begin(), A.end());
-    std::vector<std::shared_ptr<FinalStateParticle> > B = InitialStateParticle_->finalStateParticles();
-    sort(B.begin(), B.end());
-
-    if (A != B) {
-        FLOG(ERROR) << "FinalStateParticles_ are not set correctly.";
-        C &= false;
-    }
-    /// @}
-
-    C &= InitialStateParticle_->consistent();
+    for (auto& p : initialStateParticles())
+        C &= p.first->consistent();
 
     return C;
 }
@@ -173,27 +157,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 }
 
 //-------------------------
-void Model::setInitialStateParticle(std::shared_ptr<DecayingParticle> isp)
-{
-    if (InitialStateParticle_)
-        throw exceptions::Exception("Initial-state particle already set", "Model::setInitialStateParticle");
-
-    if (!isp)
-        throw exceptions::Exception("Initial-state particle empty", "Model::setInitialStateParticle");
-
-    if (isp->model() != this)
-        throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::setInitialStateParticle");
-
-    if (isp->finalStateParticles().size() != FinalStateParticles_.size())
-        throw exceptions::Exception("Initial-state particle has wrong number of final-state particles ("
-                                    + std::to_string(isp->finalStateParticles().size()) + " != " + std::to_string(FinalStateParticles_.size()) + ")",
-                                    "Model::setInitialStateParticle");
-
-    InitialStateParticle_ = isp;
-}
-
-//-------------------------
-void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP)
+void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
 {
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
@@ -221,14 +185,24 @@ void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> 
 }
 
 //-------------------------
-void Model::addBackgroundParticle(std::shared_ptr<DecayingParticle> bg)
+initialStateParticleMap::const_iterator Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
 {
-    if (BackgroundParticles_.find(bg) != BackgroundParticles_.end()) {
-        FLOG(INFO) << "DecayingParticle " << to_string(*bg) << " already added as background particle.";
-        return;
+    if (!p)
+        throw exceptions::Exception("Initial-state particle empty", "Model::addInitialStateParticle");
+
+    if (p->model() != this)
+        throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::setInitialStateParticle");
+
+    if (InitialStateParticles_.find(p) != InitialStateParticles_.end()) {
+        FLOG(INFO) << "DecayingParticle " << to_string(*p) << " already added as initial state particle.";
+        return InitialStateParticles_.find(p);
     }
 
-    BackgroundParticles_.insert(std::make_pair(bg, std::make_shared<RealParameter>(1.)));
+    for (auto& pc : p->particleCombinations())
+        addParticleCombination(pc);
+
+    InitialStateParticles_.insert(std::make_pair(p, std::make_shared<RealParameter>(1.)));
+    return InitialStateParticles_.find(p);
 }
 
 //-------------------------
@@ -241,15 +215,16 @@ void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 }
 
 //-------------------------
-std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination>& pc) const
+std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination>& pc, std::shared_ptr<DecayingParticle> initialStateParticle) const
 {
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("Initial state not set", "Model::massRange");
-
     if (FinalStateParticles_.empty())
         throw exceptions::Exception("Final state not set", "Model::massRange");
 
-    std::array<double, 2> m = {0, InitialStateParticle_->mass()->value()};
+    // must be an initialStateParticle
+    if (InitialStateParticles_.count(initialStateParticle) == 0)
+        throw exceptions::Exception("DecayingParticle is not an initialStateParticle of this model", "Model::massRange");
+
+    std::array<double, 2> m = {0, initialStateParticle->mass()->value()};
 
     for (size_t i = 0; i < FinalStateParticles_.size(); ++i) {
         if (std::find(pc->indices().begin(), pc->indices().end(), i) != pc->indices().end())
@@ -319,12 +294,14 @@ void Model::prepareDataAccessors()
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
 
-    InitialStateParticle_->pruneParticleCombinations();
-    for (auto& kv : BackgroundParticles_)
+    for (auto& kv : InitialStateParticles_) {
+        // prune initial state particles
         kv.first->pruneParticleCombinations();
 
-    // fix amplitudes when they are for the only possible decay chain
-    InitialStateParticle_->fixSolitaryFreeAmplitudes();
+        // fix amplitudes when they are for the only possible decay chain
+        kv.first->fixSolitaryFreeAmplitudes();
+    }
+
 
     // fix indices:
     // collect used indices
@@ -446,10 +423,11 @@ bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squ
 
 
 //-------------------------
-std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const
+std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, std::shared_ptr<DecayingParticle> initialStateParticle) const
 {
-    if (!InitialStateParticle_)
-        throw exceptions::Exception("Initial state unset", "Model::calculateFourMomenta");
+    // must be an initialStateParticle
+    if (InitialStateParticles_.count(initialStateParticle) == 0)
+        throw exceptions::Exception("DecayingParticle is not an initialStateParticle of this model", "Model::calculateFourMomenta");
 
     if (FinalStateParticles_.empty())
         throw exceptions::Exception("Final state unset", "Model::calculateFourMomenta");
@@ -474,7 +452,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 
     // set diagonal elements to squared masses, and store sum
     double m2_sum_1 = 0;
-    double m_sum_1 = InitialStateParticle_->mass()->value();
+    double m_sum_1 = initialStateParticle->mass()->value();
     for (size_t i = 0; i < n_fsp; ++i) {
         pp[i][i] = pow(finalStateParticles()[i]->mass()->value(), 2);
         m2_sum_1 += pp[i][i];
@@ -498,7 +476,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
         for (unsigned j = i + 1; j < n_fsp; ++j)
             if (pp[i][j] < 0)
                 // calculate unset mass: m^2_missing = M^2_isp + (n_fsp - 2) * sum_fsp (m^2) - sum_given(m^2)
-                pp[i][j] = pow(InitialStateParticle_->mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
+                pp[i][j] = pow(initialStateParticle->mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
     // upper triangular elements are now two-particle squared masses
 
     double m_01 = sqrt(pp[0][1]);

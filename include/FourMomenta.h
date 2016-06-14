@@ -74,9 +74,9 @@ public:
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// \return initial-state four-momentum (const)
+    /// \return total four-momentum (const)
     /// \param d DataPoint to get data from
-    const FourVector<double> initialStateMomentum(const DataPoint& d) const;
+    const FourVector<double> totalMomentum(const DataPoint& d) const;
 
     /// \return vector of final-state four-momenta (const)
     /// \param d DataPoint to get data from
@@ -129,7 +129,7 @@ protected:
 
 private:
 
-    /// Symmetrization index of initial state
+    /// Symmetrization index of initial state (which is composed from ALL final state particles)
     int ISPIndex_;
 
     /// Symmetrization indices of final states

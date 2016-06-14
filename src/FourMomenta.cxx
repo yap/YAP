@@ -77,10 +77,10 @@ bool FourMomenta::consistent() const
 }
 
 //-------------------------
-const FourVector<double> FourMomenta::initialStateMomentum(const DataPoint& d) const
+const FourVector<double> FourMomenta::totalMomentum(const DataPoint& d) const
 {
     if (ISPIndex_ < 0)
-        throw exceptions::Exception("Initial-state particle unknown", "FourMomenta::initialStateFourMomentum");
+        throw exceptions::Exception("Initial-state particle unknown", "FourMomenta::totalMomentum");
     return P_->value(d, ISPIndex_);
 }
 
@@ -160,7 +160,7 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
         // if ISP and not yet printed (should only print once)
         if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
             os << "    ISP : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first), model()->initialStateParticle()->mass());
+            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
             os << std::endl;
             used.insert(kv.second);
         }
