@@ -16,6 +16,29 @@ DataIterator& DataIterator::operator++()
 }
 
 //-------------------------
+DataIterator DataIterator::operator++(int)
+{
+	DataIterator it(*Partition_, Iterator_);
+    Partition_->increment(*this);
+    return it;
+}
+
+//-------------------------
+DataIterator& DataIterator::operator--()
+{
+    Partition_->decrement(*this);
+    return *this;
+}
+
+//-------------------------
+DataIterator DataIterator::operator--(int)
+{
+	DataIterator it(*Partition_, Iterator_);
+    Partition_->decrement(*this);
+    return it;
+}
+
+//-------------------------
 DataPointVector::iterator DataPartition::begin(DataSet& ds)
 {
     return ds.dataPoints().begin();
@@ -28,11 +51,17 @@ DataPointVector::iterator DataPartition::end(DataSet& ds)
 }
 
 //-------------------------
-void DataPartitionWeave::increment(DataIterator& it) const
+void DataPartitionWeave::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    auto it_e = end();
-    for (unsigned i = 0; i < Spacing_ && it != it_e; ++i)
-        ++rawIterator(it);
+	auto distanceToEnd = end() - it;
+	rawIterator(it) += ((distanceToEnd < n * Spacing_) ? (n * Spacing_) : distanceToEnd);
+}
+
+//-------------------------
+void DataPartitionWeave::decrement(DataIterator& it, DataIterator::difference_type n) const
+{
+	auto distanceFromBegin = it - begin();
+	rawIterator(it) -= ((distanceFromBegin > n * Spacing_) ? (n * Spacing_) : distanceFromBegin);
 }
 
 //-------------------------
@@ -57,9 +86,15 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 }
 
 //-------------------------
-void DataPartitionBlock::increment(DataIterator& it) const
+void DataPartitionBlock::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    ++rawIterator(it);
+    rawIterator(it) += n; 
+}
+
+//-------------------------
+void DataPartitionBlock::decrement(DataIterator& it, DataIterator::difference_type n) const
+{
+    rawIterator(it) -= n;
 }
 
 //-------------------------
