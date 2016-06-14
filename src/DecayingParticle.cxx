@@ -157,7 +157,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                 DTV.clear();
 
                         }
-                        // else non-decaying particle
+                        // else not decaying particle
                         else {
 
                             // check that particle has daughter particle combination

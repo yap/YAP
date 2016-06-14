@@ -49,20 +49,25 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     // collect ParticleCombination's of daughters
     std::vector<ParticleCombinationVector> PCs;
     for (auto d : Daughters_) {
-        ParticleCombinationVector v;
+        // get daughter's list of particle combinations
         ParticleCombinationVector v_d = d->particleCombinations();
-        for (auto pc : v_d) {
-            // check for empty indices
-            if (pc->indices().empty())
-                throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
-            // ignore PC's that differ only by parent from ones already accounted for
-            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equalDown(A, pc);}))
-            v.push_back(pc);
-        }
+
+        // create vector copy them into
+        ParticleCombinationVector v;
+        v.reserve(v_d.size());
+        
+        // copy them if they aren't nullptr, aren't empty,
+        // and aren't already contained in v, using equalDown to compare regardless of parent.
+        std::copy_if(v_d.begin(), v_d.end(), std::back_inserter(v),
+                     [&](const ParticleCombinationVector::value_type & pc)
+                     {return pc and !pc->indices().empty()
+                             and std::none_of(v.begin(), v.end(), std::bind(ParticleCombination::equalDown, std::placeholders::_1, pc));});
+
         if (v.empty())
             throw exceptions::Exception(std::string("No ParticleCombinations for daughter ") + to_string(*d)
                                         + " in DecayChannel " + to_string(*this),
                                         "DecayChannel::DecayChannel");
+
         PCs.push_back(v);
     }
 
