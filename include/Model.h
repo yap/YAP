@@ -133,6 +133,9 @@ public:
     const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
     { return FinalStateParticles_; }
 
+    const std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >& backgroundParticles() const
+    { return BackgroundParticles_; }
+
     /// \return set of DataAccessors
     const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
@@ -160,6 +163,9 @@ public:
     /// Model pointer set to this
     /// \param FSP list of shared pointers to final-state particles
     void  setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+
+    /// add a background particle
+    void addBackgroundParticle(std::shared_ptr<DecayingParticle> bg);
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
@@ -249,6 +255,10 @@ private:
 
     /// pointer to initial-state particle
     std::shared_ptr<DecayingParticle> InitialStateParticle_;
+
+    /// pointers to background particles
+    /// they will be summed in incoherently
+    std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> > BackgroundParticles_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;

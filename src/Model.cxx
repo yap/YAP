@@ -68,8 +68,15 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
 
     // sum log of norm of amplitudes over data points in partition
     double L = 0;
-    for (const auto& d : D)
-        L += log(norm(amplitude(M.initialStateParticle()->decayTrees(), d)));
+    for (const auto& d : D) {
+        double l = norm(amplitude(M.initialStateParticle()->decayTrees(), d));
+        // incoherently sum in background
+        FDEBUG("incoherently sum in background");
+        for (auto& kv : M.backgroundParticles())
+            l += kv.second->value() * norm(amplitude(kv.first->decayTrees(), d));
+
+        L += log(l);
+    }
 
     return L;
 }
@@ -221,6 +228,17 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
 }
 
 //-------------------------
+void Model::addBackgroundParticle(std::shared_ptr<DecayingParticle> bg)
+{
+    if (BackgroundParticles_.find(bg) != BackgroundParticles_.end()) {
+        FLOG(INFO) << "DecayingParticle " << to_string(*bg) << " already added as background particle.";
+        return;
+    }
+
+    BackgroundParticles_.insert(std::make_pair(bg, std::make_shared<RealParameter>(1.)));
+}
+
+//-------------------------
 void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 {
     if (!isRightHanded(cs))
@@ -307,6 +325,10 @@ void Model::prepareDataAccessors()
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
+
+    InitialStateParticle_->pruneParticleCombinations();
+    for (auto& kv : BackgroundParticles_)
+        kv.first->pruneParticleCombinations();
 
     // fix amplitudes when they are for the only possible decay chain
     InitialStateParticle_->fixSolitaryFreeAmplitudes();

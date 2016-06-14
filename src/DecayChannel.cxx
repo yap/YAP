@@ -21,7 +21,6 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(const ParticleVector& daughters) :
-    ReportsParticleCombinations(),
     Daughters_(daughters),
     DecayingParticle_(nullptr)
 {
@@ -81,7 +80,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
                 // get (B,A) combination from cache
                 auto b_a = model()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and hasParticleCombination(b_a.lock(), ParticleCombination::equivBySharedPointer))
+                if (!b_a.expired() and any_of(particleCombinations(), b_a.lock(), ParticleCombination::equivBySharedPointer))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
             }
@@ -97,7 +96,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // if pc already possessed, do nothing
-    if (hasParticleCombination(pc, ParticleCombination::equivBySharedPointer))
+    if (any_of(particleCombinations(), pc, ParticleCombination::equivBySharedPointer))
         return;
 
     // check number of daughters in pc
@@ -117,6 +116,33 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     // add to SpinAmplitude's
     for (auto& sa : SpinAmplitudes_)
         sa->addParticleCombination(pc);
+}
+
+//-------------------------
+void DecayChannel::pruneParticleCombinations()
+{
+    if (!model())
+        throw exceptions::Exception("Model not set", "DecayChannel::pruneParticleCombinations");
+
+    // remove entries that don't trace back to the ISP
+    for (auto it = ParticleCombinations_.begin(); it != ParticleCombinations_.end(); ) {
+        // find the top-most parent
+        auto pc = *it;
+        while (pc->parent())
+            pc = pc->parent();
+        // check if it's not an ISP
+        if (pc->indices().size() != model()->finalStateParticles().size())
+            // erase
+            it = ParticleCombinations_.erase(it);
+        else
+            it++;
+    }
+
+    if (ParticleCombinations_.empty())
+        throw exceptions::Exception("ParticleCombinations empty after pruning", "DecayChannel::pruneParticleCombinations");
+
+    for (auto& p : Daughters_)
+        p->pruneParticleCombinations();
 }
 
 //-------------------------

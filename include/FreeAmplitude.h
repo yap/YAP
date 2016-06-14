@@ -25,7 +25,7 @@
 
 #include "fwd/DecayChannel.h"
 #include "fwd/Model.h"
-#include "fwd/ReportsParticleCombinations.h"
+#include "fwd/DataAccessor.h"
 #include "fwd/SpinAmplitude.h"
 
 #include "Constants.h"
@@ -71,8 +71,8 @@ public:
 
     /// check that object reporting ParticleCombinations has all
     /// particle combinations required by DecayChannel
-    /// \param PC object inheriting from ReportsParticleCombinations
-    bool checkParticleCombinations(const ReportsParticleCombinations& da) const;
+    /// \param PC object inheriting from DataAccessor
+    bool checkParticleCombinations(const DataAccessor& da) const;
 
     /// \return Model this FreeAmplitude belongs to (via DecayChannel)
     const Model* model() const;

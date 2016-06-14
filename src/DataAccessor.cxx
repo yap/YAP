@@ -8,7 +8,6 @@ namespace yap {
 
 //-------------------------
 DataAccessor::DataAccessor(const ParticleCombination::Equiv& equiv) :
-    ReportsParticleCombinations(),
     Equiv_(equiv),
     NIndices_(0),
     Size_(0),
@@ -32,16 +31,6 @@ void DataAccessor::printParticleCombinations() const
 }
 
 //-------------------------
-bool DataAccessor::hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
-        const ParticleCombination::Equiv& equiv) const
-{
-    auto it = std::find_if(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(),
-                           [&](const ParticleCombinationMap<unsigned>::value_type & kv)
-    { return equiv(kv.first, c); } );
-    return it != SymmetrizationIndices_.end();
-}
-
-//-------------------------
 bool DataAccessor::consistent() const
 {
     bool C = true;
@@ -53,6 +42,11 @@ bool DataAccessor::consistent() const
             C &= false;
         }
 
+    if (ParticleCombinationsCache_.size() != SymmetrizationIndices_.size()) {
+        FLOG(ERROR) << "ParticleCombinationsCache_.size() != SymmetrizationIndices_.size()";
+        C &= false;
+    }
+
     return C;
 }
 
@@ -62,7 +56,7 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
     if (!c)
         throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
 
-    if (hasParticleCombination(c))
+    if (any_of(particleCombinations(), c))
         return;
 
     // object for recording successing of emplacement
@@ -90,9 +84,7 @@ void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c
     if (it_b.first == SymmetrizationIndices_.end())
         throw exceptions::Exception("Failed to emplace new SymmetrizationIndices element.", "DataAccessor::addParticleCombination");
 
-    if (it_b.second)
-        // add to ParticleCombinations_
-        ParticleCombinations_.push_back(c);
+    rebuildParticleCombinations();
 }
 
 //-------------------------
@@ -145,17 +137,13 @@ void DataAccessor::pruneSymmetrizationIndices()
 
     }
 
-    // (re)fill ParticleCombinations_
-    ParticleCombinations_.clear();
-    ParticleCombinations_.reserve(SymmetrizationIndices_.size());
-
-    for (auto& kv : SymmetrizationIndices_)
-        ParticleCombinations_.push_back(kv.first);
-
     // reset NIndices_
     NIndices_ = 0;
     for (const auto& kv : SymmetrizationIndices_)
         NIndices_ = std::max(kv.second + 1, NIndices_);
+
+    // (re)fill ParticleCombinations_
+    rebuildParticleCombinations();
 }
 
 //-------------------------
@@ -185,12 +173,23 @@ void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
 }
 
 //-------------------------
+void DataAccessor::rebuildParticleCombinations()
+{
+    ParticleCombinationsCache_.clear();
+    ParticleCombinationsCache_.reserve(SymmetrizationIndices_.size());
+
+    for (auto& kv : SymmetrizationIndices_)
+        ParticleCombinationsCache_.push_back(kv.first);
+}
+
+//-------------------------
 void removeExpired(DataAccessorSet& S)
 {
     for (auto it = S.begin(); it != S.end(); )
         if (!*it) it = S.erase(it);
         else ++it;
 }
+
 
 }
 

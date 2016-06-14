@@ -27,9 +27,9 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 
-#include "ReportsParticleCombinations.h"
 #include "ParticleCombination.h"
 
+#include <assert.h>
 #include <memory>
 
 namespace yap {
@@ -37,8 +37,7 @@ namespace yap {
 /// \name DataAccessor
 /// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
-class DataAccessor :
-    public virtual ReportsParticleCombinations
+class DataAccessor
 {
 public:
 
@@ -54,16 +53,6 @@ public:
     int index() const
     { return Index_; }
 
-    /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c) const
-    { return SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end(); }
-
-    /// \return if the given ParticleCombination is in SymmetrizationIndices_
-    /// \param c ParticleCombination to look for equivalent of
-    /// \param equiv ParticleCombination::Equiv object for checking equivalence
-    bool hasParticleCombination(const std::shared_ptr<ParticleCombination>& c,
-                                const ParticleCombination::Equiv& equiv) const override;
-
     /// \return index inside row of DataPoint for the requested ParticleCombination
     unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
@@ -77,8 +66,8 @@ public:
     { return NIndices_; }
 
     /// \return vector of ParticleCombination's
-    const ParticleCombinationVector& particleCombinations() const override
-    { return ParticleCombinations_; }
+    const ParticleCombinationVector& particleCombinations() const
+    { return ParticleCombinationsCache_; }
 
     /// print ParticleCombination map
     void printParticleCombinations() const;
@@ -121,7 +110,7 @@ protected:
     { Size_ += n; }
 
     /// add ParticleCombination to SymmetrizationIndices_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
 
     /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneSymmetrizationIndices();
@@ -131,6 +120,9 @@ protected:
     { Index_ = i; }
 
 private:
+
+    /// rebuild ParticleCombinations_
+    void rebuildParticleCombinations();
 
     /// Object to check equality of symmetrizations for determining storage indices
     const ParticleCombination::Equiv& Equiv_;
@@ -143,7 +135,7 @@ private:
 
     /// Vector of particle combinations. This is a cache kept for performance reasons,
     /// it must always be in sync with SymmetrizationIndices_
-    ParticleCombinationVector ParticleCombinations_;
+    ParticleCombinationVector ParticleCombinationsCache_;
 
     /// Set of CachedDataValues that have this DataAccessor as an owner
     CachedDataValueSet CachedDataValues_;
