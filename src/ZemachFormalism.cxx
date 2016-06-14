@@ -13,7 +13,7 @@ namespace yap {
 
 //-------------------------
 ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) :
-    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, ParticleCombination::equivZemach)
+    SpinAmplitude(two_J, two_j1, two_j2, l, two_s, ParticleCombination::equalZemach)
 {
     if (is_odd(two_J) or is_odd(two_j1) or is_odd(two_j2) or is_odd(two_s))
         throw exceptions::Exception("only supporting integer spins", "ZemachSpinAmplitude::ZemachSpinAmplitude");

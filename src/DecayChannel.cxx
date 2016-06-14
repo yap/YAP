@@ -56,7 +56,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             if (pc->indices().empty())
                 throw exceptions::Exception("ParticleCombination has empty indices", "DecayChannel::DecayChannel");
             // ignore PC's that differ only by parent from ones already accounted for
-            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equivDown(A, pc);}))
+            if (std::none_of(v.begin(), v.end(), [&](const std::shared_ptr<ParticleCombination>& A) {return ParticleCombination::equalDown(A, pc);}))
             v.push_back(pc);
         }
         if (v.empty())
@@ -80,7 +80,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
                 // get (B,A) combination from cache
                 auto b_a = model()->particleCombinationCache().find({PCB, PCA});
                 // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and any_of(particleCombinations(), b_a.lock(), ParticleCombination::equivBySharedPointer))
+                if (!b_a.expired() and any_of(particleCombinations(), b_a.lock(), ParticleCombination::equalBySharedPointer))
                     // if (B,A) already added, don't proceed to adding (A,B)
                     continue;
             }
@@ -96,7 +96,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // if pc already possessed, do nothing
-    if (any_of(particleCombinations(), pc, ParticleCombination::equivBySharedPointer))
+    if (any_of(particleCombinations(), pc, ParticleCombination::equalBySharedPointer))
         return;
 
     // check number of daughters in pc

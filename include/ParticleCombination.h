@@ -119,89 +119,88 @@ private:
 
     /// @}
 
-    /// \name Equivalence-checking structs
+    /// \name Equality-checking structs
     /// @{
 
 public:
 
-    /// \struct Equiv
-    /// \brief base class for equivalence (with functor), compares shared_ptr's only
-    struct Equiv {
+    /// \struct Equal
+    /// \brief base class for equality (with functor), compares shared_ptr's only
+    struct Equal {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
         { return A == B; }
     };
 
-    /// \struct EquivByOrderedContent
+    /// \struct EqualByOrderedContent
     /// \brief Checks objects referenced by shared pointers, check indices only
-    struct EquivByOrderedContent : Equiv {
+    struct EqualByOrderedContent : Equal {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivDown
+    /// \struct EqualDown
     /// \brief Checks objects referenced by shared pointers,
     /// check self and all daughters (down the decay tree) for equality
-    struct EquivDown : EquivByOrderedContent {
+    struct EqualDown : EqualByOrderedContent {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivUp
+    /// \struct EqualUp
     /// \brief Check objects referenced by shared pointers,
     /// check self and parent (up the decay tree) for equality
-    struct EquivUp : EquivByOrderedContent {
+    struct EqualUp : EqualByOrderedContent {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivUpAndDown
+    /// \struct EqualUpAndDown
     /// \brief Check objects referenced by shared pointers,
     /// check self, all daughters (down-), and parent (up the decay tree) for equality
-    struct EquivUpAndDown : EquivDown {
+    struct EqualUpAndDown : EqualDown {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivByOrderlessContent
+    /// \struct EqualByOrderlessContent
     /// \brief Check objects referenced by shared pointers,
     /// check indices only, disregarding order
-    struct EquivByOrderlessContent : Equiv {
+    struct EqualByOrderlessContent : Equal {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivDownByOrderlessContent
+    /// \struct EqualDownByOrderlessContent
     /// \brief Check objects referenced by shared pointers,
     /// check indices only, disregarding order, and check daughters (but not daughter's daughters)
     /// Use e.g. for breakup momenta
-    struct EquivDownByOrderlessContent : EquivByOrderlessContent {
+    struct EqualDownByOrderlessContent : EqualByOrderlessContent {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivByReferenceFrame
+    /// \struct EqualByReferenceFrame
     /// \brief Check objects referenced by shared pointers,
-    /// Checks parents (and up) for orderless content
-    /// Returns equivalent for content sitting in same reference frame.
-    struct EquivByReferenceFrame : EquivByOrderlessContent {
+    /// Checks parents (and up) for orderless content sitting in same reference frame.
+    struct EqualByReferenceFrame : EqualByOrderlessContent {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
-    /// \struct EquivZemach
+    /// \struct EqualZemach
 
     /// \brief Check objects reference by shared pointers; treats all
     /// two-particle states as equal, compares three particle states
     /// by unordered content of resonance, and throws on 4 or more
     /// particles
-    struct EquivZemach : Equiv {
+    struct EqualZemach : Equal {
         virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
     };
 
 
     /// \name Static Comparison objects
-    static Equiv equivBySharedPointer;
-    static EquivDown equivDown;
-    static EquivUp equivUp;
-    static EquivUpAndDown equivUpAndDown;
-    static EquivByOrderedContent equivByOrderedContent;
-    static EquivByOrderlessContent equivByOrderlessContent;
-    static EquivDownByOrderlessContent equivDownByOrderlessContent;
-    static EquivByReferenceFrame equivByReferenceFrame;
-    static EquivZemach equivZemach;
+    static Equal equalBySharedPointer;
+    static EqualDown equalDown;
+    static EqualUp equalUp;
+    static EqualUpAndDown equalUpAndDown;
+    static EqualByOrderedContent equalByOrderedContent;
+    static EqualByOrderlessContent equalByOrderlessContent;
+    static EqualDownByOrderlessContent equalDownByOrderlessContent;
+    static EqualByReferenceFrame equalByReferenceFrame;
+    static EqualZemach equalZemach;
 
 /// @}
 
@@ -210,11 +209,11 @@ public:
 /// \return if the given ParticleCombination is in ParticleCombinations
 /// \param PCs ParticleCombinations
 /// \param c ParticleCombination to look for equivalent of in ParticleCombinations
-/// \param equiv ParticleCombination::Equiv object for checking equivalence
+/// \param equal ParticleCombination::Equal object for checking equality
 inline bool any_of(const ParticleCombinationVector& PCs,
                    const std::shared_ptr<ParticleCombination>& c,
-                   const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
-{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc){return equiv(pc, c);}); }
+                   const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc){return equal(pc, c);}); }
 
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc);

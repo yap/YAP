@@ -420,7 +420,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
 
         // check that pc isn't already in M
         for (const auto& m : M)
-            if (ParticleCombination::equivByOrderlessContent(m, pc))
+            if (ParticleCombination::equalByOrderlessContent(m, pc))
                 throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "Model::massAxes");
 
         M.push_back(pc);
@@ -496,7 +496,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 
             // P_i * P_j = (m^2_ij - m^2_i - m^2_j) / 2
             pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
-            // equivalent to: if m^2_ij < (m_i + m_j)^2
+            // equal to: if m^2_ij < (m_i + m_j)^2
             if (pp[i][j] < finalStateParticles()[i]->mass()->value() * finalStateParticles()[j]->mass()->value())
                 return std::vector<FourVector<double> >();
 

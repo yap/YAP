@@ -176,9 +176,9 @@ protected:
     virtual void addAmplitude(int two_M, int two_m1, int two_m2);
 
     /// check equivalence: only check spins and angular momenta
-    virtual bool equivalentTo(const SpinAmplitude& other) const;
+    virtual bool equalTo(const SpinAmplitude& other) const;
 
-    /// check equality: calls #equivalentTo and checks symmetrizationIndices
+    /// check equality: calls #equalTo and checks symmetrizationIndices
     virtual bool equals(const SpinAmplitude& other) const;
 
     /// Constructor
@@ -188,9 +188,9 @@ protected:
     /// \param two_j2 twice the spin of second daughter
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
+    /// \param equal ParticleCombination equality struct for determining index assignments
     SpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s,
-                  ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer);
+                  ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer);
 
 private:
 

@@ -42,9 +42,9 @@ class RecalculableDataAccessor : public DataAccessor
 {
 public:
     /// Constructor
-    /// \param equiv ParticleCombination equivalence struct for determining index assignments
-    explicit RecalculableDataAccessor(const ParticleCombination::Equiv& equiv = ParticleCombination::equivBySharedPointer)
-        : DataAccessor(equiv) {}
+    /// \param equal ParticleCombination equality struct for determining index assignments
+    explicit RecalculableDataAccessor(const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+        : DataAccessor(equal) {}
 
     /// calculate for every data point in a DataPartition
     /// must be overloaded in derived class

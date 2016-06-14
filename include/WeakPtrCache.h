@@ -58,8 +58,8 @@ public:
 
     /// @}
 
-    /// override to implement equivalence checking
-    virtual bool equiv(const shared_ptr_type& A, const shared_ptr_type& B) const = 0;
+    /// override to implement equality checking
+    virtual bool equal(const shared_ptr_type& A, const shared_ptr_type& B) const = 0;
 
     /// \name constructors and assignment operators
     /// @{
@@ -96,7 +96,7 @@ public:
             return weak_ptr_type();
 
         // search for equivalent
-        auto it = std::find_if(Cache_.begin(), Cache_.end(), [&](const weak_ptr_type & w) {return !w.expired() and equiv(w.lock(), t);});
+        auto it = std::find_if(Cache_.begin(), Cache_.end(), [&](const weak_ptr_type & w) {return !w.expired() and equal(w.lock(), t);});
 
         if (it == Cache_.end())
             // if not found
