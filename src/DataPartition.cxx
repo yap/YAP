@@ -9,33 +9,15 @@
 namespace yap {
 
 //-------------------------
-DataIterator& DataIterator::operator++()
+DataIterator& DataIterator::operator+=(DataIterator::difference_type n)
 {
-    Partition_->increment(*this);
-    return *this;
+    return Partition_->increment(*this, n);
 }
 
 //-------------------------
-DataIterator DataIterator::operator++(int)
+const DataIterator::difference_type DataIterator::operator-(const DataIterator& rhs) const
 {
-	DataIterator it(*Partition_, Iterator_);
-    Partition_->increment(*this);
-    return it;
-}
-
-//-------------------------
-DataIterator& DataIterator::operator--()
-{
-    Partition_->decrement(*this);
-    return *this;
-}
-
-//-------------------------
-DataIterator DataIterator::operator--(int)
-{
-	DataIterator it(*Partition_, Iterator_);
-    Partition_->decrement(*this);
-    return it;
+    return Partition_->difference(Iterator_, rhs.Iterator_);
 }
 
 //-------------------------
@@ -51,17 +33,11 @@ DataPointVector::iterator DataPartition::end(DataSet& ds)
 }
 
 //-------------------------
-void DataPartitionWeave::increment(DataIterator& it, DataIterator::difference_type n) const
+DataIterator& DataPartitionWeave::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-	auto distanceToEnd = end() - it;
-	rawIterator(it) += ((distanceToEnd < n * Spacing_) ? (n * Spacing_) : distanceToEnd);
-}
-
-//-------------------------
-void DataPartitionWeave::decrement(DataIterator& it, DataIterator::difference_type n) const
-{
-	auto distanceFromBegin = it - begin();
-	rawIterator(it) -= ((distanceFromBegin > n * Spacing_) ? (n * Spacing_) : distanceFromBegin);
+    auto distanceToEnd = end() - it;
+    rawIterator(it) += ((distanceToEnd < n * Spacing_) ? (n * Spacing_) : distanceToEnd);
+    return it;
 }
 
 //-------------------------
@@ -86,15 +62,10 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 }
 
 //-------------------------
-void DataPartitionBlock::increment(DataIterator& it, DataIterator::difference_type n) const
+DataIterator& DataPartitionBlock::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    rawIterator(it) += n; 
-}
-
-//-------------------------
-void DataPartitionBlock::decrement(DataIterator& it, DataIterator::difference_type n) const
-{
-    rawIterator(it) -= n;
+    rawIterator(it) += n;
+    return it;
 }
 
 //-------------------------
