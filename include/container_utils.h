@@ -82,6 +82,56 @@ InputIt ordered_unique(InputIt first, InputIt last/*, Compare lt, BinaryPredicat
     return first;
 }
 
+/// create vector of combinations (as vectors) of elements between first and last
+/// \param first Iterator to start at
+/// \param last Iterator beyond point to stop at
+/// \param n number of elements in a combination
+/// \tparam InputIt iterator type
+template <class InputIt>
+std::vector<std::vector<typename InputIt::value_type> > combinations(InputIt first, InputIt last, size_t n)
+{
+    // create vector of iterators initialized to first, first + 1, first + 2, ...
+    std::vector<InputIt> Its(n, last);
+    for (size_t i = 0; i < n; ++i)
+        Its[i] = first + i;
+
+    // create output vector of vectors
+    std::vector<std::vector<typename InputIt::value_type> > C;
+
+    // repeat until last iterator is at last
+    while (Its.back() < last) {
+
+        // create combination vector from current state
+        std::vector<typename InputIt::value_type> v;
+        v.reserve(n);
+        for (const auto& it : Its)
+            v.push_back(*it);
+
+        // add it to vector of combinations
+        C.push_back(v);
+
+        // increment last iterator
+        ++Its.back();
+        // loop from iterators from back to first,
+        // checking if each if it's advanced to its furthestmost point
+        for (int i = Its.size() - 1; i >= 0 && Its[i] + (Its.size() - 1 - i ) >= last; --i) {
+            // if first iterator has advanced to furthermost point, set all to last
+            if (i == 0) {
+                for (auto& it : Its)
+                    it = last;
+            } else {
+                // increase iterator before current iterator
+                ++Its[i - 1];
+                // reset all following iterators to be in sequence beyond that one
+                for (size_t j = i; j < Its.size(); ++j)
+                    Its[j] = Its[j - 1] + 1;
+            }
+        }
+    }
+
+    return C;
+}
+
 /// \todo allow passing of binary predicate with defaulting to lambda
 
 /// check if two vectors overlap
@@ -99,5 +149,9 @@ template <typename T>
 bool contains(const std::vector<T>& A, const std::vector<T>& B)
 { return contains(A.begin(), A.end(), B.begin(), B.end(), [](const T & a, const T & b) {return a == b;}); }
 
+// \return vector of combinations of elements in vector
+template <typename T>
+std::vector<std::vector<T> > combinations(const std::vector<T>& V, size_t n)
+{ return combinations(V.begin(), V.end(), n); }
 
 #endif
