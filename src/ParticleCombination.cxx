@@ -114,6 +114,17 @@ bool ParticleCombination::consistent() const
 }
 
 //-------------------------
+bool disjoint(const ParticleCombinationVector& pcv)
+{
+    // check that for any entry in pcv overlapping with another
+    for (size_t i = 0; i < pcv.size(); ++i)
+        for (size_t j = i + 1; j < pcv.size(); ++j)
+            if (overlap(pcv[i]->indices(), pcv[j]->indices()))
+                return false;
+    return true;
+}
+
+//-------------------------
 std::string indices_string(const ParticleCombination& pc)
 {
     if (pc.indices().empty())

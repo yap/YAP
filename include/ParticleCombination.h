@@ -215,6 +215,10 @@ inline bool any_of(const ParticleCombinationVector& PCs,
                    const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
 { return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
 
+/// \return whether all members of ParticleCombinationVector are non-overlapping with each other
+/// \param pcv Vector check in
+bool disjoint(const ParticleCombinationVector& pcv);
+
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc);
 
