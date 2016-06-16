@@ -17,6 +17,9 @@
 #include "SpinAmplitudeCache.h"
 #include "StatusManager.h"
 
+#include <algorithm>
+#include <iterator>
+
 namespace yap {
 
 //-------------------------
@@ -46,55 +49,101 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         if (d->model() != Daughters_[0]->model())
             throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
 
-    // collect ParticleCombination's of daughters
+    //////////////////////////////////////////////////
+    // create ParticleCombination's for parent
+    //
+
+    // create vector of unique entries of daughters
+    auto u_daughters = Daughters_;
+    std::sort(u_daughters.begin(), u_daughters.end());
+    u_daughters.erase(std::unique(u_daughters.begin(), u_daughters.end()), u_daughters.end());
+
+    // collect combinations of ParticleCombination's of daughters
+    // map: daughter -> vector of combinations of particle combinations
+    std::map<ParticleVector::value_type, std::vector<ParticleCombinationVector> > d_CV_map;
     std::vector<ParticleCombinationVector> PCs;
-    for (auto d : Daughters_) {
+    for (auto d : u_daughters) {
         // get daughter's list of particle combinations
         ParticleCombinationVector v_d = d->particleCombinations();
 
-        // create vector copy them into
+        // create vector to copy them into
         ParticleCombinationVector v;
         v.reserve(v_d.size());
-        
+
         // copy them if they aren't nullptr, aren't empty,
         // and aren't already contained in v, using equalDown to compare regardless of parent.
         std::copy_if(v_d.begin(), v_d.end(), std::back_inserter(v),
-                     [&](const ParticleCombinationVector::value_type & pc)
-                     {return pc and !pc->indices().empty()
-                             and std::none_of(v.begin(), v.end(), std::bind(ParticleCombination::equalDown, std::placeholders::_1, pc));});
+        [&](const ParticleCombinationVector::value_type & pc) {
+            return pc and !pc->indices().empty() and
+                   std::none_of(v.begin(), v.end(), std::bind(ParticleCombination::equalDown, std::placeholders::_1, pc));
+        });
 
         if (v.empty())
-            throw exceptions::Exception(std::string("No ParticleCombinations for daughter ") + to_string(*d)
+            throw exceptions::Exception("No ParticleCombinations for daughter " + to_string(*d)
                                         + " in DecayChannel " + to_string(*this),
                                         "DecayChannel::DecayChannel");
 
-        PCs.push_back(v);
+        // create combinations of ParticleCombinations to accomodate occurance of daughter in final state
+        auto cv = combinations(v, std::count(Daughters_.begin(), Daughters_.end(), d));
+        if (cv.empty())
+            throw exceptions::Exception("Could not form combinations of ParticleCombinations for daughter " + to_string(*d),
+                                        "DecayChannel::DecayChannel");
+
+        // place combinations into map:
+        d_CV_map.emplace(d, cv);
     }
 
-    // create ParticleCombination's of parent
-    /// \todo remove hardcoding for two daughters so applies to n daughters?
-    for (auto& PCA : PCs[0]) {
-        for (auto& PCB : PCs[1]) {
+    // create vector of iterators to combinations for each unique daughter
+    // initialized to begin()
+    std::vector<std::vector<ParticleCombinationVector>::const_iterator> Its;
+    Its.reserve(u_daughters.size());
+    std::transform(u_daughters.begin(), u_daughters.end(), std::back_inserter(Its),
+    [&](const ParticleVector::value_type & ud) {return d_CV_map[ud].begin();});
 
-            // check that PCA and PCB don't overlap in FSP content
-            if (overlap(PCA->indices(), PCB->indices()))
-                continue;
+    // use 'odometer" style increment of iterators:
+    // repeat until last iterator hits its end()
+    while (Its.back() != d_CV_map[u_daughters.back()].end()) {
 
-            // for identical particles, check if swapped particle combination is already added
-            if (Daughters_[0] == Daughters_[1]) {
-                // get (B,A) combination from cache
-                auto b_a = model()->particleCombinationCache().find({PCB, PCA});
-                // if b_a is not in cache, it can't be in SymmetrizationIndices_
-                if (!b_a.expired() and any_of(particleCombinations(), b_a.lock(), ParticleCombination::equalBySharedPointer))
-                    // if (B,A) already added, don't proceed to adding (A,B)
-                    continue;
+        // fill vector of ParticleCombination's to use to create parent ParticleCombination from
+        ParticleCombinationVector pcv(Daughters_.size());
+        // loop through iterators to combinations
+        for  (size_t d = 0; d < Its.size(); ++d) {
+            auto prev_it = Daughters_.begin();
+            // loop over elements in particular combination
+            for (const auto& pc : *Its[d]) {
+                // find daughter to set value for, starting from one beyond previously found daughter
+                auto it = std::find(prev_it, Daughters_.end(), u_daughters[d]);
+                if (it == Daughters_.end())
+                    throw exceptions::Exception("failed to create particle combinations", "DecayChannel::DecayChannel");
+                // set daughter's ParticleCombination
+                pcv[it - Daughters_.begin()] = pc;
+                // increment prev_it to one beyond last found daughter
+                prev_it = it + 1;
             }
-
-            // create (A,B), ParticleCombinationCache::composite copies PCA and PCB,
-            // setting the parents of both to the newly created ParticleCombination
-            addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite({PCA, PCB}));
         }
+
+        // check vector for possible overlaps
+        if (disjoint(pcv))
+            // create new ParticleCombination for parent;
+            // ParticleCombinationCache::composite copies all elts of
+            // pcv setting the parents of all copies to the newly
+            // created ParticleCombination
+            addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite(pcv));
+
+        // increment the "odometer":
+        // increment first iterator
+        ++Its[0];
+        // loop through iterators: if current is at end(), reset it and increment next one
+        for (size_t i = 0; (i < Its.size() - 1) and Its[i] == d_CV_map[u_daughters[i]].end(); ++i) {
+            Its[i] = d_CV_map[u_daughters[i]].begin();
+            ++Its[i + 1];
+        }
+        // the "odometer" has ticked over completely if the last iterator is now at its end()
     }
+
+    // check that at least one combination was created above
+    if (particleCombinations().empty())
+        throw exceptions::Exception("ParticleCombinations_ is empty", "DecayChannel::DecayChannel");
 }
 
 //-------------------------
