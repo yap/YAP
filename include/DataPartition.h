@@ -28,9 +28,7 @@
 
 #include "StatusManager.h"
 
-#include <algorithm>
 #include <iterator>
-#include <memory>
 
 namespace yap {
 
@@ -53,14 +51,6 @@ public:
     DataIterator operator++(int)
     { DataIterator it(*this); ++(*this); return it; }
 
-    /// addition operator
-    friend const DataIterator operator+(DataIterator lhs, DataIterator::difference_type n)
-    { return (lhs += n); }
-
-    /// addition operator (make it commutative)
-    friend const DataIterator operator+(DataIterator::difference_type n, const DataIterator& rhs)
-    { return (rhs + n); }
-
     /// pre-decrement operator
     DataIterator& operator--()
     { return (*this += -1); }
@@ -73,14 +63,8 @@ public:
     DataIterator& operator-=(DataIterator::difference_type n)
     { return (*this += -n); }
 
-    /// subraction operator
-    friend const DataIterator operator-(DataIterator lhs, DataIterator::difference_type n)
-    { return (lhs + (-n)); }
-
     /// subraction operator (between `DataIterator`s)
-    /// \todo Check if their `Partition_` match! This also "works" for
-    /// iterator pointing to different kind of `DataPartition`s!
-    const DataIterator::difference_type operator-(const DataIterator& rhs) const;
+    friend const DataIterator::difference_type operator-(const DataIterator& lhs, const DataIterator& rhs);
 
     /// dereference operator
     DataPoint& operator*()
@@ -106,21 +90,9 @@ public:
     friend const bool operator>(const DataIterator& lhs, const DataIterator& rhs)
     { return lhs.Iterator_ > rhs.Iterator_; }
 
-    /// less-than-or-equal operator
-    friend const bool operator<=(const DataIterator& lhs, const DataIterator& rhs)
-    { return !(lhs > rhs); }
-
-    /// greater-than-or-equal operator
-    friend const bool operator>=(const DataIterator& lhs, const DataIterator& rhs)
-    { return !(lhs < rhs); }
-
     /// equality operator
     friend const bool operator==(const DataIterator& lhs, const DataIterator& rhs)
     { return lhs.Iterator_ == rhs.Iterator_; }
-
-    /// inequality operator
-    friend const bool operator!=(const DataIterator& lhs, const DataIterator& rhs)
-    { return !(lhs == rhs); }
 
     /// access operator
     DataPoint operator[](DataIterator::difference_type n) const
@@ -150,6 +122,29 @@ protected:
 
 };
 
+/// addition operator
+inline const DataIterator operator+(DataIterator lhs, DataIterator::difference_type n)
+{ return (lhs += n); }
+
+/// addition operator
+inline const DataIterator operator+(DataIterator::difference_type n, const DataIterator& rhs)
+{ return (rhs + n); }
+
+/// subraction operator
+inline const DataIterator operator-(const DataIterator& lhs, DataIterator::difference_type n)
+{ return (lhs + (-n)); }
+
+/// less-than-or-equal operator
+inline const bool operator<=(const DataIterator& lhs, const DataIterator& rhs)
+{ return !(lhs > rhs); }
+
+/// greater-than-or-equal operator
+inline const bool operator>=(const DataIterator& lhs, const DataIterator& rhs)
+{ return !(lhs < rhs); }
+
+/// inequality operator
+inline const bool operator!=(const DataIterator& lhs, const DataIterator& rhs)
+{ return !(lhs == rhs); }
 
 /// \class DataPartition
 /// \brief Class defining a partition of the DataSet
@@ -196,6 +191,13 @@ public:
     virtual const DataIterator& end() const
     { return End_; }
 
+    /// difference between two `DataPointVector::iterator`s to be used in
+    /// `operator-(const DataIterator&, const DataIterator&)`
+    /// \param lhs left operand
+    /// \param rhs right operand
+    /// \attention Must be overloaded in derived classes
+    virtual const DataIterator::difference_type difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const = 0;
+
     /// grant friend status to DataIterator to call increment
     friend DataIterator;
 
@@ -206,15 +208,8 @@ protected:
 
     /// increment iterator;
     /// \attention Must be overloaded in derived classes
-    virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const
-    { it = End_; return it; }
-
-    /// difference between two `DataPointVector::iterator`s to be used in
-    /// `operator-(const DataIterator&, const DataIterator&)`
-    /// \param lhs left operand
-    /// \param rhs right operand
-    virtual const DataIterator::difference_type difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const
-    { return static_cast<DataIterator::difference_type>(lhs - rhs); }
+    virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const = 0;
+    /* { it = End_; return it; } */
 
     /// \return vector<DataPoint> iterator inside DataIterator
     DataPointVector::iterator& rawIterator(DataIterator& it) const
@@ -244,50 +239,6 @@ private:
 
 };
 
-/// \class DataPartitionBlock
-/// \brief A contiguous block of data
-/// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup Data
-class DataPartitionBlock : public DataPartition
-{
-public:
-
-    /// Constructor
-    /// \param sm StatusManager to copy StatusManager structure from
-    /// \param begin vector<DataPoint>::iterator of start
-    /// \param end vector<DataPoint>::iterator of end
-    DataPartitionBlock(const StatusManager& sm, DataPointVector::iterator begin, DataPointVector::iterator end)
-        : DataPartition(sm, begin, end) {}
-
-    /// \return DataParitionVector covering DataSet as contiguous blocks
-    /// \param dataSet The dataSet
-    /// \param n number of partitions to divide the dataSet into
-    static DataPartitionVector create(DataSet& dataSet, unsigned n);
-
-    /// \return DataParitionVector covering DataSet as contiguous blocks of specified size
-    /// \param dataSet The dataSet
-    /// \param s maximum size of partitions to divide the dataSet into
-    static DataPartitionVector createBySize(DataSet& dataSet, size_t s);
-
-protected:
-
-    /// constructor taking a DataAccessorSet
-    /// \param sDA DataAccessorSet to initialize StatusManager from
-    DataPartitionBlock(const DataAccessorSet& sDA)
-        : DataPartition(sDA) {}
-
-    /// increment DataIterator
-    /// \param it DataIterator to iterate
-    virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const override;
-
-    /// difference between two iterators to be used in
-    /// `operator-(const DataIterator&, const DataIterator&)`
-    /// \param lhs left operand
-    /// \param rhs right operand
-    virtual const DataIterator::difference_type difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const
-    { return static_cast<DataIterator::difference_type>(lhs - rhs); }
-};
-
 /// \class DataPartitionWeave
 /// \brief A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E)
 /// \author Johannes Rauch, Daniel Greenwald
@@ -309,6 +260,13 @@ public:
     /// \param n number of partitions to divide the dataSet into
     static DataPartitionVector create(DataSet& dataSet, unsigned n);
 
+    /// difference between two iterators to be used in
+    /// `operator-(const DataIterator&, const DataIterator&)`
+    /// \param lhs left operand
+    /// \param rhs right operand
+    virtual const DataIterator::difference_type difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const override
+    { return DataPartition::difference(lhs, rhs) / Spacing_; }
+
 protected:
 
     /// constructor taking a DataAccessorSet
@@ -321,15 +279,42 @@ protected:
     /// \param it DataIterator to iterate
     virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const override;
 
-    /// difference between two iterators to be used in
-    /// `operator-(const DataIterator&, const DataIterator&)`
-    /// \param lhs left operand
-    /// \param rhs right operand
-    virtual const DataIterator::difference_type difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const
-    { return static_cast<DataIterator::difference_type>((lhs - rhs) / Spacing_); }
-
     /// spacing between data points for the weaving
     unsigned Spacing_;
+};
+
+/// \class DataPartitionBlock
+/// \brief A contiguous block of data
+/// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup Data
+class DataPartitionBlock : public DataPartitionWeave
+{
+public:
+
+    /// \return DataParitionVector covering DataSet as contiguous blocks
+    /// \param dataSet The dataSet
+    /// \param n number of partitions to divide the dataSet into
+    static DataPartitionVector create(DataSet& dataSet, unsigned n);
+
+    /// \return DataParitionVector covering DataSet as contiguous blocks of specified size
+    /// \param dataSet The dataSet
+    /// \param s maximum size of partitions to divide the dataSet into
+    static DataPartitionVector createBySize(DataSet& dataSet, size_t s);
+
+protected:
+
+    /// Constructor
+    /// \param sm StatusManager to copy StatusManager structure from
+    /// \param begin vector<DataPoint>::iterator of start
+    /// \param end vector<DataPoint>::iterator of end
+    DataPartitionBlock(const StatusManager& sm, DataPointVector::iterator begin, DataPointVector::iterator end)
+        : DataPartitionWeave(sm, begin, end, 1) {}
+
+    /// constructor taking a DataAccessorSet
+    /// \param sDA DataAccessorSet to initialize StatusManager from
+    DataPartitionBlock(const DataAccessorSet& sDA)
+        : DataPartitionWeave(sDA, 1) {}
+
 };
 
 }

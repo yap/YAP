@@ -15,9 +15,11 @@ DataIterator& DataIterator::operator+=(DataIterator::difference_type n)
 }
 
 //-------------------------
-const DataIterator::difference_type DataIterator::operator-(const DataIterator& rhs) const
+const DataIterator::difference_type operator-(const DataIterator& lhs, const DataIterator& rhs)
 {
-    return Partition_->difference(Iterator_, rhs.Iterator_);
+    if (lhs.Partition_ != rhs.Partition_)
+        throw exceptions::Exception("DataIterator's belong to different DataPartition's", "operator-");
+    return lhs.Partition_->difference(lhs.Iterator_, rhs.Iterator_);
 }
 
 //-------------------------
@@ -41,6 +43,13 @@ DataIterator& DataPartitionWeave::increment(DataIterator& it, DataIterator::diff
 }
 
 //-------------------------
+const DataIterator::difference_type DataPartition::difference(const DataPointVector::iterator& lhs, const DataPointVector::iterator& rhs) const
+{
+    return static_cast<DataIterator::difference_type>(lhs - rhs);
+}
+
+
+//-------------------------
 DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 {
     if (n == 0)
@@ -59,13 +68,6 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
     }
 
     return P;
-}
-
-//-------------------------
-DataIterator& DataPartitionBlock::increment(DataIterator& it, DataIterator::difference_type n) const
-{
-    rawIterator(it) += n;
-    return it;
 }
 
 //-------------------------
@@ -91,10 +93,10 @@ DataPartitionVector DataPartitionBlock::create(DataSet& dataSet, unsigned n)
     for (unsigned i = 0; i < n - 1; ++i) {
         auto it_e = it_b + p_size;
         LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
-        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
+        P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, it_e)));
         it_b = it_e;
     }
-    P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, end(dataSet)));
+    P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, end(dataSet))));
 
     return P;
 }
@@ -119,7 +121,7 @@ DataPartitionVector DataPartitionBlock::createBySize(DataSet& dataSet, size_t s)
     while (it_b != end(dataSet)) {
         auto it_e = it_b + s;
         LOG(INFO) << "Creating DataPartitionBlock with size " << std::distance(it_b, it_e);
-        P.push_back(std::make_unique<DataPartitionBlock>(dataSet, it_b, it_e));
+        P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, it_e)));
         it_b = it_e;
     }
 
