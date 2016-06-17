@@ -102,19 +102,7 @@ public:
     /// \param two_m SpinProjectionVector of daughters
     const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const
-    { return amplitude(two_M, two_m)->value(d, symmetrizationIndex(pc)); }
-
-    /// access cached spin amplitude
-    /// \param two_M 2 * spin projection of parent
-    /// \param two_m SpinProjectionVector of daughters
-    std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, const SpinProjectionVector& two_m)
-    { return Amplitudes_.at(two_M).at(two_m); }
-
-    /// access cached spin amplitude (const)
-    /// \param two_M 2 * spin projection of parent
-    /// \param two_m SpinProjectionVector of daughters
-    const std::shared_ptr<ComplexCachedDataValue>& amplitude(int two_M, const SpinProjectionVector& two_m) const
-    { return Amplitudes_.at(two_M).at(two_m); }
+    { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
 
     /// \return AmplitudeMap Amplitudes_
     const AmplitudeMap& amplitudes() const
