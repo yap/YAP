@@ -9,10 +9,15 @@
 namespace yap {
 
 //-------------------------
-DataIterator& DataIterator::operator++()
+DataIterator& DataIterator::operator+=(DataIterator::difference_type n)
 {
-    Partition_->increment(*this);
-    return *this;
+    return Partition_->increment(*this, n);
+}
+
+//-------------------------
+const DataIterator::difference_type DataIterator::operator-(const DataIterator& rhs) const
+{
+    return Partition_->difference(Iterator_, rhs.Iterator_);
 }
 
 //-------------------------
@@ -28,11 +33,11 @@ DataPointVector::iterator DataPartition::end(DataSet& ds)
 }
 
 //-------------------------
-void DataPartitionWeave::increment(DataIterator& it) const
+DataIterator& DataPartitionWeave::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    auto it_e = end();
-    for (unsigned i = 0; i < Spacing_ && it != it_e; ++i)
-        ++rawIterator(it);
+    auto distanceToEnd = end() - it;
+    rawIterator(it) += ((distanceToEnd < n * Spacing_) ? (n * Spacing_) : distanceToEnd);
+    return it;
 }
 
 //-------------------------
@@ -57,9 +62,10 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
 }
 
 //-------------------------
-void DataPartitionBlock::increment(DataIterator& it) const
+DataIterator& DataPartitionBlock::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    ++rawIterator(it);
+    rawIterator(it) += n;
+    return it;
 }
 
 //-------------------------
