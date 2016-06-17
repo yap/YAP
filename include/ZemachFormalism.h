@@ -23,6 +23,7 @@
 
 #include "fwd/DataPoint.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/Spin.h"
 
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
@@ -42,12 +43,11 @@ public:
 
     /// Calculate spin amplitude for given ParticleCombination and spin projections
     /// \param two_M 2 * spin projection of parent
-    /// \param two_m1 2 * spin projection of first daughter
-    /// \param two_m2 2 * spin projection of second daughter
+    /// \param two_m2 SpinProjectionVector of daughters
     /// \param d DataPoint to retrieve data from for calculation
     /// \param pc ParticleCombination to calculate for
-    virtual std::complex<double> calc(int two_M, int two_m1, int two_m2,
-                                      const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+    virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
+                                            const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// \return "Zemach formalism"
     virtual std::string formalism() const override
@@ -58,12 +58,11 @@ public:
 
 protected:
     /// Constructor
-    /// \param two_J  twice the spin of Initial-state
-    /// \param two_j1 twice the spin of first daughter
-    /// \param two_j2 twice the spin of second daughter
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    ZemachSpinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s);
+    ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 private:
     /// check equality
@@ -86,13 +85,12 @@ private:
 
     /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
-    /// \param two_J  twice the spin of Initial-state
-    /// \param two_j1 twice the spin of first daughter
-    /// \param two_j2 twice the spin of second daughter
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned l, unsigned two_s) const override
-    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j1, two_j2, l, two_s)); }
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
+    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j, l, two_s)); }
 
 };
 

@@ -15,7 +15,8 @@ namespace yap {
 
 //-------------------------
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
-    FreeAmplitude_(free_amp)
+    FreeAmplitude_(free_amp),
+    DaughtersTwoM_(FreeAmplitude_->spinAmplitude()->finalTwoJ().size())
 {}
 
 //-------------------------
@@ -73,7 +74,7 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
     FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
     FDEBUG("pc" << to_string(*pc));
     // spin amplitude
-    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]);
+    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
     // recalculable amplitude
     for (const auto& rda : RecalculableDataAccessors_)
         A *= rda->value(d, pc);

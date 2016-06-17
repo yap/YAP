@@ -36,18 +36,17 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         throw exceptions::Exception("More than two daughters", "DecayChannel::DecayChannel");
 
     // check no Daughters_ are empty
-    if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;}))
-    throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
+    if (std::any_of(Daughters_.begin(), Daughters_.end(), std::logical_not<ParticleVector::value_type>()))
+        throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
 
-    // check that first daughter's Model is not nullptr
-    if (Daughters_[0]->model() == nullptr)
+    // check that (first daughter's) Model is not nullptr
+    if (model() == nullptr)
         throw exceptions::Exception(std::string("Model unset in ") + to_string(*Daughters_[0]),
                                     "DecayChannel::DecayChannel");
 
     // check that all daughters have same Model (trivially checks first daughter against itself)
-    for (auto& d : Daughters_)
-        if (d->model() != Daughters_[0]->model())
-            throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
+    if (std::any_of(Daughters_.begin(), Daughters_.end(), [&](const ParticleVector::value_type & d) {return model() != d->model();}))
+    throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
 
     //////////////////////////////////////////////////
     // create ParticleCombination's for parent
@@ -150,7 +149,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // if pc already possessed, do nothing
-    if (any_of(particleCombinations(), pc, ParticleCombination::equalBySharedPointer))
+    if (any_of(particleCombinations(), pc))
         return;
 
     // check number of daughters in pc
@@ -189,7 +188,7 @@ void DecayChannel::pruneParticleCombinations()
             // erase
             it = ParticleCombinations_.erase(it);
         else
-            it++;
+            ++it;
     }
 
     if (ParticleCombinations_.empty())
@@ -210,6 +209,9 @@ void DecayChannel::fixSolitaryFreeAmplitudes()
 //-------------------------
 void DecayChannel::setDecayingParticle(DecayingParticle* dp)
 {
+    if (DecayingParticle_)
+        throw exceptions::Exception("DecayingParticle is already set", "DecayChannel::setDecayingParticle");
+
     DecayingParticle_ = dp;
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
@@ -227,16 +229,15 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (SpinAmplitudes_.empty()) {
 
         auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-        auto two_j1 = Daughters_[0]->quantumNumbers().twoJ();
-        auto two_j2 = Daughters_[1]->quantumNumbers().twoJ();
+        SpinVector two_j = {Daughters_[0]->quantumNumbers().twoJ(), Daughters_[1]->quantumNumbers().twoJ()};
 
         // create spin amplitudes
         // loop over possible S: |j1-j2| <= S <= (j1+j2)
-        for (unsigned two_S = std::abs<int>(two_j1 - two_j2); two_S <= two_j1 + two_j2; two_S += 2) {
+        for (unsigned two_S = std::abs<int>(two_j[0] - two_j[1]); two_S <= two_j[0] + two_j[1]; two_S += 2) {
             // loop over possible L: |J-s| <= L <= (J+s)
             for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L) {
                 // add SpinAmplitude retrieved from cache
-                addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j1, two_j2, L, two_S));
+                addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j, L, two_S));
             }
         }
     } else {

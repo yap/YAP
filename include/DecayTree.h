@@ -27,6 +27,7 @@
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
+#include "fwd/Spin.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
 
@@ -112,11 +113,11 @@ protected:
 
 private:
 
-    /// (twice) daughter spin projections
-    std::array<int, 2> DaughtersTwoM_;
-
     /// ComplexParameter of the free amplitude for the decay
     std::shared_ptr<FreeAmplitude> FreeAmplitude_;
+
+    /// daughter spin projections
+    SpinProjectionVector DaughtersTwoM_;
 
     /// vector of RecalculableDataAccessor's
     std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;

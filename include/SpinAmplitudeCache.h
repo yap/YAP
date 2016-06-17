@@ -21,6 +21,8 @@
 #ifndef yap_SpinAmplitudeCache_h
 #define yap_SpinAmplitudeCache_h
 
+#include "fwd/Spin.h"
+
 #include "Exceptions.h"
 #include "SpinAmplitude.h"
 #include "WeakPtrCache.h"
@@ -49,14 +51,13 @@ public:
     { return (A.get() == B.get()) or A->equalTo(*B); }
 
     /// retrieve or create SpinAmplitude
-    /// \param two_J  twice the spin of Initial-state
-    /// \param two_j1 twice the spin of first daughter
-    /// \param two_j2 twice the spin of second daughter
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S)
+    std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S)
     {
-        auto retVal = operator[](create(two_J, two_j1, two_j2, L, two_S));
+        auto retVal = operator[](create(two_J, two_j, L, two_S));
         retVal->setModel(Model_);
         return retVal;
     }
@@ -88,12 +89,11 @@ private:
 
     /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
-    /// \param two_J  twice the spin of Initial-state
-    /// \param two_j1 twice the spin of first daughter
-    /// \param two_j2 twice the spin of second daughter
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, unsigned two_j1, unsigned two_j2, unsigned L, unsigned two_S) const = 0;
+    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const = 0;
 
     /// raw pointer to Model this cache belongs to
     Model* Model_;

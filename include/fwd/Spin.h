@@ -18,25 +18,18 @@
 
 /// \file
 
-#ifndef yap_SpinAmplitudeFwd_h
-#define yap_SpinAmplitudeFwd_h
+#ifndef yap_SpinFwd_h
+#define yap_SpinFwd_h
 
-#include <map>
-#include <memory>
 #include <vector>
 
 namespace yap {
 
-class SpinAmplitude;
+/// \typedef SpinVector
+using SpinVector = std::vector<unsigned>;
 
-/// \typedef SpinAmplitudeVector
-using SpinAmplitudeVector = std::vector<std::shared_ptr<SpinAmplitude> >;
-
-/// \typedef SpinAmplitudeMap
-/// \tparam T Object to store in map, with shared_ptr to SpinAmplitude as key
-template<typename T>
-using SpinAmplitudeMap = std::map<std::shared_ptr<SpinAmplitude>, T,
-      std::owner_less<std::shared_ptr<SpinAmplitude> > >;
+/// \typedef SpinProjectionVector
+using SpinProjectionVector = std::vector<int>;
 
 }
 
