@@ -2,7 +2,7 @@
 
 #include "Exceptions.h"
 #include "MathUtilities.h"
-#include "spin.h"
+#include "Spin.h"
 
 #include <algorithm>
 #include <cmath>

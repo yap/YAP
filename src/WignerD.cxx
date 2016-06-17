@@ -3,7 +3,7 @@
 #include "Exceptions.h"
 #include "logging.h"
 #include "MathUtilities.h"
-#include "spin.h"
+#include "Spin.h"
 
 #include <cmath>
 #include <vector>

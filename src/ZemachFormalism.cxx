@@ -7,7 +7,7 @@
 #include "logging.h"
 #include "LorentzTransformation.h"
 #include "Model.h"
-#include "spin.h"
+#include "Spin.h"
 
 namespace yap {
 

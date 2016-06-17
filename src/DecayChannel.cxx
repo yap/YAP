@@ -12,7 +12,7 @@
 #include "Model.h"
 #include "Parameter.h"
 #include "ParticleCombinationCache.h"
-#include "spin.h"
+#include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
 #include "StatusManager.h"

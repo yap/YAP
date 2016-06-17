@@ -4,7 +4,7 @@
 #include "container_utils.h"
 #include "Exceptions.h"
 #include "ParticleCombination.h"
-#include "spin.h"
+#include "Spin.h"
 #include "SpinAmplitude.h"
 
 namespace yap {
