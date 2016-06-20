@@ -140,7 +140,7 @@ private:
 /// equality operator
 bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs);
 
-/// returns NOT ==
+/// inequality operator
 inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 { return !(lhs == rhs); }
 

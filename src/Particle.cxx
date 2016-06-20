@@ -71,6 +71,16 @@ void Particle::pruneParticleCombinations()
 }
 
 //-------------------------
+const SpinVector spins(const ParticleVector& v)
+{
+    SpinVector s;
+    s.reserve(v.size());
+    std::transform(v.begin(), v.end(), std::back_inserter(s),
+    [](const ParticleVector::value_type & p) {return p->quantumNumbers().twoJ();});
+    return s;
+}
+
+//-------------------------
 std::string to_string(const Particle& p)
 {
     return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value());
