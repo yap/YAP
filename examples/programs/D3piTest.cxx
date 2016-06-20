@@ -130,6 +130,8 @@ int main( int argc, char** argv)
     else {
         LOG(INFO) << "... inside phase space";
         data[0].setFinalStateMomenta(P);
+        for (unsigned i = 0; i < 10; ++i)
+            data.add(P);
     }
 
     LOG(INFO) << "AFTER";

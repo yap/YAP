@@ -37,8 +37,7 @@ DataPointVector::iterator DataPartition::end(DataSet& ds)
 //-------------------------
 DataIterator& DataPartitionWeave::increment(DataIterator& it, DataIterator::difference_type n) const
 {
-    auto distanceToEnd = end() - it;
-    rawIterator(it) += ((distanceToEnd < n * Spacing_) ? (n * Spacing_) : distanceToEnd);
+    rawIterator(it) += n * Spacing_;
     return it;
 }
 
