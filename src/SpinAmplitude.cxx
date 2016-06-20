@@ -75,6 +75,21 @@ const std::set<int> SpinAmplitude::twoM() const
 }
 
 //-------------------------
+const std::set<SpinProjectionVector> SpinAmplitude::twoM(int two_M) const
+{
+    auto it = Amplitudes_.find(two_M);
+
+    // if two_M not found, return empty set
+    if (it == Amplitudes_.end())
+        return std::set<SpinProjectionVector>();
+
+    std::set<SpinProjectionVector> two_m;
+    std::transform(it->second.begin(), it->second.end(), std::inserter(two_m, two_m.end()),
+    [](const AmplitudeSubmap::value_type & kv) {return kv.first;});
+    return two_m;
+}
+
+//-------------------------
 void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m)
 {
     // retrieve (or create) AmplitudeSubmap for two_M
@@ -113,7 +128,7 @@ std::string to_string(const SpinAmplitudeVector& saV)
         return std::string();
 
     std::string s = spin_to_string(saV[0]->initialTwoJ()) + " -> " + to_string(saV[0]->finalTwoJ());
-    s += "with LS =";
+    s += " with LS =";
     for (auto& sa : saV)
         s += " (" + std::to_string(sa->L()) + ", " + spin_to_string(sa->twoS()) + "),";
     s.erase(s.size() - 1, 1);

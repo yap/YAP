@@ -229,7 +229,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (SpinAmplitudes_.empty()) {
 
         auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-        SpinVector two_j = {Daughters_[0]->quantumNumbers().twoJ(), Daughters_[1]->quantumNumbers().twoJ()};
+        auto two_j = spins(Daughters_);
 
         // create spin amplitudes
         // loop over possible S: |j1-j2| <= S <= (j1+j2)
@@ -272,6 +272,10 @@ FreeAmplitudeSet DecayChannel::freeAmplitudes() const
 //-------------------------
 void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
+    // if spin amplitude already held, do nothing
+    if (std::find(SpinAmplitudes_.begin(), SpinAmplitudes_.end(), sa) != SpinAmplitudes_.end())
+        return;
+
     // check number of daughters
     if (sa->finalTwoJ().size() != Daughters_.size())
         throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");
