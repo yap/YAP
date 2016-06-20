@@ -156,6 +156,20 @@ int main( int argc, char** argv)
         LOG(INFO) << "fit fraction DT " << i << " = " << ff[i];
     LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
 
+    LOG(INFO) << "cached integral components:";
+    auto I_cached = cached_integrals(MI);
+    for (const auto& row : I_cached)
+        LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                     [](const std::string & s, const std::complex<double>& c)
+    { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+
+    LOG(INFO) << "integral components:";
+    auto I = integrals(MI);
+    for (const auto& row : I)
+        LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                     [](const std::string & s, const std::complex<double>& c)
+    { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+
     LOG(INFO) << M.initialStateParticle()->printDecayTrees();
 
     LOG(INFO) << "alright!";

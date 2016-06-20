@@ -117,7 +117,16 @@ private:
 };
 
 /// \return vector of fit fractions of DecayTree's in ModelIntegral
+/// \param MI ModelIntegral to retrieve values from
 const std::vector<double> fit_fractions(const ModelIntegral& MI);
+
+/// \return matrix of integral components without multiplication by free amplitudes
+/// \param MI ModelIntegral to retrieve values from
+const std::vector<std::vector<std::complex<double> > > cached_integrals(const ModelIntegral& MI);
+
+/// \return matrix of integral components with multiplication by free amplitudes
+/// \param MI ModelIntegral to retrieve values from
+const std::vector<std::vector<std::complex<double> > > integrals(const ModelIntegral& MI);
 
 /// \return addition of two RealIntegralElements
 inline const RealIntegralElement operator+(const RealIntegralElement& A, const RealIntegralElement& B)

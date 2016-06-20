@@ -1,5 +1,6 @@
 #include "ModelIntegral.h"
 
+#include "Constants.h"
 #include "DecayTree.h"
 
 #include <algorithm>
@@ -36,6 +37,30 @@ const std::vector<double> fit_fractions(const ModelIntegral& MI)
     std::transform(MI.decayTrees().begin(), MI.decayTrees().end(), std::back_inserter(ff),
     [&](const DecayTreeVector::value_type & dt) {return integral(*MI.diagonals().find(dt)).value / I;});
     return ff;
+}
+
+//-------------------------
+const std::vector<std::vector<std::complex<double> > > cached_integrals(const ModelIntegral& MI)
+{
+    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
+    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
+        I[i][i] = MI.diagonals().at(MI.decayTrees()[i]).value;
+        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
+            I[j][i] = conj(I[i][j] = MI.offDiagonals().at({MI.decayTrees()[i], MI.decayTrees()[j]}).value);
+    }
+    return I;
+}
+
+//-------------------------
+const std::vector<std::vector<std::complex<double> > > integrals(const ModelIntegral& MI)
+{
+    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
+    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
+        I[i][i] = integral(*MI.diagonals().find(MI.decayTrees()[i])).value;
+        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
+            I[j][i] = conj(I[i][j] = integral(*MI.offDiagonals().find({MI.decayTrees()[i], MI.decayTrees()[j]})).value);
+    }
+    return I;
 }
 
 //-------------------------
