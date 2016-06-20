@@ -91,7 +91,7 @@ public:
     DataPoint& back()
     { return DataPoints_.back(); }
 
-    size_t size() const
+    const size_t size() const
     { return DataPoints_.size(); }
 
     /// const access to DataPoints_
