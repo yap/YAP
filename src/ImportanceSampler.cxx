@@ -66,7 +66,7 @@ unsigned ImportanceSampler::partialCalculation(ModelIntegral& I, DataPartition& 
                 // calculate difference from mean
                 auto delta_offdiag = conj(A[i]) * A[j] - off_diags[i][j - i - 1]->value;
                 // update mean
-                off_diags[i][j - i - 1]->value = delta_offdiag / static_cast<double>(n);
+                off_diags[i][j - i - 1]->value += delta_offdiag / static_cast<double>(n);
             }
         }
     }
