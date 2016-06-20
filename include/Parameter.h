@@ -179,7 +179,7 @@ protected:
     { return real(c); }
 
     /// \return complex value with component changed
-    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const
+    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const override
     { return std::complex<double>(v, imag(c)); }
 
 };
@@ -203,7 +203,7 @@ protected:
     { return imag(c); }
 
     /// \return complex value with component changed
-    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const
+    virtual std::complex<double> setComponent(const std::complex<double>& c, double v) const override
     { return std::complex<double>(real(c), v); }
 
 };
