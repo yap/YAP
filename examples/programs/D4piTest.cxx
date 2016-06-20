@@ -75,6 +75,8 @@ int main( int argc, char** argv)
     D->addChannel({omega, omega});
     D->addChannel({rho, omega});
     D->addChannel({a_1, piMinus});
+    D->addChannel({sigma, piPlus, piMinus});
+    D->addChannel({piPlus, piMinus, piPlus, piMinus});
 
     // R pi pi channels
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
