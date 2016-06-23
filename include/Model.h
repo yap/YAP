@@ -176,11 +176,14 @@ public:
     /// @{
 
     /// Build vector of mass axes for coordinates in phase space.
-    /// Currently only supports two-particle masses; the PCs put into
-    /// the returned MassAxes will have their daughters sorted (i.e. (10) will become (01)).
+    /// Currently only supports two-particle masses.
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
     const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
+
+    /// Build vector of mass axes for coordinates in phase space with a default choice of axes.
+    /// \return MassAxes
+    const MassAxes massAxes();
 
     /// Calculate four-momenta for final-state particles for phase-space coordinate
     /// \param axes phase-space axes
@@ -222,9 +225,6 @@ protected:
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
 
 private:
-
-    // check if the fourMomenta produce the given invariant masses
-    bool checkInvariantMasses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta) const;
 
     /// lock model
     void lock()
@@ -274,7 +274,6 @@ private:
 
 };
 
-
 /// \return The sum of the logs of squared amplitudes evaluated over the data partition
 /// \param M Model to evaluate
 /// \param D DataPartition to evalue over
@@ -283,8 +282,6 @@ const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
 /// \return The sum of the logs of squared amplitudes evaluated over the data partitions
 /// \param DP DataPartitionVector of partitions to use
 const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
-
-
 
 }
 

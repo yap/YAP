@@ -17,15 +17,13 @@
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
+#include <PHSP.h>
 #include <Resonance.h>
-
-#include <TGenPhaseSpace.h>
-#include <TLorentzRotation.h>
-#include <TLorentzVector.h>
-#include <TRandom.h>
+#include <Rotation.h>
 
 #include <assert.h>
 #include <cmath>
+#include <random>
 
 /*
  * Test the calculation of helicity angles
@@ -39,9 +37,6 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     // disable debug logs in test
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
-
-    // init random generator
-    gRandom->SetSeed(1234);
 
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
@@ -67,61 +62,51 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     // Add channels to D
     D->addChannel({rho,      piPlus});
 
-    // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
+    // choose default Dalitz coordinates
+    auto massAxes = M.massAxes();
 
     // create DataSet
     auto data = M.createDataSet();
 
-    // create pseudo data
-    TLorentzVector P(0., 0., 0., D->mass()->value());
-    std::vector<double> masses = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value() };
+    // create random number engine for generation of points
+    std::mt19937 g(0);
+
+    // create random number generators
+    std::uniform_real_distribution<double> uniform_0_pi(0, yap::pi<double>());
+    std::uniform_real_distribution<double> uniform_m99_p99(-0.99, 0.99);
 
     for (unsigned int iEvt = 0; iEvt < 1000; ++iEvt) {
         std::map<std::shared_ptr<yap::ParticleCombination>, std::vector<double>> resultingThetas;
 
-        TGenPhaseSpace event;
-        event.SetDecay(P, masses.size(), &masses[0]);
-        event.Generate();
+        // generate random phase space point (with 100 attempts before failing)
+        auto momenta = yap::phsp(M, massAxes, g, 100);
+        if (momenta.empty())
+            continue;
 
         for (unsigned iTrans = 0; iTrans < 7; ++iTrans) {
 
-            std::vector<yap::FourVector<double> > momenta;
-            std::vector<TLorentzVector> root_momenta;
+            double angle = uniform_0_pi(g);
+            double boost = uniform_m99_p99(g);
 
-            double angle = gRandom->Uniform(0, yap::pi<double>());
-            double boost = gRandom->Uniform(-0.99, 0.99);
-
-            for (unsigned i = 0; i < masses.size(); ++i) {
-                TLorentzVector p = *event.GetDecay(i);
+            for (auto& p : momenta) {
 
                 // testing. Theta of downstream helicity angles must stay the same
                 switch (iTrans) {
-                    case 0:
-                    default:
-                        break;
                     case 1:
-                        p.RotateX(angle);
-                        break;
                     case 2:
-                        p.RotateY(angle);
-                        break;
                     case 3:
-                        p.RotateZ(angle);
+                        // rotate around axis: case 1, x; case 2, y; case 3, z
+                        p = yap::rotation(yap::ThreeAxes[iTrans - 1], angle) * p;
                         break;
                     case 4:
-                        p.Boost(boost, 0., 0.);
-                        break;
                     case 5:
-                        p.Boost(0., boost, 0.);
-                        break;
                     case 6:
-                        p.Boost(0., 0., boost);
+                        // boost in direction of axis: case 4, x; case 5, y; case 6, z
+                        p = yap::lorentzTransformation(yap::ThreeAxes[iTrans - 3] * boost) * p;
+                        break;
+                    default:
                         break;
                 }
-
-                momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
-                root_momenta.push_back(p);
             }
 
             data.add(momenta);
@@ -132,6 +117,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
                 if (pc_i.first->indices().size() < M.finalStateParticles().size())
                     resultingThetas[pc_i.first].push_back(M.helicityAngles()->theta(dp, pc_i.first));
         }
+
 
         // check if thetas are equal
         // Phi can change, since it only affects the phase of the amplitude, and it will change in the same way for all amplitudes

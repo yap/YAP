@@ -140,17 +140,17 @@ TEST_CASE( "swapFinalStates" )
 
 
             // print
-            std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
+            // std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
 
-            std::cout << "Zemach:                        Helicity:" << std::endl;
+            // std::cout << "Zemach:                        Helicity:" << std::endl;
             //for (size_t i = 0; i < amps_Z.size(); ++i)
             for (size_t i = 0; i < 1; ++i) {
                 double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
 
-                std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
-                          << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
-                          << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
-                          << std::endl;
+                // std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
+                //           << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
+                //           << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
+                //           << std::endl;
             }
 
             // if nan, check that all are nan

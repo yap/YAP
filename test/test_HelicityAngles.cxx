@@ -17,15 +17,12 @@
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
+#include <PHSP.h>
 #include <Resonance.h>
-
-#include <TGenPhaseSpace.h>
-#include <TLorentzRotation.h>
-#include <TLorentzVector.h>
-#include <TRandom.h>
 
 #include <assert.h>
 #include <cmath>
+#include <random>
 
 /*
  * Test the calculation of helicity angles (with passive rotation in YAP)
@@ -81,9 +78,6 @@ TEST_CASE( "HelicityAngles" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    // init random generator
-    gRandom->SetSeed(1234);
-
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
@@ -108,32 +102,26 @@ TEST_CASE( "HelicityAngles" )
     // Add channels to D
     D->addChannel({rho,      piPlus});
 
-    // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
+    // choose default Dalitz axes
+    auto massAxes = M.massAxes();
 
     REQUIRE( M.consistent() );
 
     // create DataSet
     auto data = M.createDataSet();
 
-    // create pseudo data
-    TLorentzVector P(0., 0., 0., D->mass()->value());
-    std::vector<double> masses = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value() };
+    // create random number engine for generation of points
+    std::mt19937 g(0);
 
     for (unsigned int iEvt = 0; iEvt < 100; ++iEvt) {
-        TGenPhaseSpace event;
-        event.SetDecay(P, masses.size(), &masses[0]);
-        event.Generate();
 
-        std::vector<yap::FourVector<double> > momenta;
-        std::vector<TLorentzVector> rootMomenta;
+        // generate random phase space point (with 100 attempts before failing)
+        auto momenta = yap::phsp(M, massAxes, g, 100);
+        if (momenta.empty())
+            continue;
 
-        for (unsigned i = 0; i < masses.size(); ++i) {
-            TLorentzVector p = *event.GetDecay(i);
-
-            rootMomenta.push_back(p);
-            momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
-        }
+        // boost into total rest frame
+        momenta = lorentzTransformation(-momenta) * momenta;
 
         data.add(momenta);
         const auto dp = data.points().back();
@@ -148,7 +136,7 @@ TEST_CASE( "HelicityAngles" )
 
         // compare results
         for (auto& kv : phi_theta) {
-            REQUIRE( M.helicityAngles()->phi(dp, kv.first)   == Approx(kv.second[0]) );
+            REQUIRE( cos(M.helicityAngles()->phi(dp, kv.first))   == Approx(cos(kv.second[0])) );
             REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
         }
     }

@@ -397,7 +397,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
     if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
-    throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
+        throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
 
     ParticleCombinationVector M;
 
@@ -405,29 +405,55 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
 
         // check that all indices are in range
         if (std::any_of(v.begin(), v.end(), [&](const unsigned & i) {return i >= n_fsp;}))
-        throw exceptions::Exception("particle index out of range", "Model::massAxes");
+            throw exceptions::Exception("particle index out of range", "Model::massAxes");
 
-        // sort v
-        sort(v.begin(), v.end());
         // check for duplicates
-        if (std::adjacent_find(v.begin(), v.end()) != v.end())
+        if (std::any_of(v.begin(), v.end(), [&](unsigned i){return std::count(v.begin(), v.end(), i) != 1;}))
             throw exceptions::Exception("duplicate index given", "Model::massAxes");
 
-        // get ParticleCombination
-        auto pc0 = particleCombinationCache().fsp(v[0]);
-        auto pc1 = particleCombinationCache().fsp(v[1]);
-        auto pc = particleCombinationCache().composite({pc0, pc1});
+        // get fsp ParticleCombinations
+        ParticleCombinationVector pcv;
+        pcv.reserve(v.size());
+        std::transform(v.begin(), v.end(), std::back_inserter(pcv), [&](unsigned i) {return particleCombinationCache().fsp(i);});
+        auto pc = particleCombinationCache().composite(pcv);
 
         // check that pc isn't already in M
-        for (const auto& m : M)
-            if (ParticleCombination::equalByOrderlessContent(m, pc))
-                throw exceptions::Exception("axes requested twice: " + indices_string(*m) + " == " + indices_string(*pc), "Model::massAxes");
+        if (any_of(M, pc, ParticleCombination::equalByOrderlessContent))
+            throw exceptions::Exception("axis requested twice", "Model::massAxes");
 
         M.push_back(pc);
     }
 
     return MassAxes(M);
 }
+
+//-------------------------
+const MassAxes Model::massAxes()
+{
+    /// \todo extend further
+    if (finalStateParticles().size() > 4)
+        throw exceptions::Exception("Currently only supports final states of 4 or fewer particles", "Model::massAxes");
+
+    // builds vector down first off diagonal, then second off-diagonal, etc
+    std::vector<std::vector<unsigned> > pcs;
+    for (unsigned i = 1; i < finalStateParticles().size() - 1; ++i)
+        for (unsigned j = 0 ; i + j < finalStateParticles().size(); ++j)
+            pcs.push_back({j, j + i});
+    return massAxes(pcs);
+}
+
+//-------------------------
+bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta)
+{
+    for (size_t i = 0; i < axes.size(); ++i) {
+        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector_0, [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
+        if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
+            return false;
+    }
+    return true;
+}
+
+
 
 //-------------------------
 std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses) const
@@ -542,7 +568,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
                     return std::vector<FourVector<double> >();
 
                 // phasespace check for special case: p0 and p1 are at rest in m01 rest frame
-                if (n_fsp == 3 and P[0][3] == 0 and !checkInvariantMasses(axes, squared_masses, P))
+                if (n_fsp == 3 and P[0][3] == 0 and !check_invariant_masses(axes, squared_masses, P))
                     return std::vector<FourVector<double> >();
 
             } else {
@@ -642,17 +668,6 @@ void Model::printFlags(const StatusManager& sm) const
     }
 
     std::cout << std::endl;
-}
-
-//-------------------------
-bool Model::checkInvariantMasses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta) const
-{
-    for (size_t i = 0; i < axes.size(); ++i) {
-        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector_0, [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
-        if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
-            return false;
-    }
-    return true;
 }
 
 }

@@ -34,7 +34,7 @@ int main()
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::ZemachFormalism>())), {{0, 1}, {1, 2}},
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::HelicityFormalism>())), {{0, 1}, {1, 2}}
     };
-    
+
     for (bat_gen* m : test_models) {
 
         // open log file
