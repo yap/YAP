@@ -32,7 +32,7 @@ namespace yap {
 
 /// \return vector of four momenta for daughters uniformly randomly generated in phase space of model
 template <class Generator>
-    const std::vector<FourVector<double> > phsp(const Model& M, const MassAxes& A, Generator& g, unsigned max_attempts = 1000)
+const std::vector<FourVector<double> > phsp(const Model& M, const MassAxes& A, Generator& g, unsigned max_attempts = 1000)
 {
     static std::uniform_real_distribution<double> uniform;
 
@@ -47,9 +47,9 @@ template <class Generator>
     std::vector<FourVector<double> > P;
 
     unsigned n = 0;
-    while(P.empty() and n < max_attempts) {
+    while (P.empty() and n < max_attempts) {
         // generate random point in hypercube of mass ranges
-        std::transform(r.begin(), r.end(), m2.begin(), [&](const std::array<double, 2>& R){return R[0] + R[1] * uniform(g);});
+        std::transform(r.begin(), r.end(), m2.begin(), [&](const std::array<double, 2>& R) {return R[0] + R[1] * uniform(g);});
         P = M.calculateFourMomenta(A, m2);
     }
     return P;

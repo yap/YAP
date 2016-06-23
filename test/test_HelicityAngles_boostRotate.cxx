@@ -64,7 +64,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
     // choose default Dalitz coordinates
     auto massAxes = M.massAxes();
-    
+
     // create DataSet
     auto data = M.createDataSet();
 
@@ -92,20 +92,20 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
                 // testing. Theta of downstream helicity angles must stay the same
                 switch (iTrans) {
-                case 1:
-                case 2:
-                case 3:
-                    // rotate around axis: case 1, x; case 2, y; case 3, z
-                    p = yap::rotation(yap::ThreeAxes[iTrans - 1], angle) * p;
-                    break;
-                case 4:
-                case 5:
-                case 6:
-                    // boost in direction of axis: case 4, x; case 5, y; case 6, z
-                    p = yap::lorentzTransformation(yap::ThreeAxes[iTrans-3] * boost) * p;
-                    break;
-                default:
-                    break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        // rotate around axis: case 1, x; case 2, y; case 3, z
+                        p = yap::rotation(yap::ThreeAxes[iTrans - 1], angle) * p;
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                        // boost in direction of axis: case 4, x; case 5, y; case 6, z
+                        p = yap::lorentzTransformation(yap::ThreeAxes[iTrans - 3] * boost) * p;
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -117,7 +117,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
                 if (pc_i.first->indices().size() < M.finalStateParticles().size())
                     resultingThetas[pc_i.first].push_back(M.helicityAngles()->theta(dp, pc_i.first));
         }
-        
+
 
         // check if thetas are equal
         // Phi can change, since it only affects the phase of the amplitude, and it will change in the same way for all amplitudes

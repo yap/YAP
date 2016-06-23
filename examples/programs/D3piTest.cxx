@@ -120,7 +120,7 @@ int main( int argc, char** argv)
     // generate point randomly in phase space of model
     std::mt19937 g(0);
     auto P = phsp(M, massAxes, g, 10);
-    
+
     // create data set with 1 empty data point
     auto data = M.createDataSet(1);
 

@@ -414,7 +414,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
         // get fsp ParticleCombinations
         ParticleCombinationVector pcv;
         pcv.reserve(v.size());
-        std::transform(v.begin(), v.end(), std::back_inserter(pcv), [&](unsigned i){return particleCombinationCache().fsp(i);});
+        std::transform(v.begin(), v.end(), std::back_inserter(pcv), [&](unsigned i) {return particleCombinationCache().fsp(i);});
         auto pc = particleCombinationCache().composite(pcv);
 
         // check that pc isn't already in M
