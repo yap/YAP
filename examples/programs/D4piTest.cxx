@@ -11,22 +11,21 @@
 #include "HelicityFormalism.h"
 #include "logging.h"
 #include "make_unique.h"
+#include "MassAxes.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "PHSP.h"
 #include "Resonance.h"
 #include "SpinAmplitudeCache.h"
 #include "WignerD.h"
 
-#include <TGenPhaseSpace.h>
-#include <TLorentzVector.h>
-#include <TRandom.h>
-
 #include <assert.h>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <string>
 
 //#include <callgrind.h>
@@ -112,10 +111,6 @@ int main( int argc, char** argv)
     std::cout << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
-    // create pseudo data
-    TLorentzVector P(0., 0., 0., D->mass()->value());
-    Double_t masses[4] = { piPlus->mass()->value(), piMinus->mass()->value(), piPlus->mass()->value(), piMinus->mass()->value() };
-
     LOG(INFO) << "create dataPoints";
 
     // create data set
@@ -123,22 +118,21 @@ int main( int argc, char** argv)
     yap::DataSet data = M.createDataSet(nPoints);
     yap::DataSet dataTest = M.createDataSet(nPoints);
 
+    // create random number engine for generation of points
+    std::mt19937 g(0);
+
+    // create default mass axes
+    auto massAxes = M.massAxes();
+
+    unsigned max_attempts = 10;
     for (unsigned int iEvt = 0; iEvt < nPoints; ++iEvt) {
-        TGenPhaseSpace event;
-        event.SetDecay(P, 4, masses);
-        event.Generate();
-
-        std::vector<yap::FourVector<double> > momenta;
-        for (unsigned i = 0; i < 4; ++i) {
-            TLorentzVector p = *event.GetDecay(i);
-            momenta.push_back(yap::FourVector<double>({p.T(), p.X(), p.Y(), p.Z()}));
-
-            DEBUG(yap::to_string(momenta.back()));
+        auto momenta = phsp(M, massAxes, g, max_attempts);
+        if (momenta.empty())
+            LOG(INFO) << "after " << max_attempts << " tries, could not generate point inside phase space";
+        else {
+            data[iEvt].setFinalStateMomenta(momenta);
+            dataTest[iEvt].setFinalStateMomenta(momenta);
         }
-
-        data[iEvt].setFinalStateMomenta(momenta);
-        dataTest[iEvt].setFinalStateMomenta(momenta);
-
     }
 
     LOG(INFO) << "done creating dataPoints";
@@ -163,24 +157,28 @@ int main( int argc, char** argv)
 
     //CALLGRIND_START_INSTRUMENTATION
 
+    // create uniform random distributions
+    std::uniform_real_distribution<double> uniform;
+    std::uniform_real_distribution<double> uniform2(0.95, 1.052631579);
+
     // do several loops over all dataPartitions
     for (unsigned i = 0; i < 100; ++i) {
 
         // change amplitudes
-        if (gRandom->Uniform() > 0.5) {
+        if (uniform(g) > 0.5) {
             for (auto& a : freeAmps) {
-                if (a->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform() > 0.5)
-                    a->setValue(gRandom->Uniform(0.95, 1.052631579) * a->value());
+                if (a->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5)
+                    a->setValue(uniform2(g) * a->value());
             }
         }
 
         // change masses
-        if (gRandom->Uniform() > 0.5) {
+        if (uniform(g) > 0.5) {
             for (auto& c : D->channels())
                 for (auto& d : c->daughters()) {
-                    if (d->mass()->variableStatus() != yap::VariableStatus::fixed and gRandom->Uniform() > 0.5) {
+                    if (d->mass()->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5) {
                         DEBUG("change mass for " << to_string(*d));
-                        d->mass()->setValue(gRandom->Uniform(0.95, 1.052631579) * d->mass()->value());
+                        d->mass()->setValue(uniform2(g) * d->mass()->value());
                     }
                 }
         }
@@ -190,14 +188,6 @@ int main( int argc, char** argv)
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
-
-        /*if (gRandom->Uniform()>0.5) {
-            double logATest = M.sumOfLogsOfSquaredAmplitudes(dataTest, partsTest);
-            LOG(INFO) << "logATest = " << logATest;
-            assert (logA == logATest);
-        }*/
-
-
 
     }
 

@@ -13,10 +13,12 @@
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "PHSP.h"
 #include "Resonance.h"
 #include "ZemachFormalism.h"
 
 #include <memory>
+#include <random>
 #include <vector>
 
 int main( int argc, char** argv)
@@ -112,11 +114,13 @@ int main( int argc, char** argv)
     std::cout << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
-    // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
+    // get default Dalitz axes
+    auto massAxes = M.massAxes();
 
-    std::vector<double> m2 = {1, 1};//{0.9, 1.1}; //{0.1, 4};
-
+    // generate point randomly in phase space of model
+    std::mt19937 g(0);
+    auto P = phsp(M, massAxes, g, 10);
+    
     // create data set with 1 empty data point
     auto data = M.createDataSet(1);
 
@@ -124,7 +128,6 @@ int main( int argc, char** argv)
     M.fourMomenta()->printMasses(data[0]);
 
     LOG(INFO) << "setting squared mass ...";
-    auto P = M.calculateFourMomenta(massAxes, m2);
     if (P.empty())
         LOG(INFO) << "... outside phase space";
     else {
