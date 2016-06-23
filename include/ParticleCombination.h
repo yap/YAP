@@ -219,6 +219,9 @@ inline bool any_of(const ParticleCombinationVector& PCs,
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
 
+/// only keep particleCombinations with the highest number of indices in their top-most parent
+void prune_particle_combinations(ParticleCombinationVector& PCs);
+
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc);
 

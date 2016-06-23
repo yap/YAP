@@ -125,6 +125,35 @@ bool disjoint(const ParticleCombinationVector& pcv)
 }
 
 //-------------------------
+void prune_particle_combinations(ParticleCombinationVector& PCs)
+{
+    // get "ISP"
+    size_t ispNIndices(0);
+    for (auto pc : PCs) { // must copy the shared_ptr here since we alter it!
+        // find the top-most parent
+        while (pc->parent())
+            pc = pc->parent();
+
+        ispNIndices = std::max(ispNIndices, pc->indices().size());
+    }
+
+    PCs.erase(
+            std::remove_if(PCs.begin(), PCs.end(),
+            [&] (std::shared_ptr<yap::ParticleCombination> pc) // must copy the shared_ptr here since we alter it!
+            {
+                while (pc->parent())
+                    pc = pc->parent();
+                if (pc->indices().size() < ispNIndices)
+                    return true;
+                return false;
+            }),
+            PCs.end());
+
+    if (PCs.empty())
+        throw exceptions::Exception("ParticleCombinations empty after pruning", "pruneParticleCombinations");
+}
+
+//-------------------------
 std::string indices_string(const ParticleCombination& pc)
 {
     if (pc.indices().empty())
