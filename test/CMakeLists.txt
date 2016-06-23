@@ -1,4 +1,3 @@
-find_package(ROOT) 
 find_package(Git)
 
 include(ExternalProject)
@@ -16,7 +15,7 @@ ExternalProject_Add(
 set_target_properties(catch PROPERTIES EXCLUDE_FROM_ALL TRUE)
 ExternalProject_Get_Property(catch source_dir)
 
-include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools ${ROOT_INCLUDE_DIR})
+include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools)
 set(YAP_TEST_SOURCES
   test_ClebschGordan.cxx
   test_FourMomentaCalculation.cxx
@@ -33,4 +32,4 @@ set(YAP_TEST_SOURCES
 
 add_executable(test EXCLUDE_FROM_ALL ${YAP_TEST_SOURCES})
 add_dependencies(test catch)
-target_link_libraries(test YAP ${ROOT_LIBS})
+target_link_libraries(test YAP)
