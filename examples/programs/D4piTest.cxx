@@ -94,13 +94,16 @@ int main( int argc, char** argv)
     else
         LOG(INFO) << "inconsistent!";
 
+
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
 
-    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
-    for (auto& pc : D->particleCombinations())
-        std::cout << *pc << "\n";
-    std::cout << "\n";
+    for (auto& isp : M.initialStateParticles()) {
+        std::cout << "\n" << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations \n";
+        for (auto& pc : isp.first->particleCombinations())
+            std::cout << *pc << "\n";
+        std::cout << "\n";
+    }
 
     std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
     for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
@@ -121,6 +124,7 @@ int main( int argc, char** argv)
     // create data set
     unsigned nPoints = 1;
     yap::DataSet data = M.createDataSet(nPoints);
+
     yap::DataSet dataTest = M.createDataSet(nPoints);
 
     // create random number engine for generation of points
