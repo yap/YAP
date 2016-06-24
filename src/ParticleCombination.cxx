@@ -68,6 +68,18 @@ bool ParticleCombination::decaysToFinalStateParticles() const
 }
 
 //-------------------------
+bool ParticleCombination::contains(const std::shared_ptr<const ParticleCombination>& B) const
+{
+    std::set<unsigned> setA(Indices_.begin(), Indices_.end());
+
+    const std::vector<unsigned>& indicesB(B->indices());
+    std::set<unsigned> setB(indicesB.begin(), indicesB.end());
+
+    // check if B is subset of A
+    return std::includes(setA.begin(), setA.end(), setB.begin(), setB.end());
+}
+
+//-------------------------
 bool ParticleCombination::consistent() const
 {
     bool C = true;

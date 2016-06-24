@@ -73,6 +73,9 @@ public:
     /// \return whether all leaves are final state particles
     bool decaysToFinalStateParticles() const;
 
+    /// \return whether the indices of B are a subset this' indices
+    bool contains(const std::shared_ptr<const ParticleCombination>& B) const;
+
     /// Checks consistency of object
     bool consistent() const;
 
@@ -182,7 +185,6 @@ public:
     };
 
     /// \struct EqualZemach
-
     /// \brief Check objects reference by shared pointers; treats all
     /// two-particle states as equal, compares three particle states
     /// by unordered content of resonance, and throws on 4 or more
@@ -190,7 +192,6 @@ public:
     struct EqualZemach : Equal {
         virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
-
 
     /// \name Static Comparison objects
     static Equal equalBySharedPointer;
@@ -220,7 +221,7 @@ inline bool any_of(const ParticleCombinationVector& PCs,
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
 
-/// \return wheter pc is a pc of an initial state particle
+/// \return whether pc is a pc of an initial state particle
 bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m);
 
 /// only keep particleCombinations with the highest number of indices in their top-most parent
