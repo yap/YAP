@@ -125,6 +125,9 @@ private:
     /// map of daughter index -> daughter DecayTree
     DaughterDecayTreeMap DaughterDecayTrees_;
 
+    /// parent decay tree
+    DecayTree* ParentDecayTree_;
+
 };
 
 /// equality operator
