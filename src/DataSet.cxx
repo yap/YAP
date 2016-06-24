@@ -98,21 +98,20 @@ void DataSet::addEmptyDataPoints(size_t n)
 }
 
 //-------------------------
-void DataSet::createDataPoint(const std::vector<FourVector<double> >& P)
+const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >& P)
 {
-	if (points().empty())
-		addEmptyDataPoints(1);
-	else
-		DataPoints_.push_back(DataPoints_.back());
+	DataPoint d = ((points().empty())
+			? DataPoint(model()->dataAccessors())
+			: DataPoints_.back());
 
-	setFinalStateMomenta(DataPoints_.back(), P);
+	setFinalStateMomenta(d, P);
+	return d;
 }
 
 //-------------------------
-void DataSet::add(const std::vector<FourVector<double> >& P)
+void DataSet::push_back(const std::vector<FourVector<double> >& P)
 {
-    addEmptyDataPoints(1);
-    setFinalStateMomenta(DataPoints_.back(), P);
+	DataPoints_.push_back(createDataPoint(P));
 }
 
 }

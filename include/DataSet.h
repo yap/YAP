@@ -66,7 +66,10 @@ public:
 
 	/// creates a new #DataPoint and #setFinalStateMomenta to P
 	/// \param P the momenta to be set
-	void createDataPoint(const std::vector<FourVector<double> >& P);
+	/// \return the created #DataPoint
+	const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
+
+	void push_back(const std::vector<FourVector<double> >& P);
 
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
@@ -76,10 +79,6 @@ public:
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
     void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P);
-
-    /// Add data point
-    /// \param P vector of four momenta
-    void add(const std::vector<FourVector<double> >& P);
 
     /// \return iterator to front of set
     const DataIterator& begin() const override
