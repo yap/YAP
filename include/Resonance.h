@@ -88,7 +88,7 @@ protected:
 
     /// add ParticleCombination to ParticleCombinations_,
     /// also add to MassShape_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
     /// modify a DecayTree
     /// \param dt DecayTree to modify

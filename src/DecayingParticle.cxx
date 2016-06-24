@@ -193,8 +193,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
 
-    FDEBUG(*Channels_.back() << " with N(PC) = " << Channels_.back()->particleCombinations().size());
-
     return Channels_.back();
 }
 
@@ -211,7 +209,7 @@ const Model* DecayingParticle::model() const
 }
 
 //-------------------------
-void DecayingParticle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
 {
     Particle::addParticleCombination(pc);
 

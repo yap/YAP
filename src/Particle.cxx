@@ -41,7 +41,7 @@ bool Particle::consistent() const
 }
 
 //-------------------------
-void Particle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void Particle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
 {
     ParticleCombinations_.push_back(pc);
 }

@@ -39,7 +39,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 
     // if more than two daughters, check all are spin 0
     if (Daughters_.size() > 2 and
-    std::any_of(Daughters_.begin(), Daughters_.end(), [](const ParticleVector::value_type & d) {return d->quantumNumbers().twoJ() != 0;})) {
+        std::any_of(Daughters_.begin(), Daughters_.end(), [](const ParticleVector::value_type & d) {return d->quantumNumbers().twoJ() != 0;})) {
         LOG(ERROR) << "to create so-called \"nonresonant\" decays with nonzero-spin daughters, "
                    << "create a DecayingParticle for subcontent and use two-particle decays.";
         throw exceptions::Exception("Attempted to create nonresonant decay with spinfull daughters", "DecayChannel::DecayChannel");
@@ -52,7 +52,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 
     // check that all daughters have same Model (trivially checks first daughter against itself)
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [&](const ParticleVector::value_type & d) {return model() != d->model();}))
-    throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
+        throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
 
     //////////////////////////////////////////////////
     // create ParticleCombination's for parent

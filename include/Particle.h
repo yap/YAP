@@ -102,7 +102,7 @@ protected:
     void setMass(std::shared_ptr<RealParameter> m);
 
     /// add ParticleCombination to ParticleCombinationVector_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) = 0;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations();

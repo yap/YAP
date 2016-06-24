@@ -139,7 +139,7 @@ protected:
     {}
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations() override;

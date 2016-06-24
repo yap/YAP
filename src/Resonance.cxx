@@ -44,7 +44,7 @@ void Resonance::registerWithModel()
 }
 
 //-------------------------
-void Resonance::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void Resonance::addParticleCombination(const std::shared_ptr<ParticleCombination>& c)
 {
     DecayingParticle::addParticleCombination(c);
     MassShape_->addParticleCombination(c);

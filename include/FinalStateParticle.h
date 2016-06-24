@@ -69,7 +69,7 @@ protected:
     { Model_ = m; }
 
     /// add ParticleCombination to ParticleCombinations
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) override;
 
 private:
 
