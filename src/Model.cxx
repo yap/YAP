@@ -231,9 +231,10 @@ std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination
     if (FinalStateParticles_.empty())
         throw exceptions::Exception("Final state not set", "Model::massRange");
 
-    // must be an initialStateParticle
-    if (InitialStateParticles_.count(initialStateParticle) == 0)
-        throw exceptions::Exception("DecayingParticle is not an initialStateParticle of this model", "Model::massRange");
+    // pc must be a subset of one of initialStateParticle's particleCombinations
+    if (std::none_of(initialStateParticle->particleCombinations().begin(), initialStateParticle->particleCombinations().end(),
+            [&] (const std::shared_ptr<const ParticleCombination>& isp_pc) { return isp_pc->contains(pc); }) )
+        throw exceptions::Exception("particleCombination " + to_string(*pc) + " is not in DecayingParticle " + initialStateParticle->name(), "Model::massRange");
 
     std::array<double, 2> m = {0, initialStateParticle->mass()->value()};
 
@@ -436,9 +437,14 @@ bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squ
 //-------------------------
 std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, std::shared_ptr<DecayingParticle> initialStateParticle) const
 {
-    // must be an initialStateParticle
-    if (InitialStateParticles_.count(initialStateParticle) == 0)
-        throw exceptions::Exception("DecayingParticle is not an initialStateParticle of this model", "Model::calculateFourMomenta");
+    // mass axes must be a subset of one of initialStateParticle's particleCombinations
+    if (std::none_of(axes.begin(), axes.end(),
+            [&] (const std::shared_ptr<ParticleCombination>& axis_pc)
+            {
+                return std::any_of(initialStateParticle->particleCombinations().begin(), initialStateParticle->particleCombinations().end(),
+                    [&] (const std::shared_ptr<const ParticleCombination>& isp_pc) { return isp_pc->contains(axis_pc); });
+            }) )
+        throw exceptions::Exception("MassAxes's particleCombinations are not all in DecayingParticle " + initialStateParticle->name(), "Model::calculateFourMomenta");
 
     if (FinalStateParticles_.empty())
         throw exceptions::Exception("Final state unset", "Model::calculateFourMomenta");
