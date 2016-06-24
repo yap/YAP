@@ -75,7 +75,7 @@ void DataAccessor::pruneSymmetrizationIndices()
     // remove entries that don't trace back to an ISP
     for (auto it = SymmetrizationIndices_.begin(); it != SymmetrizationIndices_.end(); ) {
         if (is_initial_state_particle_combination(*it->first, model()))
-            it++;
+            ++it;
         else
             it = SymmetrizationIndices_.erase(it);
     }
