@@ -70,8 +70,11 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
     double L = 0;
     for (const auto& d : D) {
         // incoherently sum over initialStateParticles
-        for (auto& kv : M.initialStateParticles())
+        for (auto& kv : M.initialStateParticles()) {
+            FDEBUG("calculate amplitude for " << to_string(*kv.first) << " with decay trees:");
+            DEBUG(kv.first->printDecayTrees());
             L += log(kv.second->value() * norm(amplitude(kv.first->decayTrees(), d)));
+        }
     }
 
     return L;
@@ -134,12 +137,11 @@ bool Model::consistent() const
 //-------------------------
 void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    // find top-most parent
-    auto p = pc;
-    while (p->parent())
-        p = p->parent();
-    // if does not trace up to ISP, halt
-    if (p->indices().size() != FinalStateParticles_.size())
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addParticleCombination");
+
+    // if does not trace up to an ISP, halt
+    if (is_initial_state_particle_combination(*pc, this))
         return;
 
     FourMomenta_->addParticleCombination(pc);
@@ -159,6 +161,9 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 //-------------------------
 void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
 {
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::setFinalState");
+
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
         throw exceptions::Exception("Final-state particles already set", "Model::setFinalState");
@@ -187,11 +192,14 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
 //-------------------------
 initialStateParticleMap::const_iterator Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
 {
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addInitialStateParticle");
+
     if (!p)
         throw exceptions::Exception("Initial-state particle empty", "Model::addInitialStateParticle");
 
     if (p->model() != this)
-        throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::setInitialStateParticle");
+        throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialStateParticle");
 
     if (InitialStateParticles_.find(p) != InitialStateParticles_.end()) {
         FLOG(INFO) << "DecayingParticle " << to_string(*p) << " already added as initial state particle.";
