@@ -132,9 +132,8 @@ bool is_initial_state_particle_combination(const ParticleCombination& pc, const 
     auto p = pc.origin();
 
     for (auto& isp : m->initialStateParticles())
-        if (any_of(isp.first->particleCombinations(), p)) {
+        if (any_of(isp.first->particleCombinations(), p))
             return true;
-        }
 
     return false;
 }
@@ -144,24 +143,11 @@ void prune_particle_combinations(ParticleCombinationVector& PCs)
 {
     // get ISP PCs
     size_t ispNIndices(0);
-    for (auto pc : PCs) { // must copy the shared_ptr here since we alter it!
-        // find the top-most parent
-        while (pc->parent())
-            pc = pc->parent();
+    for (auto& pc : PCs)
+        ispNIndices = std::max(ispNIndices, pc->origin()->indices().size());
 
-        ispNIndices = std::max(ispNIndices, pc->indices().size());
-    }
-
-    PCs.erase(
-            std::remove_if(PCs.begin(), PCs.end(),
-            [&] (std::shared_ptr<yap::ParticleCombination> pc) // must copy the shared_ptr here since we alter it!
-            {
-                while (pc->parent())
-                    pc = pc->parent();
-                if (pc->indices().size() < ispNIndices)
-                    return true;
-                return false;
-            }),
+    PCs.erase(std::remove_if(PCs.begin(), PCs.end(),
+            [&] (std::shared_ptr<yap::ParticleCombination>& pc) { return (pc->origin()->indices().size() < ispNIndices); }),
             PCs.end());
 
     if (PCs.empty())
