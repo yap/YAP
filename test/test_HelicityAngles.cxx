@@ -102,6 +102,8 @@ TEST_CASE( "HelicityAngles" )
     // Add channels to D
     D->addChannel({rho,      piPlus});
 
+    M.addInitialStateParticle(D);
+
     // choose default Dalitz axes
     auto massAxes = M.massAxes();
 

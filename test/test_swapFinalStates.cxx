@@ -61,13 +61,17 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     piK2->addChannel({piPlus, kMinus});
     D->addChannel({piK2, kPlus})->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
 
+    M.addInitialStateParticle(D);
+
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
 
 std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
+    auto isp = M.initialStateParticles().begin()->first; // assume we have one ISP
+
     // calculate four-momenta
-    auto P = M.calculateFourMomenta(A, m2);
+    auto P = M.calculateFourMomenta(A, m2, isp);
 
     // if failed, outside phase space
     if (P.empty())
@@ -80,7 +84,7 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
 
     // return amplitude
     M.calculate(data);
-    return amplitude(M.initialStateParticle()->decayTrees(), data[0]);
+    return amplitude(isp->decayTrees(), data[0]);
 }
 
 TEST_CASE( "swapFinalStates" )
@@ -118,10 +122,11 @@ TEST_CASE( "swapFinalStates" )
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 
     // get piK and KK mass ranges
-    auto m2_piK_range = Z[0]->massRange(mZ[0][0]);
-    auto m2_KK_range  = Z[0]->massRange(mZ[0][1]);
+    auto isp = Z[0]->initialStateParticles().begin()->first; // hackish, assume we have one ISP
+    auto m2_piK_range = Z[0]->massRange(mZ[0][0], isp);
+    auto m2_KK_range  = Z[0]->massRange(mZ[0][1], isp);
 
-    const unsigned N = 30;
+    const unsigned N = 20;
     // loop over phase space
     for (double m2_piK = m2_piK_range[0]; m2_piK <= m2_piK_range[1]; m2_piK += (m2_piK_range[1] - m2_piK_range[0]) / N) {
         for (double m2_KK = m2_KK_range[0]; m2_KK <= m2_KK_range[1]; m2_KK += (m2_KK_range[1] - m2_KK_range[0]) / N) {
@@ -140,17 +145,15 @@ TEST_CASE( "swapFinalStates" )
 
 
             // print
-            // std::cout << m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space" << std::endl;
+            DEBUG(m2_piK << ", " << m2_KK << " is " << ((std::isnan(real(amps_Z[0]))) ? "out" : "in") << " phase space");
 
-            // std::cout << "Zemach:                        Helicity:" << std::endl;
+            DEBUG("Zemach:                        Helicity:");
             //for (size_t i = 0; i < amps_Z.size(); ++i)
             for (size_t i = 0; i < 1; ++i) {
                 double phaseDiff = arg(amps_Z[i]) - arg(amps_H[i]);
-
-                // std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
-                //           << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
-                //           << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
-                //           << std::endl;
+                DEBUG(amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
+                      << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
+                      << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°");
             }
 
             // if nan, check that all are nan

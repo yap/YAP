@@ -152,13 +152,15 @@ TEST_CASE( "FourMomentaCalculation" )
         auto D = factory.decayingParticle(factory.pdgCode("D+"), 3);
         D->addChannel({X, piPlus});
 
+        M.addInitialStateParticle(D);
+
         // choose Dalitz coordinates m^2_12 and m^2_23
         const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
 
-        auto m_0_range = M.massRange(massAxes[0]);
-        auto m_1_range = M.massRange(massAxes[1]);
+        auto m_0_range = M.massRange(massAxes[0], D);
+        auto m_1_range = M.massRange(massAxes[1], D);
 
-        const unsigned N = 200;
+        const unsigned N = 50;
 
         for (double m_0 = m_0_range[0]; m_0 <= m_0_range[1]; m_0 += (m_0_range[1] - m_0_range[0]) / N) {
             for (double m_1 = m_1_range[0]; m_1 <= m_1_range[1]; m_1 += (m_1_range[1] - m_1_range[0]) / N) {
@@ -166,11 +168,11 @@ TEST_CASE( "FourMomentaCalculation" )
                 std::vector<double> m2 = {m_0 * m_0, m_1 * m_1};
 
                 // calculate final state momenta
-                auto P = M.calculateFourMomenta(massAxes, m2);
+                auto P = M.calculateFourMomenta(massAxes, m2, D);
 
                 //-------------------------
                 // check phase space
-                double m_isp = M.initialStateParticle()->mass()->value();
+                double m_isp = D->mass()->value();
                 // find a, b, and c such that mass axes are (ab) (bc)
                 double m_a = 0;
                 double m_b = 0;
@@ -256,15 +258,15 @@ TEST_CASE( "FourMomentaCalculation" )
         // choose Dalitz coordinates m^2_12, m^2_14, m^2_23, m^2_34, m^2_13
         const yap::MassAxes massAxes = M.massAxes({{0, 1}, {0, 3}, {1, 2}, {2, 3}, {0, 2}});
 
-        auto m_0_range = M.massRange(massAxes[0]);
-        auto m_1_range = M.massRange(massAxes[1]);
-        auto m_2_range = M.massRange(massAxes[2]);
-        auto m_3_range = M.massRange(massAxes[3]);
-        auto m_4_range = M.massRange(massAxes[4]);
+        auto m_0_range = M.massRange(massAxes[0], D);
+        auto m_1_range = M.massRange(massAxes[1], D);
+        auto m_2_range = M.massRange(massAxes[2], D);
+        auto m_3_range = M.massRange(massAxes[3], D);
+        auto m_4_range = M.massRange(massAxes[4], D);
 
         unsigned wrong(0);
 
-        const unsigned N = 20;
+        const unsigned N = 15;
         const double loFac = 0.999;
         const double hiFac = 1.001;
 
@@ -277,12 +279,12 @@ TEST_CASE( "FourMomentaCalculation" )
                             std::vector<double> m2 = {m_0 * m_0, m_1 * m_1, m_2 * m_2, m_3 * m_3, m_4 * m_4};
 
                             // calculate final state momenta
-                            auto P = M.calculateFourMomenta(massAxes, m2);
+                            auto P = M.calculateFourMomenta(massAxes, m2, D);
 
                             //-------------------------
                             // check phase space
                             bool inPhaseSpace = valid_5d(m2[0], m2[1], m2[2], m2[3], m2[4],
-                                                         M.initialStateParticle()->mass()->value(),
+                                                         D->mass()->value(),
                                                          M.finalStateParticles()[0]->mass()->value(),
                                                          M.finalStateParticles()[1]->mass()->value(),
                                                          M.finalStateParticles()[2]->mass()->value(),
@@ -305,7 +307,7 @@ TEST_CASE( "FourMomentaCalculation" )
                                 // check isp mass
                                 // isp
                                 auto p_isp = std::accumulate(P.begin(), P.end(), yap::FourVector_0);
-                                REQUIRE( abs(p_isp) == Approx(M.initialStateParticle()->mass()->value()) );
+                                REQUIRE( abs(p_isp) == Approx(D->mass()->value()) );
 
                                 // check Dalitz axes
                                 for (size_t i = 0; i < massAxes.size(); ++i) {
