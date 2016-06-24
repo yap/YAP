@@ -161,8 +161,18 @@ public:
     /// are given dictates the order in which four-momenta must be
     /// given in data points. The FinalStateParticle's have their
     /// Model pointer set to this
-    /// \param FSP list of shared pointers to final-state particles
-    void  setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
+    /// \param FSP vector of shared pointers to final-state particles
+    void setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP);
+
+    /// Set final-state particle content. The order in which particles
+    /// are given dictates the order in which four-momenta must be
+    /// given in data points. The FinalStateParticle's have their
+    /// Model pointer set to this
+    /// \param FSPs shared pointers to final-state particles
+    template <typename ... Types>
+    void setFinalState(Types ... FSPs)
+    { std::vector<std::shared_ptr<FinalStateParticle> > V{FSPs...}; setFinalState(V); }
+    /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
 
     /// add a background particle
     void addBackgroundParticle(std::shared_ptr<DecayingParticle> bg);

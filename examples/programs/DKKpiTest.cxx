@@ -34,7 +34,7 @@ int main( int argc, char** argv)
     auto kMinus = factory.fsp(-321);
     auto piPlus = factory.fsp(+211);
 
-    M.setFinalState({kPlus, kMinus, piPlus});
+    M.setFinalState(kPlus, kMinus, piPlus);
 
     // create initial state particle and set final state
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
@@ -42,10 +42,10 @@ int main( int argc, char** argv)
     // create a phi
     auto phi = yap::Resonance::create(factory.quantumNumbers("phi"), 1019.461e-3, "phi", radialSize, std::make_shared<yap::BreitWigner>());
     std::static_pointer_cast<yap::BreitWigner>(phi->massShape())->width()->setValue(4.266e-3);
-    phi->addChannel({kPlus, kMinus});
+    phi->addChannel(kPlus, kMinus);
 
     // Add channels to D
-    D->addChannel({phi, piPlus});
+    D->addChannel(phi, piPlus);
 
     // check consistency
     if (M.consistent())
@@ -69,7 +69,7 @@ int main( int argc, char** argv)
     M.printDataAccessors(false);
 
     // choose Dalitz coordinates m^2_12 and m^2_23
-    const yap::MassAxes massAxes = M.massAxes({{0, 1}, {1, 2}});
+    const yap::MassAxes massAxes = M.massAxes({0, 1}, {1, 2});
 
     std::vector<double> m2(massAxes.size(), 1);
 

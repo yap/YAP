@@ -50,32 +50,32 @@ int main( int argc, char** argv)
     auto piMinus = factory.fsp(-211);
 
     // Set final-state particles
-    M.setFinalState({piPlus, piMinus, piPlus, piMinus});
+    M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel({piPlus, piMinus});
+    sigma->addChannel(piPlus, piMinus);
 
     // rho
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel({piPlus, piMinus});
+    rho->addChannel(piPlus, piMinus);
 
     // omega
     auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
-    omega->addChannel({piPlus, piMinus});
+    omega->addChannel(piPlus, piMinus);
 
     // a_1
     auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    a_1->addChannel({sigma, piPlus});
-    a_1->addChannel({rho,   piPlus});
+    a_1->addChannel(sigma, piPlus);
+    a_1->addChannel(rho,   piPlus);
 
     // D's channels
-    D->addChannel({rho, rho});
-    D->addChannel({omega, omega});
-    D->addChannel({rho, omega});
-    D->addChannel({a_1, piMinus});
-    D->addChannel({sigma, piPlus, piMinus});
-    D->addChannel({piPlus, piMinus, piPlus, piMinus});
+    D->addChannel(rho, rho);
+    D->addChannel(omega, omega);
+    D->addChannel(rho, omega);
+    D->addChannel(a_1, piMinus);
+    D->addChannel(sigma, piPlus, piMinus);
+    D->addChannel(piPlus, piMinus, piPlus, piMinus);
 
     // R pi pi channels
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);

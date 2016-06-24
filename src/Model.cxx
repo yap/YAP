@@ -193,15 +193,11 @@ void Model::setInitialStateParticle(std::shared_ptr<DecayingParticle> isp)
 }
 
 //-------------------------
-void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP)
 {
-    FDEBUG("1");
-
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
         throw exceptions::Exception("Final-state particles already set", "Model::setFinalState");
-
-    FDEBUG("2");
 
     // check that none of the FSP's has yet been used
     // and that FinalStateParticles don't have ISP set to another ISP
@@ -214,8 +210,6 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
             throw exceptions::Exception("FinalStateParticle already has Model set", "Model::setFinalState");
     }
 
-    FDEBUG("3");
-
     FinalStateParticles_.reserve(FSP.size());
 
     // set indices by order in vector
@@ -224,7 +218,6 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
         fsp->setModel(this);
         FinalStateParticles_.push_back(fsp);
     }
-    FDEBUG("4");
 }
 
 //-------------------------

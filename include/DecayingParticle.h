@@ -29,6 +29,7 @@
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
+#include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
 #include "fwd/StatusManager.h"
@@ -88,6 +89,14 @@ public:
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \return shared_ptr to DecayChannel that has been added
     std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// \param daughters... shared_ptr's to daughters to create DecayChannel object from
+    /// \return shared_ptr to DecayChannel that has been added
+    template <typename ... Types>
+    std::shared_ptr<DecayChannel> addChannel(Types ... daughters)
+    { ParticleVector V{daughters...}; return addChannel(V); }
+    /* { ParticleVector V; fill_vector(daughters..., V); return addChannel(V); } */
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
