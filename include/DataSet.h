@@ -130,10 +130,6 @@ protected:
     { return DataPoints_; }
 
 private:
-
-    /// sets this as owner of all its data points
-    void assertDataPointOwnership();
-
     /// vector of data points contained in set
     DataPointVector DataPoints_;
 

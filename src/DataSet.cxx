@@ -20,7 +20,6 @@ DataSet::DataSet(const DataSet& other) :
     DataPoints_(other.DataPoints_),
     Model_(other.Model_)
 {
-    assertDataPointOwnership();
 }
 
 //-------------------------
@@ -29,7 +28,6 @@ DataSet::DataSet(DataSet&& other) :
     DataPoints_(std::move(other.DataPoints_)),
     Model_(std::move(other.Model_))
 {
-    assertDataPointOwnership();
 }
 
 //-------------------------
@@ -38,7 +36,6 @@ DataSet& DataSet::operator=(const DataSet& other)
     DataPartitionBlock::operator=(other);
     Model_ = other.Model_;
     DataPoints_ = other.DataPoints_;
-    assertDataPointOwnership();
     return *this;
 }
 
@@ -48,7 +45,6 @@ DataSet& DataSet::operator=(DataSet&& other)
     DataPartitionBlock::operator=(std::move(other));
     Model_ = std::move(other.Model_);
     DataPoints_ = std::move(other.DataPoints_);
-    assertDataPointOwnership();
     return *this;
 }
 
@@ -59,8 +55,6 @@ void DataSet::swap(DataSet& other)
     swap(static_cast<DataPartitionBlock&>(*this), static_cast<DataPartitionBlock&>(other));
     swap(Model_, other.Model_);
     swap(DataPoints_, other.DataPoints_);
-    assertDataPointOwnership();
-    other.assertDataPointOwnership();
 }
 
 //-------------------------
