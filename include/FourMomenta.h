@@ -129,8 +129,8 @@ protected:
 
 private:
 
-    /// Symmetrization index of initial state (which is composed from ALL final state particles)
-    int ISPIndex_;
+    /// Symmetrization index of an initial state that is composed from ALL final state particles
+    int TotalIndex_;
 
     /// Symmetrization indices of final states
     std::vector<int> FSPIndices_;
