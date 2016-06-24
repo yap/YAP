@@ -21,11 +21,14 @@
 #ifndef yap_Particle_h
 #define yap_Particle_h
 
+#include "fwd/Particle.h"
+
 #include "fwd/DataPoint.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
+#include "fwd/Spin.h"
 #include "fwd/StatusManager.h"
 
 #include "ParticleCombination.h"
@@ -99,7 +102,7 @@ protected:
     void setMass(std::shared_ptr<RealParameter> m);
 
     /// add ParticleCombination to ParticleCombinationVector_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) = 0;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) = 0;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations();
@@ -119,6 +122,9 @@ private:
     ParticleCombinationVector ParticleCombinations_;
 
 };
+
+/// \return SpinVector from ParticleVector
+const SpinVector spins(const ParticleVector& v);
 
 /// convert to string
 std::string to_string(const Particle& p);

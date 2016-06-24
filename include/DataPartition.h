@@ -191,6 +191,10 @@ public:
     virtual const DataIterator& end() const
     { return End_; }
 
+    /// \return size
+    virtual const size_t size() const
+    { return difference(end().Iterator_, begin().Iterator_); }
+
     /// difference between two `DataPointVector::iterator`s to be used in
     /// `operator-(const DataIterator&, const DataIterator&)`
     /// \param lhs left operand
@@ -209,7 +213,6 @@ protected:
     /// increment iterator;
     /// \attention Must be overloaded in derived classes
     virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const = 0;
-    /* { it = End_; return it; } */
 
     /// \return vector<DataPoint> iterator inside DataIterator
     DataPointVector::iterator& rawIterator(DataIterator& it) const

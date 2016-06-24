@@ -41,7 +41,7 @@ bool Particle::consistent() const
 }
 
 //-------------------------
-void Particle::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void Particle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
 {
     ParticleCombinations_.push_back(pc);
 }
@@ -68,6 +68,16 @@ void Particle::pruneParticleCombinations()
 
     if (ParticleCombinations_.empty())
         throw exceptions::Exception("ParticleCombinations empty after pruning", "Particle::pruneParticleCombinations");
+}
+
+//-------------------------
+const SpinVector spins(const ParticleVector& v)
+{
+    SpinVector s;
+    s.reserve(v.size());
+    std::transform(v.begin(), v.end(), std::back_inserter(s),
+    [](const ParticleVector::value_type & p) {return p->quantumNumbers().twoJ();});
+    return s;
 }
 
 //-------------------------

@@ -78,6 +78,9 @@ public:
     /// \return set of (twice the) spin projections of initial state
     const std::set<int> twoM() const;
 
+    /// \return set of daughter spin projections for given initial state spin projection
+    const std::set<SpinProjectionVector> twoM(int two_M) const;
+
     /// @}
 
     /// Calculate spin amplitude for caching.
@@ -103,10 +106,6 @@ public:
     const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const
     { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
-
-    /// \return AmplitudeMap Amplitudes_
-    const AmplitudeMap& amplitudes() const
-    { return Amplitudes_; }
 
     /// \todo REMOVE
     virtual std::string data_accessor_type() const override

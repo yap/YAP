@@ -32,12 +32,18 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         throw exceptions::Exception("No daughters", "DecayChannel::DecayChannel");
     if (Daughters_.size() == 1)
         throw exceptions::Exception("Only one daughter", "DecayChannel::DecayChannel");
-    if (Daughters_.size() > 2)
-        throw exceptions::Exception("More than two daughters", "DecayChannel::DecayChannel");
 
     // check no Daughters_ are empty
     if (std::any_of(Daughters_.begin(), Daughters_.end(), std::logical_not<ParticleVector::value_type>()))
         throw exceptions::Exception("Empty daughter", "DecayChannel::DecayChannel");
+
+    // if more than two daughters, check all are spin 0
+    if (Daughters_.size() > 2 and
+        std::any_of(Daughters_.begin(), Daughters_.end(), [](const ParticleVector::value_type & d) {return d->quantumNumbers().twoJ() != 0;})) {
+        LOG(ERROR) << "to create so-called \"nonresonant\" decays with nonzero-spin daughters, "
+                   << "create a DecayingParticle for subcontent and use two-particle decays.";
+        throw exceptions::Exception("Attempted to create nonresonant decay with spinfull daughters", "DecayChannel::DecayChannel");
+    }
 
     // check that (first daughter's) Model is not nullptr
     if (model() == nullptr)
@@ -46,7 +52,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 
     // check that all daughters have same Model (trivially checks first daughter against itself)
     if (std::any_of(Daughters_.begin(), Daughters_.end(), [&](const ParticleVector::value_type & d) {return model() != d->model();}))
-    throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
+        throw exceptions::Exception("Model mismatch", "DecayChannel::DecayChannel");
 
     //////////////////////////////////////////////////
     // create ParticleCombination's for parent
@@ -143,6 +149,11 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     // check that at least one combination was created above
     if (particleCombinations().empty())
         throw exceptions::Exception("ParticleCombinations_ is empty", "DecayChannel::DecayChannel");
+
+    // if more than two daughters, add nonresonant spin amplitude
+    if (Daughters_.size() > 2)
+        // add SpinAmplitude retrieved from cache
+        addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(0, spins(Daughters_), 0, 0));
 }
 
 //-------------------------
@@ -229,7 +240,7 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (SpinAmplitudes_.empty()) {
 
         auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-        SpinVector two_j = {Daughters_[0]->quantumNumbers().twoJ(), Daughters_[1]->quantumNumbers().twoJ()};
+        auto two_j = spins(Daughters_);
 
         // create spin amplitudes
         // loop over possible S: |j1-j2| <= S <= (j1+j2)
@@ -272,6 +283,10 @@ FreeAmplitudeSet DecayChannel::freeAmplitudes() const
 //-------------------------
 void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 {
+    // if spin amplitude already held, do nothing
+    if (std::find(SpinAmplitudes_.begin(), SpinAmplitudes_.end(), sa) != SpinAmplitudes_.end())
+        return;
+
     // check number of daughters
     if (sa->finalTwoJ().size() != Daughters_.size())
         throw exceptions::Exception("Number of daughters doesn't match", "DecayChannel::addSpinAmplitude");

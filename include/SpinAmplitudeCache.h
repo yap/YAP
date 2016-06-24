@@ -25,6 +25,7 @@
 
 #include "Exceptions.h"
 #include "SpinAmplitude.h"
+#include "UnitSpinAmplitude.h"
 #include "WeakPtrCache.h"
 
 #include <memory>
@@ -84,6 +85,16 @@ protected:
             throw exceptions::Exception("Model already set.", "SpinAmplitudeCache::setModel");
         Model_ = model;
     }
+
+protected:
+
+    /// \return shared_ptr to UnitSpinAmplitude object
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    std::shared_ptr<SpinAmplitude> unit(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const
+    { return std::shared_ptr<SpinAmplitude>(new UnitSpinAmplitude(two_J, two_j, L, two_S)); }
 
 private:
 

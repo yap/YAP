@@ -27,6 +27,7 @@
 
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
+#include "UnitSpinAmplitude.h"
 
 #include <complex>
 #include <memory>
@@ -90,7 +91,7 @@ private:
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
     virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
-    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j, l, two_s)); }
+    { return (two_s == 0) ? unit(two_J, two_j, l, two_s) : std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j, l, two_s)); }
 
 };
 

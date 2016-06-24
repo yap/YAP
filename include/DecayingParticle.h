@@ -82,12 +82,12 @@ public:
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
+    std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
+    std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
 
     /// Return final state particles of a channel (vector should be identical for all channels)
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -139,7 +139,7 @@ protected:
     {}
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c) override;
+    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations() override;

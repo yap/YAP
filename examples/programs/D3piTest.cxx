@@ -92,6 +92,7 @@ int main( int argc, char** argv)
     D->addChannel({f_0_1370, piPlus});
     D->addChannel({f_0_1500, piPlus});
     D->addChannel({sigma,    piPlus});
+    D->addChannel({piPlus, piMinus, piPlus});
 
     // check consistency
     if (M.consistent())
