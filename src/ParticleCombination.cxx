@@ -1,8 +1,10 @@
 #include "ParticleCombination.h"
 
 #include "container_utils.h"
+#include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "logging.h"
+#include "Model.h"
 
 #include <algorithm>
 #include <set>
@@ -24,7 +26,7 @@ void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
         throw exceptions::Exception("daughter's parent is already set", "ParticleCombination::addDaughter");
 
     // set daughter's parent to shared_from_this
-    std::const_pointer_cast<ParticleCombination>(daughter)->Parent_ = shared_from_this();
+    daughter->Parent_ = shared_from_this();
 
     // add daughter to vector
     Daughters_.push_back(daughter);
@@ -34,7 +36,7 @@ void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 }
 
 //-------------------------
-std::shared_ptr<ParticleCombination> ParticleCombination::origin()
+const std::shared_ptr<const ParticleCombination> ParticleCombination::origin() const
 {
     auto pc = shared_from_this();
     while (pc->parent())
@@ -125,9 +127,22 @@ bool disjoint(const ParticleCombinationVector& pcv)
 }
 
 //-------------------------
+bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m)
+{
+    auto p = pc.origin();
+
+    for (auto& isp : m->initialStateParticles())
+        if (any_of(isp.first->particleCombinations(), p)) {
+            return true;
+        }
+
+    return false;
+}
+
+//-------------------------
 void prune_particle_combinations(ParticleCombinationVector& PCs)
 {
-    // get "ISP"
+    // get ISP PCs
     size_t ispNIndices(0);
     for (auto pc : PCs) { // must copy the shared_ptr here since we alter it!
         // find the top-most parent
@@ -150,7 +165,7 @@ void prune_particle_combinations(ParticleCombinationVector& PCs)
             PCs.end());
 
     if (PCs.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "pruneParticleCombinations");
+        throw exceptions::Exception("ParticleCombinations empty after pruning", "prune_particle_combinations");
 }
 
 //-------------------------
@@ -189,6 +204,15 @@ std::string to_string(const ParticleCombination& pc)
 }
 
 //-------------------------
+std::string to_string_with_parent(const ParticleCombination& pc)
+{
+    if (!pc.parent())
+        return to_string(pc);
+
+    return to_string(pc) + " in " + to_string(*pc.origin());
+}
+
+//-------------------------
 // Comparison stuff:
 
 ParticleCombination::Equal ParticleCombination::equalBySharedPointer;
@@ -201,7 +225,7 @@ ParticleCombination::EqualDownByOrderlessContent ParticleCombination::equalDownB
 ParticleCombination::EqualZemach ParticleCombination::equalZemach;
 
 //-------------------------
-bool ParticleCombination::EqualByOrderedContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByOrderedContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -220,7 +244,7 @@ bool ParticleCombination::EqualByOrderedContent::operator()(const std::shared_pt
 }
 
 //-------------------------
-bool ParticleCombination::EqualDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -247,7 +271,7 @@ bool ParticleCombination::EqualDown::operator()(const std::shared_ptr<ParticleCo
 }
 
 //-------------------------
-bool ParticleCombination::EqualUp::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualUp::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -269,7 +293,7 @@ bool ParticleCombination::EqualUp::operator()(const std::shared_ptr<ParticleComb
 }
 
 //-------------------------
-bool ParticleCombination::EqualUpAndDown::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualUpAndDown::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     if (!ParticleCombination::equalDown(A, B))
         return false;
@@ -283,7 +307,7 @@ bool ParticleCombination::EqualUpAndDown::operator()(const std::shared_ptr<Parti
 }
 
 //-------------------------
-bool ParticleCombination::EqualByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -307,7 +331,7 @@ bool ParticleCombination::EqualByOrderlessContent::operator()(const std::shared_
 }
 
 //-------------------------
-bool ParticleCombination::EqualDownByOrderlessContent::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualDownByOrderlessContent::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -341,7 +365,7 @@ bool ParticleCombination::EqualDownByOrderlessContent::operator()(const std::sha
 }
 
 //-------------------------
-bool ParticleCombination::EqualByReferenceFrame::operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualByReferenceFrame::operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
 {
     // check if either empty
     if (!A or !B)
@@ -359,8 +383,8 @@ bool ParticleCombination::EqualByReferenceFrame::operator()(const std::shared_pt
 }
 
 //-------------------------
-bool ParticleCombination::EqualZemach::operator()(const std::shared_ptr<ParticleCombination>& A,
-        const std::shared_ptr<ParticleCombination>& B) const
+bool ParticleCombination::EqualZemach::operator()(const std::shared_ptr<const ParticleCombination>& A,
+        const std::shared_ptr<const ParticleCombination>& B) const
 {
     //check if either empty
     if (!A or !B)

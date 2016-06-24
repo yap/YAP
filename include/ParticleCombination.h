@@ -21,6 +21,7 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
+#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 
 #include <algorithm>
@@ -64,7 +65,7 @@ public:
     { return Daughters_.empty() and Indices_.size() == 1; }
 
     /// \return top of decay tree this ParticleCombination belongs to
-    std::shared_ptr<ParticleCombination> origin();
+    const std::shared_ptr<const ParticleCombination> origin() const;
 
     /// \return vector of all leaves of decay tree below this ParticleCombination
     ParticleCombinationVector leaves();
@@ -127,42 +128,42 @@ public:
     /// \struct Equal
     /// \brief base class for equality (with functor), compares shared_ptr's only
     struct Equal {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
         { return A == B; }
     };
 
     /// \struct EqualByOrderedContent
     /// \brief Checks objects referenced by shared pointers, check indices only
     struct EqualByOrderedContent : Equal {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualDown
     /// \brief Checks objects referenced by shared pointers,
     /// check self and all daughters (down the decay tree) for equality
     struct EqualDown : EqualByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualUp
     /// \brief Check objects referenced by shared pointers,
     /// check self and parent (up the decay tree) for equality
     struct EqualUp : EqualByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualUpAndDown
     /// \brief Check objects referenced by shared pointers,
     /// check self, all daughters (down-), and parent (up the decay tree) for equality
     struct EqualUpAndDown : EqualDown {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualByOrderlessContent
     /// \brief Check objects referenced by shared pointers,
     /// check indices only, disregarding order
     struct EqualByOrderlessContent : Equal {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualDownByOrderlessContent
@@ -170,14 +171,14 @@ public:
     /// check indices only, disregarding order, and check daughters (but not daughter's daughters)
     /// Use e.g. for breakup momenta
     struct EqualDownByOrderlessContent : EqualByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualByReferenceFrame
     /// \brief Check objects referenced by shared pointers,
     /// Checks parents (and up) for orderless content sitting in same reference frame.
     struct EqualByReferenceFrame : EqualByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
     /// \struct EqualZemach
@@ -187,7 +188,7 @@ public:
     /// by unordered content of resonance, and throws on 4 or more
     /// particles
     struct EqualZemach : Equal {
-        virtual bool operator()(const std::shared_ptr<ParticleCombination>& A, const std::shared_ptr<ParticleCombination>& B) const override;
+        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
     };
 
 
@@ -211,13 +212,16 @@ public:
 /// \param c ParticleCombination to look for equivalent of in ParticleCombinations
 /// \param equal ParticleCombination::Equal object for checking equality
 inline bool any_of(const ParticleCombinationVector& PCs,
-                   const std::shared_ptr<ParticleCombination>& c,
+                   const std::shared_ptr<const ParticleCombination>& c,
                    const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
 { return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
 
 /// \return whether all members of ParticleCombinationVector are non-overlapping with each other
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
+
+/// \return wheter pc is a pc of an initial state particle
+bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m);
 
 /// only keep particleCombinations with the highest number of indices in their top-most parent
 void prune_particle_combinations(ParticleCombinationVector& PCs);
@@ -227,6 +231,9 @@ std::string indices_string(const ParticleCombination& pc);
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);
+
+/// convert ParticleCombination with top-most parent to string
+std::string to_string_with_parent(const ParticleCombination& pc);
 
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const ParticleCombination& PC)
