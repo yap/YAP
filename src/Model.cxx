@@ -612,7 +612,7 @@ DataSet Model::createDataSet(size_t n)
     // create empty data set
     DataSet D(*this);
 
-    D.addEmptyPoints(n);
+    D.addEmptyDataPoints(n);
 
     return D;
 }

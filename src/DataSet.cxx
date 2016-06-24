@@ -2,6 +2,7 @@
 
 #include "DataPoint.h"
 #include "Exceptions.h"
+#include "FourMomenta.h"
 #include "Model.h"
 
 namespace yap {
@@ -63,11 +64,11 @@ void DataSet::swap(DataSet& other)
 }
 
 //-------------------------
-void DataSet::assertDataPointOwnership()
-{
-    for (auto& d : DataPoints_)
-        d.DataSet_ = this;
-}
+//void DataSet::assertDataPointOwnership()
+//{
+//    for (auto& d : DataPoints_)
+//        d.DataSet_ = this;
+//}
 
 //-------------------------
 bool DataSet::consistent(const DataPoint& d) const
@@ -76,30 +77,44 @@ bool DataSet::consistent(const DataPoint& d) const
 }
 
 //-------------------------
-void DataSet::addEmptyPoint()
+void DataSet::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm)
+{
+    if (!model())
+        throw exceptions::Exception("Model unset", "DataPoint::setFinalStateMomenta");
+
+    model()->fourMomenta()->setFinalStateMomenta(d, P, sm);
+
+    // call calculate on all static data accessors in model
+    for (auto& sda : model()->staticDataAccessors())
+        sda->calculate(d, sm);
+}
+
+//-------------------------
+void DataSet::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P)
+{
+    setFinalStateMomenta(d, P, *this);
+}
+
+//-------------------------
+void DataSet::addEmptyDataPoints(size_t n)
 {
     if (!model())
         throw exceptions::Exception("Model unset or deleted", "DataSet::add");
 
-    DataPoints_.emplace_back(*this);
-    auto& d = DataPoints_.back();
+	for (size_t i = 0; i < n; ++i) {
+		DataPoints_.emplace_back(model()->dataAccessors());
 
-    if (!consistent(d))
-        throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
-}
-
-//-------------------------
-void DataSet::addEmptyPoints(size_t n)
-{
-    for (size_t i = 0; i < n; ++i)
-        addEmptyPoint();
+		// check if the created DataPoint is consistent
+		if (!consistent(DataPoints_.back()))
+			throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
+	}
 }
 
 //-------------------------
 void DataSet::add(const std::vector<FourVector<double> >& P)
 {
-    addEmptyPoint();
-    DataPoints_.back().setFinalStateMomenta(P);
+    addEmptyDataPoints(1);
+    setFinalStateMomenta(DataPoints_.back(), P);
 }
 
 }

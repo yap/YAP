@@ -62,10 +62,16 @@ public:
 
     /// add empty data points
     /// \param n number of points to add
-    void addEmptyPoints(size_t n);
+    void addEmptyDataPoints(size_t n);
 
-    /// add single empty data point
-    void addEmptyPoint();
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    /// \param sm StatusManager to update
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm);
+
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P);
 
     /// Add data point
     /// \param P vector of four momenta

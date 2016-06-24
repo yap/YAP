@@ -11,42 +11,11 @@
 namespace yap {
 
 //-------------------------
-DataPoint::DataPoint(DataSet& dataSet) :
-    DataSet_(&dataSet)
+DataPoint::DataPoint(const DataAccessorSet& dataAccessorSet)
 {
-    if (!model())
-        throw exceptions::Exception("Model unset", "DataPoint::DataPoint");
-
-    Data_.resize(model()->dataAccessors().size());
-    for (auto da : model()->dataAccessors())
+    Data_.resize(dataAccessorSet.size());
+    for (auto da : dataAccessorSet)
         Data_[da->index()].assign(da->nSymmetrizationIndices(), std::vector<double>(da->size(), 0));
-}
-
-//-------------------------
-const Model* DataPoint::model() const
-{
-    return DataSet_->model();
-}
-
-//-------------------------
-void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P, StatusManager& sm)
-{
-    if (!model())
-        throw exceptions::Exception("Model unset", "DataPoint::setFinalStateMomenta");
-
-    model()->fourMomenta()->setFinalStateMomenta(*this, P, sm);
-
-    // call calculate on all static data accessors in model
-    for (auto& sda : model()->staticDataAccessors())
-        sda->calculate(*this, sm);
-
-    FDEBUG("set final state momenta and calculated StaticDataAccessors")
-}
-
-//-------------------------
-void DataPoint::setFinalStateMomenta(const std::vector<FourVector<double> >& P)
-{
-    setFinalStateMomenta(P, *DataSet_);
 }
 
 //-------------------------
