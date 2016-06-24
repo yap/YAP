@@ -64,13 +64,6 @@ void DataSet::swap(DataSet& other)
 }
 
 //-------------------------
-//void DataSet::assertDataPointOwnership()
-//{
-//    for (auto& d : DataPoints_)
-//        d.DataSet_ = this;
-//}
-
-//-------------------------
 bool DataSet::consistent(const DataPoint& d) const
 {
     return points().empty() or equalStructure(points().front(), d);
@@ -108,6 +101,17 @@ void DataSet::addEmptyDataPoints(size_t n)
 		if (!consistent(DataPoints_.back()))
 			throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
 	}
+}
+
+//-------------------------
+void DataSet::createDataPoint(const std::vector<FourVector<double> >& P)
+{
+	if (points().empty())
+		addEmptyDataPoints(1);
+	else
+		DataPoints_.push_back(DataPoints_.back());
+
+	setFinalStateMomenta(DataPoints_.back(), P);
 }
 
 //-------------------------

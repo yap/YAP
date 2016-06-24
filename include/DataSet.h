@@ -64,6 +64,10 @@ public:
     /// \param n number of points to add
     void addEmptyDataPoints(size_t n);
 
+	/// creates a new #DataPoint and #setFinalStateMomenta to P
+	/// \param P the momenta to be set
+	void createDataPoint(const std::vector<FourVector<double> >& P);
+
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
     /// \param sm StatusManager to update
