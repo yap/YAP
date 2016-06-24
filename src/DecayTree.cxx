@@ -17,7 +17,7 @@ namespace yap {
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
     FreeAmplitude_(free_amp),
     DaughtersTwoM_(FreeAmplitude_->spinAmplitude()->finalTwoJ().size()),
-    ParentDecayTree_(nullptr)
+    FreeAmplitude_(free_amp)
 {}
 
 //-------------------------
@@ -74,14 +74,18 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
 {
     FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
     FDEBUG("pc" << to_string(*pc));
-    // spin amplitude, only if it is not the top-most decay tree
-    auto A = (ParentDecayTree_) ? FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]) : Complex_1;
+
+    // spin amplitude
+    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_[0], DaughtersTwoM_[1]);
+
     // recalculable amplitude
     for (const auto& rda : RecalculableDataAccessors_)
         A *= rda->value(d, pc);
+
     // likewise for daughters
     for (const auto& d_dt : DaughterDecayTrees_)
         A *= d_dt.second->dataDependentAmplitude(d, pc->daughters()[d_dt.first]);
+
     return A;
 }
 
@@ -122,8 +126,6 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 
     if (DaughterDecayTrees_.find(i) != DaughterDecayTrees_.end())
         throw exceptions::Exception("DecayTree for this daughter already set", "DecayTree::setDaughterDecayTree");
-
-    dt->ParentDecayTree_ = this;
 
     DaughterDecayTrees_[i] = dt;
     setDaughterSpinProjection(i, dt->freeAmplitude()->twoM());
