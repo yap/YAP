@@ -83,7 +83,7 @@ int main( int argc, char** argv)
 
     // InitialStateParticles
     // add D and fix its amplitude
-    M.addInitialStateParticle(D)->second->setVariableStatus(yap::VariableStatus::fixed);
+    M.addInitialStateParticle(D).second->setVariableStatus(yap::VariableStatus::fixed);
     // add other background particles
     M.addInitialStateParticle(a_1);
     M.addInitialStateParticle(rho);

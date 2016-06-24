@@ -167,7 +167,7 @@ public:
     /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
 
     /// add an initial state particle
-    initialStateParticleMap::const_iterator addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
+    const initialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);

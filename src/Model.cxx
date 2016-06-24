@@ -141,7 +141,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addParticleCombination");
 
     // if does not trace up to an ISP, halt
-    if (is_initial_state_particle_combination(*pc, this))
+    if (not is_initial_state_particle_combination(*pc, this))
         return;
 
     FourMomenta_->addParticleCombination(pc);
@@ -190,7 +190,7 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
 }
 
 //-------------------------
-initialStateParticleMap::const_iterator Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
+const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
 {
     if (locked())
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addInitialStateParticle");
@@ -201,16 +201,19 @@ initialStateParticleMap::const_iterator Model::addInitialStateParticle(std::shar
     if (p->model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialStateParticle");
 
-    if (InitialStateParticles_.find(p) != InitialStateParticles_.end()) {
-        FLOG(INFO) << "DecayingParticle " << to_string(*p) << " already added as initial state particle.";
-        return InitialStateParticles_.find(p);
+    auto res = InitialStateParticles_.insert(std::make_pair(p, std::make_shared<RealParameter>(1.)));
+
+    if (res.second) { // new element was inserted
+        for (auto& pc : p->particleCombinations())
+            addParticleCombination(pc);
+    }
+    else { // no new element was inserted
+        // check if insertion failed
+        if (res.first == InitialStateParticles_.end())
+            throw exceptions::Exception("Failed to insert initialStateParticle", "Model::addInitialStateParticle");
     }
 
-    for (auto& pc : p->particleCombinations())
-        addParticleCombination(pc);
-
-    InitialStateParticles_.insert(std::make_pair(p, std::make_shared<RealParameter>(1.)));
-    return InitialStateParticles_.find(p);
+    return *res.first;
 }
 
 //-------------------------
