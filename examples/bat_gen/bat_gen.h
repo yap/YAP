@@ -30,7 +30,7 @@ public:
 
     // Constructor
     bat_gen(std::string name, std::unique_ptr<yap::Model> M,
-            std::vector<std::vector<unsigned> > pcs);
+            std::vector<std::vector<unsigned> > pcs = {});
 
     void MCMCUserInitialize() override;
 

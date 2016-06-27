@@ -1,0 +1,35 @@
+// ***************************************************************
+// This file was created using the bat-project script.
+// bat-project is part of Bayesian Analysis Toolkit (BAT).
+// BAT can be downloaded from http://mpp.mpg.de/bat
+// ***************************************************************
+
+#ifndef __BAT__D3PI_PHSP__H
+#define __BAT__D3PI_PHSP__H
+
+#include <DecayingParticle.h>
+#include <FinalStateParticle.h>
+#include <Model.h>
+#include <ParticleFactory.h>
+
+#include <memory>
+
+inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+{
+    auto M = std::make_unique<yap::Model>(std::move(SAC));
+
+    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+
+    // final state particles
+    auto piPlus = F.fsp(211);
+    auto piMinus = F.fsp(-211);
+
+    M->setFinalState(piPlus, piMinus, piPlus);
+
+    auto D = F.decayingParticle(F.pdgCode("D+"), 3 /*Gev^-1*/);
+    D->addChannel(piPlus, piMinus, piPlus);
+
+    return M;
+}
+
+#endif
