@@ -228,6 +228,16 @@ void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStatePartic
 }
 
 //-------------------------
+void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const
+{
+    fourMomenta()->setFinalStateMomenta(d, P, sm);
+
+    // call calculate on all static data accessors in model
+    for (auto& sda : staticDataAccessors())
+        sda->calculate(d, sm);
+}
+
+//-------------------------
 void Model::addBackgroundParticle(std::shared_ptr<DecayingParticle> bg)
 {
     if (BackgroundParticles_.find(bg) != BackgroundParticles_.end()) {

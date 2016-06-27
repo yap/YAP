@@ -64,25 +64,6 @@ bool DataSet::consistent(const DataPoint& d) const
 }
 
 //-------------------------
-void DataSet::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm)
-{
-    if (!model())
-        throw exceptions::Exception("Model unset", "DataPoint::setFinalStateMomenta");
-
-    model()->fourMomenta()->setFinalStateMomenta(d, P, sm);
-
-    // call calculate on all static data accessors in model
-    for (auto& sda : model()->staticDataAccessors())
-        sda->calculate(d, sm);
-}
-
-//-------------------------
-void DataSet::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P)
-{
-    setFinalStateMomenta(d, P, *this);
-}
-
-//-------------------------
 void DataSet::addEmptyDataPoints(size_t n)
 {
     if (!model())
@@ -104,7 +85,7 @@ const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >&
 			? DataPoint(model()->dataAccessors())
 			: DataPoints_.back());
 
-	setFinalStateMomenta(d, P);
+	model()->setFinalStateMomenta(d, P, *this);
 	return d;
 }
 

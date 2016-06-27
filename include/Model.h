@@ -39,6 +39,7 @@
 #include "fwd/StatusManager.h"
 
 #include "CoordinateSystem.h"
+#include "DataSet.h"
 #include "ParticleCombinationCache.h"
 
 #include <complex>
@@ -164,6 +165,11 @@ public:
     /// \param FSP list of shared pointers to final-state particles
     void  setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP);
 
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    /// \param sm StatusManager to update
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const;
+
     /// add a background particle
     void addBackgroundParticle(std::shared_ptr<DecayingParticle> bg);
 
@@ -176,14 +182,12 @@ public:
     /// @{
 
     /// Build vector of mass axes for coordinates in phase space.
-    /// Currently only supports two-particle masses.
-    /// \return MassAxes for requested particle combinations
-    /// \param pcs vector of vectors of particle indices
-    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
-
     /// Build vector of mass axes for coordinates in phase space with a default choice of axes.
     /// \return MassAxes
     const MassAxes massAxes();
+
+	/// \todo Description?
+    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
 
     /// Calculate four-momenta for final-state particles for phase-space coordinate
     /// \param axes phase-space axes
