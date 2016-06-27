@@ -131,6 +131,11 @@ public:
     const initialStateParticleMap& initialStateParticles() const
     { return InitialStateParticles_; }
 
+    /// \return THE initial state particle
+    /// Per default, this will be the first initial state particle added, that decays to the full final state
+    const std::shared_ptr<DecayingParticle> initialStateParticle() const
+    { return TheInitialStateParticle_; }
+
     /// \return set of DataAccessors
     const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
@@ -167,6 +172,9 @@ public:
     /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
 
     /// add an initial state particle
+    /// The first particle added that decays to the full final state will become THE initial state particle,
+    /// which can be retrieved by calling #initialStateParticle,
+    /// and its amplitude will be fixed
     const initialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
 
     /// set coordinate system
@@ -256,6 +264,10 @@ private:
     /// pointers to initial particles
     /// they will be summed in incoherently
     initialStateParticleMap InitialStateParticles_;
+
+    /// The main initial state particle.
+    /// Per default, this will be the first initialStateParticle added, that decays to the full final state
+    std::shared_ptr<DecayingParticle> TheInitialStateParticle_;
 
     /// vector of final state particles
     std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;

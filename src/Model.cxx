@@ -206,11 +206,20 @@ const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
     if (res.second) { // new element was inserted
         for (auto& pc : p->particleCombinations())
             addParticleCombination(pc);
+
+        // is this THE initial state particle?
+        if (not TheInitialStateParticle_ and p->finalStateParticles().size() == finalStateParticles().size()) {
+            DEBUG("Add " << *p << " as THE initial state particle and fix its amplitude to 1");
+            TheInitialStateParticle_ = res.first->first;
+            res.first->second->setVariableStatus(VariableStatus::fixed);
+        }
     }
     else { // no new element was inserted
         // check if insertion failed
         if (res.first == InitialStateParticles_.end())
             throw exceptions::Exception("Failed to insert initialStateParticle", "Model::addInitialStateParticle");
+
+        DEBUG("initial state particle " << *p << " already in model");
     }
 
     return *res.first;
