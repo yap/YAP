@@ -23,6 +23,7 @@
 
 #include "fwd/CachedDataValue.h"
 #include "fwd/DataPartition.h"
+#include "fwd/DecayChannel.h"
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
@@ -79,8 +80,12 @@ public:
     /// get raw pointer to Model through resonance
     const Model* model() const override;
 
+    /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
+    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+    {}
 
     /// Grant Resonance friendship, so it can set itself as owner
+    /// and call addDecayChannel
     friend class Resonance;
 
 protected:
@@ -90,6 +95,11 @@ protected:
 
     /// replace resonance's mass
     void replaceResonanceMass(std::shared_ptr<RealParameter> m);
+
+    /// Give MassShape chance to perform operations based on the
+    /// addition of a DecayChannel to its Resonance
+    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c)
+    {}
 
     /// access cached dynamic amplitude
     std::shared_ptr<ComplexCachedDataValue> T()

@@ -23,6 +23,7 @@
 
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
+#include "fwd/DecayChannel.h"
 #include "fwd/MassShape.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
@@ -58,6 +59,17 @@ public:
     /// \param massShape shared_ptr to MassShape of resonance
     static std::shared_ptr<Resonance> create(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape)
     { return std::shared_ptr<Resonance>(new Resonance(q, mass, name, radialSize, massShape)); }
+
+    /// Check if a DecayChannel is valid for Resonance; will throw if invalid.
+    /// checks with MassShape_
+    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const override;
+
+    using DecayingParticle::addChannel;
+
+    /// Add a DecayChannel to this Resonance
+    /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    /// \return shared_ptr to DecayChannel that has been added
+    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

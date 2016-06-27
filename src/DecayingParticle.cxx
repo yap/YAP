@@ -84,6 +84,9 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     if (!Channels_.empty() and c->model() != model())
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
+    // check if valid for DecayingParticle
+    checkDecayChannel(c);
+
     Channels_.push_back(c);
     Channels_.back()->setDecayingParticle(this);
 

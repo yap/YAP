@@ -85,8 +85,8 @@ void BlattWeisskopf::calculate(DataPartition& D) const
             for (auto& d : D) {
 
                 double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-                double m_a = model()->fourMomenta()->m(d, pc_symIndex.first->daughters().at(0));
-                double m_b = model()->fourMomenta()->m(d, pc_symIndex.first->daughters().at(1));
+                double m_a = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[0]);
+                double m_b = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[1]);
 
                 // nominal breakup momentum
                 double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);

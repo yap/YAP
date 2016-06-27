@@ -20,6 +20,20 @@ Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, dou
 }
 
 //-------------------------
+std::shared_ptr<DecayChannel> Resonance::addChannel(std::shared_ptr<DecayChannel> c)
+{
+    auto dc = DecayingParticle::addChannel(c);
+    MassShape_->addDecayChannel(dc);
+    return dc;
+}
+
+//-------------------------
+void Resonance::checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+{
+    MassShape_->checkDecayChannel(c);
+}
+
+//-------------------------
 bool Resonance::consistent() const
 {
     bool C = DecayingParticle::consistent();

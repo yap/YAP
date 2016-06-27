@@ -80,10 +80,15 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
+    /// Check if a DecayChannel is valid for DecayingParticle;
+    /// will throw if invalid
+    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+    {}
+
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
+    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
@@ -134,8 +139,8 @@ public:
 
     std::string printDecayTrees() const;
 
-    /// grant friend status to DecayChannel to see BlattWeiskopffs_
-    /// and to call fixSolitaryFreeAmplitudes()
+    /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
+    /// and storeBlattWeisskopf()
     friend DecayChannel;
 
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
@@ -147,6 +152,10 @@ protected:
     virtual void registerWithModel()
     {}
 
+    /// tell DecayingParticle to store a BlattWeisskopf object for L
+    /// \param l orbital angular momentum of breakup
+    void storeBlattWeisskopf(unsigned l);
+
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
@@ -157,10 +166,6 @@ protected:
     void fixSolitaryFreeAmplitudes();
 
     void printDecayChainLevel(int level) const;
-
-    /// tell DecayingParticle to store a BlattWeisskopf object for L
-    /// \param l orbital angular momentum of breakup
-    void storeBlattWeisskopf(unsigned l);
 
     /// modify a DecayTree
     /// \param dt DecayTree to modify
