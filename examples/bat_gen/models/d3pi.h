@@ -83,6 +83,8 @@ inline std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache>
     // pp2->addChannel(piPlus, piMinus);
     // D->addChannel(pp2, piPlus)->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
 
+    M->addInitialStateParticle(D);
+
     return M;
 }
 

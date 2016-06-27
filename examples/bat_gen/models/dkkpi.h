@@ -65,6 +65,8 @@ inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache
     // piK2->addChannel(piPlus, kMinus);
     // D->addChannel(piK2, kPlus)->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1);
 
+    M->addInitialStateParticle(D);
+
     return M;
 }
 

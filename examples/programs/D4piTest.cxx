@@ -82,8 +82,7 @@ int main( int argc, char** argv)
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
     // InitialStateParticles
-    // add D and fix its amplitude
-    M.addInitialStateParticle(D).second->setVariableStatus(yap::VariableStatus::fixed);
+    M.addInitialStateParticle(D);
     // add other background particles
     M.addInitialStateParticle(a_1);
     M.addInitialStateParticle(rho);

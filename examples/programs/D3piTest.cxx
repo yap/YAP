@@ -94,6 +94,8 @@ int main( int argc, char** argv)
     D->addChannel(sigma,    piPlus);
     D->addChannel(piPlus, piMinus, piPlus);
 
+    M.addInitialStateParticle(D);
+
     // check consistency
     if (M.consistent())
         LOG(INFO) << "consistent!";

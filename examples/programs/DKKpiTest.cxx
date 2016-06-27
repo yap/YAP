@@ -47,6 +47,8 @@ int main( int argc, char** argv)
     // Add channels to D
     D->addChannel(phi, piPlus);
 
+    M.addInitialStateParticle(D);
+
     // check consistency
     if (M.consistent())
         LOG(INFO) << "consistent!";
@@ -80,7 +82,7 @@ int main( int argc, char** argv)
     M.fourMomenta()->printMasses(data[0]);
 
     LOG(INFO) << "setting squared mass ...";
-    auto P = M.calculateFourMomenta(massAxes, m2);
+    auto P = M.calculateFourMomenta(massAxes, m2, D);
     if (P.empty())
         LOG(INFO) << "... outside phase space";
     else {

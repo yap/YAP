@@ -125,6 +125,8 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitude
             throw std::runtime_error("CLEO Model must be 1, 2, or 3");
     }
 
+    M->addInitialStateParticle(D);
+
     return M;
 }
 

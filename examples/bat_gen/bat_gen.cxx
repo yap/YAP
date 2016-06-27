@@ -26,23 +26,27 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
     if (!Model_ or !Model_->consistent())
         throw std::exception();
 
-    auto freeAmps = freeAmplitudes(Model_->initialStateParticle()->decayTrees());
+    for (auto& kv : Model_->initialStateParticles()) {
+        std::cout << "Initial state particle " << to_string(*kv.first) << " with beta^2 = " << kv.second->value() << ":\n";
 
-    std::cout << std::endl;
-    for (const auto& fa : freeAmps)
-        if (fa->variableStatus() != yap::VariableStatus::fixed)
-            std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
-    std::cout << std::endl;
+        auto freeAmps = freeAmplitudes(kv.first->decayTrees());
 
-    MassAxes_ = Model_->massAxes(pcs);
+        std::cout << std::endl;
+        for (const auto& fa : freeAmps)
+            if (fa->variableStatus() != yap::VariableStatus::fixed)
+                std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
+        std::cout << std::endl;
 
-    for (auto& pc : MassAxes_) {
-        std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
-        auto mrange = Model_->massRange(pc);
-        AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
-        std::cout << "Added parameter " << axis_label
-                  << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
-                  << std::endl;
+        MassAxes_ = Model_->massAxes(pcs);
+
+        for (auto& pc : MassAxes_) {
+            std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
+            auto mrange = Model_->massRange(pc, kv.first);
+            AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
+            std::cout << "Added parameter " << axis_label
+                      << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
+                      << std::endl;
+        }
     }
     // for (size_t i = 0; i < Model_->finalStateParticles().size(); ++i)
     //     AddObservable(std::string("T") + std::to_string(i), 0, 1);
@@ -84,7 +88,7 @@ double bat_gen::LogLikelihood(const std::vector<double>&)
 double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
 {
     // calculate four-momenta
-    auto P = Model_->calculateFourMomenta(MassAxes_, parameters);
+    auto P = Model_->calculateFourMomenta(MassAxes_, parameters, Model_->initialStateParticle());
 
     // if failed, outside phase space
     if (P.empty())
