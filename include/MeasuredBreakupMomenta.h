@@ -63,6 +63,9 @@ public:
     { return sqrt(q2(d, pc)); }
 
     /// Calculate breakup momentum from parent and daughter masses
+    /// \param m2_R squared mass of parent
+    /// \param m_a mass of first daughter
+    /// \param m_b mass of second daughter
     static double calcQ2(double m2_R, double m_a, double m_b);
 
     /// \return Breakup Momentum

@@ -34,7 +34,7 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
     for (auto& kv : symmetrizationIndices()) {
 
         // check if calculation unnecessary
-        if (sm.status(*Q2_, kv.second) == CalculationStatus::uncalculated)
+        if (sm.status(*Q2_, kv.second) == CalculationStatus::calculated)
             continue;
 
         if (kv.first->daughters().size() != 2)

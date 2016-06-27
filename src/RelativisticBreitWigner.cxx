@@ -55,7 +55,7 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
     // i * mass^2 * nominal width
     auto im2w_R = Complex_i * m2_R * width()->value();
     // J + 1/2
-    double Jp12 = resonance()->quantumNumbers().twoJ() + 0.5;
+    unsigned twoLp1 = BlattWeisskopf_->L() + 1;
 
     // T := 1 / (M^2 - m^2 - i * M * Gamma)
     for (auto& d : D) {
@@ -71,11 +71,11 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
         // calculate measured breakup momentum
         double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc);
 
-        // i * m_R * Gamma_R * (q_ab/q_R)^(2J+1) * (m_R/m_ab) * Blatt-Weisskopf^2
-        // = i * m_R^2 * Gamma_R * (q_ab^2 / q_R^2)^(J+1/2) / m_ab * BW^2
-        auto imw = im2w_R * pow(q2_meas / q2_nomi, Jp12) / m_ab * pow(BlattWeisskopf_->value(d, pc), 2);
+        double Q = sqrt(q2_meas / q2_nomi);
 
-        T()->setValue(1. / (m2_R - pow(m_ab, 2) - im2w_R / sqrt(m2_R)), d, si, D);
+        auto imw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2);
+
+        T()->setValue(1. / (m2_R - pow(m_ab, 2) - imw), d, si, D);
 
     }
 }
