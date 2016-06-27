@@ -34,6 +34,7 @@ set(YAP_SOURCES
 	PoleMass.cxx
 	QuantumNumbers.cxx
 	RecalculableDataAccessor.cxx
+  RelativisticBreitWigner.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
 	StatusManager.cxx
