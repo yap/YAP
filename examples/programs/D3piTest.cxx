@@ -19,6 +19,7 @@
 #include "ParticleFactory.h"
 #include "PoleMass.h"
 #include "PHSP.h"
+#include "RelativisticBreitWigner.h"
 #include "Resonance.h"
 #include "ZemachFormalism.h"
 
@@ -61,7 +62,7 @@ int main( int argc, char** argv)
     LOG(INFO) << "final state set";
 
     // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
     rho->addChannel(piPlus, piMinus);
 
     // f_2(1270)
