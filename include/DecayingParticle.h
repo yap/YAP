@@ -117,6 +117,10 @@ public:
     std::shared_ptr<RealParameter> radialSize()
     { return RadialSize_; }
 
+    /// \return Blatt-Weisskopf factors
+    const BlattWeisskopfMap& blattWeisskopfs() const
+    { return BlattWeisskopfs_; }
+
     FreeAmplitudeSet freeAmplitudes() const;
 
     /// @}
@@ -168,7 +172,7 @@ private:
     DecayChannelVector Channels_;
 
     /// map of Blatt-Weisskopf barrier factors, key = angular momentum
-    std::map<unsigned, std::shared_ptr<BlattWeisskopf> > BlattWeisskopfs_;
+    BlattWeisskopfMap BlattWeisskopfs_;
 
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<RealParameter> RadialSize_;

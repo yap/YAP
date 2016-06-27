@@ -17,14 +17,20 @@
  */
 
 /// \file
-/// Contains forward declarations only
 
 #ifndef yap_BlattWeisskopfFwd_h
 #define yap_BlattWeisskopfFwd_h
 
+#include <map>
+#include <memory>
+
 namespace yap {
 
 class BlattWeisskopf;
+
+/// \typedef BlattWeisskopfMap
+/// Map of unsigned (for angular momentum) to shared_ptr to BlattWeisskopf
+using BlattWeisskopfMap = std::map<unsigned, std::shared_ptr<BlattWeisskopf> >;
 
 }
 
