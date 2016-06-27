@@ -68,7 +68,7 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
 
 std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
-    auto isp = M.initialStateParticles().begin()->first; // assume we have one ISP
+    auto isp = M.initialStateParticle();
 
     // calculate four-momenta
     auto P = M.calculateFourMomenta(A, m2, isp);
@@ -122,7 +122,7 @@ TEST_CASE( "swapFinalStates" )
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 
     // get piK and KK mass ranges
-    auto isp = Z[0]->initialStateParticles().begin()->first; // hackish, assume we have one ISP
+    auto isp = Z[0]->initialStateParticle();
     auto m2_piK_range = Z[0]->massRange(mZ[0][0], isp);
     auto m2_KK_range  = Z[0]->massRange(mZ[0][1], isp);
 

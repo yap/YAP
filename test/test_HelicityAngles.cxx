@@ -100,7 +100,7 @@ TEST_CASE( "HelicityAngles" )
     rho->addChannel({piPlus, piMinus});
 
     // Add channels to D
-    D->addChannel({rho,      piPlus});
+    D->addChannel({rho, piPlus});
 
     M.addInitialStateParticle(D);
 
