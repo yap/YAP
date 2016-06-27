@@ -1,8 +1,12 @@
 #include "logging.h"
 #include "BreitWigner.h"
 #include "DataSet.h"
+#include "DecayChannel.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
+#include "Flatte.h"
 #include "FourMomenta.h"
+#include "FreeAmplitude.h"
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
 #include "ImportanceSampler.h"
@@ -13,6 +17,7 @@
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "PoleMass.h"
 #include "PHSP.h"
 #include "Resonance.h"
 #include "ZemachFormalism.h"
@@ -56,43 +61,40 @@ int main( int argc, char** argv)
     LOG(INFO) << "final state set";
 
     // rho
-    auto rho = yap::Resonance::create(factory.quantumNumbers("rho0"), 0.775, "rho", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(rho->massShape())->width()->setValue(0.149);
+    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addChannel(piPlus, piMinus);
 
     // f_2(1270)
-    auto f_2 = yap::Resonance::create(factory.quantumNumbers("f_2"), 1.275, "f_2", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_2->massShape())->width()->setValue(0.185);
+    auto f_2 = factory.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
     f_2->addChannel(piPlus, piMinus);
 
     // f_0(980)
-    auto f_0_980 = yap::Resonance::create(factory.quantumNumbers("f_0"), 0.980, "f_0_980", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_980->massShape())->width()->setValue(0.329);
+    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
+    f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
+    f_0_980_flatte->addChannel(0.406 * 2, factory.particleTableEntry("K+").Mass);
+    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_1370->massShape())->width()->setValue(0.250);
+    auto f_0_1370 = yap::Resonance::create(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>(0.265));
     f_0_1370->addChannel(piPlus, piMinus);
 
     // f_0(1500)
-    auto f_0_1500 = yap::Resonance::create(factory.quantumNumbers("f_0"), 1.507, "f_0_1500", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(f_0_1500->massShape())->width()->setValue(0.109);
+    auto f_0_1500 = factory.resonance(factory.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
     f_0_1500->addChannel(piPlus, piMinus);
 
     // sigma a.k.a. f_0(500)
-    auto sigma = yap::Resonance::create(factory.quantumNumbers("f_0"), 0.800, "sigma", radialSize, std::make_unique<yap::BreitWigner>());
-    std::static_pointer_cast<yap::BreitWigner>(sigma->massShape())->width()->setValue(0.800);
+    auto sigma = factory.resonance(factory.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addChannel(piPlus, piMinus);
 
     // Add channels to D
-    D->addChannel(rho,      piPlus);
-    D->addChannel(f_2,      piPlus);
-    D->addChannel(f_0_980,  piPlus);
-    D->addChannel(f_0_1370, piPlus);
-    D->addChannel(f_0_1500, piPlus);
-    D->addChannel(sigma,    piPlus);
-    D->addChannel(piPlus, piMinus, piPlus);
+    D->addChannel(rho,      piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1., 0.));
+    D->addChannel(f_0_980,  piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.4, yap::rad(12.)));
+    D->addChannel(f_2,      piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(2.1, yap::rad(-123.)));
+    D->addChannel(f_0_1370, piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.3, yap::rad(-21.)));
+    D->addChannel(f_0_1500, piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.1, yap::rad(-44.)));
+    D->addChannel(sigma,    piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(3.7, yap::rad(-3.)));
+    // D->addChannel(piPlus, piMinus, piPlus);
 
     // check consistency
     if (M.consistent())
@@ -118,31 +120,17 @@ int main( int argc, char** argv)
     // get default Dalitz axes
     auto massAxes = M.massAxes();
 
-    // generate point randomly in phase space of model
+    // generate points randomly in phase space of model
     std::mt19937 g(0);
-    auto P = phsp(M, massAxes, g, 10);
 
-    // create data set with 1 empty data point
-    auto data = M.createDataSet(1);
+    // create data set
+    auto data = M.createDataSet();
 
-    LOG(INFO) << "BEFORE";
-    M.fourMomenta()->printMasses(data[0]);
-
-    LOG(INFO) << "setting squared mass ...";
-    if (P.empty())
-        LOG(INFO) << "... outside phase space";
-    else {
-        LOG(INFO) << "... inside phase space";
-        data[0].setFinalStateMomenta(P);
-        for (unsigned i = 0; i < 10; ++i)
+    for (unsigned i = 0; i < 10000; ++i) {
+        auto P = phsp(M, massAxes, g, 10);
+        if (!P.empty())
             data.add(P);
     }
-
-    LOG(INFO) << "AFTER";
-    M.fourMomenta()->printMasses(data[0]);
-
-    for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
-        LOG(INFO) << p;
 
     M.calculate(data);
     auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);
@@ -159,7 +147,7 @@ int main( int argc, char** argv)
     LOG(INFO) << "integral = " << to_string(MI.integral());
     auto ff = fit_fractions(MI);
     for (size_t i = 0; i < ff.size(); ++i)
-        LOG(INFO) << "fit fraction DT " << i << " = " << ff[i];
+        LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*MI.decayTrees()[i]->freeAmplitude());
     LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
 
     LOG(INFO) << "cached integral components:";
