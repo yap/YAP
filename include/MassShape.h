@@ -79,8 +79,6 @@ public:
     /// get raw pointer to Model through resonance
     const Model* model() const override;
 
-    virtual std::string data_accessor_type() const override
-    {return "MassShape"; }
 
     /// Grant Resonance friendship, so it can set itself as owner
     friend class Resonance;

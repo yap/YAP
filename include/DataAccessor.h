@@ -82,10 +82,6 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
-    /// \return string denoting DataAccessor type
-    /// \todo REMOVE
-    virtual std::string data_accessor_type() const = 0;
-
     /// grant friend status to Model to access CachedDataValues_
     friend Model;
 

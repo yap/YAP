@@ -107,10 +107,6 @@ public:
                                          int two_M, const SpinProjectionVector& two_m) const
     { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
 
-    /// \todo REMOVE
-    virtual std::string data_accessor_type() const override
-    {return "SpinAmplitude"; }
-
     /// \return a string naming the formalism used for the SpinAmplitude calculation
     virtual std::string formalism() const = 0;
 

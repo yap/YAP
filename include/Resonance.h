@@ -75,9 +75,6 @@ public:
 
     /// @}
 
-    virtual std::string data_accessor_type() const override
-    {return "Resonance"; }
-
     /// grant friend status to MassShape to call setMass
     friend MassShape;
 

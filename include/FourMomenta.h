@@ -103,9 +103,6 @@ public:
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
-    virtual std::string data_accessor_type() const override
-    {return "FourMomenta"; }
-
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
 

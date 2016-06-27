@@ -76,9 +76,6 @@ public:
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;
 
-    virtual std::string data_accessor_type() const override
-    {return "BlattWeisskopf"; }
-
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 

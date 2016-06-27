@@ -187,7 +187,7 @@ public:
 
     /// Build vector of mass axes for coordinates in phase space.
     /// Currently only supports two-particle masses.
-    /// if argument is left empty, a default set of axes is constructed 
+    /// if argument is left empty, a default set of axes is constructed
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
     const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {});

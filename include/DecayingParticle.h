@@ -128,10 +128,6 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    /// \return string denoting DataAccessor type
-    virtual std::string data_accessor_type() const
-    { return "DecayingParticle"; }
-
     std::string printDecayTrees() const;
 
     /// grant friend status to DecayChannel to see BlattWeiskopffs_

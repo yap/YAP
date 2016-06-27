@@ -18,7 +18,6 @@ DataAccessor::DataAccessor(const ParticleCombination::Equal& equal) :
 //-------------------------
 void DataAccessor::printParticleCombinations() const
 {
-    LOG(INFO) << data_accessor_type();
     for (auto& kv : SymmetrizationIndices_) {
         auto p = kv.first;
         while (p->parent())
@@ -36,11 +35,12 @@ bool DataAccessor::consistent() const
     bool C = true;
 
     // check CachedDataValues_
-    for (auto& c : CachedDataValues_)
+    for (auto& c : CachedDataValues_) {
         if (c->owner() != this) {
             FLOG(ERROR) << "CachedDataValue's owner != this";
             C &= false;
         }
+    }
 
     return C;
 }

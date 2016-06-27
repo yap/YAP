@@ -93,9 +93,6 @@ public:
     const std::shared_ptr<RealCachedDataValue>& theta() const
     { return Theta_; }
 
-    virtual std::string data_accessor_type() const override
-    {return "HelicityAngles"; }
-
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
 

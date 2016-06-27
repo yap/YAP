@@ -58,7 +58,7 @@ inline std::string to_string(const SpinProjectionVector& two_m)
 /// \param two_c 2 * spin c
 /// \return \f$ \Delta(abc) \f$
 constexpr bool triangle(unsigned two_a, unsigned two_b, unsigned two_c)
-{ return is_even(two_a + two_b + two_c) and std::abs((int)two_a - (int)two_b) <= two_c and two_c <= (two_a + two_b); }
+{ return is_even(two_a + two_b + two_c) and std::abs((int)two_a - (int)two_b) <= (int)two_c and two_c <= (two_a + two_b); }
 
 /// \return Whether angular momentum is conserved in J -> j1 + j2 with orbital angular momentum l
 /// \param two_J 2 * spin of initial state

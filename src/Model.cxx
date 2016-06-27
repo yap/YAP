@@ -645,8 +645,6 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 void Model::printFlags(const StatusManager& sm) const
 {
     for (const auto& d : DataAccessors_) {
-        std::cout << d->data_accessor_type() << "  ";
-
         std::cout << std::endl;
 
         for (auto& c : d->cachedDataValues()) {

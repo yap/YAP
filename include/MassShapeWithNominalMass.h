@@ -51,9 +51,6 @@ public:
     const std::shared_ptr<RealParameter> mass() const
     { return const_cast<MassShapeWithNominalMass*>(this)->mass(); }
 
-    virtual std::string data_accessor_type() const override
-    { return "MassShapeWithNominalMass"; }
-
 protected:
 
     /// also add mass as parameter

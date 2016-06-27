@@ -62,9 +62,6 @@ public:
 
     virtual bool consistent() const override;
 
-    virtual std::string data_accessor_type() const override
-    {return "BreitWigner"; }
-
 protected:
 
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
