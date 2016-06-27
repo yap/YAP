@@ -130,8 +130,8 @@ int main( int argc, char** argv)
         if (momenta.empty())
             LOG(INFO) << "after " << max_attempts << " tries, could not generate point inside phase space";
         else {
-            data[iEvt].setFinalStateMomenta(momenta);
-            dataTest[iEvt].setFinalStateMomenta(momenta);
+            M.setFinalStateMomenta(data[iEvt], momenta, data);
+            M.setFinalStateMomenta(dataTest[iEvt], momenta, dataTest);
         }
     }
 

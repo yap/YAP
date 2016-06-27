@@ -132,9 +132,9 @@ int main( int argc, char** argv)
         LOG(INFO) << "... outside phase space";
     else {
         LOG(INFO) << "... inside phase space";
-        data[0].setFinalStateMomenta(P);
+        M.setFinalStateMomenta(data[0], P, data);
         for (unsigned i = 0; i < 10; ++i)
-            data.add(P);
+            data.push_back(P);
     }
 
     LOG(INFO) << "AFTER";
