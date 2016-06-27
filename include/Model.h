@@ -187,13 +187,10 @@ public:
 
     /// Build vector of mass axes for coordinates in phase space.
     /// Currently only supports two-particle masses.
+    /// if argument is left empty, a default set of axes is constructed 
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
-    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
-
-    /// Build vector of mass axes for coordinates in phase space with a default choice of axes.
-    /// \return MassAxes
-    const MassAxes massAxes();
+    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {});
 
     /// Calculate four-momenta for final-state particles for phase-space coordinate
     /// \param axes phase-space axes

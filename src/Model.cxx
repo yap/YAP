@@ -374,6 +374,18 @@ void Model::prepareDataAccessors()
 //-------------------------
 const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
 {
+    // if no axes requested, build default:
+    if (pcs.empty()) {
+        
+        if (finalStateParticles().size() > 4)
+            throw exceptions::Exception("Currently only supports final states of 4 or fewer particles for default axes", "Model::massAxes");
+
+        // builds vector down first off diagonal, then second off-diagonal, etc
+        for (unsigned i = 1; i < finalStateParticles().size() - 1; ++i)
+            for (unsigned j = 0 ; i + j < finalStateParticles().size(); ++j)
+                pcs.push_back({j, j + i});
+    }
+
     unsigned n_fsp = finalStateParticles().size();
     unsigned n_axes = 3 * n_fsp - 7;
 
@@ -418,21 +430,6 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
     }
 
     return MassAxes(M);
-}
-
-//-------------------------
-const MassAxes Model::massAxes()
-{
-    /// \todo extend further
-    if (finalStateParticles().size() > 4)
-        throw exceptions::Exception("Currently only supports final states of 4 or fewer particles", "Model::massAxes");
-
-    // builds vector down first off diagonal, then second off-diagonal, etc
-    std::vector<std::vector<unsigned> > pcs;
-    for (unsigned i = 1; i < finalStateParticles().size() - 1; ++i)
-        for (unsigned j = 0 ; i + j < finalStateParticles().size(); ++j)
-            pcs.push_back({j, j + i});
-    return massAxes(pcs);
 }
 
 //-------------------------
