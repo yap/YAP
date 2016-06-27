@@ -70,7 +70,9 @@ public:
 	const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
 
 	void push_back(const std::vector<FourVector<double> >& P);
+	void push_back(std::vector<FourVector<double> >&& P);
 	void insert(DataIterator pos, const std::vector<FourVector<double> >& P);
+	void insert(DataIterator pos, std::vector<FourVector<double> >&& P);
 
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta

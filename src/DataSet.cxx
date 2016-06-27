@@ -115,7 +115,19 @@ void DataSet::push_back(const std::vector<FourVector<double> >& P)
 }
 
 //-------------------------
+void DataSet::push_back(std::vector<FourVector<double> >&& P)
+{
+	DataPoints_.push_back(createDataPoint(P));
+}
+
+//-------------------------
 void DataSet::insert(DataIterator pos, const std::vector<FourVector<double> >& P)
+{
+	DataPoints_.insert(rawIterator(pos), createDataPoint(P));
+}
+
+//-------------------------
+void DataSet::insert(DataIterator pos, std::vector<FourVector<double> >&& P)
 {
 	DataPoints_.insert(rawIterator(pos), createDataPoint(P));
 }
