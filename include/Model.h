@@ -186,7 +186,7 @@ public:
     /// \return MassAxes
     const MassAxes massAxes();
 
-	/// \todo Description?
+    /// \todo Description?
     const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs);
 
     /// Calculate four-momenta for final-state particles for phase-space coordinate

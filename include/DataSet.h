@@ -64,15 +64,15 @@ public:
     /// \param n number of points to add
     void addEmptyDataPoints(size_t n);
 
-	/// creates a new #DataPoint and #setFinalStateMomenta to P
-	/// \param P the momenta to be set
-	/// \return the created #DataPoint
-	const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
+    /// creates a new #DataPoint and #setFinalStateMomenta to P
+    /// \param P the momenta to be set
+    /// \return the created #DataPoint
+    const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
 
-	void push_back(const std::vector<FourVector<double> >& P);
-	void push_back(std::vector<FourVector<double> >&& P);
-	void insert(DataIterator pos, const std::vector<FourVector<double> >& P);
-	void insert(DataIterator pos, std::vector<FourVector<double> >&& P);
+    void push_back(const std::vector<FourVector<double> >& P);
+    void push_back(std::vector<FourVector<double> >&& P);
+    void insert(DataIterator pos, const std::vector<FourVector<double> >& P);
+    void insert(DataIterator pos, std::vector<FourVector<double> >&& P);
 
     /// \return iterator to front of set
     const DataIterator& begin() const override

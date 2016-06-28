@@ -69,48 +69,48 @@ void DataSet::addEmptyDataPoints(size_t n)
     if (!model())
         throw exceptions::Exception("Model unset or deleted", "DataSet::add");
 
-	for (size_t i = 0; i < n; ++i) {
-		DataPoints_.emplace_back(model()->dataAccessors());
+    for (size_t i = 0; i < n; ++i) {
+        DataPoints_.emplace_back(model()->dataAccessors());
 
-		// check if the created DataPoint is consistent
-		if (!consistent(DataPoints_.back()))
-			throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
-	}
+        // check if the created DataPoint is consistent
+        if (!consistent(DataPoints_.back()))
+            throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
+    }
 }
 
 //-------------------------
 const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >& P)
 {
-	DataPoint d = ((points().empty())
-			? DataPoint(model()->dataAccessors())
-			: DataPoints_.back());
+    DataPoint d = ((points().empty())
+                   ? DataPoint(model()->dataAccessors())
+                   : DataPoints_.back());
 
-	model()->setFinalStateMomenta(d, P, *this);
-	return d;
+    model()->setFinalStateMomenta(d, P, *this);
+    return d;
 }
 
 //-------------------------
 void DataSet::push_back(const std::vector<FourVector<double> >& P)
 {
-	DataPoints_.push_back(createDataPoint(P));
+    DataPoints_.push_back(createDataPoint(P));
 }
 
 //-------------------------
 void DataSet::push_back(std::vector<FourVector<double> >&& P)
 {
-	DataPoints_.push_back(createDataPoint(P));
+    DataPoints_.push_back(createDataPoint(P));
 }
 
 //-------------------------
 void DataSet::insert(DataIterator pos, const std::vector<FourVector<double> >& P)
 {
-	DataPoints_.insert(rawIterator(pos), createDataPoint(P));
+    DataPoints_.insert(rawIterator(pos), createDataPoint(P));
 }
 
 //-------------------------
 void DataSet::insert(DataIterator pos, std::vector<FourVector<double> >&& P)
 {
-	DataPoints_.insert(rawIterator(pos), createDataPoint(P));
+    DataPoints_.insert(rawIterator(pos), createDataPoint(P));
 }
 
 }
