@@ -91,14 +91,14 @@ TEST_CASE( "Matrix" )
 
         // now boost all 4vectors
         std::vector<yap::FourVector<double> > V({a, b, c});
-        const auto V_boost = lorentzTransformation(-V) * V;
+        const auto V_boosted = lorentzTransformation(-V) * V;
 
         // check if they have been boosted into their rest frame
-        REQUIRE( abs(vect(std::accumulate(V_boost.begin(), V_boost.end(), yap::FourVector_0))) == Approx(0.));
+        REQUIRE( abs(vect(std::accumulate(V_boosted.begin(), V_boosted.end(), yap::FourVector_0))) == Approx(0.));
 
         // check if the invariant masses are the same
         for (unsigned i = 0; i < V.size(); ++i) {
-            REQUIRE( norm(V[i]) == Approx(norm(V_boost[i])) );
+            REQUIRE( norm(V[i]) == Approx(norm(V_boosted[i])) );
         }
     }
 
