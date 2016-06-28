@@ -11,6 +11,7 @@
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
+#include "ParticleCombination.h"
 #include "ParticleCombinationCache.h"
 #include "Spin.h"
 #include "SpinAmplitude.h"
@@ -185,25 +186,7 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
 //-------------------------
 void DecayChannel::pruneParticleCombinations()
 {
-    if (!model())
-        throw exceptions::Exception("Model not set", "DecayChannel::pruneParticleCombinations");
-
-    // remove entries that don't trace back to the ISP
-    for (auto it = ParticleCombinations_.begin(); it != ParticleCombinations_.end(); ) {
-        // find the top-most parent
-        auto pc = *it;
-        while (pc->parent())
-            pc = pc->parent();
-        // check if it's not an ISP
-        if (pc->indices().size() != model()->finalStateParticles().size())
-            // erase
-            it = ParticleCombinations_.erase(it);
-        else
-            ++it;
-    }
-
-    if (ParticleCombinations_.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "DecayChannel::pruneParticleCombinations");
+    prune_particle_combinations(ParticleCombinations_);
 
     for (auto& p : Daughters_)
         p->pruneParticleCombinations();

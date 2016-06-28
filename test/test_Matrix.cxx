@@ -75,20 +75,9 @@ TEST_CASE( "Matrix" )
          * (x,y,z,t)=(0.000000,-0.000000,0.000000,5.565968) (P,eta,phi,E)=(0.000000,1.443635,-1.570796,5.565968)
          */
 
-        const yap::FourVector<double> a({6.2, 0., -1.1, 2.5});
-        const yap::FourVector<double> b({8.6, -0.2, 1.15, 1.5});
-        const yap::FourVector<double> c({6.9, 0.55, 2., -2.3});
-
-        /*std::cout << "gamma a    " << a[0] / abs(a) << "\n";
-
-        std::cout << "boost vec  " << to_string(boost(a)) << "\n";
-        std::cout << "boosted a  " << to_string(lorentzTransformation(boost(a)) * a) << "\n";
-        std::cout << "boosted -a " << to_string(lorentzTransformation(-boost(a)) * a) << "\n";
-        std::cout << "boosted -a " << to_string(lorentzTransformation(boost(-a)) * a) << "\n";
-
-        std::cout << "alt boosted a  " << to_string(lorentzTransformation(a) * a) << "\n";
-        std::cout << "alt boosted -a " << to_string(lorentzTransformation(static_cast<yap::FourVector<double>>(-a)) * a) << "\n";
-         */
+        const yap::FourVector<double> a({6.2,  0.,  -1.1,  2.5});
+        const yap::FourVector<double> b({8.6, -0.2,  1.15, 1.5});
+        const yap::FourVector<double> c({6.9,  0.55, 2.,  -2.3});
 
         // see if we can boost a 4vector into its rest frame
         REQUIRE( abs(vect(lorentzTransformation(boost(-a)) * a)) == Approx(0.) );
@@ -102,15 +91,14 @@ TEST_CASE( "Matrix" )
 
         // now boost all 4vectors
         std::vector<yap::FourVector<double> > V({a, b, c});
-        auto V_boost = lorentzTransformation(-V) * V;
+        const auto V_boosted = lorentzTransformation(-V) * V;
 
         // check if they have been boosted into their rest frame
-        REQUIRE( abs(std::accumulate(V_boost.begin(), V_boost.end(), yap::ThreeVector_0,
-        [&](const yap::ThreeVector<double>& val, yap::FourVector<double> v) { return val + vect(v); })) == Approx(0.));
+        REQUIRE( abs(vect(std::accumulate(V_boosted.begin(), V_boosted.end(), yap::FourVector_0))) == Approx(0.));
 
         // check if the invariant masses are the same
         for (unsigned i = 0; i < V.size(); ++i) {
-            REQUIRE( norm(V[i]) == Approx(norm(V_boost[i])) );
+            REQUIRE( norm(V[i]) == Approx(norm(V_boosted[i])) );
         }
     }
 

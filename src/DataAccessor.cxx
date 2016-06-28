@@ -18,15 +18,8 @@ DataAccessor::DataAccessor(const ParticleCombination::Equal& equal) :
 //-------------------------
 void DataAccessor::printParticleCombinations() const
 {
-    for (auto& kv : SymmetrizationIndices_) {
-        auto p = kv.first;
-        while (p->parent())
-            p = p->parent();
-        if (p == kv.first)
-            LOG(INFO) << kv.second << " : " << *(kv.first);
-        else
-            LOG(INFO) << kv.second << " : " << *(kv.first) << ". In " << *p;
-    }
+    for (auto& kv : SymmetrizationIndices_)
+        LOG(INFO) << kv.second << " : " << to_string_with_parent(*(kv.first));
 }
 
 //-------------------------
@@ -35,12 +28,11 @@ bool DataAccessor::consistent() const
     bool C = true;
 
     // check CachedDataValues_
-    for (auto& c : CachedDataValues_) {
+    for (auto& c : CachedDataValues_)
         if (c->owner() != this) {
             FLOG(ERROR) << "CachedDataValue's owner != this";
             C &= false;
         }
-    }
 
     return C;
 }
@@ -78,21 +70,20 @@ void DataAccessor::pruneSymmetrizationIndices()
     if (!model())
         throw exceptions::Exception("Model not set", "DataAccessor::pruneSymmetrizationIndices");
 
-    // remove entries that don't trace back to the ISP
+    // remove entries that don't trace back to an ISP
     for (auto it = SymmetrizationIndices_.begin(); it != SymmetrizationIndices_.end(); ) {
-        // find the top-most parent
-        auto pc = it->first;
-        while (pc->parent())
-            pc = pc->parent();
-        // check if it's not an ISP
-        if (pc->indices().size() != model()->finalStateParticles().size())
-            // erase
-            it = SymmetrizationIndices_.erase(it);
+        if (is_initial_state_particle_combination(*it->first, model()))
+            ++it;
         else
-            it++;
+            it = SymmetrizationIndices_.erase(it);
     }
 
+    if (SymmetrizationIndices_.empty())
+        throw exceptions::Exception("ParticleCombinations empty after pruning", "DataAccessor::pruneSymmetrizationIndices");
+
+    //
     // fix indices now for holes
+    //
 
     // collect used indices
     std::set<unsigned> used;

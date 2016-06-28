@@ -20,7 +20,7 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta(Model* m) :
     StaticDataAccessor(m, ParticleCombination::equalByOrderlessContent),
-    ISPIndex_(-1),
+    TotalIndex_(-1),
     P_(FourVectorCachedDataValue::create(this)),
     M_(RealCachedDataValue::create(this, {}, {P_}))
 {
@@ -46,8 +46,8 @@ void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc
     auto index = symmetrizationIndex(pc);
 
     // check for ISP
-    if (ISPIndex_ < 0 and pc->indices().size() == model()->finalStateParticles().size())
-        ISPIndex_ = index;
+    if (TotalIndex_ < 0 and pc->indices().size() == model()->finalStateParticles().size())
+        TotalIndex_ = index;
 
     /// check for FSP
     if (pc->isFinalStateParticle()) {
@@ -63,7 +63,7 @@ bool FourMomenta::consistent() const
 {
     bool C = StaticDataAccessor::consistent();
 
-    if (ISPIndex_ < 0) {
+    if (TotalIndex_ < 0) {
         FLOG(ERROR) << "ISP symmetrization index has not been recorded.";
         C &= false;
     }
@@ -77,11 +77,11 @@ bool FourMomenta::consistent() const
 }
 
 //-------------------------
-const FourVector<double> FourMomenta::initialStateMomentum(const DataPoint& d) const
+const FourVector<double> FourMomenta::totalMomentum(const DataPoint& d) const
 {
-    if (ISPIndex_ < 0)
-        throw exceptions::Exception("Initial-state particle unknown", "FourMomenta::initialStateFourMomentum");
-    return P_->value(d, ISPIndex_);
+    if (TotalIndex_ < 0)
+        throw exceptions::Exception("Initial-state particle unknown", "FourMomenta::totalMomentum");
+    return P_->value(d, TotalIndex_);
 }
 
 //-------------------------
@@ -160,7 +160,7 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
         // if ISP and not yet printed (should only print once)
         if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
             os << "    ISP : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first), model()->initialStateParticle()->mass());
+            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
             os << std::endl;
             used.insert(kv.second);
         }

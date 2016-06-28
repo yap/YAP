@@ -67,11 +67,6 @@ public:
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
-    /// \todo Do we need non-const access to the quantum numbers?
-    /// \return quantum numbers
-    QuantumNumbers& quantumNumbers()
-    { return QuantumNumbers_; }
-
     /// Get mass [GeV]
     std::shared_ptr<RealParameter> mass() const
     { return Mass_; }

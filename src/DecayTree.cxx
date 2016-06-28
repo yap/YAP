@@ -73,14 +73,18 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
 {
     FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
     FDEBUG("pc" << to_string(*pc));
+
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
+
     // recalculable amplitude
     for (const auto& rda : RecalculableDataAccessors_)
         A *= rda->value(d, pc);
+
     // likewise for daughters
     for (const auto& d_dt : DaughterDecayTrees_)
         A *= d_dt.second->dataDependentAmplitude(d, pc->daughters()[d_dt.first]);
+
     return A;
 }
 

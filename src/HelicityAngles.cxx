@@ -41,7 +41,7 @@ void HelicityAngles::calculate(DataPoint& d, StatusManager& sm) const
     // call on ISP PC's
     // \todo allow for designating the boost that takes from the data frame to the lab frame (possibly event dependent)
     for (auto& kv : symmetrizationIndices())
-        if (kv.first->indices().size() == model()->finalStateParticles().size())
+        if (not kv.first->parent())
             calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), sm);
 }
 
@@ -100,6 +100,7 @@ void HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination>
 {
     if (pc->isFinalStateParticle())
         throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "HelicityAngles::addParticleCombination");
+
     return StaticDataAccessor::addParticleCombination(pc);
 }
 

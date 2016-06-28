@@ -81,9 +81,11 @@ int main( int argc, char** argv)
     //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
     //factory.createChannel(f_0_980, piPlus, piMinus, 0);
 
-    // background channels
-    M.addBackgroundParticle(a_1);
-    M.addBackgroundParticle(rho);
+    // InitialStateParticles
+    M.addInitialStateParticle(D);
+    // add other background particles
+    M.addInitialStateParticle(a_1);
+    M.addInitialStateParticle(rho);
 
     // check consistency
     if (M.consistent())
@@ -91,13 +93,16 @@ int main( int argc, char** argv)
     else
         LOG(INFO) << "inconsistent!";
 
+
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
 
-    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
-    for (auto& pc : D->particleCombinations())
-        std::cout << *pc << "\n";
-    std::cout << "\n";
+    for (auto& isp : M.initialStateParticles()) {
+        std::cout << "\n" << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations \n";
+        for (auto& pc : isp.first->particleCombinations())
+            std::cout << *pc << "\n";
+        std::cout << "\n";
+    }
 
     std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
     for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
@@ -118,6 +123,7 @@ int main( int argc, char** argv)
     // create data set
     unsigned nPoints = 1;
     yap::DataSet data = M.createDataSet(nPoints);
+
     yap::DataSet dataTest = M.createDataSet(nPoints);
 
     // create random number engine for generation of points
@@ -153,7 +159,7 @@ int main( int argc, char** argv)
     auto parts = yap::DataPartitionWeave::create(data, nChains);
     //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
-    auto freeAmps = freeAmplitudes(M.initialStateParticle()->decayTrees());
+    auto freeAmps = freeAmplitudes(D->decayTrees());
 
     LOG(INFO) << freeAmps.size() << " free amplitudes";
 
@@ -225,7 +231,7 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+    LOG(INFO) << D->printDecayTrees();
 
     std::cout << "alright! \n";
 }

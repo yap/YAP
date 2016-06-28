@@ -93,10 +93,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     // now that Model is set, register with Model (repeated registration has no effect)
     registerWithModel();
 
-    // if this is to be the initial state particle
-    if (!model()->initialStateParticle() and finalStateParticles().size() == model()->finalStateParticles().size())
-        const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->setInitialStateParticle(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
-
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations())
         addParticleCombination(pc);
@@ -227,10 +223,6 @@ void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleComb
         if (any_of(dc->particleCombinations(), pc, ParticleCombination::equalDown))
             dc->addParticleCombination(pc);
     }
-
-    // check if also model's initial state particle
-    if (model() and model()->initialStateParticle() == shared_from_this())
-        const_cast<Model*>(static_cast<const DecayingParticle*>(this)->model())->addParticleCombination(pc);
 }
 
 //-------------------------

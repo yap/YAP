@@ -87,6 +87,8 @@ TEST_CASE( "swapDalitzAxes" )
                     piK2->addChannel({piPlus, kMinus});
                     D->addChannel({piK2, kPlus})->freeAmplitudes().begin()->get()->setValue(30. * yap::Complex_1);
 
+                    M->addInitialStateParticle(D);
+
                     // Dalitz coordinates
                     yap::MassAxes massAxes;
                     std::vector<double> squared_masses;
@@ -122,7 +124,7 @@ TEST_CASE( "swapDalitzAxes" )
                     }
 
                     // calculate four-momenta
-                    auto P = M->calculateFourMomenta(massAxes, squared_masses);
+                    auto P = M->calculateFourMomenta(massAxes, squared_masses, D);
 
                     // if failed, outside phase space
                     if (P.empty()) {
@@ -136,7 +138,7 @@ TEST_CASE( "swapDalitzAxes" )
                     data.add(P);
 
                     M->calculate(data);
-                    resultingAmplitudes[i] = amplitude(M->initialStateParticle()->decayTrees(), data[0]);
+                    resultingAmplitudes[i] = amplitude(D->decayTrees(), data[0]);
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 

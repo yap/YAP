@@ -49,25 +49,7 @@ void Particle::addParticleCombination(const std::shared_ptr<ParticleCombination>
 //-------------------------
 void Particle::pruneParticleCombinations()
 {
-    if (!model())
-        throw exceptions::Exception("Model not set", "DecayChannel::pruneParticleCombinations");
-
-    // remove entries that don't trace back to the ISP
-    for (auto it = ParticleCombinations_.begin(); it != ParticleCombinations_.end(); ) {
-        // find the top-most parent
-        auto pc = *it;
-        while (pc->parent())
-            pc = pc->parent();
-        // check if it's not an ISP
-        if (pc->indices().size() != model()->finalStateParticles().size())
-            // erase
-            it = ParticleCombinations_.erase(it);
-        else
-            it++;
-    }
-
-    if (ParticleCombinations_.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "Particle::pruneParticleCombinations");
+    prune_particle_combinations(ParticleCombinations_);
 }
 
 //-------------------------

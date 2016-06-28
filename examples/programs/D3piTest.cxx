@@ -97,6 +97,8 @@ int main( int argc, char** argv)
     D->addChannel(sigma,    piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(3.7, yap::rad(-3.)));
     // D->addChannel(piPlus, piMinus, piPlus);
 
+    M.addInitialStateParticle(D);
+
     // check consistency
     if (M.consistent())
         LOG(INFO) << "consistent!";
