@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    /// override to throw on adding final-state PC
+    /// override to throw on adding final-state PC or more-than-two-body PC
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// squared breakup momentum [GeV^2]

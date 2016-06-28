@@ -31,7 +31,7 @@ class Exception;
 class AngularMomentumNotConserved;
 class InconsistentSpinProjection;
 class OutsidePhaseSpace;
-class FinalStateParticleCombination;
+class NotTwoBodyParticleCombination;
 class ParameterIsFixed;
 class ResonanceUnset;
 class NonfiniteResult;

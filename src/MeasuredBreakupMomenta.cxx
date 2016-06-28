@@ -62,8 +62,10 @@ double MeasuredBreakupMomenta::calcQ2(double m2_R, double m_a, double m_b)
 //-------------------------
 void MeasuredBreakupMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    if (pc->isFinalStateParticle())
-        throw exceptions::FinalStateParticleCombination("cannot calculate breakup momentum for fsp", "MeasuredBreakupMomenta::addParticleCombination");
+    if (pc->daughters().size() != 2)
+        throw exceptions::NotTwoBodyParticleCombination("cannot calculate breakup momentum for "
+                + std::to_string(pc->daughters().size()) + "-body decay",
+                "MeasuredBreakupMomenta::addParticleCombination");
     StaticDataAccessor::addParticleCombination(pc);
 }
 

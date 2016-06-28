@@ -214,7 +214,8 @@ void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleComb
 
     // add also to all BlattWeiskopf barrier factors
     for (auto& kv : BlattWeisskopfs_)
-        kv.second->addParticleCombination(pc);
+        if (pc->daughters().size() == 2)
+            kv.second->addParticleCombination(pc);
 
     // add to DecayChannels,
     // if DecayChannel contains particle combination with same content (without checking parent)
@@ -348,17 +349,19 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
         throw exceptions::Exception("FreeAmplitude's SpinAmplitude is nullptr", "DecayingParticle::modifyDecayTree");
 
     // find BlattWeisskopf object
-    auto bw = BlattWeisskopfs_.find(dt.freeAmplitude()->spinAmplitude()->L());
-    if (bw == BlattWeisskopfs_.end())
-        throw exceptions::Exception("No Blatt-Weisskopf factor found for L = "
-                                    + std::to_string(dt.freeAmplitude()->spinAmplitude()->L()),
-                                    "DecayingParticle::modifyDecayTree");
+    if (dt.freeAmplitude()->spinAmplitude()->L() > 0) {
+        auto bw = BlattWeisskopfs_.find(dt.freeAmplitude()->spinAmplitude()->L());
+        if (bw == BlattWeisskopfs_.end())
+            throw exceptions::Exception("No Blatt-Weisskopf factor found for L = "
+                                        + std::to_string(dt.freeAmplitude()->spinAmplitude()->L()),
+                                        "DecayingParticle::modifyDecayTree");
 
-    if (!bw->second)
-        throw exceptions::Exception("BlattWeisskopf is nullptr", "DecayingParticle::modifyDecayTree");
+        if (!bw->second)
+            throw exceptions::Exception("BlattWeisskopf is nullptr", "DecayingParticle::modifyDecayTree");
 
-    // Add BlattWeisskopf object
-    dt.addDataAccessor(*bw->second);
+        // Add BlattWeisskopf object
+        dt.addDataAccessor(*bw->second);
+    }
 }
 
 //-------------------------

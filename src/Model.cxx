@@ -146,7 +146,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 
     FourMomenta_->addParticleCombination(pc);
 
-    if (!pc->isFinalStateParticle()) {
+    if (pc->daughters().size() == 2) {
         if (HelicityAngles_)
             HelicityAngles_->addParticleCombination(pc);
         if (MeasuredBreakupMomenta_)
@@ -210,8 +210,7 @@ const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
             TheInitialStateParticle_ = res.first->first;
             res.first->second->setVariableStatus(VariableStatus::fixed);
         }
-    }
-    else { // no new element was inserted
+    } else { // no new element was inserted
         // check if insertion failed
         if (res.first == InitialStateParticles_.end())
             throw exceptions::Exception("Failed to insert initialStateParticle", "Model::addInitialStateParticle");
@@ -371,7 +370,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
 {
     // if no axes requested, build default:
     if (pcs.empty()) {
-        
+
         if (finalStateParticles().size() > 4)
             throw exceptions::Exception("Currently only supports final states of 4 or fewer particles for default axes", "Model::massAxes");
 

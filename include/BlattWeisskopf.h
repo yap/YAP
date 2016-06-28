@@ -79,6 +79,11 @@ public:
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 
+protected:
+
+    /// override to throw on adding non-two-body PC
+    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
 private:
 
     /// raw pointer to owning DecayingParticle

@@ -85,12 +85,12 @@ public:
         : Exception(what_arg, func_name) {}
 };
 
-/// \class FinalStateParticleCombination
+/// \class NotTwoBodyParticleCombination
 /// \ingroup Exceptions
-class FinalStateParticleCombination : public Exception
+class NotTwoBodyParticleCombination : public Exception
 {
 public:
-    FinalStateParticleCombination(const std::string& what_arg = "", const std::string& func_name = "")
+    NotTwoBodyParticleCombination(const std::string& what_arg = "", const std::string& func_name = "")
         : Exception(what_arg, func_name) {}
 };
 

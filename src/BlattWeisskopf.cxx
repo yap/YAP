@@ -123,5 +123,16 @@ const Model* BlattWeisskopf::model() const
     return DecayingParticle_->model();
 }
 
+//-------------------------
+void BlattWeisskopf::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    if (pc->daughters().size() != 2)
+        throw exceptions::NotTwoBodyParticleCombination("cannot calculate Blatt-Weisskopf barrier factor for "
+                + std::to_string(pc->daughters().size()) + "-body decay",
+                "BlattWeisskopf::addParticleCombination");
+
+    return RecalculableDataAccessor::addParticleCombination(pc);
+}
+
 }
 

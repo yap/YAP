@@ -98,8 +98,10 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 //-------------------------
 void HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    if (pc->isFinalStateParticle())
-        throw exceptions::FinalStateParticleCombination("cannot calculate helicity angles for fsp", "HelicityAngles::addParticleCombination");
+    if (pc->daughters().size() != 2)
+        throw exceptions::NotTwoBodyParticleCombination("cannot calculate helicity angles for "
+                + std::to_string(pc->daughters().size()) + "-body decay",
+                "MeasuredBreakupMomenta::addParticleCombination");
 
     return StaticDataAccessor::addParticleCombination(pc);
 }

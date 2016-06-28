@@ -103,7 +103,7 @@ protected:
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
                          StatusManager& sm) const;
 
-    /// override to throw on adding final-state PC
+    /// override to throw on adding non-two-body PC
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// Azimuthal angle
