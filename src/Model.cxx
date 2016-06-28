@@ -159,11 +159,8 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 }
 
 //-------------------------
-void Model::setFinalState(std::initializer_list<std::shared_ptr<FinalStateParticle> > FSP)
+void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP)
 {
-    if (locked())
-        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::setFinalState");
-
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
         throw exceptions::Exception("Final-state particles already set", "Model::setFinalState");

@@ -29,6 +29,8 @@ inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::SpinAmplitudeC
     auto D = F.decayingParticle(F.pdgCode("D+"), 3 /*Gev^-1*/);
     D->addChannel(piPlus, piMinus, piPlus);
 
+    M->addInitialStateParticle(D);
+
     return M;
 }
 

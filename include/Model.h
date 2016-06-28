@@ -154,6 +154,7 @@ public:
     /// \name Setters
     /// @{
 
+
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
     /// given in data points. The FinalStateParticle's have their
