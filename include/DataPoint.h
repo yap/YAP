@@ -21,11 +21,7 @@
 #ifndef yap_DataPoint_h
 #define yap_DataPoint_h
 
-#include "fwd/DataPoint.h"
-
 #include "fwd/DataAccessor.h"
-#include "fwd/FourVector.h"
-#include "fwd/StatusManager.h"
 
 #include <string>
 #include <vector>
@@ -60,11 +56,7 @@ public:
     { return Data_[i][j].size(); }
 
     /// \return size of data point
-    unsigned dataSize() const;
-
-    /// \return string of size of data point
-    std::string dataSizeString() const
-    { return "Size of DataPoint: " + std::to_string(dataSize()) + " byte (for " + std::to_string(Data_.size()) + " data accessors"; }
+    unsigned bytes() const;
 
     /// check that two DataPoint's have same internal structure
     friend bool equalStructure(const DataPoint& A, const DataPoint& B);

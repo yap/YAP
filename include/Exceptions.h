@@ -130,8 +130,8 @@ public:
 class EmptyFourMomentaVector : public Exception
 {
 public:
-   EmptyFourMomentaVector(const std::string& func_name = "")
-       : Exception("Empty FourMomenta vector", func_name) {}
+    EmptyFourMomentaVector(const std::string& func_name = "")
+        : Exception("Empty FourMomenta vector", func_name) {}
 };
 
 }

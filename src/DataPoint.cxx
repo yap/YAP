@@ -1,21 +1,15 @@
 #include "DataPoint.h"
 
-#include "DataSet.h"
-#include "Exceptions.h"
-#include "FourMomenta.h"
-#include "HelicityAngles.h"
-#include "logging.h"
-#include "Model.h"
-#include "StaticDataAccessor.h"
+#include "DataAccessor.h"
 
 namespace yap {
 
 //-------------------------
 DataPoint::DataPoint(const DataAccessorSet& dataAccessorSet)
+    : Data_(dataAccessorSet.size())
 {
-    Data_.resize(dataAccessorSet.size());
     for (auto da : dataAccessorSet)
-        Data_[da->index()].assign(da->nSymmetrizationIndices(), std::vector<double>(da->size(), 0));
+        Data_[da->index()].assign(da->nSymmetrizationIndices(), std::vector<double>(da->size()));
 }
 
 //-------------------------
@@ -35,7 +29,7 @@ bool equalStructure(const DataPoint& A, const DataPoint& B)
 }
 
 //-------------------------
-unsigned DataPoint::dataSize() const
+unsigned DataPoint::bytes() const
 {
     unsigned size = sizeof(Data_);
     for (auto& v : Data_) {
