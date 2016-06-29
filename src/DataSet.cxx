@@ -2,7 +2,6 @@
 
 #include "DataPoint.h"
 #include "Exceptions.h"
-#include "FourMomenta.h"
 #include "Model.h"
 
 namespace yap {
@@ -15,49 +14,6 @@ DataSet::DataSet(const Model& m) :
 }
 
 //-------------------------
-DataSet::DataSet(const DataSet& other) :
-    DataPartitionBlock(other),
-    DataPoints_(other.DataPoints_),
-    Model_(other.Model_)
-{
-}
-
-//-------------------------
-DataSet::DataSet(DataSet&& other) :
-    DataPartitionBlock(std::move(other)),
-    DataPoints_(std::move(other.DataPoints_)),
-    Model_(std::move(other.Model_))
-{
-}
-
-//-------------------------
-DataSet& DataSet::operator=(const DataSet& other)
-{
-    DataPartitionBlock::operator=(other);
-    Model_ = other.Model_;
-    DataPoints_ = other.DataPoints_;
-    return *this;
-}
-
-//-------------------------
-DataSet& DataSet::operator=(DataSet&& other)
-{
-    DataPartitionBlock::operator=(std::move(other));
-    Model_ = std::move(other.Model_);
-    DataPoints_ = std::move(other.DataPoints_);
-    return *this;
-}
-
-//-------------------------
-void DataSet::swap(DataSet& other)
-{
-    using std::swap;
-    swap(static_cast<DataPartitionBlock&>(*this), static_cast<DataPartitionBlock&>(other));
-    swap(Model_, other.Model_);
-    swap(DataPoints_, other.DataPoints_);
-}
-
-//-------------------------
 bool DataSet::consistent(const DataPoint& d) const
 {
     return points().empty() or equalStructure(points().front(), d);
@@ -66,51 +22,58 @@ bool DataSet::consistent(const DataPoint& d) const
 //-------------------------
 void DataSet::addEmptyDataPoints(size_t n)
 {
+    if (n == 0)
+        return;
+
     if (!model())
-        throw exceptions::Exception("Model unset or deleted", "DataSet::add");
+        throw exceptions::Exception("Model unset or deleted", "DataSet::addEmptyDataPoints");
 
-    for (size_t i = 0; i < n; ++i) {
-        DataPoints_.emplace_back(model()->dataAccessors());
+    // create first data point, either via DataAccessorSet constructor or copy constructor
+    DataPoints_.emplace_back(DataPoints_.empty() ? model()->dataAccessors() : DataPoints_.back());
 
-        // check if the created DataPoint is consistent
-        if (!consistent(DataPoints_.back()))
-            throw exceptions::Exception("produced inconsistent data point", "Model::addDataPoint");
-    }
+    // create remaining data points via copy constructor
+    for (size_t i = 1; i < n; ++i)
+        DataPoints_.emplace_back(DataPoints_.back());
 }
 
 //-------------------------
 const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >& P)
 {
-    DataPoint d = ((points().empty())
-                   ? DataPoint(model()->dataAccessors())
-                   : DataPoints_.back());
-
+    DataPoint d = points().empty() ? DataPoint(model()->dataAccessors()) : DataPoints_.back();
     model()->setFinalStateMomenta(d, P, *this);
     return d;
 }
 
 //-------------------------
-void DataSet::push_back(const std::vector<FourVector<double> >& P)
+void DataSet::push_back(const DataPoint& d)
 {
-    DataPoints_.push_back(createDataPoint(P));
+    if (!consistent(d))
+        throw exceptions::InconsistentDataPoint("DataSet::push_back");
+    DataPoints_.push_back(d);
 }
 
 //-------------------------
-void DataSet::push_back(std::vector<FourVector<double> >&& P)
+void DataSet::push_back(DataPoint&& d)
 {
-    DataPoints_.push_back(createDataPoint(P));
+    if (!consistent(d))
+        throw exceptions::InconsistentDataPoint("DataSet::push_back");
+    DataPoints_.push_back(std::move(d));
 }
 
 //-------------------------
-void DataSet::insert(DataIterator pos, const std::vector<FourVector<double> >& P)
+DataIterator DataSet::insert(const DataIterator& pos, const DataPoint& d)
 {
-    DataPoints_.insert(rawIterator(pos), createDataPoint(P));
+    if (!consistent(d))
+        throw exceptions::InconsistentDataPoint("DataSet::push_back");
+    return dataIterator(DataPoints_.insert(rawIterator(pos), d));
 }
 
 //-------------------------
-void DataSet::insert(DataIterator pos, std::vector<FourVector<double> >&& P)
+DataIterator DataSet::insert(const DataIterator& pos, DataPoint&& d)
 {
-    DataPoints_.insert(rawIterator(pos), createDataPoint(P));
+    if (!consistent(d))
+        throw exceptions::InconsistentDataPoint("DataSet::push_back");
+    return dataIterator(DataPoints_.insert(rawIterator(pos), std::move(d)));
 }
 
 }

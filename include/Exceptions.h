@@ -116,6 +116,15 @@ public:
 /// \ingroup Exceptions
 class NonfiniteResult : public Exception {};
 
+/// \class InconsistentDataPoint
+/// \ingroup Exceptions
+class InconsistentDataPoint : public Exception
+{
+public:
+    InconsistentDataPoint(const std::string& func_name = "")
+        : Exception("Inconsistent DataPoint", func_name) {}
+};
+
 }
 
 }

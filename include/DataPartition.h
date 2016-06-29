@@ -215,8 +215,19 @@ protected:
     virtual DataIterator& increment(DataIterator& it, DataIterator::difference_type n) const = 0;
 
     /// \return vector<DataPoint> iterator inside DataIterator
+    /// \param it DataIterator to access
     DataPointVector::iterator& rawIterator(DataIterator& it) const
     { return it.Iterator_; }
+
+    /// \return vector<DataPoint> iterator inside DataIterator
+    /// \param it DataIterator to access
+    const DataPointVector::iterator& rawIterator(const DataIterator& it) const
+    { return it.Iterator_; }
+
+    /// \return DataIterator for vector<DataPoint> iterator
+    /// \param raw_it vector<DataPoint>::iterator to use
+    DataIterator dataIterator(DataPointVector::iterator it) const
+    { return DataIterator(*this, it); }
 
     /// set begin
     const DataIterator& setBegin(DataPointVector::iterator it)

@@ -21,10 +21,10 @@
 #ifndef yap_DataSet_h
 #define yap_DataSet_h
 
+#include "fwd/DataPoint.h"
 #include "fwd/FourVector.h"
 #include "fwd/Model.h"
 
-#include "DataPoint.h"
 #include "DataPartition.h"
 
 #include <vector>
@@ -42,21 +42,6 @@ public:
     /// Constructor
     DataSet(const Model& m);
 
-    /// Copy constructor
-    DataSet(const DataSet& other);
-
-    /// Move constructor
-    DataSet(DataSet&& other);
-
-    /// Copy assignment operator
-    DataSet& operator=(const DataSet& other);
-
-    /// Move assignment operator
-    DataSet& operator=(DataSet&& other);
-
-    /// Swap
-    void swap(DataSet& other);
-
     /// Check if data point is consisent with data set
     bool consistent(const DataPoint& d) const;
 
@@ -69,10 +54,38 @@ public:
     /// \return the created #DataPoint
     const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
 
-    void push_back(const std::vector<FourVector<double> >& P);
-    void push_back(std::vector<FourVector<double> >&& P);
-    void insert(DataIterator pos, const std::vector<FourVector<double> >& P);
-    void insert(DataIterator pos, std::vector<FourVector<double> >&& P);
+    /// creates a DataPoint from a vector of FourVector's using #createDataPoint
+    /// and pushes it back in the vector data points
+    /// \param P vector of FourVector's to create DataPoint from
+    void push_back(const std::vector<FourVector<double> >& P)
+    { DataPoints_.push_back(createDataPoint(P)); }
+
+    /// checks consistency of DataPoint, and pushes it back in the vector of data points
+    /// \param d DataPoint to copy into DataSet
+    void push_back(const DataPoint& d);
+
+    /// checks consistency of DataPoint, and pushes it back in the vector of data points
+    /// \param d DataPoint to move into DataSet
+    void push_back(DataPoint&& d);
+
+    /// creates a DataPoint from a vector of FourVector's using #createDataPoint
+    /// and inserts it into the vector of DataPoint's at a specified position
+    /// \param pos DataIterator of position in DataSet to insert into
+    /// \param P vector of FourVector to create DataPoint from
+    DataIterator insert(DataIterator pos, const std::vector<FourVector<double> >& P)
+    { return dataIterator(DataPoints_.insert(rawIterator(pos), createDataPoint(P))); }
+
+    /// checks consistency of DataPoint and inserts it into vector of
+    /// data points at specifief position
+    /// \param pos DataIterator of position in DataSet to insert into
+    /// \param d DataPoint to copy into DataSet
+    DataIterator insert(const DataIterator& pos, const DataPoint& d);
+
+    /// checks consistency of DataPoint and inserts it into vector of
+    /// data points at specifief position
+    /// \param pos DataIterator of position in DataSet to insert into
+    /// \param d DataPoint to move into DataSet
+    DataIterator insert(const DataIterator& pos, DataPoint&& d);
 
     /// \return iterator to front of set
     const DataIterator& begin() const override
@@ -130,19 +143,6 @@ private:
     const Model* Model_;
 
 };
-
-/// swap
-inline void swap(DataSet& A, DataSet& B)
-{ A.swap(B); }
-
-}
-
-namespace std {
-
-/// swap
-template <>
-inline void swap<yap::DataSet>(yap::DataSet& A, yap::DataSet& B)
-{ A.swap(B); }
 
 }
 
