@@ -59,7 +59,8 @@ public:
     std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S)
     {
         auto retVal = operator[](create(two_J, two_j, L, two_S));
-        retVal->setModel(Model_);
+        if (Model_)
+            retVal->setModel(*Model_);
         return retVal;
     }
 
@@ -79,11 +80,11 @@ public:
 protected:
 
     /// set raw pointer to owning Model
-    void setModel(Model* model)
+    void setModel(Model& model)
     {
-        if (Model_ != nullptr and Model_ != model)
+        if (Model_ != nullptr and Model_ != &model)
             throw exceptions::Exception("Model already set.", "SpinAmplitudeCache::setModel");
-        Model_ = model;
+        Model_ = &model;
     }
 
 protected:

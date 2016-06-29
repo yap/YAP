@@ -63,8 +63,8 @@ class HelicityAngles : public StaticDataAccessor
 public:
 
     /// Constructor
-    /// \param m Raw pointer to owning Model
-    HelicityAngles(Model* m);
+    /// \param m owning Model
+    HelicityAngles(Model& m);
 
     /// Calculate helicity angles for all possible symmetrization indices
     /// \param d DataPoint to calculate into

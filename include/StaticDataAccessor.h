@@ -46,19 +46,16 @@ public:
     /// Constructor
     /// \param model Raw pointer to owning Model
     /// \param equal ParticleCombination equality struct for determining index assignments
-    StaticDataAccessor(Model* m, const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+    StaticDataAccessor(Model& m, const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
         : DataAccessor(equal), Model_(nullptr)
     {
         setModel(m);
     }
 
     /// Set the Model and add this DataAccessor to the Model's DataAccessorSet
-    virtual void setModel(Model* m)
+    virtual void setModel(Model& m)
     {
-        Model_ = m;
-
-        if (!model())
-            throw exceptions::Exception("Model unset", "StaticDataAccessor::StaticDataAccessor");
+        Model_ = &m;
 
         // register with Model
         addToModel();

@@ -45,7 +45,8 @@ class FourMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    FourMomenta(Model* m);
+    /// \param m Owning model
+    FourMomenta(Model& m);
 
     /// check consistency
     bool consistent() const;

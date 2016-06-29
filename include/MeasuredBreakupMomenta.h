@@ -43,8 +43,8 @@ class MeasuredBreakupMomenta : public StaticDataAccessor
 public:
 
     /// Constructor
-    /// \param m Raw pointer to owning Model
-    MeasuredBreakupMomenta(Model* m);
+    /// \param m owning Model
+    MeasuredBreakupMomenta(Model& m);
 
     /// Calculate breakup momenta for all possible symmetrization indices
     /// \param d DataPoint to caluclate into

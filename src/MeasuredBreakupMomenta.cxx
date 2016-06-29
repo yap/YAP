@@ -10,7 +10,7 @@
 namespace yap {
 
 //-------------------------
-MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model* m) :
+MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model& m) :
     StaticDataAccessor(m, ParticleCombination::equalDownByOrderlessContent),
     Q2_(RealCachedDataValue::create(this))
 {

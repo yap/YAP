@@ -18,14 +18,12 @@
 namespace yap {
 
 //-------------------------
-FourMomenta::FourMomenta(Model* m) :
+FourMomenta::FourMomenta(Model& m) :
     StaticDataAccessor(m, ParticleCombination::equalByOrderlessContent),
     TotalIndex_(-1),
     P_(FourVectorCachedDataValue::create(this)),
     M_(RealCachedDataValue::create(this, {}, {P_}))
 {
-    if (!model())
-        throw exceptions::Exception("Model unset", "FourMomenta::FourMomenta");
 }
 
 //-------------------------

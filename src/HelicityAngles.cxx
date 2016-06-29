@@ -13,7 +13,7 @@
 namespace yap {
 
 //-------------------------
-HelicityAngles::HelicityAngles(Model* m) :
+HelicityAngles::HelicityAngles(Model& m) :
     StaticDataAccessor(m, ParticleCombination::equalUpAndDown),
     Phi_(RealCachedDataValue::create(this)),
     Theta_(RealCachedDataValue::create(this))

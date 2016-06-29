@@ -33,13 +33,13 @@ namespace yap {
 Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     Locked_(false),
     CoordinateSystem_(ThreeAxes),
-    FourMomenta_(std::make_shared<FourMomenta>(this))
+    FourMomenta_(std::make_shared<FourMomenta>(*this))
 {
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
         throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
-    SAC->setModel(this);
+    SAC->setModel(*this);
     SpinAmplitudeCache_ = std::move(SAC);
 }
 
@@ -290,12 +290,12 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // HelicityAngles are called before any newly created
         // StaticDataAccessors
         if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da))
-            HelicityAngles_ = std::make_shared<HelicityAngles>(this);
+            HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
 
         // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
         if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
                 and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta())
-            MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(this);
+            MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
 
         // if StaticDataAccessor, add to StaticDataAccessors_
         if (dynamic_cast<StaticDataAccessor*>(da))
