@@ -140,10 +140,6 @@ public:
     const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
 
-    /// \return set of DataAccessors
-    const StaticDataAccessorVector& staticDataAccessors() const
-    { return StaticDataAccessors_; }
-
     /// \return (min, max) array[2] of mass range for particle combination
     /// \param pc shared pointer to ParticleCombination to get mass range of
     /// \param p Initial state particle to get the mass range for

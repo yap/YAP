@@ -192,7 +192,7 @@ void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<doub
     fourMomenta()->setFinalStateMomenta(d, P, sm);
 
     // call calculate on all static data accessors in model
-    for (auto& sda : staticDataAccessors())
+    for (const auto& sda : StaticDataAccessors_)
         sda->calculate(d, sm);
 }
 
