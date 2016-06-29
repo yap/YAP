@@ -31,6 +31,9 @@ FourMomenta::FourMomenta(Model* m) :
 //-------------------------
 void FourMomenta::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const
 {
+    if (P.empty())
+        throw exceptions::EmptyFourMomentaVector("FourMomenta::setFinalStateMomenta");
+    
     if (P.size() != FSPIndices_.size())
         throw exceptions::Exception("Wrong number of momenta provided (" + std::to_string(P.size()) + " != " + std::to_string(FSPIndices_.size()) + ")",
                                     "FourMomenta::setFinalStateMomenta");
