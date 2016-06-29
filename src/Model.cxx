@@ -359,18 +359,15 @@ void Model::prepareDataAccessors()
 
     }
 
-#ifndef ELPP_DISABLE_DEBUG_LOGS
-    std::cout << "StaticDataAccessors:\n";
-    for (auto& D : StaticDataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-    std::cout << "DataAccessors:\n";
-    for (auto& D : DataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-#endif
+    // print all DataAccessors
+    DEBUG("StaticDataAccessors:");
+    std::for_each(StaticDataAccessors_.begin(), StaticDataAccessors_.end(),
+            [] (const StaticDataAccessor* da) {DEBUG(to_string(da->symmetrizationIndices()))});
+
+    DEBUG("DataAccessors:");
+    DEBUG("StaticDataAccessors:");
+    std::for_each(DataAccessors_.begin(), DataAccessors_.end(),
+            [] (const DataAccessor* da) {DEBUG(to_string(da->symmetrizationIndices()))});
 
     lock();
 }

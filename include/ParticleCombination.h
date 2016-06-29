@@ -236,6 +236,17 @@ std::string to_string(const ParticleCombination& pc);
 /// convert ParticleCombination with top-most parent to string
 std::string to_string_with_parent(const ParticleCombination& pc);
 
+/// convert ParticleCombinationMap to string
+template<typename T>
+inline std::string to_string(const ParticleCombinationMap<T>& pcm)
+{
+    std::string s;
+    using std::to_string;
+    for (auto& kv : pcm)
+        s += to_string(kv.second) + " : " + to_string_with_parent(*(kv.first));
+    return s;
+}
+
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const ParticleCombination& PC)
 { os << to_string(PC); return os; }

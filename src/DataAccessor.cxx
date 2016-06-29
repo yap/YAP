@@ -16,13 +16,6 @@ DataAccessor::DataAccessor(const ParticleCombination::Equal& equal) :
 }
 
 //-------------------------
-void DataAccessor::printParticleCombinations() const
-{
-    for (auto& kv : SymmetrizationIndices_)
-        LOG(INFO) << kv.second << " : " << to_string_with_parent(*(kv.first));
-}
-
-//-------------------------
 bool DataAccessor::consistent() const
 {
     bool C = true;
