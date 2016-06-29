@@ -178,6 +178,11 @@ public:
     /// and its amplitude will be fixed
     const initialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
 
+    /// set four momenta of data point
+    /// \param P vector of FourVectors of final-state momenta
+    /// \param sm StatusManager to update
+    void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const;
+
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
 

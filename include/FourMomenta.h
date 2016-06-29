@@ -106,8 +106,8 @@ public:
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
 
-    /// grant friend status to DataPoint to call setFourMomenta
-    friend class DataPoint;
+    /// grant friend status to DataSet to call setFourMomenta on its DataPoint's
+    friend class DataSet;
 
 protected:
 

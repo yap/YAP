@@ -23,9 +23,8 @@
 
 #include "fwd/DataPoint.h"
 
-#include "fwd/DataSet.h"
+#include "fwd/DataAccessor.h"
 #include "fwd/FourVector.h"
-#include "fwd/Model.h"
 #include "fwd/StatusManager.h"
 
 #include <string>
@@ -43,16 +42,7 @@ public:
 
     /// Constructor
     /// \param dataSet DataSet this DataPoint belongs to
-    DataPoint(DataSet& dataSet);
-
-    /// set four momenta of data point
-    /// \param P vector of FourVectors of final-state momenta
-    /// \param sm StatusManager to update
-    void setFinalStateMomenta(const std::vector<FourVector<double> >& P, StatusManager& sm);
-
-    /// set four momenta of data point
-    /// \param P vector of FourVectors of final-state momenta
-    void setFinalStateMomenta(const std::vector<FourVector<double> >& P);
+    DataPoint(const DataAccessorSet& dataAccessorSet);
 
     /// \return number of data accessor rows
     size_t nDataAccessors() const
@@ -83,25 +73,10 @@ public:
     friend bool operator==(const DataPoint& lhs, const DataPoint& rhs)
     { return lhs.Data_ == rhs.Data_; }
 
-    const DataSet* dataSet() const
-    { return DataSet_; }
-
-    /// \return model to which DataPoint belongs
-    const Model* model() const;
-
     /// grant friend status to CachedDataValue to access Data_
     friend class CachedDataValue;
 
-    /// grant friend status to DataSet to set itself owner
-    friend DataSet;
-
-    /// grant friend status to model to access DataSet_
-    friend Model;
-
 private:
-
-    /// raw pointer to owning DataSet
-    DataSet* DataSet_;
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor

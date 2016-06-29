@@ -135,7 +135,7 @@ TEST_CASE( "swapDalitzAxes" )
                     // reset data set
                     auto data = M->createDataSet();
                     // add point
-                    data.add(P);
+                    data.push_back(P);
 
                     M->calculate(data);
                     resultingAmplitudes[i] = amplitude(D->decayTrees(), data[0]);

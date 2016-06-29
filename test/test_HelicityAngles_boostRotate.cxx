@@ -111,7 +111,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
                 }
             }
 
-            data.add(momenta);
+            data.push_back(momenta);
             const auto dp = data.points().back();
 
             // compare results

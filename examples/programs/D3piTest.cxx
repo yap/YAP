@@ -125,6 +125,7 @@ int main( int argc, char** argv)
 
     // generate points randomly in phase space of model
     std::mt19937 g(0);
+    auto P = phsp(M, massAxes, g, 10);
 
     // create data set
     auto data = M.createDataSet();
@@ -132,8 +133,14 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 10000; ++i) {
         auto P = phsp(M, massAxes, g, 10);
         if (!P.empty())
-            data.add(P);
+            data.push_back(P);
     }
+
+    LOG(INFO) << "AFTER";
+    M.fourMomenta()->printMasses(data[0]);
+
+    for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
+        LOG(INFO) << p;
 
     M.calculate(data);
     auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);

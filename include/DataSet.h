@@ -62,14 +62,17 @@ public:
 
     /// add empty data points
     /// \param n number of points to add
-    void addEmptyPoints(size_t n);
+    void addEmptyDataPoints(size_t n);
 
-    /// add single empty data point
-    void addEmptyPoint();
+    /// creates a new #DataPoint and #setFinalStateMomenta to P
+    /// \param P the momenta to be set
+    /// \return the created #DataPoint
+    const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
 
-    /// Add data point
-    /// \param P vector of four momenta
-    void add(const std::vector<FourVector<double> >& P);
+    void push_back(const std::vector<FourVector<double> >& P);
+    void push_back(std::vector<FourVector<double> >&& P);
+    void insert(DataIterator pos, const std::vector<FourVector<double> >& P);
+    void insert(DataIterator pos, std::vector<FourVector<double> >&& P);
 
     /// \return iterator to front of set
     const DataIterator& begin() const override
@@ -120,10 +123,6 @@ protected:
     { return DataPoints_; }
 
 private:
-
-    /// sets this as owner of all its data points
-    void assertDataPointOwnership();
-
     /// vector of data points contained in set
     DataPointVector DataPoints_;
 

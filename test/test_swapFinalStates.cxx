@@ -80,7 +80,7 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
     // reset data set
     data = M.createDataSet();
     // add point
-    data.add(P);
+    data.push_back(P);
 
     // return amplitude
     M.calculate(data);

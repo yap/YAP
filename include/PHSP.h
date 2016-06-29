@@ -41,7 +41,6 @@ const std::vector<FourVector<double> > phsp(const Model& M, const MassAxes& A, G
     r.reserve(A.size());
     std::transform(A.begin(), A.end(), std::back_inserter(r),
                    [&](const MassAxes::value_type& a){auto R = M.massRange(a, M.initialStateParticle()); R[0] *= R[0]; R[1] = R[1] * R[1] - R[0]; return R;});
-    
     // create vector to store invariant masses in
     std::vector<double> m2(r.size(), 0);
     std::vector<FourVector<double> > P;

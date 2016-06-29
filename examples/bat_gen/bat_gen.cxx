@@ -97,6 +97,6 @@ double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
     unsigned c = GetCurrentChain();
     Data_[c].setAll(yap::VariableStatus::changed);
     Data_[c].setAll(yap::CalculationStatus::uncalculated);
-    Data_[c][0].setFinalStateMomenta(P);
+    Model_->setFinalStateMomenta(Data_[c][0], P, Data_[c]);
     return 0;
 }
