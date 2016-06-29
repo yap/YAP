@@ -18,6 +18,7 @@
 #include "bat_gen.h"
 #include "models/d3pi.h"
 #include "models/d3pi_phsp.h"
+#include "models/d4pi.h"
 #include "models/dkkpi.h"
 #include "models/D_K0pi0pi0.h"
 
@@ -32,9 +33,10 @@ int main()
         // new bat_gen("D3PI_PHSP", d3pi_phsp(std::make_unique<yap::ZemachFormalism>()))
         new bat_gen("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()))
         // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>()))
-        // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>())),
+        // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>()))
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::ZemachFormalism>()))
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::HelicityFormalism>()))
+        // new bat_gen("D4PI", d4pi())
     };
 
     for (bat_gen* m : test_models) {
