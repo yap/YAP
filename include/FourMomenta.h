@@ -101,9 +101,6 @@ public:
 
     /// @}
 
-    /// print all masses
-    std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
-
     /// grant friend status to Model to call addParticleCombination and setFinalStateMomenta
     friend class Model;
 
@@ -137,6 +134,9 @@ private:
     std::shared_ptr<RealCachedDataValue> M_;
 
 };
+
+/// print all masses
+std::string masses_as_string(const FourMomenta& fm, const DataPoint& d);
 
 }
 #endif

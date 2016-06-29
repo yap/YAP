@@ -79,7 +79,7 @@ int main( int argc, char** argv)
     auto data = M.createDataSet(1);
 
     DEBUG("BEFORE");
-    M.fourMomenta()->printMasses(data[0]);
+    DEBUG(masses_as_string(*M.fourMomenta(), data[0]));
 
     LOG(INFO) << "setting squared mass ...";
     auto P = M.calculateFourMomenta(massAxes, m2, D);
@@ -91,7 +91,7 @@ int main( int argc, char** argv)
     }
 
     DEBUG("AFTER");
-    M.fourMomenta()->printMasses(data[0]);
+    DEBUG(masses_as_string(*M.fourMomenta(), data[0]));
 
     std::cout << "alright! \n";
 }

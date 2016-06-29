@@ -134,8 +134,9 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-std::ostream& print_mp_string(std::ostream& os, unsigned n, unsigned m_p, std::shared_ptr<ParticleCombination> pc, double m, FourVector<double> p, std::shared_ptr<RealParameter> M = nullptr)
+std::string mp_string(unsigned n, unsigned m_p, std::shared_ptr<ParticleCombination> pc, double m, FourVector<double> p, std::shared_ptr<RealParameter> M = nullptr)
 {
+    std::ostringstream os;
     os << std::setw(n) << indices_string(*pc) << " : "
        << "m = " << std::setprecision(m_p) << m << " GeV/c^2";
     if (M)
@@ -143,61 +144,61 @@ std::ostream& print_mp_string(std::ostream& os, unsigned n, unsigned m_p, std::s
     else
         os << "            " << std::setw(m_p) << " "                << "         ";
     os << "\tp = " << p << " GeV";
-    return os;
+    return os.str();
 }
 
 //-------------------------
-std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) const
+std::string masses_as_string(const FourMomenta& fm, const DataPoint& d)
 {
-    os << "Invariant masses:" << std::endl;
-    unsigned n_fsp = model()->finalStateParticles().size();
+    std::string s = "Invariant masses:\n";
+    unsigned n_fsp = fm.model()->finalStateParticles().size();
     unsigned n = n_fsp + 2;
     unsigned m_p = 6;
 
     std::set<unsigned> used;
 
     // print the ISP
-    for (auto& kv : symmetrizationIndices())
+    for (auto& kv : fm.symmetrizationIndices())
         // if ISP and not yet printed (should only print once)
         if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
-            os << "    ISP : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
-            os << std::endl;
+            s += "    ISP : ";
+            s += mp_string(n, m_p, kv.first, fm.m(d, kv.first), fm.p(d, kv.first));
+            s += "\n";
             used.insert(kv.second);
         }
 
     // print the FSP's
-    for (size_t i = 0; i < FSPIndices_.size(); ++i)
-        for (auto& kv : symmetrizationIndices())
+    for (size_t i = 0; i < fm.model()->finalStateParticles().size(); ++i)
+        for (auto& kv : fm.symmetrizationIndices())
             if (kv.first->isFinalStateParticle() and kv.first->indices()[0] == i and used.find(kv.second) == used.end()) {
-                os << "    FSP : ";
-                print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first), model()->finalStateParticles()[i]->mass());
-                os << std::endl;
+                s += "    FSP : ";
+                s += mp_string(n, m_p, kv.first, fm.m(d, kv.first), fm.p(d, kv.first), fm.model()->finalStateParticles()[i]->mass());
+                s += "\n";
                 used.insert(kv.second);
             }
 
 
     // print the rest in increasing number of particle content
     for (unsigned i = 2; i < n_fsp; ++i)
-        for (auto& kv : symmetrizationIndices())
+        for (auto& kv : fm.symmetrizationIndices())
             // if i-particle mass and not yet printed
             if (kv.first->indices().size() == i and used.find(kv.second) == used.end()) {
-                os << "    " << i << "-p : ";
-                print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
-                os << std::endl;
+                s += "    " + std::to_string(i) + "-p : ";
+                s += mp_string(n, m_p, kv.first, fm.m(d, kv.first), fm.p(d, kv.first));
+                s += "\n";
                 used.insert(kv.second);
             }
 
     // print unused
-    for (auto& kv : symmetrizationIndices())
+    for (auto& kv : fm.symmetrizationIndices())
         if (used.find(kv.second) == used.end()) {
-            os << "        : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
-            os << std::endl;
+            s += "        : ";
+            s += mp_string(n, m_p, kv.first, fm.m(d, kv.first), fm.p(d, kv.first));
+            s += "\n";
             used.insert(kv.second);
         }
 
-    return os;
+    return s;
 }
 
 }
