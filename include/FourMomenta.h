@@ -103,11 +103,8 @@ public:
     /// print all masses
     std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
 
-    /// grant friend status to Model to call addParticleCombination
+    /// grant friend status to Model to call addParticleCombination and setFinalStateMomenta
     friend class Model;
-
-    /// grant friend status to DataSet to call setFourMomenta on its DataPoint's
-    friend class DataSet;
 
 protected:
 

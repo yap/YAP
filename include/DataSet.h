@@ -24,6 +24,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/FourVector.h"
 #include "fwd/Model.h"
+#include "fwd/StatusManager.h"
 
 #include "DataPartition.h"
 
@@ -49,10 +50,17 @@ public:
     /// \param n number of points to add
     void addEmptyDataPoints(size_t n);
 
+    /// creates a new #DataPoint and calls #Model::setFinalStateMomenta on it
+    /// \param P the momenta to be set
+    /// \param sm StatusManager to use when calling #Model::setFinalStateMomenta
+    /// \return the created #DataPoint
+    const DataPoint createDataPoint(const std::vector<FourVector<double> >& P, StatusManager& sm);
+
     /// creates a new #DataPoint and #setFinalStateMomenta to P
     /// \param P the momenta to be set
     /// \return the created #DataPoint
-    const DataPoint createDataPoint(const std::vector<FourVector<double> >& P);
+    const DataPoint createDataPoint(const std::vector<FourVector<double> >& P)
+    { return createDataPoint(P, *this); }
 
     /// creates a DataPoint from a vector of FourVector's using #createDataPoint
     /// and pushes it back in the vector data points
