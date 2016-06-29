@@ -107,7 +107,7 @@ private:
     ParticleCombination() = default;
 
     /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
-    ParticleCombination(unsigned index) : Indices_(1, index) {}
+    explicit ParticleCombination(unsigned index) : Indices_(1, index) {}
 
     /// Copy constructor is deleted
     ParticleCombination(const ParticleCombination&) = delete;
