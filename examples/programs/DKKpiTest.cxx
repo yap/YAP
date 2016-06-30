@@ -66,8 +66,8 @@ int main( int argc, char** argv)
 
     LOG(INFO) << D->decayChainAsString();
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
-    data_accessors_as_string(M, false);
+    LOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    LOG(INFO) << data_accessors_as_string(M, false);
 
     // choose default Dalitz coordinates
     const yap::MassAxes massAxes = M.massAxes();

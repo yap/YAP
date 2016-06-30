@@ -116,8 +116,8 @@ int main( int argc, char** argv)
 
     LOG(INFO) << D->decayChainAsString();
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
-    data_accessors_as_string(M, false);
+    LOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    LOG(INFO) << data_accessors_as_string(M, false);
 
     // get default Dalitz axes
     auto massAxes = M.massAxes();
@@ -135,7 +135,7 @@ int main( int argc, char** argv)
             data.push_back(P);
     }
 
-    masses_as_string(*M.fourMomenta(), data[0]);
+    LOG(INFO) << masses_as_string(*M.fourMomenta(), data[0]);
 
     for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
         LOG(INFO) << p;
