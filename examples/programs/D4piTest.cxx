@@ -3,6 +3,7 @@
 #include "DataPoint.h"
 #include "DataSet.h"
 #include "DecayChannel.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
@@ -112,8 +113,7 @@ int main( int argc, char** argv)
     for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
         std::cout << *pc_i.first << ": " << pc_i.second << "\n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    LOG(INFO) << D->decayChainAsString();
 
     std::cout << *M.spinAmplitudeCache() << std::endl;
     data_accessors_as_string(M, false);
@@ -231,7 +231,7 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << D->printDecayTrees();
+    LOG(INFO) << to_string(M.initialStateParticle()->decayTrees());
 
     std::cout << "alright! \n";
 }

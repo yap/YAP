@@ -64,8 +64,7 @@ int main( int argc, char** argv)
 
     std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    LOG(INFO) << D->decayChainAsString();
 
     std::cout << *M.spinAmplitudeCache() << std::endl;
     data_accessors_as_string(M, false);

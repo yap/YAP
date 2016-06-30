@@ -131,13 +131,11 @@ public:
     /// @}
 
     /// Print complete decay chain
-    void printDecayChain() const
-    { printDecayChainLevel(0); }
+    std::string decayChainAsString() const
+    { return decayChainLevelAsString(0); }
 
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
-
-    std::string printDecayTrees() const;
 
     /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
     /// and storeBlattWeisskopf()
@@ -165,7 +163,7 @@ protected:
     /// if only one decay channel is available, fix its free amplitude to the current value
     void fixSolitaryFreeAmplitudes();
 
-    void printDecayChainLevel(int level) const;
+    std::string decayChainLevelAsString(int level) const;
 
     /// modify a DecayTree
     /// \param dt DecayTree to modify

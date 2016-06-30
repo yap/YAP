@@ -8,6 +8,7 @@
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
@@ -72,7 +73,7 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
         // incoherently sum over initialStateParticles
         for (auto& kv : M.initialStateParticles()) {
             FDEBUG("calculate amplitude for " << to_string(*kv.first) << " with decay trees:");
-            DEBUG(kv.first->printDecayTrees());
+            DEBUG(to_string(kv.first->decayTrees()));
             L += log(kv.second->value() * norm(amplitude(kv.first->decayTrees(), d)));
         }
     }

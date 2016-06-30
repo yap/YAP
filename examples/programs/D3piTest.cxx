@@ -114,8 +114,7 @@ int main( int argc, char** argv)
 
     // std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    LOG(INFO) << D->decayChainAsString();
 
     std::cout << *M.spinAmplitudeCache() << std::endl;
     data_accessors_as_string(M, false);
@@ -173,7 +172,7 @@ int main( int argc, char** argv)
                                      [](const std::string & s, const std::complex<double>& c)
     { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
 
-    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+    LOG(INFO) << to_string(M.initialStateParticle()->decayTrees());
 
     LOG(INFO) << "alright!";
 }
