@@ -8,6 +8,7 @@
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
@@ -72,7 +73,7 @@ const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
         // incoherently sum over initialStateParticles
         for (auto& kv : M.initialStateParticles()) {
             FDEBUG("calculate amplitude for " << to_string(*kv.first) << " with decay trees:");
-            DEBUG(kv.first->printDecayTrees());
+            DEBUG(to_string(kv.first->decayTrees()));
             L += log(kv.second->value() * norm(amplitude(kv.first->decayTrees(), d)));
         }
     }
@@ -359,18 +360,15 @@ void Model::prepareDataAccessors()
 
     }
 
-#ifndef ELPP_DISABLE_DEBUG_LOGS
-    std::cout << "StaticDataAccessors:\n";
-    for (auto& D : StaticDataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-    std::cout << "DataAccessors:\n";
-    for (auto& D : DataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-#endif
+    // print all DataAccessors
+    DEBUG("StaticDataAccessors:");
+    std::for_each(StaticDataAccessors_.begin(), StaticDataAccessors_.end(),
+            [] (const StaticDataAccessor* da) {DEBUG(to_string(da->symmetrizationIndices()))});
+
+    DEBUG("DataAccessors:");
+    DEBUG("StaticDataAccessors:");
+    std::for_each(DataAccessors_.begin(), DataAccessors_.end(),
+            [] (const DataAccessor* da) {DEBUG(to_string(da->symmetrizationIndices()))});
 
     lock();
 }
@@ -625,47 +623,58 @@ void Model::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-void Model::printDataAccessors(bool printParticleCombinations) const
+std::string data_accessors_as_string(const Model& m, bool printParticleCombinations)
 {
+    using std::to_string;
+
     // header
-    std::cout << "DataAccessors of \n"
-              << "index \tnSymIndices \taddress  \tname";
+    std::string s = "DataAccessors of \nindex \tnSymIndices \taddress \tname";
 
     if (printParticleCombinations)
-        std::cout << "\t\tparticleCombinations";
+        s += "\t\tparticleCombinations";
 
-    std::cout << std::endl;
+    s += "\n";
 
-    for (const auto& d : DataAccessors_) {
-        std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+    for (const auto& d : m.dataAccessors()) {
+        std::stringstream ss;
+        ss << d;
+        s +=  to_string(d->index()) + "  \t" + to_string(d->nSymmetrizationIndices()) + "  \t\t"
+                + ss.str() + "  \t(" + typeid(*d).name() + ")  \t";
 
         if (printParticleCombinations) {
-            std::cout << " \t";
-
-            for (const auto& pc_i : d->symmetrizationIndices())
-                std::cout << *pc_i.first << ":" << pc_i.second << ";  ";
+            s += " \t";
+            s += to_string(d->symmetrizationIndices());
         }
 
-        std::cout << std::endl;
+        s += "\n";
     }
-    std::cout << std::endl;
+    s += "\n";
+
+    return s;
 }
 
 //-------------------------
-void Model::printFlags(const StatusManager& sm) const
+std::string flags_as_string(const Model& m, const StatusManager& sm)
 {
-    for (const auto& d : DataAccessors_) {
-        std::cout << std::endl;
+    using std::to_string;
+    std::string s;
+
+    for (const auto& d : m.dataAccessors()) {
+        s += "\n";
 
         for (auto& c : d->cachedDataValues()) {
-            std::cout << "  CachedDataValue " << c << ": ";
+            std::stringstream ss;
+            ss << c;
+            s += "  CachedDataValue " + ss.str() + ": ";
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
-                std::cout << sm.status(*c, i) << "; ";
-            std::cout << "\n";
+                s += to_string(sm.status(*c, i)) + "; ";
+            s += "\n";
         }
     }
 
-    std::cout << std::endl;
+    s += "\n";
+
+    return s;
 }
 
 }

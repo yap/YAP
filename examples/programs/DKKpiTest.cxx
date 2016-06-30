@@ -64,11 +64,10 @@ int main( int argc, char** argv)
 
     std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    LOG(INFO) << D->decayChainAsString();
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
-    M.printDataAccessors(false);
+    LOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    LOG(INFO) << data_accessors_as_string(M, false);
 
     // choose default Dalitz coordinates
     const yap::MassAxes massAxes = M.massAxes();
@@ -79,7 +78,7 @@ int main( int argc, char** argv)
     auto data = M.createDataSet(1);
 
     DEBUG("BEFORE");
-    M.fourMomenta()->printMasses(data[0]);
+    DEBUG(masses_as_string(*M.fourMomenta(), data[0]));
 
     LOG(INFO) << "setting squared mass ...";
     auto P = M.calculateFourMomenta(massAxes, m2, D);
@@ -91,7 +90,7 @@ int main( int argc, char** argv)
     }
 
     DEBUG("AFTER");
-    M.fourMomenta()->printMasses(data[0]);
+    DEBUG(masses_as_string(*M.fourMomenta(), data[0]));
 
     std::cout << "alright! \n";
 }

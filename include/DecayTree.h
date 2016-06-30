@@ -162,6 +162,9 @@ FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV);
 /// \param vector of trees to check in
 const DecayTreeVector select_changed(const DecayTreeVector& dtv);
 
+/// \return map of spin projections to decayTrees as string
+std::string to_string(const std::map<int, DecayTreeVector>& decayTrees);
+
 }
 
 #endif

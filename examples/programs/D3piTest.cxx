@@ -114,11 +114,10 @@ int main( int argc, char** argv)
 
     // std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    LOG(INFO) << D->decayChainAsString();
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
-    M.printDataAccessors(false);
+    LOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    LOG(INFO) << data_accessors_as_string(M, false);
 
     // get default Dalitz axes
     auto massAxes = M.massAxes();
@@ -136,8 +135,7 @@ int main( int argc, char** argv)
             data.push_back(P);
     }
 
-    LOG(INFO) << "AFTER";
-    M.fourMomenta()->printMasses(data[0]);
+    LOG(INFO) << masses_as_string(*M.fourMomenta(), data[0]);
 
     for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
         LOG(INFO) << p;
@@ -174,7 +172,7 @@ int main( int argc, char** argv)
                                      [](const std::string & s, const std::complex<double>& c)
     { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
 
-    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+    LOG(INFO) << to_string(M.initialStateParticle()->decayTrees());
 
     LOG(INFO) << "alright!";
 }

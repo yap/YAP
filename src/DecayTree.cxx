@@ -176,4 +176,15 @@ const DecayTreeVector select_changed(const DecayTreeVector& dtv)
     return C;
 }
 
+//-------------------------
+std::string to_string(const std::map<int, DecayTreeVector>& decayTrees)
+{
+    std::string s;
+    for (const auto& m_dtv : decayTrees) {
+        for (const auto& dt : m_dtv.second)
+            s += "\ndepth = " + std::to_string(depth(*dt)) + "\n" + dt->asString() + "\n";
+    }
+    return s;
+}
+
 }

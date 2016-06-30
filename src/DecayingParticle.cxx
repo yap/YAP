@@ -260,8 +260,10 @@ std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateP
 }
 
 //-------------------------
-void DecayingParticle::printDecayChainLevel(int level) const
+std::string DecayingParticle::decayChainLevelAsString(int level) const
 {
+    std::ostringstream os;
+
     // get maximum length of particle names
     static size_t padding = 0;
     static size_t paddingSpinAmp = 0;
@@ -271,33 +273,35 @@ void DecayingParticle::printDecayChainLevel(int level) const
             for (std::shared_ptr<Particle> d : c->daughters()) {
                 padding = std::max(padding, d->name().length());
                 if (std::dynamic_pointer_cast<DecayingParticle>(d))
-                    std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(-1);
+                    os << std::static_pointer_cast<DecayingParticle>(d)->decayChainLevelAsString(-1);
                 paddingSpinAmp = std::max(paddingSpinAmp, to_string(c->spinAmplitudes()).length());
             }
         }
         if (level == -1)
-            return;
+            return os.str();
     }
 
     for (size_t i = 0; i < Channels_.size(); ++i) {
         if (i > 0)
-            std::cout << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
+            os << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
 
-        std::cout << std::left << std::setw(padding) << this->name() << " ->";
+        os << std::left << std::setw(padding) << this->name() << " ->";
         for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
-            std::cout << " " << std::setw(padding) << d->name();
-        std::cout << std::left << std::setw(paddingSpinAmp)
+            os << " " << std::setw(padding) << d->name();
+        os << std::left << std::setw(paddingSpinAmp)
                   << to_string(Channels_[i]->spinAmplitudes());
 
         for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
             if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-                std::cout << ",  ";
-                std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(level + 1);
+                os << ",  ";
+                os << std::static_pointer_cast<DecayingParticle>(d)->decayChainLevelAsString(level + 1);
             }
     }
 
     if (level == 0)
-        std::cout << "\n";
+        os << "\n";
+
+    return os.str();
 }
 
 //-------------------------
@@ -362,17 +366,6 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
         // Add BlattWeisskopf object
         dt.addDataAccessor(*bw->second);
     }
-}
-
-//-------------------------
-std::string DecayingParticle::printDecayTrees() const
-{
-    std::string s;
-    for (const auto& m_dtv : DecayTrees_) {
-        for (const auto& dt : m_dtv.second)
-            s += "\ndepth = " + std::to_string(depth(*dt)) + "\n" + dt->asString() + "\n";
-    }
-    return s;
 }
 
 //-------------------------
