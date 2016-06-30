@@ -68,7 +68,7 @@ int main( int argc, char** argv)
     std::cout << "\n";
 
     std::cout << *M.spinAmplitudeCache() << std::endl;
-    M.printDataAccessors(false);
+    data_accessors_as_string(M, false);
 
     // choose default Dalitz coordinates
     const yap::MassAxes massAxes = M.massAxes();

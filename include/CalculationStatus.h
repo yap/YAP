@@ -31,17 +31,20 @@ enum class CalculationStatus : bool {
     uncalculated = false
 };
 
-inline std::ostream& operator<<(std::ostream& str, const CalculationStatus& c)
+inline std::string to_string(const CalculationStatus& c)
 {
     switch (c) {
         case CalculationStatus::calculated:
-            return str << "calculated";
+            return "calculated";
         case CalculationStatus::uncalculated:
-            return str << "uncalculated";
+            return "uncalculated";
         default:
-            return str << (int) c;
+            return std::to_string(static_cast<int>(c));
     }
 }
+
+inline std::ostream& operator<<(std::ostream& str, const CalculationStatus& c)
+{ return str << to_string(c); }
 
 }
 

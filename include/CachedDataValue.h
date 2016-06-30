@@ -185,8 +185,12 @@ inline bool operator==(const CachedDataValue::Status& S, const VariableStatus& s
 inline bool operator!=(const CachedDataValue::Status& S, const VariableStatus& s)
 { return S.Variable != s; }
 
+/// to_string for CachedDataValue::Status
+std::string to_string(const CachedDataValue::Status& S);
+
 /// streaming operator for CachedDataValue::Status
-std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
+inline std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S)
+{ return str << to_string(S); }
 
 /// \class RealCachedDataValue
 /// \brief Class for managing a single real cached value inside a #DataPoint

@@ -209,12 +209,6 @@ public:
     /// Set VariableStatus'es of all Parameter's to unchanged, or leave as fixed
     void setParameterFlagsToUnchanged();
 
-    /// Print the list of DataAccessor's
-    void printDataAccessors(bool printParticleCombinations = true) const;
-
-    /// Print all VariableStatus'es and CalculationStatus'es
-    void printFlags(const StatusManager& sm) const;
-
     /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
 
@@ -293,6 +287,12 @@ const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
 /// \return The sum of the logs of squared amplitudes evaluated over the data partitions
 /// \param DP DataPartitionVector of partitions to use
 const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
+
+/// Print the list of DataAccessor's
+std::string data_accessors_as_string(const Model& m, bool printParticleCombinations = true);
+
+/// Print all VariableStatus'es and CalculationStatus'es
+std::string flags_as_string(const Model& m, const StatusManager& sm);
 
 }
 

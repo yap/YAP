@@ -30,19 +30,22 @@ enum class VariableStatus : int {
     unchanged = +1,        ///< Parameter is free but has not been changed
 };
 
-inline std::ostream& operator<<(std::ostream& str, const VariableStatus& s)
+inline std::string to_string(const VariableStatus& s)
 {
     switch (s) {
         case VariableStatus::changed:
-            return str << "changed";
+            return "changed";
         case VariableStatus::fixed:
-            return str << "fixed";
+            return "fixed";
         case VariableStatus::unchanged:
-            return str << "unchanged";
+            return "unchanged";
         default:
-            return str << (int) s;
+            return std::to_string(static_cast<int>(s));
     }
 }
+
+inline std::ostream& operator<<(std::ostream& str, const VariableStatus& c)
+{ return str << to_string(c); }
 
 }
 

@@ -622,45 +622,58 @@ void Model::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-void Model::printDataAccessors(bool printParticleCombinations) const
+std::string data_accessors_as_string(const Model& m, bool printParticleCombinations)
 {
+    using std::to_string;
+
     // header
-    std::cout << "DataAccessors of \n"
-              << "index \tnSymIndices \taddress  \tname";
+    std::string s = "DataAccessors of \nindex \tnSymIndices \taddress \tname";
 
     if (printParticleCombinations)
-        std::cout << "\t\tparticleCombinations";
+        s += "\t\tparticleCombinations";
 
-    std::cout << std::endl;
+    s += "\n";
 
-    for (const auto& d : DataAccessors_) {
-        std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+    for (const auto& d : m.dataAccessors()) {
+        std::stringstream ss;
+        ss << d;
+        s +=  to_string(d->index()) + "  \t" + to_string(d->nSymmetrizationIndices()) + "  \t\t"
+                + ss.str() + "  \t(" + typeid(*d).name() + ")  \t";
 
         if (printParticleCombinations) {
-            std::cout << " \t";
-            to_string(d->symmetrizationIndices());
+            s += " \t";
+            s += to_string(d->symmetrizationIndices());
         }
 
-        std::cout << std::endl;
+        s += "\n";
     }
-    std::cout << std::endl;
+    s += "\n";
+
+    return s;
 }
 
 //-------------------------
-void Model::printFlags(const StatusManager& sm) const
+std::string flags_as_string(const Model& m, const StatusManager& sm)
 {
-    for (const auto& d : DataAccessors_) {
-        std::cout << std::endl;
+    using std::to_string;
+    std::string s;
+
+    for (const auto& d : m.dataAccessors()) {
+        s += "\n";
 
         for (auto& c : d->cachedDataValues()) {
-            std::cout << "  CachedDataValue " << c << ": ";
+            std::stringstream ss;
+            ss << c;
+            s += "  CachedDataValue " + ss.str() + ": ";
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
-                std::cout << sm.status(*c, i) << "; ";
-            std::cout << "\n";
+                s += to_string(sm.status(*c, i)) + "; ";
+            s += "\n";
         }
     }
 
-    std::cout << std::endl;
+    s += "\n";
+
+    return s;
 }
 
 }
