@@ -135,7 +135,7 @@ private:
 
 };
 
-/// print all masses
+/// \return all masses as (multiline) string
 std::string masses_as_string(const FourMomenta& fm, const DataPoint& d);
 
 }

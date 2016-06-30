@@ -157,7 +157,7 @@ std::string masses_as_string(const FourMomenta& fm, const DataPoint& d)
 
     std::set<unsigned> used;
 
-    // print the ISP
+    // the ISP
     for (auto& kv : fm.symmetrizationIndices())
         // if ISP and not yet printed (should only print once)
         if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
@@ -167,7 +167,7 @@ std::string masses_as_string(const FourMomenta& fm, const DataPoint& d)
             used.insert(kv.second);
         }
 
-    // print the FSP's
+    // the FSP's
     for (size_t i = 0; i < fm.model()->finalStateParticles().size(); ++i)
         for (auto& kv : fm.symmetrizationIndices())
             if (kv.first->isFinalStateParticle() and kv.first->indices()[0] == i and used.find(kv.second) == used.end()) {
@@ -178,7 +178,7 @@ std::string masses_as_string(const FourMomenta& fm, const DataPoint& d)
             }
 
 
-    // print the rest in increasing number of particle content
+    // the rest in increasing number of particle content
     for (unsigned i = 2; i < n_fsp; ++i)
         for (auto& kv : fm.symmetrizationIndices())
             // if i-particle mass and not yet printed
@@ -189,7 +189,7 @@ std::string masses_as_string(const FourMomenta& fm, const DataPoint& d)
                 used.insert(kv.second);
             }
 
-    // print unused
+    // unused
     for (auto& kv : fm.symmetrizationIndices())
         if (used.find(kv.second) == used.end()) {
             s += "        : ";

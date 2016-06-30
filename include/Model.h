@@ -288,10 +288,12 @@ const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
 /// \param DP DataPartitionVector of partitions to use
 const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
 
-/// Print the list of DataAccessor's
+/// \return the list of DataAccessor's as (multiline) string
+/// \param m Model to print DataAccessor's of
+/// \param printParticleCombinations also print ParticleCombination's of each DataAccessor
 std::string data_accessors_as_string(const Model& m, bool printParticleCombinations = true);
 
-/// Print all VariableStatus'es and CalculationStatus'es
+/// \return all VariableStatus'es and CalculationStatus'es as (multiline) string
 std::string flags_as_string(const Model& m, const StatusManager& sm);
 
 }

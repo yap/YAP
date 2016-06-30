@@ -130,7 +130,7 @@ public:
 
     /// @}
 
-    /// Print complete decay chain
+    /// \return complete decay chain as (multiline) string
     std::string decayChainAsString() const
     { return decayChainLevelAsString(0); }
 
