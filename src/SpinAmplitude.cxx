@@ -4,7 +4,6 @@
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "Exceptions.h"
-#include "logging.h"
 #include "Spin.h"
 #include "StatusManager.h"
 
@@ -100,7 +99,6 @@ void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m)
         throw exceptions::Exception("Amplitude already stored for " + spin_to_string(two_M) + " -> " + to_string(two_m),
                                     "SpinAmplitude::addAmplitude");
 
-    FDEBUG("adding CachedDataValue for " << spin_to_string(two_M) << " -> " << to_string(two_m) << " in " << *this);
     ASM[two_m] = ComplexCachedDataValue::create(this);
 }
 

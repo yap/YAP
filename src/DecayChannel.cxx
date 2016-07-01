@@ -367,9 +367,9 @@ FinalStateParticleVector DecayChannel::finalStateParticles() const
             fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
 
         } else {
-            FLOG(ERROR) << "Daughter is neither a FinalStateParticle nor a DecayingParticle. DecayChannel is inconsistent.";
             throw exceptions::Exception("Invalid daughter", "DecayChannel::DecayChannel");
         }
+
     }
 
     return fsps;

@@ -43,7 +43,6 @@ ParticleFactory::ParticleFactory(const std::string pdlFile)
 std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 {
     const auto& p = particleTableEntry(PDG);
-    DEBUG("make FinalStateParticle " << p.Name << " with quantum numbers " << p);
     return FinalStateParticle::create(p, p.Mass, p.Name);
 }
 
@@ -51,7 +50,6 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize) const
 {
     const auto& p = particleTableEntry(PDG);
-    DEBUG("make DecayingParticle " << p.Name << " with quantum numbers " << p);
     return DecayingParticle::create(p, p.Mass, p.Name, radialSize);
 }
 
@@ -59,7 +57,6 @@ std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, dou
 std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const
 {
     const auto& p = particleTableEntry(PDG);
-    DEBUG("make Resonance " << p.Name << " with quantum numbers " << p);
     massShape->setParameters(p);
     return Resonance::create(p, p.Mass, p.Name, radialSize, std::move(massShape));
 }
@@ -67,10 +64,10 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
 //-------------------------
 const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 {
-    if (particleTable_.count(PDG) == 0) {
-        LOG(FATAL) << "ParticleFactory::particleTableEntry : No particle table entry for PDG " << PDG;
-    }
-    return particleTable_.at(PDG);
+    if (ParticleTable_.count(PDG) == 0)
+        throw exceptions::Exception("ParticleFactory::particleTableEntry : No particle table entry for PDG " + std::to_string(PDG),
+                                    "ParticleFactory::particleTableEntry");
+    return ParticleTable_.at(PDG);
 }
 
 //-------------------------
@@ -80,21 +77,20 @@ void ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
         throw exceptions::Exception("entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
                                     "ParticlFactory::addParticleTableEntry");
 
-    if (particleTable_.count(entry.PDG) != 0)
-        LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG << " already exists. Overwriting entry.";
+    if (ParticleTable_.count(entry.PDG) != 0)
+        FLOG(WARNING) << "PDG code " << entry.PDG << " already exists. Overwriting entry.";
 
-    particleTable_[entry.PDG] = entry;
+    ParticleTable_[entry.PDG] = entry;
 }
 
 //-------------------------
 int ParticleFactory::pdgCode(std::string name) const
 {
-    auto it = std::find_if(particleTable_.begin(), particleTable_.end(),
+    auto it = std::find_if(ParticleTable_.begin(), ParticleTable_.end(),
     [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.Name == name;});
-    if (it == particleTable_.end()) {
-        LOG(ERROR) << "ParticleFactory::pdgCode - particle with name \"" << name << "\" not found.";
-        return 0;
-    }
+    if (it == ParticleTable_.end())
+        throw exceptions::Exception("particle with name \"" + name + "\" not found",
+                                    "ParticleFactory::pdgCode");
     return it->first;
 }
 
@@ -128,10 +124,8 @@ void ParticleFactory::readPDT(const std::string fname)
     int    lundkc;
     //EvtId i;
 
-    if (!indec) {
-        LOG(ERROR) << "Could not open:" << fname.c_str() << "EvtPDL";
-        return;
-    }
+    if (!indec)
+        throw exceptions::Exception("Could not open \"" + fname + "\"", "ParticleFactory::readPDT");
 
     do {
 

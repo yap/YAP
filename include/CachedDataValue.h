@@ -107,13 +107,7 @@ public:
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
     inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
-    {
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-        return d.Data_[Owner_->index()][sym_index][Position_ + index];
-#else
-        return d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index);
-#endif
-    }
+    { return d.Data_[Owner_->index()][sym_index][Position_ + index]; }
 
     /// \return Size of cached value (number of real elements)
     virtual const unsigned size() const
@@ -130,7 +124,8 @@ public:
     /// \param val Value to set to
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
-    void setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const;
+    void setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const
+    { d.Data_[Owner_->index()][sym_index][Position_ + index] = val; } 
 
     /// @}
 

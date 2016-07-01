@@ -5,7 +5,6 @@
 #include "DataPoint.h"
 #include "Exceptions.h"
 #include "FourVector.h"
-#include "logging.h"
 #include "StatusManager.h"
 #include "VariableStatus.h"
 
@@ -40,16 +39,6 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
 {
     if (Size_ == 0)
         throw exceptions::Exception("zero size", "CachedDataValue::CachedDataValue");
-}
-
-//-------------------------
-void CachedDataValue::setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const
-{
-#ifdef ELPP_DISABLE_DEBUG_LOGS
-    d.Data_[Owner_->index()][sym_index][Position_ + index] = val;
-#else
-    d.Data_.at(Owner_->index()).at(sym_index).at(Position_ + index) = val;
-#endif
 }
 
 //-------------------------

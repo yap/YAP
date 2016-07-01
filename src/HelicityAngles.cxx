@@ -4,7 +4,6 @@
 #include "CalculationStatus.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
-#include "logging.h"
 #include "LorentzTransformation.h"
 #include "Model.h"
 #include "ParticleCombination.h"
@@ -85,9 +84,6 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 
             Phi_->setValue(phi_theta[0], d, symIndex, sm);
             Theta_->setValue(phi_theta[1], d, symIndex, sm);
-
-            DEBUG("calculated helicity angles for " << to_string(*daughter)
-                  << ": (phi, theta) = (" << phi_theta[0] << ", " << phi_theta[1] << ")");
         }
 
         // recurse down the decay tree

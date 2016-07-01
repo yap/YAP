@@ -81,28 +81,28 @@ public:
     /// \name Particle table access
     /// @{
 
-    /// get ParticleTableEntry from #particleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     const ParticleTableEntry& particleTableEntry(int PDG) const;
 
-    /// get ParticleTableEntry from #particleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
     const ParticleTableEntry& particleTableEntry(std::string name) const
     { return particleTableEntry(pdgCode(name)); }
 
-    /// get #QuantumNumbers from #particleTable_ with safety checks
+    /// get #QuantumNumbers from #ParticleTable_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     const QuantumNumbers& quantumNumbers(int PDG) const
     { return static_cast<const QuantumNumbers&>(particleTableEntry(PDG)); }
 
-    /// get #QuantumNumbers from #particleTable_ with safety checks
+    /// get #QuantumNumbers from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
     const QuantumNumbers& quantumNumbers(std::string name) const
     { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
 
 
-    /// add ParticleTableEntry to #particleTable_
-    /// \param entry ParticleTableEntry to add to #particleTable_
+    /// add ParticleTableEntry to #ParticleTable_
+    /// \param entry ParticleTableEntry to add to #ParticleTable_
     void addParticleTableEntry(ParticleTableEntry entry);
 
     // find PDG number by particle name
@@ -113,11 +113,11 @@ public:
     /// @}
 
 private:
-    /// read pdl file and fill #particleTable_
+    /// read pdl file and fill #ParticleTable_
     void readPDT(const std::string fname);
 
     /// maps PDGCodes to ParticleTableEntry's
-    std::map<int, ParticleTableEntry> particleTable_;
+    std::map<int, ParticleTableEntry> ParticleTable_;
 
 };
 

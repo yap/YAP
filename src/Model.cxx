@@ -215,8 +215,6 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
         // check if insertion failed
         if (res.first == InitialStateParticles_.end())
             throw exceptions::Exception("Failed to insert initialStateParticle", "Model::addInitialStateParticle");
-
-        DEBUG("initial state particle " << *p << " already in model");
     }
 
     return *res.first;
@@ -341,19 +339,6 @@ void Model::prepareDataAccessors()
             index += 1;
 
     }
-
-#ifndef ELPP_DISABLE_DEBUG_LOGS
-    std::cout << "StaticDataAccessors:\n";
-    for (auto& D : StaticDataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-    std::cout << "DataAccessors:\n";
-    for (auto& D : DataAccessors_) {
-        std::cout << std::endl;
-        D->printParticleCombinations();
-    }
-#endif
 
     lock();
 }

@@ -28,8 +28,6 @@ void MassShape::calculate(DataPartition& D) const
         // recalculate & cache, if necessary
         if (D.status(*T(), pc_si.second) == CalculationStatus::uncalculated) {
 
-            DEBUG("calculate mass shape");
-
             calculateT(D, pc_si.first, pc_si.second);
             D.status(*T(), pc_si.second) = CalculationStatus::calculated;
         }
