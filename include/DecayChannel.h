@@ -66,7 +66,7 @@ public:
     virtual bool consistent() const;
 
     /// \return vector of shared_ptr's to final-state particles of channel (recursively checked)
-    std::vector<std::shared_ptr<FinalStateParticle> > finalStateParticles() const;
+    FinalStateParticleVector finalStateParticles() const;
 
     /// \name Getters
     /// @{

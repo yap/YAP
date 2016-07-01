@@ -17,14 +17,19 @@
  */
 
 /// \file
-/// Contains forward declarations only
 
 #ifndef yap_FinalStateParticleFwd_h
 #define yap_FinalStateParticleFwd_h
 
+#include <memory>
+#include <vector>
+
 namespace yap {
 
 class FinalStateParticle;
+
+/// \typedef FinalStateParticleVector
+using FinalStateParticleVector = std::vector<std::shared_ptr<FinalStateParticle> >;
 
 }
 

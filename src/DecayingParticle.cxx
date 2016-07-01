@@ -54,19 +54,6 @@ bool DecayingParticle::consistent() const
     // check consistency of all channels
     std::for_each(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
 
-    // check if all channels lead to same final state particles
-    /// \todo This isn't necessary, we should think how to change this. Example: D -> KKpipi, with f0->KK and f0->pipi
-    std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = Channels_[0]->finalStateParticles();
-    std::sort(fsps0.begin(), fsps0.end());
-    for (unsigned i = 1; i < Channels_.size(); ++i) {
-        std::vector<std::shared_ptr<FinalStateParticle> > fsps = Channels_[i]->finalStateParticles();
-        std::sort(fsps.begin(), fsps.end());
-        if (fsps != fsps0) {
-            FLOG(ERROR) << "final state of channel " << i << " does not match.";
-            C &= false;
-        }
-    }
-
     return C;
 }
 
@@ -248,7 +235,7 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
 }
 
 //-------------------------
-std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
+FinalStateParticleVector DecayingParticle::finalStateParticles(unsigned i) const
 {
     if (i >= Channels_.size())
         throw exceptions::Exception("Channel index too high (" + std::to_string(i) + " >= " + std::to_string(Channels_.size()) + ")",

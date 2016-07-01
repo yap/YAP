@@ -103,10 +103,10 @@ public:
     { ParticleVector V{daughters...}; return addChannel(V); }
     /* { ParticleVector V; fill_vector(daughters..., V); return addChannel(V); } */
 
-    /// Return final state particles of a channel (vector should be identical for all channels)
+    /// Return final state particles of a channel
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.
-    std::vector< std::shared_ptr<FinalStateParticle> > finalStateParticles(unsigned i = 0) const;
+    FinalStateParticleVector finalStateParticles(unsigned i) const;
 
     /// \name Getters
     /// @{

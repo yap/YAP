@@ -125,7 +125,7 @@ public:
     { return SpinAmplitudeCache_.get(); }
 
     /// \return vector of shared pointers to final state particles
-    const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
+    const FinalStateParticleVector& finalStateParticles() const
     { return FinalStateParticles_; }
 
     const initialStateParticleMap& initialStateParticles() const
@@ -160,7 +160,7 @@ public:
     /// given in data points. The FinalStateParticle's have their
     /// Model pointer set to this
     /// \param FSP vector of shared pointers to final-state particles
-    void setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP);
+    void setFinalState(const FinalStateParticleVector& FSP);
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
@@ -169,8 +169,7 @@ public:
     /// \param FSPs shared pointers to final-state particles
     template <typename ... Types>
     void setFinalState(Types ... FSPs)
-    { std::vector<std::shared_ptr<FinalStateParticle> > V{FSPs...}; setFinalState(V); }
-    /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
+    { FinalStateParticleVector V{FSPs...}; setFinalState(V); }
 
     /// add an initial state particle
     /// The first particle added that decays to the full final state will become THE initial state particle,
@@ -271,7 +270,7 @@ private:
     std::shared_ptr<DecayingParticle> TheInitialStateParticle_;
 
     /// vector of final state particles
-    std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;
+    FinalStateParticleVector FinalStateParticles_;
 
     /// four momenta manager
     std::shared_ptr<FourMomenta> FourMomenta_;

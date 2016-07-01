@@ -159,7 +159,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 }
 
 //-------------------------
-void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP)
+void Model::setFinalState(const FinalStateParticleVector& FSP)
 {
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
