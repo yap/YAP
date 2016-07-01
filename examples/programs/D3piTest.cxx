@@ -131,30 +131,18 @@ int main( int argc, char** argv)
     // create data set
     auto data = M.createDataSet();
 
-    for (unsigned i = 0; i < 10000; ++i) {
-        auto P = phsp(M, D->mass()->value(), A, m2r, g, 10);
-        if (!P.empty())
-            data.push_back(P);
-    }
+    // generate 10,000 phase-space-distributed data points
+    std::generate_n(std::back_inserter(data), 10000,
+                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
 
-    LOG(INFO) << "AFTER";
-    M.fourMomenta()->printMasses(data[0]);
-
-    for (auto p : M.fourMomenta()->finalStateMomenta(data[0]))
-        LOG(INFO) << p;
+    LOG(INFO) << data.size() << " data points of " << data[0].bytes() << " bytes each = " << (data.size() * data[0].bytes()) * 1.e-6 << " MB";
 
     M.calculate(data);
 
-    FLOG(INFO) << M.initialStateParticles().size() << " ISPs";
-
     for (const auto& isp_b2 : M.initialStateParticles()) {
-        FLOG(INFO) << *isp_b2.first;
-        FLOG(INFO) << isp_b2.first->decayTrees().size() << " spin projections";
         for (const auto& m_dtv : isp_b2.first->decayTrees()) {
 
-            FLOG(INFO) << "m = " << m_dtv.first;
-            FLOG(INFO) << m_dtv.second.size() << " decay trees";
-            LOG(INFO) << to_string(m_dtv.second);
+            LOG(INFO) << "\n" << to_string(m_dtv.second);
 
             auto A_DT = amplitude(m_dtv.second, data[0]);
             LOG(INFO) << "A_DT = " << A_DT;

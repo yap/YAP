@@ -50,6 +50,10 @@ public:
     /// \param n number of points to add
     void addEmptyDataPoints(size_t n);
 
+    /// \typedef value_type
+    /// needed by std::back_inserter and std::inserter
+    using value_type = std::vector<FourVector<double> >;
+
     /// creates a new #DataPoint and calls #Model::setFinalStateMomenta on it
     /// \param P the momenta to be set
     /// \param sm StatusManager to use when calling #Model::setFinalStateMomenta

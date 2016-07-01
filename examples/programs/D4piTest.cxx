@@ -129,10 +129,9 @@ int main( int argc, char** argv)
     yap::DataSet data = M.createDataSet();
     // create random number engine for generation of points
     std::mt19937 g(0);
-    // fill data set
-    for (unsigned n = 0; n < 1; ++n)
-        data.push_back(yap::phsp(M, D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
-    // std::generate_n(std::back_inserter(data), 1, std::bind(yap::phsp<std::mt19937>, M, D->mass()->value(), A, m2r, g, 100));
+    // fill data set with 1 point
+    std::generate_n(std::back_inserter(data), 1,
+                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
 
     LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
     LOG(INFO) << "Printing data:";

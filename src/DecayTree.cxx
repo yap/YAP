@@ -152,7 +152,7 @@ std::string to_string(const DecayTreeVector& dtv)
 {
     return std::accumulate(dtv.begin(), dtv.end(), std::string(),
                            [](std::string & s, const DecayTreeVector::value_type & dt)
-    { return s += to_string(*dt) + "\n"; });
+                           { return s += "\n" + to_string(*dt); }).erase(0, 1);
 }
 
 //-------------------------

@@ -39,7 +39,7 @@ namespace yap {
 /// \param g random generator to pass to uniform_real_distribution
 /// \param max_attempts maximum number of attempts to make to find a point in phase space
 template <class Generator>
-const std::vector<FourVector<double> > phsp(const Model& M, double initial_mass, const MassAxes& A, const std::vector<MassRange>& R2, Generator& g, unsigned max_attempts = 1000)
+const std::vector<FourVector<double> > phsp(const Model& M, double initial_mass, const MassAxes& A, const std::vector<MassRange>& R2, Generator& g, unsigned max_attempts)
 {
     static std::uniform_real_distribution<double> uniform(0, std::nextafter(1., 2.));
 
