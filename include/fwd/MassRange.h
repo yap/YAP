@@ -17,19 +17,17 @@
  */
 
 /// \file
+/// Contains forward declarations only
 
-#ifndef yap_FinalStateParticleFwd_h
-#define yap_FinalStateParticleFwd_h
+#ifndef yap_MassRangeFwd_h
+#define yap_MassRangeFwd_h
 
-#include <memory>
-#include <vector>
+#include <array>
 
 namespace yap {
 
-class FinalStateParticle;
-
-/// \typedef FinalStateParticleVector
-using FinalStateParticleVector = std::vector<std::shared_ptr<FinalStateParticle> >;
+/// \typedef MassRange
+using MassRange = std::array<double, 2>;
 
 }
 

@@ -9,6 +9,7 @@
 
 #include <BAT/BCModel.h>
 
+#include <DecayingParticle.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <ParticleFactory.h>
@@ -47,6 +48,7 @@ protected:
     yap::MassAxes MassAxes_;
     std::unique_ptr<yap::Model> Model_;
     std::vector<yap::DataSet> Data_;
+    std::shared_ptr<yap::DecayingParticle> ISP_;
 
     std::vector<unsigned> LikelihoodCalls_;
 };

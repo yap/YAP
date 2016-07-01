@@ -3,7 +3,6 @@
 #include "DecayChannel.h"
 #include "Exceptions.h"
 #include "FreeAmplitude.h"
-#include "logging.h"
 #include "RecalculableDataAccessor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
@@ -60,9 +59,7 @@ FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV)
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d) const
 {
     auto A = Complex_0;
-    FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
     for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations()) {
-        FDEBUG("pc " << to_string(*pc));
         A += dataDependentAmplitude(d, pc);
     }
     return A;
@@ -71,9 +68,6 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d)
 //-------------------------
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
-    FDEBUG("decayChannel " << to_string(*FreeAmplitude_->decayChannel()));
-    FDEBUG("pc" << to_string(*pc));
-
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
 
@@ -144,13 +138,21 @@ void DecayTree::addDataAccessor(const RecalculableDataAccessor& rda)
 }
 
 //-------------------------
-std::string DecayTree::asString(std::string offset) const
+std::string to_string(const DecayTree& dt, std::string offset)
 {
-    auto s = to_string(*FreeAmplitude_);
-    offset += "    ";
-    for (const auto& d_dt : DaughterDecayTrees_)
-        s += "\n" + offset + "d[" + std::to_string(d_dt.first) + "] --> " + d_dt.second->asString(offset);
+    std::string s = to_string(*dt.freeAmplitude());
+    offset += "     ";
+    for (auto d_dt : dt.daughterDecayTrees())
+        s += "\n" + offset + "d[" + std::to_string(d_dt.first) + "] --> " + to_string(*d_dt.second, offset);
     return s;
+}
+
+//-------------------------
+std::string to_string(const DecayTreeVector& dtv)
+{
+    return std::accumulate(dtv.begin(), dtv.end(), std::string(),
+                           [](std::string & s, const DecayTreeVector::value_type & dt)
+    { return s += to_string(*dt) + "\n"; });
 }
 
 //-------------------------

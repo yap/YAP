@@ -21,6 +21,7 @@
 #ifndef yap_DecayTreeFwd_h
 #define yap_DecayTreeFwd_h
 
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -30,6 +31,11 @@ class DecayTree;
 
 /// \typedef DecayTreeVector
 using DecayTreeVector = std::vector<std::shared_ptr<DecayTree> >;
+
+/// \typedef DecayTreeVectorMap
+/// Map of type T to DecayTreeVector
+template <typename T>
+using DecayTreeVectorMap = std::map<T, DecayTreeVector>;
 
 }
 

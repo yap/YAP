@@ -48,7 +48,7 @@
 namespace yap {
 
 /// map initial state particle to free (real) amplitude (for incoherent summing over initial state particles)
-using initialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
+using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
 
 /// \class Model
 /// \brief Class implementing a PWA model
@@ -125,25 +125,16 @@ public:
     { return SpinAmplitudeCache_.get(); }
 
     /// \return vector of shared pointers to final state particles
-    const std::vector<std::shared_ptr<FinalStateParticle> >& finalStateParticles() const
+    const FinalStateParticleVector& finalStateParticles() const
     { return FinalStateParticles_; }
 
-    const initialStateParticleMap& initialStateParticles() const
+    /// \return InitialStateParticles_
+    const InitialStateParticleMap& initialStateParticles() const
     { return InitialStateParticles_; }
-
-    /// \return THE initial state particle
-    /// Per default, this will be the first initial state particle added, that decays to the full final state
-    const std::shared_ptr<DecayingParticle> initialStateParticle() const
-    { return TheInitialStateParticle_; }
 
     /// \return set of DataAccessors
     const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
-
-    /// \return (min, max) array[2] of mass range for particle combination
-    /// \param pc shared pointer to ParticleCombination to get mass range of
-    /// \param p Initial state particle to get the mass range for
-    std::array<double, 2> massRange(const std::shared_ptr<ParticleCombination>& pc, std::shared_ptr<DecayingParticle> initialStateParticle) const;
 
     /// @}
 
@@ -156,7 +147,7 @@ public:
     /// given in data points. The FinalStateParticle's have their
     /// Model pointer set to this
     /// \param FSP vector of shared pointers to final-state particles
-    void setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP);
+    void setFinalState(const FinalStateParticleVector& FSP);
 
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
@@ -165,14 +156,13 @@ public:
     /// \param FSPs shared pointers to final-state particles
     template <typename ... Types>
     void setFinalState(Types ... FSPs)
-    { std::vector<std::shared_ptr<FinalStateParticle> > V{FSPs...}; setFinalState(V); }
-    /* { std::vector<std::shared_ptr<FinalStateParticle> > V(); fill_vector(FSPs..., V); setFinalState(V); } */
+    { FinalStateParticleVector V{FSPs...}; setFinalState(V); }
 
     /// add an initial state particle
     /// The first particle added that decays to the full final state will become THE initial state particle,
     /// which can be retrieved by calling #initialStateParticle,
     /// and its amplitude will be fixed
-    const initialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
+    const InitialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
 
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
@@ -194,11 +184,15 @@ public:
     /// \param pcs vector of vectors of particle indices
     const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {});
 
-    /// Calculate four-momenta for final-state particles for phase-space coordinate
+    /// Calculate four-momenta for final-state particles for
+    /// phase-space coordinate.  if `initial_mass` is negative, the
+    /// mass of the first ISP decaying to the full final state is used
+    /// (preferentially taking one with a fixed fore-factor if there
+    /// is such a one)
     /// \param axes phase-space axes
     /// \param squared_masses phase-space coordinate
-    /// \param p Initial state particle to calculate the four momenta with (its mass will be used)
-    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, std::shared_ptr<DecayingParticle> initialStateParticle) const;
+    /// \param initial_mass initial mass of decaying system
+    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, double initial_mass = -1) const;
 
     /// @}
 
@@ -265,14 +259,10 @@ private:
 
     /// pointers to initial particles
     /// they will be summed in incoherently
-    initialStateParticleMap InitialStateParticles_;
-
-    /// The main initial state particle.
-    /// Per default, this will be the first initialStateParticle added, that decays to the full final state
-    std::shared_ptr<DecayingParticle> TheInitialStateParticle_;
+    InitialStateParticleMap InitialStateParticles_;
 
     /// vector of final state particles
-    std::vector<std::shared_ptr<FinalStateParticle> > FinalStateParticles_;
+    FinalStateParticleVector FinalStateParticles_;
 
     /// four momenta manager
     std::shared_ptr<FourMomenta> FourMomenta_;
@@ -285,14 +275,22 @@ private:
 
 };
 
+/// \return vector of shared_ptr to DecayingParticles inside Model
+/// that decay to its full final state, sorted such that the first
+/// entries have fixed prefactors
+std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M);
+
+/// \return intensity for a data point evaluated over isp_map
+const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& d);
+
 /// \return The sum of the logs of squared amplitudes evaluated over the data partition
 /// \param M Model to evaluate
 /// \param D DataPartition to evalue over
-const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D);
+const double sum_of_log_intensity(const Model& M, DataPartition& D);
 
 /// \return The sum of the logs of squared amplitudes evaluated over the data partitions
 /// \param DP DataPartitionVector of partitions to use
-const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP);
+const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP);
 
 }
 

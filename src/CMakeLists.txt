@@ -22,6 +22,7 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
   ImportanceSampler.cxx
+  MassRange.cxx
 	MassShape.cxx
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx

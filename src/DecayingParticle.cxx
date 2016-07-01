@@ -54,19 +54,6 @@ bool DecayingParticle::consistent() const
     // check consistency of all channels
     std::for_each(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
 
-    // check if all channels lead to same final state particles
-    /// \todo This isn't necessary, we should think how to change this. Example: D -> KKpipi, with f0->KK and f0->pipi
-    std::vector<std::shared_ptr<FinalStateParticle> > fsps0 = Channels_[0]->finalStateParticles();
-    std::sort(fsps0.begin(), fsps0.end());
-    for (unsigned i = 1; i < Channels_.size(); ++i) {
-        std::vector<std::shared_ptr<FinalStateParticle> > fsps = Channels_[i]->finalStateParticles();
-        std::sort(fsps.begin(), fsps.end());
-        if (fsps != fsps0) {
-            FLOG(ERROR) << "final state of channel " << i << " does not match.";
-            C &= false;
-        }
-    }
-
     return C;
 }
 
@@ -248,7 +235,7 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
 }
 
 //-------------------------
-std::vector< std::shared_ptr<FinalStateParticle> > DecayingParticle::finalStateParticles(unsigned i) const
+FinalStateParticleVector DecayingParticle::finalStateParticles(unsigned i) const
 {
     if (i >= Channels_.size())
         throw exceptions::Exception("Channel index too high (" + std::to_string(i) + " >= " + std::to_string(Channels_.size()) + ")",
@@ -365,24 +352,19 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 }
 
 //-------------------------
-std::string DecayingParticle::printDecayTrees() const
+std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map)
 {
-    std::string s;
-    for (const auto& m_dtv : DecayTrees_) {
-        for (const auto& dt : m_dtv.second)
-            s += "\ndepth = " + std::to_string(depth(*dt)) + "\n" + dt->asString() + "\n";
-    }
-    return s;
+    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
+                           [](std::string & s, const DecayTreeVectorMap<int>::value_type & m_dtv)
+    { return s += to_string(m_dtv.second); });
 }
 
 //-------------------------
-const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d)
+const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d)
 {
-    auto A = Complex_0;
-    for (const auto& m_dtv : m_dtv_map)
-        for (const auto& dt : m_dtv.second)
-            A += amplitude(*dt, d);
-    return A;
+    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), 0.,
+                           [&](double & a, const DecayTreeVectorMap<int>::value_type & m_dtv)
+    {return a += norm(amplitude(m_dtv.second, d));});
 }
 
 

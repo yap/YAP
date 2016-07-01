@@ -1,4 +1,3 @@
-#include "logging.h"
 #include "BreitWigner.h"
 #include "DataSet.h"
 #include "DecayChannel.h"
@@ -10,8 +9,10 @@
 #include "HelicityAngles.h"
 #include "HelicityFormalism.h"
 #include "ImportanceSampler.h"
+#include "logging.h"
 #include "make_unique.h"
 #include "MassAxes.h"
+#include "MassRange.h"
 #include "Model.h"
 #include "ModelIntegral.h"
 #include "Parameter.h"
@@ -121,17 +122,17 @@ int main( int argc, char** argv)
     M.printDataAccessors(false);
 
     // get default Dalitz axes
-    auto massAxes = M.massAxes();
+    auto A = M.massAxes();
+    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
 
     // generate points randomly in phase space of model
     std::mt19937 g(0);
-    auto P = phsp(M, massAxes, g, 10);
 
     // create data set
     auto data = M.createDataSet();
 
     for (unsigned i = 0; i < 10000; ++i) {
-        auto P = phsp(M, massAxes, g, 10);
+        auto P = phsp(M, D->mass()->value(), A, m2r, g, 10);
         if (!P.empty())
             data.push_back(P);
     }
@@ -143,38 +144,46 @@ int main( int argc, char** argv)
         LOG(INFO) << p;
 
     M.calculate(data);
-    auto A_DT = amplitude(M.initialStateParticle()->decayTrees(), data[0]);
-    LOG(INFO) << "A_DT = " << A_DT;
-    LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-    yap::ModelIntegral MI(M.initialStateParticle()->decayTrees().at(0));
-    yap::ImportanceSampler::calculate(MI, data);
+    FLOG(INFO) << M.initialStateParticles().size() << " ISPs";
 
-    // for (const auto& kv : MI.diagonals())
-    //     LOG(INFO) << to_string(kv.second);
-    // for (const auto& kv : MI.offDiagonals())
-    //     LOG(INFO) << to_string(kv.second);
-    LOG(INFO) << "integral = " << to_string(MI.integral());
-    auto ff = fit_fractions(MI);
-    for (size_t i = 0; i < ff.size(); ++i)
-        LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*MI.decayTrees()[i]->freeAmplitude());
-    LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
+    for (const auto& isp_b2 : M.initialStateParticles()) {
+        FLOG(INFO) << *isp_b2.first;
+        FLOG(INFO) << isp_b2.first->decayTrees().size() << " spin projections";
+        for (const auto& m_dtv : isp_b2.first->decayTrees()) {
 
-    LOG(INFO) << "cached integral components:";
-    auto I_cached = cached_integrals(MI);
-    for (const auto& row : I_cached)
-        LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
-                                     [](const std::string & s, const std::complex<double>& c)
-    { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+            FLOG(INFO) << "m = " << m_dtv.first;
+            FLOG(INFO) << m_dtv.second.size() << " decay trees";
+            LOG(INFO) << to_string(m_dtv.second);
 
-    LOG(INFO) << "integral components:";
-    auto I = integrals(MI);
-    for (const auto& row : I)
-        LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
-                                     [](const std::string & s, const std::complex<double>& c)
-    { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+            auto A_DT = amplitude(m_dtv.second, data[0]);
+            LOG(INFO) << "A_DT = " << A_DT;
+            LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-    LOG(INFO) << M.initialStateParticle()->printDecayTrees();
+            yap::ModelIntegral MI(m_dtv.second);
+            yap::ImportanceSampler::calculate(MI, data);
+
+            LOG(INFO) << "integral = " << to_string(MI.integral());
+            auto ff = fit_fractions(MI);
+            for (size_t i = 0; i < ff.size(); ++i)
+                LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*MI.decayTrees()[i]->freeAmplitude());
+            LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
+
+            LOG(INFO) << "cached integral components:";
+            auto I_cached = cached_integrals(MI);
+            for (const auto& row : I_cached)
+                LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                             [](const std::string & s, const std::complex<double>& c)
+            { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+
+            LOG(INFO) << "integral components:";
+            auto I = integrals(MI);
+            for (const auto& row : I)
+                LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                             [](const std::string & s, const std::complex<double>& c)
+            { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
+        }
+    }
 
     LOG(INFO) << "alright!";
 }

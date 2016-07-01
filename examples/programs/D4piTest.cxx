@@ -120,33 +120,21 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "create dataPoints";
 
+    // create default mass axes
+
+    auto A = M.massAxes();
+    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
+
     // create data set
-    unsigned nPoints = 1;
-    yap::DataSet data = M.createDataSet(nPoints);
-
-    yap::DataSet dataTest = M.createDataSet(nPoints);
-
+    yap::DataSet data = M.createDataSet();
     // create random number engine for generation of points
     std::mt19937 g(0);
+    // fill data set
+    for (unsigned n = 0; n < 1; ++n)
+        data.push_back(yap::phsp(M, D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
+    // std::generate_n(std::back_inserter(data), 1, std::bind(yap::phsp<std::mt19937>, M, D->mass()->value(), A, m2r, g, 100));
 
-    // create default mass axes
-    auto massAxes = M.massAxes();
-
-    unsigned max_attempts = 10;
-    for (unsigned int iEvt = 0; iEvt < nPoints; ++iEvt) {
-        auto momenta = phsp(M, massAxes, g, max_attempts);
-        if (momenta.empty())
-            LOG(INFO) << "after " << max_attempts << " tries, could not generate point inside phase space";
-        else {
-            M.setFinalStateMomenta(data[iEvt], momenta, data);
-            M.setFinalStateMomenta(dataTest[iEvt], momenta, dataTest);
-        }
-    }
-
-    LOG(INFO) << "done creating dataPoints";
-
-    LOG(INFO) <<  "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
-
+    LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
     LOG(INFO) << "Printing data:";
     for (unsigned d = 0; d < data.points().size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
@@ -157,7 +145,6 @@ int main( int argc, char** argv)
     // create data partitions
     unsigned nChains = 1;
     auto parts = yap::DataPartitionWeave::create(data, nChains);
-    //auto partsTest = yap::DataPartitionWeave::create(dataTest, nChains);
 
     auto freeAmps = freeAmplitudes(D->decayTrees());
 
@@ -192,7 +179,7 @@ int main( int argc, char** argv)
         }
         DEBUG("===================================================================================================================== ");
 
-        double logA = sumOfLogsOfSquaredAmplitudes(M, parts);
+        double logA = sum_of_log_intensity(M, parts);
         M.setParameterFlagsToUnchanged();
 
         LOG(INFO) << "logA = " << logA;
@@ -231,7 +218,7 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << D->printDecayTrees();
+    LOG(INFO) << to_string(D->decayTrees());
 
     std::cout << "alright! \n";
 }

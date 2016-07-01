@@ -56,65 +56,63 @@ void Model::calculate(DataPartition& D) const
 }
 
 //-------------------------
+const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& d)
+{
+    return std::accumulate(isp_map.begin(), isp_map.end(), 0.,
+                           [&](double & a, const InitialStateParticleMap::value_type & isp_b2)
+    {return a += isp_b2.second->value() * intensity(isp_b2.first->decayTrees(), d);});
+}
+
+//-------------------------
 // hidden helper function,
 // resolves C++ problem related to naming of functions and call to std::async below
-const double sum_of_logs_of_squared_amplitudes(const Model& M, DataPartition& D)
+const double sum_of_logs_of_intensities(const Model& M, DataPartition& D)
 {
-    if (M.initialStateParticles().empty())
-        throw exceptions::Exception("Model has no initialStateParticles", "sumOfLogsOfSquaredAmplitudes");
-
     // calculate components
     M.calculate(D);
 
-    // sum log of norm of amplitudes over data points in partition
-    double L = 0;
-    for (const auto& d : D) {
-        // incoherently sum over initialStateParticles
-        for (auto& kv : M.initialStateParticles()) {
-            FDEBUG("calculate amplitude for " << to_string(*kv.first) << " with decay trees:");
-            DEBUG(kv.first->printDecayTrees());
-            L += log(kv.second->value() * norm(amplitude(kv.first->decayTrees(), d)));
-        }
-    }
-
-    return L;
+    // sum log of intensities over data points in partition
+    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
 }
 
 //-------------------------
-const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartition& D)
+const double sum_of_log_intensity(const Model& M, DataPartition& D)
 {
-    return sum_of_logs_of_squared_amplitudes(M, D);
+    if (M.initialStateParticles().empty())
+        throw exceptions::Exception("Model has no initialStateParticles", "sum_of_log_intensity");
+
+    return sum_of_logs_of_intensities(M, D);
 }
 
 //-------------------------
-const double sumOfLogsOfSquaredAmplitudes(const Model& M, DataPartitionVector& DP)
+const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP)
 {
-    // if DataPartitionVector is empty, run over whole data set
+    // if DataPartitionVector is empty
     if (DP.empty())
-        throw exceptions::Exception("DataPartitionVector is empty", "sumOfLogsOfSquaredAmplitudes");
+        throw exceptions::Exception("DataPartitionVector is empty", "sum_of_log_intensity");
 
     // check no partitions are nullptr
     if (std::any_of(DP.begin(), DP.end(), std::logical_not<DataPartitionVector::value_type>()))
-        throw exceptions::Exception("DataPartitionVector contains nullptr", "sumOfLogsOfSquaredAmplitudes");
+        throw exceptions::Exception("DataPartitionVector contains nullptr", "sum_of_log_intensity");
 
     // if threading is unnecessary
     if (DP.size() == 1)
-        return sumOfLogsOfSquaredAmplitudes(M, *DP[0]);
+        return sum_of_log_intensity(M, *DP[0]);
+
+    if (M.initialStateParticles().empty())
+        throw exceptions::Exception("Model has no InitialStateParticles", "sum_of_log_intensity");
 
     std::vector<std::future<double> > partial_sums;
+    partial_sums.reserve(DP.size());
 
     // create thread for calculation on each partition
-    for (auto& P : DP) {
+    for (auto& P : DP)
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
-        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_squared_amplitudes, std::cref(M), std::ref(*P)));
-    }
+        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_intensities, std::cref(M), std::ref(*P)));
 
     // wait for each partition to finish calculating
-    double log_L = 0;
-    for (auto& s : partial_sums)
-        log_L  += s.get();
-
-    return log_L;
+    return std::accumulate(partial_sums.begin(), partial_sums.end(), 0.,
+    [](double & l, std::future<double>& s) {return l += s.get();});
 }
 
 //-------------------------
@@ -159,7 +157,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 }
 
 //-------------------------
-void Model::setFinalState(const std::vector<std::shared_ptr<FinalStateParticle> >& FSP)
+void Model::setFinalState(const FinalStateParticleVector& FSP)
 {
     // check that FinalStateParticles_ is empty
     if (!FinalStateParticles_.empty())
@@ -196,8 +194,7 @@ void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<doub
         sda->calculate(d, sm);
 }
 
-//-------------------------
-const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
+const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
 {
     if (locked())
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addInitialStateParticle");
@@ -214,12 +211,6 @@ const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
         for (auto& pc : p->particleCombinations())
             addParticleCombination(pc);
 
-        // is this THE initial state particle?
-        if (not TheInitialStateParticle_ and p->finalStateParticles().size() == finalStateParticles().size()) {
-            DEBUG("Add " << *p << " as THE initial state particle and fix its amplitude to 1");
-            TheInitialStateParticle_ = res.first->first;
-            res.first->second->setVariableStatus(VariableStatus::fixed);
-        }
     } else { // no new element was inserted
         // check if insertion failed
         if (res.first == InitialStateParticles_.end())
@@ -232,36 +223,28 @@ const initialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
 }
 
 //-------------------------
+std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M)
+{
+    std::vector<std::shared_ptr<DecayingParticle> > isps;
+    isps.reserve(M.initialStateParticles().size());
+    for (const auto& kv : M.initialStateParticles())
+        if (kv.second->variableStatus() == VariableStatus::fixed
+                and kv.first->finalStateParticles(0).size() == M.finalStateParticles().size())
+            isps.push_back(kv.first);
+    for (const auto& kv : M.initialStateParticles())
+        if (kv.second->variableStatus() != VariableStatus::fixed
+                and kv.first->finalStateParticles(0).size() == M.finalStateParticles().size())
+            isps.push_back(kv.first);
+    return isps;
+}
+
+//-------------------------
 void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 {
     if (!isRightHanded(cs))
         throw exceptions::Exception("Coordinate system not right-handed", "Model::setCoordinateSystem");
 
     CoordinateSystem_ = unit(cs);
-}
-
-//-------------------------
-std::array<double, 2> Model::massRange(const std::shared_ptr<ParticleCombination>& pc, std::shared_ptr<DecayingParticle> initialStateParticle) const
-{
-    if (FinalStateParticles_.empty())
-        throw exceptions::Exception("Final state not set", "Model::massRange");
-
-    // pc must be a subset of one of initialStateParticle's particleCombinations
-    if (std::none_of(initialStateParticle->particleCombinations().begin(), initialStateParticle->particleCombinations().end(),
-            [&] (const std::shared_ptr<const ParticleCombination>& isp_pc) { return isp_pc->contains(pc); }) )
-        throw exceptions::Exception("particleCombination " + to_string(*pc) + " is not in DecayingParticle " + initialStateParticle->name(), "Model::massRange");
-
-    std::array<double, 2> m = {0, initialStateParticle->mass()->value()};
-
-    for (size_t i = 0; i < FinalStateParticles_.size(); ++i) {
-        if (std::find(pc->indices().begin(), pc->indices().end(), i) != pc->indices().end())
-            // add mass to low end
-            m[0] += FinalStateParticles_[i]->mass()->value();
-        else
-            // subtract mass from high end
-            m[1] -= FinalStateParticles_[i]->mass()->value();
-    }
-    return m;
 }
 
 //-------------------------
@@ -413,12 +396,12 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
     for (auto& v : pcs) {
 
         // check that all indices are in range
-        if (std::any_of(v.begin(), v.end(), [&](const unsigned & i) {return i >= n_fsp;}))
-        throw exceptions::Exception("particle index out of range", "Model::massAxes");
+        if (std::any_of(v.begin(), v.end(), std::bind(std::greater_equal<unsigned>(), std::placeholders::_1, n_fsp)))
+            throw exceptions::Exception("particle index out of range", "Model::massAxes");
 
         // check for duplicates
         if (std::any_of(v.begin(), v.end(), [&](unsigned i) {return std::count(v.begin(), v.end(), i) != 1;}))
-        throw exceptions::Exception("duplicate index given", "Model::massAxes");
+            throw exceptions::Exception("duplicate index given", "Model::massAxes");
 
         // get fsp ParticleCombinations
         ParticleCombinationVector pcv;
@@ -447,20 +430,9 @@ bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squ
     return true;
 }
 
-
-
 //-------------------------
-std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, std::shared_ptr<DecayingParticle> initialStateParticle) const
+std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, double initial_mass) const
 {
-    // mass axes must be a subset of one of initialStateParticle's particleCombinations
-    if (std::none_of(axes.begin(), axes.end(),
-            [&] (const std::shared_ptr<ParticleCombination>& axis_pc)
-            {
-                return std::any_of(initialStateParticle->particleCombinations().begin(), initialStateParticle->particleCombinations().end(),
-                    [&] (const std::shared_ptr<const ParticleCombination>& isp_pc) { return isp_pc->contains(axis_pc); });
-            }) )
-        throw exceptions::Exception("MassAxes's particleCombinations are not all in DecayingParticle " + initialStateParticle->name(), "Model::calculateFourMomenta");
-
     if (FinalStateParticles_.empty())
         throw exceptions::Exception("Final state unset", "Model::calculateFourMomenta");
 
@@ -470,8 +442,8 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
                                     "Model::calculateFourMomenta");
 
     // check none are negative
-    if (std::any_of(squared_masses.begin(), squared_masses.end(), [](double m) {return m < 0;}))
-    throw exceptions::Exception("negative squared mass given", "Model::calculateFourMomenta");
+    if (std::any_of(squared_masses.begin(), squared_masses.end(), std::bind(std::less<double>(), std::placeholders::_1, 0)))
+        throw exceptions::Exception("negative squared mass given", "Model::calculateFourMomenta");
 
     unsigned n_fsp = finalStateParticles().size();
 
@@ -479,12 +451,19 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
     if (n_fsp > 4)
         throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
 
+    if (initial_mass < 0) {
+        auto ISPs = full_final_state_isp(*this);
+        if (ISPs.empty())
+            throw exceptions::Exception("No proper initial-state particle found", "Model::calculateFourMomenta");
+        initial_mass = ISPs[0]->mass()->value();
+    }
+
     // matrix of four-vector products
     std::vector<std::vector<double> > pp(n_fsp, std::vector<double>(n_fsp, -1));
 
     // set diagonal elements to squared masses, and store sum
     double m2_sum_1 = 0;
-    double m_sum_1 = initialStateParticle->mass()->value();
+    double m_sum_1 = initial_mass;
     for (size_t i = 0; i < n_fsp; ++i) {
         pp[i][i] = pow(finalStateParticles()[i]->mass()->value(), 2);
         m2_sum_1 += pp[i][i];
@@ -508,7 +487,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
         for (unsigned j = i + 1; j < n_fsp; ++j)
             if (pp[i][j] < 0)
                 // calculate unset mass: m^2_missing = M^2_isp + (n_fsp - 2) * sum_fsp (m^2) - sum_given(m^2)
-                pp[i][j] = pow(initialStateParticle->mass()->value(), 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
+                pp[i][j] = pow(initial_mass, 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
     // upper triangular elements are now two-particle squared masses
 
     double m_01 = sqrt(pp[0][1]);

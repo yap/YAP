@@ -352,9 +352,9 @@ std::string to_string(const DecayChannel& dc)
 }
 
 //-------------------------
-std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStateParticles() const
+FinalStateParticleVector DecayChannel::finalStateParticles() const
 {
-    std::vector<std::shared_ptr<FinalStateParticle> > fsps;
+    FinalStateParticleVector fsps;
 
     for (std::shared_ptr<Particle> d : Daughters_) {
 
@@ -363,7 +363,7 @@ std::vector<std::shared_ptr<FinalStateParticle> > DecayChannel::finalStatePartic
             fsps.push_back(std::static_pointer_cast<FinalStateParticle>(d));
 
         } else if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-            auto ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles();
+            auto ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles(0);
             fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
 
         } else {

@@ -74,7 +74,7 @@ public:
 
     /// \return DecayTrees
     /// map key is spin projection
-    const std::map<int, DecayTreeVector>& decayTrees() const
+    const DecayTreeVectorMap<int>& decayTrees() const
     { return DecayTrees_; }
 
     /// Check consistency of object
@@ -103,10 +103,10 @@ public:
     { ParticleVector V{daughters...}; return addChannel(V); }
     /* { ParticleVector V; fill_vector(daughters..., V); return addChannel(V); } */
 
-    /// Return final state particles of a channel (vector should be identical for all channels)
+    /// Return final state particles of a channel
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
     /// \param i index of DecayChannel to return FinalStateParticles of.
-    std::vector< std::shared_ptr<FinalStateParticle> > finalStateParticles(unsigned i = 0) const;
+    FinalStateParticleVector finalStateParticles(unsigned i) const;
 
     /// \name Getters
     /// @{
@@ -136,8 +136,6 @@ public:
 
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
-
-    std::string printDecayTrees() const;
 
     /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
     /// and storeBlattWeisskopf()
@@ -183,15 +181,18 @@ private:
     std::shared_ptr<RealParameter> RadialSize_;
 
     /// Map of spin projection to DecayTreeVector
-    std::map<int, DecayTreeVector> DecayTrees_;
+    DecayTreeVectorMap<int> DecayTrees_;
 
 };
 
-/// \return sum of all amplitudes in map of spin projection to decay tree vector
-const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d);
+/// convert to (multiline) string
+std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map);
+
+/// \return sum of squared amplitudes of different spin projections in map of spin projection to decay tree vector
+const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d);
 
 /// \return set of free amplitudes in map of spin projection to decay tree vector
-FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map);
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap<int>& m_dtv_map);
 
 }
 
