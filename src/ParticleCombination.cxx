@@ -108,7 +108,7 @@ bool ParticleCombination::consistent() const
 
         // count number of daughters with parent not set to this
         auto n = std::count_if(Daughters_.begin(), Daughters_.end(),
-        [&](const ParticleCombinationVector::value_type & d) {return d->parent().get() != this;});
+                               [&](const ParticleCombinationVector::value_type & d) {return d->parent().get() != this;});
         if (n != 0) {
             FLOG(ERROR) << n << " daughters' parent not set to this ParticleCombination.";
             C &= false;
@@ -116,7 +116,7 @@ bool ParticleCombination::consistent() const
 
         // check consistency of daughters
         std::for_each(Daughters_.begin(), Daughters_.end(),
-        [&](const ParticleCombinationVector::value_type & d) {C &= d->consistent();});
+                      [&](const ParticleCombinationVector::value_type & d) {C &= d->consistent();});
     }
     // if Daugthers_ empty, should have one and only index (as FSP)
     else if (Indices_.size() != 1) {
@@ -159,8 +159,8 @@ void prune_particle_combinations(ParticleCombinationVector& PCs)
         ispNIndices = std::max(ispNIndices, pc->origin()->indices().size());
 
     PCs.erase(std::remove_if(PCs.begin(), PCs.end(),
-            [&] (std::shared_ptr<yap::ParticleCombination>& pc) { return (pc->origin()->indices().size() < ispNIndices); }),
-            PCs.end());
+    [&] (std::shared_ptr<yap::ParticleCombination>& pc) { return (pc->origin()->indices().size() < ispNIndices); }),
+    PCs.end());
 
     if (PCs.empty())
         throw exceptions::Exception("ParticleCombinations empty after pruning", "prune_particle_combinations");

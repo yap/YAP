@@ -74,7 +74,7 @@ public:
 
     /// \return DecayTrees
     /// map key is spin projection
-    const std::map<int, DecayTreeVector>& decayTrees() const
+    const DecayTreeVectorMap<int>& decayTrees() const
     { return DecayTrees_; }
 
     /// Check consistency of object
@@ -137,8 +137,6 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    std::string printDecayTrees() const;
-
     /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
     /// and storeBlattWeisskopf()
     friend DecayChannel;
@@ -183,15 +181,15 @@ private:
     std::shared_ptr<RealParameter> RadialSize_;
 
     /// Map of spin projection to DecayTreeVector
-    std::map<int, DecayTreeVector> DecayTrees_;
+    DecayTreeVectorMap<int> DecayTrees_;
 
 };
 
-/// \return sum of all amplitudes in map of spin projection to decay tree vector
-const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d);
+/// convert to (multiline) string
+std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map);
 
 /// \return set of free amplitudes in map of spin projection to decay tree vector
-FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map);
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap<int>& m_dtv_map);
 
 }
 

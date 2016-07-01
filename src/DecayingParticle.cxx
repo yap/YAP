@@ -352,14 +352,11 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 }
 
 //-------------------------
-std::string DecayingParticle::printDecayTrees() const
+std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map)
 {
-    std::string s;
-    for (const auto& m_dtv : DecayTrees_) {
-        for (const auto& dt : m_dtv.second)
-            s += "\ndepth = " + std::to_string(depth(*dt)) + "\n" + dt->asString() + "\n";
-    }
-    return s;
+    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
+                           [](std::string & s, const DecayTreeVectorMap<int>::value_type & m_dtv)
+    { return s += to_string(m_dtv.second); });
 }
 
 //-------------------------

@@ -93,9 +93,6 @@ public:
     /// grant friend status to Resonance to call addDataAccessor
     friend class Resonance;
 
-    /// convert to (multiline) string
-    std::string asString(std::string offset = "") const;
-
 protected:
 
     /// Set the DecayTree of the i'th daughter
@@ -126,6 +123,12 @@ private:
     DaughterDecayTreeMap DaughterDecayTrees_;
 
 };
+
+/// convert to (multiline) string
+std::string to_string(const DecayTree& dt, std::string offset = "");
+
+/// convert to (mutliline string)
+std::string to_string(const DecayTreeVector& dtv);
 
 /// equality operator
 inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
