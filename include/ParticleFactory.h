@@ -35,6 +35,50 @@ class FinalStateParticle;
 class MassShape;
 class Resonance;
 
+/// \class lineInputIterator
+/// Iterator to read an input stream line by line.
+/// \attention The line is read when the iterator is increased.
+/// \author Paolo Di Giglio
+template <class StringT = std::string>
+class LineInputIterator : public std::iterator<std::input_iterator_tag, StringT>
+{
+public:
+	typedef typename StringT::value_type  char_type;
+	typedef typename StringT::traits_type traits_type;
+	typedef std::basic_istream<char_type, traits_type> istream_type;
+
+	LineInputIterator(istream_type& is) : InputStream_(is) {};
+
+	const StringT& operator*() const { return Value_; };
+	const StringT* const operator->() const { return &Value_;}
+
+	/// pre-increment operator (read line in)
+	LineInputIterator<StringT>& operator++()
+	{
+		/// \todo Check for `getline()` return values
+		getline(InputStream_, Value_);
+	}
+
+	/// post-increment operator (read line in)
+	LineInputIterator<StringT> operator++(int)
+	{
+		LineInputIterator<StringT> prev(*this);
+		// read line in
+		++(*this);
+		return prev;
+	}
+	
+	friend const bool operator==(const LineInputIterator<StringT>& lhs, const LineInputIterator<StringT>& rhs)
+	{ return (lhs.InputStream_ == rhs.InputStream_) && (lhs.Value_ == rhs.Value_); };
+	
+	friend const bool operator!=(const LineInputIterator<StringT>& lhs, const LineInputIterator<StringT>& rhs)
+	{ return !(lhs == rhs); };
+
+private:
+	istream_type InputStream_;
+	StringT      Value_;
+};
+
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
