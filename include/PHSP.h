@@ -21,7 +21,8 @@
 #ifndef yap_PHSP_h
 #define yap_PHSP_h
 
-#include "FourVector.h"
+#include "fwd/FourVector.h"
+#include "MassRange.h"
 #include "Model.h"
 
 #include <algorithm>
@@ -31,26 +32,25 @@
 namespace yap {
 
 /// \return vector of four momenta for daughters uniformly randomly generated in phase space of model
+/// \param M model to calculate with
+/// \param initial_mass Initial mass to decay from
+/// \param A mass axes
+/// \param R2 vector of squared mass ranges of axes
+/// \param g random generator to pass to uniform_real_distribution
+/// \param max_attempts maximum number of attempts to make to find a point in phase space
 template <class Generator>
-const std::vector<FourVector<double> > phsp(const Model& M, const MassAxes& A, Generator& g, unsigned max_attempts = 1000)
+const std::vector<FourVector<double> > phsp(const Model& M, double initial_mass, const MassAxes& A, const std::vector<MassRange>& R2, Generator& g, unsigned max_attempts = 1000)
 {
-    static std::uniform_real_distribution<double> uniform;
+    static std::uniform_real_distribution<double> uniform(0, std::nextafter(1., 2.));
 
-    // get mass^2 ranges:
-    std::vector<std::array<double, 2> > r;
-    r.reserve(A.size());
-    std::transform(A.begin(), A.end(), std::back_inserter(r),
-                   [&](const MassAxes::value_type& a){auto R = M.massRange(a, M.initialStateParticle()); R[0] *= R[0]; R[1] = R[1] * R[1] - R[0]; return R;});
-    
     // create vector to store invariant masses in
-    std::vector<double> m2(r.size(), 0);
+    std::vector<double> m2(R2.size(), 0);
     std::vector<FourVector<double> > P;
 
-    unsigned n = 0;
-    while (P.empty() and n < max_attempts) {
+    for (unsigned n = 0; n < max_attempts && P.empty(); ++n) {
         // generate random point in hypercube of mass ranges
-        std::transform(r.begin(), r.end(), m2.begin(), [&](const std::array<double, 2>& R) {return R[0] + R[1] * uniform(g);});
-        P = M.calculateFourMomenta(A, m2, M.initialStateParticle());
+        std::transform(R2.begin(), R2.end(), m2.begin(), [&](const MassRange & r2) {return r2[0] + (r2[1] - r2[0]) * uniform(g);});
+        P = M.calculateFourMomenta(A, m2, initial_mass);
     }
     return P;
 }

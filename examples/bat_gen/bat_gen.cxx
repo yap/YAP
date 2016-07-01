@@ -12,6 +12,7 @@
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FreeAmplitude.h>
+#include <MassRange.h>
 #include <ParticleCombination.h>
 #include <VariableStatus.h>
 
@@ -26,6 +27,12 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
     if (!Model_ or !Model_->consistent())
         throw std::exception();
 
+    auto isps = full_final_state_isp(*Model_);
+    if (isps.empty())
+        throw yap::exceptions::Exception("no full-final-state initial-state particle in model", "bat_gen::bat_gen");
+
+    ISP_ = isps[0];
+
     for (auto& kv : Model_->initialStateParticles()) {
         std::cout << "Initial state particle " << to_string(*kv.first) << " with beta^2 = " << kv.second->value() << ":\n";
 
@@ -36,20 +43,19 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
             if (fa->variableStatus() != yap::VariableStatus::fixed)
                 std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
         std::cout << std::endl;
-
-        MassAxes_ = Model_->massAxes(pcs);
-
-        for (auto& pc : MassAxes_) {
-            std::string axis_label = "m2_" + indices_string(*pc).substr(1, 2);
-            auto mrange = Model_->massRange(pc, kv.first);
-            AddParameter(axis_label, pow(mrange[0], 2), pow(mrange[1], 2));
-            std::cout << "Added parameter " << axis_label
-                      << " with range = [" << pow(mrange[0], 2) << ", " << pow(mrange[1], 2) << "]"
-                      << std::endl;
-        }
     }
-    // for (size_t i = 0; i < Model_->finalStateParticles().size(); ++i)
-    //     AddObservable(std::string("T") + std::to_string(i), 0, 1);
+
+    MassAxes_ = Model_->massAxes(pcs);
+    auto m2r = yap::squared(yap::mass_range(MassAxes_, ISP_, Model_->finalStateParticles()));
+
+    for (size_t i = 0; i < MassAxes_.size(); ++i) {
+        std::string axis_label = "m2_" + indices_string(*MassAxes_[i]).substr(1, 2);
+        AddParameter(axis_label, m2r[i][0], m2r[i][1], axis_label, "[GeV]");
+        std::cout << "Added parameter " << axis_label
+                  << " with range = [" << m2r[i][0] << ", " << m2r[i][1] << "]"
+                  << std::endl;
+    }
+
 }
 
 // ---------------------------------------------------------
@@ -63,12 +69,10 @@ void bat_gen::MCMCUserInitialize()
 double bat_gen::LogLikelihood(const std::vector<double>&)
 {
     unsigned c = GetCurrentChain();
-    double L = sumOfLogsOfSquaredAmplitudes(*Model_, Data_[c]);
+    double L = sum_of_log_intensity(*Model_, Data_[c]);
     // Model_->setParameterFlagsToUnchanged();
     ++LikelihoodCalls_[c];
     return L;
-    // return Model_->sumOfLogsOfSquaredAmplitudes(Data_[GetC]);
-    // return Model_->partialSumOfLogsOfSquaredAmplitudes(Partitions_[c].get(), Data_);
 }
 
 // // ---------------------------------------------------------
@@ -88,7 +92,7 @@ double bat_gen::LogLikelihood(const std::vector<double>&)
 double bat_gen::LogAPrioriProbability(const std::vector<double>& parameters)
 {
     // calculate four-momenta
-    auto P = Model_->calculateFourMomenta(MassAxes_, parameters, Model_->initialStateParticle());
+    auto P = Model_->calculateFourMomenta(MassAxes_, parameters, ISP_->mass()->value());
 
     // if failed, outside phase space
     if (P.empty())

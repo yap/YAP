@@ -65,7 +65,9 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     M.addInitialStateParticle(D);
 
     // choose default Dalitz coordinates
-    auto massAxes = M.massAxes();
+    auto A = M.massAxes();
+    // get mass^2 ranges
+    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
 
     // create DataSet
     auto data = M.createDataSet();
@@ -81,7 +83,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
         std::map<std::shared_ptr<yap::ParticleCombination>, std::vector<double>> resultingThetas;
 
         // generate random phase space point (with 100 attempts before failing)
-        auto momenta = yap::phsp(M, massAxes, g, 100);
+        auto momenta = yap::phsp(M, D->mass()->value(), A, m2r, g, 100);
         if (momenta.empty())
             continue;
 

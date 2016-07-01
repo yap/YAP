@@ -188,6 +188,9 @@ private:
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map);
 
+/// \return sum of squared amplitudes of different spin projections in map of spin projection to decay tree vector
+const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d);
+
 /// \return set of free amplitudes in map of spin projection to decay tree vector
 FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap<int>& m_dtv_map);
 

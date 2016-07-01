@@ -360,13 +360,11 @@ std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map)
 }
 
 //-------------------------
-const std::complex<double> amplitude(const std::map<int, DecayTreeVector>& m_dtv_map, const DataPoint& d)
+const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d)
 {
-    auto A = Complex_0;
-    for (const auto& m_dtv : m_dtv_map)
-        for (const auto& dt : m_dtv.second)
-            A += amplitude(*dt, d);
-    return A;
+    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), 0.,
+                           [&](double & a, const DecayTreeVectorMap<int>::value_type & m_dtv)
+    {return a += norm(amplitude(m_dtv.second, d));});
 }
 
 

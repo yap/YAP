@@ -4,6 +4,7 @@
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
+#include <DecayTree.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FourVector.h>
@@ -13,6 +14,7 @@
 #include <logging.h>
 #include <make_unique.h>
 #include <MassAxes.h>
+#include <MassRange.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleFactory.h>
@@ -68,10 +70,14 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
 
 std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
-    auto isp = M.initialStateParticle();
+    auto ISPs = full_final_state_isp(M);
+    if (ISPs.empty())
+        throw;
+
+    auto isp = ISPs[0];
 
     // calculate four-momenta
-    auto P = M.calculateFourMomenta(A, m2, isp);
+    auto P = M.calculateFourMomenta(A, m2, isp->mass()->value());
 
     // if failed, outside phase space
     if (P.empty())
@@ -84,7 +90,7 @@ std::complex<double> calculate_model(yap::Model& M, const yap::MassAxes& A, std:
 
     // return amplitude
     M.calculate(data);
-    return amplitude(isp->decayTrees(), data[0]);
+    return amplitude(isp->decayTrees().at(0), data[0]);
 }
 
 TEST_CASE( "swapFinalStates" )
@@ -122,9 +128,10 @@ TEST_CASE( "swapFinalStates" )
     } while (std::next_permutation(FSP.begin(), FSP.end()));
 
     // get piK and KK mass ranges
-    auto isp = Z[0]->initialStateParticle();
-    auto m2_piK_range = Z[0]->massRange(mZ[0][0], isp);
-    auto m2_KK_range  = Z[0]->massRange(mZ[0][1], isp);
+    auto ISPs = full_final_state_isp(*Z[0]);
+    auto isp = ISPs[0];
+    auto m2_piK_range = yap::squared(yap::mass_range(mZ[0][0], isp, Z[0]->finalStateParticles()));
+    auto m2_KK_range  = yap::squared(yap::mass_range(mZ[0][1], isp, Z[0]->finalStateParticles()));
 
     const unsigned N = 20;
     // loop over phase space

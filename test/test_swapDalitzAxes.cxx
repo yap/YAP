@@ -4,6 +4,7 @@
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
+#include <DecayTree.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <FreeAmplitude.h>
@@ -90,41 +91,41 @@ TEST_CASE( "swapDalitzAxes" )
                     M->addInitialStateParticle(D);
 
                     // Dalitz coordinates
-                    yap::MassAxes massAxes;
+                    yap::MassAxes A;
                     std::vector<double> squared_masses;
                     switch (i) {
                         case 0:
                             // original
-                            massAxes = M->massAxes({{0, 1}, {1, 2}});
+                            A = M->massAxes({{0, 1}, {1, 2}});
                             squared_masses = {m2_ab, m2_bc};
                             break;
                         case 1:
                             // 0 <-> 1
-                            massAxes = M->massAxes({{1, 0}, {0, 2}});
+                            A = M->massAxes({{1, 0}, {0, 2}});
                             squared_masses = {m2_ab, m2_ac};
                             break;
                         case 2:
                             // 0 <-> 2
-                            massAxes = M->massAxes({{2, 1}, {1, 0}});
+                            A = M->massAxes({{2, 1}, {1, 0}});
                             squared_masses = {m2_bc, m2_ab};
                             break;
                         case 3:
                             // 1 <-> 2
-                            massAxes = M->massAxes({{0, 2}, {2, 1}});
+                            A = M->massAxes({{0, 2}, {2, 1}});
                             squared_masses = {m2_ac, m2_bc};
                             break;
                         case 4:
-                            massAxes = M->massAxes({{1, 2}, {2, 0}});
+                            A = M->massAxes({{1, 2}, {2, 0}});
                             squared_masses = {m2_bc, m2_ac};
                             break;
                         case 5:
-                            massAxes = M->massAxes({{2, 0}, {0, 1}});
+                            A = M->massAxes({{2, 0}, {0, 1}});
                             squared_masses = {m2_ac, m2_ab};
                             break;
                     }
 
                     // calculate four-momenta
-                    auto P = M->calculateFourMomenta(massAxes, squared_masses, D);
+                    auto P = M->calculateFourMomenta(A, squared_masses, D->mass()->value());
 
                     // if failed, outside phase space
                     if (P.empty()) {
@@ -138,7 +139,7 @@ TEST_CASE( "swapDalitzAxes" )
                     data.add(P);
 
                     M->calculate(data);
-                    resultingAmplitudes[i] = amplitude(D->decayTrees(), data[0]);
+                    resultingAmplitudes[i] = amplitude(D->decayTrees().at(0), data[0]);
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 

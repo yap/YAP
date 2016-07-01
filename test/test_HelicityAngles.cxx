@@ -105,7 +105,9 @@ TEST_CASE( "HelicityAngles" )
     M.addInitialStateParticle(D);
 
     // choose default Dalitz axes
-    auto massAxes = M.massAxes();
+    auto A = M.massAxes();
+    // get mass^2 ranges
+    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
 
     REQUIRE( M.consistent() );
 
@@ -118,7 +120,7 @@ TEST_CASE( "HelicityAngles" )
     for (unsigned int iEvt = 0; iEvt < 100; ++iEvt) {
 
         // generate random phase space point (with 100 attempts before failing)
-        auto momenta = yap::phsp(M, massAxes, g, 100);
+        auto momenta = yap::phsp(M, D->mass()->value(), A, m2r, g, 100);
         if (momenta.empty())
             continue;
 

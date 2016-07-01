@@ -21,6 +21,8 @@
 #ifndef yap_FinalStateParticle_h
 #define yap_FinalStateParticle_h
 
+#include "fwd/FinalStateParticle.h"
+
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -77,6 +79,9 @@ private:
     Model* Model_;
 
 };
+
+/// \return whether pc and FSPs are for the same final state
+bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
 
 }
 

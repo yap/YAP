@@ -82,7 +82,7 @@ int main( int argc, char** argv)
     M.fourMomenta()->printMasses(data[0]);
 
     LOG(INFO) << "setting squared mass ...";
-    auto P = M.calculateFourMomenta(massAxes, m2, D);
+    auto P = M.calculateFourMomenta(massAxes, m2, D->mass()->value());
     if (P.empty())
         LOG(INFO) << "... outside phase space";
     else {
