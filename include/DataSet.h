@@ -119,7 +119,7 @@ public:
     DataPoint& back()
     { return DataPoints_.back(); }
 
-    const size_t size() const
+    const size_t size() const override
     { return DataPoints_.size(); }
 
     /// const access to DataPoints_
