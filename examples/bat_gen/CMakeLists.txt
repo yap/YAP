@@ -6,6 +6,7 @@ include_directories(${YAP_SOURCE_DIR}/include ${BAT_INCLUDE_DIR} ${ROOT_INCLUDE_
 set(SOURCES
 	runBatGen.cxx
 	bat_gen.cxx
+  bat_yap_base.cxx
 	)
 
 #add_custom_target(create-examples-run_gen-output COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/output)
