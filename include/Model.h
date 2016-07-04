@@ -34,12 +34,12 @@
 #include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
-#include "fwd/SpinAmplitudeCache.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
 
 #include "CoordinateSystem.h"
 #include "ParticleCombinationCache.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
