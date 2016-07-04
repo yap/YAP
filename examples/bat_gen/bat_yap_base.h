@@ -38,7 +38,7 @@ protected:
 
     void increaseLikelihoodCalls(unsigned c)
     { ++LikelihoodCalls_[c]; }
-    
+
 private:
     yap::MassAxes Axes_;
     std::unique_ptr<yap::Model> Model_;

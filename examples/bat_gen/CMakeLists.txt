@@ -1,10 +1,10 @@
 find_package(ROOT)
-find_package(BAT )
+find_package(BAT)
 
 include_directories(${YAP_SOURCE_DIR}/include ${BAT_INCLUDE_DIR} ${ROOT_INCLUDE_DIR})
 
 set(SOURCES
-	runBatGen.cxx
+  bat_fit.cxx
 	bat_gen.cxx
   bat_yap_base.cxx
 	)
@@ -19,6 +19,16 @@ add_custom_target(link-macros
 		macros
 	)
 
-add_executable(runBatGen EXCLUDE_FROM_ALL ${SOURCES})
-add_dependencies(runBatGen link-macros)
-target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
+set(PROGRAMS runBatGen runBatFit)
+foreach(program ${PROGRAMS})
+	add_executable(${program} EXCLUDE_FROM_ALL ${program}.cxx ${SOURCES})
+	target_link_libraries(${program} ${ROOT_LIBS} ${BAT_LIBS} YAP)
+endforeach(program)
+
+# add_executable(runBatGen EXCLUDE_FROM_ALL runBatGen.cxx ${SOURCES})
+# add_dependencies(runBatGen link-macros)
+# target_link_libraries(runBatGen ${ROOT_LIBS} ${BAT_LIBS} YAP)
+# 
+# add_executable(runBatFit EXCLUDE_FROM_ALL runBatGen.cxx ${SOURCES})
+# add_dependencies(runBatFit link-macros)
+# target_link_libraries(runBatFit ${ROOT_LIBS} ${BAT_LIBS} YAP)

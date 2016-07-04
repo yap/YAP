@@ -27,7 +27,7 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 {
     for (auto& kv : model()->initialStateParticles()) {
         std::cout << "Initial state particle " << to_string(*kv.first) << " with beta^2 = " << kv.second->value() << ":\n";
-        
+
         auto freeAmps = freeAmplitudes(kv.first->decayTrees());
 
         std::cout << std::endl;
@@ -39,7 +39,7 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
 
     axes() = model()->massAxes(pcs);
     auto m2r = yap::squared(yap::mass_range(axes(), isp(), model()->finalStateParticles()));
-    
+
     for (size_t i = 0; i < axes().size(); ++i) {
         std::string axis_label = "m2_" + indices_string(*axes()[i]).substr(1, 2);
         AddParameter(axis_label, m2r[i][0], m2r[i][1], axis_label, "[GeV]");
