@@ -59,6 +59,13 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
 }
 
 //-------------------------
+const ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
+{
+    std::copy(rhs.particleTable_.begin(), rhs.particleTable_.end(), std::inserter(particleTable_, particleTable_.end()));
+    return *this;
+}
+
+//-------------------------
 const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 {
     if (particleTable_.count(PDG) == 0) {

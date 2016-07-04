@@ -93,6 +93,14 @@ public:
     /// \return shared pointer to new Resonance object
     std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const;
 
+    /// Increment-assignment operator.
+    ///
+    /// Merges the #particleTable_ of the second operand to the
+    /// #particleTable_ of the first operand.
+    /// \param rhs The right hand side of the `+=`.
+    /// \return A `const` reference to `*this` instance.
+    const ParticleFactory& operator+=(const ParticleFactory& rhs);
+
     /// \name Particle table access
     /// @{
 
@@ -115,8 +123,7 @@ public:
     const QuantumNumbers& quantumNumbers(std::string name) const
     { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
 
-
-    /// inserts ParticleTableEntry to #particleTable_
+    /// inserts the pair `int` and `ParticleTableEntry` to #particleTable_
     /// \param entry a A pair of PDG ID (integer) and ParticleTableEntry
     /// to add to #particleTable_
     std::pair<iterator, bool> insert(const value_type& entry);
@@ -159,8 +166,10 @@ public:
 //	const std::string* const operator->() const { return &Value_;}
 
     /// Deference operator
-    /// \returns A #ParticleTableEntry constructed from the file
-    /// entry currently read in the `Value_` class member.
+    ///
+    /// \return A pair of `int` (the PDG particle ID) and #ParticleTableEntry
+    /// constructed from the file entry currently read in the `Value_` class
+    /// member.
     /// \attention Isospin and parity are missing from `.pdl` format!
     const ParticleFactory::value_type operator*() const
     {
@@ -223,7 +232,7 @@ public:
         return *this;
     }
 
-    /// post-increment operator (read line in)
+    /// post-increment operator (read line in by calling `++(*this)`)
     PDLIterator operator++(int)
     {
         PDLIterator prev(*this);
@@ -232,6 +241,7 @@ public:
         return prev;
     }
 
+    /// Returns just an empty iterator, i.e. a default constructed one.
     static PDLIterator end()
     {
         return PDLIterator();
