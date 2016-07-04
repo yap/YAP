@@ -43,7 +43,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    yap::ParticleFactory factory((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
