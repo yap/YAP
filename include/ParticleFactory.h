@@ -26,6 +26,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <sstream>
 #include <vector>
 
 namespace yap {
@@ -35,49 +36,6 @@ class FinalStateParticle;
 class MassShape;
 class Resonance;
 
-/// \class lineInputIterator
-/// Iterator to read an input stream line by line.
-/// \attention The line is read when the iterator is increased.
-/// \author Paolo Di Giglio
-template <class StringT = std::string>
-class LineInputIterator : public std::iterator<std::input_iterator_tag, StringT>
-{
-public:
-	typedef typename StringT::value_type  char_type;
-	typedef typename StringT::traits_type traits_type;
-	typedef std::basic_istream<char_type, traits_type> istream_type;
-
-	LineInputIterator(istream_type& is) : InputStream_(is) {};
-
-	const StringT& operator*() const { return Value_; };
-	const StringT* const operator->() const { return &Value_;}
-
-	/// pre-increment operator (read line in)
-	LineInputIterator<StringT>& operator++()
-	{
-		/// \todo Check for `getline()` return values
-		getline(InputStream_, Value_);
-	}
-
-	/// post-increment operator (read line in)
-	LineInputIterator<StringT> operator++(int)
-	{
-		LineInputIterator<StringT> prev(*this);
-		// read line in
-		++(*this);
-		return prev;
-	}
-	
-	friend const bool operator==(const LineInputIterator<StringT>& lhs, const LineInputIterator<StringT>& rhs)
-	{ return (lhs.InputStream_ == rhs.InputStream_) && (lhs.Value_ == rhs.Value_); };
-	
-	friend const bool operator!=(const LineInputIterator<StringT>& lhs, const LineInputIterator<StringT>& rhs)
-	{ return !(lhs == rhs); };
-
-private:
-	istream_type InputStream_;
-	StringT      Value_;
-};
 
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
@@ -95,14 +53,27 @@ struct ParticleTableEntry : public QuantumNumbers {
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
-
 class ParticleFactory
 {
 public:
 
+    using ParticleTableMap = std::map<int, ParticleTableEntry>;
+    using value_type = ParticleTableMap::value_type;
+    using iterator   = ParticleTableMap::iterator;
+
     /// Constructor
-    /// \param pdlFile Path to a pdl file like used by EvtGen
-    ParticleFactory(const std::string pdlFile);
+    /// \param first First iterator to read the particle entries from
+    /// \param last  Last iterator to read the particle entries from
+    template <class Iter>
+    ParticleFactory(Iter first, Iter last)
+    { importTable(first, last); }
+
+    /// Imports the table into the class from `first` to `last`
+    /// \param first Iterator pointing to the first entry to import
+    /// \param last  Iterator pointing to the last entry to import
+    template <class Iter>
+    void importTable(Iter first, Iter last)
+    { std::copy(first, last, std::inserter(particleTable_, particleTable_.end())); }
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
@@ -145,9 +116,10 @@ public:
     { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
 
 
-    /// add ParticleTableEntry to #particleTable_
-    /// \param entry ParticleTableEntry to add to #particleTable_
-    void addParticleTableEntry(ParticleTableEntry entry);
+    /// inserts ParticleTableEntry to #particleTable_
+    /// \param entry a A pair of PDG ID (integer) and ParticleTableEntry
+    /// to add to #particleTable_
+    std::pair<iterator, bool> insert(const value_type& entry);
 
     // find PDG number by particle name
     // \return PDG code number
@@ -157,13 +129,128 @@ public:
     /// @}
 
 private:
-    /// read pdl file and fill #particleTable_
-    void readPDT(const std::string fname);
-
     /// maps PDGCodes to ParticleTableEntry's
     std::map<int, ParticleTableEntry> particleTable_;
-
 };
+
+/// \class PDLIterator
+/// Stream iterator targeted for `.pdl` files to read the input stream
+/// line by line. It automatically discards comments and _set_-entries.
+/// When either the EOF or the _end_ keyword is reached, the iterator
+/// is set to its end state (i.e. `InputStream_` is set to `nullptr`).
+/// \attention The line is read when the iterator is incremented.
+/// \author Paolo Di Giglio
+class PDLIterator : public std::iterator<std::input_iterator_tag, std::string>
+{
+public:
+    using char_type    = typename std::string::value_type;
+    using traits_type  = typename std::string::traits_type;
+    using istream_type = std::basic_istream<char_type, traits_type>;
+
+    /// Default constructor.
+    /// It's automatically called when the End Of File is reached
+    PDLIterator() : InputStream_(nullptr) {};
+
+    /// Construct and read the first line in
+    PDLIterator(istream_type& is) : InputStream_(&is) { ++(*this); };
+
+    // XXX Needed?
+//	const std::string& to_string() const { return Value_; };
+//	const std::string* const operator->() const { return &Value_;}
+
+    /// Deference operator
+    /// \returns A #ParticleTableEntry constructed from the file
+    /// entry currently read in the `Value_` class member.
+    /// \attention Isospin and parity are missing from `.pdl` format!
+    const ParticleFactory::value_type operator*() const
+    {
+        // create a stream with the entry string
+        std::istringstream iss(Value_);
+
+        // temporary variables
+        std::string discard, particleName;
+        int    stdhepid;
+        double mass;
+        double particleWidth;
+        double particleMaxWidth; // not needed
+        int    threeTimesCharge;
+        int    twoTimesSpin;
+        double lifetime; // dimension [c/mm]
+        int    lundkc; // not needed
+
+        // read the values in
+        iss >> discard; // "add"
+        iss >> discard; // "p"
+        iss >> discard; // "Particle"
+        iss >> particleName;
+        iss >> stdhepid;
+        iss >> mass;
+        iss >> particleWidth;
+        iss >> particleMaxWidth;
+        iss >> threeTimesCharge;
+        iss >> twoTimesSpin;
+        iss >> lifetime;
+        iss >> lundkc;
+
+        return ParticleFactory::value_type(stdhepid, ParticleTableEntry(stdhepid, particleName,
+                                           QuantumNumbers(twoTimesSpin, std::round(1. * threeTimesCharge / 3)),
+                                           mass, {particleWidth}));
+    }
+
+    /// pre-increment operator (read line in)
+    ///
+    /// It ignores the comments (lines starting with '*') and
+    /// all the lines starting with _set_. If the _end_ keyword
+    /// is found or the EOF is reached, `InputStream_` is set
+    /// to `nullptr`.
+    PDLIterator& operator++()
+    {
+        // ignore comments and 'set' entries
+        std::string command;
+        do {
+            // check if iterator reaches EOF
+            if (InputStream_ && !getline(*InputStream_, Value_)) {
+                InputStream_ = nullptr;
+            } else {
+                std::istringstream iss(Value_);
+                iss >> command;
+                // check if the 'end' keyword has been reached
+                if (command == "end")
+                    InputStream_ = nullptr;
+            }
+        } while (Value_[0] == '*' || command == "set");
+
+        return *this;
+    }
+
+    /// post-increment operator (read line in)
+    PDLIterator operator++(int)
+    {
+        PDLIterator prev(*this);
+        // read line in
+        ++(*this);
+        return prev;
+    }
+
+    static PDLIterator end()
+    {
+        return PDLIterator();
+    }
+
+    /// Check if pointers to streams are equal
+    friend const bool operator==(const PDLIterator& lhs, const PDLIterator& rhs)
+    { return lhs.InputStream_ == rhs.InputStream_; }
+
+    /// Check if pointers to streams are not equal
+    friend const bool operator!=(const PDLIterator& lhs, const PDLIterator& rhs)
+    { return !(lhs == rhs); }
+
+private:
+    istream_type* InputStream_;
+    std::string Value_;
+};
+
+ParticleFactory read_pdl_file(const std::string& filename);
 
 }
 

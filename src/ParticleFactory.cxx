@@ -34,12 +34,6 @@ bool ParticleTableEntry::consistent() const
 }
 
 //-------------------------
-ParticleFactory::ParticleFactory(const std::string pdlFile)
-{
-    readPDT(pdlFile);
-}
-
-//-------------------------
 std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 {
     const auto& p = particleTableEntry(PDG);
@@ -74,16 +68,16 @@ const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 }
 
 //-------------------------
-void ParticleFactory::addParticleTableEntry(ParticleTableEntry entry)
+std::pair<ParticleFactory::iterator, bool> ParticleFactory::insert(const value_type& entry)
 {
-    if (!entry.consistent())
-        throw exceptions::Exception("entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
-                                    "ParticlFactory::addParticleTableEntry");
+    if (!entry.second.consistent())
+        throw exceptions::Exception("entry with PDG code " + std::to_string(entry.first) + " is inconsistent",
+                                    "ParticlFactory::insert");
 
-    if (particleTable_.count(entry.PDG) != 0)
-        LOG(WARNING) << "ParticleFactory::addParticleTableEntry : PDG code " << entry.PDG << " already exists. Overwriting entry.";
+    if (particleTable_.count(entry.first) != 0)
+        LOG(WARNING) << "ParticleFactory::insert : PDG code " << entry.first << " already exists. Overwriting entry.";
 
-    particleTable_[entry.PDG] = entry;
+    return particleTable_.insert(entry);
 }
 
 //-------------------------
@@ -98,90 +92,10 @@ int ParticleFactory::pdgCode(std::string name) const
     return it->first;
 }
 
-//-------------------------
-void ParticleFactory::readPDT(const std::string fname)
+ParticleFactory read_pdl_file(const std::string& filename)
 {
-
-    /**
-     * This function was taken from EvtGen and modified
-     *
-     * // Copyright Information: See EvtGen/COPYRIGHT
-     * //      Copyright (C) 1998      Caltech, UCSB
-     *
-     */
-
-    std::ifstream indec;
-
-    indec.open(fname.c_str());
-
-    char cmnd[100];
-    char xxxx[100];
-
-    char pname[100];
-    int  stdhepid;
-    double mass;
-    double pwidth;
-    double pmaxwidth;
-    int    chg3;
-    int    spin2;
-    double ctau;
-    int    lundkc;
-    //EvtId i;
-
-    if (!indec) {
-        LOG(ERROR) << "Could not open:" << fname.c_str() << "EvtPDL";
-        return;
-    }
-
-    do {
-
-        char ch, ch1;
-
-        // ignoring commented lines
-        do {
-            indec.get(ch);
-            if (ch == '\n') {
-                indec.get(ch);
-            }
-            if (ch != '*') {
-                indec.putback(ch);
-            } else {
-                while (indec.get(ch1), ch1 != '\n');
-            }
-        } while (ch == '*');
-
-        indec >> cmnd;
-
-        if (strcmp(cmnd, "end")) {
-            if (!strcmp(cmnd, "add")) {
-                indec >> xxxx;
-                indec >> xxxx;
-                indec >> pname;
-                indec >> stdhepid;
-                indec >> mass;
-                indec >> pwidth;
-                indec >> pmaxwidth;
-                indec >> chg3;
-                indec >> spin2;
-                indec >> ctau;
-                indec >> lundkc;
-
-                // note: isospin & parity are missing from .pdl format
-                addParticleTableEntry(ParticleTableEntry(stdhepid, pname,
-                                      QuantumNumbers(spin2, std::round(1. * chg3 / 3)),
-                                      mass, {pwidth}));
-            }
-
-            // if find a set read information and discard it
-            if (!strcmp(cmnd, "set")) {
-                indec >> xxxx;
-                indec >> xxxx;
-                indec >> xxxx;
-                indec >> xxxx;
-            }
-        }
-
-    } while (strcmp(cmnd, "end"));
+    std::ifstream input(filename.c_str(), std::ios::in);
+    return ParticleFactory(PDLIterator(input), PDLIterator::end());
 }
 
 }
