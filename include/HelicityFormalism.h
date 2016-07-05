@@ -100,7 +100,7 @@ private:
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
     virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
-    { return (two_s == 0) ? unit(two_J, two_j, l, two_s) : std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j, l, two_s)); }
+    { return (two_J == 0) ? unit(two_J, two_j, l, two_s) : std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j, l, two_s)); }
 
 };
 
