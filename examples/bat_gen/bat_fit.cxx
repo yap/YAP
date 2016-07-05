@@ -108,9 +108,8 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_mcmc,
 // ---------------------------------------------------------
 double bat_fit::LogLikelihood(const std::vector<double>&)
 {
-    unsigned c = GetCurrentChain();
     double L = sum_of_log_intensity(*model(), Data_);
-    // model()->setParameterFlagsToUnchanged();
-    increaseLikelihoodCalls(c);
+    model()->setParameterFlagsToUnchanged();
+    increaseLikelihoodCalls();
     return L;
 }
