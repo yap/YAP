@@ -28,6 +28,7 @@ set(YAP_SOURCES
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
   ModelIntegral.cxx
+  Parameter.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx

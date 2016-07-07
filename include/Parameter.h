@@ -28,6 +28,7 @@
 
 #include <complex>
 #include <memory>
+#include <numeric>
 
 namespace yap {
 
@@ -37,19 +38,26 @@ namespace yap {
 /// \defgroup Parameters
 class ParameterBase
 {
+protected:
+
+    /// Constructor
+    ParameterBase() : VariableStatus_(VariableStatus::changed) {}
+
 public:
 
-    // \param size Number of real components in variable
-    ParameterBase() : VariableStatus_(VariableStatus::changed)
-    {}
-
     /// \return VariableStatus
-    VariableStatus variableStatus() const
+    const VariableStatus variableStatus() const
     { return VariableStatus_; }
 
     /// set VariableStatus
     void setVariableStatus(VariableStatus stat)
     { VariableStatus_ = stat; }
+
+    /// \return number of real elements in parameter
+    virtual const size_t size() const = 0;
+
+    /// Set value from vector
+    virtual void setValue(const std::vector<double>& V) = 0;
 
 private:
 
@@ -62,6 +70,7 @@ private:
 /// \brief Template class holding also a value for a parameter
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
+/// \tparam T type to be stored in Parameter
 template <typename T>
 class Parameter : public ParameterBase
 {
@@ -94,6 +103,8 @@ public:
     value() const
     { return ParameterValue_; }
 
+    using ParameterBase::setValue;
+
     /// set value
     virtual void setValue(T val)
     {
@@ -105,12 +116,51 @@ public:
         setVariableStatus(VariableStatus::changed);
     }
 
-protected:
+private:
 
     /// Value stored
     T ParameterValue_;
 
 };
+
+/// \class RealParameter
+/// \ingroup Parameters
+class RealParameter : public Parameter<double>
+{
+public:
+
+    /// constructor
+    RealParameter(double t = 0) : Parameter(t) {}
+
+    /// \return size = 1
+    const size_t size() const {return 1;}
+
+    using Parameter::setValue;
+
+    /// Set value from vector
+    void setValue(const std::vector<double>& V)
+    { setValue(V[0]); }
+};
+
+/// \class ComplexParameter
+/// \ingroup Parameters
+class ComplexParameter : public Parameter<std::complex<double> >
+{
+public:
+
+    /// constructor
+    ComplexParameter(const std::complex<double>& t = 0) : Parameter(t) {}
+
+    /// \return size = 2
+    const size_t size() const {return 2;}
+
+    using Parameter::setValue;
+
+    /// Set value from vector
+    void setValue(const std::vector<double>& V)
+    { setValue(std::complex<double>(V[0], V[1])); }
+};
+
 
 /// \class ComplexComponentParameter
 /// \brief Abstract base allowing access to the components of a ComplexParameter as a RealParameter
@@ -120,27 +170,16 @@ class ComplexComponentParameter : public RealParameter
 public:
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par)
-        : RealParameter(), Parent_(par)
-    {
-        if (!Parent_)
-            throw exceptions::Exception("Parent unset", "RealSubparameter::RealSubparameter");
-    }
+    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par);
 
     /// \return value of parameter by accessing parent
     const double value() const override
     { return component(Parent_->value()); }
 
+    using RealParameter::setValue;
+
     /// set value by accessing parent
-    void setValue(double val) override
-    {
-        if (variableStatus() == VariableStatus::fixed)
-            throw exceptions::ParameterIsFixed("", "ComplexComponentParameter::setValue");
-        if (value() == val)
-            return;
-        Parent_->setValue(setComponent(Parent_->value(), val));
-        setVariableStatus(VariableStatus::changed);
-    }
+    void setValue(double val) override;
 
     /// \return shared_ptr to parent
     std::shared_ptr<ComplexParameter> parent()
@@ -156,6 +195,7 @@ protected:
 
 private:
 
+    /// ComplexParameter this object points to a component of
     std::shared_ptr<ComplexParameter> Parent_;
 
 };
@@ -207,6 +247,20 @@ protected:
     { return std::complex<double>(real(c), v); }
 
 };
+
+/// \return number of real elements in ParameterVector
+inline const size_t size(const ParameterVector& V)
+{ return std::accumulate(V.begin(), V.end(), size_t(0), [](size_t& s, const ParameterVector::value_type & p) {return s += p->size();}); }
+
+/// set value into parameter from iterator, calling parameter's setValue(vector<double>) function
+/// \param P Parameter to set into
+/// \param first Iterator to take values from
+template <class InputIt>
+std::vector<double>::const_iterator set_value(ParameterBase& P, InputIt first)
+{ std::vector<double> V(first, first + P.size()); P.setValue(V); return first += (P.size() - 1); }
+
+/// set values in ParameterVector from values in vector<double>
+void set_values(ParameterVector& pars, const std::vector<double>& vals);
 
 }
 
