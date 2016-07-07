@@ -32,8 +32,10 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 
+#include <complex>
 #include <memory>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -181,7 +183,7 @@ inline bool operator!=(const CachedDataValue::Status& S, const VariableStatus& s
 { return S.Variable != s; }
 
 /// streaming operator for CachedDataValue::Status
-std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
+std::string to_string(const CachedDataValue::Status& S);
 
 /// \class RealCachedDataValue
 /// \brief Class for managing a single real cached value inside a #DataPoint

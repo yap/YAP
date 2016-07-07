@@ -624,7 +624,7 @@ void Model::printFlags(const StatusManager& sm) const
         for (auto& c : d->cachedDataValues()) {
             std::cout << "  CachedDataValue " << c << ": ";
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
-                std::cout << sm.status(*c, i) << "; ";
+                std::cout << to_string(sm.status(*c, i)) << "; ";
             std::cout << "\n";
         }
     }

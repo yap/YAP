@@ -21,7 +21,7 @@
 #ifndef yap_CalculationStatus_h
 #define yap_CalculationStatus_h
 
-#include <ostream>
+#include <string>
 
 namespace yap {
 
@@ -31,15 +31,15 @@ enum class CalculationStatus : bool {
     uncalculated = false
 };
 
-inline std::ostream& operator<<(std::ostream& str, const CalculationStatus& c)
+inline std::string to_string(const CalculationStatus& c)
 {
     switch (c) {
         case CalculationStatus::calculated:
-            return str << "calculated";
+            return "calculated";
         case CalculationStatus::uncalculated:
-            return str << "uncalculated";
+            return "uncalculated";
         default:
-            return str << (int) c;
+            return std::to_string(static_cast<bool>(c));
     }
 }
 
