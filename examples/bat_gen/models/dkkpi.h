@@ -15,6 +15,7 @@
 #include <Model.h>
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
+#include "PDL.h"
 #include "QuantumNumbers.h"
 #include "RelativisticBreitWigner.h"
 #include "Resonance.h"
@@ -25,7 +26,7 @@
 
 inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto kPlus  = F.fsp(+321);

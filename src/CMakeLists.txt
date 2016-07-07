@@ -21,27 +21,28 @@ set(YAP_SOURCES
 	FourMomenta.cxx
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
-  ImportanceSampler.cxx
-  MassRange.cxx
+	ImportanceSampler.cxx
+	MassRange.cxx
 	MassShape.cxx
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
-  ModelIntegral.cxx
+	ModelIntegral.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx
 	ParticleFactory.cxx
+	PDL.cxx
 	PoleMass.cxx
 	QuantumNumbers.cxx
 	RecalculableDataAccessor.cxx
-  RelativisticBreitWigner.cxx
+	RelativisticBreitWigner.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
 	StatusManager.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
-)
+	)
 
 add_library(YAP SHARED ${YAP_SOURCES})
 

@@ -21,6 +21,8 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "fwd/ParticleFactory.h"
+
 #include "QuantumNumbers.h"
 
 #include <map>
@@ -51,14 +53,16 @@ struct ParticleTableEntry : public QuantumNumbers {
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
-
 class ParticleFactory
 {
 public:
 
-    /// Constructor
-    /// \param pdlFile Path to a pdl file like used by EvtGen
-    ParticleFactory(const std::string pdlFile);
+	/// \typedef ParticleFactory::value_type
+	/// Define this to allow `std::inserter` to use `insert`
+    using value_type = ParticleTableEntry;
+	/// \typedef ParticleFactory::value_type
+	/// Define this to allow `std::inserter` to use `insert`
+    using iterator = ParticleTableMap::iterator;
 
     /// Create a FinalStateParticle from a PDG code
     /// \param PDG PDG code of particle to create
@@ -77,6 +81,14 @@ public:
     /// \param massShape Pointer to MassShape object describing resonance
     /// \return shared pointer to new Resonance object
     std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const;
+
+    /// Increment-assignment operator.
+    ///
+    /// Merges the #ParticleTable_ of the second operand to the
+    /// #ParticleTable_ of the first operand.
+    /// \param rhs The right hand side of the `+=`.
+    /// \return A `const` reference to `*this` instance.
+    const ParticleFactory& operator+=(const ParticleFactory& rhs);
 
     /// \name Particle table access
     /// @{
@@ -100,10 +112,16 @@ public:
     const QuantumNumbers& quantumNumbers(std::string name) const
     { return static_cast<const QuantumNumbers&>(particleTableEntry(name)); }
 
+    /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_
+    /// \param entry a A ParticleTableEntry to add to #ParticleTable_
+    std::pair<ParticleTableMap::iterator, bool> insert(const ParticleTableEntry& entry);
 
-    /// add ParticleTableEntry to #ParticleTable_
-    /// \param entry ParticleTableEntry to add to #ParticleTable_
-    void addParticleTableEntry(ParticleTableEntry entry);
+	/// convenience function to allow `inserter()` to be used in the `std::copy` algorithm
+	ParticleTableMap::iterator insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry);
+
+	/// #ParticleFactory's own inserter
+	friend std::insert_iterator<ParticleFactory> inserter(ParticleFactory& F)
+	{ return std::insert_iterator<ParticleFactory>(F, F.ParticleTable_.end()); }
 
     // find PDG number by particle name
     // \return PDG code number
@@ -113,12 +131,8 @@ public:
     /// @}
 
 private:
-    /// read pdl file and fill #ParticleTable_
-    void readPDT(const std::string fname);
-
     /// maps PDGCodes to ParticleTableEntry's
     std::map<int, ParticleTableEntry> ParticleTable_;
-
 };
 
 }

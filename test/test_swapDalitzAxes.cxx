@@ -15,6 +15,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleFactory.h>
+#include <PDL.h>
 #include <Resonance.h>
 #include <ZemachFormalism.h>
 
@@ -35,7 +36,7 @@ TEST_CASE( "swapDalitzAxes" )
     std::array<double, 2> m2_ab_range = {0.4, 1.9};
     std::array<double, 2> m2_bc_range = {0.9, 3.1};
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
 
     const unsigned N = 20;

@@ -18,6 +18,7 @@
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
+#include <PDL.h>
 #include <PoleMass.h>
 #include <QuantumNumbers.h>
 #include <RelativisticBreitWigner.h>
@@ -29,7 +30,7 @@
 
 inline std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
 {
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);

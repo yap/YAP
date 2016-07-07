@@ -11,6 +11,7 @@
 #include <FinalStateParticle.h>
 #include <Model.h>
 #include <ParticleFactory.h>
+#include <PDL.h>
 
 #include <memory>
 
@@ -18,7 +19,7 @@ inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::SpinAmplitudeC
 {
     auto M = std::make_unique<yap::Model>(std::move(SAC));
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);

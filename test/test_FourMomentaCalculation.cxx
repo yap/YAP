@@ -14,6 +14,7 @@
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
+#include <PDL.h>
 #include <ZemachFormalism.h>
 
 #include <cmath>
@@ -134,7 +135,7 @@ TEST_CASE( "FourMomentaCalculation" )
         //yap::plainLogs(el::Level::Debug);
 
         // load particle factory
-        yap::ParticleFactory factory("../data/evt.pdl");
+        yap::ParticleFactory factory = yap::read_pdl_file("../data/evt.pdl");
 
         // create final state particles
         auto piPlus = factory.fsp(211);
@@ -235,7 +236,7 @@ TEST_CASE( "FourMomentaCalculation" )
         yap::disableLogs(el::Level::Global);
 
         // load particle factory
-        yap::ParticleFactory factory("../data/evt.pdl");
+        yap::ParticleFactory factory = yap::read_pdl_file("../data/evt.pdl");
 
         // create final state particles
         auto piPlus = factory.fsp(211);

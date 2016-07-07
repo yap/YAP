@@ -18,6 +18,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleFactory.h>
+#include <PDL.h>
 #include <Resonance.h>
 #include <ZemachFormalism.h>
 
@@ -100,7 +101,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach

@@ -22,10 +22,15 @@
 #ifndef yap_ParticleFactoryFwd_h
 #define yap_ParticleFactoryFwd_h
 
+#include <map>
+
 namespace yap {
 
 struct ParticleTableEntry;
 class ParticleFactory;
+
+/// \typedef ParticleTableMap
+using ParticleTableMap = std::map<int, ParticleTableEntry>;
 
 }
 
