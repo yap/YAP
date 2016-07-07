@@ -40,7 +40,7 @@ class Resonance;
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup ParticleFactory 
+/// \ingroup ParticleFactory
 struct ParticleTableEntry : public QuantumNumbers {
     ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
     bool consistent() const override;
@@ -59,11 +59,11 @@ class ParticleFactory
 {
 public:
 
-	/// \typedef ParticleFactory::value_type
-	/// Define this to allow `std::inserter` to use `insert`
+    /// \typedef ParticleFactory::value_type
+    /// Define this to allow `std::inserter` to use `insert`
     using value_type = ParticleTableEntry;
-	/// \typedef ParticleFactory::iterator
-	/// Define this to allow `std::inserter` to use `insert`
+    /// \typedef ParticleFactory::iterator
+    /// Define this to allow `std::inserter` to use `insert`
     using iterator = ParticleTableMap::iterator;
 
     /// Create a FinalStateParticle from a PDG code
@@ -90,7 +90,7 @@ public:
     /// #ParticleTable_ of the first operand.
     /// \param rhs The right hand side of the `+=`.
     /// \return A `const` reference to `*this` instance.
-    const ParticleFactory& operator+=(const ParticleFactory& rhs);
+//    const ParticleFactory& operator+=(const ParticleFactory& rhs);
 
     /// \name Particle table access
     /// @{
@@ -118,12 +118,12 @@ public:
     /// \param entry a A ParticleTableEntry to add to #ParticleTable_
     std::pair<ParticleTableMap::iterator, bool> insert(const ParticleTableEntry& entry);
 
-	/// convenience function to allow `inserter()` to be used in the `std::copy` algorithm
-	ParticleTableMap::iterator insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry);
+    /// convenience function to allow `inserter()` to be used in the `std::copy` algorithm
+    ParticleTableMap::iterator insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry);
 
-	/// #ParticleFactory's own inserter
-	friend std::insert_iterator<ParticleFactory> inserter(ParticleFactory& F)
-	{ return std::insert_iterator<ParticleFactory>(F, F.ParticleTable_.end()); }
+    /// #ParticleFactory's own inserter
+    friend std::insert_iterator<ParticleFactory> inserter(ParticleFactory& F)
+    { return std::insert_iterator<ParticleFactory>(F, F.ParticleTable_.end()); }
 
     // find PDG number by particle name
     // \return PDG code number

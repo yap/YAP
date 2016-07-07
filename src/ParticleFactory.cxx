@@ -6,7 +6,10 @@
 #include "MassShape.h"
 #include "Resonance.h"
 
+#include <algorithm>
 #include <fstream>
+#include <functional>
+#include <utility>
 
 namespace yap {
 
@@ -55,12 +58,13 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
     return Resonance::create(p, p.Mass, p.Name, radialSize, std::move(massShape));
 }
 
-//-------------------------
-const ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
-{
-    std::copy(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(), std::inserter(ParticleTable_, ParticleTable_.end()));
-    return *this;
-}
+////-------------------------
+//const ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
+//{
+//	std::transform(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(),
+//			inserter(*this), std::bind(std::get<1>, std::placeholders::_1));
+//    return *this;
+//}
 
 //-------------------------
 const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const

@@ -56,10 +56,10 @@ public:
     /// \attention Isospin and parity are missing from `.pdl` format!
     const ParticleTableEntry operator*() const;
 
-	/// Arrow iterator
-	/// \return `i->m` is the same as `(*i).m`
-	ParticleTableEntry operator->() const
-	{ return (*this).operator*(); };
+    /// Arrow iterator
+    /// \return `i->m` is the same as `(*i).m`
+    ParticleTableEntry operator->() const
+    { return (*this).operator * (); };
 
     /// pre-increment operator (read line in)
     ///
@@ -75,7 +75,7 @@ public:
     /// Returns just an empty iterator, i.e. a default constructed one.
     static const PDLIterator& end()
     {
-		static PDLIterator PDL_END;
+        static PDLIterator PDL_END;
         return PDL_END;
     }
 
