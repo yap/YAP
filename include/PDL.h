@@ -43,10 +43,6 @@ public:
     using traits_type  = typename std::string::traits_type;
     using istream_type = std::basic_istream<char_type, traits_type>;
 
-    /// Default constructor.
-    /// It's automatically called when the End Of File is reached
-    PDLIterator() : InputStream_(nullptr) {};
-
     /// Construct and read the first line in
     PDLIterator(istream_type& is) : InputStream_(&is) { ++(*this); };
 
@@ -91,6 +87,10 @@ public:
 private:
     istream_type* InputStream_;
     std::string Value_;
+
+    /// Default constructor (private).
+    /// It's automatically called when the End Of File is reached
+    PDLIterator() : InputStream_(nullptr) {};
 };
 
 /// Helper function to create a #ParticleFactory from an input `.pdl` file
