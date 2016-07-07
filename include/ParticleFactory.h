@@ -40,6 +40,7 @@ class Resonance;
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
+/// \ingroup ParticleFactory 
 struct ParticleTableEntry : public QuantumNumbers {
     ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
     bool consistent() const override;
@@ -53,6 +54,7 @@ struct ParticleTableEntry : public QuantumNumbers {
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
+/// \defgroup ParticleFactory
 class ParticleFactory
 {
 public:
@@ -60,7 +62,7 @@ public:
 	/// \typedef ParticleFactory::value_type
 	/// Define this to allow `std::inserter` to use `insert`
     using value_type = ParticleTableEntry;
-	/// \typedef ParticleFactory::value_type
+	/// \typedef ParticleFactory::iterator
 	/// Define this to allow `std::inserter` to use `insert`
     using iterator = ParticleTableMap::iterator;
 

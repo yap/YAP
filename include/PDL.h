@@ -35,6 +35,7 @@ namespace yap {
 /// is set to its end state (i.e. `InputStream_` is set to `nullptr`).
 /// \attention The line is read when the iterator is incremented.
 /// \author Paolo Di Giglio
+/// \ingroup ParticleFactory
 class PDLIterator : public std::iterator<std::input_iterator_tag, std::string>
 {
 public:
@@ -92,6 +93,9 @@ private:
     std::string Value_;
 };
 
+/// Helper function to create a #ParticleFactory from an input `.pdl` file
+/// \return A copy of the created #ParticleFactory
+/// \ingroup ParticleFactory
 ParticleFactory read_pdl_file(const std::string& filename);
 
 }
