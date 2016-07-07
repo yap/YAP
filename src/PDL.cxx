@@ -47,20 +47,22 @@ const ParticleTableEntry PDLIterator::operator*() const
 //-------------------------
 PDLIterator& PDLIterator::operator++()
 {
-    // ignore comments and 'set' entries
+    // ignore lines not starting with "add"
     std::string command;
     do {
+
         // check if iterator reaches EOF
-        if (InputStream_ && !getline(*InputStream_, Value_)) {
-            *this = end();
-        } else {
-            std::istringstream iss(Value_);
-            iss >> command;
-            // check if the 'end' keyword has been reached
-            if (command == "end")
-                *this = end();
-        }
-    } while (Value_[0] == '*' || command == "set");
+        if (InputStream_ and !getline(*InputStream_, Value_))
+            return *this = end();
+
+        std::istringstream iss(Value_);
+        iss >> command;
+
+        // check if the 'end' keyword has been reached
+        if (command == "end")
+            return *this = end();
+
+    } while (command != "add");
 
     return *this;
 }

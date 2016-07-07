@@ -58,13 +58,14 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
     return Resonance::create(p, p.Mass, p.Name, radialSize, std::move(massShape));
 }
 
-////-------------------------
-//const ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
-//{
-//	std::transform(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(),
-//			inserter(*this), std::bind(std::get<1>, std::placeholders::_1));
-//    return *this;
-//}
+//-------------------------
+ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
+{
+	std::transform(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(),
+                 inserter(*this),
+                 std::bind(&ParticleTableMap::value_type::second, std::placeholders::_1));
+  return *this;
+}
 
 //-------------------------
 const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
@@ -79,26 +80,35 @@ const ParticleTableEntry& ParticleFactory::particleTableEntry(int PDG) const
 std::pair<ParticleTableMap::iterator, bool> ParticleFactory::insert(const ParticleTableEntry& entry)
 {
     if (!entry.consistent())
-        throw exceptions::Exception("entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
-                                    "ParticlFactory::insert");
+        throw exceptions::Exception("Entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
+                                    "ParticleTable::insert");
 
-    if (ParticleTable_.count(entry.PDG) != 0)
-        LOG(WARNING) << "ParticleFactory::insert : PDG code " << entry.PDG << " already exists. Overwriting entry.";
+    auto it_b = ParticleTable_.insert(ParticleTableMap::value_type(entry.PDG, entry));
 
-    return ParticleTable_.insert(ParticleTableMap::value_type(entry.PDG, entry));
+    // if insertion failed because key value entry.PDG was already contained
+    if (!it_b.second and it_b.first != ParticleTable_.end()) {
+        LOG(WARNING) << "PDG code " << entry.PDG << " already exists. Overwriting entry.";
+        it_b.first->second = entry;
+        it_b.second = true;
+    }
+
+    return it_b;
 }
 
 //-------------------------
 ParticleTableMap::iterator ParticleFactory::insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry)
 {
     if (!entry.consistent())
-        throw exceptions::Exception("entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
-                                    "ParticlFactory::insert");
+        throw exceptions::Exception("Entry with PDG code " + std::to_string(entry.PDG) + " is inconsistent",
+                                    "ParticleTable::insert");
 
-    if (ParticleTable_.count(entry.PDG) != 0)
-        LOG(WARNING) << "ParticleFactory::insert : PDG code " << entry.PDG << " already exists. Overwriting entry.";
+    if (ParticleTable_.count(entry.PDG) == 0)
+        return ParticleTable_.insert(hint, ParticleTableMap::value_type(entry.PDG, entry));
 
-    return ParticleTable_.insert(hint, ParticleTableMap::value_type(entry.PDG, entry));
+    LOG(WARNING) << "PDG code " << entry.PDG << " already exists. Overwriting entry.";
+    auto it = ParticleTable_.find(entry.PDG);
+    it->second = entry;
+    return it;
 }
 
 //-------------------------

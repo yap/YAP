@@ -21,32 +21,46 @@
 #ifndef yap_ParticleFactory_h
 #define yap_ParticleFactory_h
 
+#include "fwd/DecayingParticle.h"
+#include "fwd/FinalStateParticle.h"
+#include "fwd/MassShape.h"
 #include "fwd/ParticleFactory.h"
+#include "fwd/Resonance.h"
 
 #include "QuantumNumbers.h"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace yap {
 
-class DecayingParticle;
-class FinalStateParticle;
-class MassShape;
-class Resonance;
-
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup ParticleFactory
 struct ParticleTableEntry : public QuantumNumbers {
+    /// constructor
+    /// \param pdg PDG code
+    /// \param name Particle name
+    /// \param q QuantumNumbers of particle
+    /// \param mass Mass of particle
+    /// \param parameters Further parameters of particle (implementation dependent)
     ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
+
+    /// \return consistency of entry
     bool consistent() const override;
+
+    /// PDG code of particle
     int PDG;
+
+    /// Name of particle
     std::string Name;
+
+    /// Mass of particle
     double Mass;
+
+    /// further parameters of particle (implementation dependent)
     std::vector<double> MassShapeParameters;
 };
 
@@ -62,6 +76,7 @@ public:
     /// \typedef ParticleFactory::value_type
     /// Define this to allow `std::inserter` to use `insert`
     using value_type = ParticleTableEntry;
+
     /// \typedef ParticleFactory::iterator
     /// Define this to allow `std::inserter` to use `insert`
     using iterator = ParticleTableMap::iterator;
@@ -84,13 +99,9 @@ public:
     /// \return shared pointer to new Resonance object
     std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const;
 
-    /// Increment-assignment operator.
-    ///
-    /// Merges the #ParticleTable_ of the second operand to the
-    /// #ParticleTable_ of the first operand.
-    /// \param rhs The right hand side of the `+=`.
-    /// \return A `const` reference to `*this` instance.
-//    const ParticleFactory& operator+=(const ParticleFactory& rhs);
+    /// Adds content of rhs to this
+    /// \param rhs ParticleFactory to add into this
+    ParticleFactory& operator+=(const ParticleFactory& rhs);
 
     /// \name Particle table access
     /// @{
@@ -133,8 +144,9 @@ public:
     /// @}
 
 private:
+
     /// maps PDGCodes to ParticleTableEntry's
-    std::map<int, ParticleTableEntry> ParticleTable_;
+    ParticleTableMap ParticleTable_;
 };
 
 }

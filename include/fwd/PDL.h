@@ -17,21 +17,14 @@
 */
 
 /// \file
+/// Contains forward declarations only
 
-#ifndef yap_ParticleFactoryFwd_h
-#define yap_ParticleFactoryFwd_h
-
-#include <map>
+#ifndef yap_PDLFwd_h
+#define yap_PDLFwd_h
 
 namespace yap {
 
-struct ParticleTableEntry;
-class ParticleFactory;
-
-/// \typedef ParticleTableMap
-/// Maps PDG code to ParticleTableEntry
-/// \ingroup ParticleFactory
-using ParticleTableMap = std::map<int, ParticleTableEntry>;
+class PDLIterator;
 
 }
 
