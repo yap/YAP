@@ -23,6 +23,8 @@
 
 #include "fwd/ParticleFactory.h"
 
+#include "ParticleFactory.h"
+
 #include <sstream>
 #include <string>
 
@@ -46,10 +48,6 @@ public:
     /// Construct and read the first line in
     PDLIterator(istream_type& is) : InputStream_(&is) { ++(*this); };
 
-    // XXX Needed?
-//	const std::string& to_string() const { return Value_; };
-//	const std::string* const operator->() const { return &Value_;}
-
     /// Deference operator
     ///
     /// \return A pair of `int` (the PDG particle ID) and #ParticleTableEntry
@@ -57,6 +55,11 @@ public:
     /// member.
     /// \attention Isospin and parity are missing from `.pdl` format!
     const ParticleTableEntry operator*() const;
+
+	/// Arrow iterator
+	/// \return `i->m` is the same as `(*i).m`
+	ParticleTableEntry operator->() const
+	{ return (*this).operator*(); };
 
     /// pre-increment operator (read line in)
     ///
