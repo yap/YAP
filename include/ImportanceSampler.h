@@ -22,31 +22,31 @@
 #define yap_ImportanceSampler_h
 
 #include "fwd/DataPartition.h"
-#include "fwd/ModelIntegral.h"
+#include "fwd/DecayTreeVectorIntegral.h"
 
-#include "ModelIntegrator.h"
+#include "DecayTreeVectorIntegrator.h"
 
 namespace yap {
 
 /// \class ImportanceSampler
-/// \brief Calculates ModelIntegral using importance sampling
+/// \brief Calculates DecayTreeVectorIntegral using importance sampling
 /// \author Daniel Greenwald
 /// \ingroup Integration
-class ImportanceSampler : public ModelIntegrator
+class ImportanceSampler : public DecayTreeVectorIntegrator
 {
 
 public:
 
-    /// Update calculation of ModelIntegral
-    static void calculate(ModelIntegral& I, DataPartitionVector& DPV);
+    /// Update calculation of DecayTreeVectorIntegral
+    static void calculate(DecayTreeVectorIntegral& I, DataPartitionVector& DPV);
 
-    /// Update calculation of ModelIntegral
-    static void calculate(ModelIntegral& I, DataPartition& D);
+    /// Update calculation of DecayTreeVectorIntegral
+    static void calculate(DecayTreeVectorIntegral& I, DataPartition& D);
 
 private:
 
     /// perform partial calculation for one data partition
-    static unsigned partialCalculation(ModelIntegral& I, DataPartition& D);
+    static unsigned partialCalculation(DecayTreeVectorIntegral& I, DataPartition& D);
 
 };
 

@@ -14,7 +14,7 @@
 #include "MassAxes.h"
 #include "MassRange.h"
 #include "Model.h"
-#include "ModelIntegral.h"
+#include "DecayTreeVectorIntegral.h"
 #include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleFactory.h"
@@ -148,7 +148,7 @@ int main( int argc, char** argv)
             LOG(INFO) << "A_DT = " << A_DT;
             LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-            yap::ModelIntegral MI(m_dtv.second);
+            yap::DecayTreeVectorIntegral MI(m_dtv.second);
             yap::ImportanceSampler::calculate(MI, data);
 
             LOG(INFO) << "integral = " << to_string(MI.integral());

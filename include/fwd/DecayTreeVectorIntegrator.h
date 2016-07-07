@@ -19,12 +19,12 @@
 /// \file
 /// Contains forward declarations only
 
-#ifndef yap_ModelIntegratorFwd_h
-#define yap_ModelIntegratorFwd_h
+#ifndef yap_DecayTreeVectorIntegratorFwd_h
+#define yap_DecayTreeVectorIntegratorFwd_h
 
 namespace yap {
 
-class ModelIntegrator;
+class DecayTreeVectorIntegrator;
 
 }
 

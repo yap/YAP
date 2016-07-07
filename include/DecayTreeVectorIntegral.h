@@ -18,12 +18,12 @@
 
 /// \file
 
-#ifndef yap_ModelIntegral_h
-#define yap_ModelIntegral_h
+#ifndef yap_DecayTreeVectorIntegral_h
+#define yap_DecayTreeVectorIntegral_h
 
 #include "fwd/DecayTree.h"
 #include "fwd/Model.h"
-#include "fwd/ModelIntegral.h"
+#include "fwd/DecayTreeVectorIntegral.h"
 
 #include <array>
 #include <complex>
@@ -37,16 +37,18 @@ namespace yap {
 /// \ingroup Integration
 template <typename T>
 struct IntegralElement {
+
     /// integral value
     T value;
 
     /// constructor
     /// \param val initial value of integral component
     IntegralElement(T val = 0) : value(val) {}
+
 };
 
-/// \class ModelIntegral
-/// \brief Stores integral components for a model
+/// \class DecayTreeVectorIntegral
+/// \brief Stores integral components for a vector of decay trees
 /// \author Daniel Greenwald
 /// \defgroup Integration Classes related to model integration
 ///
@@ -58,13 +60,13 @@ struct IntegralElement {
 ///     stored as |A|^2 for the tree and returned as |a|^2 * stored value
 ///   o Off-diagonal components: one for each pair of DecayTrees (i, j),
 ///     stored as conj(A_i) * A_j and returned as 2 * real(conj(a_i) * a_i * stored value)
-class ModelIntegral
+class DecayTreeVectorIntegral
 {
 public:
 
     /// constructor
     /// \param dtv DecayTreeVector to construct integral of
-    ModelIntegral(const DecayTreeVector& dtv);
+    DecayTreeVectorIntegral(const DecayTreeVector& dtv);
 
     /// \return integral calculated from components
     const RealIntegralElement integral() const;
@@ -76,27 +78,16 @@ public:
     /// \return Model this integral calculates with (via DecayTrees)
     const Model* model() const;
 
-    /// \name typedefs
-    /// @{
-
-    /// \typedef map type for diagonal integral elements
-    using DiagonalMap = std::map<DecayTreeVector::value_type, RealIntegralElement>;
-
-    /// \typdef map type for off-diagonal integral elements
-    using OffDiagonalMap = std::map<std::array<DecayTreeVector::value_type, 2>, ComplexIntegralElement>;
-
-    /// @}
-
     /// \return Diagonals_ (const)
-    const ModelIntegral::DiagonalMap& diagonals() const
+    const DiagonalIntegralMap& diagonals() const
     { return Diagonals_; }
 
     /// \return OffDiagonals_ (const)
-    const ModelIntegral::OffDiagonalMap& offDiagonals() const
+    const OffDiagonalIntegralMap& offDiagonals() const
     { return OffDiagonals_; }
 
-    /// grant friend status to ModelIntegrator to access components and DecayTrees_
-    friend class ModelIntegrator;
+    /// grant friend status to DecayTreeVectorIntegrator to access components and DecayTrees_
+    friend class DecayTreeVectorIntegrator;
 
 private:
 
@@ -106,37 +97,37 @@ private:
     /// diagonal element integrals:
     /// stores norm(dataDependentAmplitude(...)),
     /// for each DecayTree in DecayTrees_
-    DiagonalMap Diagonals_;
+    DiagonalIntegralMap Diagonals_;
 
     /// off-diagonal element integrals stores:
     /// conj([0].dataDependentAmplitude(...)) * [1].dataDependentAmplitude(...),
     /// for each pair of DecayTree's in DecayTrees_ (in the upper
     /// right triangle of the matrix of combinations)
-    OffDiagonalMap OffDiagonals_;
+    OffDiagonalIntegralMap OffDiagonals_;
 
 };
 
-/// \return vector of fit fractions of DecayTree's in ModelIntegral
-/// \param MI ModelIntegral to retrieve values from
-const std::vector<double> fit_fractions(const ModelIntegral& MI);
+/// \return vector of fit fractions of DecayTree's in DecayTreeVectorIntegral
+/// \param MI DecayTreeVectorIntegral to retrieve values from
+const std::vector<double> fit_fractions(const DecayTreeVectorIntegral& MI);
 
 /// \return matrix of integral components without multiplication by free amplitudes
-/// \param MI ModelIntegral to retrieve values from
-const std::vector<std::vector<std::complex<double> > > cached_integrals(const ModelIntegral& MI);
+/// \param MI DecayTreeVectorIntegral to retrieve values from
+const std::vector<std::vector<std::complex<double> > > cached_integrals(const DecayTreeVectorIntegral& MI);
 
 /// \return matrix of integral components with multiplication by free amplitudes
-/// \param MI ModelIntegral to retrieve values from
-const std::vector<std::vector<std::complex<double> > > integrals(const ModelIntegral& MI);
+/// \param MI DecayTreeVectorIntegral to retrieve values from
+const std::vector<std::vector<std::complex<double> > > integrals(const DecayTreeVectorIntegral& MI);
 
 /// \return addition of two RealIntegralElements
 inline const RealIntegralElement operator+(const RealIntegralElement& A, const RealIntegralElement& B)
 { return RealIntegralElement(A.value + B.value); }
 
 /// \return integral of diagonal element given DiagonalMap entry
-const RealIntegralElement integral(const ModelIntegral::DiagonalMap::value_type& a_A2);
+const RealIntegralElement integral(const DiagonalIntegralMap::value_type& a_A2);
 
 /// \return integral of off-diagonal element given OffDiagonalMap entry
-const RealIntegralElement integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA);
+const RealIntegralElement integral(const OffDiagonalIntegralMap::value_type& aa_AA);
 
 /// \return string of RealIntegralElement
 inline const std::string to_string(const RealIntegralElement& a)

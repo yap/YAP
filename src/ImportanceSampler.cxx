@@ -13,7 +13,7 @@
 namespace yap {
 
 //-------------------------
-unsigned ImportanceSampler::partialCalculation(ModelIntegral& I, DataPartition& D)
+unsigned ImportanceSampler::partialCalculation(DecayTreeVectorIntegral& I, DataPartition& D)
 {
     // get model
     const Model* M = I.model();
@@ -27,8 +27,8 @@ unsigned ImportanceSampler::partialCalculation(ModelIntegral& I, DataPartition& 
     std::vector<std::complex<double> > A(I.decayTrees().size());
 
     // create holder for values
-    std::vector<ModelIntegral::DiagonalMap::mapped_type*> diags;
-    std::vector<std::vector<ModelIntegral::OffDiagonalMap::mapped_type*> > off_diags(I.decayTrees().size() - 1);
+    std::vector<DiagonalIntegralMap::mapped_type*> diags;
+    std::vector<std::vector<OffDiagonalIntegralMap::mapped_type*> > off_diags(I.decayTrees().size() - 1);
     // fill holders
     diags.reserve(I.decayTrees().size());
     for (size_t i = 0; i < I.decayTrees().size(); ++i) {
@@ -76,7 +76,7 @@ unsigned ImportanceSampler::partialCalculation(ModelIntegral& I, DataPartition& 
 }
 
 //-------------------------
-void ImportanceSampler::calculate(ModelIntegral& I, DataPartition& D)
+void ImportanceSampler::calculate(DecayTreeVectorIntegral& I, DataPartition& D)
 {
     // get vector trees that need to be calculated
     DecayTreeVector C = select_changed(I.decayTrees());
@@ -85,8 +85,8 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartition& D)
     if (C.empty())
         return;
 
-    // create ModelIntegral to hold updates
-    ModelIntegral U(C);
+    // create DecayTreeVectorIntegral to hold updates
+    DecayTreeVectorIntegral U(C);
     // calculate it
     partialCalculation(U, D);
 
@@ -101,7 +101,7 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartition& D)
 }
 
 //-------------------------
-void ImportanceSampler::calculate(ModelIntegral& I, DataPartitionVector& DPV)
+void ImportanceSampler::calculate(DecayTreeVectorIntegral& I, DataPartitionVector& DPV)
 {
     // if only one data partition, don't thread:
     if (DPV.size() == 1) {
@@ -117,7 +117,7 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartitionVector& DPV)
         return;
 
     // create copies for running over each partition
-    std::vector<ModelIntegral> m(DPV.size(), ModelIntegral(C));
+    std::vector<DecayTreeVectorIntegral> m(DPV.size(), DecayTreeVectorIntegral(C));
 
     // run over each partition storing number of events used in each calculation
     std::vector<std::future<unsigned> > n;

@@ -13,8 +13,9 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-	DecayTree.cxx
 	DecayingParticle.cxx
+	DecayTree.cxx
+  DecayTreeVectorIntegral.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
 	FreeAmplitude.cxx
@@ -27,7 +28,6 @@ set(YAP_SOURCES
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
-  ModelIntegral.cxx
   Parameter.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
