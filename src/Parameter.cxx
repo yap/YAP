@@ -20,7 +20,7 @@ void ComplexComponentParameter::setValue(double val)
     if (value() == val)
         return;
     Parent_->setValue(setComponent(Parent_->value(), val));
-    setVariableStatus(VariableStatus::changed);
+    variableStatus() = VariableStatus::changed;
 }
 
 //-------------------------

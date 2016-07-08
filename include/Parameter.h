@@ -46,12 +46,12 @@ protected:
 public:
 
     /// \return VariableStatus
-    const VariableStatus variableStatus() const
+    VariableStatus& variableStatus()
     { return VariableStatus_; }
 
-    /// set VariableStatus
-    void setVariableStatus(VariableStatus stat)
-    { VariableStatus_ = stat; }
+    /// \return VariableStatus (const)
+    const VariableStatus variableStatus() const
+    { return VariableStatus_; }
 
     /// \return number of real elements in parameter
     virtual const size_t size() const = 0;
@@ -113,7 +113,7 @@ public:
         if (ParameterValue_ == val)
             return;
         ParameterValue_ = val;
-        setVariableStatus(VariableStatus::changed);
+        variableStatus() = VariableStatus::changed;
     }
 
 private:
@@ -122,6 +122,11 @@ private:
     T ParameterValue_;
 
 };
+
+/// \return string of Parameter
+template <typename T>
+inline std::string to_string(const Parameter<T>& P)
+{ using std::to_string; return to_string(P.value()) + " (" + to_string(P.variableStatus()) + ")"; }
 
 /// \class RealParameter
 /// \ingroup Parameters

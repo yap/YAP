@@ -13,7 +13,7 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::s
       Model_(nullptr)
 {
     // final state particles have fixed mass
-    mass()->setVariableStatus(VariableStatus::fixed);
+    mass()->variableStatus() = VariableStatus::fixed;
 }
 
 //-------------------------

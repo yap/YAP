@@ -229,7 +229,7 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
     for (auto& m_dtv : DecayTrees_)
         // if only available decay tree
         if (m_dtv.second.size() == 1)
-            m_dtv.second[0]->freeAmplitude()->setVariableStatus(VariableStatus::fixed);
+            m_dtv.second[0]->freeAmplitude()->variableStatus() = VariableStatus::fixed;
     for (auto& c : Channels_)
         c->fixSolitaryFreeAmplitudes();
 }

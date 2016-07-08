@@ -9,7 +9,7 @@ void RecalculableDataAccessor::setParameterFlagsToUnchanged()
 {
     for (auto& p : parameters_)
         if (p->variableStatus() == VariableStatus::changed)
-            p->setVariableStatus(VariableStatus::unchanged);
+            p->variableStatus() = VariableStatus::unchanged;
 }
 
 //-------------------------
