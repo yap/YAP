@@ -47,9 +47,6 @@
 
 namespace yap {
 
-/// map initial state particle to free (real) amplitude (for incoherent summing over initial state particles)
-using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
-
 /// \class Model
 /// \brief Class implementing a PWA model
 /// \author Johannes Rauch, Daniel Greenwald

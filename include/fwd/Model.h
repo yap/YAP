@@ -17,14 +17,23 @@
  */
 
 /// \file
-/// Contains forward declarations only
 
 #ifndef yap_ModelFwd_h
 #define yap_ModelFwd_h
 
+#include "fwd/DecayingParticle.h"
+#include "fwd/Parameter.h"
+
+#include <map>
+#include <memory>
+
 namespace yap {
 
 class Model;
+
+/// \typedef InitialStateParticleMap
+/// maps ISP to real parameter giving admixture in model
+using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
 
 }
 
