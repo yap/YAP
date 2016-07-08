@@ -33,9 +33,8 @@ class DecayTree;
 using DecayTreeVector = std::vector<std::shared_ptr<DecayTree> >;
 
 /// \typedef DecayTreeVectorMap
-/// Map of type T to DecayTreeVector
-template <typename T>
-using DecayTreeVectorMap = std::map<T, DecayTreeVector>;
+/// Map of spin projection (int) to DecayTreeVector
+using DecayTreeVectorMap = std::map<int, DecayTreeVector>;
 
 }
 
