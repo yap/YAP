@@ -26,7 +26,7 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
     : bat_yap_base(name, std::move(M))
 {
     for (auto& kv : model()->initialStateParticles()) {
-        std::cout << "Initial state particle " << to_string(*kv.first) << " with beta^2 = " << kv.second->value() << ":\n";
+        std::cout << "Initial state particle " << to_string(*kv.first) << " with " << to_string(kv.second);
 
         auto freeAmps = freeAmplitudes(kv.first->decayTrees());
 

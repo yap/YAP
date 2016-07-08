@@ -31,9 +31,13 @@ namespace yap {
 
 class Model;
 
+/// \typedef 
+/// maps spin projection (int) to admixture factor
+using AdmixtureMap = std::map<int, std::shared_ptr<RealParameter> >;
+
 /// \typedef InitialStateParticleMap
-/// maps ISP to real parameter giving admixture in model
-using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
+/// maps ISP to AdmixtureMap = one free real parameter per spin projection of ISP
+using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, AdmixtureMap>;
 
 }
 

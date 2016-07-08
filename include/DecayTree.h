@@ -155,6 +155,12 @@ inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint
 /// \param d DataPoint to evaluate on
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d);
 
+/// \return square of sum of amplitudes of decay trees in a vector
+/// \param dtv DecayTreeVector to sum over
+/// \param d DataPoint to evaluate on
+inline const double intensity(const DecayTreeVector& dtv, const DataPoint& d)
+{ return norm(amplitude(dtv, d)); }
+
 /// \return set of all free amplitudes in a DecayTree
 FreeAmplitudeSet freeAmplitudes(const DecayTree& DT);
 

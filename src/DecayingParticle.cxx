@@ -359,13 +359,4 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
     { return s += to_string(m_dtv.second); });
 }
 
-//-------------------------
-const double intensity(const DecayTreeVectorMap& m_dtv_map, const DataPoint& d)
-{
-    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), 0.,
-                           [&](double & a, const DecayTreeVectorMap::value_type & m_dtv)
-    {return a += norm(amplitude(m_dtv.second, d));});
-}
-
-
 }

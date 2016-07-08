@@ -19,6 +19,8 @@ bat_yap_base::bat_yap_base(std::string name, std::unique_ptr<yap::Model> M)
     if (!Model_)
         throw yap::exceptions::Exception("Model nullptr", "bat_yap_base::bat_yap_base");
 
+    Model_->lock();
+
     if (!Model_->consistent())
         throw yap::exceptions::Exception("Model inconsistent", "bat_yap_base::bat_yap_base");
 
