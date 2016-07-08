@@ -21,10 +21,11 @@
 #ifndef yap_ImportanceSampler_h
 #define yap_ImportanceSampler_h
 
+#include "Integrator.h"
+
 #include "fwd/DataPartition.h"
 #include "fwd/DecayTreeVectorIntegral.h"
-
-#include "DecayTreeVectorIntegrator.h"
+#include "fwd/ModelIntegral.h"
 
 namespace yap {
 
@@ -32,21 +33,30 @@ namespace yap {
 /// \brief Calculates DecayTreeVectorIntegral using importance sampling
 /// \author Daniel Greenwald
 /// \ingroup Integration
-class ImportanceSampler : public DecayTreeVectorIntegrator
+class ImportanceSampler : public Integrator
 {
 
 public:
 
-    /// Update calculation of DecayTreeVectorIntegral
-    static void calculate(DecayTreeVectorIntegral& I, DataPartitionVector& DPV);
+    // convenience typedef
+    using integral_sub_map = std::map<DecayTreeVectorIntegral*, DecayTreeVectorIntegral>;
 
-    /// Update calculation of DecayTreeVectorIntegral
-    static void calculate(DecayTreeVectorIntegral& I, DataPartition& D);
+    /// Update calculation of ModelIntegral
+    static void calculate(ModelIntegral& I, DataPartitionVector& DPV);
+
+    /// Update calculation of ModelIntegral
+    static void calculate(ModelIntegral& I, DataPartition& D);
 
 private:
 
+    /// \return integral_sub_map for all changed trees
+    static integral_sub_map select_changed_integrals(ModelIntegral& I);
+
+    /// perform partial calculation of one integral component for one data partition
+    static unsigned partially_calculate_subIntegral(DecayTreeVectorIntegral& I, DataPartition& D);
+
     /// perform partial calculation for one data partition
-    static unsigned partialCalculation(DecayTreeVectorIntegral& I, DataPartition& D);
+    static unsigned partially_calculate(integral_sub_map& J, DataPartition& D);
 
 };
 

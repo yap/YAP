@@ -18,29 +18,22 @@
 
 /// \file
 
-#ifndef yap_DecayTreeVectorIntegralFwd_h
-#define yap_DecayTreeVectorIntegralFwd_h
+#ifndef yap_ModelIntegralFwd_h
+#define yap_ModelIntegralFwd_h
 
-#include "fwd/DecayTree.h"
-#include "fwd/IntegralElement.h"
+#include "fwd/DecayTreeVectorIntegral.h"
+#include "fwd/Parameter.h"
 
 #include <map>
+#include <memory>
 
 namespace yap {
 
-class DecayTreeVectorIntegral;
+class ModelIntegral;
 
-/// \typedef DiagonalIntegralMap
-/// maps shared_ptr to DecayTree to diagonal integral element
-/// \ingroup Integration
-using DiagonalIntegralMap = std::map<DecayTreeVector::value_type, RealIntegralElement>;
-
-/// \typedef OffDiagonalIntegralMap
-/// maps shared_ptr to DecayTree to off-diagonal integral element
-/// \ingroup Integration
-using OffDiagonalIntegralMap = std::map<std::array<DecayTreeVector::value_type, 2>, ComplexIntegralElement>;
-
-
+/// \typedef IntegralMap
+/// maps admixture parameter to integral
+using IntegralMap = std::map<std::shared_ptr<RealParameter>, DecayTreeVectorIntegral>;
 
 }
 

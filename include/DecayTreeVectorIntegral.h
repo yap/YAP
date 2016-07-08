@@ -21,31 +21,18 @@
 #ifndef yap_DecayTreeVectorIntegral_h
 #define yap_DecayTreeVectorIntegral_h
 
+#include "IntegralElement.h"
+
+#include "fwd/DecayTreeVectorIntegral.h"
+
 #include "fwd/DecayTree.h"
 #include "fwd/Model.h"
-#include "fwd/DecayTreeVectorIntegral.h"
 
 #include <array>
 #include <complex>
 #include <map>
 
 namespace yap {
-
-/// \class IntegralElement
-/// \brief Holds the values of a component of an integral
-/// \author Daniel Greenwald
-/// \ingroup Integration
-template <typename T>
-struct IntegralElement {
-
-    /// integral value
-    T value;
-
-    /// constructor
-    /// \param val initial value of integral component
-    IntegralElement(T val = 0) : value(val) {}
-
-};
 
 /// \class DecayTreeVectorIntegral
 /// \brief Stores integral components for a vector of decay trees
@@ -66,7 +53,7 @@ public:
 
     /// constructor
     /// \param dtv DecayTreeVector to construct integral of
-    DecayTreeVectorIntegral(const DecayTreeVector& dtv);
+    explicit DecayTreeVectorIntegral(const DecayTreeVector& dtv);
 
     /// \return integral calculated from components
     const RealIntegralElement integral() const;
@@ -86,8 +73,8 @@ public:
     const OffDiagonalIntegralMap& offDiagonals() const
     { return OffDiagonals_; }
 
-    /// grant friend status to DecayTreeVectorIntegrator to access components and DecayTrees_
-    friend class DecayTreeVectorIntegrator;
+    /// grant friend status to Integrator to access components and DecayTrees_
+    friend class Integrator;
 
 private:
 
@@ -119,23 +106,11 @@ const std::vector<std::vector<std::complex<double> > > cached_integrals(const De
 /// \param MI DecayTreeVectorIntegral to retrieve values from
 const std::vector<std::vector<std::complex<double> > > integrals(const DecayTreeVectorIntegral& MI);
 
-/// \return addition of two RealIntegralElements
-inline const RealIntegralElement operator+(const RealIntegralElement& A, const RealIntegralElement& B)
-{ return RealIntegralElement(A.value + B.value); }
-
 /// \return integral of diagonal element given DiagonalMap entry
 const RealIntegralElement integral(const DiagonalIntegralMap::value_type& a_A2);
 
 /// \return integral of off-diagonal element given OffDiagonalMap entry
 const RealIntegralElement integral(const OffDiagonalIntegralMap::value_type& aa_AA);
-
-/// \return string of RealIntegralElement
-inline const std::string to_string(const RealIntegralElement& a)
-{ return std::to_string(a.value); }
-
-/// \return string of ComplexIntegralElement
-inline const std::string to_string(const ComplexIntegralElement& a)
-{ return std::to_string(real(a.value)) + " " + std::to_string(imag(a.value)) + "i"; }
 
 }
 

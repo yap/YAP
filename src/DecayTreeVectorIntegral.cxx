@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "DecayTree.h"
+#include "IntegralElement.h"
 
 #include <algorithm>
 #include <numeric>

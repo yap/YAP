@@ -23,11 +23,13 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
   ImportanceSampler.cxx
+  Integrator.cxx
   MassRange.cxx
 	MassShape.cxx
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
+  ModelIntegral.cxx
   Parameter.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx

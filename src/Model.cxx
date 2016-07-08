@@ -609,7 +609,7 @@ DataSet Model::createDataSet(size_t n)
 {
     if (!locked())
         lock();
-    
+
     if (!locked())
         throw exceptions::Exception("data sets cannot be generated from an unlocked model.", "Model::createDataSet");
 
