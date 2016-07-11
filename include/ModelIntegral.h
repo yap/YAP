@@ -24,9 +24,10 @@
 #include "fwd/ModelIntegral.h"
 
 #include "fwd/DecayTree.h"
-#include "fwd/DecayTreeVectorIntegral.h"
 #include "fwd/IntegralElement.h"
 #include "fwd/Model.h"
+
+#include "DecayTreeVectorIntegral.h"
 
 namespace yap {
 

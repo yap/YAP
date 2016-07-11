@@ -5,9 +5,9 @@
 
 #include <fwd/DataPartition.h>
 #include <fwd/Model.h>
-#include <fwd/ModelIntegral.h>
 
 #include <DataSet.h>
+#include <ModelIntegral.h>
 
 #include <memory>
 #include <string>
@@ -39,8 +39,8 @@ public:
     { return FitData_; }
 
     /// \return NormalizationData_
-    yap::DataSet& normalizationData()
-    { return NormalizationData_; }
+    yap::DataSet& integralData()
+    { return IntegralData_; }
 
     /// \typedef integrator_type
     /// convienence typedef
@@ -55,9 +55,11 @@ private:
     yap::DataSet FitData_;
 
     /// DataSet to calculate model integral with
-    yap::DataSet NormalizationData_;
+    yap::DataSet IntegralData_;
 
     integrator_type Integrator_;
+
+    yap::ModelIntegral Integral_;
 
 };
 

@@ -7,6 +7,7 @@
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>
+#include <ModelIntegral.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
 
@@ -19,8 +20,9 @@ void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPa
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
-      NormalizationData_(model()->createDataSet()),
-      Integrator_(integrator_type(unambiguous_importance_sampler_calculate))
+      IntegralData_(model()->createDataSet()),
+      Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
+      Integral_(*M)
 {
     unsigned n_fsp = model()->finalStateParticles().size();
     unsigned n_dof = 3 * n_fsp - 7;
@@ -140,7 +142,8 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
 double bat_fit::LogLikelihood(const std::vector<double>&)
 {
     double L = sum_of_log_intensity(*model(), FitData_);
-    
+    Integrator_(Integral_, IntegralData_);
+    L -= FitData_.size() * Integral_.integral().value;
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;
