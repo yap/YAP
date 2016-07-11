@@ -167,14 +167,14 @@ void prune_particle_combinations(ParticleCombinationVector& PCs)
 }
 
 //-------------------------
-std::string indices_string(const ParticleCombination& pc)
+std::string indices_string(const ParticleCombination& pc, std::string before, std::string after)
 {
     if (pc.indices().empty())
         return "(empty)";
-    std::string s = "(";
+    std::string s = before;
     for (auto i : pc.indices())
         s += std::to_string(i);
-    s += ")";
+    s += after;
     return s;
 }
 

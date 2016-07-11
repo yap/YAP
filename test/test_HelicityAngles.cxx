@@ -128,7 +128,7 @@ TEST_CASE( "HelicityAngles" )
         momenta = lorentzTransformation(-momenta) * momenta;
 
         data.push_back(momenta);
-        const auto dp = data.points().back();
+        const auto dp = data.back();
 
         std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
 

@@ -135,7 +135,7 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
     LOG(INFO) << "Printing data:";
-    for (unsigned d = 0; d < data.points().size(); ++d) {
+    for (unsigned d = 0; d < data.size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
         for (auto& v : M.fourMomenta()->finalStateMomenta(data[d]))
             LOG(INFO) << yap::to_string(v);

@@ -38,7 +38,23 @@ namespace yap {
 /// \ingroup Data
 class DataIterator : public std::iterator<std::random_access_iterator_tag, DataPoint>
 {
+protected:
+
+    /// constructor with defaulted iterator
+    /// \param p owning DataPartition
+    DataIterator(const DataPartition& p)
+        : Partition_(&p) {}
+
+    /// constructor
+    /// \param p owning DataPartition
+    /// \param it vector<DataPoint> iterator to contain
+    DataIterator(const DataPartition& p, DataPointVector::iterator it)
+        : Partition_(&p), Iterator_(it) {}
+
 public:
+
+    const DataPartition* partition() const
+    { return Partition_; }
 
     /// addition assignment operator
     DataIterator& operator+=(DataIterator::difference_type n);
@@ -101,18 +117,7 @@ public:
     /// grant friend status to DataPartition to access Iterator_
     friend DataPartition;
 
-protected:
-
-    /// constructor with defaulted iterator
-    /// \param p owning DataPartition
-    DataIterator(const DataPartition& p)
-        : Partition_(&p) {}
-
-    /// constructor
-    /// \param p owning DataPartition
-    /// \param it vector<DataPoint> iterator to contain
-    DataIterator(const DataPartition& p, DataPointVector::iterator it)
-        : Partition_(&p), Iterator_(it) {}
+private:
 
     /// owning DataPartition
     const DataPartition* Partition_;
@@ -226,8 +231,8 @@ protected:
 
     /// \return DataIterator for vector<DataPoint> iterator
     /// \param raw_it vector<DataPoint>::iterator to use
-    DataIterator dataIterator(DataPointVector::iterator it) const
-    { return DataIterator(*this, it); }
+    DataIterator dataIterator(DataPointVector::iterator it, const DataPartition* part) const
+    { return (part) ? DataIterator(*part, it) : DataIterator(*this, it); }
 
     /// set begin
     const DataIterator& setBegin(DataPointVector::iterator it)

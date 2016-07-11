@@ -228,7 +228,7 @@ bool is_initial_state_particle_combination(const ParticleCombination& pc, const 
 void prune_particle_combinations(ParticleCombinationVector& PCs);
 
 /// Get indices listed as string
-std::string indices_string(const ParticleCombination& pc);
+std::string indices_string(const ParticleCombination& pc, std::string before = "(", std::string after = ")");
 
 /// convert ParticleCombination to string
 std::string to_string(const ParticleCombination& pc);
