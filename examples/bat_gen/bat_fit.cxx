@@ -3,30 +3,33 @@
 #include <DataSet.h>
 #include <DecayingParticle.h>
 #include <FourVector.h>
+#include <ImportanceSampler.h>
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <Parameter.h>
+#include <ParticleCombination.h>
 
 #include <TTree.h>
 
+void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPartition& D)
+{ yap::ImportanceSampler::calculate(M, D); }
+
 // -----------------------
-bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_mcmc, TTree& t_pars,
-                 int N, unsigned lag)
+bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
     : bat_yap_base(name, std::move(M)),
-      Data_(model()->createDataSet())
+      FitData_(model()->createDataSet()),
+      NormalizationData_(model()->createDataSet()),
+      Integrator_(integrator_type(unambiguous_importance_sampler_calculate))
 {
     unsigned n_fsp = model()->finalStateParticles().size();
     unsigned n_dof = 3 * n_fsp - 7;
 
     //
     // find mass axes
-    // and set t_mcmc parameter branch addresses
     //
     std::vector<std::vector<unsigned> > pcs;
     pcs.reserve(n_dof);
-    std::vector<double> m2;
-    m2.reserve(n_dof);
 
     bool parameter;
     char c_parname[10];
@@ -57,18 +60,38 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_mcmc,
         }
         pcs.push_back(indices);
 
-        // set branch address
-        m2.push_back(0);
-        t_mcmc.SetBranchAddress(parname.data(), &m2.back());
     }
 
-    if (pcs.size() != n_dof or m2.size() != n_dof)
+    if (pcs.size() != n_dof)
         throw yap::exceptions::Exception("insufficient axes found "
                                          "(" + std::to_string(pcs.size()) + " < " + std::to_string(n_dof) + ")",
                                          "bat_fit::bat_fit");
 
     // create mass axes
     axes() = model()->massAxes(pcs);
+}
+
+//-------------------------
+void set_address(const yap::MassAxes::value_type& a,
+                 std::vector<double>& m2,
+                 TTree& t_mcmc)
+{
+    m2.push_back(0);
+    t_mcmc.SetBranchAddress(indices_string(*a, "m2_", "").data(), &m2.back());
+}
+
+//-------------------------
+size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
+{
+    if (axes().empty())
+        throw yap::exceptions::Exception("mass axes empty", "bat_fit::loadData");
+
+    // set branch addresses
+    std::vector<double> m2;
+    m2.reserve(axes().size());
+    std::for_each(axes().begin(), axes().end(), std::bind(set_address, std::placeholders::_1, std::ref(m2), std::ref(t_mcmc)));
+    if (m2.size() != axes().size())
+        throw yap::exceptions::Exception("not all mass axes loaded from TTree", "bat_fit::loadData");
 
     //
     // load data
@@ -83,10 +106,11 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_mcmc,
     while (Phase <= 0 and n < t_mcmc.GetEntries())
         t_mcmc.GetEntry(n++);
 
-    auto nN = (N < 0) ? t_mcmc.GetEntries() : std::min(n + N, t_mcmc.GetEntries());
+    int n_attempted = 0;
+    size_t old_size = data.size();
 
-    while (n < nN) {
-        t_mcmc.GetEntry(n++);
+    for (; n < t_mcmc.GetEntries() and (N < 0 or n_attempted < N); ++n) {
+        t_mcmc.GetEntry(n);
 
         if (Phase <= 0)
             continue;
@@ -94,21 +118,29 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_mcmc,
         if (Iteration % lag != 0)
             continue;
 
+        ++n_attempted;
+
         auto P = model()->calculateFourMomenta(axes(), m2, isp()->mass()->value());
         if (P.empty())
             std::cout << "point is out of phase space!";
-        Data_.push_back(P);
+        data.push_back(P);
     }
 
-    LOG(INFO) << "Data loaded with " << Data_.size() << " points";
-    if (!Data_.points().empty())
-        LOG(INFO) << "Total data size = " << (Data_.size() * Data_[0].bytes() * 1.e-6) << " MB";
+    if (data.empty())
+        LOG(INFO) << "No data loaded.";
+    else {
+        LOG(INFO) << "Loaded " << data.size() - old_size << " data points (" << ((data.size() - old_size) * data[0].bytes() * 1.e-6) << " MB)";
+        if (old_size != 0)
+            LOG(INFO) << "Total data size now " << data.size() << " points (" << (data.size() * data[0].bytes() * 1.e-6) << " MB)";
+    }
+    return data.size() - old_size;
 }
 
 // ---------------------------------------------------------
 double bat_fit::LogLikelihood(const std::vector<double>&)
 {
-    double L = sum_of_log_intensity(*model(), Data_);
+    double L = sum_of_log_intensity(*model(), FitData_);
+    
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;

@@ -40,9 +40,10 @@ int main()
     if (!t_pars)
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
-    bat_fit m("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()),
-              *t_mcmc, *t_pars,
-              100, 1);
+    bat_fit m("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()), *t_pars);
+
+    m.loadData(m.fitData(), *t_mcmc, 10000, 1);
+    m.loadData(m.fitData(), *t_mcmc, 4000, 3);
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);
