@@ -22,7 +22,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
       FitData_(model()->createDataSet()),
       IntegralData_(model()->createDataSet()),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
-      Integral_(*M)
+      Integral_(*model())
 {
     unsigned n_fsp = model()->finalStateParticles().size();
     unsigned n_dof = 3 * n_fsp - 7;

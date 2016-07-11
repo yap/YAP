@@ -21,8 +21,7 @@ class bat_fit : public bat_yap_base
 public:
     
     /// constructor
-    bat_fit(std::string name, std::unique_ptr<yap::Model> M,
-            TTree& t_pars);
+    bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars);
 
     /// log likelihood
     double LogLikelihood(const std::vector<double>&) override;
