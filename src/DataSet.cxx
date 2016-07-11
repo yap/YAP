@@ -83,9 +83,10 @@ DataIterator DataSet::erase(const DataIterator& first, const DataIterator& last)
         throw exceptions::Exception("Iterators' partitions don't match", "DataSet::erase");
     if (first.partition() == this)
         return dataIterator(DataPoints_.erase(rawIterator(first), rawIterator(last)), first.partition());
-    throw exceptions::Exception("erase with iterators not belonging to DataSet as partition not yet supported",
-                                "DataSet::erase");
-    /// \todo implement erase using DataIterator that may jump through set in any way.
+    auto it = first;
+    while (it != last)
+        erase(it++);
+    return last;
 }
 
 }

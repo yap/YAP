@@ -104,15 +104,18 @@ public:
     { DataPoints_.clear(); }
 
     /// removes last element added to data set
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     void pop_back()
     { DataPoints_.pop_back(); }
-
-    /// remove specified element from data set
+    
+    /// remove specified element from data set.
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     /// \param pos iterator to element to remove
     DataIterator erase(const DataIterator& pos)
     { return dataIterator(DataPoints_.erase(rawIterator(pos)), pos.partition()); }
 
     /// remove specified elements from data set
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     /// \param first iterator to first element to remove
     /// \param last iterator beyond last element to remove
     DataIterator erase(const DataIterator& first, const DataIterator& last);
