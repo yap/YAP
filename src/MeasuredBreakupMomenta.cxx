@@ -5,13 +5,14 @@
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "Model.h"
+#include "ParticleCombination.h"
 #include "StatusManager.h"
 
 namespace yap {
 
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model& m) :
-    StaticDataAccessor(m, ParticleCombination::equalDownByOrderlessContent),
+    StaticDataAccessor(m, equal_down_by_orderless_content),
     Q2_(RealCachedDataValue::create(this))
 {
     if (!model()->fourMomenta())

@@ -11,8 +11,8 @@
 namespace yap {
 
 //-------------------------
-HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s, ParticleCombination::Equal& equal) :
-    SpinAmplitude(two_J, two_j, l, two_s, equal),
+HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
+    SpinAmplitude(two_J, two_j, l, two_s, equal_by_shared_pointer),
     RequiresHelicityAngles()
 {
     if (finalTwoJ().size() != 2)

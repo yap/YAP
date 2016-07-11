@@ -23,6 +23,7 @@
 
 #include "fwd/SpinAmplitude.h"
 
+#include "fwd/ParticleCombination.h"
 #include "fwd/Spin.h"
 #include "fwd/StatusManager.h"
 
@@ -138,7 +139,7 @@ protected:
     /// \param two_s twice the total spin angular momentum
     /// \param equal ParticleCombination equality struct for determining index assignments
     SpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s,
-                  ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer);
+                  const ParticleCombinationEqualTo& equal);
 
 private:
 

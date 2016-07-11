@@ -123,98 +123,47 @@ private:
 
     /// @}
 
-    /// \name Equality-checking structs
-    /// @{
+};
+    
+/// \name ParticleCombinationEqualTo functions
+/// @{
 
-public:
+/// compare shared_ptr's to ParticleCombination, returning true always
+constexpr bool equal_always(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B)
+{ return true; }
 
-    /// \struct Equal
-    /// \brief base class for equality (with functor), compares shared_ptr's only
-    struct Equal {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const
-        { return A == B; }
-    };
+/// compare shared_ptr's to ParticleCombination by shared_ptr only
+inline bool equal_by_shared_pointer(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B)
+{ return A == B; }
 
-    /// \struct EqualByOrderedContent
-    /// \brief Checks objects referenced by shared pointers, check indices only
-    struct EqualByOrderedContent : Equal {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
+/// compare shared_ptr's to ParticleCombination by indices only
+bool equal_by_ordered_content(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
-    /// \struct EqualDown
-    /// \brief Checks objects referenced by shared pointers,
-    /// check self and all daughters (down the decay tree) for equality
-    struct EqualDown : EqualByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
+/// compare shared_ptr's to ParticleCombination by indices, disregarding order
+bool equal_by_orderless_content(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
-    /// \struct EqualUp
-    /// \brief Check objects referenced by shared pointers,
-    /// check self and parent (up the decay tree) for equality
-    struct EqualUp : EqualByOrderedContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
+/// compare shared_ptr's to ParticleCombination by checking selves and then all daughters
+bool equal_down(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
-    /// \struct EqualUpAndDown
-    /// \brief Check objects referenced by shared pointers,
-    /// check self, all daughters (down-), and parent (up the decay tree) for equality
-    struct EqualUpAndDown : EqualDown {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
+/// compare shared_ptr's to ParticleCombination by checking selves and then parents
+bool equal_up(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
-    /// \struct EqualByOrderlessContent
-    /// \brief Check objects referenced by shared pointers,
-    /// check indices only, disregarding order
-    struct EqualByOrderlessContent : Equal {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
+/// compare shared_ptr's to ParticleCombination by checking selves, daughters, and parents
+bool equal_up_and_down(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
-    /// \struct EqualDownByOrderlessContent
-    /// \brief Check objects referenced by shared pointers,
-    /// check indices only, disregarding order, and check daughters (but not daughter's daughters)
-    /// Use e.g. for breakup momenta
-    struct EqualDownByOrderlessContent : EqualByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
-
-    /// \struct EqualByReferenceFrame
-    /// \brief Check objects referenced by shared pointers,
-    /// Checks parents (and up) for orderless content sitting in same reference frame.
-    struct EqualByReferenceFrame : EqualByOrderlessContent {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
-
-    /// \struct EqualZemach
-    /// \brief Check objects reference by shared pointers; treats all
-    /// two-particle states as equal, compares three particle states
-    /// by unordered content of resonance, and throws on 4 or more
-    /// particles
-    struct EqualZemach : Equal {
-        virtual bool operator()(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B) const override;
-    };
-
-    /// \name Static Comparison objects
-    static Equal equalBySharedPointer;
-    static EqualDown equalDown;
-    static EqualUp equalUp;
-    static EqualUpAndDown equalUpAndDown;
-    static EqualByOrderedContent equalByOrderedContent;
-    static EqualByOrderlessContent equalByOrderlessContent;
-    static EqualDownByOrderlessContent equalDownByOrderlessContent;
-    static EqualByReferenceFrame equalByReferenceFrame;
-    static EqualZemach equalZemach;
+/// compare shared_ptr's to ParticleCombination by checking selves
+/// with #equal_by_orderless_content and then checking (only) one generation down
+bool equal_down_by_orderless_content(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B);
 
 /// @}
-
-};
 
 /// \return if the given ParticleCombination is in ParticleCombinations
 /// \param PCs ParticleCombinations
 /// \param c ParticleCombination to look for equivalent of in ParticleCombinations
-/// \param equal ParticleCombination::Equal object for checking equality
+/// \param equal ParticleCombinationEqualTo object for checking equality
 inline bool any_of(const ParticleCombinationVector& PCs,
                    const std::shared_ptr<const ParticleCombination>& c,
-                   const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+                   const ParticleCombinationEqualTo& equal = equal_by_shared_pointer)
 { return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
 
 /// \return whether all members of ParticleCombinationVector are non-overlapping with each other

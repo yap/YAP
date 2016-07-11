@@ -14,7 +14,7 @@ namespace yap {
 
 //-------------------------
 MassShape::MassShape() :
-    RecalculableDataAccessor(ParticleCombination::equalByOrderlessContent),
+    RecalculableDataAccessor(equal_by_orderless_content),
     Resonance_(nullptr),
     T_(ComplexCachedDataValue::create(this))
 {}

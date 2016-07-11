@@ -10,7 +10,7 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s, ParticleCombination::Equal& equal) :
+SpinAmplitude::SpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s, const ParticleCombinationEqualTo& equal) :
     StaticDataAccessor(equal),
     InitialTwoJ_(two_J),
     FinalTwoJ_(two_j),

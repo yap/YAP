@@ -79,10 +79,10 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
         // copy them if they aren't nullptr, aren't empty,
         // and aren't already contained in v, using equalDown to compare regardless of parent.
         std::copy_if(v_d.begin(), v_d.end(), std::back_inserter(v),
-        [&](const ParticleCombinationVector::value_type & pc) {
-            return pc and !pc->indices().empty() and
-                   std::none_of(v.begin(), v.end(), std::bind(ParticleCombination::equalDown, std::placeholders::_1, pc));
-        });
+                     [&](const ParticleCombinationVector::value_type & pc) {
+                         return pc and !pc->indices().empty() and
+                             std::none_of(v.begin(), v.end(), std::bind(equal_down, std::placeholders::_1, pc));
+                     });
 
         if (v.empty())
             throw exceptions::Exception("No ParticleCombinations for daughter " + to_string(*d)

@@ -208,7 +208,7 @@ void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleComb
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (any_of(dc->particleCombinations(), pc, ParticleCombination::equalDown))
+        if (any_of(dc->particleCombinations(), pc, equal_down))
             dc->addParticleCombination(pc);
     }
 }

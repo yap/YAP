@@ -21,6 +21,7 @@
 #ifndef yap_ParticleCombinationFwd_h
 #define yap_ParticleCombinationFwd_h
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <vector>
@@ -29,17 +30,9 @@ namespace yap {
 
 class ParticleCombination;
 
-// The following cannot be forward declared since they are nested
-// inside ParticleCombination:
-/* class ParticleCombination::Equal; */
-/* class ParticleCombination::EqualByOrderedContent; */
-/* class ParticleCombination::EqualDown; */
-/* class ParticleCombination::EqualUp; */
-/* class ParticleCombination::EqualUpAndDown; */
-/* class ParticleCombination::EqualByOrderlessContent; */
-/* class ParticleCombination::EqualDownByOrderlessContent; */
-/* class ParticleCombination::EqualByReferenceFrame; */
-/* class ParticleCombination::EqualZemach; */
+/// \typedef ParticleCombinationEqualTo
+/// std::function to compare two ParticleCombination's
+using ParticleCombinationEqualTo = std::function<bool(const std::shared_ptr<const ParticleCombination>&, const std::shared_ptr<const ParticleCombination>&)>;
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;

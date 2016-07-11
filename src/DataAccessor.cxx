@@ -7,7 +7,7 @@
 namespace yap {
 
 //-------------------------
-DataAccessor::DataAccessor(const ParticleCombination::Equal& equal) :
+DataAccessor::DataAccessor(const ParticleCombinationEqualTo& equal) :
     Equal_(equal),
     NIndices_(0),
     Size_(0),

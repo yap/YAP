@@ -26,10 +26,8 @@
 #include "fwd/CachedDataValue.h"
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
 
-#include "ParticleCombination.h"
-
-#include <assert.h>
 #include <memory>
 
 namespace yap {
@@ -43,10 +41,10 @@ public:
 
     /// Constructor
     /// \param equal ParticleCombination equality struct for determining index assignments
-    DataAccessor(const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer);
+    DataAccessor(const ParticleCombinationEqualTo& equal);
 
-    /// \return Equality struct
-    const ParticleCombination::Equal& equal() const
+    /// \return Equality function
+    const ParticleCombinationEqualTo& equal() const
     { return Equal_; }
 
     /// \return index inside DataPoint structure that this DataAccessor accesses
@@ -114,7 +112,7 @@ protected:
 private:
 
     /// Object to check equality of symmetrizations for determining storage indices
-    const ParticleCombination::Equal& Equal_;
+    ParticleCombinationEqualTo Equal_;
 
     /// Map of indices for each used symmetrization stored with key = shared_ptr<ParticleCombination>
     ParticleCombinationMap<unsigned> SymmetrizationIndices_;
