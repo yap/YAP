@@ -58,6 +58,22 @@ public:
     /// \param SAC unique_ptr to SpinAmplitudeCache
     Model(std::unique_ptr<SpinAmplitudeCache> SAC);
 
+    /// copy constructor deleted
+    /// \todo Implement deep copy.
+    Model(const Model&) = delete;
+
+    /// copy assignment operator
+    /// \todo Implement deep copy assignment.
+    Model& operator=(const Model&) = delete;
+
+    /// move constructor
+    /// \todo Implement move construction.
+    Model(Model&&) = delete;
+
+    /// move assignment operator
+    /// \todo Implement move assignment.
+    Model& operator=(Model&) = delete;
+
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
     /// \todo This need not be a member function!
