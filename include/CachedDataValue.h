@@ -41,27 +41,6 @@
 
 namespace yap {
 
-/// \struct DaughterCachedDataValue
-/// \brief Stores a shared_ptr to a CachedDataValue and the index of
-/// the daughter within a Particle Combination to pass to it
-/// \ingroup Data
-/// \ingroup Cache
-struct DaughterCachedDataValue {
-    /// constructor
-    DaughterCachedDataValue(std::shared_ptr<CachedDataValue> cdv, size_t index)
-        : CDV(cdv), Daughter(index) {}
-
-    /// CachedDataValue
-    std::shared_ptr<CachedDataValue> CDV;
-
-    /// index of daughter to pass to it
-    size_t Daughter;
-};
-
-/// less-than comparison operator
-inline bool operator<(const DaughterCachedDataValue& A, const DaughterCachedDataValue& B)
-{ return (A.CDV < B.CDV) or (A.Daughter < B.Daughter); }
-
 /// \class CachedDataValueBase
 /// \brief Class for managing cached values inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald

@@ -28,14 +28,9 @@
 namespace yap {
 
 class CachedDataValue;
-struct DaughterCachedDataValue;
 class RealCachedDataValue;
 class ComplexCachedDataValue;
 class FourVectorCachedDataValue;
-
-// Cannot be forward declared since it is nested inside
-// CachedDataValue
-/* class CachedDataValue::Status; */
 
 /// \typedef CachedDataValueSet
 /// \ingroup Data
@@ -46,11 +41,6 @@ using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
 /// \ingroup Data
 /// \ingroup Cache
 using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
-
-/// \typedef DaughterCachedDataValueSet
-/// \ingroup Data
-/// \ingroup Cache
-using DaughterCachedDataValueSet = std::set<DaughterCachedDataValue>;
 
 }
 
