@@ -21,7 +21,7 @@
 #ifndef yap_FourMomenta_
 #define yap_FourMomenta_
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/DataPoint.h"
 #include "fwd/FourVector.h"
 #include "fwd/Model.h"
@@ -84,19 +84,19 @@ public:
     const std::vector<FourVector<double> > finalStateMomenta(const DataPoint& d) const;
 
     /// \return masses
-    std::shared_ptr<RealCachedDataValue> mass()
+    std::shared_ptr<RealCachedValue> mass()
     { return M_; }
 
     /// \return masses (const)
-    std::shared_ptr<RealCachedDataValue> mass() const
+    std::shared_ptr<RealCachedValue> mass() const
     { return M_; }
 
     /// \return momentum
-    std::shared_ptr<FourVectorCachedDataValue> momentum()
+    std::shared_ptr<FourVectorCachedValue> momentum()
     { return P_; }
 
     /// \return momentum (const)
-    std::shared_ptr<FourVectorCachedDataValue> momentum() const
+    std::shared_ptr<FourVectorCachedValue> momentum() const
     { return P_; }
 
     /// @}
@@ -131,10 +131,10 @@ private:
     std::vector<int> FSPIndices_;
 
     /// four-vector of particle combinations
-    std::shared_ptr<FourVectorCachedDataValue> P_;
+    std::shared_ptr<FourVectorCachedValue> P_;
 
     /// invariant mass of particle combinations [GeV]
-    std::shared_ptr<RealCachedDataValue> M_;
+    std::shared_ptr<RealCachedValue> M_;
 
 };
 

@@ -1,6 +1,6 @@
 #include "MassShapeWithNominalMass.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"

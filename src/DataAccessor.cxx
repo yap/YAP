@@ -1,6 +1,6 @@
 #include "DataAccessor.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "logging.h"
 #include "Model.h"
 
@@ -27,10 +27,10 @@ bool DataAccessor::consistent() const
 {
     bool C = true;
 
-    // check CachedDataValues_
-    for (auto& c : CachedDataValues_)
+    // check CachedValues_
+    for (auto& c : CachedValues_)
         if (c->owner() != this) {
-            FLOG(ERROR) << "CachedDataValue's owner != this";
+            FLOG(ERROR) << "CachedValue's owner != this";
             C &= false;
         }
 
@@ -128,19 +128,19 @@ void DataAccessor::addToModel()
 }
 
 //-------------------------
-void DataAccessor::addCachedDataValue(std::shared_ptr<CachedDataValue> c)
+void DataAccessor::addCachedValue(std::shared_ptr<CachedValue> c)
 {
-    // add CachedDataValue
-    if (CachedDataValues_.insert(c).second) {
+    // add CachedValue
+    if (CachedValues_.insert(c).second) {
         // if insertion was successful
 
         // set its index
-        c->setIndex(CachedDataValues_.size() - 1);
+        c->setIndex(CachedValues_.size() - 1);
 
         // set its position
         c->setPosition(size());
 
-        // increase data size to accommodate CachedDataValue
+        // increase data size to accommodate CachedValue
         increaseSize(c->size());
     }
 }

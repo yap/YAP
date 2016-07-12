@@ -1,6 +1,6 @@
 #include "StatusManager.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "DataAccessor.h"
 #include "Exceptions.h"
@@ -14,14 +14,14 @@ StatusManager::StatusManager(const DataAccessorSet& sDA)
     : Statuses_(sDA.size())
 {
     for (const auto& da : sDA) {
-        Statuses_[da->index()].resize(da->cachedDataValues().size());
-        for (const auto& cdv : da->cachedDataValues())
+        Statuses_[da->index()].resize(da->CachedValues().size());
+        for (const auto& cdv : da->CachedValues())
             Statuses_[da->index()][cdv->index()].resize(da->nSymmetrizationIndices());
     }
 }
 
 //-------------------------
-CachedDataValue::Status& StatusManager::status(const CachedDataValue& cdv, size_t sym_index)
+CachedValue::Status& StatusManager::status(const CachedValue& cdv, size_t sym_index)
 {
     return status(cdv.owner()->index(), cdv.index(), sym_index);
 }

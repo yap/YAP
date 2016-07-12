@@ -61,7 +61,7 @@ public:
         addToModel();
     }
 
-    /// calculate cachedDataValues, store to DataPoint, and update StatusManager.
+    /// calculate CachedValues, store to DataPoint, and update StatusManager.
     /// Must be overriden in derived classes.
     virtual void calculate(DataPoint& d, StatusManager& sm) const = 0;
 

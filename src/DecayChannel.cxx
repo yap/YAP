@@ -2,7 +2,7 @@
 
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"

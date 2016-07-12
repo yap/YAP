@@ -1,6 +1,6 @@
 #include "HelicityFormalism.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "ClebschGordan.h"
 #include "HelicityAngles.h"
 #include "logging.h"

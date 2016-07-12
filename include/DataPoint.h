@@ -65,8 +65,8 @@ public:
     friend bool operator==(const DataPoint& lhs, const DataPoint& rhs)
     { return lhs.Data_ == rhs.Data_; }
 
-    /// grant friend status to CachedDataValue to access Data_
-    friend class CachedDataValue;
+    /// grant friend status to CachedValue to access Data_
+    friend class CachedValue;
 
 private:
 

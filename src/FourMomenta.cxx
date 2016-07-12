@@ -1,6 +1,6 @@
 #include "FourMomenta.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "container_utils.h"
 #include "DecayingParticle.h"
@@ -21,8 +21,8 @@ namespace yap {
 FourMomenta::FourMomenta(Model& m) :
     StaticDataAccessor(m, equal_by_orderless_content),
     TotalIndex_(-1),
-    P_(FourVectorCachedDataValue::create(*this)),
-    M_(RealCachedDataValue::create(*this))
+    P_(FourVectorCachedValue::create(*this)),
+    M_(RealCachedValue::create(*this))
 {
 }
 

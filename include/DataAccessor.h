@@ -23,7 +23,7 @@
 
 #include "fwd/DataAccessor.h"
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -66,9 +66,9 @@ public:
     /// print ParticleCombination map
     void printParticleCombinations() const;
 
-    /// \return CachedDataValueSet
-    const CachedDataValueSet& cachedDataValues() const
-    { return CachedDataValues_; }
+    /// \return CachedValueSet
+    const CachedValueSet& CachedValues() const
+    { return CachedValues_; }
 
     /// \return size of storage in data point (number of real values)
     unsigned size() const
@@ -80,19 +80,19 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
-    /// grant friend status to Model to access CachedDataValues_
+    /// grant friend status to Model to access CachedValues_
     friend Model;
 
-    /// grant friend status to CachedDataValue to call addCachedDataValue
-    friend CachedDataValue;
+    /// grant friend status to CachedValue to call addCachedValue
+    friend CachedValue;
 
 protected:
 
     /// register with Model
     void virtual addToModel();
 
-    /// add CachedDataValue
-    void addCachedDataValue(std::shared_ptr<CachedDataValue> c);
+    /// add CachedValue
+    void addCachedValue(std::shared_ptr<CachedValue> c);
 
     /// Increase storage
     /// \param n number of elements to increase by
@@ -120,8 +120,8 @@ private:
     /// Number of independent indices stored in SymmetrizationIndices_
     unsigned NIndices_;
 
-    /// Set of CachedDataValues that have this DataAccessor as an owner
-    CachedDataValueSet CachedDataValues_;
+    /// Set of CachedValues that have this DataAccessor as an owner
+    CachedValueSet CachedValues_;
 
     /// number of real values stored per symm. index
     unsigned Size_;

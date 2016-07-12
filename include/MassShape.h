@@ -21,7 +21,7 @@
 #ifndef yap_MassShape_h
 #define yap_MassShape_h
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/Model.h"
@@ -102,11 +102,11 @@ protected:
     {}
 
     /// access cached dynamic amplitude
-    std::shared_ptr<ComplexCachedDataValue> T()
+    std::shared_ptr<ComplexCachedValue> T()
     { return T_; }
 
     /// access cached dynamic amplitude (const)
-    const std::shared_ptr<ComplexCachedDataValue> T() const
+    const std::shared_ptr<ComplexCachedValue> T() const
     { return const_cast<MassShape*>(this)->T(); }
 
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
@@ -121,7 +121,7 @@ private:
     Resonance* Resonance_;
 
     /// cached dynamic amplitude
-    std::shared_ptr<ComplexCachedDataValue> T_;
+    std::shared_ptr<ComplexCachedValue> T_;
 
 };
 

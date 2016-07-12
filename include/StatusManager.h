@@ -24,7 +24,7 @@
 #include "fwd/CalculationStatus.h"
 #include "fwd/VariableStatus.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "DataAccessor.h"
 
 namespace yap {
@@ -41,48 +41,48 @@ public:
     /// @{
 
     /// Access status
-    /// \return CachedDataValue::Status
+    /// \return CachedValue::Status
     /// \param da_index Index of DataAccessor
-    /// \param cdv_index Index of CachedDataValue
+    /// \param cdv_index Index of CachedValue
     /// \param sym_index Index of symmetrization
-    CachedDataValue::Status& status(size_t da_index, size_t cdv_index, size_t sym_index)
+    CachedValue::Status& status(size_t da_index, size_t cdv_index, size_t sym_index)
     { return Statuses_[da_index][cdv_index][sym_index]; }
 
     /// retrieve status (const)
-    /// \return CachedDataValue::Status (const)
+    /// \return CachedValue::Status (const)
     /// \param da_index Index of DataAccessor
-    /// \param cdv_index Index of CachedDataValue
+    /// \param cdv_index Index of CachedValue
     /// \param sym_index Index of symmetrization
-    const CachedDataValue::Status& status(size_t da_index, size_t cdv_index, size_t sym_index) const
+    const CachedValue::Status& status(size_t da_index, size_t cdv_index, size_t sym_index) const
     { return const_cast<StatusManager*>(this)->status(da_index, cdv_index, sym_index); }
 
     /// Access status
-    /// \return CachedDataValue::Status
-    /// \param cdv CachedDataValue
+    /// \return CachedValue::Status
+    /// \param cdv CachedValue
     /// \param sym_index Index of symmetrization
-    CachedDataValue::Status& status(const CachedDataValue& cdv, size_t sym_index);
+    CachedValue::Status& status(const CachedValue& cdv, size_t sym_index);
 
     /// retrieve status (const)
-    /// \return CachedDataValue::Status (const)
-    /// \param cdv CachedDataValue
+    /// \return CachedValue::Status (const)
+    /// \param cdv CachedValue
     /// \param sym_index Index of symmetrization
-    const CachedDataValue::Status& status(const CachedDataValue& cdv, size_t sym_index) const
+    const CachedValue::Status& status(const CachedValue& cdv, size_t sym_index) const
     { return const_cast<StatusManager*>(this)->status(cdv, sym_index); }
 
     /// @}
 
-    /// set all statuses for a particular CachedDataValue
-    /// \param cdv CachedDataValue
+    /// set all statuses for a particular CachedValue
+    /// \param cdv CachedValue
     /// \param stat status to set to
     /// \tparam T type of status
     template <class T>
-    void set(const CachedDataValue& cdv, const T& stat)
+    void set(const CachedValue& cdv, const T& stat)
     {
         for (auto& s : Statuses_[cdv.owner()->index()][cdv.index()])
             s = stat;
     }
 
-    /// set all statuses for all CachedDataValue's of a DataAccessor
+    /// set all statuses for all CachedValue's of a DataAccessor
     /// \param da DataAccessor
     /// \param stat status to set to
     /// \tparam T type of status
@@ -114,9 +114,9 @@ private:
 
     /// vector of Status;
     /// first index is for DataAccessor;
-    /// second index is for CachedDataValue
+    /// second index is for CachedValue
     /// third index is for SymmetrizationIndex
-    std::vector<std::vector<std::vector<CachedDataValue::Status> > > Statuses_;
+    std::vector<std::vector<std::vector<CachedValue::Status> > > Statuses_;
 
 };
 

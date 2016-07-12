@@ -23,7 +23,7 @@
 
 #include "fwd/DecayChannel.h"
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayingParticle.h"

@@ -18,10 +18,10 @@
 
 /// \file
 
-#ifndef yap_CachedDataValue_h
-#define yap_CachedDataValue_h
+#ifndef yap_CachedValue_h
+#define yap_CachedValue_h
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/CalculationStatus.h"
 #include "fwd/FourVector.h"
 #include "fwd/Parameter.h"
@@ -41,12 +41,12 @@
 
 namespace yap {
 
-/// \class CachedDataValueBase
+/// \class CachedValue
 /// \brief Class for managing cached values inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-class CachedDataValue : public std::enable_shared_from_this<CachedDataValue>
+class CachedValue : public std::enable_shared_from_this<CachedValue>
 {
 
 protected:
@@ -54,11 +54,11 @@ protected:
     /// Constructor (protected)
     /// \param size number of real elements in cached value
     /// \param da DataAccessor it to belong to
-    CachedDataValue(unsigned size, DataAccessor& da);
+    CachedValue(unsigned size, DataAccessor& da);
 
 public:
 
-    /// \struct stores calculation and variable statuses for a CachedDataValue
+    /// \struct stores calculation and variable statuses for a CachedValue
     struct Status {
 
         /// constructor
@@ -94,7 +94,7 @@ public:
     /// \param index index of value to get from within cached value (must be less than #Size_)
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
-    /// \return Value of CachedDataValue inside the data point
+    /// \return Value of CachedValue inside the data point
     inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
     { return d.Data_[Owner_->index()][sym_index][Position_ + index]; }
 
@@ -151,41 +151,41 @@ private:
 };
 
 /// equality operator for checking the CalculationStatus
-inline bool operator==(const CachedDataValue::Status& S, const CalculationStatus& s)
+inline bool operator==(const CachedValue::Status& S, const CalculationStatus& s)
 { return S.Calculation == s; }
 
 /// inequality operator for checking the CalculationStatus
-inline bool operator!=(const CachedDataValue::Status& S, const CalculationStatus& s)
+inline bool operator!=(const CachedValue::Status& S, const CalculationStatus& s)
 { return S.Calculation != s; }
 
 /// equality operator for checking the VariableStatus
-inline bool operator==(const CachedDataValue::Status& S, const VariableStatus& s)
+inline bool operator==(const CachedValue::Status& S, const VariableStatus& s)
 { return S.Variable == s; }
 
 /// inequality operator for checking the VariableStatus
-inline bool operator!=(const CachedDataValue::Status& S, const VariableStatus& s)
+inline bool operator!=(const CachedValue::Status& S, const VariableStatus& s)
 { return S.Variable != s; }
 
-/// streaming operator for CachedDataValue::Status
-std::string to_string(const CachedDataValue::Status& S);
+/// streaming operator for CachedValue::Status
+std::string to_string(const CachedValue::Status& S);
 
-/// \class RealCachedDataValue
+/// \class RealCachedValue
 /// \brief Class for managing a single real cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-class RealCachedDataValue : public CachedDataValue
+class RealCachedValue : public CachedValue
 {
 private:
 
     /// Constructor
-    RealCachedDataValue(DataAccessor& da) : CachedDataValue(1, da) {}
+    RealCachedValue(DataAccessor& da) : CachedValue(1, da) {}
 
 public:
 
-    /// create shared_ptr to RealCachedDataValue
+    /// create shared_ptr to RealCachedValue
     /// \param owner #DataAccessor to which this cached value belongs
-    static std::shared_ptr<RealCachedDataValue> create(DataAccessor& da);
+    static std::shared_ptr<RealCachedValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -201,35 +201,35 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     void setValue(double val, DataPoint& d, unsigned sym_index) const
-    { CachedDataValue::setValue(0, val, d, sym_index); }
+    { CachedValue::setValue(0, val, d, sym_index); }
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
-    /// \return Value of CachedDataValue inside the data point
+    /// \return Value of CachedValue inside the data point
     const double value(const DataPoint& d, unsigned sym_index) const
-    { return CachedDataValue::value(0, d, sym_index); }
+    { return CachedValue::value(0, d, sym_index); }
 
 };
 
-/// \class ComplexCachedDataValue
+/// \class ComplexCachedValue
 /// \brief Class for managing a complex cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-class ComplexCachedDataValue : public CachedDataValue
+class ComplexCachedValue : public CachedValue
 {
 private:
 
     /// Constructor (protected)
     /// see #create for details
-    ComplexCachedDataValue(DataAccessor& da) : CachedDataValue(2, da) {}
+    ComplexCachedValue(DataAccessor& da) : CachedValue(2, da) {}
 
 public:
 
-    /// create shared pointer to ComplexCachedDataValue
+    /// create shared pointer to ComplexCachedValue
     /// \param owner #DataAccessor to which this cached value belongs
-    static std::shared_ptr<ComplexCachedDataValue> create(DataAccessor& da);
+    static std::shared_ptr<ComplexCachedValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -264,35 +264,35 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     void setValue(double val_re, double val_im, DataPoint& d, unsigned sym_index) const
-    { CachedDataValue::setValue(0, val_re, d, sym_index); CachedDataValue::setValue(1, val_im, d, sym_index); }
+    { CachedValue::setValue(0, val_re, d, sym_index); CachedValue::setValue(1, val_im, d, sym_index); }
 
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
-    /// \return Value of CachedDataValue inside the data point
+    /// \return Value of CachedValue inside the data point
     const std::complex<double> value(const DataPoint& d, unsigned  sym_index) const
-    { return std::complex<double>(CachedDataValue::value(0, d, sym_index), CachedDataValue::value(1, d, sym_index)); }
+    { return std::complex<double>(CachedValue::value(0, d, sym_index), CachedValue::value(1, d, sym_index)); }
 
 };
 
-/// \class FourVectorCachedDataValue
+/// \class FourVectorCachedValue
 /// \brief Class for managing a four-vector cached value inside a #DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
-class FourVectorCachedDataValue : public CachedDataValue
+class FourVectorCachedValue : public CachedValue
 {
 private:
 
     /// Constructor (protected)
     /// see #create for details
-    FourVectorCachedDataValue(DataAccessor& da) : CachedDataValue(4, da) {}
+    FourVectorCachedValue(DataAccessor& da) : CachedValue(4, da) {}
 
 public:
 
-    /// create shared pointer to ComplexCachedDataValue
+    /// create shared pointer to ComplexCachedValue
     /// \param owner #DataAccessor to which this cached value belongs
-    static std::shared_ptr<FourVectorCachedDataValue> create(DataAccessor& da);
+    static std::shared_ptr<FourVectorCachedValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -312,7 +312,7 @@ public:
     /// Get value from #DataPoint for particular symmetrization
     /// \param d #DataPoint to get value from
     /// \param sym_index index of symmetrization to grab from
-    /// \return Value of CachedDataValue inside the data point
+    /// \return Value of CachedValue inside the data point
     const FourVector<double> value(const DataPoint& d, unsigned  sym_index) const;
 
 };

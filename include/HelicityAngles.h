@@ -21,7 +21,7 @@
 #ifndef yap_HelicityAngles_h
 #define yap_HelicityAngles_h
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
@@ -75,22 +75,22 @@ public:
     double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// access azimuthal angle
-    std::shared_ptr<RealCachedDataValue>& phi()
+    std::shared_ptr<RealCachedValue>& phi()
     { return Phi_; }
 
     /// access azimuthal angle (const)
-    const std::shared_ptr<RealCachedDataValue>& phi() const
+    const std::shared_ptr<RealCachedValue>& phi() const
     { return Phi_; }
 
     /// get polar angle
     double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
     /// access polar angle
-    std::shared_ptr<RealCachedDataValue>& theta()
+    std::shared_ptr<RealCachedValue>& theta()
     { return Theta_; }
 
     /// access polar angle (const)
-    const std::shared_ptr<RealCachedDataValue>& theta() const
+    const std::shared_ptr<RealCachedValue>& theta() const
     { return Theta_; }
 
     /// grant friend status to Model to call addParticleCombination
@@ -107,10 +107,10 @@ protected:
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// Azimuthal angle
-    std::shared_ptr<RealCachedDataValue> Phi_;
+    std::shared_ptr<RealCachedValue> Phi_;
 
     /// Polar angle
-    std::shared_ptr<RealCachedDataValue> Theta_;
+    std::shared_ptr<RealCachedValue> Theta_;
 
 };
 

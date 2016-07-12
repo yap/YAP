@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_CachedDataValueFwd_h
-#define yap_CachedDataValueFwd_h
+#ifndef yap_CachedValueFwd_h
+#define yap_CachedValueFwd_h
 
 #include <memory>
 #include <set>
@@ -27,20 +27,20 @@
 
 namespace yap {
 
-class CachedDataValue;
-class RealCachedDataValue;
-class ComplexCachedDataValue;
-class FourVectorCachedDataValue;
+class CachedValue;
+class RealCachedValue;
+class ComplexCachedValue;
+class FourVectorCachedValue;
 
-/// \typedef CachedDataValueSet
+/// \typedef CachedValueSet
 /// \ingroup Data
 /// \ingroup Cache
-using CachedDataValueSet = std::set<std::shared_ptr<CachedDataValue> >;
+using CachedValueSet = std::set<std::shared_ptr<CachedValue> >;
 
-/// \typedef CachedDataValueVector
+/// \typedef CachedValueVector
 /// \ingroup Data
 /// \ingroup Cache
-using CachedDataValueVector = std::vector<std::shared_ptr<CachedDataValue> >;
+using CachedValueVector = std::vector<std::shared_ptr<CachedValue> >;
 
 }
 
