@@ -54,7 +54,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
         addParameter(DecayingParticle_->mass());
         addParameter(DecayingParticle_->radialSize());
 
-        BarrierFactor_ = RealCachedDataValue::create(this);
+        BarrierFactor_ = RealCachedDataValue::create(*this);
     }
 
     // if L == 0, values are all always 1, no storage in DataPoint necessary
@@ -114,7 +114,7 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 //-------------------------
 void BlattWeisskopf::updateCalculationStatus(StatusManager& D) const
 {
-    if (variableStatus(*this) == VariableStatus::changed)
+    if (variable_status(*this) == VariableStatus::changed)
         D.set(*BarrierFactor_, CalculationStatus::uncalculated);
 }
 

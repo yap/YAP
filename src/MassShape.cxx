@@ -16,7 +16,7 @@ namespace yap {
 MassShape::MassShape() :
     RecalculableDataAccessor(equal_by_orderless_content),
     Resonance_(nullptr),
-    T_(ComplexCachedDataValue::create(this))
+    T_(ComplexCachedDataValue::create(*this))
 {}
 
 //-------------------------
@@ -38,7 +38,7 @@ void MassShape::calculate(DataPartition& D) const
 //-------------------------
 void MassShape::updateCalculationStatus(StatusManager& D) const
 {
-    if (variableStatus(*this) == VariableStatus::changed)
+    if (variable_status(*this) == VariableStatus::changed)
         D.set(*T(), CalculationStatus::uncalculated);
 }
 

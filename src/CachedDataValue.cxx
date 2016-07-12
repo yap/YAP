@@ -30,9 +30,9 @@ std::string to_string(const CachedDataValue::Status& S)
 }
 
 //-------------------------
-CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataValueSet vals) :
+CachedDataValue::CachedDataValue(unsigned size, DataAccessor& da) :
     std::enable_shared_from_this<CachedDataValue>(),
-    Owner_(nullptr),
+    Owner_(&da),
     Index_(-1),
     Position_(-1),
     Size_(size)
@@ -42,26 +42,17 @@ CachedDataValue::CachedDataValue(unsigned size, ParameterSet pars, CachedDataVal
 }
 
 //-------------------------
-void CachedDataValue::setDataAccessor(DataAccessor* owner)
+void CachedDataValue::addToDataAccessor()
 {
-    if (Owner_ != nullptr)
-        throw exceptions::Exception("Owner_ has already been set", "CachedDataValue");
-
-    Owner_ = owner;
-
-    if (Owner_ == nullptr)
-        throw exceptions::Exception("Owner_ is nullptr", "CachedDataValue");
-
     // add self to owner
     Owner_->addCachedDataValue(shared_from_this());
-
 }
 
 //-------------------------
-std::shared_ptr<RealCachedDataValue> RealCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+std::shared_ptr<RealCachedDataValue> RealCachedDataValue::create(DataAccessor& da)
 {
-    auto c = std::shared_ptr<RealCachedDataValue>(new RealCachedDataValue(pars, vals));
-    c->setDataAccessor(da);
+    auto c = std::shared_ptr<RealCachedDataValue>(new RealCachedDataValue(da));
+    c->addToDataAccessor();
     return c;
 }
 
@@ -77,10 +68,10 @@ void RealCachedDataValue::setValue(double val, DataPoint& d, unsigned sym_index,
 }
 
 //-------------------------
-std::shared_ptr<ComplexCachedDataValue> ComplexCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+std::shared_ptr<ComplexCachedDataValue> ComplexCachedDataValue::create(DataAccessor& da)
 {
-    auto c = std::shared_ptr<ComplexCachedDataValue>(new ComplexCachedDataValue(pars, vals));
-    c->setDataAccessor(da);
+    auto c = std::shared_ptr<ComplexCachedDataValue>(new ComplexCachedDataValue(da));
+    c->addToDataAccessor();
     return c;
 }
 
@@ -101,10 +92,10 @@ void ComplexCachedDataValue::setValue(double val_re, double val_im, DataPoint& d
 }
 
 //-------------------------
-std::shared_ptr<FourVectorCachedDataValue> FourVectorCachedDataValue::create(DataAccessor* da, ParameterSet pars, CachedDataValueSet vals)
+std::shared_ptr<FourVectorCachedDataValue> FourVectorCachedDataValue::create(DataAccessor& da)
 {
-    auto c = std::shared_ptr<FourVectorCachedDataValue>(new FourVectorCachedDataValue(pars, vals));
-    c->setDataAccessor(da);
+    auto c = std::shared_ptr<FourVectorCachedDataValue>(new FourVectorCachedDataValue(da));
+    c->addToDataAccessor();
     return c;
 }
 

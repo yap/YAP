@@ -48,6 +48,14 @@ namespace yap {
 /// \ingroup Cache
 class CachedDataValue : public std::enable_shared_from_this<CachedDataValue>
 {
+
+protected:
+
+    /// Constructor (protected)
+    /// \param size number of real elements in cached value
+    /// \param da DataAccessor it to belong to
+    CachedDataValue(unsigned size, DataAccessor& da);
+
 public:
 
     /// \struct stores calculation and variable statuses for a CachedDataValue
@@ -115,11 +123,8 @@ public:
 
 protected:
 
-    /// Constructor (protected)
-    CachedDataValue(unsigned size, ParameterSet pars = {}, CachedDataValueSet vals = {});
-
-    /// set the owning DataAccessor
-    void setDataAccessor(DataAccessor* owner);
+    /// add to the Owner_
+    void addToDataAccessor();
 
     /// set index
     void setIndex(int i)
@@ -171,13 +176,16 @@ std::string to_string(const CachedDataValue::Status& S);
 /// \ingroup Cache
 class RealCachedDataValue : public CachedDataValue
 {
+private:
+
+    /// Constructor
+    RealCachedDataValue(DataAccessor& da) : CachedDataValue(1, da) {}
+
 public:
 
     /// create shared_ptr to RealCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedDataValues cached value depends on
-    static std::shared_ptr<RealCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
+    static std::shared_ptr<RealCachedDataValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -202,12 +210,6 @@ public:
     const double value(const DataPoint& d, unsigned sym_index) const
     { return CachedDataValue::value(0, d, sym_index); }
 
-private:
-
-    /// Constructor
-    RealCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
-        : CachedDataValue(1, pars, vals) {}
-
 };
 
 /// \class ComplexCachedDataValue
@@ -217,13 +219,17 @@ private:
 /// \ingroup Cache
 class ComplexCachedDataValue : public CachedDataValue
 {
+private:
+
+    /// Constructor (protected)
+    /// see #create for details
+    ComplexCachedDataValue(DataAccessor& da) : CachedDataValue(2, da) {}
+
 public:
 
     /// create shared pointer to ComplexCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedDataValues cached value depends on
-    static std::shared_ptr<ComplexCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
+    static std::shared_ptr<ComplexCachedDataValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -267,12 +273,6 @@ public:
     const std::complex<double> value(const DataPoint& d, unsigned  sym_index) const
     { return std::complex<double>(CachedDataValue::value(0, d, sym_index), CachedDataValue::value(1, d, sym_index)); }
 
-private:
-
-    /// Constructor (protected)
-    /// see #create for details
-    ComplexCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
-        : CachedDataValue(2, pars, vals) {}
 };
 
 /// \class FourVectorCachedDataValue
@@ -282,13 +282,17 @@ private:
 /// \ingroup Cache
 class FourVectorCachedDataValue : public CachedDataValue
 {
+private:
+
+    /// Constructor (protected)
+    /// see #create for details
+    FourVectorCachedDataValue(DataAccessor& da) : CachedDataValue(4, da) {}
+
 public:
 
     /// create shared pointer to ComplexCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
-    /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedDataValues cached value depends on
-    static std::shared_ptr<FourVectorCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
+    static std::shared_ptr<FourVectorCachedDataValue> create(DataAccessor& da);
 
     /// Set value into #DataPoint for particular symmetrization, and
     /// update VariableStatus for symm. and partition index
@@ -310,14 +314,6 @@ public:
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedDataValue inside the data point
     const FourVector<double> value(const DataPoint& d, unsigned  sym_index) const;
-
-private:
-
-    /// Constructor (protected)
-    /// see #create for details
-    FourVectorCachedDataValue(ParameterSet pars = {}, CachedDataValueSet vals = {})
-        : CachedDataValue(4, pars, vals) {}
-
 
 };
 

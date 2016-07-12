@@ -13,7 +13,7 @@ void RecalculableDataAccessor::setParameterFlagsToUnchanged()
 }
 
 //-------------------------
-const VariableStatus variableStatus(const RecalculableDataAccessor& rda)
+const VariableStatus variable_status(const RecalculableDataAccessor& rda)
 {
     for (auto& p : rda.parameters())
         if (p->variableStatus() == VariableStatus::changed)

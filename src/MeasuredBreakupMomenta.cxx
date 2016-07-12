@@ -13,7 +13,7 @@ namespace yap {
 //-------------------------
 MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model& m) :
     StaticDataAccessor(m, equal_down_by_orderless_content),
-    Q2_(RealCachedDataValue::create(this))
+    Q2_(RealCachedDataValue::create(*this))
 {
     if (!model()->fourMomenta())
         throw exceptions::Exception("Model's FourMomenta unset", "MeasuredBreakupMomenta::MeasuredBreakupMomenta");

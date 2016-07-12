@@ -88,7 +88,7 @@ const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
 {
     // check status of recalculable components, terminating as soon as one is seen to have changed
     for (const auto& rda : RecalculableDataAccessors_)
-        if (variableStatus(*rda) == VariableStatus::changed)
+        if (variable_status(*rda) == VariableStatus::changed)
             return VariableStatus::changed;
     // check daughters, terminating as soon as one is seen to have changed
     for (const auto& d_dt : DaughterDecayTrees_)

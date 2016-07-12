@@ -14,8 +14,8 @@ namespace yap {
 //-------------------------
 HelicityAngles::HelicityAngles(Model& m) :
     StaticDataAccessor(m, equal_up_and_down),
-    Phi_(RealCachedDataValue::create(this)),
-    Theta_(RealCachedDataValue::create(this))
+    Phi_(RealCachedDataValue::create(*this)),
+    Theta_(RealCachedDataValue::create(*this))
 {
 }
 

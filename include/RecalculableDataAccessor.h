@@ -78,7 +78,7 @@ private:
 
 };
 
-const VariableStatus variableStatus(const RecalculableDataAccessor&);
+const VariableStatus variable_status(const RecalculableDataAccessor&);
 
 }
 
