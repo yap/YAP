@@ -197,7 +197,7 @@ public:
     /// create shared_ptr to RealCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedValues cached value depends on
+    /// \param vals set of shared pointers to CachedDataValues cached value depends on
     static std::shared_ptr<RealCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// Set value into #DataPoint for particular symmetrization, and
@@ -243,7 +243,7 @@ public:
     /// create shared pointer to ComplexCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedValues cached value depends on
+    /// \param vals set of shared pointers to CachedDataValues cached value depends on
     static std::shared_ptr<ComplexCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// Set value into #DataPoint for particular symmetrization, and
@@ -308,7 +308,7 @@ public:
     /// create shared pointer to ComplexCachedDataValue
     /// \param owner #DataAccessor to which this cached value belongs
     /// \param pars set of shared pointers to Parameters cached value depends on
-    /// \param vals set of shared pointers to CachedValues cached value depends on
+    /// \param vals set of shared pointers to CachedDataValues cached value depends on
     static std::shared_ptr<FourVectorCachedDataValue> create(DataAccessor* da, ParameterSet pars = {}, CachedDataValueSet vals = {});
 
     /// Set value into #DataPoint for particular symmetrization, and
