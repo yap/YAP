@@ -208,7 +208,7 @@ void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleComb
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (any_of(dc->particleCombinations(), pc, ParticleCombination::equalDown))
+        if (any_of(dc->particleCombinations(), pc, equal_down))
             dc->addParticleCombination(pc);
     }
 }
@@ -229,7 +229,7 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
     for (auto& m_dtv : DecayTrees_)
         // if only available decay tree
         if (m_dtv.second.size() == 1)
-            m_dtv.second[0]->freeAmplitude()->setVariableStatus(VariableStatus::fixed);
+            m_dtv.second[0]->freeAmplitude()->variableStatus() = VariableStatus::fixed;
     for (auto& c : Channels_)
         c->fixSolitaryFreeAmplitudes();
 }
@@ -352,20 +352,11 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 }
 
 //-------------------------
-std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map)
+std::string to_string(const DecayTreeVectorMap& m_dtv_map)
 {
     return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
-                           [](std::string & s, const DecayTreeVectorMap<int>::value_type & m_dtv)
+                           [](std::string & s, const DecayTreeVectorMap::value_type & m_dtv)
     { return s += to_string(m_dtv.second); });
 }
-
-//-------------------------
-const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d)
-{
-    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), 0.,
-                           [&](double & a, const DecayTreeVectorMap<int>::value_type & m_dtv)
-    {return a += norm(amplitude(m_dtv.second, d));});
-}
-
 
 }

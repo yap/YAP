@@ -16,7 +16,7 @@ DataSet::DataSet(const Model& m) :
 //-------------------------
 bool DataSet::consistent(const DataPoint& d) const
 {
-    return points().empty() or equalStructure(points().front(), d);
+    return DataPoints_.empty() or equalStructure(DataPoints_.front(), d);
 }
 
 //-------------------------
@@ -37,9 +37,9 @@ void DataSet::addEmptyDataPoints(size_t n)
 }
 
 //-------------------------
-    const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >& P, StatusManager& sm)
+const DataPoint DataSet::createDataPoint(const std::vector<FourVector<double> >& P, StatusManager& sm)
 {
-    DataPoint d = points().empty() ? DataPoint(model()->dataAccessors()) : DataPoints_.back();
+    DataPoint d = DataPoints_.empty() ? DataPoint(model()->dataAccessors()) : DataPoints_.back();
     model()->setFinalStateMomenta(d, P, sm);
     return d;
 }
@@ -65,7 +65,7 @@ DataIterator DataSet::insert(const DataIterator& pos, const DataPoint& d)
 {
     if (!consistent(d))
         throw exceptions::InconsistentDataPoint("DataSet::push_back");
-    return dataIterator(DataPoints_.insert(rawIterator(pos), d));
+    return dataIterator(DataPoints_.insert(rawIterator(pos), d), pos.partition());
 }
 
 //-------------------------
@@ -73,7 +73,20 @@ DataIterator DataSet::insert(const DataIterator& pos, DataPoint&& d)
 {
     if (!consistent(d))
         throw exceptions::InconsistentDataPoint("DataSet::push_back");
-    return dataIterator(DataPoints_.insert(rawIterator(pos), std::move(d)));
+    return dataIterator(DataPoints_.insert(rawIterator(pos), std::move(d)), pos.partition());
+}
+
+//-------------------------
+DataIterator DataSet::erase(const DataIterator& first, const DataIterator& last)
+{
+    if (first.partition() != last.partition())
+        throw exceptions::Exception("Iterators' partitions don't match", "DataSet::erase");
+    if (first.partition() == this)
+        return dataIterator(DataPoints_.erase(rawIterator(first), rawIterator(last)), first.partition());
+    auto it = first;
+    while (it != last)
+        erase(it++);
+    return last;
 }
 
 }

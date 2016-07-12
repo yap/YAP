@@ -75,6 +75,7 @@ protected:
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Parameters
 /// \ingroup Cache
+/// \tparam T type to be stored in CachedValue
 template <typename T>
 class CachedValue : public CachedValueBase, public Parameter<T>
 {

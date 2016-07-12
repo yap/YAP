@@ -18,46 +18,45 @@
 
 /// \file
 
-#ifndef yap_ModelIntegrator_h
-#define yap_ModelIntegrator_h
+#ifndef yap_Integrator_h
+#define yap_Integrator_h
 
 #include "fwd/DecayTree.h"
-
-#include "ModelIntegral.h"
+#include "fwd/DecayTreeVectorIntegral.h"
+#include "fwd/ModelIntegral.h"
 
 namespace yap {
 
-/// \class ModelIntegrator
+/// \class Integrator
 /// \brief Integrates a model
 /// \author Daniel Greenwald
 /// \ingroup Integration
-class ModelIntegrator
+class Integrator
 {
 protected:
 
-    /// \return ModelIntegral's Diagonals_
+    /// \return ModelIntegral's IntegralMap
     /// \param I ModelIntegral to access
-    static ModelIntegral::DiagonalMap& diagonals(ModelIntegral& I)
-    { return I.Diagonals_; }
+    static IntegralMap& integrals(ModelIntegral& I);
 
-    /// \return ModelIntegral's OffDiagonals_
-    /// \param I ModelIntegral to access
-    static ModelIntegral::OffDiagonalMap& offDiagonals(ModelIntegral& I)
-    { return I.OffDiagonals_; }
+    /// \return DecayTreeVectorIntegral's Diagonals_
+    /// \param I DecayTreeVectorIntegral to access
+    static DiagonalIntegralMap& diagonals(DecayTreeVectorIntegral& I);
+
+    /// \return DecayTreeVectorIntegral's OffDiagonals_
+    /// \param I DecayTreeVectorIntegral to access
+    static OffDiagonalIntegralMap& offDiagonals(DecayTreeVectorIntegral& I);
 
     /// \return value stored in ModelIntegal's Diagonals_ for particular DecayTree
-    /// \param I ModelIntegral to access
+    /// \param I DecayTreeVectorIntegral to access
     /// \param dt shared_ptr to DecayTree to access diagonal integral component for
-    static ModelIntegral::DiagonalMap::mapped_type& diagonalComponent(ModelIntegral& I, const DecayTreeVector::value_type& dt)
-    { return I.Diagonals_.at(dt); }
+    static DiagonalIntegralMap::mapped_type& diagonalComponent(DecayTreeVectorIntegral& I, const DecayTreeVector::value_type& dt);
 
-    /// \return value stored in ModelIntegral's OffDiagonals_ for particular DecayTree pair
-    /// \param I ModelIntegral to access
+    /// \return value stored in DecayTreeVectorIntegral's OffDiagonals_ for particular DecayTree pair
+    /// \param I DecayTreeVectorIntegral to access
     /// \param i shared_ptr to DecayTree to access off-diagonal integral component for
     /// \param j shared_ptr to DecayTree to access off-diagonal integral component for
-    static ModelIntegral::OffDiagonalMap::mapped_type& offDiagonalComponent(ModelIntegral& I, const DecayTreeVector::value_type& i, const DecayTreeVector::value_type& j)
-    { return I.OffDiagonals_.at(ModelIntegral::OffDiagonalMap::key_type({i, j})); }
-
+    static OffDiagonalIntegralMap::mapped_type& offDiagonalComponent(DecayTreeVectorIntegral& I, const DecayTreeVector::value_type& i, const DecayTreeVector::value_type& j);
 
 };
 

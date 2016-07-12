@@ -13,8 +13,9 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-	DecayTree.cxx
 	DecayingParticle.cxx
+	DecayTree.cxx
+	DecayTreeVectorIntegral.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
 	FreeAmplitude.cxx
@@ -22,12 +23,14 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
 	ImportanceSampler.cxx
+	Integrator.cxx
 	MassRange.cxx
 	MassShape.cxx
 	MassShapeWithNominalMass.cxx
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
 	ModelIntegral.cxx
+	Parameter.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	Particle.cxx
@@ -42,7 +45,7 @@ set(YAP_SOURCES
 	StatusManager.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
-	)
+)
 
 add_library(YAP SHARED ${YAP_SOURCES})
 

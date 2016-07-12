@@ -67,7 +67,7 @@ inline std::unique_ptr<yap::Model> d4pi()
     for (auto& freeAmp : a_1->addChannel({rho, piPlus})->freeAmplitudes()) {
         LOG(INFO) << to_string(*freeAmp);
         if (freeAmp->spinAmplitude()->L() == 0)
-            freeAmp->setVariableStatus(yap::VariableStatus::fixed); // S-wave, fixed
+            freeAmp->variableStatus() = yap::VariableStatus::fixed; // S-wave, fixed
         else if (freeAmp->spinAmplitude()->L() == 1)
             freeAmp->setValue(0.); // P-wave, 0
         else if (freeAmp->spinAmplitude()->L() == 2)

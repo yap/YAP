@@ -2,6 +2,7 @@
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
+#include "DecayTreeVectorIntegral.h"
 #include "FinalStateParticle.h"
 #include "Flatte.h"
 #include "FourMomenta.h"
@@ -140,8 +141,13 @@ int main( int argc, char** argv)
 
     M.calculate(data);
 
+    yap::ModelIntegral MI(M);
+    yap::ImportanceSampler::calculate(MI, data);
+
     for (const auto& isp_b2 : M.initialStateParticles()) {
         for (const auto& m_dtv : isp_b2.first->decayTrees()) {
+
+            auto mi = MI.integral(m_dtv.second);
 
             LOG(INFO) << "\n" << to_string(m_dtv.second);
 
@@ -149,24 +155,21 @@ int main( int argc, char** argv)
             LOG(INFO) << "A_DT = " << A_DT;
             LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-            yap::ModelIntegral MI(m_dtv.second);
-            yap::ImportanceSampler::calculate(MI, data);
-
-            LOG(INFO) << "integral = " << to_string(MI.integral());
-            auto ff = fit_fractions(MI);
+            LOG(INFO) << "integral = " << to_string(mi.integral());
+            auto ff = fit_fractions(mi);
             for (size_t i = 0; i < ff.size(); ++i)
-                LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*MI.decayTrees()[i]->freeAmplitude());
+                LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*mi.decayTrees()[i]->freeAmplitude());
             LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
 
             LOG(INFO) << "cached integral components:";
-            auto I_cached = cached_integrals(MI);
+            auto I_cached = cached_integrals(mi);
             for (const auto& row : I_cached)
                 LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
                                              [](const std::string & s, const std::complex<double>& c)
             { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
 
             LOG(INFO) << "integral components:";
-            auto I = integrals(MI);
+            auto I = integrals(mi);
             for (const auto& row : I)
                 LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
                                              [](const std::string & s, const std::complex<double>& c)

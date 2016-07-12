@@ -68,7 +68,7 @@ DataPartitionVector DataPartitionBlock::create(DataSet& dataSet, unsigned n)
     if (n == 0)
         throw exceptions::Exception("number of partitions is zero", "DataParitionBlock::create");
 
-    auto N = dataSet.points().size();
+    auto N = dataSet.size();
     n = std::min<unsigned>(n, N);
 
     unsigned p_size = std::round(N / n);
@@ -94,7 +94,7 @@ DataPartitionVector DataPartitionBlock::createBySize(DataSet& dataSet, size_t s)
     if (s == 0)
         throw exceptions::Exception("block size is zero", "DataPartitionBlock::createBySize");
 
-    auto N = dataSet.points().size();
+    auto N = dataSet.size();
     s = std::min(s, N);
 
     DataPartitionVector P;

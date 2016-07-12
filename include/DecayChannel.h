@@ -32,10 +32,9 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
+#include "fwd/ParticleCombination.h"
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
-
-#include "ParticleCombination.h"
 
 #include <complex>
 #include <map>

@@ -21,7 +21,6 @@
 #ifndef yap_ParameterFwd_h
 #define yap_ParameterFwd_h
 
-#include <complex>
 #include <memory>
 #include <set>
 #include <vector>
@@ -30,6 +29,8 @@ namespace yap {
 
 class ParameterBase;
 template <typename T> class Parameter;
+class ComplexParameter;
+class RealParameter;
 class ComplexComponentParameter;
 class RealComponentParameter;
 class ImaginaryComponentParameter;
@@ -43,14 +44,6 @@ using ParameterVector = std::vector<std::shared_ptr<ParameterBase> >;
 /// \ingroup Parameters
 /// Use when enforcement of no duplicates is required, and order does not matter
 using ParameterSet = std::set<std::shared_ptr<ParameterBase> >;
-
-/// \typedef ComplexParameter
-/// \ingroup Parameters
-using ComplexParameter = Parameter<std::complex<double> >;
-
-/// \typedef RealParameter
-/// \ingroup Parameters
-using RealParameter = Parameter<double>;
 
 /// \typedef ComplexParameterVector
 /// \ingroup Parameters

@@ -21,20 +21,19 @@
 #ifndef yap_ModelIntegralFwd_h
 #define yap_ModelIntegralFwd_h
 
-#include <complex>
+#include "fwd/DecayTreeVectorIntegral.h"
+#include "fwd/Parameter.h"
+
+#include <map>
+#include <memory>
 
 namespace yap {
 
 class ModelIntegral;
 
-template <typename T>
-struct IntegralElement;
-
-/// \typedef RealIntegralElement
-using RealIntegralElement = IntegralElement<double>;
-
-/// \typedef ComplexIntegralElement
-using ComplexIntegralElement = IntegralElement<std::complex<double> >;
+/// \typedef IntegralMap
+/// maps admixture parameter to integral
+using IntegralMap = std::map<std::shared_ptr<RealParameter>, DecayTreeVectorIntegral>;
 
 }
 

@@ -85,7 +85,7 @@ public:
     /// \param pos DataIterator of position in DataSet to insert into
     /// \param P vector of FourVector to create DataPoint from
     DataIterator insert(DataIterator pos, const std::vector<FourVector<double> >& P)
-    { return dataIterator(DataPoints_.insert(rawIterator(pos), createDataPoint(P))); }
+    { return dataIterator(DataPoints_.insert(rawIterator(pos), createDataPoint(P)), pos.partition()); }
 
     /// checks consistency of DataPoint and inserts it into vector of
     /// data points at specifief position
@@ -98,6 +98,27 @@ public:
     /// \param pos DataIterator of position in DataSet to insert into
     /// \param d DataPoint to move into DataSet
     DataIterator insert(const DataIterator& pos, DataPoint&& d);
+
+    /// clear the data set
+    void clear()
+    { DataPoints_.clear(); }
+
+    /// removes last element added to data set
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
+    void pop_back()
+    { DataPoints_.pop_back(); }
+    
+    /// remove specified element from data set.
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
+    /// \param pos iterator to element to remove
+    DataIterator erase(const DataIterator& pos)
+    { return dataIterator(DataPoints_.erase(rawIterator(pos)), pos.partition()); }
+
+    /// remove specified elements from data set
+    /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
+    /// \param first iterator to first element to remove
+    /// \param last iterator beyond last element to remove
+    DataIterator erase(const DataIterator& first, const DataIterator& last);
 
     /// \return iterator to front of set
     const DataIterator& begin() const override
@@ -115,16 +136,29 @@ public:
     DataPoint& at(size_t i)
     { return DataPoints_.at(i); }
 
+    /// access front
+    const DataPoint& front() const
+    { return DataPoints_.front(); }
+
     /// access back
-    DataPoint& back()
+    const DataPoint& back() const
     { return DataPoints_.back(); }
 
+    /// \return number of data points
     const size_t size() const override
     { return DataPoints_.size(); }
 
-    /// const access to DataPoints_
-    const DataPointVector& points() const
-    { return DataPoints_; }
+    /// \return maximum possible number data points that can be stored
+    const size_t max_size() const
+    { return DataPoints_.max_size(); }
+
+    /// \return number of data points that can be held in currently allocated storage
+    const size_t capacity() const
+    { return DataPoints_.capacity(); }
+
+    /// \return whether DataPoints_ is empty
+    const bool empty() const
+    { return DataPoints_.empty(); }
 
     /// reserve storage space
     void reserve(size_t n)

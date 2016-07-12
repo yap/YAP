@@ -22,12 +22,12 @@
 #define yap_StaticDataAccessor_h
 
 #include "fwd/Model.h"
+#include "fwd/ParticleCombination.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
 
 #include "DataAccessor.h"
 #include "Exceptions.h"
-#include "ParticleCombination.h"
 
 namespace yap {
 
@@ -40,13 +40,13 @@ public:
 
     /// Constructor
     /// \param equal ParticleCombination equality struct for determining index assignments
-    StaticDataAccessor(const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+    StaticDataAccessor(const ParticleCombinationEqualTo& equal)
         : DataAccessor(equal), Model_(nullptr) {}
 
     /// Constructor
     /// \param model Raw pointer to owning Model
     /// \param equal ParticleCombination equality struct for determining index assignments
-    StaticDataAccessor(Model& m, const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+    StaticDataAccessor(Model& m, const ParticleCombinationEqualTo& equal)
         : DataAccessor(equal), Model_(nullptr)
     {
         setModel(m);

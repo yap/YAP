@@ -32,8 +32,10 @@
 #include "DataAccessor.h"
 #include "DataPoint.h"
 
+#include <complex>
 #include <memory>
 #include <set>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -125,7 +127,7 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     void setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const
-    { d.Data_[Owner_->index()][sym_index][Position_ + index] = val; } 
+    { d.Data_[Owner_->index()][sym_index][Position_ + index] = val; }
 
     /// @}
 
@@ -181,7 +183,7 @@ inline bool operator!=(const CachedDataValue::Status& S, const VariableStatus& s
 { return S.Variable != s; }
 
 /// streaming operator for CachedDataValue::Status
-std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S);
+std::string to_string(const CachedDataValue::Status& S);
 
 /// \class RealCachedDataValue
 /// \brief Class for managing a single real cached value inside a #DataPoint

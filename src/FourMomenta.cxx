@@ -19,7 +19,7 @@ namespace yap {
 
 //-------------------------
 FourMomenta::FourMomenta(Model& m) :
-    StaticDataAccessor(m, ParticleCombination::equalByOrderlessContent),
+    StaticDataAccessor(m, equal_by_orderless_content),
     TotalIndex_(-1),
     P_(FourVectorCachedDataValue::create(this)),
     M_(RealCachedDataValue::create(this, {}, {P_}))

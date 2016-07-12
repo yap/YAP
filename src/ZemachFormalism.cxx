@@ -12,8 +12,50 @@
 namespace yap {
 
 //-------------------------
+bool equal_zemach(const std::shared_ptr<const ParticleCombination>& A, const std::shared_ptr<const ParticleCombination>& B)
+{
+    //check if either empty
+    if (!A or !B)
+        return false;
+    
+    if (A->indices().size() > 3 or B->indices().size() > 3)
+        throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
+                                    "equal_zemach::operator()");
+
+    // compare shared_ptr addresses
+    if (A == B)
+        return true;
+
+    // check if both size < 3
+    if (A->indices().size() < 3 and B->indices().size() < 3)
+        return true;
+
+    // now check if sizes same
+    if (A->indices().size() != B->indices().size())
+        return false;
+
+    // find resonance and spectator
+    auto rA = A->daughters()[0];
+    auto sA = A->daughters()[1];
+    if (sA->indices().size() == 2)
+        std::swap(sA, rA);
+    if (rA->indices().size() != 2 and sA->indices().size() != 1)
+        throw exceptions::Exception("could not find resonance and spectator in A",
+                                    "ParticleCombination::EqualZemach::operator()");
+    auto rB = B->daughters()[0];
+    auto sB = B->daughters()[1];
+    if (sB->indices().size() == 2)
+        std::swap(sB, rB);
+    if (rB->indices().size() != 2 and sB->indices().size() != 1)
+        throw exceptions::Exception("could not find resonance and spectator in B",
+                                    "ParticleCombination::EqualZemach::operator()");
+    
+    return equal_by_orderless_content(rA, rB) and equal_by_orderless_content(sA, sB);
+}
+
+//-------------------------
 ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
-    SpinAmplitude(two_J, two_j, l, two_s, ParticleCombination::equalZemach)
+    SpinAmplitude(two_J, two_j, l, two_s, ParticleCombinationEqualTo(equal_zemach))
 {
     if (finalTwoJ().size() != 2)
         throw exceptions::Exception("Wrong number of daughter spins specified (" + std::to_string(finalTwoJ().size()) + " != 2)",

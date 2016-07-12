@@ -2,7 +2,6 @@
 
 #include "BlattWeisskopf.h"
 #include "CachedDataValue.h"
-#include "CachedValue.h"
 #include "Constants.h"
 #include "DataPartition.h"
 #include "DecayChannel.h"

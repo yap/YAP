@@ -17,24 +17,14 @@
  */
 
 /// \file
+/// Contains forward declarations only
 
-#ifndef yap_DecayTreeFwd_h
-#define yap_DecayTreeFwd_h
-
-#include <map>
-#include <memory>
-#include <vector>
+#ifndef yap_DecayTreeVectorIntegratorFwd_h
+#define yap_DecayTreeVectorIntegratorFwd_h
 
 namespace yap {
 
-class DecayTree;
-
-/// \typedef DecayTreeVector
-using DecayTreeVector = std::vector<std::shared_ptr<DecayTree> >;
-
-/// \typedef DecayTreeVectorMap
-/// Map of spin projection (int) to DecayTreeVector
-using DecayTreeVectorMap = std::map<int, DecayTreeVector>;
+class DecayTreeVectorIntegrator;
 
 }
 

@@ -24,9 +24,9 @@ CachedDataValue::Status& CachedDataValue::Status::operator=(const VariableStatus
 }
 
 //-------------------------
-std::ostream& operator<<(std::ostream& str, const CachedDataValue::Status& S)
+std::string to_string(const CachedDataValue::Status& S)
 {
-    return str << S.Calculation << ", " << S.Variable;
+    return to_string(S.Calculation) + ", " + to_string(S.Variable);
 }
 
 //-------------------------

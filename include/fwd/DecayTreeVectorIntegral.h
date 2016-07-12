@@ -18,30 +18,29 @@
 
 /// \file
 
-#ifndef yap_ParticleCombinationFwd_h
-#define yap_ParticleCombinationFwd_h
+#ifndef yap_DecayTreeVectorIntegralFwd_h
+#define yap_DecayTreeVectorIntegralFwd_h
 
-#include <functional>
+#include "fwd/DecayTree.h"
+#include "fwd/IntegralElement.h"
+
 #include <map>
-#include <memory>
-#include <vector>
 
 namespace yap {
 
-class ParticleCombination;
+class DecayTreeVectorIntegral;
 
-/// \typedef ParticleCombinationEqualTo
-/// std::function to compare two ParticleCombination's
-using ParticleCombinationEqualTo = std::function<bool(const std::shared_ptr<const ParticleCombination>&, const std::shared_ptr<const ParticleCombination>&)>;
+/// \typedef DiagonalIntegralMap
+/// maps shared_ptr to DecayTree to diagonal integral element
+/// \ingroup Integration
+using DiagonalIntegralMap = std::map<DecayTreeVector::value_type, RealIntegralElement>;
 
-/// \typedef ParticleCombinationVector
-using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
+/// \typedef OffDiagonalIntegralMap
+/// maps shared_ptr to DecayTree to off-diagonal integral element
+/// \ingroup Integration
+using OffDiagonalIntegralMap = std::map<std::array<DecayTreeVector::value_type, 2>, ComplexIntegralElement>;
 
-/// \typedef ParticleCombinationMap
-/// \tparam T Object to store in map, with shared_ptr to ParticleCombination as key
-template<typename T>
-using ParticleCombinationMap = std::map<std::shared_ptr<ParticleCombination>, T,
-      std::owner_less<std::shared_ptr<ParticleCombination> > >;
+
 
 }
 

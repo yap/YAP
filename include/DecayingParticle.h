@@ -74,7 +74,7 @@ public:
 
     /// \return DecayTrees
     /// map key is spin projection
-    const DecayTreeVectorMap<int>& decayTrees() const
+    const DecayTreeVectorMap& decayTrees() const
     { return DecayTrees_; }
 
     /// Check consistency of object
@@ -181,18 +181,15 @@ private:
     std::shared_ptr<RealParameter> RadialSize_;
 
     /// Map of spin projection to DecayTreeVector
-    DecayTreeVectorMap<int> DecayTrees_;
+    DecayTreeVectorMap DecayTrees_;
 
 };
 
 /// convert to (multiline) string
-std::string to_string(const DecayTreeVectorMap<int>& m_dtv_map);
-
-/// \return sum of squared amplitudes of different spin projections in map of spin projection to decay tree vector
-const double intensity(const DecayTreeVectorMap<int>& m_dtv_map, const DataPoint& d);
+std::string to_string(const DecayTreeVectorMap& m_dtv_map);
 
 /// \return set of free amplitudes in map of spin projection to decay tree vector
-FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap<int>& m_dtv_map);
+FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap& m_dtv_map);
 
 }
 

@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
+#include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
@@ -43,7 +44,7 @@ class RecalculableDataAccessor : public DataAccessor
 public:
     /// Constructor
     /// \param equal ParticleCombination equality struct for determining index assignments
-    explicit RecalculableDataAccessor(const ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer)
+    explicit RecalculableDataAccessor(const ParticleCombinationEqualTo& equal)
         : DataAccessor(equal) {}
 
     /// calculate for every data point in a DataPartition

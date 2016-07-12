@@ -8,6 +8,7 @@
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
@@ -56,11 +57,20 @@ void Model::calculate(DataPartition& D) const
 }
 
 //-------------------------
+const double intensity(const InitialStateParticleMap::value_type& isp_mix, const DataPoint& d)
+{
+    return std::accumulate(isp_mix.second.begin(), isp_mix.second.end(), 0.,
+                           [&](double& I, const AdmixtureMap::value_type& m_b)
+                           // += admixture factory * intensity of decay tree for spin projection
+                           { return I += m_b.second->value() * intensity(isp_mix.first->decayTrees().at(m_b.first), d);});
+}
+
+//-------------------------
 const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& d)
 {
     return std::accumulate(isp_map.begin(), isp_map.end(), 0.,
-                           [&](double & a, const InitialStateParticleMap::value_type & isp_b2)
-    {return a += isp_b2.second->value() * intensity(isp_b2.first->decayTrees(), d);});
+                           [&](double& I, const InitialStateParticleMap::value_type& isp_mix)
+                           { return I += intensity(isp_mix, d); });
 }
 
 //-------------------------
@@ -194,6 +204,18 @@ void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<doub
         sda->calculate(d, sm);
 }
 
+//-------------------------
+AdmixtureMap admixture_map(const DecayTreeVectorMap& dtvm)
+{
+    AdmixtureMap M;
+    // create new (spin projection -> real parameter) entry for each in dtvm
+    std::transform(dtvm.begin(), dtvm.end(), std::inserter(M, M.end()),
+                   [](const DecayTreeVectorMap::value_type& v)
+                   {return AdmixtureMap::value_type(v.first, std::make_shared<RealParameter>(1.));});
+    return M;
+}
+
+//-------------------------
 const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::shared_ptr<DecayingParticle> p)
 {
     if (locked())
@@ -205,7 +227,7 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
     if (p->model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialStateParticle");
 
-    auto res = InitialStateParticles_.insert(std::make_pair(p, std::make_shared<RealParameter>(1.)));
+    auto res = InitialStateParticles_.emplace(p, admixture_map(p->decayTrees()));
 
     if (res.second) { // new element was inserted
         for (auto& pc : p->particleCombinations())
@@ -221,17 +243,34 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
 }
 
 //-------------------------
+std::string to_string(const AdmixtureMap& mix)
+{
+    return std::accumulate(mix.begin(), mix.end(), std::string(),
+                           [](std::string& s, const AdmixtureMap::value_type& m_b)
+                           { return s += "; b(m = " + std::to_string(m_b.first) + ") = " + to_string(*m_b.second); }
+        ).erase(0, 2);
+}
+
+//-------------------------
+size_t n_fixed(const AdmixtureMap& mix)
+{
+    return std::count_if(mix.begin(), mix.end(),
+                         [](const AdmixtureMap::value_type& m_b)
+                         {return m_b.second->variableStatus() == VariableStatus::fixed;});
+}
+    
+//-------------------------
 std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M)
 {
     std::vector<std::shared_ptr<DecayingParticle> > isps;
     isps.reserve(M.initialStateParticles().size());
+    // collect first those particles for whom all admixture factors are fixed
     for (const auto& kv : M.initialStateParticles())
-        if (kv.second->variableStatus() == VariableStatus::fixed
-                and kv.first->finalStateParticles(0).size() == M.finalStateParticles().size())
+        if (kv.first->finalStateParticles(0).size() == M.finalStateParticles().size() and n_fixed(kv.second) == kv.second.size())
             isps.push_back(kv.first);
+    // then collect the rest
     for (const auto& kv : M.initialStateParticles())
-        if (kv.second->variableStatus() != VariableStatus::fixed
-                and kv.first->finalStateParticles(0).size() == M.finalStateParticles().size())
+        if (kv.first->finalStateParticles(0).size() == M.finalStateParticles().size() and n_fixed(kv.second) < kv.second.size())
             isps.push_back(kv.first);
     return isps;
 }
@@ -289,10 +328,22 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
 }
 
 //-------------------------
-void Model::prepareDataAccessors()
+void Model::lock()
 {
-    if (locked())
-        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::prepareDataAcessors");
+    // if already locked, do nothing
+    if (Locked_)
+        return;
+
+    // prune initial state particles
+    // and fix their amplitudes if necessary
+    for (auto& isp_mix : InitialStateParticles_) {
+        isp_mix.first->pruneParticleCombinations();
+        isp_mix.first->fixSolitaryFreeAmplitudes();
+    }
+
+    // if only one ISP with only one spin projection, fix it's admixture
+    if (InitialStateParticles_.size() == 1 and InitialStateParticles_.begin()->second.size() == 1)
+        InitialStateParticles_.begin()->second.begin()->second->variableStatus() = VariableStatus::fixed;
 
     // remove expired elements of DataAccessors_
     removeExpired(DataAccessors_);
@@ -301,15 +352,6 @@ void Model::prepareDataAccessors()
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
-
-    for (auto& kv : InitialStateParticles_) {
-        // prune initial state particles
-        kv.first->pruneParticleCombinations();
-
-        // fix amplitudes when they are for the only possible decay chain
-        kv.first->fixSolitaryFreeAmplitudes();
-    }
-
 
     // fix indices:
     // collect used indices
@@ -337,10 +379,9 @@ void Model::prepareDataAccessors()
         // if index is now used, increment it by 1
         if (used.find(index) != used.end())
             index += 1;
-
     }
 
-    lock();
+    Locked_ = true;
 }
 
 //-------------------------
@@ -395,7 +436,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
         auto pc = particleCombinationCache().composite(pcv);
 
         // check that pc isn't already in M
-        if (any_of(M, pc, ParticleCombination::equalByOrderlessContent))
+        if (any_of(M, pc, equal_by_orderless_content))
             throw exceptions::Exception("axis requested twice", "Model::massAxes");
 
         M.push_back(pc);
@@ -567,8 +608,7 @@ std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axe
 DataSet Model::createDataSet(size_t n)
 {
     if (!locked())
-        // prepare DataAccessors (locks model)
-        prepareDataAccessors();
+        lock();
 
     if (!locked())
         throw exceptions::Exception("data sets cannot be generated from an unlocked model.", "Model::createDataSet");
@@ -624,7 +664,7 @@ void Model::printFlags(const StatusManager& sm) const
         for (auto& c : d->cachedDataValues()) {
             std::cout << "  CachedDataValue " << c << ": ";
             for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
-                std::cout << sm.status(*c, i) << "; ";
+                std::cout << to_string(sm.status(*c, i)) << "; ";
             std::cout << "\n";
         }
     }

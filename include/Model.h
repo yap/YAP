@@ -34,21 +34,18 @@
 #include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
 #include "fwd/RecalculableDataAccessor.h"
-#include "fwd/SpinAmplitudeCache.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
 
 #include "CoordinateSystem.h"
 #include "ParticleCombinationCache.h"
+#include "SpinAmplitudeCache.h"
 
 #include <complex>
 #include <memory>
 #include <vector>
 
 namespace yap {
-
-/// map initial state particle to free (real) amplitude (for incoherent summing over initial state particles)
-using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, std::shared_ptr<RealParameter> >;
 
 /// \class Model
 /// \brief Class implementing a PWA model
@@ -72,8 +69,10 @@ public:
     bool locked() const
     { return Locked_; }
 
-    /// removes expired DataAccessor's, prune's remaining, and assigns them indices
-    void prepareDataAccessors();
+    /// prepare model and mark as locked:
+    /// removes expired DataAccessor's, prune's remaining, and assigns them indices;
+    /// fixes amplitudes that needn't be free
+    void lock();
 
     /// \name Getters
     /// @{
@@ -230,10 +229,6 @@ protected:
 
 private:
 
-    /// lock model
-    void lock()
-    { Locked_ = true; }
-
     /// stores whether model structure can be modified
     /// (whether DataAccessors can be added or not)
     bool Locked_;
@@ -275,10 +270,16 @@ private:
 
 };
 
+/// \return string of AdmixtureMap
+std::string to_string(const AdmixtureMap& mix);
+
 /// \return vector of shared_ptr to DecayingParticles inside Model
 /// that decay to its full final state, sorted such that the first
 /// entries have fixed prefactors
 std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M);
+
+/// \return intensity for all spin projections of an ISP
+const double intensity(const InitialStateParticleMap::value_type& isp_mix, const DataPoint& d);
 
 /// \return intensity for a data point evaluated over isp_map
 const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& d);

@@ -65,9 +65,7 @@ protected:
     /// \param two_j SpinVector of daughters
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    /// \param equal ParticleCombination equality struct for determining index assignments
-    HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s,
-                          ParticleCombination::Equal& equal = ParticleCombination::equalBySharedPointer);
+    HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 private:
 

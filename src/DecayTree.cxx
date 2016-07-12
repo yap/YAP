@@ -4,6 +4,7 @@
 #include "Exceptions.h"
 #include "FreeAmplitude.h"
 #include "RecalculableDataAccessor.h"
+#include "ParticleCombination.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 

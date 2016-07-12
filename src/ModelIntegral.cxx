@@ -1,95 +1,49 @@
 #include "ModelIntegral.h"
 
-#include "Constants.h"
-#include "DecayTree.h"
+#include "DecayingParticle.h"
+#include "DecayTreeVectorIntegral.h"
+#include "Exceptions.h"
+#include "Model.h"
+#include "Parameter.h"
 
-#include <algorithm>
-#include <numeric>
+#include <memory>
 
 namespace yap {
 
 //-------------------------
-ModelIntegral::ModelIntegral(const DecayTreeVector& dtv)
-    : DecayTrees_(dtv)
+ModelIntegral::ModelIntegral(const Model& model)
 {
-    // initialize diagonal elements
-    for (const auto& dt : DecayTrees_)
-        Diagonals_.emplace(dt, DiagonalMap::mapped_type());
-    // initialize off-diagonal elements
-    for (size_t i = 0; i < DecayTrees_.size(); ++i)
-        for (size_t j = i + 1; j < DecayTrees_.size(); ++j)
-            OffDiagonals_.emplace(OffDiagonalMap::key_type({DecayTrees_[i], DecayTrees_[j]}),
-                                  OffDiagonalMap::mapped_type());
+    // for each initial state particle
+    for (const auto& isp_mix : model.initialStateParticles())
+        // for each spin projection
+        for (const auto& m_b : isp_mix.second)
+            // create new DecayTreeVectorIntegral
+            Integrals_.emplace(m_b.second, DecayTreeVectorIntegral(isp_mix.first->decayTrees().at(m_b.first)));
+}
+
+//-------------------------
+const RealIntegralElement ModelIntegral::integral() const
+{
+   return std::accumulate(Integrals_.begin(), Integrals_.end(), RealIntegralElement(),
+                          [](RealIntegralElement& i, const IntegralMap::value_type& b_I)
+                          { return i += b_I.first->value() * b_I.second.integral(); });
+}
+
+//-------------------------
+const DecayTreeVectorIntegral& ModelIntegral::integral(const DecayTreeVector& dtv) const
+{
+    auto it = find_if(Integrals_.begin(), Integrals_.end(),
+                      [&](const IntegralMap::value_type& b_I)
+                      {return b_I.second.decayTrees() == dtv;});
+    if (it == Integrals_.end())
+        throw exceptions::Exception("DecayTreeVector not found", "ModelIntegral::integral");
+    return it->second;
 }
 
 //-------------------------
 const Model* ModelIntegral::model() const
 {
-    return (!DecayTrees_.empty() and DecayTrees_[0]) ? DecayTrees_[0]->model() : nullptr;
-}
-
-//-------------------------
-const std::vector<double> fit_fractions(const ModelIntegral& MI)
-{
-    double I = MI.integral().value;
-    std::vector<double> ff;
-    ff.reserve(MI.decayTrees().size());
-    std::transform(MI.decayTrees().begin(), MI.decayTrees().end(), std::back_inserter(ff),
-    [&](const DecayTreeVector::value_type & dt) {return integral(*MI.diagonals().find(dt)).value / I;});
-    return ff;
-}
-
-//-------------------------
-const std::vector<std::vector<std::complex<double> > > cached_integrals(const ModelIntegral& MI)
-{
-    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
-    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
-        I[i][i] = MI.diagonals().at(MI.decayTrees()[i]).value;
-        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
-            I[j][i] = conj(I[i][j] = MI.offDiagonals().at({MI.decayTrees()[i], MI.decayTrees()[j]}).value);
-    }
-    return I;
-}
-
-//-------------------------
-const std::vector<std::vector<std::complex<double> > > integrals(const ModelIntegral& MI)
-{
-    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
-    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
-        I[i][i] = integral(*MI.diagonals().find(MI.decayTrees()[i])).value;
-        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
-            I[j][i] = conj(I[i][j] = integral(*MI.offDiagonals().find({MI.decayTrees()[i], MI.decayTrees()[j]})).value);
-    }
-    return I;
-}
-
-//-------------------------
-const RealIntegralElement integral(const ModelIntegral::DiagonalMap::value_type& a_A2)
-{
-    return RealIntegralElement(norm(a_A2.first->dataIndependentAmplitude()) * a_A2.second.value);
-}
-
-//-------------------------
-const RealIntegralElement integral(const ModelIntegral::OffDiagonalMap::value_type& aa_AA)
-{
-    return RealIntegralElement(real(2. * conj(aa_AA.first[0]->dataIndependentAmplitude())
-                                    * aa_AA.first[1]->dataIndependentAmplitude()
-                                    * aa_AA.second.value));
-}
-
-//-------------------------
-const RealIntegralElement operator+(const RealIntegralElement& d, const ModelIntegral::DiagonalMap::value_type& v)
-{ return d + integral(v); }
-
-//-------------------------
-const RealIntegralElement operator+(const RealIntegralElement& d, const ModelIntegral::OffDiagonalMap::value_type& v)
-{ return d + integral(v); }
-
-//-------------------------
-const IntegralElement<double> ModelIntegral::integral() const
-{
-    return std::accumulate(Diagonals_.begin(), Diagonals_.end(), RealIntegralElement())
-           + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), RealIntegralElement());
+    return Integrals_.empty() ? nullptr : Integrals_.begin()->second.model();
 }
 
 }

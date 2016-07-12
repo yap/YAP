@@ -39,10 +39,7 @@ public:
 
     /// implements equality checking
     bool equal(const shared_ptr_type& A, const shared_ptr_type& B) const override
-    { return ParticleCombination::equalUpAndDown(A, B); }
-
-    /// Default constructor
-    ParticleCombinationCache() = default;
+    { return equal_up_and_down(A, B); }
 
     /// retrieve or create final-state particle ParticleCombination
     /// \param index Index of particle

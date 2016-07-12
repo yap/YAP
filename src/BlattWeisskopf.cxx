@@ -9,6 +9,7 @@
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
+#include "ParticleCombination.h"
 
 namespace yap {
 
@@ -31,7 +32,7 @@ double f_inverse_square(unsigned l, double z)
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
-    RecalculableDataAccessor(ParticleCombination::equalDownByOrderlessContent),
+    RecalculableDataAccessor(equal_down_by_orderless_content),
     RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
     L_(L)
