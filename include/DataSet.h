@@ -144,6 +144,9 @@ public:
     const DataPoint& back() const
     { return DataPoints_.back(); }
 
+    /// \return size of data set in bytes
+    const unsigned bytes() const;
+
     /// \return number of data points
     const size_t size() const override
     { return DataPoints_.size(); }

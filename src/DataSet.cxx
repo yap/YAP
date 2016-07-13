@@ -89,4 +89,10 @@ DataIterator DataSet::erase(const DataIterator& first, const DataIterator& last)
     return last;
 }
 
+//-------------------------
+const unsigned DataSet::bytes() const
+{
+    return empty() ? 0 : size() * front().bytes();
+}
+
 }

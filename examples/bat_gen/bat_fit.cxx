@@ -133,7 +133,7 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
     else {
         LOG(INFO) << "Loaded " << data.size() - old_size << " data points (" << ((data.size() - old_size) * data[0].bytes() * 1.e-6) << " MB)";
         if (old_size != 0)
-            LOG(INFO) << "Total data size now " << data.size() << " points (" << (data.size() * data[0].bytes() * 1.e-6) << " MB)";
+            LOG(INFO) << "Total data size now " << data.size() << " points (" << (data.bytes() * 1.e-6) << " MB)";
     }
     return data.size() - old_size;
 }
