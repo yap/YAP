@@ -47,7 +47,7 @@ class SpinAmplitude : public StaticDataAccessor
 public:
 
     /// \typedef AmplitudeSubmap
-    /// \brief maps SpinProjectionVector to ComplexCachesDataValue
+    /// \brief maps SpinProjectionVector to ComplexCachedValue
     using AmplitudeSubmap = std::map<SpinProjectionVector, std::shared_ptr<ComplexCachedValue> >;
 
     /// \typedef AmplitudeMap
