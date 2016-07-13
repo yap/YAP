@@ -27,7 +27,7 @@
 #include "fwd/Spin.h"
 #include "fwd/StatusManager.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "MathUtilities.h"
 #include "StaticDataAccessor.h"
 
@@ -47,8 +47,8 @@ class SpinAmplitude : public StaticDataAccessor
 public:
 
     /// \typedef AmplitudeSubmap
-    /// \brief maps SpinProjectionVector to ComplexCachesDataValue
-    using AmplitudeSubmap = std::map<SpinProjectionVector, std::shared_ptr<ComplexCachedDataValue> >;
+    /// \brief maps SpinProjectionVector to ComplexCachedValue
+    using AmplitudeSubmap = std::map<SpinProjectionVector, std::shared_ptr<ComplexCachedValue> >;
 
     /// \typedef AmplitudeMap
     /// \brief maps parent spin projectin to AmplitudeSubmap

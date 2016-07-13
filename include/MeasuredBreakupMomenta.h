@@ -21,7 +21,7 @@
 #ifndef yap_MeasuredBreakupMomenta_h
 #define yap_MeasuredBreakupMomenta_h
 
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
@@ -69,11 +69,11 @@ public:
     static double calcQ2(double m2_R, double m_a, double m_b);
 
     /// \return Breakup Momentum
-    std::shared_ptr<RealCachedDataValue> breakupMomenta()
+    std::shared_ptr<RealCachedValue> breakupMomenta()
     { return Q2_; }
 
     /// \return Breakup Momentum (const)
-    std::shared_ptr<RealCachedDataValue> breakupMomenta() const
+    std::shared_ptr<RealCachedValue> breakupMomenta() const
     { return Q2_; }
 
     /// grant friend status to Model to call addParticleCombination
@@ -85,7 +85,7 @@ protected:
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
     /// squared breakup momentum [GeV^2]
-    std::shared_ptr<RealCachedDataValue> Q2_;
+    std::shared_ptr<RealCachedValue> Q2_;
 
 };
 

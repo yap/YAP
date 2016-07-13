@@ -24,7 +24,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayingParticle.h"
-#include "fwd/CachedDataValue.h"
+#include "fwd/CachedValue.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
@@ -93,7 +93,7 @@ private:
     unsigned L_;
 
     /// Blatt-Weisskopf barrier factor
-    std::shared_ptr<RealCachedDataValue> BarrierFactor_;
+    std::shared_ptr<RealCachedValue> BarrierFactor_;
 
 };
 

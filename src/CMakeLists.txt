@@ -5,7 +5,7 @@ include_directories(${INCLUDE_DIRECTORIES})
 set(YAP_SOURCES
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
-	CachedDataValue.cxx
+	CachedValue.cxx
 	ClebschGordan.cxx
 	DataAccessor.cxx
 	DataPartition.cxx

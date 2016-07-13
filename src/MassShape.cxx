@@ -1,6 +1,6 @@
 #include "MassShape.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "Exceptions.h"
@@ -16,7 +16,7 @@ namespace yap {
 MassShape::MassShape() :
     RecalculableDataAccessor(equal_by_orderless_content),
     Resonance_(nullptr),
-    T_(ComplexCachedDataValue::create(*this))
+    T_(ComplexCachedValue::create(*this))
 {}
 
 //-------------------------

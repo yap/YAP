@@ -1,6 +1,6 @@
 #include "HelicityAngles.h"
 
-#include "CachedDataValue.h"
+#include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
@@ -14,8 +14,8 @@ namespace yap {
 //-------------------------
 HelicityAngles::HelicityAngles(Model& m) :
     StaticDataAccessor(m, equal_up_and_down),
-    Phi_(RealCachedDataValue::create(*this)),
-    Theta_(RealCachedDataValue::create(*this))
+    Phi_(RealCachedValue::create(*this)),
+    Theta_(RealCachedValue::create(*this))
 {
 }
 
