@@ -13,12 +13,16 @@
 
 #include <logging.h>
 #include <make_unique.h>
+#include <MassRange.h>
+#include <PHSP.h>
 #include <ZemachFormalism.h>
 
 #include <TFile.h>
 #include <TTree.h>
 
+#include <algorithm>
 #include <chrono>
+#include <random>
 
 int main()
 {
@@ -42,8 +46,19 @@ int main()
 
     bat_fit m("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()), *t_pars);
 
+    // load fit data
     m.loadData(m.fitData(), *t_mcmc, 10000, 1);
-    m.loadData(m.fitData(), *t_mcmc, 4000, 3);
+
+    // get FSP mass ranges
+    auto m2r = yap::squared(mass_range(m.axes(), m.isp(), m.model()->finalStateParticles()));
+
+    // generate integration data
+    std::mt19937 g(0);
+    std::generate_n(std::back_inserter(m.integralData()), 10000,
+                    std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()),
+                              m.isp()->mass()->value(), m.axes(), m2r, g,
+                              std::numeric_limits<unsigned>::max()));
+    LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);

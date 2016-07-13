@@ -25,7 +25,14 @@ public:
     unsigned likelihoodCalls() const
     { return std::accumulate(LikelihoodCalls_.begin(), LikelihoodCalls_.end(), 0); }
 
-protected:
+    const std::shared_ptr<yap::DecayingParticle> isp() const
+    { return ISP_; }
+
+    const std::unique_ptr<yap::Model>& model() const
+    { return Model_; }
+
+    const yap::MassAxes& axes() const
+    { return Axes_; }
 
     std::shared_ptr<yap::DecayingParticle> isp()
     { return ISP_; }
@@ -35,6 +42,8 @@ protected:
 
     yap::MassAxes& axes()
     { return Axes_; }
+
+protected:
 
     void increaseLikelihoodCalls(unsigned c)
     { ++LikelihoodCalls_[c]; }
