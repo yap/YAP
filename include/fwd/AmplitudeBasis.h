@@ -17,6 +17,7 @@
  */
 
 /// \file
+/// Contains forward declarations only
 
 #ifndef yap_AmplitudeBasisFwd_h
 #define yap_AmplitudeBasisFwd_h
