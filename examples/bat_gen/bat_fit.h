@@ -5,6 +5,7 @@
 
 #include <fwd/DataPartition.h>
 #include <fwd/Model.h>
+#include <fwd/Parameter.h>
 
 #include <DataSet.h>
 #include <ModelIntegral.h>
@@ -22,6 +23,9 @@ public:
     
     /// constructor
     bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars);
+
+    void addParameter(std::string name, std::shared_ptr<yap::ComplexParameter> P, std::complex<double> low, std::complex<double> high, std::string latex = "", std::string units = "");
+    void addParameter(std::string name, std::shared_ptr<yap::RealParameter> P, double low, double high, std::string latex = "", std::string units = "");
 
     /// log likelihood
     double LogLikelihood(const std::vector<double>&) override;
@@ -59,6 +63,8 @@ private:
     integrator_type Integrator_;
 
     yap::ModelIntegral Integral_;
+
+    yap::ParameterVector Parameters_;
 
 };
 

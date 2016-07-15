@@ -139,12 +139,32 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
 }
 
 // ---------------------------------------------------------
-double bat_fit::LogLikelihood(const std::vector<double>&)
+double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
+    yap::set_values(Parameters_, p);
     double L = sum_of_log_intensity(*model(), FitData_);
     Integrator_(Integral_, IntegralData_);
     L -= FitData_.size() * Integral_.integral().value;
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;
+}
+
+//-------------------------
+void bat_fit::addParameter(std::string name, std::shared_ptr<yap::ComplexParameter> P, std::complex<double> low, std::complex<double> high, std::string latex, std::string units)
+{
+    if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
+        throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
+    Parameters_.push_back(P);
+    AddParameter(name + "_re", real(low), real(high), "Re(" + latex + ")", units);
+    AddParameter(name + "_im", imag(low), imag(high), "Im(" + latex + ")", units);
+}
+
+//-------------------------
+void bat_fit::addParameter(std::string name, std::shared_ptr<yap::RealParameter> P, double low, double high, std::string latex, std::string units)
+{
+    if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
+        throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
+    Parameters_.push_back(P);
+    AddParameter(name, low, high, latex, units);
 }
