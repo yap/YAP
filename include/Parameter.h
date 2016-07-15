@@ -115,7 +115,7 @@ public:
         ParameterValue_ = val;
         variableStatus() = VariableStatus::changed;
     }
-    
+
     /// set value by operator
     Parameter& operator=(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type t)
     { setValue(t); return *this; }
@@ -200,7 +200,7 @@ public:
     { return Parent_; }
 
     using RealParameter::operator=;
-    
+
 protected:
 
     /// \return component value from whole value
@@ -229,7 +229,7 @@ public:
         : ComplexComponentParameter(par) {}
 
     using ComplexComponentParameter::operator=;
-    
+
 protected:
 
     /// \return component value from whole value
@@ -255,7 +255,7 @@ public:
         : ComplexComponentParameter(par) {}
 
     using ComplexComponentParameter::operator=;
-        
+
 protected:
 
     /// \return component value from whole value

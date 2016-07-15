@@ -31,7 +31,7 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
         std::cout << "Initial state particle " << to_string(*kv.first) << " with " << to_string(kv.second) << std::endl;
 
         for (const auto& m_dtv : kv.first->decayTrees())
-            for (const auto & dt : m_dtv.second)
+            for (const auto& dt : m_dtv.second)
                 if (dt->freeAmplitude()->variableStatus() != yap::VariableStatus::fixed)
                     std::cout << to_string(*dt->freeAmplitude())
                               << "  =  (" << abs(dt->freeAmplitude()->value()) << ", "

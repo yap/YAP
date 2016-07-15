@@ -107,7 +107,7 @@ public:
     /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     void pop_back()
     { DataPoints_.pop_back(); }
-    
+
     /// remove specified element from data set.
     /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     /// \param pos iterator to element to remove

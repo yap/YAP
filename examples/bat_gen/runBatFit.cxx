@@ -44,7 +44,7 @@ int main()
     file->GetObject((model_name + "_parameters").data(), t_pars);
     if (!t_pars)
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
-    
+
     //
     // CREATE yap::Model
     //

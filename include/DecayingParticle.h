@@ -117,7 +117,6 @@ public:
     const BlattWeisskopfMap& blattWeisskopfs() const
     { return BlattWeisskopfs_; }
 
-
     /// \return Free amplitudes for decay to particular state
     /// \param dV vector of daughters to search for free amplitudes to decay to
     FreeAmplitudeVector freeAmplitudes(const ParticleVector& dV);
@@ -127,8 +126,6 @@ public:
     template <typename ... Types>
     FreeAmplitudeVector freeAmplitudes(Types ... daughters)
     { ParticleVector V{daughters...}; return freeAmplitudes(V); }
-
-
 
     /// @}
 

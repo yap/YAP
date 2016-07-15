@@ -20,7 +20,7 @@ class bat_fit : public bat_yap_base
 {
 
 public:
-    
+
     /// constructor
     bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars);
 
@@ -48,7 +48,7 @@ public:
     /// \typedef integrator_type
     /// convienence typedef
     using integrator_type = std::function<void(yap::ModelIntegral&, yap::DataPartition&)>;
-    
+
     integrator_type& integrator()
     { return Integrator_; }
 

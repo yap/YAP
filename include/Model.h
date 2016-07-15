@@ -82,6 +82,7 @@ public:
     /// Check consistency of object
     virtual bool consistent() const;
 
+    /// \return whether model has been locked
     bool locked() const
     { return Locked_; }
 

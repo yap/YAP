@@ -172,7 +172,7 @@ int main( int argc, char** argv)
                         DEBUG("change mass for " << to_string(*d));
                         d->mass()->setValue(uniform2(g) * d->mass()->value());
                     }
-        
+
         DEBUG("===================================================================================================================== ");
 
         double logA = sum_of_log_intensity(M, parts);
