@@ -124,6 +124,18 @@ const SpinVector spins(const ParticleVector& v);
 /// convert to string
 std::string to_string(const Particle& p);
 
+/// convert to string
+inline std::string to_string(const ParticleVector& p)
+{
+    return std::accumulate(p.begin(), p.end(), std::string(""),
+                           [](std::string& s, const ParticleVector::value_type& p)
+                           {return s += " " + p->name();}).erase(0, 1);
+}
+
+/// equality comparison
+/// doesn't care about order
+const bool orderless_equal(const ParticleVector& A, const ParticleVector& B);
+
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const Particle& p)
 { os << to_string(p); return os; }

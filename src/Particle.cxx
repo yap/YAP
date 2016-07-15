@@ -68,5 +68,17 @@ std::string to_string(const Particle& p)
     return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value());
 }
 
+//-------------------------
+const bool orderless_equal(const ParticleVector& A, const ParticleVector& B)
+{
+    if (A == B)
+        return true;
+    if (A.size() != B.size())
+        return false;
+    // create set
+    std::set<ParticleVector::value_type> S(A.begin(), A.end());
+    return std::all_of(S.begin(), S.end(), [&](const ParticleVector::value_type& p)
+                       {return std::count(A.begin(), A.end(), p) == std::count(B.begin(), B.end(), p);});
+}
 
 }
