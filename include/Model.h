@@ -72,7 +72,7 @@ public:
 
     /// move assignment operator
     /// \todo Implement move assignment.
-    Model& operator=(Model&) = delete;
+    Model& operator=(Model&&) = delete;
 
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
