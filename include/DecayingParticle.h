@@ -22,25 +22,17 @@
 #define yap_DecayingParticle_h
 
 #include "fwd/BlattWeisskopf.h"
-#include "fwd/DataPartition.h"
-#include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
-#include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
-#include "fwd/StatusManager.h"
 
-#include "DataAccessor.h"
 #include "Particle.h"
 
-#include <complex>
-#include <map>
 #include <memory>
-#include <vector>
 
 namespace yap {
 
@@ -82,8 +74,7 @@ public:
 
     /// Check if a DecayChannel is valid for DecayingParticle;
     /// will throw if invalid
-    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
-    {}
+    virtual void checkDecayChannel(const DecayChannel& c) const;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)

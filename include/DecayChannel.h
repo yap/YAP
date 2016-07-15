@@ -131,6 +131,9 @@ private:
 
 };
 
+/// \return total charge of decay channel
+const int charge(const DecayChannel& dc);
+
 /// convert to string
 std::string to_string(const DecayChannel& dc);
 

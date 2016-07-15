@@ -28,19 +28,19 @@ void RelativisticBreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void RelativisticBreitWigner::checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+void RelativisticBreitWigner::checkDecayChannel(const DecayChannel& c) const
 {
     // check decaying resonance does not yet have a channel
     if (resonance() and !resonance()->channels().empty())
         throw exceptions::Exception("Resonance already has DecayChannel", "RelativisticBreitWigner");
 
     // check channel is only to two daughters
-    if (c->daughters().size() != 2)
-        throw exceptions::Exception("Wrong number of daughters (" + std::to_string(c->daughters().size()) + " != 2",
+    if (c.daughters().size() != 2)
+        throw exceptions::Exception("Wrong number of daughters (" + std::to_string(c.daughters().size()) + " != 2",
                                     "RelativisticBreitWigner::checkDecayChannel");
 
     // check channel is to spin-0 particles
-    auto sv = spins(c->daughters());
+    auto sv = spins(c.daughters());
     if (std::any_of(sv.begin(), sv.end(), std::bind(std::not_equal_to<unsigned>(), std::placeholders::_1, 0)))
         throw exceptions::Exception("Non-spin-0 daughter", "RelativisticBreitWigner::checkDecayChannel");
 }

@@ -62,7 +62,7 @@ public:
 
     /// Check if a DecayChannel is valid for Resonance; will throw if invalid.
     /// checks with MassShape_
-    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const override;
+    virtual void checkDecayChannel(const DecayChannel& c) const override;
 
     using DecayingParticle::addChannel;
 

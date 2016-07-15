@@ -28,8 +28,9 @@ std::shared_ptr<DecayChannel> Resonance::addChannel(std::shared_ptr<DecayChannel
 }
 
 //-------------------------
-void Resonance::checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+void Resonance::checkDecayChannel(const DecayChannel& c) const
 {
+    DecayingParticle::checkDecayChannel(c);
     MassShape_->checkDecayChannel(c);
 }
 

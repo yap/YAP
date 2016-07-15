@@ -1,8 +1,6 @@
 #include "DecayingParticle.h"
 
 #include "BlattWeisskopf.h"
-#include "CalculationStatus.h"
-#include "Constants.h"
 #include "container_utils.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
@@ -11,7 +9,7 @@
 #include "Model.h"
 #include "Parameter.h"
 #include "SpinAmplitude.h"
-#include "StatusManager.h"
+#include "VariableStatus.h"
 
 #include <functional>
 #include <iomanip>
@@ -58,6 +56,15 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
+void DecayingParticle::checkDecayChannel(const DecayChannel& dc) const
+{
+    if (charge(dc) != quantumNumbers().Q())
+        throw exceptions::Exception("Charge of channel not equal to decaying particle (" 
+                                    + std::to_string(charge(dc)) + " != " + std::to_string(quantumNumbers().Q()) + ")",
+                                    "DecayChannel::checkDecayChannel");
+}
+
+//-------------------------
 std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<DecayChannel> c)
 {
     if (!c)
@@ -72,7 +79,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
     // check if valid for DecayingParticle
-    checkDecayChannel(c);
+    checkDecayChannel(*c);
 
     Channels_.push_back(c);
     Channels_.back()->setDecayingParticle(this);

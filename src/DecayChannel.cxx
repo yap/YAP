@@ -2,21 +2,17 @@
 
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
-#include "CachedValue.h"
-#include "CalculationStatus.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
 #include "Model.h"
-#include "Parameter.h"
 #include "ParticleCombination.h"
 #include "ParticleCombinationCache.h"
 #include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
-#include "StatusManager.h"
 
 #include <algorithm>
 #include <iterator>
@@ -210,15 +206,6 @@ void DecayChannel::setDecayingParticle(DecayingParticle* dp)
     if (!DecayingParticle_)
         throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
 
-    // check charge conservation
-    int q = 0;
-    for (const auto& d : Daughters_)
-        q += d->quantumNumbers().Q();
-    if (DecayingParticle_->quantumNumbers().Q() != q)
-        throw exceptions::Exception("Charge not conserved: " + std::to_string(DecayingParticle_->quantumNumbers().Q()) + " != " + std::to_string(q)
-                                    + " in " + to_string(*this),
-                                    "DecayChannel::setDecayingParticle");
-
     // if SpinAmplitude's have already been added by hand, don't add automatically
     if (SpinAmplitudes_.empty()) {
 
@@ -331,6 +318,13 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
+const int charge(const DecayChannel& dc)
+{
+    return std::accumulate(dc.daughters().begin(), dc.daughters().end(), 0,
+                           [](int q, const ParticleVector::value_type& p)
+                           { return q += p->quantumNumbers().Q(); });
+}
+
 std::string to_string(const DecayChannel& dc)
 {
     std::string s = "(";
