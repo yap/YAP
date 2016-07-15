@@ -61,10 +61,10 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
 //-------------------------
 ParticleFactory& ParticleFactory::operator+=(const ParticleFactory& rhs)
 {
-	std::transform(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(),
-                 inserter(*this),
-                 std::bind(&ParticleTableMap::value_type::second, std::placeholders::_1));
-  return *this;
+    std::transform(rhs.ParticleTable_.begin(), rhs.ParticleTable_.end(),
+                   inserter(*this),
+                   std::bind(&ParticleTableMap::value_type::second, std::placeholders::_1));
+    return *this;
 }
 
 //-------------------------

@@ -34,27 +34,27 @@ const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint
     return A;
 }
 
-//-------------------------
-FreeAmplitudeSet freeAmplitudes(const DecayTree& DT)
-{
-    FreeAmplitudeSet S = {DT.freeAmplitude()};
-    for (auto& d_dt : DT.daughterDecayTrees()) {
-        auto s = freeAmplitudes(*d_dt.second);
-        S.insert(s.begin(), s.end());
-    }
-    return S;
-}
+// //-------------------------
+// FreeAmplitudeSet free_amplitudes(const DecayTree& DT)
+// {
+//     FreeAmplitudeSet S = {DT.freeAmplitude()};
+//     for (auto& d_dt : DT.daughterDecayTrees()) {
+//         auto s = free_amplitudes(*d_dt.second);
+//         S.insert(s.begin(), s.end());
+//     }
+//     return S;
+// }
 
-//-------------------------
-FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV)
-{
-    FreeAmplitudeSet S;
-    for (auto& DT : DTV) {
-        auto s = freeAmplitudes(*DT);
-        S.insert(s.begin(), s.end());
-    }
-    return S;
-}
+// //-------------------------
+// FreeAmplitudeSet free_amplitudes(const DecayTreeVector& DTV)
+// {
+//     FreeAmplitudeSet S;
+//     for (auto& DT : DTV) {
+//         auto s = free_amplitudes(*DT);
+//         S.insert(s.begin(), s.end());
+//     }
+//     return S;
+// }
 
 //-------------------------
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d) const
@@ -167,7 +167,9 @@ unsigned depth(const DecayTree& DT)
 
 //-------------------------
 bool has_changed(const DecayTreeVector::value_type& dt)
-{ return dt->dataDependentAmplitudeStatus() == VariableStatus::changed; }
+{
+    return dt->dataDependentAmplitudeStatus() == VariableStatus::changed;
+}
 
 //-------------------------
 const DecayTreeVector select_changed(const DecayTreeVector& dtv)

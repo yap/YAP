@@ -107,7 +107,7 @@ public:
     /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     void pop_back()
     { DataPoints_.pop_back(); }
-    
+
     /// remove specified element from data set.
     /// \warning DataIterator's and DataPartition's referring to this DataSet will most likely be invalidated
     /// \param pos iterator to element to remove
@@ -143,6 +143,9 @@ public:
     /// access back
     const DataPoint& back() const
     { return DataPoints_.back(); }
+
+    /// \return size of data set in bytes
+    const unsigned bytes() const;
 
     /// \return number of data points
     const size_t size() const override

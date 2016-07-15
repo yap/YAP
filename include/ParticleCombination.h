@@ -124,7 +124,7 @@ private:
     /// @}
 
 };
-    
+
 /// \name ParticleCombinationEqualTo functions
 /// @{
 

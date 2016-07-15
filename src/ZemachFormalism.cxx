@@ -17,7 +17,7 @@ bool equal_zemach(const std::shared_ptr<const ParticleCombination>& A, const std
     //check if either empty
     if (!A or !B)
         return false;
-    
+
     if (A->indices().size() > 3 or B->indices().size() > 3)
         throw exceptions::Exception("Zemach formalism cannot be used with 4 or more particles",
                                     "equal_zemach::operator()");
@@ -49,7 +49,7 @@ bool equal_zemach(const std::shared_ptr<const ParticleCombination>& A, const std
     if (rB->indices().size() != 2 and sB->indices().size() != 1)
         throw exceptions::Exception("could not find resonance and spectator in B",
                                     "ParticleCombination::EqualZemach::operator()");
-    
+
     return equal_by_orderless_content(rA, rB) and equal_by_orderless_content(sA, sB);
 }
 

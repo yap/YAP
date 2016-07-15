@@ -81,7 +81,7 @@ public:
     const Model* model() const override;
 
     /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
-    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
+    virtual void checkDecayChannel(const DecayChannel& c) const
     {}
 
     /// Grant Resonance friendship, so it can set itself as owner

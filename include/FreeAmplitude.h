@@ -77,6 +77,8 @@ public:
     /// \return Model this FreeAmplitude belongs to (via DecayChannel)
     const Model* model() const;
 
+    using ComplexParameter::operator=;
+
 private:
 
     /// DecayChannel for which this is a free amplitude

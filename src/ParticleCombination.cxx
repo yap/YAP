@@ -326,7 +326,7 @@ bool equal_down_by_orderless_content(const std::shared_ptr<const ParticleCombina
     // compare shared_ptr addresses
     if (A == B)
         return true;
-    
+
     if (!equal_by_orderless_content(A, B))
         return false;
 
@@ -342,11 +342,11 @@ bool equal_down_by_orderless_content(const std::shared_ptr<const ParticleCombina
                 ++matches;
                 break;
             }
-    
+
     if (matches == A->daughters().size())
         // a match!
         return true;
-    
+
     return false;
 }
 

@@ -80,7 +80,7 @@ public:
     Parameter() = default;
 
     /// Value-assigning constructor
-    Parameter(T t) : ParameterBase(), ParameterValue_(t)
+    explicit Parameter(T t) : ParameterBase(), ParameterValue_(t)
     {}
 
     /// virtual destructor defaulted
@@ -106,7 +106,7 @@ public:
     using ParameterBase::setValue;
 
     /// set value
-    virtual void setValue(T val)
+    virtual void setValue(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type val)
     {
         if (variableStatus() == VariableStatus::fixed)
             throw exceptions::ParameterIsFixed("", "Parameter::setValue");
@@ -115,6 +115,11 @@ public:
         ParameterValue_ = val;
         variableStatus() = VariableStatus::changed;
     }
+
+    /// set value by operator
+    Parameter& operator=(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type t)
+    { setValue(t); return *this; }
+
 
 private:
 
@@ -145,6 +150,8 @@ public:
     /// Set value from vector
     void setValue(const std::vector<double>& V)
     { setValue(V[0]); }
+
+    using Parameter::operator=;
 };
 
 /// \class ComplexParameter
@@ -164,6 +171,8 @@ public:
     /// Set value from vector
     void setValue(const std::vector<double>& V)
     { setValue(std::complex<double>(V[0], V[1])); }
+
+    using Parameter::operator=;
 };
 
 
@@ -189,6 +198,8 @@ public:
     /// \return shared_ptr to parent
     std::shared_ptr<ComplexParameter> parent()
     { return Parent_; }
+
+    using RealParameter::operator=;
 
 protected:
 
@@ -217,6 +228,8 @@ public:
     RealComponentParameter(std::shared_ptr<ComplexParameter> par)
         : ComplexComponentParameter(par) {}
 
+    using ComplexComponentParameter::operator=;
+
 protected:
 
     /// \return component value from whole value
@@ -240,6 +253,8 @@ public:
     /// \param par shared_ptr to ComplexParameter to access
     ImaginaryComponentParameter(std::shared_ptr<ComplexParameter> par)
         : ComplexComponentParameter(par) {}
+
+    using ComplexComponentParameter::operator=;
 
 protected:
 

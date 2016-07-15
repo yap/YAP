@@ -1,8 +1,6 @@
 #include "DecayingParticle.h"
 
 #include "BlattWeisskopf.h"
-#include "CalculationStatus.h"
-#include "Constants.h"
 #include "container_utils.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
@@ -11,7 +9,7 @@
 #include "Model.h"
 #include "Parameter.h"
 #include "SpinAmplitude.h"
-#include "StatusManager.h"
+#include "VariableStatus.h"
 
 #include <functional>
 #include <iomanip>
@@ -46,15 +44,20 @@ bool DecayingParticle::consistent() const
         FLOG(ERROR) << "DecayChannel vector contains nullptr";
         C &= false;
     }
-    // check all channels' parents point to this
-    if (std::any_of(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {return dc and dc->decayingParticle() != this;})) {
-        FLOG(ERROR) << "DecayChannel vector contains channel not pointing back to this";
-        C &= false;
-    }
+
     // check consistency of all channels
     std::for_each(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
 
     return C;
+}
+
+//-------------------------
+void DecayingParticle::checkDecayChannel(const DecayChannel& dc) const
+{
+    if (charge(dc) != quantumNumbers().Q())
+        throw exceptions::Exception("Charge of channel not equal to decaying particle ("
+                                    + std::to_string(charge(dc)) + " != " + std::to_string(quantumNumbers().Q()) + ")",
+                                    "DecayChannel::checkDecayChannel");
 }
 
 //-------------------------
@@ -72,10 +75,19 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
 
     // check if valid for DecayingParticle
-    checkDecayChannel(c);
+    checkDecayChannel(*c);
 
     Channels_.push_back(c);
-    Channels_.back()->setDecayingParticle(this);
+
+    // if spin amplitudes haven't been added by hand, add all possible
+    if (Channels_.back()->spinAmplitudes().empty())
+        Channels_.back()->addAllPossibleSpinAmplitudes(quantumNumbers().twoJ());
+
+    // create necessary BlattWeisskopf objects
+    for (const auto& sa : Channels_.back()->spinAmplitudes())
+        // if BW is not already stored for L, add it
+        if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
+            BlattWeisskopfs_.emplace(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this));
 
     // now that Model is set, register with Model (repeated registration has no effect)
     registerWithModel();
@@ -231,7 +243,9 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
         if (m_dtv.second.size() == 1)
             m_dtv.second[0]->freeAmplitude()->variableStatus() = VariableStatus::fixed;
     for (auto& c : Channels_)
-        c->fixSolitaryFreeAmplitudes();
+        for (auto& d : c->daughters())
+            if (std::dynamic_pointer_cast<DecayingParticle>(d))
+                std::static_pointer_cast<DecayingParticle>(d)->fixSolitaryFreeAmplitudes();
 }
 
 //-------------------------
@@ -297,36 +311,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& da
 }
 
 //-------------------------
-FreeAmplitudeSet DecayingParticle::freeAmplitudes() const
-{
-    FreeAmplitudeSet S;
-    for (auto m_dtv : DecayTrees_)
-        for (auto dt : m_dtv.second)
-            if (dt->freeAmplitude())
-                S.insert(dt->freeAmplitude());
-    return S;
-}
-
-//-------------------------
-FreeAmplitudeSet freeAmplitudes(const std::map<int, DecayTreeVector>& m_dtv_map)
-{
-    FreeAmplitudeSet S;
-    for (auto& m_dtv : m_dtv_map) {
-        auto s = freeAmplitudes(m_dtv.second);
-        S.insert(s.begin(), s.end());
-    }
-    return S;
-}
-
-//-------------------------
-void DecayingParticle::storeBlattWeisskopf(unsigned l)
-{
-    // if BW is not already stored for L, add it
-    if (BlattWeisskopfs_.find(l) == BlattWeisskopfs_.end())
-        BlattWeisskopfs_.emplace(l, std::make_shared<BlattWeisskopf>(l, this));
-}
-
-//-------------------------
 void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 {
     if (!dt.freeAmplitude())
@@ -357,6 +341,21 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
     return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
                            [](std::string & s, const DecayTreeVectorMap::value_type & m_dtv)
     { return s += to_string(m_dtv.second); });
+}
+
+//-------------------------
+FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
+{
+    if (std::any_of(dV.begin(), dV.end(), std::logical_not<ParticleVector::value_type>()))
+        throw exceptions::Exception("nullptr argument provided", "free_amplitudes");
+
+    FreeAmplitudeVector V;
+    for (const auto& m_dtv : DecayTrees_)
+        for (const auto& dt : m_dtv.second)
+            if (orderless_equal(dt->freeAmplitude()->decayChannel()->daughters(), dV)
+                and find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
+                V.push_back(dt->freeAmplitude());
+    return V;
 }
 
 }

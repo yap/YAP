@@ -9,6 +9,7 @@
 #include <CalculationStatus.h>
 #include <DataSet.h>
 #include <DecayingParticle.h>
+#include <DecayTree.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FreeAmplitude.h>
@@ -26,14 +27,16 @@ bat_gen::bat_gen(std::string name, std::unique_ptr<yap::Model> M, std::vector<st
     : bat_yap_base(name, std::move(M))
 {
     for (auto& kv : model()->initialStateParticles()) {
-        std::cout << "Initial state particle " << to_string(*kv.first) << " with " << to_string(kv.second);
 
-        auto freeAmps = freeAmplitudes(kv.first->decayTrees());
+        std::cout << "Initial state particle " << to_string(*kv.first) << " with " << to_string(kv.second) << std::endl;
 
-        std::cout << std::endl;
-        for (const auto& fa : freeAmps)
-            if (fa->variableStatus() != yap::VariableStatus::fixed)
-                std::cout << to_string(*fa) << "  =  (" << abs(fa->value()) << ", " << yap::deg(arg(fa->value())) << " deg)" << std::endl;
+        for (const auto& m_dtv : kv.first->decayTrees())
+            for (const auto& dt : m_dtv.second)
+                if (dt->freeAmplitude()->variableStatus() != yap::VariableStatus::fixed)
+                    std::cout << to_string(*dt->freeAmplitude())
+                              << "  =  (" << abs(dt->freeAmplitude()->value()) << ", "
+                              << yap::deg(arg(dt->freeAmplitude()->value())) << " deg)"
+                              << std::endl;
         std::cout << std::endl;
     }
 

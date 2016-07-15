@@ -258,7 +258,7 @@ size_t n_fixed(const AdmixtureMap& mix)
                          [](const AdmixtureMap::value_type& m_b)
                          {return m_b.second->variableStatus() == VariableStatus::fixed;});
 }
-    
+
 //-------------------------
 std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M)
 {

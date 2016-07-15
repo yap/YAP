@@ -2,6 +2,7 @@
 
 #include "ParticleFactory.h"
 
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <string>

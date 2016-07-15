@@ -3,6 +3,7 @@
 #include "DataPoint.h"
 #include "DataSet.h"
 #include "DecayChannel.h"
+#include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
@@ -146,10 +147,6 @@ int main( int argc, char** argv)
     unsigned nChains = 1;
     auto parts = yap::DataPartitionWeave::create(data, nChains);
 
-    auto freeAmps = freeAmplitudes(D->decayTrees());
-
-    LOG(INFO) << freeAmps.size() << " free amplitudes";
-
     //CALLGRIND_START_INSTRUMENTATION
 
     // create uniform random distributions
@@ -160,23 +157,22 @@ int main( int argc, char** argv)
     for (unsigned i = 0; i < 100; ++i) {
 
         // change amplitudes
-        if (uniform(g) > 0.5) {
-            for (auto& a : freeAmps) {
-                if (a->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5)
-                    a->setValue(uniform2(g) * a->value());
-            }
-        }
+        if (uniform(g) > 0.5)
+            for (auto& isp_b : M.initialStateParticles())
+                for (auto& m_dtv : isp_b.first->decayTrees())
+                    for (auto& dt : m_dtv.second)
+                        if (dt->freeAmplitude()->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5)
+                            *dt->freeAmplitude() = uniform2(g) * dt->freeAmplitude()->value();
 
         // change masses
-        if (uniform(g) > 0.5) {
+        if (uniform(g) > 0.5)
             for (auto& c : D->channels())
-                for (auto& d : c->daughters()) {
+                for (auto& d : c->daughters())
                     if (d->mass()->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5) {
                         DEBUG("change mass for " << to_string(*d));
                         d->mass()->setValue(uniform2(g) * d->mass()->value());
                     }
-                }
-        }
+
         DEBUG("===================================================================================================================== ");
 
         double logA = sum_of_log_intensity(M, parts);

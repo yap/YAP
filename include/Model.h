@@ -72,7 +72,7 @@ public:
 
     /// move assignment operator
     /// \todo Implement move assignment.
-    Model& operator=(Model&) = delete;
+    Model& operator=(Model&&) = delete;
 
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
@@ -82,6 +82,7 @@ public:
     /// Check consistency of object
     virtual bool consistent() const;
 
+    /// \return whether model has been locked
     bool locked() const
     { return Locked_; }
 

@@ -29,6 +29,9 @@ namespace yap {
 
 class FreeAmplitude;
 
+/// \typedef FreeAmplitudeVector
+using FreeAmplitudeVector = std::vector<std::shared_ptr<FreeAmplitude> >;
+
 /// \typedef FreeAmplitudeSet
 using FreeAmplitudeSet = std::set<std::shared_ptr<FreeAmplitude> >;
 

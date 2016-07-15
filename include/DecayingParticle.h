@@ -22,25 +22,17 @@
 #define yap_DecayingParticle_h
 
 #include "fwd/BlattWeisskopf.h"
-#include "fwd/DataPartition.h"
-#include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
-#include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
-#include "fwd/StatusManager.h"
 
-#include "DataAccessor.h"
 #include "Particle.h"
 
-#include <complex>
-#include <map>
 #include <memory>
-#include <vector>
 
 namespace yap {
 
@@ -82,8 +74,7 @@ public:
 
     /// Check if a DecayChannel is valid for DecayingParticle;
     /// will throw if invalid
-    virtual void checkDecayChannel(const std::shared_ptr<DecayChannel>& c) const
-    {}
+    virtual void checkDecayChannel(const DecayChannel& c) const;
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
@@ -126,7 +117,15 @@ public:
     const BlattWeisskopfMap& blattWeisskopfs() const
     { return BlattWeisskopfs_; }
 
-    FreeAmplitudeSet freeAmplitudes() const;
+    /// \return Free amplitudes for decay to particular state
+    /// \param dV vector of daughters to search for free amplitudes to decay to
+    FreeAmplitudeVector freeAmplitudes(const ParticleVector& dV);
+
+    /// \return Free amplitudes for decay to particular state
+    /// \param daughters... daughters to search for free amplitudes to decay to
+    template <typename ... Types>
+    FreeAmplitudeVector freeAmplitudes(Types ... daughters)
+    { ParticleVector V{daughters...}; return freeAmplitudes(V); }
 
     /// @}
 
@@ -137,10 +136,6 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
-    /// and storeBlattWeisskopf()
-    friend DecayChannel;
-
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
     friend Model;
 
@@ -149,10 +144,6 @@ protected:
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel()
     {}
-
-    /// tell DecayingParticle to store a BlattWeisskopf object for L
-    /// \param l orbital angular momentum of breakup
-    void storeBlattWeisskopf(unsigned l);
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
@@ -187,9 +178,6 @@ private:
 
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);
-
-/// \return set of free amplitudes in map of spin projection to decay tree vector
-FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap& m_dtv_map);
 
 }
 
