@@ -117,7 +117,18 @@ public:
     const BlattWeisskopfMap& blattWeisskopfs() const
     { return BlattWeisskopfs_; }
 
-    FreeAmplitudeSet freeAmplitudes() const;
+
+    /// \return Free amplitudes for decay to particular state
+    /// \param dV vector of daughters to search for free amplitudes to decay to
+    FreeAmplitudeVector freeAmplitudes(const ParticleVector& dV);
+
+    /// \return Free amplitudes for decay to particular state
+    /// \param daughters... daughters to search for free amplitudes to decay to
+    template <typename ... Types>
+    FreeAmplitudeVector freeAmplitudes(Types ... daughters)
+    { ParticleVector V{daughters...}; return freeAmplitudes(V); }
+
+
 
     /// @}
 
@@ -128,10 +139,6 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    /// grant friend status to DecayChannel to call fixSolitaryFreeAmplitudes()
-    /// and storeBlattWeisskopf()
-    friend DecayChannel;
-
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
     friend Model;
 
@@ -140,10 +147,6 @@ protected:
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel()
     {}
-
-    /// tell DecayingParticle to store a BlattWeisskopf object for L
-    /// \param l orbital angular momentum of breakup
-    void storeBlattWeisskopf(unsigned l);
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
@@ -178,9 +181,6 @@ private:
 
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);
-
-/// \return set of free amplitudes in map of spin projection to decay tree vector
-FreeAmplitudeSet freeAmplitudes(const DecayTreeVectorMap& m_dtv_map);
 
 }
 

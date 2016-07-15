@@ -22,12 +22,14 @@
 #define yap_DecayTree_h
 
 #include "fwd/DataPoint.h"
+#include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/Spin.h"
+#include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
 
@@ -161,11 +163,11 @@ const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint
 inline const double intensity(const DecayTreeVector& dtv, const DataPoint& d)
 { return norm(amplitude(dtv, d)); }
 
-/// \return set of all free amplitudes in a DecayTree
-FreeAmplitudeSet freeAmplitudes(const DecayTree& DT);
+/* /// \return set of all free amplitudes in a DecayTree */
+/* FreeAmplitudeSet free_amplitudes(const DecayTree& DT); */
 
-/// \return set of all free amplitudes in a DecayTreeVector
-FreeAmplitudeSet freeAmplitudes(const DecayTreeVector& DTV);
+/* /// \return set of all free amplitudes in a DecayTreeVector */
+/* FreeAmplitudeSet free_amplitudes(const DecayTreeVector& DTV); */
 
 /// \return vector of trees whose data-dependent amplitude variable statuses are VariableStatus::changed
 /// \param vector of trees to check in

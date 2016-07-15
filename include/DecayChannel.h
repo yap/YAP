@@ -23,24 +23,14 @@
 
 #include "fwd/DecayChannel.h"
 
-#include "fwd/CachedValue.h"
-#include "fwd/DataPartition.h"
-#include "fwd/DataPoint.h"
-#include "fwd/DecayingParticle.h"
 #include "fwd/FinalStateParticle.h"
-#include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
-#include "fwd/Parameter.h"
 #include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/SpinAmplitude.h"
-#include "fwd/StatusManager.h"
 
-#include <complex>
-#include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 namespace yap {
 
@@ -85,21 +75,18 @@ public:
     /// \return raw pointer to model through first Daughter
     const Model* model() const;
 
-    /// \return raw pointer to owning DecayingParticle
-    DecayingParticle* decayingParticle() const
-    { return DecayingParticle_; }
-
-    /// \return set of FreeAmplitude's for this decay channel
-    FreeAmplitudeSet freeAmplitudes() const;
-
     /// @}
 
     /// add a spin amplitude
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
 
-    /// Grant friend status to DecayingParticle to set itself as owner
-    /// and to call fixSolitaryFreeAmplitudes()
-    friend DecayingParticle;
+    /// automatically create all possible spin amplitudes given initial spin J
+    /// \param two_J, (twice) decaying particle's spin
+    void addAllPossibleSpinAmplitudes(unsigned two_J);
+
+    /// grant friend status to DecayingParticle to call
+    /// addParticleCombination and pruneParticleCombinations
+    friend class DecayingParticle;
 
 protected:
 
@@ -109,12 +96,6 @@ protected:
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations();
 
-    /// call fixSolitaryFreeAmplitudes() on each daughter
-    void fixSolitaryFreeAmplitudes();
-
-    /// set raw pointer to owning DecayingParticle
-    void setDecayingParticle(DecayingParticle* dp);
-
 private:
 
     /// daughters of the decay
@@ -122,9 +103,6 @@ private:
 
     /// Vector of SpinAmplitudes
     SpinAmplitudeVector SpinAmplitudes_;
-
-    /// raw pointer owning DecayingParticle
-    DecayingParticle* DecayingParticle_;
 
     /// vector of shared_ptr<ParticleCombination>
     ParticleCombinationVector ParticleCombinations_;

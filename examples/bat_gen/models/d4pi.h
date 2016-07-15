@@ -37,7 +37,7 @@ inline std::unique_ptr<yap::Model> d4pi()
 
     auto M = std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
-    M->setFinalState({piPlus, piMinus, piPlus, piMinus});
+    M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // use common radial size for all resonances
     double radialSize = 1.2; // [GeV^-1]
@@ -51,7 +51,7 @@ inline std::unique_ptr<yap::Model> d4pi()
     
     // rho
     auto rho = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel({piPlus, piMinus});
+    rho->addChannel(piPlus, piMinus);
 
     // omega
     //auto omega = F.resonance(F.pdgCode("omega"), radialSize, std::make_shared<yap::BreitWigner>());
@@ -59,24 +59,28 @@ inline std::unique_ptr<yap::Model> d4pi()
     
     // sigma / f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel({piPlus, piMinus});
+    sigma->addChannel(piPlus, piMinus);
 
     // a_1
     auto a_1 = F.resonance(F.pdgCode("a_1+"), radialSize, std::make_shared<yap::BreitWigner>());
+    a_1->addChannel(rho,   piPlus);
+    a_1->addChannel(sigma, piPlus);
     
-    for (auto& freeAmp : a_1->addChannel({rho, piPlus})->freeAmplitudes()) {
+    for (auto& freeAmp : a_1->freeAmplitudes(rho, piPlus)) {
         LOG(INFO) << to_string(*freeAmp);
-        if (freeAmp->spinAmplitude()->L() == 0)
+        if (freeAmp->spinAmplitude()->L() == 0) {
+            *freeAmp = 1.; // S-wave, 1
             freeAmp->variableStatus() = yap::VariableStatus::fixed; // S-wave, fixed
+        }
         else if (freeAmp->spinAmplitude()->L() == 1)
-            freeAmp->setValue(0.); // P-wave, 0
+            *freeAmp = 0.; // P-wave, 0
         else if (freeAmp->spinAmplitude()->L() == 2)
-            freeAmp->setValue(std::polar(0.241, yap::rad(82.))); // D-wave
+            *freeAmp = std::polar(0.241, yap::rad(82.)); // D-wave
         else
             LOG(ERROR) << "wrong spin";
     }
     
-    a_1->addChannel({sigma, piPlus})->freeAmplitudes().begin()->get()->setValue(std::polar(0.439, yap::rad(193.)));
+    *a_1->freeAmplitudes(sigma, piPlus)[0] = std::polar(0.439, yap::rad(193.));
     
     // f_0(980) (as Flatte)
     auto piZero = F.fsp(111);
@@ -85,22 +89,30 @@ inline std::unique_ptr<yap::Model> d4pi()
     f_0_980_flatte->addChannel(0.20, piZero->mass()->value());
     f_0_980_flatte->addChannel(0.50, Kshort->mass()->value());
     auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, f_0_980_flatte);
-    f_0_980->addChannel({piPlus, piMinus});
+    f_0_980->addChannel(piPlus, piMinus);
        
     // f_2(1270)
     auto f_2 = F.resonance(F.pdgCode("f_2"), radialSize, std::make_shared<yap::BreitWigner>());
-    f_2->addChannel({piPlus, piMinus}); 
+    f_2->addChannel(piPlus, piMinus); 
     
     // pi+ pi- flat
     auto pipiFlat = F.decayingParticle(F.pdgCode("f_0"), radialSize); // just need any spin0 particle
-    pipiFlat->addChannel({piPlus, piMinus});   
+    pipiFlat->addChannel(piPlus, piMinus);   
     
     //
     // D0 channels
     //
+
+    D->addChannel(rho, rho);
+    D->addChannel(a_1, piMinus);
+    D->addChannel(f_0_980, piPlus, piMinus);
+    D->addChannel(f_2, pipiFlat);
+    D->addChannel(sigma, piPlus, piMinus);
     
-    D->addChannel({a_1, piMinus});
-    
+    // R pi pi
+    *D->freeAmplitudes(f_0_980, piPlus, piMinus)[0] = std::polar(0.233, yap::rad(261.));
+    *D->freeAmplitudes(f_2,     pipiFlat       )[0] = std::polar(0.338, yap::rad(317.));
+    *D->freeAmplitudes(sigma,   piPlus, piMinus)[0] = std::polar(0.432, yap::rad(254.));
     
     // rho rho
     // transform into angular momentum basis
@@ -111,23 +123,18 @@ inline std::unique_ptr<yap::Model> d4pi()
     auto A_perp     = std::polar(0.384, yap::rad(163.));
     auto A_0        = std::polar(0.624, yap::rad(357.));
     
-    for (auto& freeAmp : D->addChannel({rho, rho})->freeAmplitudes()) {
+    for (auto& freeAmp : D->freeAmplitudes(rho, rho)) {
         LOG(INFO) << to_string(*freeAmp);
         if (freeAmp->spinAmplitude()->L() == 0)
-            freeAmp->setValue(sqrt(6./5.) * A_parallel - sqrt(3./5.) * A_0); // S-wave
+            *freeAmp = sqrt(6./5.) * A_parallel - sqrt(3./5.) * A_0; // S-wave
         else if (freeAmp->spinAmplitude()->L() == 1)
-            freeAmp->setValue(A_perp); // P-wave
+            *freeAmp = A_perp; // P-wave
         else if (freeAmp->spinAmplitude()->L() == 2)
-            freeAmp->setValue(sqrt(3/5) * A_parallel + sqrt(6/5) * A_0); // D-wave
+            *freeAmp = sqrt(3/5) * A_parallel + sqrt(6/5) * A_0; // D-wave
         else
             LOG(ERROR) << "wrong spin";
     }
     
-    // R pi pi
-    D->addChannel({f_0_980, piPlus, piMinus})->freeAmplitudes().begin()->get()->setValue(std::polar(0.233, yap::rad(261.)));
-    D->addChannel({f_2,     pipiFlat       })->freeAmplitudes().begin()->get()->setValue(std::polar(0.338, yap::rad(317.)));
-    D->addChannel({sigma,   piPlus, piMinus})->freeAmplitudes().begin()->get()->setValue(std::polar(0.432, yap::rad(254.)));
-
     M->addInitialStateParticle(D);
 
     return M;

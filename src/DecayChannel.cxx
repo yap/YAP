@@ -1,11 +1,9 @@
 #include "DecayChannel.h"
 
-#include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
-#include "FreeAmplitude.h"
 #include "logging.h"
 #include "Model.h"
 #include "ParticleCombination.h"
@@ -21,8 +19,7 @@ namespace yap {
 
 //-------------------------
 DecayChannel::DecayChannel(const ParticleVector& daughters) :
-    Daughters_(daughters),
-    DecayingParticle_(nullptr)
+    Daughters_(daughters)
 {
     // check daughter size
     if (Daughters_.empty())
@@ -189,65 +186,25 @@ void DecayChannel::pruneParticleCombinations()
 }
 
 //-------------------------
-void DecayChannel::fixSolitaryFreeAmplitudes()
+void DecayChannel::addAllPossibleSpinAmplitudes(unsigned two_J)
 {
-    for (auto& d : Daughters_)
-        if (std::dynamic_pointer_cast<DecayingParticle>(d))
-            std::static_pointer_cast<DecayingParticle>(d)->fixSolitaryFreeAmplitudes();
-}
+    auto two_j = spins(Daughters_);
 
-//-------------------------
-void DecayChannel::setDecayingParticle(DecayingParticle* dp)
-{
-    if (DecayingParticle_)
-        throw exceptions::Exception("DecayingParticle is already set", "DecayChannel::setDecayingParticle");
-
-    DecayingParticle_ = dp;
-    if (!DecayingParticle_)
-        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::setDecayingParticle");
-
-    // if SpinAmplitude's have already been added by hand, don't add automatically
-    if (SpinAmplitudes_.empty()) {
-
-        auto two_J = DecayingParticle_->quantumNumbers().twoJ();
-        auto two_j = spins(Daughters_);
-
-        // create spin amplitudes
-        // loop over possible S: |j1-j2| <= S <= (j1+j2)
-        for (unsigned two_S = std::abs<int>(two_j[0] - two_j[1]); two_S <= two_j[0] + two_j[1]; two_S += 2) {
-            // loop over possible L: |J-s| <= L <= (J+s)
-            for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L) {
-                // add SpinAmplitude retrieved from cache
-                addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j, L, two_S));
-            }
+    // create spin amplitudes
+    // loop over possible S: |j1-j2| <= S <= (j1+j2)
+    for (unsigned two_S = std::abs<int>(two_j[0] - two_j[1]); two_S <= two_j[0] + two_j[1]; two_S += 2) {
+        // loop over possible L: |J-s| <= L <= (J+s)
+        for (unsigned L = std::abs<int>(two_J - two_S) / 2; L <= (two_J + two_S) / 2; ++L) {
+            // add SpinAmplitude retrieved from cache
+            addSpinAmplitude(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->spinAmplitudeCache()->spinAmplitude(two_J, two_j, L, two_S));
         }
-    } else {
-
-        // check DecayingPartcle_'s quantum numbers against existing SpinAmplitude's
-        if (DecayingParticle_->quantumNumbers().twoJ() != SpinAmplitudes_[0]->initialTwoJ())
-            throw exceptions::Exception("Spins don't match ", "DecayChannel::setDecayingParticle");
-
     }
-
-    // let DecayingParticle know to create a BlattWeisskopf objects for necessary orbital angular momenta
-    for (auto& sa : SpinAmplitudes_)
-        DecayingParticle_->storeBlattWeisskopf(sa->L());
 }
 
 //-------------------------
 const Model* DecayChannel::model() const
 {
     return Daughters_[0]->model();
-}
-
-//-------------------------
-FreeAmplitudeSet DecayChannel::freeAmplitudes() const
-{
-    if (!DecayingParticle_)
-        throw exceptions::Exception("DecayingParticle is nullptr", "DecayChannel::freeAmplitudes");
-
-    // get set from decaying particle
-    return find(DecayingParticle_->freeAmplitudes(), this);
 }
 
 //-------------------------
@@ -267,15 +224,8 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
         if (Daughters_[i]->quantumNumbers().twoJ() != sa->finalTwoJ()[i])
             throw exceptions::Exception("Spins don't match daughter's", "DecayChannel::addSpinAmplitude");
 
-    // check against DecayingParticle_ if set
-    if (DecayingParticle_) {
-        if (DecayingParticle_->quantumNumbers().twoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match DecayingParticle", "DecayChannel::addSpinAmplitude");
-    } else {
-        // else check against previously added SpinAmplitude's initial quantum numbers
-        if (!SpinAmplitudes_.empty() and SpinAmplitudes_[0]->initialTwoJ() != sa->initialTwoJ())
-            throw exceptions::Exception("Spins don't match previously added", "DecayChannel::addSpinAmplitude");
-    }
+    if (!SpinAmplitudes_.empty() and SpinAmplitudes_[0]->initialTwoJ() != sa->initialTwoJ())
+        throw exceptions::Exception("Spins don't match previously added", "DecayChannel::addSpinAmplitude");
 
     // add to SpinAmplitudes_
     SpinAmplitudes_.push_back(sa);
@@ -297,12 +247,6 @@ bool DecayChannel::consistent() const
     }
     // check daughters
     std::for_each(Daughters_.begin(), Daughters_.end(), [&](std::shared_ptr<Particle> d) {if (d) C &= d->consistent();});
-
-    // check DecayingParticle_ is set
-    if (!DecayingParticle_) {
-        FLOG(ERROR) << "DecayingParticle is unset.";
-        C &= false;
-    }
 
     // loop over SpinAmplitude's
     for (const auto& sa : SpinAmplitudes_) {
@@ -327,22 +271,7 @@ const int charge(const DecayChannel& dc)
 
 std::string to_string(const DecayChannel& dc)
 {
-    std::string s = "(";
-    if (dc.decayingParticle())
-        s += dc.decayingParticle()->name() + " -> ";
-    if (dc.daughters().empty())
-        s += "[nothing]";
-    else {
-        for (auto& d : dc.daughters())
-            s += d->name() + " ";
-        s.erase(s.size() - 1, 1);
-    }
-    s += ")";
-    // auto& saV = dc.spinAmplitudes();
-    // if (saV.empty())
-    //     return s;
-    // s += " " + to_string(saV);
-    return s;
+    return dc.daughters().empty() ? "[nothing]" : to_string(dc.daughters());
 }
 
 //-------------------------

@@ -67,10 +67,12 @@ int main( int argc, char** argv)
     // rho
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
     rho->addChannel(piPlus, piMinus);
+    D->addChannel(rho, piPlus);
 
     // f_2(1270)
     auto f_2 = factory.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
     f_2->addChannel(piPlus, piMinus);
+    D->addChannel(f_2, piPlus);
 
     // f_0(980)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>();
@@ -78,26 +80,30 @@ int main( int argc, char** argv)
     f_0_980_flatte->addChannel(0.406 * 2, factory.particleTableEntry("K+").Mass);
     auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
+    D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
     auto f_0_1370 = yap::Resonance::create(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>(0.265));
     f_0_1370->addChannel(piPlus, piMinus);
+    D->addChannel(f_0_1370, piPlus);
 
     // f_0(1500)
     auto f_0_1500 = factory.resonance(factory.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
     f_0_1500->addChannel(piPlus, piMinus);
+    D->addChannel(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
     auto sigma = factory.resonance(factory.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addChannel(piPlus, piMinus);
+    D->addChannel(sigma, piPlus);
 
     // Add channels to D
-    D->addChannel(rho,      piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1., 0.));
-    D->addChannel(f_0_980,  piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.4, yap::rad(12.)));
-    D->addChannel(f_2,      piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(2.1, yap::rad(-123.)));
-    D->addChannel(f_0_1370, piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.3, yap::rad(-21.)));
-    D->addChannel(f_0_1500, piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(1.1, yap::rad(-44.)));
-    D->addChannel(sigma,    piPlus)->freeAmplitudes().begin()->get()->setValue(std::polar(3.7, yap::rad(-3.)));
+    *D->freeAmplitudes(rho,      piPlus)[0] = std::polar(1., 0.);
+    *D->freeAmplitudes(f_0_980,  piPlus)[0] = std::polar(1.4, yap::rad(12.));
+    *D->freeAmplitudes(f_2,      piPlus)[0] = std::polar(2.1, yap::rad(-123.));
+    *D->freeAmplitudes(f_0_1370, piPlus)[0] = std::polar(1.3, yap::rad(-21.));
+    *D->freeAmplitudes(f_0_1500, piPlus)[0] = std::polar(1.1, yap::rad(-44.));
+    *D->freeAmplitudes(sigma,    piPlus)[0] = std::polar(3.7, yap::rad(-3.));
     // D->addChannel(piPlus, piMinus, piPlus);
 
     M.addInitialStateParticle(D);
