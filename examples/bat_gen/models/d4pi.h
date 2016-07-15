@@ -7,6 +7,7 @@
 #ifndef __BAT__D4PI__H
 #define __BAT__D4PI__H
 
+#include <AmplitudeBasis.h>
 #include <BreitWigner.h>
 #include <Constants.h>
 #include <DecayChannel.h>
@@ -104,23 +105,14 @@ inline std::unique_ptr<yap::Model> d4pi()
     
     // rho rho
     // transform into angular momentum basis
-    // A_S = sqrt(6/5) * A_parallel - sqrt(3/5) * A_0
-    // A_P = A_perp
-    // A_D = sqrt(3/5) * A_parallel + sqrt(6/5) * A_0
-    auto A_parallel = std::polar(0.157, yap::rad(120.));
-    auto A_perp     = std::polar(0.384, yap::rad(163.));
-    auto A_0        = std::polar(0.624, yap::rad(357.));
-    
+    auto c = yap::basis::canonical<double>(yap::basis::transversity<double>(
+            std::polar(0.624, yap::rad(357.)),    // A_longitudinal
+            std::polar(0.157, yap::rad(120.)),    // A_parallel
+            std::polar(0.384, yap::rad(163.)) )); // A_perpendicular
+
     for (auto& freeAmp : D->addChannel({rho, rho})->freeAmplitudes()) {
         LOG(INFO) << to_string(*freeAmp);
-        if (freeAmp->spinAmplitude()->L() == 0)
-            freeAmp->setValue(sqrt(6./5.) * A_parallel - sqrt(3./5.) * A_0); // S-wave
-        else if (freeAmp->spinAmplitude()->L() == 1)
-            freeAmp->setValue(A_perp); // P-wave
-        else if (freeAmp->spinAmplitude()->L() == 2)
-            freeAmp->setValue(sqrt(3/5) * A_parallel + sqrt(6/5) * A_0); // D-wave
-        else
-            LOG(ERROR) << "wrong spin";
+        freeAmp->setValue(c[freeAmp->spinAmplitude()->L()]);
     }
     
     // R pi pi
