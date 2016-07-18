@@ -15,6 +15,11 @@ else()
 	message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+CHECK_CXX_COMPILER_FLAG("-fdiagnostics-color=always" COMPILER_SUPPORTS_DIAGNOSTIC_COLORS)
+if (COMPILER_SUPPORTS_DIAGNOSTIC_COLORS)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+endif()
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-missing-braces -Werror=overloaded-virtual -pthread" )
 
 set(EXT_PROJECTS_DIR  ${YAP_SOURCE_DIR}/external)
