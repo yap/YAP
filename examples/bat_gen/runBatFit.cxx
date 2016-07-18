@@ -114,6 +114,8 @@ int main()
 
     // load fit data
     m.loadData(m.fitData(), *t_mcmc, 10000, 1);
+    // partition fit data
+    m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 8);
 
     // get FSP mass ranges
     auto m2r = yap::squared(mass_range(m.axes(), m.isp(), m.model()->finalStateParticles()));
@@ -125,6 +127,8 @@ int main()
                               m.isp()->mass()->value(), m.axes(), m2r, g,
                               std::numeric_limits<unsigned>::max()));
     LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
+    // partition integration data
+    m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 8);
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);

@@ -13,14 +13,16 @@
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPartition& D)
+void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPartitionVector& D)
 { yap::ImportanceSampler::calculate(M, D); }
 
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
+      FitPartitions_(1, &FitData_),
       IntegralData_(model()->createDataSet()),
+      IntegralPartitions_(1, &IntegralData_),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model())
 {
@@ -142,8 +144,8 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
 double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
     yap::set_values(Parameters_, p);
-    double L = sum_of_log_intensity(*model(), FitData_);
-    Integrator_(Integral_, IntegralData_);
+    double L = sum_of_log_intensity(*model(), FitPartitions_);
+    Integrator_(Integral_, IntegralPartitions_);
     L -= FitData_.size() * log(Integral_.integral().value);
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();

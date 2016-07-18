@@ -41,13 +41,21 @@ public:
     yap::DataSet& fitData()
     { return FitData_; }
 
+    /// \return FitPartitions_
+    yap::DataPartitionVector& fitPartitions()
+    { return FitPartitions_; }
+
     /// \return NormalizationData_
     yap::DataSet& integralData()
     { return IntegralData_; }
 
+    /// \return NormalizationData_
+    yap::DataPartitionVector& integralPartitions()
+    { return IntegralPartitions_; }
+
     /// \typedef integrator_type
     /// convienence typedef
-    using integrator_type = std::function<void(yap::ModelIntegral&, yap::DataPartition&)>;
+    using integrator_type = std::function<void(yap::ModelIntegral&, yap::DataPartitionVector&)>;
 
     integrator_type& integrator()
     { return Integrator_; }
@@ -57,8 +65,14 @@ private:
     /// DataSet to fit the model to
     yap::DataSet FitData_;
 
+    /// Partitioning of FitData_
+    yap::DataPartitionVector FitPartitions_;
+
     /// DataSet to calculate model integral with
     yap::DataSet IntegralData_;
+
+    /// Partitioning of IntegralData_
+    yap::DataPartitionVector IntegralPartitions_;
 
     integrator_type Integrator_;
 
