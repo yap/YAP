@@ -144,7 +144,7 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
     yap::set_values(Parameters_, p);
     double L = sum_of_log_intensity(*model(), FitData_);
     Integrator_(Integral_, IntegralData_);
-    L -= FitData_.size() * Integral_.integral().value;
+    L -= FitData_.size() * log(Integral_.integral().value);
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;
