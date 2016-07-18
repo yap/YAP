@@ -3,7 +3,6 @@
 #include "DataPoint.h"
 #include "DataSet.h"
 #include "Exceptions.h"
-#include "make_unique.h"
 
 namespace yap {
 
@@ -57,7 +56,7 @@ DataPartitionVector DataPartitionWeave::create(DataSet& dataSet, unsigned n)
     P.reserve(n);
 
     for (unsigned i = 0; i < n; ++i)
-        P.push_back(std::make_unique<DataPartitionWeave>(dataSet, begin(dataSet) + i, end(dataSet), n));
+        P.push_back(new DataPartitionWeave(dataSet, begin(dataSet) + i, end(dataSet), n));
 
     return P;
 }
@@ -80,10 +79,10 @@ DataPartitionVector DataPartitionBlock::create(DataSet& dataSet, unsigned n)
 
     for (unsigned i = 0; i < n - 1; ++i) {
         auto it_e = it_b + p_size;
-        P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, it_e)));
+        P.push_back(new DataPartitionBlock(dataSet, it_b, it_e));
         it_b = it_e;
     }
-    P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, end(dataSet))));
+    P.push_back(new DataPartitionBlock(dataSet, it_b, end(dataSet)));
 
     return P;
 }
@@ -103,7 +102,7 @@ DataPartitionVector DataPartitionBlock::createBySize(DataSet& dataSet, size_t s)
     auto it_b = begin(dataSet);
     while (it_b != end(dataSet)) {
         auto it_e = it_b + s;
-        P.push_back(std::unique_ptr<DataPartitionBlock>(new DataPartitionBlock(dataSet, it_b, it_e)));
+        P.push_back(new DataPartitionBlock(dataSet, it_b, it_e));
         it_b = it_e;
     }
 

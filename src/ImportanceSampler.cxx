@@ -162,9 +162,11 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartitionVector& DPV)
 
     // calculate data fractions:
     // also waits for threads to finish calculating
-    double N = std::accumulate(n.begin(), n.end(), 0., [](double a, std::future<unsigned>& F) {return a + F.get();});
-    std::vector<double> f(n.size());
-    std::transform(n.begin(), n.end(), f.begin(), [&](std::future<unsigned>& nn) {return nn.get() / N;});
+    std::vector<double> f;
+    f.reserve(n.size());
+    std::transform(n.begin(), n.end(), std::back_inserter(f), std::mem_fn(&std::future<unsigned>::get));
+    double N = std::accumulate(f.begin(), f.end(), 0.);
+    std::transform(f.begin(), f.end(), f.begin(), std::bind(std::divides<double>(), std::placeholders::_1, N));
 
     // reset current state for newly calculated results
     for (auto& p_i : J) {

@@ -32,8 +32,8 @@ class DataPartitionBlock;
 class DataPartitionWeave;
 
 /// \typedef DataPartitionVector
-/// \brief Vector of unique_ptr's to DataPartition
-using DataPartitionVector = std::vector<std::unique_ptr<DataPartition> >;
+/// \brief Vector of raw pointers to DataPartition's
+using DataPartitionVector = std::vector<DataPartition*>;
 
 }
 
