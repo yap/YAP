@@ -17,7 +17,7 @@ void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPa
 { yap::ImportanceSampler::calculate(M, D); }
 
 // -----------------------
-bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
+bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
       FitPartitions_(1, &FitData_),
@@ -26,14 +26,14 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model())
 {
-    unsigned n_fsp = model()->finalStateParticles().size();
-    unsigned n_dof = 3 * n_fsp - 7;
+    // create mass axes
+    axes() = model()->massAxes(pcs);
+}
 
-    //
-    // find mass axes
-    //
+std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars)
+{
     std::vector<std::vector<unsigned> > pcs;
-    pcs.reserve(n_dof);
+    pcs.reserve(t_pars.GetEntries());
 
     bool parameter;
     char c_parname[10];
@@ -47,32 +47,21 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, TTree& t_pars)
         // parameter names should be m2_ij
         if (parname.find("m2_") != 0)
             throw yap::exceptions::Exception("parameter name \"" + parname + "\" does not match \"m2_ij\"",
-                                             "bat_fit::bat_fit");
+                                             "find_mass_axes");
         if (parname.size() != 5)
             throw yap::exceptions::Exception("parameter name \"" + parname + "\" is not right length "
                                              + "(" + std::to_string(parname.size()) + " != 5)",
-                                             "bat_fit::bat_fit");
+                                             "find_mass_axes");
         // read indices:
         std::vector<unsigned> indices;
         indices.reserve(2);
-        for (size_t i = parname.rfind("_") + 1; i < parname.size(); ++i) {
-            indices.push_back(std::stoi(parname.substr(i, 1)));
-            if (indices.back() >= n_fsp)
-                throw yap::exceptions::Exception("index out of range (" + std::to_string(indices.back()) + " >= "
-                                                 + std::to_string(n_fsp) + ")",
-                                                 "bat_fit::bat_fit");
-        }
+        std::transform(parname.begin() + parname.rfind("_") + 1, parname.end(), std::back_inserter(indices), [](char c){return std::atoi(&c);});
+            // for (size_t i = parname.rfind("_") + 1; i < parname.size(); ++i)
+            //     indices.push_back(std::stoi(parname.substr(i, 1)));
         pcs.push_back(indices);
-
     }
 
-    if (pcs.size() != n_dof)
-        throw yap::exceptions::Exception("insufficient axes found "
-                                         "(" + std::to_string(pcs.size()) + " < " + std::to_string(n_dof) + ")",
-                                         "bat_fit::bat_fit");
-
-    // create mass axes
-    axes() = model()->massAxes(pcs);
+    return pcs;
 }
 
 //-------------------------
@@ -85,17 +74,17 @@ void set_address(const yap::MassAxes::value_type& a,
 }
 
 //-------------------------
-size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
+size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A, double initial_mass, TTree& t_mcmc, int N, unsigned lag)
 {
-    if (axes().empty())
-        throw yap::exceptions::Exception("mass axes empty", "bat_fit::loadData");
+    if (A.empty())
+        throw yap::exceptions::Exception("mass axes empty", "load_data");
 
     // set branch addresses
     std::vector<double> m2;
-    m2.reserve(axes().size());
-    std::for_each(axes().begin(), axes().end(), std::bind(set_address, std::placeholders::_1, std::ref(m2), std::ref(t_mcmc)));
-    if (m2.size() != axes().size())
-        throw yap::exceptions::Exception("not all mass axes loaded from TTree", "bat_fit::loadData");
+    m2.reserve(A.size());
+    std::for_each(A.begin(), A.end(), std::bind(set_address, std::placeholders::_1, std::ref(m2), std::ref(t_mcmc)));
+    if (m2.size() != A.size())
+        throw yap::exceptions::Exception("not all mass axes loaded from TTree", "load_data");
 
     //
     // load data
@@ -124,7 +113,7 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
 
         ++n_attempted;
 
-        auto P = model()->calculateFourMomenta(axes(), m2, isp()->mass()->value());
+        auto P = M.calculateFourMomenta(A, m2, initial_mass);
         if (P.empty())
             std::cout << "point is out of phase space!";
         data.push_back(P);
@@ -145,8 +134,7 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
     yap::set_values(Parameters_, p);
     Integrator_(Integral_, IntegralPartitions_);
-    double logI = log(Integral_.integral().value);
-    double L = sum_of_log_intensity(*model(), FitPartitions_, logI);
+    double L = sum_of_log_intensity(*model(), FitPartitions_, log(Integral_.integral().value));
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;

@@ -99,7 +99,7 @@ int main()
     M->addInitialStateParticle(D);
 
     // create bat_fit object
-    bat_fit m("D3PI_fit", std::move(M), *t_pars);
+    bat_fit m("D3PI_fit", std::move(M), find_mass_axes(*t_pars));
 
     // set parameters of fit
     auto amp_range = std::complex<double>(5., 5.);
@@ -113,7 +113,7 @@ int main()
     m.GetParameters().SetPriorConstantAll();
 
     // load fit data
-    m.loadData(m.fitData(), *t_mcmc, 10000, 1);
+    load_data(m.fitData(), *m.model(), m.axes(), m.isp()->mass()->value(), *t_mcmc, 10000, 1);
     // partition fit data
     m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 8);
 
