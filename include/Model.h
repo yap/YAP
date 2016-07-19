@@ -304,11 +304,13 @@ const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& 
 /// \return The sum of the logs of squared amplitudes evaluated over the data partition
 /// \param M Model to evaluate
 /// \param D DataPartition to evalue over
-const double sum_of_log_intensity(const Model& M, DataPartition& D);
+/// \param ped Pedestal to substract from each term in the sum
+const double sum_of_log_intensity(const Model& M, DataPartition& D, double ped = 0);
 
 /// \return The sum of the logs of squared amplitudes evaluated over the data partitions
 /// \param DP DataPartitionVector of partitions to use
-const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP);
+/// \param ped Pedestal to substract from each term in the sum
+const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, double ped = 0);
 
 }
 

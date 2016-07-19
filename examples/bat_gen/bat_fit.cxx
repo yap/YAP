@@ -144,9 +144,9 @@ size_t bat_fit::loadData(yap::DataSet& data, TTree& t_mcmc, int N, unsigned lag)
 double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
     yap::set_values(Parameters_, p);
-    double L = sum_of_log_intensity(*model(), FitPartitions_);
     Integrator_(Integral_, IntegralPartitions_);
-    L -= FitData_.size() * log(Integral_.integral().value);
+    double logI = log(Integral_.integral().value);
+    double L = sum_of_log_intensity(*model(), FitPartitions_, logI);
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;

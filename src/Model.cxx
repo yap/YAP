@@ -76,26 +76,30 @@ const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& 
 //-------------------------
 // hidden helper function,
 // resolves C++ problem related to naming of functions and call to std::async below
-const double sum_of_logs_of_intensities(const Model& M, DataPartition& D)
+    const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double ped)
 {
     // calculate components
     M.calculate(D);
 
     // sum log of intensities over data points in partition
-    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
+    // if pedestal is zero
+    if (ped == 0)
+        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
+    // else
+    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
 }
 
 //-------------------------
-const double sum_of_log_intensity(const Model& M, DataPartition& D)
+const double sum_of_log_intensity(const Model& M, DataPartition& D, double ped)
 {
     if (M.initialStateParticles().empty())
         throw exceptions::Exception("Model has no initialStateParticles", "sum_of_log_intensity");
 
-    return sum_of_logs_of_intensities(M, D);
+    return sum_of_logs_of_intensities(M, D, ped);
 }
 
 //-------------------------
-const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP)
+const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, double ped)
 {
     // if DataPartitionVector is empty
     if (DP.empty())
@@ -107,7 +111,7 @@ const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP)
 
     // if threading is unnecessary
     if (DP.size() == 1)
-        return sum_of_log_intensity(M, *DP[0]);
+        return sum_of_log_intensity(M, *DP[0], ped);
 
     if (M.initialStateParticles().empty())
         throw exceptions::Exception("Model has no InitialStateParticles", "sum_of_log_intensity");
@@ -118,11 +122,11 @@ const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP)
     // create thread for calculation on each partition
     for (auto& P : DP)
         // since std::async copies its arguments, even if they are supposed to be references, we need to use std::ref and std::cref
-        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_intensities, std::cref(M), std::ref(*P)));
+        partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_intensities, std::cref(M), std::ref(*P), ped));
 
     // wait for each partition to finish calculating
     return std::accumulate(partial_sums.begin(), partial_sums.end(), 0.,
-    [](double & l, std::future<double>& s) {return l += s.get();});
+                           [](double & l, std::future<double>& s) {return l += s.get();});
 }
 
 //-------------------------
