@@ -344,17 +344,28 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
 }
 
 //-------------------------
-FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
+DecayTreeVector DecayingParticle::decayTrees(const ParticleVector& dV)
 {
     if (std::any_of(dV.begin(), dV.end(), std::logical_not<ParticleVector::value_type>()))
-        throw exceptions::Exception("nullptr argument provided", "free_amplitudes");
+        throw exceptions::Exception("nullptr argument provided", "decayTrees");
 
-    FreeAmplitudeVector V;
+    DecayTreeVector V;
     for (const auto& m_dtv : DecayTrees_)
         for (const auto& dt : m_dtv.second)
             if (orderless_equal(dt->freeAmplitude()->decayChannel()->daughters(), dV)
-                and find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
-                V.push_back(dt->freeAmplitude());
+                and find(V.begin(), V.end(), dt) == V.end())
+                V.push_back(dt);
+    return V;
+}
+
+//-------------------------
+FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
+{
+    auto dtv = decayTrees(dV);
+    FreeAmplitudeVector V;
+    for (const auto& dt : dtv)
+        if (find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
+            V.push_back(dt->freeAmplitude());
     return V;
 }
 
