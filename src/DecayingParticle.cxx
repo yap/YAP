@@ -89,9 +89,6 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
         if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
             BlattWeisskopfs_.emplace(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this));
 
-    // now that Model is set, register with Model (repeated registration has no effect)
-    registerWithModel();
-
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations())
         addParticleCombination(pc);
@@ -204,6 +201,16 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector&
 const Model* DecayingParticle::model() const
 {
     return Channels_.empty() ? nullptr : Channels_[0]->model();
+}
+
+//-------------------------
+void DecayingParticle::registerWithModel()
+{
+    for (auto& kv : BlattWeisskopfs_)
+        kv.second->addToModel();
+
+    for (auto& c : Channels_)
+        c->registerWithModel();
 }
 
 //-------------------------

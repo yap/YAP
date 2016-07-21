@@ -11,6 +11,7 @@
 #include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
+#include "UnitSpinAmplitude.h"
 
 #include <algorithm>
 #include <iterator>
@@ -174,6 +175,20 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     // add to SpinAmplitude's
     for (auto& sa : SpinAmplitudes_)
         sa->addParticleCombination(pc);
+}
+
+//-------------------------
+void DecayChannel::registerWithModel()
+{
+    for (auto& d : Daughters_) {
+        auto dp = std::dynamic_pointer_cast<DecayingParticle>(d);
+        if (dp)
+            dp->registerWithModel();
+    }
+
+    for (auto& sa : SpinAmplitudes_)
+        //if (not std::dynamic_pointer_cast<UnitSpinAmplitude>(sa))
+            sa->addToModel();
 }
 
 //-------------------------

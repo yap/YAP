@@ -52,14 +52,9 @@ public:
         setModel(m);
     }
 
-    /// Set the Model and add this DataAccessor to the Model's DataAccessorSet
+    /// Set the Model
     virtual void setModel(Model& m)
-    {
-        Model_ = &m;
-
-        // register with Model
-        addToModel();
-    }
+    { Model_ = &m; }
 
     /// calculate CachedValues, store to DataPoint, and update StatusManager.
     /// Must be overriden in derived classes.
