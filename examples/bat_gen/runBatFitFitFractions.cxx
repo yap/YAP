@@ -17,6 +17,7 @@
 #include <ZemachFormalism.h>
 
 #include <BAT/BCAux.h>
+#include <BAT/BCGaussianPrior.h>
 #include <BAT/BCLog.h>
 #include <BAT/BCParameterSet.h>
 
@@ -102,13 +103,29 @@ int main()
     m.addFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  1.0e-2, 0.8e-2);
     m.addFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, 1.4e-2, 2.5e-2);
     
-    // set parameters of fit
+    // set free amplitude parameters of fit
     m.addFreeAmplitude("rho",      m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
     m.addFreeAmplitude("f_2",      m.isp()->freeAmplitudes(f_2,      piPlus)[0], 2.1, quad(0.2, 0.1), yap::rad(-123.), yap::rad(quad(6, 3)));
     m.addFreeAmplitude("f_0_980",  m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], 1.4, quad(0.2, 0.2), yap::rad(12.),   yap::rad(quad(12, 10)));
     m.addFreeAmplitude("f_0_1370", m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], 1.3/*, quad(0.4, 0.2)*/, yap::rad(-21.)/*,  yap::rad(quad(15, 14))*/);
     m.addFreeAmplitude("f_0_1500", m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], 1.1/*, quad(0.3, 0.2)*/, yap::rad(-44.)/*,  yap::rad(quad(13, 16))*/);
     m.addFreeAmplitude("sigma",    m.isp()->freeAmplitudes(sigma,    piPlus)[0], 3.7, quad(0.3, 0.2), yap::rad(-3.),   yap::rad(quad(4, 2)));
+
+    // add shape parameters
+    m.addParameter("f_0_980_mass", f_0_980->mass(), 0.953 - 3 * 0.02, 0.953 + 3 * 0.02);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.953, 0.02));
+    m.addParameter("f_0_980_coupling", f_0_980_flatte->channels()[0].Coupling, 0.329 - 3 * 0.096, 0.329 + 3 * 0.096);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.329, 0.096));
+    m.addParameter("f_0_1370_mass", f_0_1370->mass(), 1.259 - 3 * 0.055, 1.259 + 3 * 0.055);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(1.259, 0.055));
+    m.addParameter("f_0_1370_width", std::dynamic_pointer_cast<yap::BreitWigner>(f_0_1370->massShape())->width(),
+                   0.298 - 3 * 0.021, 0.298 + 3 * 0.021);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.298, 0.021));
+    m.addParameter("sigma_mass", std::dynamic_pointer_cast<yap::PoleMass>(sigma->massShape())->mass(),
+                   std::complex<double>(0.466, -0.223) - 3. * std::complex<double>(0.018, 0.028),
+                   std::complex<double>(0.466, -0.223) + 3. * std::complex<double>(0.018, 0.028));
+    m.GetParameters()[m.GetParameters().Size() - 2].SetPrior(new BCGaussianPrior(0.466, 0.018));
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(-0.223, 0.028));
 
     // get FSP mass ranges
     auto m2r = yap::squared(mass_range(m.axes(), m.isp(), m.model()->finalStateParticles()));

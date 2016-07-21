@@ -60,6 +60,8 @@ double fit_fitFraction::LogLikelihood(const std::vector<double>& p)
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
         *FreeAmplitudes_[i] = p[FreeAmplitudes_[i]->spinAmplitude()->L()] * std::polar(p[3 + i * 2 + 0], p[3 + i * 2 + 1]);
     
+    yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + 3 + FreeAmplitudes_.size() * 2, p.end());
+
     Integrator_(Integral_, IntegralPartitions_);
 
     auto ff = fit_fractions(Integral_.integral(DecayTrees_));
