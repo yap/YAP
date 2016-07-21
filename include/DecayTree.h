@@ -108,7 +108,7 @@ protected:
     { DaughtersTwoM_.at(i) = two_m; }
 
     /// Add a RecalculableDataAccessor
-    void addDataAccessor(const RecalculableDataAccessor& rda);
+    void addRecalculableDataAccessor(const RecalculableDataAccessor& rda);
 
 private:
 
