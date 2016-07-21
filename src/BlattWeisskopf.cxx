@@ -48,9 +48,6 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
                                     "BlattWeisskopf::BlattWeisskopf");
 
     if (L_ > 0) {
-        // register with model
-        addToModel();
-
         addParameter(DecayingParticle_->mass());
         addParameter(DecayingParticle_->radialSize());
 
