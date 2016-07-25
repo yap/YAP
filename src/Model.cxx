@@ -1,5 +1,6 @@
 #include "Model.h"
 
+#include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "DataAccessor.h"
@@ -657,6 +658,8 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 
     for (const auto& d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+        if (dynamic_cast<const BlattWeisskopf*>(d))
+            std::cout << dynamic_cast<const BlattWeisskopf*>(d)->decayingParticle()->name() << "\t";
 
         if (printParticleCombinations) {
             std::cout << " \t";

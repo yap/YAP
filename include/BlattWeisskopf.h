@@ -76,6 +76,9 @@ public:
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;
 
+    const DecayingParticle* decayingParticle() const
+    { return DecayingParticle_; }
+
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 
