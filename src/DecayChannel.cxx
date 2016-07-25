@@ -187,7 +187,7 @@ void DecayChannel::registerWithModel()
     }
 
     for (auto& sa : SpinAmplitudes_)
-        //if (not std::dynamic_pointer_cast<UnitSpinAmplitude>(sa))
+        if (sa->size() > 0)
             sa->addToModel();
 }
 

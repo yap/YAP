@@ -207,7 +207,7 @@ const Model* DecayingParticle::model() const
 void DecayingParticle::registerWithModel()
 {
     for (auto& kv : BlattWeisskopfs_) {
-        if (kv.second->L() > 0)
+        if (kv.second->size() > 0)
             kv.second->addToModel();
     }
 
