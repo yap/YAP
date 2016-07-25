@@ -130,6 +130,9 @@ void DataAccessor::addToModel()
 //-------------------------
 void DataAccessor::addCachedValue(std::shared_ptr<CachedValue> c)
 {
+    if (not c)
+        return;
+
     // add CachedValue
     if (CachedValues_.insert(c).second) {
         // if insertion was successful
