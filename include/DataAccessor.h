@@ -94,11 +94,6 @@ protected:
     /// add CachedValue
     void addCachedValue(std::shared_ptr<CachedValue> c);
 
-    /// Increase storage
-    /// \param n number of elements to increase by
-    void increaseSize(unsigned n)
-    { Size_ += n; }
-
     /// add ParticleCombination to SymmetrizationIndices_
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
 
@@ -110,6 +105,11 @@ protected:
     { Index_ = i; }
 
 private:
+
+    /// Increase storage
+    /// \param n number of elements to increase by
+    void increaseSize(unsigned n)
+    { Size_ += n; }
 
     /// Object to check equality of symmetrizations for determining storage indices
     ParticleCombinationEqualTo Equal_;
