@@ -80,7 +80,7 @@ protected:
 
         // for 2 daughters, loop over all possibilities
         for (const auto& two_m : projections(two_j))
-            for (int two_M = -two_J; two_M <= (int)two_J; two_M += 2) {
+            for (auto two_M : projections(two_J)) {
                 try {
                     if (ClebschGordan::nonzeroCoupling(two_j[0], two_m[0], two_j[1], two_m[1], l, two_s, two_J))
                         addAmplitude(two_M, two_m, true);

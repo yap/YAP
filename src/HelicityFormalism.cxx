@@ -40,7 +40,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, const SpinVector& t
             Coefficients_[two_m] = c * CG;
 
             // add amplitudes for all initial spin projections
-            for (int two_M = -initialTwoJ(); two_M <= (int)initialTwoJ(); two_M += 2)
+            for (auto two_M : projections(initialTwoJ()))
                 addAmplitude(two_M, two_m);
 
         } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
