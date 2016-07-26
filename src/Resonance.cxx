@@ -55,7 +55,7 @@ bool Resonance::consistent() const
 void Resonance::registerWithModel()
 {
     DecayingParticle::registerWithModel();
-    MassShape_->addToModel();
+    MassShape_->registerWithModel();
 }
 
 //-------------------------

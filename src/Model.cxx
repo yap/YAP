@@ -44,7 +44,7 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     SAC->setModel(*this);
     SpinAmplitudeCache_ = std::move(SAC);
 
-    FourMomenta_->addToModel();
+    FourMomenta_->registerWithModel();
 }
 
 //-------------------------
@@ -323,14 +323,14 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // StaticDataAccessors
         if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)) {
             HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
-            HelicityAngles_->addToModel();
+            HelicityAngles_->registerWithModel();
         }
 
         // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
         if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
                 and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta()) {
             MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
-            MeasuredBreakupMomenta_->addToModel();
+            MeasuredBreakupMomenta_->registerWithModel();
         }
 
         // if StaticDataAccessor, add to StaticDataAccessors_

@@ -120,10 +120,10 @@ void DataAccessor::pruneSymmetrizationIndices()
 }
 
 //-------------------------
-void DataAccessor::addToModel()
+void DataAccessor::registerWithModel()
 {
     if (!model())
-        throw exceptions::Exception("Model unset", "DataAccessor::addToModel");
+        throw exceptions::Exception("Model unset", "DataAccessor::registerWithModel");
     const_cast<Model*>(static_cast<const DataAccessor*>(this)->model())->addDataAccessor(this);
 }
 

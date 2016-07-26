@@ -208,7 +208,7 @@ void DecayingParticle::registerWithModel()
 {
     for (auto& kv : BlattWeisskopfs_) {
         if (kv.second->size() > 0)
-            kv.second->addToModel();
+            kv.second->registerWithModel();
     }
 
     for (auto& c : Channels_)

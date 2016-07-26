@@ -89,7 +89,7 @@ public:
 protected:
 
     /// register with Model
-    void virtual addToModel();
+    void virtual registerWithModel();
 
     /// add CachedValue
     void addCachedValue(std::shared_ptr<CachedValue> c);
