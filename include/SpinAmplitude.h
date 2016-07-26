@@ -123,7 +123,8 @@ protected:
     /// projection to states with final projections.
     /// \param two_M twice the spin projection of the initial state
     /// \param two_m SpinProjectionVector of daughters
-    virtual void addAmplitude(int two_M, const SpinProjectionVector& two_m);
+    /// \param addNULLCachedValue set true for use from UnitSpinAmplitude
+    virtual void addAmplitude(int two_M, const SpinProjectionVector& two_m, bool addNULLCachedValue = false);
 
     /// check equivalence: only check spins and angular momenta
     virtual bool equalTo(const SpinAmplitude& other) const;

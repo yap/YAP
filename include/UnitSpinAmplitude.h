@@ -69,7 +69,7 @@ protected:
     UnitSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s)
         : SpinAmplitude(two_J, two_j, l, two_s, equal_always)
     {
-        addAmplitude(0, SpinProjectionVector(two_j.size(), 0));
+        addAmplitude(0, SpinProjectionVector(two_j.size(), 0), true);
     }
 
 };
