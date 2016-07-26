@@ -97,7 +97,7 @@ public:
     /// and call calc(M, \vec{m}, d, pc) when necessary
     /// \param d DataPoint to calculate into
     /// \param sm StatusManager to update
-    void calculate(DataPoint& d, StatusManager& sm) const override;
+    void calculate(DataPoint& d, StatusManager& sm) const override final;
 
     /// \return precalculated complex amplitude
     /// \param d DataPoint to retrieve value from
@@ -123,11 +123,11 @@ protected:
     /// projection to states with final projections.
     /// \param two_M twice the spin projection of the initial state
     /// \param two_m SpinProjectionVector of daughters
-    /// \param addNULLCachedValue set true for use from UnitSpinAmplitude
-    virtual void addAmplitude(int two_M, const SpinProjectionVector& two_m, bool addNULLCachedValue = false);
+    /// \param store_null store a NULL CachedValue shared_pointer (set true for use from UnitSpinAmplitude)
+    void addAmplitude(int two_M, const SpinProjectionVector& two_m, bool store_null = false);
 
     /// check equivalence: only check spins and angular momenta
-    virtual bool equalTo(const SpinAmplitude& other) const;
+    bool equalTo(const SpinAmplitude& other) const;
 
     /// check equality: calls #equalTo and checks symmetrizationIndices
     virtual bool equals(const SpinAmplitude& other) const;
