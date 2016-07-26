@@ -11,7 +11,6 @@
 #include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
-#include "UnitSpinAmplitude.h"
 
 #include <algorithm>
 #include <iterator>
