@@ -72,6 +72,17 @@ constexpr bool conserves(unsigned two_J, unsigned two_j1, unsigned two_j2, int l
            and (std::min<int>(two_j1 + two_j2, two_J + 2 * l) >= std::max(std::abs((int)two_j1 - (int)two_j2), std::abs((int)two_J - 2 * l)));
 }
 
+/// \return vector of all spin projections, from -two_j to two_j
+/// \param two_j spin to make projections of
+inline const SpinProjectionVector projections(unsigned two_j)
+{
+    SpinProjectionVector spv;
+    spv.reserve(two_j + 1);
+    for (int two_m = -two_j; two_m <= (int)two_j; two_m += 2)
+        spv.push_back(two_m);
+    return spv;
+}
+
 /// \return vector of all possible spin projection states of spins in two_J
 /// \param two_J SpinVector of spins to make projections of
 inline const std::vector<SpinProjectionVector> projections(const SpinVector& two_J)
