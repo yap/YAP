@@ -144,14 +144,14 @@ public:
 
 protected:
 
-    /// register any necessary DataAccessor's with model
-    virtual void registerWithModel();
-
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations() override;
+
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel() override;
 
     /// if only one decay channel is available, fix its free amplitude to the current value
     void fixSolitaryFreeAmplitudes();

@@ -179,11 +179,8 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
 //-------------------------
 void DecayChannel::registerWithModel()
 {
-    for (auto& d : Daughters_) {
-        auto dp = std::dynamic_pointer_cast<DecayingParticle>(d);
-        if (dp)
-            dp->registerWithModel();
-    }
+    for (auto& d : Daughters_)
+        d->registerWithModel();
 
     for (auto& sa : SpinAmplitudes_)
         if (sa->size() > 0)

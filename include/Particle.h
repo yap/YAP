@@ -86,6 +86,7 @@ public:
     const ParticleCombinationVector& particleCombinations() const
     { return ParticleCombinations_; }
 
+
     /// @}
 
     /// grant friend status to DecayChannel to call addParticleCombination
@@ -101,6 +102,9 @@ protected:
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations();
+
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel() = 0;
 
 private:
 
