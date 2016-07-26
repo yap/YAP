@@ -104,7 +104,7 @@ public:
     /// \param pc ParticleCombination to retrieve value for
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
-    const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const
     { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
 

@@ -43,6 +43,15 @@ public:
                                     const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return Complex_1; }
 
+    /// \return unit amplitude
+    /// \param d dummy DataPoint
+    /// \param pc dummy ParticleCombination
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m SpinProjectionVector of daughters
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                         int two_M, const SpinProjectionVector& two_m) const override
+    { return Complex_1; }
+
     /// \return "unit-valued"
     virtual std::string formalism() const
     { return "unit-valued"; }
