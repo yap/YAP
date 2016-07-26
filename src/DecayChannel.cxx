@@ -187,8 +187,7 @@ void DecayChannel::registerWithModel()
     }
 
     for (auto& sa : SpinAmplitudes_)
-        /// \todo find a more elegant solution than the dynamic_cast
-        if (sa->size() > 0 and not std::dynamic_pointer_cast<UnitSpinAmplitude>(sa))
+        if (sa->size() > 0)
             sa->addToModel();
 }
 
