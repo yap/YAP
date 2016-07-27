@@ -161,8 +161,13 @@ TEST_CASE( "UnitSpinAmplitude" )
 
                                 //DEBUG("pc " << to_string_with_parent(*pc));
 
+                                REQUIRE( sa->twoM() == sa_test.twoM() );
+
                                 // loop over spin projections
-                                for (int two_M : sa_test.twoM())
+                                for (int two_M : sa_test.twoM()) {
+
+                                    REQUIRE( sa->twoM(two_M) == sa_test.twoM(two_M) );
+
                                     for (auto two_m : sa_test.twoM(two_M)) {
                                         auto amp = sa_test.calc(two_M, two_m, data[0], pc);
                                         if (std::dynamic_pointer_cast<yap::UnitSpinAmplitude>(sa))
@@ -178,6 +183,7 @@ TEST_CASE( "UnitSpinAmplitude" )
                                         }
 
                                     }
+                                }
                             }
                         }
                         catch (const yap::exceptions::AngularMomentumNotConserved&) { /* ignore */ }
