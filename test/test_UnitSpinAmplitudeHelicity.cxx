@@ -20,7 +20,6 @@
 #include "Resonance.h"
 #include "Spin.h"
 #include "UnitSpinAmplitude.h"
-#include "ZemachFormalism.h"
 
 #include <assert.h>
 #include <memory>
@@ -46,21 +45,6 @@ public:
     /// \param two_s twice the total spin angular momentum
     testHelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
         HelicitySpinAmplitude(two_J, two_j, l, two_s)
-    { }
-};
-
-// to access the protected constructor publicly
-class testZemachSpinAmplitude : public ZemachSpinAmplitude
-{
-public:
-
-    /// Constructor
-    /// \param two_J twice the spin of initial state
-    /// \param two_j SpinVector of daughters
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin angular momentum
-    testZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
-        ZemachSpinAmplitude(two_J, two_j, l, two_s)
     { }
 };
 
@@ -171,13 +155,13 @@ TEST_CASE( "UnitSpinAmplitude" )
                                     for (auto two_m : sa_test.twoM(two_M)) {
                                         auto amp = sa_test.calc(two_M, two_m, data[0], pc);
                                         if (std::dynamic_pointer_cast<yap::UnitSpinAmplitude>(sa))
-                                            // if it is a UnitSpinAmpliutde, check if the corresponding HelicitySpinAmplitude is 1
+                                            // if it is a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is 1
                                             REQUIRE(amp == Catch::Detail::CApprox(yap::Complex_1));
                                         else {
-                                            // if it is NOT a UnitSpinAmpliutde, check if the corresponding HelicitySpinAmplitude is != 1
+                                            // if it is NOT a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is != 1
                                             //REQUIRE(amp != yap::Complex_1);
-                                            if (amp == yap::Complex_1) {
-                                                DEBUG("is 1 but not Unit");
+                                            if (amp == yap::Complex_1 and sa->size() > 0) {
+                                                DEBUG("is 1 but not Unit and has size > 0");
                                                 ++false_unit;
                                             }
                                         }

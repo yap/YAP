@@ -26,7 +26,7 @@ set(YAP_TEST_SOURCES
   test_Matrix.cxx
   test_swapDalitzAxes.cxx
   test_swapFinalStates.cxx
-  test_UnitSpinAmplitude.cxx
+  test_UnitSpinAmplitudeHelicity.cxx
   test_Vector.cxx
   test_WignerD.cxx
   yap_test.cxx
