@@ -58,7 +58,10 @@ public:
     /// \param two_S 2 * the total spin angular momentum
     std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S)
     {
-        auto retVal = operator[](create(two_J, two_j, L, two_S));
+        auto retVal = (two_j.size() > 2) ?
+                // nonresonant for >2 daughters
+                unit(two_J, two_j, L, two_S) :
+                operator[](create(two_J, two_j, L, two_S));
         if (Model_)
             retVal->setModel(*Model_);
         return retVal;
