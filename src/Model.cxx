@@ -234,8 +234,6 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
     // add DataAccessors to model / set model pointers
     p->registerWithModel();
 
-
-
     if (p->model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialStateParticle");
 
@@ -310,6 +308,11 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
     if (da->model() != this)
         throw exceptions::Exception("DataAccessor's Model is not this", "Model::addDataAccessor");
 
+    // if DataAccessor stores nothing
+    if (da->size() == 0)
+        // do nothing
+        return;
+
     // add DataAccessor
     if (DataAccessors_.insert(da).second) {
         // if insertion was successful
@@ -369,6 +372,14 @@ void Model::lock()
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
         D->pruneSymmetrizationIndices();
+
+    // remove data accessors from list that don't need storage
+    for (auto it = DataAccessors_.begin(); it != DataAccessors_.end(); ) {
+        if (!(*it)->requiresStorage())
+            it = DataAccessors_.erase(it);
+        else
+            ++it;
+    }
 
     // fix indices:
     // collect used indices

@@ -70,9 +70,13 @@ public:
     const CachedValueSet& CachedValues() const
     { return CachedValues_; }
 
-    /// \return size of storage in data point (number of real values)
-    unsigned size() const
+    /// \return size of storage in data point (number of real values pr symm Index)
+    const unsigned size() const
     { return Size_; }
+
+    /// \return whether DataAccessor stores any data
+    const bool requiresStorage() const
+    { return size() > 0 and nSymmetrizationIndices() > 0; }
 
     /// Check consistency of object
     bool consistent() const;

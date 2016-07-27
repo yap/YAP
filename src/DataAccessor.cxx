@@ -78,9 +78,6 @@ void DataAccessor::pruneSymmetrizationIndices()
             it = SymmetrizationIndices_.erase(it);
     }
 
-    if (SymmetrizationIndices_.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "DataAccessor::pruneSymmetrizationIndices");
-
     //
     // fix indices now for holes
     //

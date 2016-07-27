@@ -183,8 +183,7 @@ void DecayChannel::registerWithModel()
         d->registerWithModel();
 
     for (auto& sa : SpinAmplitudes_)
-        if (sa->size() > 0)
-            sa->registerWithModel();
+        sa->registerWithModel();
 }
 
 //-------------------------
