@@ -13,7 +13,7 @@ namespace yap {
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
     SpinAmplitude(two_J, two_j, l, two_s, equal_by_shared_pointer),
-    RequiresHelicityAngles()
+    RequiresHelicityAngles(two_J != 0)
 {
     if (finalTwoJ().size() != 2)
         throw exceptions::Exception("Wrong number of daughter spins specified (" + std::to_string(finalTwoJ().size()) + " != 2)",
@@ -40,8 +40,10 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(unsigned two_J, const SpinVector& t
             Coefficients_[two_m] = c * CG;
 
             // add amplitudes for all initial spin projections
-            for (int two_M = -initialTwoJ(); two_M <= (int)initialTwoJ(); two_M += 2)
-                addAmplitude(two_M, two_m);
+            for (auto two_M : projections(initialTwoJ()))
+                // for J==0, only the Clebsch-Gordan coefficients are returned
+                // ==> we don't need storage space in the DataPoint
+                addAmplitude(two_M, two_m, initialTwoJ() == 0);
 
         } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
 

@@ -139,17 +139,19 @@ public:
     /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
     friend Model;
 
-protected:
+    /// grant friend status to DecayChannel to call registerWithModel()
+    friend DecayChannel;
 
-    /// register any necessary DataAccessor's with model
-    virtual void registerWithModel()
-    {}
+protected:
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& c) override;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations() override;
+
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel() override;
 
     /// if only one decay channel is available, fix its free amplitude to the current value
     void fixSolitaryFreeAmplitudes();

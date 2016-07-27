@@ -43,6 +43,19 @@ class HelicitySpinAmplitude : public SpinAmplitude, public RequiresHelicityAngle
 {
 public:
 
+    /// \return precalculated complex amplitude
+    /// \param d DataPoint to retrieve value from
+    /// \param pc ParticleCombination to retrieve value for
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m SpinProjectionVector of daughters
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                         int two_M, const SpinProjectionVector& two_m) const
+    {
+        return (initialTwoJ() == 0) ?
+            Coefficients_.at(two_m) :
+            SpinAmplitude::amplitude(d, pc, two_M, two_m);
+    }
+
     /// Calculate spin amplitude for given ParticleCombination and spin projections
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
@@ -98,7 +111,7 @@ private:
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
     virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
-    { return (two_J == 0) ? unit(two_J, two_j, l, two_s) : std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j, l, two_s)); }
+    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j, l, two_s)); }
 
 };
 

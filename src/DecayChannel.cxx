@@ -177,6 +177,17 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
 }
 
 //-------------------------
+void DecayChannel::registerWithModel()
+{
+    for (auto& d : Daughters_)
+        d->registerWithModel();
+
+    for (auto& sa : SpinAmplitudes_)
+        if (sa->size() > 0)
+            sa->registerWithModel();
+}
+
+//-------------------------
 void DecayChannel::pruneParticleCombinations()
 {
     prune_particle_combinations(ParticleCombinations_);

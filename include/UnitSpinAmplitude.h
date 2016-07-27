@@ -21,10 +21,10 @@
 #ifndef yap_UnitSpinAmplitude_h
 #define yap_UnitSpinAmplitude_h
 
-#include "fwd/Spin.h"
-
+#include "ClebschGordan.h"
 #include "Constants.h"
 #include "ParticleCombination.h"
+#include "Spin.h"
 #include "SpinAmplitude.h"
 
 namespace yap {
@@ -41,6 +41,15 @@ public:
     /// \return Complex_1 regardless of input
     const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
                                     const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    { return Complex_1; }
+
+    /// \return unit amplitude
+    /// \param d dummy DataPoint
+    /// \param pc dummy ParticleCombination
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m SpinProjectionVector of daughters
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                         int two_M, const SpinProjectionVector& two_m) const override
     { return Complex_1; }
 
     /// \return "unit-valued"
@@ -60,7 +69,23 @@ protected:
     UnitSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s)
         : SpinAmplitude(two_J, two_j, l, two_s, equal_always)
     {
-        addAmplitude(0, SpinProjectionVector(two_j.size(), 0));
+        if (two_j.size() > 2) {
+            // check if all spins are 0
+            if (two_J != 0 or l != 0 or two_s != 0 or
+                    std::any_of(two_j.begin(), two_j.end(), [](int i){ return i != 0; }))
+                throw exceptions::Exception("More than 2 daughters, but not all spins are 0", "UnitSpinAmplitude::UnitSpinAmplitude");
+            addAmplitude(0, SpinProjectionVector(two_j.size(), 0), true);
+            return;
+        }
+
+        // for 2 daughters, loop over all possibilities
+        for (const auto& two_m : projections(two_j))
+            for (auto two_M : projections(two_J)) {
+                try {
+                    if (ClebschGordan::nonzeroCoupling(two_j[0], two_m[0], two_j[1], two_m[1], l, two_s, two_J))
+                        addAmplitude(two_M, two_m, true);
+                } catch (const exceptions::InconsistentSpinProjection&) { /* ignore */ }
+            }
     }
 
 };

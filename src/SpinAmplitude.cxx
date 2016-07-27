@@ -89,7 +89,7 @@ const std::set<SpinProjectionVector> SpinAmplitude::twoM(int two_M) const
 }
 
 //-------------------------
-void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m)
+void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m, bool store_null)
 {
     // retrieve (or create) AmplitudeSubmap for two_M
     auto& ASM = Amplitudes_[two_M];
@@ -99,7 +99,10 @@ void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m)
         throw exceptions::Exception("Amplitude already stored for " + spin_to_string(two_M) + " -> " + to_string(two_m),
                                     "SpinAmplitude::addAmplitude");
 
-    ASM[two_m] = ComplexCachedValue::create(*this);
+    if (store_null)
+        ASM[two_m] = std::shared_ptr<ComplexCachedValue>(nullptr);
+    else
+        ASM[two_m] = ComplexCachedValue::create(*this);
 }
 
 //-------------------------

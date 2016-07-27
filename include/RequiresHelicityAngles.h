@@ -25,9 +25,24 @@ namespace yap {
 
 /// \class RequiresHelicityAngles
 /// \brief Base class to be inherited from to denote that an object
-/// requires a model calculate helicty angles
+/// requires a model calculate helicity angles
 class RequiresHelicityAngles
 {
+public:
+
+    /// Constructor
+    /// \param r Whether to require helicity angles
+    RequiresHelicityAngles(bool r = true) : Requires_(r) {}
+
+    /// \return Whether object requires helicity angles be
+    /// calculated by model
+    bool requiresHelicityAngles() const
+    { return Requires_; }
+
+private:
+
+    bool Requires_;
+
 };
 
 }

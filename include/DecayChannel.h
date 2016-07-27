@@ -86,9 +86,13 @@ public:
 
     /// grant friend status to DecayingParticle to call
     /// addParticleCombination and pruneParticleCombinations
+    /// and registerWithModel
     friend class DecayingParticle;
 
 protected:
+
+    /// register any necessary DataAccessor's with model
+    virtual void registerWithModel();
 
     /// Add particle combination
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c);

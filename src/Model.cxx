@@ -1,5 +1,6 @@
 #include "Model.h"
 
+#include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
 #include "Constants.h"
 #include "DataAccessor.h"
@@ -42,6 +43,8 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
         throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
     SAC->setModel(*this);
     SpinAmplitudeCache_ = std::move(SAC);
+
+    FourMomenta_->registerWithModel();
 }
 
 //-------------------------
@@ -228,6 +231,11 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
     if (!p)
         throw exceptions::Exception("Initial-state particle empty", "Model::addInitialStateParticle");
 
+    // add DataAccessors to model / set model pointers
+    p->registerWithModel();
+
+
+
     if (p->model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialStateParticle");
 
@@ -313,13 +321,18 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // adding to StaticDataAccessorVector insures that
         // HelicityAngles are called before any newly created
         // StaticDataAccessors
-        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da))
+        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)
+                and dynamic_cast<RequiresHelicityAngles*>(da)->requiresHelicityAngles()) {
             HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
+            HelicityAngles_->registerWithModel();
+        }
 
         // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
         if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
-                and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta())
+                and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta()) {
             MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
+            MeasuredBreakupMomenta_->registerWithModel();
+        }
 
         // if StaticDataAccessor, add to StaticDataAccessors_
         if (dynamic_cast<StaticDataAccessor*>(da))
@@ -646,6 +659,10 @@ void Model::printDataAccessors(bool printParticleCombinations) const
 
     for (const auto& d : DataAccessors_) {
         std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
+        if (dynamic_cast<const BlattWeisskopf*>(d))
+            std::cout << dynamic_cast<const BlattWeisskopf*>(d)->decayingParticle()->name() << "\t";
+        if (dynamic_cast<const SpinAmplitude*>(d))
+            std::cout << "J = " << spin_to_string(dynamic_cast<const SpinAmplitude*>(d)->initialTwoJ());
 
         if (printParticleCombinations) {
             std::cout << " \t";

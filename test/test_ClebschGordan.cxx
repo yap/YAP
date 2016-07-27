@@ -4,6 +4,7 @@
 #include <Exceptions.h>
 #include <logging.h>
 #include <MathUtilities.h>
+#include <Spin.h>
 
 TEST_CASE( "ClebschGordan" )
 {
@@ -33,8 +34,8 @@ TEST_CASE( "ClebschGordan" )
             unsigned maxJ = 2;
             for (unsigned two_j1 = 0; two_j1 <= 2 * maxJ; ++two_j1)
                 for (unsigned two_j2 = 0; two_j2 <= 2 * maxJ; ++two_j2)
-                    for (int two_m1 = -two_j1; two_m1 <= (int)two_j1; two_m1 += 2)
-                        for (int two_m2 = -two_j2; two_m2 <= (int)two_j2; two_m2 += 2)
+                    for (int two_m1 : yap::projections(two_j1))
+                        for (int two_m2 : yap::projections(two_j2))
                             for (unsigned two_J = std::max(abs((int)two_j1 - (int)two_j2), abs(two_m1 + two_m2)); two_J <= two_j1 + two_j2; two_J += 2) {
                                 // negate m1 and m2
                                 REQUIRE(

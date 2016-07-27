@@ -126,14 +126,14 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 }
 
 //-------------------------
-void DecayTree::addDataAccessor(const RecalculableDataAccessor& rda)
+void DecayTree::addRecalculableDataAccessor(const RecalculableDataAccessor& rda)
 {
     if (!FreeAmplitude_)
-        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addDataAccessor");
+        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addRecalculableDataAccessor");
 
     if (!FreeAmplitude_->checkParticleCombinations(rda))
         throw exceptions::Exception("RecalculableDataAccessor doesn't have all ParticleCombinations required by FreeAmplitude",
-                                    "DecayTree::addDataAccessor");
+                                    "DecayTree::addRecalculableDataAccessor");
 
     RecalculableDataAccessors_.push_back(&rda);
 }
