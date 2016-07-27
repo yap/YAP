@@ -321,7 +321,8 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
         // adding to StaticDataAccessorVector insures that
         // HelicityAngles are called before any newly created
         // StaticDataAccessors
-        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)) {
+        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)
+                and dynamic_cast<RequiresHelicityAngles*>(da)->requiresHelicityAngles()) {
             HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
             HelicityAngles_->registerWithModel();
         }
@@ -660,6 +661,8 @@ void Model::printDataAccessors(bool printParticleCombinations) const
         std::cout << d->index() << "  \t" << d->nSymmetrizationIndices() << "  \t\t" << d << "  \t(" << typeid(*d).name() << ")  \t";
         if (dynamic_cast<const BlattWeisskopf*>(d))
             std::cout << dynamic_cast<const BlattWeisskopf*>(d)->decayingParticle()->name() << "\t";
+        if (dynamic_cast<const SpinAmplitude*>(d))
+            std::cout << "J = " << spin_to_string(dynamic_cast<const SpinAmplitude*>(d)->initialTwoJ());
 
         if (printParticleCombinations) {
             std::cout << " \t";
