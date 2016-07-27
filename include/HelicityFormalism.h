@@ -41,6 +41,15 @@ namespace yap {
 /// \ingroup SpinAmplitude
 class HelicitySpinAmplitude : public SpinAmplitude, public RequiresHelicityAngles
 {
+protected:
+
+    /// Constructor
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
+    HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
+
 public:
 
     /// \return precalculated complex amplitude
@@ -72,15 +81,6 @@ public:
 
     /// grant HelicityFormalism friend status to call constructor
     friend class HelicityFormalism;
-
-protected:
-
-    /// Constructor
-    /// \param two_J twice the spin of initial state
-    /// \param two_j SpinVector of daughters
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin angular momentum
-    HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 private:
 

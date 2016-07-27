@@ -40,6 +40,15 @@ namespace yap {
 /// \ingroup SpinAmplitude
 class ZemachSpinAmplitude : public SpinAmplitude
 {
+protected:
+
+    /// Constructor
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
+    ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
+
 public:
 
     /// \return precalculated complex amplitude
@@ -72,12 +81,9 @@ public:
     friend class ZemachFormalism;
 
 protected:
-    /// Constructor
-    /// \param two_J twice the spin of initial state
-    /// \param two_j SpinVector of daughters
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin angular momentum
-    ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
+
+    /// call SpinAmplitude::addParticleCombination only if pc has more than 2 indices
+    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 
 private:
 

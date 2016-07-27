@@ -105,6 +105,12 @@ ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j
 }
 
 //-------------------------
+void ZemachSpinAmplitude::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+{
+    if (pc->indices().size() > 2) SpinAmplitude::addParticleCombination(pc);
+}
+
+//-------------------------
 const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                                           int two_M, const SpinProjectionVector& two_m) const
 {

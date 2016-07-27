@@ -23,9 +23,9 @@ FreeAmplitude::FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<S
     if (!SpinAmplitude_)
         throw exceptions::Exception("SpinAmpliutde is nullptr", "FreeAmplitude::FreeAmplitude");
 
-    if (!checkParticleCombinations(*SpinAmplitude_))
-        throw exceptions::Exception("SpinAmplitude does not contain all of DecayChannel's ParticleCombinations",
-                                    "FreeAmplitude::FreeAmplitude");
+    // if (!checkParticleCombinations(*SpinAmplitude_))
+    //     throw exceptions::Exception("SpinAmplitude does not contain all of DecayChannel's ParticleCombinations",
+    //                                 "FreeAmplitude::FreeAmplitude");
 
     // check M
     auto s_M = SpinAmplitude_->twoM();
@@ -50,7 +50,7 @@ bool FreeAmplitude::checkParticleCombinations(const DataAccessor& da) const
     return contains(da.symmetrizationIndices().begin(), da.symmetrizationIndices().end(),
                     DecayChannel_->particleCombinations().begin(), DecayChannel_->particleCombinations().end(),
                     [&](const ParticleCombinationMap<unsigned>::value_type & pc_i, const ParticleCombinationVector::value_type & pc)
-    {return pc_i.first == pc;});
+                    {return pc_i.first == pc;});
 }
 
 //-------------------------
