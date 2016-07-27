@@ -42,6 +42,20 @@ class ZemachSpinAmplitude : public SpinAmplitude
 {
 public:
 
+    /// \return precalculated complex amplitude
+    /// \param d DataPoint to retrieve value from
+    /// \param pc ParticleCombination to retrieve value for
+    /// \param two_M 2 * spin projection of parent
+    /// \param two_m SpinProjectionVector of daughters
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+                                                 int two_M, const SpinProjectionVector& two_m) const override;
+    
+    /// Overrides SpinAmplitude::calculate to do nothing if twoS() == 0
+    /// \param d DataPoint to calculate into
+    /// \param sm StatusManager to update
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override
+    { if (twoS() != 0) SpinAmplitude::calculate(d, sm); }
+
     /// Calculate spin amplitude for given ParticleCombination and spin projections
     /// \param two_M 2 * spin projection of parent
     /// \param two_m2 SpinProjectionVector of daughters
@@ -66,6 +80,7 @@ protected:
     ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 private:
+
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override
     { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }

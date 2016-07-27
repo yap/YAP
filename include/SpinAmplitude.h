@@ -97,7 +97,7 @@ public:
     /// and call calc(M, \vec{m}, d, pc) when necessary
     /// \param d DataPoint to calculate into
     /// \param sm StatusManager to update
-    void calculate(DataPoint& d, StatusManager& sm) const override final;
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// \return precalculated complex amplitude
     /// \param d DataPoint to retrieve value from

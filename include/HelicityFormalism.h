@@ -49,12 +49,14 @@ public:
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
     virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
-                                         int two_M, const SpinProjectionVector& two_m) const
-    {
-        return (initialTwoJ() == 0) ?
-            Coefficients_.at(two_m) :
-            SpinAmplitude::amplitude(d, pc, two_M, two_m);
-    }
+                                         int two_M, const SpinProjectionVector& two_m) const override
+    { return (initialTwoJ() == 0) ? Coefficients_.at(two_m) : SpinAmplitude::amplitude(d, pc, two_M, two_m); }
+    
+    /// Overrides SpinAmplitude::calculate to do nothing if initialTwoJ() == 0
+    /// \param d DataPoint to calculate into
+    /// \param sm StatusManager to update
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override
+    { if (initialTwoJ() != 0) SpinAmplitude::calculate(d, sm); }
 
     /// Calculate spin amplitude for given ParticleCombination and spin projections
     /// \param two_M 2 * spin projection of parent
