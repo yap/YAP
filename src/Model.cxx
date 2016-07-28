@@ -13,6 +13,7 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
+#include "KahanSum.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
@@ -84,12 +85,17 @@ const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& 
     // calculate components
     M.calculate(D);
 
-    // sum log of intensities over data points in partition
+    // compensated sum of logs of intensities over data points in partition
+    KahanAccumulation init;
     // if pedestal is zero
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
+        return std::accumulate(D.begin(), D.end(), init,
+                               [&](KahanAccumulation& l, const DataPoint & d)
+                               {return KahanSum(l, log(intensity(M.initialStateParticles(), d)));}).sum;
     // else
-    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
+    return std::accumulate(D.begin(), D.end(), init,
+                           [&](KahanAccumulation& l, const DataPoint & d)
+                           {return KahanSum(l, (log(intensity(M.initialStateParticles(), d)) - ped));}).sum;
 }
 
 //-------------------------

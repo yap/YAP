@@ -10,6 +10,7 @@
 #include "FinalStateParticle.h"
 #include "HelicityFormalism.h"
 #include "ImportanceSampler.h"
+#include "KahanSum.h"
 #include "logging.h"
 #include "make_unique.h"
 #include "MassAxes.h"
@@ -40,10 +41,15 @@ namespace yap {
 
     // sum intensities over data points in partition
     // if pedestal is zero
+    KahanAccumulation init;
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += intensity(M.initialStateParticles(), d);});
+        return std::accumulate(D.begin(), D.end(), init,
+                               [&](KahanAccumulation& l, const DataPoint & d)
+                               {return KahanSum(l, intensity(M.initialStateParticles(), d));}).sum;
     // else
-    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (intensity(M.initialStateParticles(), d) - ped);});
+    return std::accumulate(D.begin(), D.end(), init,
+                           [&](KahanAccumulation& l, const DataPoint & d)
+                           {return KahanSum(l, (intensity(M.initialStateParticles(), d) - ped));}).sum;
 }
 
 //-------------------------
