@@ -1,23 +1,12 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
-#include "BreitWigner.h"
+#include "helperFunctions.h"
+
 #include "Constants.h"
 #include "DataPoint.h"
-#include "DataPoint.h"
-#include "DataSet.h"
-#include "FinalStateParticle.h"
-#include "HelicityFormalism.h"
 #include "logging.h"
-#include "make_unique.h"
-#include "MassAxes.h"
-#include "Model.h"
-#include "Parameter.h"
 #include "Particle.h"
-#include "ParticleFactory.h"
-#include "PDL.h"
-#include "PHSP.h"
-#include "Resonance.h"
 #include "Spin.h"
 #include "UnitSpinAmplitude.h"
 
@@ -50,61 +39,7 @@ public:
 
 }
 
-std::shared_ptr<yap::Model> create_model()
-{
-    auto M = std::make_shared<yap::Model>(std::make_unique<yap::HelicityFormalism>());
-
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
-    double radialSize = 1.;
-
-    // initial state particle
-    auto D = factory.decayingParticle(421, radialSize);
-
-    // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
-
-    // Set final-state particles
-    M->setFinalState(piPlus, piMinus, piPlus, piMinus);
-
-    // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel(piPlus, piMinus);
-
-    // sigma / f_0(500)
-    auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel(piPlus, piMinus);
-
-    // a_1
-    auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    a_1->addChannel(sigma, piPlus);
-    a_1->addChannel(rho,   piPlus);
-
-    // D's channels
-    D->addChannel(rho, rho);
-    D->addChannel(a_1, piMinus);
-
-    M->addInitialStateParticle(D);
-
-    return M;
-}
-
-yap::DataSet generate_data(std::shared_ptr<yap::Model> M)
-{
-    auto isp = M->initialStateParticles().begin()->first;
-    auto A = M->massAxes();
-    auto m2r = yap::squared(yap::mass_range(A, isp, M->finalStateParticles()));
-
-    yap::DataSet data(M->createDataSet());
-
-    std::mt19937 g(0);
-    // fill data set with 1 point
-    std::generate_n(std::back_inserter(data), 1,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(*M), isp->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
-
-    return data;
-}
-
+//-------------------------
 TEST_CASE( "UnitSpinAmplitude" )
 {
     // disable debug logs in test
@@ -112,7 +47,7 @@ TEST_CASE( "UnitSpinAmplitude" )
     //yap::plainLogs(el::Level::Debug);
 
     auto M = create_model();
-    auto data = generate_data(M);
+    auto data = generate_data(M, 1);
     auto isp = M->initialStateParticles().begin()->first;
 
     yap::HelicityFormalism formalism;
