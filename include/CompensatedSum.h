@@ -18,26 +18,35 @@
 
 /// \file
 
-#ifndef yap_KahanSum_h
-#define yap_KahanSum_h
+#ifndef yap_CompensatedSum_h
+#define yap_CompensatedSum_h
 
-
-#include <numeric>
-#include <iostream>
-#include <vector>
+#include <type_traits>
 
 namespace yap {
 
-/// \struct KahanAccumulation
-/// \brief Struct to calculate a compensated sum
+/// \struct CompensatedSum
+/// \brief Struct to calculate a compensated sum using the Kahan summation algorithm
 /// \author Johannes Rauch, Daniel Greenwald
 template <typename T>
-struct KahanAccumulation
+struct CompensatedSum
 {
-    T sum{0};
-    T correction{0};
+    /// sum
+    T sum;
 
-    KahanAccumulation& operator+=(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type value)
+    /// correction to sum
+    T correction;
+
+    /// constructor
+    CompensatedSum(T val = 0) : sum(val), correction(0) {}
+
+    /// (implicit) cast operator
+    /// \return sum
+    operator T() const
+    { return sum; }
+
+    /// addition assignment operator
+    CompensatedSum& operator+=(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type value)
     {
         T y = value - correction;
         T t = sum + y;

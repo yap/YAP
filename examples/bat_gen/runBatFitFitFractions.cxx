@@ -170,6 +170,7 @@ int main()
     for (size_t i = 0; i < D->decayTrees().at(0).size(); ++i)
         std::cout << i << " = " << to_string(*D->decayTrees().at(0)[i]) << std::endl;
 
+    m.PrintSummary();
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
     m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
     m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);

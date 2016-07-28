@@ -2,6 +2,7 @@
 
 #include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
+#include "CompensatedSum.h"
 #include "Constants.h"
 #include "DataAccessor.h"
 #include "DataPartition.h"
@@ -13,7 +14,6 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
-#include "KahanSum.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
@@ -85,17 +85,15 @@ const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double
     // calculate components
     M.calculate(D);
 
-    // compensated sum of logs of intensities over data points in partition
-    KahanAccumulation<double> init;
     // if pedestal is zero
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), init,
-                               [&](KahanAccumulation<double>& l, const DataPoint& d)
-                               {return l += log(intensity(M.initialStateParticles(), d));}).sum;
+        return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
+                               [&](CompensatedSum<double>& l, const DataPoint& d)
+                               {return l += log(intensity(M.initialStateParticles(), d));});
     // else
-    return std::accumulate(D.begin(), D.end(), init,
-                           [&](KahanAccumulation<double>& l, const DataPoint& d)
-                           {return l += (log(intensity(M.initialStateParticles(), d)) - ped);}).sum;
+    return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
+                           [&](CompensatedSum<double>& l, const DataPoint& d)
+                           {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
 }
 
 //-------------------------

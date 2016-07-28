@@ -4,13 +4,13 @@
 #include "helperFunctions.h"
 
 #include "BreitWigner.h"
+#include "CompensatedSum.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
 #include "DataSet.h"
 #include "FinalStateParticle.h"
 #include "HelicityFormalism.h"
 #include "ImportanceSampler.h"
-#include "KahanSum.h"
 #include "logging.h"
 #include "make_unique.h"
 #include "MassAxes.h"
@@ -41,15 +41,14 @@ namespace yap {
 
     // sum intensities over data points in partition
     // if pedestal is zero
-    KahanAccumulation<double> init;
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), init,
-                               [&](KahanAccumulation<double>& l, const DataPoint & d)
-                               {return l += intensity(M.initialStateParticles(), d);}).sum;
+        return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
+                               [&](CompensatedSum<double>& l, const DataPoint & d)
+                               {return l += intensity(M.initialStateParticles(), d);});
     // else
-    return std::accumulate(D.begin(), D.end(), init,
-                           [&](KahanAccumulation<double>& l, const DataPoint & d)
-                           {return l += intensity(M.initialStateParticles(), d) - ped;}).sum;
+    return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
+                           [&](CompensatedSum<double>& l, const DataPoint & d)
+                           {return l += intensity(M.initialStateParticles(), d) - ped;});
 }
 
 //-------------------------
