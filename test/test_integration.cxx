@@ -112,7 +112,7 @@ TEST_CASE("integration")
     yap::ModelIntegral mi(*M);
 
     yap::ImportanceSampler::calculate(mi, partitions);
-    double smartIntegral = mi.integral().value;
+    double smartIntegral = integral(mi).value();
     DEBUG("smartIntegral = " << smartIntegral);
 
     REQUIRE(bruteForceIntegral == Approx(smartIntegral));
