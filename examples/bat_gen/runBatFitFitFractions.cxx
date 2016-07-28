@@ -26,8 +26,12 @@
 #include <chrono>
 #include <random>
 
-constexpr double quad(double stat, double sys)
-{ return sqrt(stat * stat + sys * sys); }
+const double quad(std::vector<double> S)
+{ return sqrt(std::accumulate(S.begin(), S.end(), 0., [](double a, double s) {return a + s * s;})); }
+
+template <typename ... Types>
+constexpr double quad(double s0, Types ... additional)
+{ return quad({s0, additional...}); }
 
 int main()
 {
@@ -96,20 +100,20 @@ int main()
     m.GetParameters()[1].Fix(1);
 
     // set fit fractions to fit
-    m.addFitFraction(D->decayTrees(rho,      piPlus)[0], 20e-2,   2.3e-2, 0.9e-2);
-    m.addFitFraction(D->decayTrees(f_2,      piPlus)[0], 18.2e-2, 2.6e-2, 0.7e-2);
-    m.addFitFraction(D->decayTrees(f_0_980,  piPlus)[0], 4.1e-2,  0.9e-2, 0.3e-2);
-    m.addFitFraction(D->decayTrees(f_0_1370, piPlus)[0], 2.6e-2,  1.8e-2, 0.6e-2);
-    m.addFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  1.0e-2, 0.8e-2);
-    m.addFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, 1.4e-2, 2.5e-2);
-    
+    m.setFitFraction(D->decayTrees(rho,      piPlus)[0], 20e-2,   2.3e-2, 0.9e-2);
+    m.setFitFraction(D->decayTrees(f_2,      piPlus)[0], 18.2e-2, 2.6e-2, 0.7e-2);
+    m.setFitFraction(D->decayTrees(f_0_980,  piPlus)[0], 4.1e-2,  0.9e-2, 0.3e-2);
+    m.setFitFraction(D->decayTrees(f_0_1370, piPlus)[0], 2.6e-2,  1.8e-2, 0.6e-2);
+    m.setFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  1.0e-2, 0.8e-2);
+    m.setFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, 1.4e-2, 2.5e-2);
+
     // set free amplitude parameters of fit
-    m.addFreeAmplitude("rho",      m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
-    m.addFreeAmplitude("f_2",      m.isp()->freeAmplitudes(f_2,      piPlus)[0], 2.1, quad(0.2, 0.1), yap::rad(-123.), yap::rad(quad(6, 3)));
-    m.addFreeAmplitude("f_0_980",  m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], 1.4, quad(0.2, 0.2), yap::rad(12.),   yap::rad(quad(12, 10)));
-    m.addFreeAmplitude("f_0_1370", m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], 1.3/*, quad(0.4, 0.2)*/, yap::rad(-21.)/*,  yap::rad(quad(15, 14))*/);
-    m.addFreeAmplitude("f_0_1500", m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], 1.1/*, quad(0.3, 0.2)*/, yap::rad(-44.)/*,  yap::rad(quad(13, 16))*/);
-    m.addFreeAmplitude("sigma",    m.isp()->freeAmplitudes(sigma,    piPlus)[0], 3.7, quad(0.3, 0.2), yap::rad(-3.),   yap::rad(quad(4, 2)));
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_2,      piPlus)[0], 2.1, quad(0.2, 0.1), -123., quad(6., 3.));
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], 1.4, quad(0.2, 0.2),   12., quad(12., 10.));
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], 1.3, quad(0.4, 0.2),  -21., quad(15., 14.));
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], 1.1, quad(0.3, 0.2),  -44., quad(13., 16.));
+    m.setFreeAmplitude(m.isp()->freeAmplitudes(sigma,    piPlus)[0], 3.7, quad(0.3, 0.2),   -3., quad(4., 2.));
 
     // add shape parameters
     m.addParameter("f_0_980_mass", f_0_980->mass(), 0.953 - 3 * 0.02, 0.953 + 3 * 0.02);
@@ -145,7 +149,7 @@ int main()
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
-    m.SetNIterationsPreRunMax(1e6);
+    m.SetNIterationsPreRunMax(5e6);
     m.SetNChains(4);
     // m.SetMinimumEfficiency(0.85);
     // m.SetMaximumEfficiency(0.99);
@@ -166,7 +170,9 @@ int main()
     for (size_t i = 0; i < D->decayTrees().at(0).size(); ++i)
         std::cout << i << " = " << to_string(*D->decayTrees().at(0)[i]) << std::endl;
 
-    m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
+    m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
+    m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2);
 
     // timing:
     auto diff = end - start;

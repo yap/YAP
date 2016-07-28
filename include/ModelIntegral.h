@@ -44,16 +44,10 @@ public:
     /// \param model Model to integrate
     ModelIntegral(const Model& model);
 
-    /// \return integral calculated from components
-    const RealIntegralElement integral() const;
+    const IntegralMap& integrals() const
+    { return Integrals_; }
 
-    /// \return DecayTreeVectorIntegral for particular DecayTreeVector
-    const DecayTreeVectorIntegral& integral(const DecayTreeVector& dtv) const;
-
-    /// \return raw pointer to model accessed through first integral component
-    const Model* model() const;
-
-    /// grant friend status to Integrator to access Integrals_
+    /// grant friend status to Integrator for nonconst access Integrals_
     friend class Integrator;
 
 private:
@@ -62,6 +56,10 @@ private:
     IntegralMap Integrals_;
 
 };
+
+/// \return integral calculated from components
+const RealIntegralElement integral(const ModelIntegral& MI);
+
 
 }
 

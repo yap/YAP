@@ -23,6 +23,8 @@
 
 #include "fwd/IntegralElement.h"
 
+#include "complex_to_string.h"
+
 namespace yap {
 
 /// \class IntegralElement
@@ -30,18 +32,79 @@ namespace yap {
 /// \author Daniel Greenwald
 /// \ingroup Integration
 template <typename T>
-struct IntegralElement {
-
-    /// integral value
-    T value;
+class IntegralElement
+{
+public:
 
     /// constructor
     /// \param val initial value of integral component
-    IntegralElement(T val = 0) : value(val) {}
+    explicit IntegralElement(T val = 0) : Value_(val) {}
+
+    /// reset
+    void reset()
+    { Value_ = 0; }
+
+    /// access value
+    const T value() const
+    { return Value_; }
+
+    /// access value
+    T& value()
+    { return Value_; }
+
+    /// multiplication (by T) assignment operator
+    template <typename U>
+    IntegralElement& operator*=(const U& rhs)
+    { Value_ *= rhs; return *this; }
 
     /// addition assignment operator
     IntegralElement& operator+=(const IntegralElement& B)
-    { value += B.value; return *this; }
+    { Value_ += B.Value_; return *this; }
+
+    /// unary minus operator
+    IntegralElement& operator-() const
+    { Value_ *= -1; return *this; }
+
+    /// subtraction assignment operator
+    IntegralElement& operator-=(const IntegralElement& B)
+    { return *this += -B; }
+
+    /// multiplication assignment operator
+    IntegralElement& operator*=(const IntegralElement& B)
+    { Value_ *= B.Value_; return *this; }
+
+    /// division assignment operator
+    IntegralElement& operator/=(const IntegralElement& B)
+    { Value_ /= B.Value_; return *this; }
+
+    /// multiplication operator
+    template <typename U>
+    friend const IntegralElement operator*(IntegralElement A, const U& B)
+    { return A *= B; }
+
+    /// multiplication operator
+    template <typename U>
+    friend const IntegralElement operator*(const U& A, IntegralElement B)
+    { return operator*(B, A); }
+
+    /// access value by cast
+    explicit operator T() const
+    { return value; }
+
+    /// access real value as complex value by cast
+    template <typename U>
+    explicit operator std::complex<U>() const
+    { return static_cast<std::complex<U> >(Value_); }
+
+    /// cast into complex integral element, from real one
+    template <typename U>
+    explicit operator IntegralElement<std::complex<U> >() const
+    { return IntegralElement<std::complex<U> >(static_cast<std::complex<U> >(Value_)); }
+
+private:
+
+    /// integral value
+    T Value_;
 
 };
 
@@ -50,20 +113,43 @@ template <typename T>
 inline const IntegralElement<T> operator+(IntegralElement<T> A, const IntegralElement<T>& B)
 { return A += B; }
 
-/// multiplication operator
-template <typename T, typename U>
-inline const IntegralElement<T> operator*(const IntegralElement<T>& A, const U& B)
-{ return IntegralElement<T>(A.value * B); }
+/// \return subtraction of two IntegralElements
+template <typename T>
+inline const IntegralElement<T> operator-(IntegralElement<T> A, const IntegralElement<T>& B)
+{ return A -= B; }
 
-/// multiplication operator
-template <typename T, typename U>
-inline const IntegralElement<T> operator*(const U& A, const IntegralElement<T>& B)
-{ return operator*(B, A); }
+/// \return multiplication of two IntegralElements
+template <typename T>
+inline const IntegralElement<T> operator*(IntegralElement<T> A, const IntegralElement<T>& B)
+{ return A *= B; }
+
+/// \return division IntegralElements into another
+template <typename T>
+inline const IntegralElement<T> operator/(IntegralElement<T> A, const IntegralElement<T>& B)
+{ return A /= B; }
 
 /// \return string of IntegralElement
 template <typename T>
-inline const std::string to_string(const IntegralElement<T>& a)
-{ using std::to_string; return to_string(a.value); }
+inline std::string to_string(const IntegralElement<T>& a)
+{ using std::to_string; return to_string(a.value()); }
+
+/// \name operations on ComplexIntegralElement
+/// @{
+
+/// \return conjugate of element
+inline ComplexIntegralElement conj(const ComplexIntegralElement& Z)
+{ return ComplexIntegralElement(conj(Z.value())); }
+
+/// \return RealIntegralElement for real component of ComplexIntegralElement
+inline RealIntegralElement real(const ComplexIntegralElement& Z)
+{ return RealIntegralElement(real(Z.value())); }
+
+/// \return RealIntegralElement for imaginary component of ComplexIntegralElement
+inline RealIntegralElement imag(const ComplexIntegralElement& Z)
+{ return RealIntegralElement(imag(Z.value())); }
+
+/// @}
+
 
 }
 

@@ -22,6 +22,7 @@
 #define yap_IntegralElementFwd_h
 
 #include <complex>
+#include <vector>
 
 namespace yap {
 
@@ -32,9 +33,21 @@ struct IntegralElement;
 /// \ingroup Integration
 using RealIntegralElement = IntegralElement<double>;
 
+/// \typedef RealIntegralElementVector
+/// \ingroup Integration
+using RealIntegralElementVector = std::vector<RealIntegralElement>;
+
 /// \typedef ComplexIntegralElement
 /// \ingroup Integration
 using ComplexIntegralElement = IntegralElement<std::complex<double> >;
+
+/// \typedef ComplexIntegralElementVector
+/// \ingroup Integration
+using ComplexIntegralElementVector = std::vector<ComplexIntegralElement>;
+
+/// \typedef ComplexIntegralElementMatrix
+/// \ingroup Integration
+using ComplexIntegralElementMatrix = std::vector<ComplexIntegralElementVector>;
 
 }
 

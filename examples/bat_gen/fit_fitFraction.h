@@ -1,7 +1,10 @@
 #ifndef __BAT__fit_frac__H
 #define __BAT__fit_frac__H
 
-#include <DecayTree.h>
+#include <fwd/DecayTree.h>
+#include <fwd/DecayTreeVectorIntegral.h>
+#include <fwd/IntegralElement.h>
+
 #include <FreeAmplitude.h>
 
 #include "bat_fit.h"
@@ -25,19 +28,23 @@ public:
     using fit_fraction_map = std::map<std::shared_ptr<yap::DecayTree>, std::array<double, 2> >;
 
     /// add a FreeAmplitude
-    void addFreeAmplitude(std::string name, std::shared_ptr<yap::FreeAmplitude> A, double amp, double amp_s, double phase, double phase_s);
-    void addFreeAmplitude(std::string name, std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase)
-    { addFreeAmplitude(name, A, amp, -1, phase, -1); }
+    void setFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A, double amp, double amp_s, double phase, double phase_s);
+    void setFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase)
+    { setFreeAmplitude(A, amp, -1, phase, -1); }
 
-    /// add fit fraction
-    void addFitFraction(std::shared_ptr<yap::DecayTree> dt, double mean, double stat, double syst);
-    
+    /// set fit fraction
+    void setFitFraction(std::shared_ptr<yap::DecayTree> dt, double mean, double stat, double syst);
+
+    yap::RealIntegralElementVector setParameters(const std::vector<double>& p);
+
+    const yap::DecayTreeVector& decayTrees() const;
+
+    const yap::DecayTreeVectorIntegral& decayTreesIntegral() const;
+
 private:
 
-    yap::DecayTreeVector DecayTrees_;
+    std::vector<std::array<double, 2> > FitFractions_;
 
-    fit_fraction_map FitFractions_;
-  
     yap::FreeAmplitudeVector FreeAmplitudes_;
 
 };
