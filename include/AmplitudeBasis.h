@@ -36,8 +36,7 @@ namespace basis {
 /// \tparam T type stored in amplitudes
 /// \defgroup AmplitudeBasis struct for converting among amplitude bases
 template <typename T>
-struct canonical
-{
+struct canonical {
     /// S amplitude (l=0)
     std::complex<T> S;
     /// P amplitude (l=1)
@@ -54,30 +53,31 @@ struct canonical
 
     /// casting constructor
     explicit constexpr canonical(const transversity<T>& t) :
-        S(sqrt(2./3.) * t.parallel - sqrt(1./3.) * t.longitudinal),
+        S(sqrt(2. / 3.) * t.parallel - sqrt(1. / 3.) * t.longitudinal),
         P(t.perpendicular),
-        D(sqrt(1./3.) * t.parallel + sqrt(2./3.) * t.longitudinal)
+        D(sqrt(1. / 3.) * t.parallel + sqrt(2. / 3.) * t.longitudinal)
     {}
 
     /// casting constructor
     explicit constexpr canonical(const helicity<T>& h) :
-        S(sqrt(1./3.) * (h.plus + h.minus - h.zero)),
-        P(sqrt(1./2.) * (h.plus - h.minus)),
-        D(sqrt(1./6.) * (h.plus + h.minus) + sqrt(2./3.) * h.zero)
+        S(sqrt(1. / 3.) * (h.plus + h.minus - h.zero)),
+        P(sqrt(1. / 2.) * (h.plus - h.minus)),
+        D(sqrt(1. / 6.) * (h.plus + h.minus) + sqrt(2. / 3.) * h.zero)
     {}
 
     /// access canonical amplitude via angular momentum
     /// \param L angular momentum to retrieve amplitude for
-    const std::complex<T>& operator[] (size_t L) {
-        switch(L) {
-        case 0:
-            return S;
-        case 1:
-            return P;
-        case 2:
-            return D;
-        default :
-            throw exceptions::Exception("L must be 0, 1, or 2", "canonical::operator[]");
+    const std::complex<T>& operator[] (size_t L)
+    {
+        switch (L) {
+            case 0:
+                return S;
+            case 1:
+                return P;
+            case 2:
+                return D;
+            default :
+                throw exceptions::Exception("L must be 0, 1, or 2", "canonical::operator[]");
         }
     }
 };
@@ -86,8 +86,7 @@ struct canonical
 /// Stores amplitudes in transversity basis
 /// \ingroup AmplitudeBasis
 template <typename T>
-struct transversity
-{
+struct transversity {
     /// longitudinal amplitude
     std::complex<T> longitudinal;
     /// parallel amplitude
@@ -104,8 +103,8 @@ struct transversity
 
     /// casting constructor
     explicit constexpr transversity(const canonical<T>& c) :
-        longitudinal (-sqrt(1./3.) * c.S + sqrt(2./3.) * c.D),
-        parallel     ( sqrt(2./3.) * c.S + sqrt(1./3.) * c.D),
+        longitudinal (-sqrt(1. / 3.) * c.S + sqrt(2. / 3.) * c.D),
+        parallel     ( sqrt(2. / 3.) * c.S + sqrt(1. / 3.) * c.D),
         perpendicular( c.P)
     {}
 
@@ -121,8 +120,7 @@ struct transversity
 /// Stores amplitudes in helicity basis
 /// \ingroup AmplitudeBasis
 template <typename T>
-struct helicity
-{
+struct helicity {
     /// zero amplitude A_0
     std::complex<T> zero;
     /// plus amplitude A_+
@@ -139,9 +137,9 @@ struct helicity
 
     /// casting constructor
     explicit constexpr helicity(const canonical<T>& c) :
-        zero (-sqrt(1./3.) * c.S + sqrt(2./3.) * c.D),
-        plus ( sqrt(1./3.) * c.S + sqrt(1./2.) * c.P + sqrt(1./6.) * c.D),
-        minus( sqrt(1./3.) * c.S - sqrt(1./2.) * c.P + sqrt(1./6.) * c.D)
+        zero (-sqrt(1. / 3.) * c.S + sqrt(2. / 3.) * c.D),
+        plus ( sqrt(1. / 3.) * c.S + sqrt(1. / 2.) * c.P + sqrt(1. / 6.) * c.D),
+        minus( sqrt(1. / 3.) * c.S - sqrt(1. / 2.) * c.P + sqrt(1. / 6.) * c.D)
     {}
 
     /// casting constructor

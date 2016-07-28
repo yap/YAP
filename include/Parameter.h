@@ -283,7 +283,7 @@ std::vector<double>::const_iterator set_value(ParameterBase& P, InputIt first)
 template <class InputIt>
 void set_values(ParameterVector::iterator first_par, ParameterVector::iterator last_par, InputIt first_val, InputIt last_val)
 {
-    while(first_par != last_par and first_val != last_val) {
+    while (first_par != last_par and first_val != last_val) {
         first_val = set_value(**first_par, first_val);
         ++first_par;
         ++first_val;
