@@ -26,13 +26,13 @@
 
 namespace std {
 
-/// \return string of complex number    
+/// \return string of complex number
 template <typename T>
 constexpr std::string to_string(const std::complex<T>& z)
 {
     using std::to_string;
     return to_string(real(z))
-        + (imag(z) >= 0 ? " + " + to_string(imag(z)) : " - " + to_string(imag(conj(z)))) + "i";
+           + (imag(z) >= 0 ? " + " + to_string(imag(z)) : " - " + to_string(imag(conj(z)))) + "i";
 }
 
 }
