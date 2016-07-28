@@ -654,6 +654,17 @@ DataSet Model::createDataSet(size_t n)
 }
 
 //-------------------------
+FreeAmplitudeSet free_amplitudes(const Model& M)
+{
+    FreeAmplitudeSet S;
+    for (const auto& dp_am : M.initialStateParticles()) {
+        auto s = free_amplitudes(*dp_am.first);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
+//-------------------------
 void Model::setParameterFlagsToUnchanged()
 {
     for (auto& d : RecalculableDataAccessors_)

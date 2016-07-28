@@ -196,6 +196,9 @@ private:
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);
 
+/// \return all the free amplitudes under a decaying particle
+FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp);
+
 }
 
 #endif

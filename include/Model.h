@@ -29,6 +29,7 @@
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
 #include "fwd/FourVector.h"
+#include "fwd/FreeAmplitude.h"
 #include "fwd/HelicityAngles.h"
 #include "fwd/MassAxes.h"
 #include "fwd/MeasuredBreakupMomenta.h"
@@ -311,6 +312,9 @@ const double sum_of_log_intensity(const Model& M, DataPartition& D, double ped =
 /// \param DP DataPartitionVector of partitions to use
 /// \param ped Pedestal to substract from each term in the sum
 const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, double ped = 0);
+
+/// \return all free amplitudes in a model
+FreeAmplitudeSet free_amplitudes(const Model& M);
 
 }
 

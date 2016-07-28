@@ -378,4 +378,15 @@ FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
     return V;
 }
 
+//-------------------------
+FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp)
+{
+    FreeAmplitudeSet S;
+    for (const auto& m_dtv : dp.decayTrees()) {
+        auto s = free_amplitudes(m_dtv.second);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
 }
