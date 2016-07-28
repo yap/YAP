@@ -38,12 +38,12 @@ namespace yap {
     // calculate components
     M.calculate(D);
 
-    // sum log of intensities over data points in partition
+    // sum intensities over data points in partition
     // if pedestal is zero
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
+        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += intensity(M.initialStateParticles(), d);});
     // else
-    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
+    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (intensity(M.initialStateParticles(), d) - ped);});
 }
 
 //-------------------------
@@ -103,10 +103,10 @@ TEST_CASE("integration")
     double bruteForceIntegral = yap::sum_of_intensity(*M, partitions, 0) / nPoints;
     DEBUG("bruteForceIntegral = " << bruteForceIntegral);
 
-    yap::ModelIntegral integral(*M);
+    yap::ModelIntegral mi(*M);
 
-    yap::ImportanceSampler::calculate(integral, partitions);
-    double smartIntegral = integral.integral().value;
+    yap::ImportanceSampler::calculate(mi, partitions);
+    double smartIntegral = mi.integral().value;
     DEBUG("smartIntegral = " << smartIntegral);
 
     REQUIRE(bruteForceIntegral == Approx(smartIntegral));
