@@ -22,7 +22,10 @@ class bat_fit : public bat_yap_base
 public:
 
     /// constructor
-    bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs);
+    /// \param name name of bat model
+    /// \param M yap::model
+    /// \param pcs vector<vector<unsigned>> defining mass axes
+    bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs = {});
 
     /// add a complex parameter from the model to bat
     void addParameter(std::string name, std::shared_ptr<yap::ComplexParameter> P, std::complex<double> low, std::complex<double> high, std::string latex = "", std::string units = "");

@@ -38,9 +38,6 @@ class ImportanceSampler : public Integrator
 
 public:
 
-    // convenience typedef
-    using integral_sub_map = std::map<DecayTreeVectorIntegral*, DecayTreeVectorIntegral>;
-
     /// Update calculation of ModelIntegral
     static void calculate(ModelIntegral& I, DataPartitionVector& DPV);
 
@@ -50,13 +47,13 @@ public:
 private:
 
     /// \return integral_sub_map for all changed trees
-    static integral_sub_map select_changed_integrals(ModelIntegral& I);
+    static std::vector<DecayTreeVectorIntegral*> select_changed(ModelIntegral& I);
 
     /// perform partial calculation of one integral component for one data partition
     static unsigned partially_calculate_subIntegral(DecayTreeVectorIntegral& I, DataPartition& D);
 
     /// perform partial calculation for one data partition
-    static unsigned partially_calculate(integral_sub_map& J, DataPartition& D);
+    static unsigned partially_calculate(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D);
 
 };
 

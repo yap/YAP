@@ -79,7 +79,7 @@ const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& 
 //-------------------------
 // hidden helper function,
 // resolves C++ problem related to naming of functions and call to std::async below
-    const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double ped)
+const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double ped)
 {
     // calculate components
     M.calculate(D);
@@ -87,9 +87,9 @@ const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& 
     // sum log of intensities over data points in partition
     // if pedestal is zero
     if (ped == 0)
-        return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += log(intensity(M.initialStateParticles(), d));});
+        return std::accumulate(D.begin(), D.end(), 0., [&](double& l, const DataPoint& d) {return l += log(intensity(M.initialStateParticles(), d));});
     // else
-    return std::accumulate(D.begin(), D.end(), 0., [&](double & l, const DataPoint & d) {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
+    return std::accumulate(D.begin(), D.end(), 0., [&](double& l, const DataPoint& d) {return l += (log(intensity(M.initialStateParticles(), d)) - ped);});
 }
 
 //-------------------------
@@ -129,7 +129,7 @@ const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, doubl
 
     // wait for each partition to finish calculating
     return std::accumulate(partial_sums.begin(), partial_sums.end(), 0.,
-                           [](double & l, std::future<double>& s) {return l += s.get();});
+                           [](double& l, std::future<double>& s) {return l += s.get();});
 }
 
 //-------------------------
@@ -443,7 +443,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
     if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
-    throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
+        throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
 
     ParticleCombinationVector M;
 
@@ -452,7 +452,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
         // check that all indices are in range
         if (std::any_of(v.begin(), v.end(), std::bind(std::greater_equal<unsigned>(), std::placeholders::_1, n_fsp)))
             throw exceptions::Exception("particle index out of range", "Model::massAxes");
-
+        
         // check for duplicates
         if (std::any_of(v.begin(), v.end(), [&](unsigned i) {return std::count(v.begin(), v.end(), i) != 1;}))
             throw exceptions::Exception("duplicate index given", "Model::massAxes");

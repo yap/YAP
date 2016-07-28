@@ -41,22 +41,14 @@ protected:
 
     /// \return DecayTreeVectorIntegral's Diagonals_
     /// \param I DecayTreeVectorIntegral to access
-    static DiagonalIntegralMap& diagonals(DecayTreeVectorIntegral& I);
+    static RealIntegralElementVector& diagonals(DecayTreeVectorIntegral& I);
 
     /// \return DecayTreeVectorIntegral's OffDiagonals_
     /// \param I DecayTreeVectorIntegral to access
-    static OffDiagonalIntegralMap& offDiagonals(DecayTreeVectorIntegral& I);
+    static ComplexIntegralElementMatrix& offDiagonals(DecayTreeVectorIntegral& I);
 
-    /// \return value stored in ModelIntegal's Diagonals_ for particular DecayTree
-    /// \param I DecayTreeVectorIntegral to access
-    /// \param dt shared_ptr to DecayTree to access diagonal integral component for
-    static DiagonalIntegralMap::mapped_type& diagonalComponent(DecayTreeVectorIntegral& I, const DecayTreeVector::value_type& dt);
-
-    /// \return value stored in DecayTreeVectorIntegral's OffDiagonals_ for particular DecayTree pair
-    /// \param I DecayTreeVectorIntegral to access
-    /// \param i shared_ptr to DecayTree to access off-diagonal integral component for
-    /// \param j shared_ptr to DecayTree to access off-diagonal integral component for
-    static OffDiagonalIntegralMap::mapped_type& offDiagonalComponent(DecayTreeVectorIntegral& I, const DecayTreeVector::value_type& i, const DecayTreeVector::value_type& j);
+    /// zero-out a DecayTreeVectorIntegral
+    static DecayTreeVectorIntegral& reset(DecayTreeVectorIntegral& I);
 
 };
 

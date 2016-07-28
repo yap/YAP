@@ -69,6 +69,18 @@ public:
     const DecayTreeVectorMap& decayTrees() const
     { return DecayTrees_; }
 
+    /// \return DecayTree's for decay to particular state
+    /// \param dV vector of daughters to search for decay trees for
+    DecayTreeVector decayTrees(const ParticleVector& dV);
+
+    /// \return DecayTree's for decay to particular state
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
+    template <typename ... Types>
+    DecayTreeVector decayTrees(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return decayTrees(V); }
+
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -87,12 +99,13 @@ public:
     std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param daughters... shared_ptr's to daughters to create DecayChannel object from
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
     /// \return shared_ptr to DecayChannel that has been added
     template <typename ... Types>
-    std::shared_ptr<DecayChannel> addChannel(Types ... daughters)
-    { ParticleVector V{daughters...}; return addChannel(V); }
-    /* { ParticleVector V; fill_vector(daughters..., V); return addChannel(V); } */
+    std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return addChannel(V); }
 
     /// Return final state particles of a channel
     /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
@@ -122,10 +135,12 @@ public:
     FreeAmplitudeVector freeAmplitudes(const ParticleVector& dV);
 
     /// \return Free amplitudes for decay to particular state
-    /// \param daughters... daughters to search for free amplitudes to decay to
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
     template <typename ... Types>
-    FreeAmplitudeVector freeAmplitudes(Types ... daughters)
-    { ParticleVector V{daughters...}; return freeAmplitudes(V); }
+    FreeAmplitudeVector freeAmplitudes(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return freeAmplitudes(V); }
 
     /// @}
 

@@ -7,6 +7,7 @@ set(SOURCES
   bat_fit.cxx
 	bat_gen.cxx
   bat_yap_base.cxx
+  fit_fitFraction.cxx
 	)
 
 #add_custom_target(create-examples-run_gen-output COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/output)
@@ -19,7 +20,7 @@ add_custom_target(link-macros
 		macros
 	)
 
-set(PROGRAMS runBatGen runBatFit)
+set(PROGRAMS runBatGen runBatFit runBatFitFitFractions)
 foreach(program ${PROGRAMS})
 	add_executable(${program} EXCLUDE_FROM_ALL ${program}.cxx ${SOURCES})
 	target_link_libraries(${program} ${ROOT_LIBS} ${BAT_LIBS} YAP)

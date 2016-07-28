@@ -45,12 +45,12 @@ constexpr auto Complex_i = std::complex<double>(0, 1);
 /// @{
 
 /// pi
-template <typename T>
+template <typename T = double>
 constexpr T pi()
 { return acos((T) - 1); }
 
 /// convert degrees to radians
-template <typename T>
+template <typename T = double>
 constexpr T rad_per_deg()
 { return pi<T>() / T(180); }
 
@@ -60,7 +60,7 @@ constexpr T rad(const T& d)
 { return d * rad_per_deg<T>(); }
 
 /// convert radians to degrees
-template <typename T>
+template <typename T = double>
 constexpr T deg_per_rad()
 { return T(180) / pi<T>(); }
 

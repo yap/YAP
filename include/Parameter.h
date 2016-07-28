@@ -279,8 +279,22 @@ template <class InputIt>
 std::vector<double>::const_iterator set_value(ParameterBase& P, InputIt first)
 { std::vector<double> V(first, first + P.size()); P.setValue(V); return first += (P.size() - 1); }
 
+/// set values in ParameterVector from iterators
+template <class InputIt>
+void set_values(ParameterVector::iterator first_par, ParameterVector::iterator last_par, InputIt first_val, InputIt last_val)
+{
+    while (first_par != last_par and first_val != last_val) {
+        first_val = set_value(**first_par, first_val);
+        ++first_par;
+        ++first_val;
+    }
+    if (first_par != last_par)
+        throw exceptions::Exception("insufficient number of values provided", "set_values");
+}
+
 /// set values in ParameterVector from values in vector<double>
-void set_values(ParameterVector& pars, const std::vector<double>& vals);
+inline void set_values(ParameterVector& pars, const std::vector<double>& vals)
+{ set_values(pars.begin(), pars.end(), vals.begin(), vals.end()); }
 
 }
 

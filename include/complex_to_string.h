@@ -18,36 +18,22 @@
 
 /// \file
 
-#ifndef yap_IntegralElementFwd_h
-#define yap_IntegralElementFwd_h
+#ifndef yap_complex_to_string_h
+#define yap_complex_to_string_h
 
 #include <complex>
-#include <vector>
+#include <string>
 
-namespace yap {
+namespace std {
 
+/// \return string of complex number
 template <typename T>
-struct IntegralElement;
-
-/// \typedef RealIntegralElement
-/// \ingroup Integration
-using RealIntegralElement = IntegralElement<double>;
-
-/// \typedef RealIntegralElementVector
-/// \ingroup Integration
-using RealIntegralElementVector = std::vector<RealIntegralElement>;
-
-/// \typedef ComplexIntegralElement
-/// \ingroup Integration
-using ComplexIntegralElement = IntegralElement<std::complex<double> >;
-
-/// \typedef ComplexIntegralElementVector
-/// \ingroup Integration
-using ComplexIntegralElementVector = std::vector<ComplexIntegralElement>;
-
-/// \typedef ComplexIntegralElementMatrix
-/// \ingroup Integration
-using ComplexIntegralElementMatrix = std::vector<ComplexIntegralElementVector>;
+constexpr std::string to_string(const std::complex<T>& z)
+{
+    using std::to_string;
+    return to_string(real(z))
+           + (imag(z) >= 0 ? " + " + to_string(imag(z)) : " - " + to_string(imag(conj(z)))) + "i";
+}
 
 }
 
