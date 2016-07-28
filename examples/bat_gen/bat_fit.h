@@ -4,6 +4,8 @@
 #include "bat_yap_base.h"
 
 #include <fwd/DataPartition.h>
+#include <fwd/FreeAmplitude.h>
+#include <fwd/IntegralElement.h>
 #include <fwd/Model.h>
 #include <fwd/Parameter.h>
 
@@ -33,8 +35,20 @@ public:
     /// ada a real parameter from the model to bat
     void addParameter(std::string name, std::shared_ptr<yap::RealParameter> P, double low, double high, std::string latex = "", std::string units = "");
 
+    /// set the range and prior for a FreeAmplitude
+    void setPrior(std::shared_ptr<yap::FreeAmplitude> A, BCPrior* amp_prior, BCPrior* phase_prior);
+
+    /// set the range and a constant prior for a FreeAmplitude
+    void setPrior(std::shared_ptr<yap::FreeAmplitude> A, double amp_low, double amp_high, double phase_low, double phase_high);
+
+    /// fix a FreeAmplitude
+    void fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase);
+
     /// log likelihood
-    double LogLikelihood(const std::vector<double>&) override;
+    double LogLikelihood(const std::vector<double>& p) override;
+
+    /// calculate  observables
+    void CalculateObservables(const std::vector<double>& p) override;
 
     /// \return FitData_
     yap::DataSet& fitData()
@@ -60,7 +74,16 @@ public:
     integrator_type& integrator()
     { return Integrator_; }
 
+    /// init size of CalculatedFitFractions_
+    void MCMCUserInitialize();
+
+    /// set parameters into model
+    void setParameters(const std::vector<double>& p);
+
 protected:
+
+    /// find the position in the parameter list of the first element of a free amplitude
+    size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
 
     /// DataSet to fit the model to
     yap::DataSet FitData_;
@@ -82,6 +105,18 @@ protected:
 
     /// vector of parameters to set in model
     yap::ParameterVector Parameters_;
+
+    /// offset of where first user-set parameter is
+    int FirstParameter_;
+
+    /// list of decay trees integrated over
+    yap::DecayTreeVector DecayTrees_;
+
+    /// Free amplitudes of model to set
+    yap::FreeAmplitudeVector FreeAmplitudes_;
+
+    /// Calculated fit fractions (for observables)
+    std::vector<yap::RealIntegralElementVector> CalculatedFitFractions_;
 
 };
 

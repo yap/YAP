@@ -1,8 +1,11 @@
 #include "bat_fit.h"
 
 #include <DataSet.h>
+#include <DecayChannel.h>
 #include <DecayingParticle.h>
+#include <DecayTree.h>
 #include <FourVector.h>
+#include <FreeAmplitude.h>
 #include <ImportanceSampler.h>
 #include <logging.h>
 #include <MassAxes.h>
@@ -10,6 +13,9 @@
 #include <ModelIntegral.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
+#include <VariableStatus.h>
+
+#include <BAT/BCPrior.h>
 
 #include <TTree.h>
 
@@ -24,12 +30,39 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
       IntegralData_(model()->createDataSet()),
       IntegralPartitions_(1, &IntegralData_),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
-      Integral_(*model())
+      Integral_(*model()),
+      FirstParameter_(-1)
 {
     // create mass axes
     axes() = model()->massAxes(pcs);
+
+    // loop over all free amplitudes
+    for (const auto& fa : free_amplitudes(*model())) {
+        // ignore fixed free amplitudes
+        if (fa->variableStatus() == yap::VariableStatus::fixed)
+            continue;
+        // add amplitude parameter
+        AddParameter("amp(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                     1.e-3, 2 * norm(fa->value()));
+        /// add phase parameter
+        AddParameter("phase(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                     -180, 180);
+        /// add free amplitude to list
+        FreeAmplitudes_.push_back(fa);
+    }
+
+    SetPriorConstantAll();
+
+    // add observables for all fit fractions
+    for (const auto& b2_dtvi : Integral_.integrals())
+        for (const auto& dt : b2_dtvi.second.decayTrees()) {
+            DecayTrees_.push_back(dt);
+            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
+        }
+    CalculatedFitFractions_.assign(1, yap::RealIntegralElementVector(DecayTrees_.size()));
 }
 
+//-------------------------
 std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars)
 {
     std::vector<std::vector<unsigned> > pcs;
@@ -129,15 +162,42 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
     return data.size() - old_size;
 }
 
+//-------------------------
+void bat_fit::setParameters(const std::vector<double>& p)
+{
+    for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
+        *FreeAmplitudes_[i] = std::polar(p[i * 2], yap::rad(p[i * 2 + 1]));
+    
+    yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
+
+    Integrator_(Integral_, IntegralPartitions_);
+
+    // calculate fit fractions
+    unsigned c = GetCurrentChain();
+    size_t i = 0;
+    for (const auto& b2_dtvi : Integral_.integrals()) {
+        auto ff = fit_fractions(b2_dtvi.second);
+        for (const auto& f : ff)
+            CalculatedFitFractions_[c][i++] = f;
+    }
+}
+
 // ---------------------------------------------------------
 double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
-    yap::set_values(Parameters_, p);
-    Integrator_(Integral_, IntegralPartitions_);
+    setParameters(p);
     double L = sum_of_log_intensity(*model(), FitPartitions_, log(integral(Integral_).value()));
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;
+}
+
+//-------------------------
+void bat_fit::CalculateObservables(const std::vector<double>& p)
+{
+    unsigned c = GetCurrentChain();
+    for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
+        GetObservables()[i] = CalculatedFitFractions_[c][i].value();
 }
 
 //-------------------------
@@ -146,6 +206,8 @@ void bat_fit::addParameter(std::string name, std::shared_ptr<yap::ComplexParamet
     if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
         throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
     Parameters_.push_back(P);
+    if (FirstParameter_ < 0)
+        FirstParameter_ = GetParameters().Size();
     AddParameter(name + "_re", real(low), real(high), latex.empty() ? latex : "Re(" + latex + ")", units);
     AddParameter(name + "_im", imag(low), imag(high), latex.empty() ? latex : "Im(" + latex + ")", units);
 }
@@ -156,5 +218,70 @@ void bat_fit::addParameter(std::string name, std::shared_ptr<yap::RealParameter>
     if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
         throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
     Parameters_.push_back(P);
+    if (FirstParameter_ < 0)
+        FirstParameter_ = GetParameters().Size();
     AddParameter(name, low, high, latex, units);
 }
+
+//-------------------------
+size_t bat_fit::findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const
+{
+    auto it = std::find(FreeAmplitudes_.begin(), FreeAmplitudes_.end(), A);
+
+    if (it == FreeAmplitudes_.end())
+        throw yap::exceptions::Exception("FreeAmplitude not found", "setPrior");
+
+    return (it - FreeAmplitudes_.begin()) * 2;
+}
+
+//-------------------------
+void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> A, BCPrior* amp_prior, BCPrior* phase_prior)
+{
+    auto i = findFreeAmplitude(A);
+
+    // add amp
+    if (amp_prior) {
+        double low = amp_prior->GetMean() - 3 * amp_prior->GetStandardDeviation();
+        GetParameters()[i].SetLimits(std::max(low, 0.), amp_prior->GetMean() + 3 * amp_prior->GetStandardDeviation());
+        GetParameters()[i].SetPrior(amp_prior);
+    } else
+        throw yap::exceptions::Exception("amp_prior is null", "bat_fit::setPrior");
+
+    if (phase_prior) {
+        GetParameters()[i + 1].SetLimits(phase_prior->GetMean() - 3. * phase_prior->GetStandardDeviation(),
+                                         phase_prior->GetMean() + 3. * phase_prior->GetStandardDeviation());
+        GetParameters()[i + 1].SetPrior(phase_prior);
+    } else {
+        throw yap::exceptions::Exception("phase_prior is null", "bat_fit::setPrior");
+    }
+}
+
+//-------------------------
+void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> A,  double amp_low, double amp_high, double phase_low, double phase_high)
+{
+    auto i = findFreeAmplitude(A);
+
+    GetParameters()[i].SetLimits(amp_low, amp_high);
+    GetParameters()[i].SetPriorConstant();
+
+    GetParameters()[i + 1].SetLimits(phase_low, phase_high);
+    GetParameters()[i + 1].SetPriorConstant();
+}
+
+//-------------------------
+void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase)
+{
+    auto i = findFreeAmplitude(A);
+    GetParameters()[i].SetLimits(0, 2 * amp);
+    GetParameters()[i].Fix(amp);
+    GetParameters()[i + 1].SetLimits(phase - 0.1, phase + 0.1);
+    GetParameters()[i + 1].Fix(phase);
+}
+
+//-------------------------
+void bat_fit::MCMCUserInitialize()
+{
+    bat_yap_base::MCMCUserInitialize();
+    CalculatedFitFractions_.assign(GetNChains(), CalculatedFitFractions_[0]);
+}
+

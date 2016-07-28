@@ -102,20 +102,17 @@ int main()
     bat_fit m("D3PI_fit", std::move(M), find_mass_axes(*t_pars));
 
     // set parameters of fit
-    auto amp_range = std::complex<double>(5., 5.);
-    D->freeAmplitudes(rho, piPlus)[0]->variableStatus() = yap::VariableStatus::fixed;
-    m.addParameter("f_0_980",  m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], -amp_range, amp_range);
-    m.addParameter("f_2",      m.isp()->freeAmplitudes(f_2,      piPlus)[0], -amp_range, amp_range);
-    m.addParameter("f_0_1370", m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], -amp_range, amp_range);
-    m.addParameter("f_0_1500", m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], -amp_range, amp_range);
-    m.addParameter("sigma",    m.isp()->freeAmplitudes(sigma,    piPlus)[0], -amp_range, amp_range);
-
-    m.GetParameters().SetPriorConstantAll();
+    m.fix(D->freeAmplitudes(rho, piPlus)[0], 1, 0);
+    m.setPrior(D->freeAmplitudes(f_0_980,  piPlus)[0], 1.e-3, 5, -180, 180);
+    m.setPrior(D->freeAmplitudes(f_2,      piPlus)[0], 1.e-3, 5, -180, 180);
+    m.setPrior(D->freeAmplitudes(f_0_1370, piPlus)[0], 1.e-3, 5, -180, 180);
+    m.setPrior(D->freeAmplitudes(f_0_1500, piPlus)[0], 1.e-3, 5, -180, 180);
+    m.setPrior(D->freeAmplitudes(sigma,    piPlus)[0], 1.e-3, 5, -180, 180);
 
     // load fit data
     load_data(m.fitData(), *m.model(), m.axes(), m.isp()->mass()->value(), *t_mcmc, 10000, 1);
     // partition fit data
-    m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 8);
+    m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);
 
     // get FSP mass ranges
     auto m2r = yap::squared(mass_range(m.axes(), m.isp(), m.model()->finalStateParticles()));
@@ -128,18 +125,19 @@ int main()
                               std::numeric_limits<unsigned>::max()));
     LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
     // partition integration data
-    m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 8);
+    m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
+    m.SetNIterationsPreRunMax(1e6);
     m.SetNChains(4);
     // m.SetMinimumEfficiency(0.85);
     // m.SetMaximumEfficiency(0.99);
 
-    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(2e4 / m.GetNChains()));
 
     m.WriteMarkovChain("output/" + m.GetSafeName() + "_mcmc.root", "RECREATE");
 
@@ -152,7 +150,10 @@ int main()
     // end timing
     auto end = std::chrono::steady_clock::now();
 
+    m.PrintSummary();
     m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
+    m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
     // timing:
     auto diff = end - start;

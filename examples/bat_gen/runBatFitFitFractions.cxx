@@ -97,23 +97,23 @@ int main()
     // create bat_fit object
     fit_fitFraction m("D3PI_frac_fit", std::move(M));
 
-    m.GetParameters()[1].Fix(1);
+    m.GetParameter("N_1").Fix(1);
 
     // set fit fractions to fit
-    m.setFitFraction(D->decayTrees(rho,      piPlus)[0], 20e-2,   2.3e-2, 0.9e-2);
-    m.setFitFraction(D->decayTrees(f_2,      piPlus)[0], 18.2e-2, 2.6e-2, 0.7e-2);
-    m.setFitFraction(D->decayTrees(f_0_980,  piPlus)[0], 4.1e-2,  0.9e-2, 0.3e-2);
-    m.setFitFraction(D->decayTrees(f_0_1370, piPlus)[0], 2.6e-2,  1.8e-2, 0.6e-2);
-    m.setFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  1.0e-2, 0.8e-2);
-    m.setFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, 1.4e-2, 2.5e-2);
+    m.setFitFraction(D->decayTrees(rho,      piPlus)[0], 20e-2,   quad(2.3e-2, 0.9e-2));
+    m.setFitFraction(D->decayTrees(f_2,      piPlus)[0], 18.2e-2, quad(2.6e-2, 0.7e-2));
+    m.setFitFraction(D->decayTrees(f_0_980,  piPlus)[0], 4.1e-2,  quad(0.9e-2, 0.3e-2));
+    m.setFitFraction(D->decayTrees(f_0_1370, piPlus)[0], 2.6e-2,  quad(1.8e-2, 0.6e-2));
+    m.setFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  quad(1.0e-2, 0.8e-2));
+    m.setFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, quad(1.4e-2, 2.5e-2));
 
     // set free amplitude parameters of fit
-    m.fixFreeAmplitude(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_2,      piPlus)[0], 2.1, quad(0.2, 0.1), -123., quad(6., 3.));
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], 1.4, quad(0.2, 0.2),   12., quad(12., 10.));
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], 1.3, quad(0.4, 0.2),  -21., quad(15., 14.));
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], 1.1, quad(0.3, 0.2),  -44., quad(13., 16.));
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(sigma,    piPlus)[0], 3.7, quad(0.3, 0.2),   -3., quad(4., 2.));
+    m.fix(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
+    m.setPrior(m.isp()->freeAmplitudes(f_2,      piPlus)[0], new BCGaussianPrior(2.1, quad(0.2, 0.1)), new BCGaussianPrior(-123., quad(6.,   3.)));
+    m.setPrior(m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], new BCGaussianPrior(1.4, quad(0.2, 0.2)), new BCGaussianPrior(  12., quad(12., 10.)));
+    m.setPrior(m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], new BCGaussianPrior(1.3, quad(0.4, 0.2)), new BCGaussianPrior( -21., quad(15., 14.)));
+    m.setPrior(m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], new BCGaussianPrior(1.1, quad(0.3, 0.2)), new BCGaussianPrior( -44., quad(13., 16.)));
+    m.setPrior(m.isp()->freeAmplitudes(sigma,    piPlus)[0], new BCGaussianPrior(3.7, quad(0.3, 0.2)), new BCGaussianPrior(  -3., quad(4.,   2.)));
 
     // add shape parameters
     m.addParameter("f_0_980_mass", f_0_980->mass(), 0.953 - 3 * 0.02, 0.953 + 3 * 0.02);
