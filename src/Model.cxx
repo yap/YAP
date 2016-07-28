@@ -86,16 +86,16 @@ const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double
     M.calculate(D);
 
     // compensated sum of logs of intensities over data points in partition
-    KahanAccumulation init;
+    KahanAccumulation<double> init;
     // if pedestal is zero
     if (ped == 0)
         return std::accumulate(D.begin(), D.end(), init,
-                               [&](KahanAccumulation& l, const DataPoint& d)
-                               {return KahanSum(l, log(intensity(M.initialStateParticles(), d)));}).sum;
+                               [&](KahanAccumulation<double>& l, const DataPoint& d)
+                               {return l += log(intensity(M.initialStateParticles(), d));}).sum;
     // else
     return std::accumulate(D.begin(), D.end(), init,
-                           [&](KahanAccumulation& l, const DataPoint& d)
-                           {return KahanSum(l, (log(intensity(M.initialStateParticles(), d)) - ped));}).sum;
+                           [&](KahanAccumulation<double>& l, const DataPoint& d)
+                           {return l += (log(intensity(M.initialStateParticles(), d)) - ped);}).sum;
 }
 
 //-------------------------

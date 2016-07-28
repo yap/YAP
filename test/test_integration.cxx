@@ -41,15 +41,15 @@ namespace yap {
 
     // sum intensities over data points in partition
     // if pedestal is zero
-    KahanAccumulation init;
+    KahanAccumulation<double> init;
     if (ped == 0)
         return std::accumulate(D.begin(), D.end(), init,
-                               [&](KahanAccumulation& l, const DataPoint & d)
-                               {return KahanSum(l, intensity(M.initialStateParticles(), d));}).sum;
+                               [&](KahanAccumulation<double>& l, const DataPoint & d)
+                               {return l += intensity(M.initialStateParticles(), d);}).sum;
     // else
     return std::accumulate(D.begin(), D.end(), init,
-                           [&](KahanAccumulation& l, const DataPoint & d)
-                           {return KahanSum(l, (intensity(M.initialStateParticles(), d) - ped));}).sum;
+                           [&](KahanAccumulation<double>& l, const DataPoint & d)
+                           {return l += intensity(M.initialStateParticles(), d) - ped;}).sum;
 }
 
 //-------------------------

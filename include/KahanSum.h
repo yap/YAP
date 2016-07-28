@@ -21,10 +21,6 @@
 #ifndef yap_KahanSum_h
 #define yap_KahanSum_h
 
-/**
- * Struct to calculate a compenated sum
- * Code copied from: http://ideone.com/iuPPP
- */
 
 #include <numeric>
 #include <iostream>
@@ -32,26 +28,24 @@
 
 namespace yap {
 
+/// \struct KahanAccumulation
+/// \brief Struct to calculate a compensated sum
+/// \author Johannes Rauch, Daniel Greenwald
+template <typename T>
 struct KahanAccumulation
 {
-    double sum;
-    double correction;
+    T sum{0};
+    T correction{0};
 
-    KahanAccumulation() :
-        sum(0.),
-        correction(0.)
-    {}
+    KahanAccumulation& operator+=(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type value)
+    {
+        T y = value - correction;
+        T t = sum + y;
+        correction = (t - sum) - y;
+        sum = t;
+        return *this;
+    }
 };
- 
-KahanAccumulation KahanSum(KahanAccumulation accumulation, double value)
-{
-    KahanAccumulation result;
-    double y = value - accumulation.correction;
-    double t = accumulation.sum + y;
-    result.correction = (t - accumulation.sum) - y;
-    result.sum = t;
-    return result;
-}
 
 }
 
