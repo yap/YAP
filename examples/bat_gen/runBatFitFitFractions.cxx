@@ -108,7 +108,7 @@ int main()
     m.setFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, 1.4e-2, 2.5e-2);
 
     // set free amplitude parameters of fit
-    m.setFreeAmplitude(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
+    m.fixFreeAmplitude(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
     m.setFreeAmplitude(m.isp()->freeAmplitudes(f_2,      piPlus)[0], 2.1, quad(0.2, 0.1), -123., quad(6., 3.));
     m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], 1.4, quad(0.2, 0.2),   12., quad(12., 10.));
     m.setFreeAmplitude(m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], 1.3, quad(0.4, 0.2),  -21., quad(15., 14.));
@@ -149,12 +149,12 @@ int main()
 
     // set precision
     m.SetPrecision(BCEngineMCMC::kMedium);
-    m.SetNIterationsPreRunMax(5e6);
+    m.SetNIterationsPreRunMax(1e6);
     m.SetNChains(4);
     // m.SetMinimumEfficiency(0.85);
     // m.SetMaximumEfficiency(0.99);
 
-    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(2e4 / m.GetNChains()));
 
     m.WriteMarkovChain("output/" + m.GetSafeName() + "_mcmc.root", "RECREATE");
 
@@ -172,7 +172,7 @@ int main()
 
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
     m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
-    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
     // timing:
     auto diff = end - start;

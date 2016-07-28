@@ -146,8 +146,8 @@ void bat_fit::addParameter(std::string name, std::shared_ptr<yap::ComplexParamet
     if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
         throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
     Parameters_.push_back(P);
-    AddParameter(name + "_re", real(low), real(high), "Re(" + latex + ")", units);
-    AddParameter(name + "_im", imag(low), imag(high), "Im(" + latex + ")", units);
+    AddParameter(name + "_re", real(low), real(high), latex.empty() ? latex : "Re(" + latex + ")", units);
+    AddParameter(name + "_im", imag(low), imag(high), latex.empty() ? latex : "Im(" + latex + ")", units);
 }
 
 //-------------------------

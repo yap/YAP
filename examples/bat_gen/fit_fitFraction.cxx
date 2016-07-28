@@ -76,6 +76,13 @@ void fit_fitFraction::setFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A, do
 }
 
 //-------------------------
+void fit_fitFraction::MCMCUserInitialize()
+{
+    bat_fit::MCMCUserInitialize();
+    CalculatedFitFractions_.assign(GetNChains(), yap::RealIntegralElementVector());
+}
+
+//-------------------------
 void fit_fitFraction::setFitFraction(std::shared_ptr<yap::DecayTree> dt, double mean, double stat, double syst)
 {
     auto it = std::find(decayTrees().begin(), decayTrees().end(), dt);
@@ -85,7 +92,7 @@ void fit_fitFraction::setFitFraction(std::shared_ptr<yap::DecayTree> dt, double 
 }
 
 //-------------------------
-yap::RealIntegralElementVector fit_fitFraction::setParameters(const std::vector<double>& p)
+double fit_fitFraction::LogLikelihood(const std::vector<double>& p)
 {
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
         *FreeAmplitudes_[i] = p[FreeAmplitudes_[i]->spinAmplitude()->L()] * std::polar(p[3 + i * 2], yap::rad(p[3 + i * 2 + 1]));
@@ -93,19 +100,14 @@ yap::RealIntegralElementVector fit_fitFraction::setParameters(const std::vector<
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + 3 + FreeAmplitudes_.size() * 2, p.end());
 
     Integrator_(Integral_, IntegralPartitions_);
-    return fit_fractions(decayTreesIntegral());
-}
 
-//-------------------------
-double fit_fitFraction::LogLikelihood(const std::vector<double>& p)
-{
-
-    auto ff = setParameters(p);
+    unsigned c = GetCurrentChain();
+    CalculatedFitFractions_[c] = fit_fractions(decayTreesIntegral());
 
     double L = 0;
-    for (size_t i = 0; i < ff.size(); ++i)
+    for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
         if (FitFractions_[i][0] > 0)
-            L += BCMath::LogGaus(ff[i].value(), FitFractions_[i][0], FitFractions_[i][1]);
+            L += BCMath::LogGaus(CalculatedFitFractions_[c][i].value(), FitFractions_[i][0], FitFractions_[i][1]);
 
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
@@ -116,7 +118,7 @@ double fit_fitFraction::LogLikelihood(const std::vector<double>& p)
 //-------------------------
 void fit_fitFraction::CalculateObservables(const std::vector<double>& p)
 {
-    auto ff = setParameters(p);
-    for (size_t i = 0; i < ff.size(); ++i)
-        GetObservables()[i] = ff[i].value();
+    unsigned c = GetCurrentChain();
+    for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
+        GetObservables()[i] = CalculatedFitFractions_[c][i].value();
 }
