@@ -55,8 +55,11 @@ public:
     /// \param dtv DecayTreeVector to construct integral of
     explicit DecayTreeVectorIntegral(const DecayTreeVector& dtv);
 
-    /// \return integral calculated from components
-    const RealIntegralElement integral() const;
+    /// \return integral of diagonal component
+    const RealIntegralElement integral(unsigned i) const;
+
+    /// \return integral of off-diagonal components := (i,j) + (j,i)*, if i != j; else (i,i)
+    const RealIntegralElement integral(unsigned i, unsigned j) const;
 
     /// \return DecayTrees_
     const DecayTreeVector& decayTrees() const
@@ -66,15 +69,30 @@ public:
     const Model* model() const;
 
     /// \return Diagonals_ (const)
-    const DiagonalIntegralMap& diagonals() const
+    const RealIntegralElementVector& diagonals() const
     { return Diagonals_; }
 
     /// \return OffDiagonals_ (const)
-    const OffDiagonalIntegralMap& offDiagonals() const
+    const ComplexIntegralElementMatrix& offDiagonals() const
     { return OffDiagonals_; }
+
+    /// casts diagonal components into off-diagonal type, conjugates
+    /// upper-triangle off-diagonals to return lower-triangle members.
+    /// \return (copy of) component
+    const ComplexIntegralElement component(unsigned i, unsigned j) const;
+
+    // addition operator
+    DecayTreeVectorIntegral& operator+=(const DecayTreeVectorIntegral& rhs);
+
+    // multiplication operator
+    DecayTreeVectorIntegral& operator*=(double rhs);
 
     /// grant friend status to Integrator to access components and DecayTrees_
     friend class Integrator;
+
+protected:
+
+    DecayTreeVectorIntegral& reset();
 
 private:
 
@@ -84,33 +102,36 @@ private:
     /// diagonal element integrals:
     /// stores norm(dataDependentAmplitude(...)),
     /// for each DecayTree in DecayTrees_
-    DiagonalIntegralMap Diagonals_;
+    RealIntegralElementVector Diagonals_;
 
     /// off-diagonal element integrals stores:
     /// conj([0].dataDependentAmplitude(...)) * [1].dataDependentAmplitude(...),
     /// for each pair of DecayTree's in DecayTrees_ (in the upper
     /// right triangle of the matrix of combinations)
-    OffDiagonalIntegralMap OffDiagonals_;
+    ComplexIntegralElementMatrix OffDiagonals_;
 
 };
 
-/// \return vector of fit fractions of DecayTree's in DecayTreeVectorIntegral
-/// \param MI DecayTreeVectorIntegral to retrieve values from
-const std::vector<double> fit_fractions(const DecayTreeVectorIntegral& MI);
+/// \return integral calculated from components of DecayTreeVectorIntegral
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+const RealIntegralElement integral(const DecayTreeVectorIntegral& dtvi);
 
 /// \return matrix of integral components without multiplication by free amplitudes
-/// \param MI DecayTreeVectorIntegral to retrieve values from
-const std::vector<std::vector<std::complex<double> > > cached_integrals(const DecayTreeVectorIntegral& MI);
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+const ComplexIntegralElementMatrix cached_integrals(const DecayTreeVectorIntegral& dtvi);
 
 /// \return matrix of integral components with multiplication by free amplitudes
-/// \param MI DecayTreeVectorIntegral to retrieve values from
-const std::vector<std::vector<std::complex<double> > > integrals(const DecayTreeVectorIntegral& MI);
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+const ComplexIntegralElementMatrix integrals(const DecayTreeVectorIntegral& dtvi);
 
-/// \return integral of diagonal element given DiagonalMap entry
-const RealIntegralElement integral(const DiagonalIntegralMap::value_type& a_A2);
+/// \return diagonal integrals
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+const RealIntegralElementVector diagonal_integrals(const DecayTreeVectorIntegral& dtvi);
 
-/// \return integral of off-diagonal element given OffDiagonalMap entry
-const RealIntegralElement integral(const OffDiagonalIntegralMap::value_type& aa_AA);
+/// \return vector of fit fractions of DecayTree's in DecayTreeVectorIntegral
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+const RealIntegralElementVector fit_fractions(const DecayTreeVectorIntegral& dtvi);
+
 
 }
 

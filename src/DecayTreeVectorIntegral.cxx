@@ -5,22 +5,19 @@
 #include "IntegralElement.h"
 
 #include <algorithm>
+#include <complex>
 #include <numeric>
 
 namespace yap {
 
 //-------------------------
 DecayTreeVectorIntegral::DecayTreeVectorIntegral(const DecayTreeVector& dtv)
-    : DecayTrees_(dtv)
+    : DecayTrees_(dtv),
+      Diagonals_(DecayTrees_.size()),
+      OffDiagonals_(DecayTrees_.size() - 1)
 {
-    // initialize diagonal elements
-    for (const auto& dt : DecayTrees_)
-        Diagonals_.emplace(dt, DiagonalIntegralMap::mapped_type());
-    // initialize off-diagonal elements
-    for (size_t i = 0; i < DecayTrees_.size(); ++i)
-        for (size_t j = i + 1; j < DecayTrees_.size(); ++j)
-            OffDiagonals_.emplace(OffDiagonalIntegralMap::key_type({DecayTrees_[i], DecayTrees_[j]}),
-                                  OffDiagonalIntegralMap::mapped_type());
+    for (size_t i = 0; i < OffDiagonals_.size(); ++i)
+        OffDiagonals_[i] = ComplexIntegralElementMatrix::value_type(DecayTrees_.size() - i - 1);
 }
 
 //-------------------------
@@ -30,67 +27,127 @@ const Model* DecayTreeVectorIntegral::model() const
 }
 
 //-------------------------
-const std::vector<double> fit_fractions(const DecayTreeVectorIntegral& MI)
+const RealIntegralElement DecayTreeVectorIntegral::integral(unsigned i) const
 {
-    double I = MI.integral().value;
-    std::vector<double> ff;
-    ff.reserve(MI.decayTrees().size());
-    std::transform(MI.decayTrees().begin(), MI.decayTrees().end(), std::back_inserter(ff),
-    [&](const DecayTreeVector::value_type & dt) {return integral(*MI.diagonals().find(dt)).value / I;});
+    return RealIntegralElement(Diagonals_.at(i).value() * norm(DecayTrees_[i]->dataIndependentAmplitude()));
+}
+
+//-------------------------
+const RealIntegralElement DecayTreeVectorIntegral::integral(unsigned i, unsigned j) const
+{
+    if (j < i)
+        return integral(j, i);
+
+    if (i == j)
+        return integral(i);
+
+    return RealIntegralElement(real(2. * OffDiagonals_.at(i).at(j - i - 1).value()
+                                    * conj(DecayTrees_[i]->dataIndependentAmplitude())
+                                    * DecayTrees_[j]->dataIndependentAmplitude()));
+}
+
+//-------------------------
+const ComplexIntegralElement DecayTreeVectorIntegral::component(unsigned i, unsigned j) const
+{
+    if (j < i)
+        return conj(component(j, i));
+    if (i == j)
+        return static_cast<ComplexIntegralElement>(Diagonals_.at(i));
+    return OffDiagonals_.at(i).at(j - i - 1);
+}
+
+//-------------------------
+DecayTreeVectorIntegral& DecayTreeVectorIntegral::operator+=(const DecayTreeVectorIntegral& rhs)
+{
+    if (rhs.Diagonals_.size() != Diagonals_.size())
+        throw exceptions::Exception("size mismatch", "DecayTreeVectorIntegral::operator+=");
+
+    for (size_t i = 0; i < Diagonals_.size(); ++i)
+        Diagonals_[i] += rhs.Diagonals_[i];
+    for (size_t i = 0; i < OffDiagonals_.size(); ++i)
+        for (size_t j = 0; j < OffDiagonals_[i].size(); ++j)
+            OffDiagonals_[i][j] += rhs.OffDiagonals_[i][j];
+    return *this;
+}
+
+//-------------------------
+DecayTreeVectorIntegral& DecayTreeVectorIntegral::operator*=(double rhs)
+{
+    for (size_t i = 0; i < Diagonals_.size(); ++i)
+        Diagonals_[i] *= rhs;
+    for (size_t i = 0; i < OffDiagonals_.size(); ++i)
+        for (size_t j = 0; j < OffDiagonals_[i].size(); ++j)
+            OffDiagonals_[i][j] *= rhs;
+    return *this;
+}
+
+//-------------------------
+DecayTreeVectorIntegral& DecayTreeVectorIntegral::reset()
+{
+    for (auto& elt : Diagonals_)
+        elt.reset();
+    for (auto& row : OffDiagonals_)
+        for (auto& elt : row)
+            elt.reset();
+    return *this;
+}
+
+//-------------------------
+const RealIntegralElementVector diagonal_integrals(const DecayTreeVectorIntegral& dtvi)
+{
+    RealIntegralElementVector I;
+    I.reserve(dtvi.decayTrees().size());
+    for (size_t i = 0; i < dtvi.decayTrees().size(); ++i)
+        I.emplace_back(dtvi.integral(i));
+    return I;
+}
+
+//-------------------------
+const RealIntegralElementVector fit_fractions(const DecayTreeVectorIntegral& dtvi)
+{
+    auto I = integral(dtvi);
+    auto ff = diagonal_integrals(dtvi);
+    std::transform(ff.begin(), ff.end(), ff.begin(), std::bind(std::divides<RealIntegralElement>(), std::placeholders::_1, I));
     return ff;
 }
 
 //-------------------------
-const std::vector<std::vector<std::complex<double> > > cached_integrals(const DecayTreeVectorIntegral& MI)
+const ComplexIntegralElementMatrix cached_integrals(const DecayTreeVectorIntegral& dtvi)
 {
-    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
-    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
-        I[i][i] = MI.diagonals().at(MI.decayTrees()[i]).value;
-        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
-            I[j][i] = conj(I[i][j] = MI.offDiagonals().at({MI.decayTrees()[i], MI.decayTrees()[j]}).value);
+    ComplexIntegralElementMatrix I(dtvi.decayTrees().size(), ComplexIntegralElementVector(dtvi.decayTrees().size()));
+    for (size_t i = 0; i < dtvi.decayTrees().size(); ++i) {
+        I[i][i] = static_cast<ComplexIntegralElement>(dtvi.diagonals()[i]);
+        for (size_t j = i + 1; j < dtvi.decayTrees().size(); ++j)
+            I[j][i] = conj(I[i][j] = dtvi.offDiagonals()[i][j - i - 1]);
     }
     return I;
 }
 
 //-------------------------
-const std::vector<std::vector<std::complex<double> > > integrals(const DecayTreeVectorIntegral& MI)
+const ComplexIntegralElementMatrix integrals(const DecayTreeVectorIntegral& dtvi)
 {
-    std::vector<std::vector<std::complex<double> > > I(MI.decayTrees().size(), std::vector<std::complex<double> >(MI.decayTrees().size(), Complex_0));
-    for (size_t i = 0; i < MI.decayTrees().size(); ++i) {
-        I[i][i] = integral(*MI.diagonals().find(MI.decayTrees()[i])).value;
-        for (size_t j = i + 1; j < MI.decayTrees().size(); ++j)
-            I[j][i] = conj(I[i][j] = integral(*MI.offDiagonals().find({MI.decayTrees()[i], MI.decayTrees()[j]})).value);
+    ComplexIntegralElementMatrix I(dtvi.decayTrees().size(), ComplexIntegralElementVector(dtvi.decayTrees().size()));
+    for (size_t i = 0; i < dtvi.decayTrees().size(); ++i) {
+        I[i][i] = static_cast<ComplexIntegralElement>(dtvi.diagonals()[i] * norm(dtvi.decayTrees()[i]->dataIndependentAmplitude()));
+        for (size_t j = i + 1; j < dtvi.decayTrees().size(); ++j)
+            I[j][i] = conj(I[i][j] =
+                               dtvi.offDiagonals()[i][j - i - 1]
+                               * conj(dtvi.decayTrees()[i]->dataIndependentAmplitude())
+                               * dtvi.decayTrees()[j]->dataIndependentAmplitude());
     }
     return I;
 }
 
 //-------------------------
-const RealIntegralElement integral(const DiagonalIntegralMap::value_type& a_A2)
+const RealIntegralElement integral(const DecayTreeVectorIntegral& dtvi)
 {
-    return RealIntegralElement(norm(a_A2.first->dataIndependentAmplitude()) * a_A2.second.value);
-}
-
-//-------------------------
-const RealIntegralElement integral(const OffDiagonalIntegralMap::value_type& aa_AA)
-{
-    return RealIntegralElement(real(2. * conj(aa_AA.first[0]->dataIndependentAmplitude())
-                                    * aa_AA.first[1]->dataIndependentAmplitude()
-                                    * aa_AA.second.value));
-}
-
-//-------------------------
-const RealIntegralElement operator+(const RealIntegralElement& d, const DiagonalIntegralMap::value_type& v)
-{ return d + integral(v); }
-
-//-------------------------
-const RealIntegralElement operator+(const RealIntegralElement& d, const OffDiagonalIntegralMap::value_type& v)
-{ return d + integral(v); }
-
-//-------------------------
-const IntegralElement<double> DecayTreeVectorIntegral::integral() const
-{
-    return std::accumulate(Diagonals_.begin(), Diagonals_.end(), RealIntegralElement())
-           + std::accumulate(OffDiagonals_.begin(), OffDiagonals_.end(), RealIntegralElement());
+    RealIntegralElement I(0.);
+    for (unsigned i = 0; i < dtvi.diagonals().size(); ++i) {
+        I += dtvi.integral(i);
+        for (unsigned j = i + 1; j < dtvi.diagonals().size(); ++j)
+            I += dtvi.integral(i, j);
+    }
+    return I;
 }
 
 }

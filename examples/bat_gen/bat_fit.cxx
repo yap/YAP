@@ -55,9 +55,9 @@ std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars)
         // read indices:
         std::vector<unsigned> indices;
         indices.reserve(2);
-        std::transform(parname.begin() + parname.rfind("_") + 1, parname.end(), std::back_inserter(indices), [](char c){return std::atoi(&c);});
-            // for (size_t i = parname.rfind("_") + 1; i < parname.size(); ++i)
-            //     indices.push_back(std::stoi(parname.substr(i, 1)));
+        std::transform(parname.begin() + parname.rfind("_") + 1, parname.end(), std::back_inserter(indices), [](char c) {return std::atoi(&c);});
+        // for (size_t i = parname.rfind("_") + 1; i < parname.size(); ++i)
+        //     indices.push_back(std::stoi(parname.substr(i, 1)));
         pcs.push_back(indices);
     }
 
@@ -134,7 +134,7 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
 {
     yap::set_values(Parameters_, p);
     Integrator_(Integral_, IntegralPartitions_);
-    double L = sum_of_log_intensity(*model(), FitPartitions_, log(Integral_.integral().value));
+    double L = sum_of_log_intensity(*model(), FitPartitions_, log(integral(Integral_).value()));
     model()->setParameterFlagsToUnchanged();
     increaseLikelihoodCalls();
     return L;

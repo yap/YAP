@@ -150,37 +150,33 @@ int main( int argc, char** argv)
     yap::ModelIntegral MI(M);
     yap::ImportanceSampler::calculate(MI, data);
 
-    for (const auto& isp_b2 : M.initialStateParticles()) {
-        for (const auto& m_dtv : isp_b2.first->decayTrees()) {
+    for (const auto& b2_dtvi : MI.integrals()) {
 
-            auto mi = MI.integral(m_dtv.second);
+        LOG(INFO) << "\n" << to_string(b2_dtvi.second.decayTrees());
 
-            LOG(INFO) << "\n" << to_string(m_dtv.second);
+        auto A_DT = amplitude(b2_dtvi.second.decayTrees(), data[0]);
+        LOG(INFO) << "A_DT = " << A_DT;
+        LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-            auto A_DT = amplitude(m_dtv.second, data[0]);
-            LOG(INFO) << "A_DT = " << A_DT;
-            LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
+        LOG(INFO) << "integral = " << to_string(integral(b2_dtvi.second));
+        auto ff = fit_fractions(b2_dtvi.second);
+        for (size_t i = 0; i < ff.size(); ++i)
+            LOG(INFO) << "fit fraction " << to_string(100. * ff[i]) << "% for " << to_string(*b2_dtvi.second.decayTrees()[i]->freeAmplitude());
+        LOG(INFO) << "sum of fit fractions = " << to_string(std::accumulate(ff.begin(), ff.end(), yap::RealIntegralElement()));
 
-            LOG(INFO) << "integral = " << to_string(mi.integral());
-            auto ff = fit_fractions(mi);
-            for (size_t i = 0; i < ff.size(); ++i)
-                LOG(INFO) << "fit fraction " << 100. * ff[i] << "% for " << to_string(*mi.decayTrees()[i]->freeAmplitude());
-            LOG(INFO) << "sum of fit fractions = " << std::accumulate(ff.begin(), ff.end(), 0.);
+        LOG(INFO) << "cached integral components:";
+        auto I_cached = cached_integrals(b2_dtvi.second);
+        for (const auto& row : I_cached)
+            LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                         [](std::string & s, const yap::ComplexIntegralElement & c)
+        { return s += "\t" + to_string(c);}).erase(0, 1);
 
-            LOG(INFO) << "cached integral components:";
-            auto I_cached = cached_integrals(mi);
-            for (const auto& row : I_cached)
-                LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
-                                             [](const std::string & s, const std::complex<double>& c)
-            { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
-
-            LOG(INFO) << "integral components:";
-            auto I = integrals(mi);
-            for (const auto& row : I)
-                LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
-                                             [](const std::string & s, const std::complex<double>& c)
-            { return s + "\t" + std::to_string(real(c)) + " + " + std::to_string(imag(c));}).erase(0, 1);
-        }
+        LOG(INFO) << "integral components:";
+        auto I = integrals(b2_dtvi.second);
+        for (const auto& row : I)
+            LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
+                                         [](std::string & s, const yap::ComplexIntegralElement & c)
+        { return s += "\t" + to_string(c);}).erase(0, 1);
     }
 
     LOG(INFO) << "alright!";

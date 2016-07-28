@@ -34,27 +34,27 @@ const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint
     return A;
 }
 
-// //-------------------------
-// FreeAmplitudeSet free_amplitudes(const DecayTree& DT)
-// {
-//     FreeAmplitudeSet S = {DT.freeAmplitude()};
-//     for (auto& d_dt : DT.daughterDecayTrees()) {
-//         auto s = free_amplitudes(*d_dt.second);
-//         S.insert(s.begin(), s.end());
-//     }
-//     return S;
-// }
+//-------------------------
+FreeAmplitudeSet free_amplitudes(const DecayTree& DT)
+{
+    FreeAmplitudeSet S = {DT.freeAmplitude()};
+    for (auto& d_dt : DT.daughterDecayTrees()) {
+        auto s = free_amplitudes(*d_dt.second);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
 
-// //-------------------------
-// FreeAmplitudeSet free_amplitudes(const DecayTreeVector& DTV)
-// {
-//     FreeAmplitudeSet S;
-//     for (auto& DT : DTV) {
-//         auto s = free_amplitudes(*DT);
-//         S.insert(s.begin(), s.end());
-//     }
-//     return S;
-// }
+//-------------------------
+FreeAmplitudeSet free_amplitudes(const DecayTreeVector& DTV)
+{
+    FreeAmplitudeSet S;
+    for (auto& DT : DTV) {
+        auto s = free_amplitudes(*DT);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
 
 //-------------------------
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d) const
@@ -143,7 +143,7 @@ std::string to_string(const DecayTree& dt, std::string offset)
 {
     std::string s = to_string(*dt.freeAmplitude());
     offset += "     ";
-    for (auto d_dt : dt.daughterDecayTrees())
+    for (cosnt auto& d_dt : dt.daughterDecayTrees())
         s += "\n" + offset + "d[" + std::to_string(d_dt.first) + "] --> " + to_string(*d_dt.second, offset);
     return s;
 }
@@ -152,7 +152,7 @@ std::string to_string(const DecayTree& dt, std::string offset)
 std::string to_string(const DecayTreeVector& dtv)
 {
     return std::accumulate(dtv.begin(), dtv.end(), std::string(),
-                           [](std::string & s, const DecayTreeVector::value_type & dt)
+                           [](std::string& s, const DecayTreeVector::value_type& dt)
                            { return s += "\n" + to_string(*dt); }).erase(0, 1);
 }
 
@@ -166,7 +166,7 @@ unsigned depth(const DecayTree& DT)
 }
 
 //-------------------------
-bool has_changed(const DecayTreeVector::value_type& dt)
+const bool has_changed(const std::shared_ptr<DecayTree>& dt)
 {
     return dt->dataDependentAmplitudeStatus() == VariableStatus::changed;
 }
@@ -176,8 +176,7 @@ const DecayTreeVector select_changed(const DecayTreeVector& dtv)
 {
     DecayTreeVector C;
     C.reserve(dtv.size());
-    std::copy_if(dtv.begin(), dtv.end(), std::back_inserter(C),
-                 std::function<bool(const DecayTreeVector::value_type&)>(has_changed));
+    std::copy_if(dtv.begin(), dtv.end(), std::back_inserter(C), &has_changed);
     return C;
 }
 
