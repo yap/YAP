@@ -75,15 +75,15 @@ public:
     { return Integrator_; }
 
     /// init size of CalculatedFitFractions_
-    void MCMCUserInitialize();
+    void MCMCUserInitialize() override;
 
     /// set parameters into model
     void setParameters(const std::vector<double>& p);
 
-protected:
-
     /// find the position in the parameter list of the first element of a free amplitude
     size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
+
+protected:
 
     /// DataSet to fit the model to
     yap::DataSet FitData_;
