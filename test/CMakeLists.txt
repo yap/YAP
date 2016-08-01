@@ -19,6 +19,7 @@ include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE
 set(YAP_TEST_SOURCES
   test_BasisTransformations.cxx
   test_ClebschGordan.cxx
+  test_CompensatedSum.cxx
   test_FourMomentaCalculation.cxx
   test_helicityFrame.cxx
   test_HelicityAngles.cxx
