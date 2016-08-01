@@ -40,7 +40,7 @@ public:
 
     /// \return Complex_1 regardless of input
     const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
-                                    const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+                                    const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override
     { return Complex_1; }
 
     /// \return unit amplitude
@@ -53,7 +53,7 @@ public:
     { return Complex_1; }
 
     /// \return "unit-valued"
-    virtual std::string formalism() const
+    virtual std::string formalism() const override
     { return "unit-valued"; }
 
     /// grant SpinAmplitudeCache friend status to call constructor
