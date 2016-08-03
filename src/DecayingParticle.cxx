@@ -309,15 +309,6 @@ void DecayingParticle::printDecayChainLevel(int level) const
 }
 
 //-------------------------
-std::shared_ptr<DecayChannel> DecayingParticle::channel(const ParticleVector& daughters)
-{
-    auto it = std::find_if(Channels_.begin(), Channels_.end(), [&](std::shared_ptr<DecayChannel> dc) {return dc->daughters() == daughters;});
-    if (it == Channels_.end())
-        throw exceptions::Exception("Channel not found", "DecayingParticle::channel");
-    return *it;
-}
-
-//-------------------------
 void DecayingParticle::modifyDecayTree(DecayTree& dt) const
 {
     if (!dt.freeAmplitude())
@@ -368,24 +359,13 @@ ParticleSet particles(DecayingParticle& dp)
 }
 
 //-------------------------
-DecayTreeSet DecayingParticle::decayTreeSet() const
+DecayTreeSet decay_trees(const DecayingParticle& dp)
 {
     DecayTreeSet S;
-    for (const auto& m_dtv : DecayTrees_)
+    for (const auto& m_dtv : dp.decayTrees())
         S.insert(m_dtv.second.begin(), m_dtv.second.end());
     return S;
 }
-
-//-------------------------
-// FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
-// {
-//     auto dtv = decayTrees(dV);
-//     FreeAmplitudeVector V;
-//     for (const auto& dt : dtv)
-//         if (find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
-//             V.push_back(dt->freeAmplitude());
-//     return V;
-// }
 
 //-------------------------
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp)

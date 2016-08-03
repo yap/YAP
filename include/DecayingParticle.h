@@ -69,17 +69,6 @@ public:
     const DecayTreeVectorMap& decayTrees() const
     { return DecayTrees_; }
 
-    /// \return Set of all decay trees under this DecayingParticle
-    DecayTreeSet decayTreeSet() const;
-
-    /// Predicates are applied from right to left
-    /// \return DecayTreeSet for decays passing provided filters
-    /// \param p last predicate to apply in filtering DecayTree's
-    /// \param P... predicates to apply in filtering DecayTree's
-    template <typename Last, typename ... Predicates>
-    DecayTreeSet decayTreeSet(Last p, Predicates ... P) const
-    { return filter(decayTreeSet(), p, P...); }
-        
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -113,9 +102,6 @@ public:
 
     /// \name Getters
     /// @{
-
-    /// \return channel
-    std::shared_ptr<DecayChannel> channel(const ParticleVector& daughters);
 
     /// \return channels
     const DecayChannelVector& channels() const
@@ -183,6 +169,25 @@ private:
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);
 
+/// \return Set of all decay trees in provided DecayingParticle
+/// \todo Have it recursively travel down DecayChannels?
+DecayTreeSet decay_trees(const DecayingParticle& dp);
+
+/// \return DecayTreeSet for decays passing provided predicates
+/// \param p last predicate to apply in filtering DecayTree's
+/// \param P... predicates to apply in filtering DecayTree's
+template <typename Last, typename ... Predicates>
+DecayTreeSet decay_trees(const DecayingParticle& dp, Last p, Predicates ... P)
+{ return filter(decay_trees(dp), p, P...); }
+
+/// \return lone DecayTree passing provided predicates
+/// \param p last predicate to apply in filtering DecayTree's
+/// \param P... predicates to apply in filtering DecayTree's
+/// throws if no unique DecayTree is found
+template <typename Last, typename ... Predicates>
+DecayTreeSet::value_type decay_tree(const DecayingParticle& dp, Last p, Predicates ... P)
+{ return lone_elt(filter(decay_trees(dp), p, P...)); }
+
 /// \return all the free amplitudes under a decaying particle
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp);
 
@@ -191,13 +196,25 @@ template <typename Last, typename ... UnaryPredicates>
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
 { return filter(free_amplitudes(dp), p, P...); }
 
-/// \return free amplitude in a model from decay trees evaluating to true
+/// \return lone free amplitude in a model from decay trees evaluating to true
+/// throws if no unique free amplitude is found
 template <typename Last, typename ... UnaryPredicates>
 FreeAmplitudeSet::value_type free_amplitude(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
 { return lone_elt(free_amplitudes(dp, p, P...)); }
 
 /// \return set of all particles below given DecayingParticle, including itself
 ParticleSet particles(DecayingParticle& dp);
+
+/// \return DecayChannel's of DecayingParticle matching predicates
+template <typename Last, typename ... UnaryPredicates>
+DecayChannelSet decay_channels(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
+{ return filter(DecayChannelSet(dp.channels().begin(), dp.channels().end()), p, P...); }
+
+/// \return lone DecayChannel of DecayingParticle matching predicates
+/// throws if no unique DecayChannel is found
+template <typename Last, typename ... UnaryPredicates>
+DecayChannelSet::value_type decay_channel(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
+{ return lone_elt(decay_channels(dp, p, P...)); }
 
 }
 

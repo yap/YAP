@@ -24,6 +24,7 @@
 #include <fwd/Particle.h>
 
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
@@ -32,6 +33,9 @@ class DecayChannel;
 
 /// \typedef DecayChannelVector
 using DecayChannelVector = std::vector<std::shared_ptr<DecayChannel> >;
+
+/// \typedef DecayChannelSet
+using DecayChannelSet = std::set<std::shared_ptr<DecayChannel> >;
 
 /// \return set of all particles below given decay channel
 ParticleSet particles(const DecayChannel&);
