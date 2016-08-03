@@ -454,12 +454,19 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
     for (auto& v : pcs) {
 
         // check that all indices are in range
-        if (std::any_of(v.begin(), v.end(), std::bind(std::greater_equal<unsigned>(), std::placeholders::_1, n_fsp)))
-            throw exceptions::Exception("particle index out of range", "Model::massAxes");
-        
+        {
+            auto it = std::find_if(v.end(), v.end(), std::bind(std::greater_equal<unsigned>(), std::placeholders::_1, n_fsp));
+            if (it != v.end())
+                throw exceptions::Exception("particle index out of range (" + std::to_string(*it) + " >= " + std::to_string(n_fsp) + ")",
+                                            "Model::massAxes");
+        }
+
         // check for duplicates
-        if (std::any_of(v.begin(), v.end(), [&](unsigned i) {return std::count(v.begin(), v.end(), i) != 1;}))
-            throw exceptions::Exception("duplicate index given", "Model::massAxes");
+        {
+            auto it = std::find_if(v.begin(), v.end(), [&](unsigned i) {return std::count(v.begin(), v.end(), i) != 1;});
+            if (it != v.end())
+                throw exceptions::Exception("duplicate index (" + std::to_string(*it) + ")given", "Model::massAxes");
+        }
 
         // get fsp ParticleCombinations
         ParticleCombinationVector pcv;
