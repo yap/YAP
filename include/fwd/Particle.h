@@ -22,6 +22,7 @@
 #define yap_ParticleFwd_h
 
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
@@ -31,6 +32,10 @@ class Particle;
 /// \typedef ParticleVector
 /// \ingroup Particle
 using ParticleVector = std::vector<std::shared_ptr<Particle> >;
+
+/// \typedef ParticleSet
+/// \ingroup Particle
+using ParticleSet = std::set<std::shared_ptr<Particle> >;
 
 }
 
