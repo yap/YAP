@@ -206,10 +206,8 @@ const Model* DecayingParticle::model() const
 //-------------------------
 void DecayingParticle::registerWithModel()
 {
-    for (auto& kv : BlattWeisskopfs_) {
-        if (kv.second->size() > 0)
-            kv.second->registerWithModel();
-    }
+    for (auto& kv : BlattWeisskopfs_)
+        kv.second->registerWithModel();
 
     for (auto& c : Channels_)
         c->registerWithModel();
