@@ -1,10 +1,14 @@
 #include "DecayTree.h"
 
 #include "DecayChannel.h"
+#include "DecayingParticle.h"
 #include "Exceptions.h"
+#include "Filters.h"
 #include "FreeAmplitude.h"
-#include "RecalculableDataAccessor.h"
+#include "Model.h"
+#include "Particle.h"
 #include "ParticleCombination.h"
+#include "RecalculableDataAccessor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -139,6 +143,23 @@ void DecayTree::addRecalculableDataAccessor(const RecalculableDataAccessor& rda)
 }
 
 //-------------------------
+std::shared_ptr<DecayingParticle> DecayTree::decayingParticle() const
+{
+    if (!model())
+        throw exceptions::Exception("model is nullptr", "DecayTree::decayingParticle");
+
+    auto S = particles(*model(), has_decay_tree(this));
+
+    if (S.empty())
+        throw exceptions::Exception("no decaying particle found", "DecayTree::decayingParticle");
+
+    if (S.size() > 1)
+        throw exceptions::Exception("more than one decaying particle found", "DecayTree::decayingParticle");
+ 
+   return std::dynamic_pointer_cast<DecayingParticle>(lone_elt(S));
+}
+
+//-------------------------
 std::string to_string(const DecayTree& dt, std::string offset)
 {
     std::string s = to_string(*dt.freeAmplitude());
@@ -154,6 +175,12 @@ std::string to_string(const DecayTreeVector& dtv)
     return std::accumulate(dtv.begin(), dtv.end(), std::string(),
                            [](std::string& s, const DecayTreeVector::value_type& dt)
                            { return s += "\n" + to_string(*dt); }).erase(0, 1);
+}
+
+//-------------------------
+std::shared_ptr<FreeAmplitude> free_amplitude(const DecayTree& dt)
+{
+    return dt.freeAmplitude();
 }
 
 //-------------------------

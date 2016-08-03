@@ -8,6 +8,7 @@
 #include "bat_fit.h"
 #include "models/d3pi.h"
 
+#include <RelativisticBreitWigner.h>
 #include <logging.h>
 #include <make_unique.h>
 #include <MassRange.h>
@@ -45,73 +46,11 @@ int main()
     if (!t_pars)
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
-    //
-    // CREATE yap::Model
-    //
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
-
-    // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
-
-    auto M = std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>());
-    M->setFinalState(piPlus, piMinus, piPlus);
-
-    // use common radial size for all resonances
-    double radialSize = 3.; // [GeV^-1]
-
-    // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
-
-    // rho
-    auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
-    rho->addChannel(piPlus, piMinus);
-    D->addChannel(rho, piPlus);
-
-    // f_2(1270)
-    auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
-    f_2->addChannel(piPlus, piMinus);
-    D->addChannel(f_2, piPlus);
-
-    // f_0(980)
-    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(0.406 * 2, F.particleTableEntry("K+").Mass);
-    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
-    f_0_980->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_980, piPlus);
-
-    // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(F.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::RelativisticBreitWigner>(0.265));
-    f_0_1370->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1370, piPlus);
-
-    // f_0(1500)
-    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::RelativisticBreitWigner>());
-    f_0_1500->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1500, piPlus);
-
-    // sigma a.k.a. f_0(500)
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
-    sigma->addChannel(piPlus, piMinus);
-    D->addChannel(sigma, piPlus);
-
-    M->addInitialStateParticle(D);
-
-    // create bat_fit object
-    bat_fit m("D3PI_fit", std::move(M), find_mass_axes(*t_pars));
-
-    // set parameters of fit
-    m.fix(D->freeAmplitudes(rho, piPlus)[0], 1, 0);
-    m.setPrior(D->freeAmplitudes(f_0_980,  piPlus)[0], 1.e-3, 5, -180, 180);
-    m.setPrior(D->freeAmplitudes(f_2,      piPlus)[0], 1.e-3, 5, -180, 180);
-    m.setPrior(D->freeAmplitudes(f_0_1370, piPlus)[0], 1.e-3, 5, -180, 180);
-    m.setPrior(D->freeAmplitudes(f_0_1500, piPlus)[0], 1.e-3, 5, -180, 180);
-    m.setPrior(D->freeAmplitudes(sigma,    piPlus)[0], 1.e-3, 5, -180, 180);
-
-    // load fit data
+    // create model
+    auto m = d3pi_fit("D3PI_fit", std::make_unique<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
+    
+    // load fit data and partition it
     load_data(m.fitData(), *m.model(), m.axes(), m.isp()->mass()->value(), *t_mcmc, 10000, 1);
-    // partition fit data
     m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);
 
     // get FSP mass ranges
@@ -124,6 +63,7 @@ int main()
                               m.isp()->mass()->value(), m.axes(), m2r, g,
                               std::numeric_limits<unsigned>::max()));
     LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
+
     // partition integration data
     m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
 
@@ -153,7 +93,7 @@ int main()
     m.PrintSummary();
     m.PrintAllMarginalized(m.GetSafeName() + "_plots.pdf");
     m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
-    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, false);//true);
 
     // timing:
     auto diff = end - start;

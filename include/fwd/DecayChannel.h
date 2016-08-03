@@ -21,6 +21,8 @@
 #ifndef yap_DecayChannelFwd_h
 #define yap_DecayChannelFwd_h
 
+#include <fwd/Particle.h>
+
 #include <memory>
 #include <vector>
 
@@ -30,6 +32,9 @@ class DecayChannel;
 
 /// \typedef DecayChannelVector
 using DecayChannelVector = std::vector<std::shared_ptr<DecayChannel> >;
+
+/// \return set of all particles below given decay channel
+ParticleSet particles(const DecayChannel&);
 
 }
 

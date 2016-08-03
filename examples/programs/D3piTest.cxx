@@ -1,8 +1,10 @@
 #include "BreitWigner.h"
+#include "container_utils.h"
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
 #include "DecayTreeVectorIntegral.h"
+#include "Filters.h"
 #include "FinalStateParticle.h"
 #include "Flatte.h"
 #include "FourMomenta.h"
@@ -97,13 +99,15 @@ int main( int argc, char** argv)
     sigma->addChannel(piPlus, piMinus);
     D->addChannel(sigma, piPlus);
 
+    FLOG(INFO) << "number of free amplitudes = " << free_amplitudes(M).size();
+    
     // Add channels to D
-    *D->freeAmplitudes(rho,      piPlus)[0] = std::polar(1., 0.);
-    *D->freeAmplitudes(f_0_980,  piPlus)[0] = std::polar(1.4, yap::rad(12.));
-    *D->freeAmplitudes(f_2,      piPlus)[0] = std::polar(2.1, yap::rad(-123.));
-    *D->freeAmplitudes(f_0_1370, piPlus)[0] = std::polar(1.3, yap::rad(-21.));
-    *D->freeAmplitudes(f_0_1500, piPlus)[0] = std::polar(1.1, yap::rad(-44.));
-    *D->freeAmplitudes(sigma,    piPlus)[0] = std::polar(3.7, yap::rad(-3.));
+    *free_amplitude(*D, yap::to(rho))      = std::polar(1., 0.);
+    *free_amplitude(*D, yap::to(f_0_980))  = std::polar(1.4, yap::rad(12.));
+    *free_amplitude(*D, yap::to(f_2))      = std::polar(2.1, yap::rad(-123.));
+    *free_amplitude(*D, yap::to(f_0_1370)) = std::polar(1.3, yap::rad(-21.));
+    *free_amplitude(*D, yap::to(f_0_1500)) = std::polar(1.1, yap::rad(-44.));
+    *free_amplitude(*D, yap::to(sigma))    = std::polar(3.7, yap::rad(-3.));
     // D->addChannel(piPlus, piMinus, piPlus);
 
     M.addInitialStateParticle(D);

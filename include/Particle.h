@@ -136,10 +136,6 @@ inline std::string to_string(const ParticleVector& p)
                            {return s += " " + p->name();}).erase(0, 1);
 }
 
-/// equality comparison
-/// doesn't care about order
-const bool orderless_equal(const ParticleVector& A, const ParticleVector& B);
-
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const Particle& p)
 { os << to_string(p); return os; }

@@ -34,6 +34,7 @@
 #include "fwd/MassAxes.h"
 #include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
+#include "fwd/Particle.h"
 #include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StaticDataAccessor.h"
 #include "fwd/StatusManager.h"
@@ -315,6 +316,31 @@ const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, doubl
 
 /// \return all free amplitudes in a model
 FreeAmplitudeSet free_amplitudes(const Model& M);
+
+/// \return free amplitude in a model from decay trees evaluating to true
+template <typename Last, typename ... UnaryPredicates>
+FreeAmplitudeSet free_amplitudes(const Model& M, Last p, UnaryPredicates ... P)
+{ return filter(free_amplitudes(M), p, P...); }
+
+/// \return lone free amplitude in a model passing predicates
+/// throws if unique amplitude is not found
+template <typename Last, typename ... UnaryPredicates>
+FreeAmplitudeSet::value_type free_amplitude(const Model& M, Last p, UnaryPredicates ... P)
+{ return lone_elt(filter(free_amplitudes(M), p, P...)); }
+
+/// \return set of all particles in model
+ParticleSet particles(const Model& M);
+
+/// \return Set of particles in model for which all predicates evaluate true
+template <typename Last, typename ... UnaryPredicates>
+ParticleSet particles(const Model& M, Last p, UnaryPredicates ... P)
+{ return filter(particles(M), p, P...); }
+
+/// \return lone particle in model for which all predicates evaluate true
+/// throws if unique particle is not found
+template <typename Last, typename ... UnaryPredicates>
+ParticleSet::value_type particle(const Model& M, Last p, UnaryPredicates ... P)
+{ return lone_elt(filter(particles(M), p, P...)); }
 
 }
 

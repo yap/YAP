@@ -672,6 +672,17 @@ FreeAmplitudeSet free_amplitudes(const Model& M)
 }
 
 //-------------------------
+ParticleSet particles(const Model& M)
+{
+    ParticleSet S;
+    for (const auto& dp_am : M.initialStateParticles()) {
+        auto s = particles(*dp_am.first);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
+}
+
+//-------------------------
 void Model::setParameterFlagsToUnchanged()
 {
     for (auto& d : RecalculableDataAccessors_)

@@ -87,54 +87,54 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitude
     auto Kstar_1680 = yap::Resonance::create(yap::QuantumNumbers(1 * 2, 0), 1.717, "Kstar_1680", radialSize, std::make_shared<yap::BreitWigner>(0.322));
     Kstar_1680->addChannel(Kshort, piZero);
     D->addChannel(Kstar_1680, piZero);
-    
+
+    M->addInitialStateParticle(D);
+   
     // change switch argument to choose between different CLEO models
     switch (1) {
 
         case 1:
             
-            *D->freeAmplitudes(sigma, Kshort)[0]        = std::polar(0.67, yap::rad(140.));
-            *D->freeAmplitudes(f_0_980, Kshort)[0]      = std::polar(1.71, yap::rad(35.2));
-            *D->freeAmplitudes(f_0_1370, Kshort)[0]     = std::polar(5.72, yap::rad(340.3));
-            *D->freeAmplitudes(f_0_1500, Kshort)[0]     = yap::Complex_0;
-            *D->freeAmplitudes(f_2_1270, Kshort)[0]     = std::polar(1.57, yap::rad(282.));
-            *D->freeAmplitudes(Kstar_892, piZero)[0]    = std::polar(1., 0.);
-            *D->freeAmplitudes(Kstar_2_1430, piZero)[0] = std::polar(0.43, yap::rad(141.));
-            *D->freeAmplitudes(Kstar_1680, piZero)[0]   = std::polar(5.65, yap::rad(55.));
+            *free_amplitude(*M, to(sigma))        = std::polar(0.67, yap::rad(140.));
+            *free_amplitude(*M, to(f_0_980))      = std::polar(1.71, yap::rad(35.2));
+            *free_amplitude(*M, to(f_0_1370))     = std::polar(5.72, yap::rad(340.3));
+            *free_amplitude(*M, to(f_0_1500))     = yap::Complex_0;
+            *free_amplitude(*M, to(f_2_1270))     = std::polar(1.57, yap::rad(282.));
+            *free_amplitude(*M, to(Kstar_892))    = std::polar(1., 0.);
+            *free_amplitude(*M, to(Kstar_2_1430)) = std::polar(0.43, yap::rad(141.));
+            *free_amplitude(*M, to(Kstar_1680))   = std::polar(5.65, yap::rad(55.));
 
             break;
 
         case 2:
 
-            *D->freeAmplitudes(sigma, Kshort)[0]         = std::polar(0.91, yap::rad(119.));
-            *D->freeAmplitudes(f_0_980, Kshort)[0]       = std::polar(2.13, yap::rad(65.));
-            *D->freeAmplitudes(f_0_1370, Kshort)[0]      = yap::Complex_0;
-            *D->freeAmplitudes(f_0_1500, Kshort)[0]      = std::polar(11.7, yap::rad(16.));
-            *D->freeAmplitudes(f_2_1270, Kshort)[0]      = std::polar(4.16, yap::rad(2.2));
-            *D->freeAmplitudes(Kstar_892, piZero)[0]     = std::polar(1., 0.);
-            *D->freeAmplitudes(Kstar_2_1430, piZero)[0]  = std::polar(0.98, yap::rad(191.));
-            *D->freeAmplitudes(Kstar_1680, piZero)[0]    = std::polar(7.6, yap::rad(45.));
+            *free_amplitude(*M, to(sigma))         = std::polar(0.91, yap::rad(119.));
+            *free_amplitude(*M, to(f_0_980))       = std::polar(2.13, yap::rad(65.));
+            *free_amplitude(*M, to(f_0_1370))      = yap::Complex_0;
+            *free_amplitude(*M, to(f_0_1500))      = std::polar(11.7, yap::rad(16.));
+            *free_amplitude(*M, to(f_2_1270))      = std::polar(4.16, yap::rad(2.2));
+            *free_amplitude(*M, to(Kstar_892))     = std::polar(1., 0.);
+            *free_amplitude(*M, to(Kstar_2_1430))  = std::polar(0.98, yap::rad(191.));
+            *free_amplitude(*M, to(Kstar_1680))    = std::polar(7.6, yap::rad(45.));
 
             break;
 
         case 3:
 
-            *D->freeAmplitudes(sigma, Kshort)[0]        = std::polar(0.99, yap::rad(39.));
-            *D->freeAmplitudes(f_0_980, Kshort)[0]      = std::polar(2.59, yap::rad(44.8));
-            *D->freeAmplitudes(f_0_1370, Kshort)[0]     = std::polar(11.6, yap::rad(15.8));
-            *D->freeAmplitudes(f_0_1500, Kshort)[0]     = std::polar(20.9, yap::rad(281.4));
-            *D->freeAmplitudes(f_2_1270, Kshort)[0]     = std::polar(2.98, yap::rad(340.9));
-            *D->freeAmplitudes(Kstar_892, piZero)[0]    = std::polar(1., 0.);
-            *D->freeAmplitudes(Kstar_2_1430, piZero)[0] = std::polar(0.85, yap::rad(159.));
-            *D->freeAmplitudes(Kstar_1680, piZero)[0]   = std::polar(7.07, yap::rad(18.7));
+            *free_amplitude(*M, to(sigma))        = std::polar(0.99, yap::rad(39.));
+            *free_amplitude(*M, to(f_0_980))      = std::polar(2.59, yap::rad(44.8));
+            *free_amplitude(*M, to(f_0_1370))     = std::polar(11.6, yap::rad(15.8));
+            *free_amplitude(*M, to(f_0_1500))     = std::polar(20.9, yap::rad(281.4));
+            *free_amplitude(*M, to(f_2_1270))     = std::polar(2.98, yap::rad(340.9));
+            *free_amplitude(*M, to(Kstar_892))    = std::polar(1., 0.);
+            *free_amplitude(*M, to(Kstar_2_1430)) = std::polar(0.85, yap::rad(159.));
+            *free_amplitude(*M, to(Kstar_1680))   = std::polar(7.07, yap::rad(18.7));
 
             break;
 
         default:
             throw std::runtime_error("CLEO Model must be 1, 2, or 3");
     }
-
-    M->addInitialStateParticle(D);
 
     return M;
 }

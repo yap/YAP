@@ -21,29 +21,7 @@
 #ifndef yap_container_utils_h
 #define yap_container_utils_h
 
-#include <Exceptions.h>
-
 #include <algorithm>
-
-/// Throws if container's size is not 1
-/// \return lone element in container
-template <typename container>
-typename container::value_type lone_elt(container& C)
-{
-    if (C.size() != 1)
-        throw yap::exceptions::Exception("Container size not 1", "lone_elt");
-    return *C.begin();
-}
-
-/// Throws if container's size is not 1
-/// \return lone element in container
-template <typename container>
-typename container::value_type lone_elt(container&& C)
-{
-    if (C.size() != 1)
-        throw yap::exceptions::Exception("Container size not 1", "lone_elt");
-    return *C.begin();
-}
 
 /// check if two containers overlap (no sorting necessary).
 /// BinaryPredicate must have signature bool(const InputIt1::type&, const InputIt2::type&)
