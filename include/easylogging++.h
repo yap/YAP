@@ -4155,7 +4155,7 @@ public:
     LogMessage(Level level, const std::string& file, unsigned long int line, const std::string& func,
                base::type::VerboseLevel verboseLevel, Logger* logger) :
         m_level(level), m_file(file), m_line(line), m_func(func),
-        m_verboseLevel(verboseLevel), m_logger(logger), m_message(std::move(logger->stream().str()))
+        m_verboseLevel(verboseLevel), m_logger(logger), m_message(logger->stream().str())
     {
     }
     inline Level level(void) const { return m_level; }
@@ -4544,8 +4544,8 @@ protected:
     void handle(const LogDispatchData* data)
     {
         m_data = data;
-        dispatch(std::move(m_data->logMessage()->logger()->logBuilder()->build(m_data->logMessage(),
-                           m_data->dispatchAction() == base::DispatchAction::NormalLog)));
+        dispatch(m_data->logMessage()->logger()->logBuilder()->build(m_data->logMessage(),
+                                                                     m_data->dispatchAction() == base::DispatchAction::NormalLog));
     }
 private:
     const LogDispatchData* m_data;

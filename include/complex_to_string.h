@@ -28,7 +28,7 @@ namespace std {
 
 /// \return string of complex number
 template <typename T>
-constexpr std::string to_string(const std::complex<T>& z)
+std::string to_string(const std::complex<T>& z)
 {
     using std::to_string;
     return to_string(real(z))

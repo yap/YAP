@@ -62,29 +62,4 @@ std::string to_string(const FreeAmplitude& fa)
            + (fa.variableStatus() == VariableStatus::fixed ? " [fixed]" : "");
 }
 
-
-//-------------------------
-FreeAmplitudeSet find(const FreeAmplitudeSet& fas, int two_m)
-{
-    FreeAmplitudeSet S;
-    std::copy_if(fas.begin(), fas.end(), std::inserter(S, S.end()), [&two_m](const FreeAmplitudeSet::value_type & fa) {return fa->twoM() == two_m;});
-    return S;
-}
-
-//-------------------------
-FreeAmplitudeSet find(const FreeAmplitudeSet& fas, const DecayChannel* const dc)
-{
-    FreeAmplitudeSet S;
-    std::copy_if(fas.begin(), fas.end(), std::inserter(S, S.end()), [&dc](const FreeAmplitudeSet::value_type & fa) {return fa->decayChannel().get() == dc;});
-    return S;
-}
-
-//-------------------------
-FreeAmplitudeSet find(const FreeAmplitudeSet& fas, const SpinAmplitude* const sa)
-{
-    FreeAmplitudeSet S;
-    std::copy_if(fas.begin(), fas.end(), std::inserter(S, S.end()), [&sa](const FreeAmplitudeSet::value_type & fa) {return fa->spinAmplitude().get() == sa;});
-    return S;
-}
-
 }

@@ -9,10 +9,12 @@
 #include "models/d3pi.h"
 
 #include <DecayTree.h>
+#include <Filters.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
 #include <make_unique.h>
 #include <MassRange.h>
+#include <Model.h>
 #include <PHSP.h>
 #include <ZemachFormalism.h>
 
@@ -100,20 +102,20 @@ int main()
     m.GetParameter("N_1").Fix(1);
 
     // set fit fractions to fit
-    m.setFitFraction(D->decayTrees(rho,      piPlus)[0], 20e-2,   quad(2.3e-2, 0.9e-2));
-    m.setFitFraction(D->decayTrees(f_2,      piPlus)[0], 18.2e-2, quad(2.6e-2, 0.7e-2));
-    m.setFitFraction(D->decayTrees(f_0_980,  piPlus)[0], 4.1e-2,  quad(0.9e-2, 0.3e-2));
-    m.setFitFraction(D->decayTrees(f_0_1370, piPlus)[0], 2.6e-2,  quad(1.8e-2, 0.6e-2));
-    m.setFitFraction(D->decayTrees(f_0_1500, piPlus)[0], 3.4e-2,  quad(1.0e-2, 0.8e-2));
-    m.setFitFraction(D->decayTrees(sigma,    piPlus)[0], 41.8e-2, quad(1.4e-2, 2.5e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(rho))),      20e-2,   quad(2.3e-2, 0.9e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_2))),      18.2e-2, quad(2.6e-2, 0.7e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_980))),  4.1e-2,  quad(0.9e-2, 0.3e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_1370))), 2.6e-2,  quad(1.8e-2, 0.6e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_1500))), 3.4e-2,  quad(1.0e-2, 0.8e-2));
+    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(sigma))),    41.8e-2, quad(1.4e-2, 2.5e-2));
 
     // set free amplitude parameters of fit
-    m.fix(m.isp()->freeAmplitudes(rho,      piPlus)[0], 1., 0.);
-    m.setPrior(m.isp()->freeAmplitudes(f_2,      piPlus)[0], new BCGaussianPrior(2.1, quad(0.2, 0.1)), new BCGaussianPrior(-123., quad(6.,   3.)));
-    m.setPrior(m.isp()->freeAmplitudes(f_0_980,  piPlus)[0], new BCGaussianPrior(1.4, quad(0.2, 0.2)), new BCGaussianPrior(  12., quad(12., 10.)));
-    m.setPrior(m.isp()->freeAmplitudes(f_0_1370, piPlus)[0], new BCGaussianPrior(1.3, quad(0.4, 0.2)), new BCGaussianPrior( -21., quad(15., 14.)));
-    m.setPrior(m.isp()->freeAmplitudes(f_0_1500, piPlus)[0], new BCGaussianPrior(1.1, quad(0.3, 0.2)), new BCGaussianPrior( -44., quad(13., 16.)));
-    m.setPrior(m.isp()->freeAmplitudes(sigma,    piPlus)[0], new BCGaussianPrior(3.7, quad(0.3, 0.2)), new BCGaussianPrior(  -3., quad(4.,   2.)));
+    m.fix(free_amplitude(*m.model(), yap::to(rho)), 1., 0.);
+    m.setPrior(free_amplitude(*m.model(), yap::to(f_2)),      new BCGaussianPrior(2.1, quad(0.2, 0.1)), new BCGaussianPrior(-123., quad(6.,   3.)));
+    m.setPrior(free_amplitude(*m.model(), yap::to(f_0_980)),  new BCGaussianPrior(1.4, quad(0.2, 0.2)), new BCGaussianPrior(  12., quad(12., 10.)));
+    m.setPrior(free_amplitude(*m.model(), yap::to(f_0_1370)), new BCGaussianPrior(1.3, quad(0.4, 0.2)), new BCGaussianPrior( -21., quad(15., 14.)));
+    m.setPrior(free_amplitude(*m.model(), yap::to(f_0_1500)), new BCGaussianPrior(1.1, quad(0.3, 0.2)), new BCGaussianPrior( -44., quad(13., 16.)));
+    m.setPrior(free_amplitude(*m.model(), yap::to(sigma)),    new BCGaussianPrior(3.7, quad(0.3, 0.2)), new BCGaussianPrior(  -3., quad(4.,   2.)));
 
     // add shape parameters
     m.addParameter("f_0_980_mass", f_0_980->mass(), 0.953 - 3 * 0.02, 0.953 + 3 * 0.02);

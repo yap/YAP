@@ -15,6 +15,7 @@ set(YAP_SOURCES
 	DecayingParticle.cxx
 	DecayTree.cxx
 	DecayTreeVectorIntegral.cxx
+  Filters.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
 	FreeAmplitude.cxx

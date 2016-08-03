@@ -46,17 +46,17 @@ inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache
     auto KK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.1, "KK0", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
     KK0->addChannel(kPlus, kMinus);
     D->addChannel(KK0, piPlus);
-    *D->freeAmplitudes(KK0, piPlus)[0] = 1.;
+    *free_amplitude(*D, to(KK0)) = 1.;
 
     auto KK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.35, "KK1", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
     KK1->addChannel(kPlus, kMinus);
     D->addChannel(KK1, piPlus);
-    *D->freeAmplitudes(KK1, piPlus)[0] = 2.;
+    *free_amplitude(*D, to(KK1)) = 2.;
 
     auto KK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.6, "KK2", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
     KK2->addChannel(kPlus, kMinus);
     D->addChannel(KK2, piPlus);
-    *D->freeAmplitudes(KK2, piPlus)[0] = 30.;
+    *free_amplitude(*D, to(KK2)) = 30.;
 
     /* auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", radialSize, std::make_shared<yap::BreitWigner>(0.025)); */
     /* piK0->addChannel(piPlus, kMinus); */

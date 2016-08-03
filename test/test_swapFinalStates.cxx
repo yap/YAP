@@ -2,9 +2,11 @@
 #include <catch_capprox.hpp>
 
 #include <BreitWigner.h>
+#include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
 #include <DecayTree.h>
+#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FourVector.h>
@@ -55,17 +57,17 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK0->addChannel(piPlus, kMinus);
     D->addChannel(piK0, kPlus);
-    *D->freeAmplitudes(piK0, kPlus)[0] = 0.5 * yap::Complex_1;
+    *free_amplitude(*D, yap::to(piK0)) = 0.5 * yap::Complex_1;
 
     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK1->addChannel(piPlus, kMinus);
     D->addChannel(piK1, kPlus);
-    *D->freeAmplitudes(piK1, kPlus)[0] = yap::Complex_1;
+    *free_amplitude(*D, yap::to(piK1)) = yap::Complex_1;
 
     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK2->addChannel(piPlus, kMinus);
     D->addChannel(piK2, kPlus);
-    *D->freeAmplitudes(piK2, kPlus)[0] = yap::Complex_1;
+    *free_amplitude(*D, yap::to(piK2)) = yap::Complex_1;
 
     M.addInitialStateParticle(D);
 

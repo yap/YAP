@@ -27,7 +27,7 @@
 namespace yap {
 
 template <typename T>
-struct IntegralElement;
+class IntegralElement;
 
 /// \typedef RealIntegralElement
 /// \ingroup Integration

@@ -69,18 +69,17 @@ public:
     const DecayTreeVectorMap& decayTrees() const
     { return DecayTrees_; }
 
-    /// \return DecayTree's for decay to particular state
-    /// \param dV vector of daughters to search for decay trees for
-    DecayTreeVector decayTrees(const ParticleVector& dV);
+    /// \return Set of all decay trees under this DecayingParticle
+    DecayTreeSet decayTreeSet() const;
 
-    /// \return DecayTree's for decay to particular state
-    /// \param A shared_ptr to a daughter
-    /// \param B shared_ptr to a daughter
-    /// \param other_daughters... other daughters
-    template <typename ... Types>
-    DecayTreeVector decayTrees(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
-    { ParticleVector V{A, B, other_daughters...}; return decayTrees(V); }
-
+    /// Predicates are applied from right to left
+    /// \return DecayTreeSet for decays passing provided filters
+    /// \param p last predicate to apply in filtering DecayTree's
+    /// \param P... predicates to apply in filtering DecayTree's
+    template <typename Last, typename ... Predicates>
+    DecayTreeSet decayTreeSet(Last p, Predicates ... P) const
+    { return filter(decayTreeSet(), p, P...); }
+        
     /// Check consistency of object
     virtual bool consistent() const override;
 
@@ -129,18 +128,6 @@ public:
     /// \return Blatt-Weisskopf factors
     const BlattWeisskopfMap& blattWeisskopfs() const
     { return BlattWeisskopfs_; }
-
-    /// \return Free amplitudes for decay to particular state
-    /// \param dV vector of daughters to search for free amplitudes to decay to
-    FreeAmplitudeVector freeAmplitudes(const ParticleVector& dV);
-
-    /// \return Free amplitudes for decay to particular state
-    /// \param A shared_ptr to a daughter
-    /// \param B shared_ptr to a daughter
-    /// \param other_daughters... other daughters
-    template <typename ... Types>
-    FreeAmplitudeVector freeAmplitudes(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
-    { ParticleVector V{A, B, other_daughters...}; return freeAmplitudes(V); }
 
     /// @}
 
@@ -198,6 +185,19 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map);
 
 /// \return all the free amplitudes under a decaying particle
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp);
+
+/// \return free amplitude in a model from decay trees evaluating to true
+template <typename Last, typename ... UnaryPredicates>
+FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
+{ return filter(free_amplitudes(dp), p, P...); }
+
+/// \return free amplitude in a model from decay trees evaluating to true
+template <typename Last, typename ... UnaryPredicates>
+FreeAmplitudeSet::value_type free_amplitude(const DecayingParticle& dp, Last p, UnaryPredicates ... P)
+{ return lone_elt(free_amplitudes(dp, p, P...)); }
+
+/// \return set of all particles below given DecayingParticle, including itself
+ParticleSet particles(DecayingParticle& dp);
 
 }
 

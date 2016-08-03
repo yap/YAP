@@ -206,10 +206,8 @@ const Model* DecayingParticle::model() const
 //-------------------------
 void DecayingParticle::registerWithModel()
 {
-    for (auto& kv : BlattWeisskopfs_) {
-        if (kv.second->size() > 0)
-            kv.second->registerWithModel();
-    }
+    for (auto& kv : BlattWeisskopfs_)
+        kv.second->registerWithModel();
 
     for (auto& c : Channels_)
         c->registerWithModel();
@@ -353,30 +351,41 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
 }
 
 //-------------------------
-DecayTreeVector DecayingParticle::decayTrees(const ParticleVector& dV)
+bool is_decaying_particle(const std::shared_ptr<Particle>& p)
 {
-    if (std::any_of(dV.begin(), dV.end(), std::logical_not<ParticleVector::value_type>()))
-        throw exceptions::Exception("nullptr argument provided", "decayTrees");
-
-    DecayTreeVector V;
-    for (const auto& m_dtv : DecayTrees_)
-        for (const auto& dt : m_dtv.second)
-            if (orderless_equal(dt->freeAmplitude()->decayChannel()->daughters(), dV)
-                and find(V.begin(), V.end(), dt) == V.end())
-                V.push_back(dt);
-    return V;
+    return std::dynamic_pointer_cast<DecayingParticle>(p) != nullptr;
 }
 
 //-------------------------
-FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
+ParticleSet particles(DecayingParticle& dp)
 {
-    auto dtv = decayTrees(dV);
-    FreeAmplitudeVector V;
-    for (const auto& dt : dtv)
-        if (find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
-            V.push_back(dt->freeAmplitude());
-    return V;
+    ParticleSet S = {dp.shared_from_this()};
+    for (const auto& dc : dp.channels()) {
+        auto s = particles(*dc);
+        S.insert(s.begin(), s.end());
+    }
+    return S;
 }
+
+//-------------------------
+DecayTreeSet DecayingParticle::decayTreeSet() const
+{
+    DecayTreeSet S;
+    for (const auto& m_dtv : DecayTrees_)
+        S.insert(m_dtv.second.begin(), m_dtv.second.end());
+    return S;
+}
+
+//-------------------------
+// FreeAmplitudeVector DecayingParticle::freeAmplitudes(const ParticleVector& dV)
+// {
+//     auto dtv = decayTrees(dV);
+//     FreeAmplitudeVector V;
+//     for (const auto& dt : dtv)
+//         if (find(V.begin(), V.end(), dt->freeAmplitude()) == V.end())
+//             V.push_back(dt->freeAmplitude());
+//     return V;
+// }
 
 //-------------------------
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp)

@@ -21,9 +21,10 @@
 #ifndef yap_DecayTree_h
 #define yap_DecayTree_h
 
+#include "fwd/DecayTree.h"
+
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
-#include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -82,6 +83,9 @@ public:
     /// \return DaughterDecayTrees_
     const DaughterDecayTreeMap daughterDecayTrees() const
     { return DaughterDecayTrees_; }
+
+    /// \return DecayingParticle
+    std::shared_ptr<DecayingParticle> decayingParticle() const;
 
     /// \return Model this DecayTree belongs to (via FreeAmplitude)
     const Model* model() const;

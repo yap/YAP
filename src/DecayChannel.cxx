@@ -272,6 +272,23 @@ bool DecayChannel::consistent() const
 }
 
 //-------------------------
+ParticleSet particles(const DecayChannel& dc)
+{
+    ParticleSet S;
+    for (const auto& d : dc.daughters()) {
+        if (is_final_state_particle(d))
+            S.insert(d);
+        else if (is_decaying_particle(d)) {
+            auto s = particles(*std::static_pointer_cast<DecayingParticle>(d));
+            S.insert(s.begin(), s.end());
+        }
+        else
+            throw exceptions::Exception("neither final-state particle nor decaying particle", "find_particles");
+    }
+    return S;
+}
+
+//-------------------------
 const int charge(const DecayChannel& dc)
 {
     return std::accumulate(dc.daughters().begin(), dc.daughters().end(), 0,
