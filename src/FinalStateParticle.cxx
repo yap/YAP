@@ -49,5 +49,12 @@ bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const Fin
     return true;
 }
 
+//-------------------------
+bool is_final_state_particle(const std::shared_ptr<Particle>& p)
+{
+    return std::dynamic_pointer_cast<FinalStateParticle>(p) != nullptr;
+}
+
+
 }
 
