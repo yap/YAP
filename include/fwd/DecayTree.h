@@ -23,6 +23,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
@@ -31,6 +32,9 @@ class DecayTree;
 
 /// \typedef DecayTreeVector
 using DecayTreeVector = std::vector<std::shared_ptr<DecayTree> >;
+
+/// \typedef DecayTreeSet
+using DecayTreeSet = std::set<std::shared_ptr<DecayTree> >;
 
 /// \typedef DecayTreeVectorMap
 /// Map of spin projection (int) to DecayTreeVector
