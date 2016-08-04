@@ -3,7 +3,6 @@
 #include "container_utils.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
-#include "FinalStateParticle.h"
 #include "logging.h"
 #include "Model.h"
 #include "ParticleCombination.h"
@@ -299,30 +298,6 @@ const int charge(const DecayChannel& dc)
 std::string to_string(const DecayChannel& dc)
 {
     return dc.daughters().empty() ? "[nothing]" : to_string(dc.daughters());
-}
-
-//-------------------------
-FinalStateParticleVector DecayChannel::finalStateParticles() const
-{
-    FinalStateParticleVector fsps;
-
-    for (std::shared_ptr<Particle> d : Daughters_) {
-
-        // if daughter is fsp
-        if (std::dynamic_pointer_cast<FinalStateParticle>(d)) {
-            fsps.push_back(std::static_pointer_cast<FinalStateParticle>(d));
-
-        } else if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-            auto ddaughters = std::dynamic_pointer_cast<DecayingParticle>(d)->finalStateParticles(0);
-            fsps.insert(fsps.end(), ddaughters.begin(), ddaughters.end());
-
-        } else {
-            throw exceptions::Exception("Invalid daughter", "DecayChannel::DecayChannel");
-        }
-
-    }
-
-    return fsps;
 }
 
 }

@@ -256,18 +256,6 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
 }
 
 //-------------------------
-FinalStateParticleVector DecayingParticle::finalStateParticles(unsigned i) const
-{
-    if (i >= Channels_.size())
-        throw exceptions::Exception("Channel index too high (" + std::to_string(i) + " >= " + std::to_string(Channels_.size()) + ")",
-                                    "DecayingParticle::finalStateParticles");
-    if (!Channels_[i])
-        throw exceptions::Exception("Channel " + std::to_string(i) + " is empty", "DecayingParticle::finalStateParticles");
-
-    return Channels_[i]->finalStateParticles();
-}
-
-//-------------------------
 void DecayingParticle::printDecayChainLevel(int level) const
 {
     // get maximum length of particle names

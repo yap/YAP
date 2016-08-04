@@ -24,7 +24,6 @@
 #include "fwd/BlattWeisskopf.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
-#include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
@@ -94,11 +93,6 @@ public:
     template <typename ... Types>
     std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
     { ParticleVector V{A, B, other_daughters...}; return addChannel(V); }
-
-    /// Return final state particles of a channel
-    /// \return vector of shared_ptr's to FinalStateParticles of this decaying particle (in channel i)
-    /// \param i index of DecayChannel to return FinalStateParticles of.
-    FinalStateParticleVector finalStateParticles(unsigned i) const;
 
     /// \name Getters
     /// @{
