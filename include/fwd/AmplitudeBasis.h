@@ -27,13 +27,16 @@ namespace yap {
 namespace basis {
 
 template <typename T>
-struct canonical;
+class basis;
 
 template <typename T>
-struct transversity;
+class canonical;
 
 template <typename T>
-struct helicity;
+class transversity;
+
+template <typename T>
+class helicity;
 
 }
 
