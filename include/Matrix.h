@@ -44,11 +44,12 @@ public:
     constexpr Matrix(const std::array<std::array<T, C>, R>& m) noexcept : std::array<std::array<T, C>, R>(m) {}
 
     /// Default constructor;
-    /// produces a zero matrix
-    Matrix()
+    /// produces a matrix with all elements having the same value (0 by default)
+    /// \param element element which will be assigned to all elements
+    Matrix(T element = 0)
     {
         for (size_t i = 0; i < this->size(); ++i)
-            this->at(i).fill(T(0));
+            this->at(i).fill(element);
     }
 
     /// Use std::array's assignment operators

@@ -43,21 +43,23 @@ public:
     /// \param c1 1st amplitude
     /// \param c2 2nd amplitude
     /// \param c3 3rd amplitude
-    /// \param cov 3x3 covariance matrix
-    explicit basis(std::complex<T> c1, std::complex<T> c2, std::complex<T> c3, SquareMatrix<T, 3> cov = zeroMatrix<T, 3, 3>()) :
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit basis(const std::complex<T>& c1, const std::complex<T>& c2, const std::complex<T>& c3,
+            SquareMatrix<SquareMatrix<T, 2>, 3> cov = SquareMatrix<SquareMatrix<T, 2>, 3>(zeroMatrix<T, 2>())) :
         coordinates_({c1, c2, c3}), covariance_(cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
-    /// \param cov 3x3 covariance matrix
-    explicit basis(Vector<std::complex<T>, 3> c, SquareMatrix<T, 3> cov = SquareMatrix<T, 3>::zeroMatrix()) :
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit basis(Vector<std::complex<T>, 3> c,
+            SquareMatrix<SquareMatrix<T, 2>, 3> cov = SquareMatrix<SquareMatrix<T, 2>, 3>(zeroMatrix<T, 2>())) :
         coordinates_(c), covariance_(cov)
     {}
 
     /// constructor
-    /// \param cov 3x3 covariance matrix
-    explicit basis(SquareMatrix<T, 3> cov) :
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit basis(const SquareMatrix<SquareMatrix<T, 2>, 3>& cov) :
         coordinates_({0, 0, 0}), covariance_(cov)
     {}
 
@@ -80,7 +82,7 @@ private:
     /// vector of coordinates
     Vector<std::complex<T>, 3> coordinates_;
     /// covariance matrix
-    SquareMatrix<T, 3> covariance_;
+    SquareMatrix<SquareMatrix<T, 2>, 3> covariance_;
 };
 
 /// \struct canonical
