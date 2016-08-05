@@ -23,6 +23,8 @@
 
 #include "fwd/AmplitudeBasis.h"
 
+#include "ComplexBasis.h"
+
 #include "Exceptions.h"
 #include "Matrix.h"
 #include "Vector.h"
@@ -34,7 +36,7 @@ namespace yap {
 namespace basis {
 
 /// \class basis
-/// base class for amplitude bases
+/// base class for spin amplitude bases
 /// 3x3 covariance matrix (between coordinates) of 2x2 covariances (between real and imaginary parts of amplitudes)
 template <typename T>
 class basis {
@@ -66,6 +68,18 @@ public:
     explicit basis(const covariance_type& cov) :
         coordinates_({0, 0, 0}), covariance_(cov)
     {}
+
+    /// constructor
+    /// \param c1 1st amplitude with covariance in cartesian representation
+    /// \param c2 2nd amplitude with covariance in cartesian representation
+    /// \param c3 3rd amplitude with covariance in cartesian representation
+    basis(const complexBasis::cartesian<T>& c1, const complexBasis::cartesian<T>& c2, const complexBasis::cartesian<T>& c3) :
+        coordinates_({c1, c2, c3}), covariance_()
+    {
+        covariance_[0][0] = c1.covariance();
+        covariance_[1][1] = c2.covariance();
+        covariance_[2][2] = c3.covariance();
+    }
 
     /// \return coordinates
     const Vector<std::complex<T>, 3>& coordinates() const

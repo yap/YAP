@@ -27,7 +27,7 @@
 #include "Vector.h"
 
 #include <complex>
-#include <math>
+#include <math.h>
 
 namespace yap {
 
@@ -39,12 +39,23 @@ template <typename T>
 class cartesian {
 public:
     /// constructor
-    cartesian(const& std::complex<T>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
+    /// \param val complex value
+    /// \param cov covariance
+    cartesian(const std::complex<T>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
         value_(val), covariance_(cov)
     {}
 
+    /// constructor
+    /// \param val complex value
+    /// \param varReal variance of the real part
+    /// \param varImag variance of the imaginary part
+    cartesian(const std::complex<T>& val, T varReal, T varImag) :
+        value_(val), covariance_({varReal, 0, 0, varImag})
+    {}
+
     /// conversion constructor
-    cartesian(const polar& pol) :
+    /// \param pol complex number on polar representation
+    cartesian(const polar<T>& pol) :
         value_( pol.r()*cos(pol.phi()), pol.r()*sin(pol.phi()) ),
         covariance_(jacobian(pol)*pol.covariance()*jacobian(pol).transpose())
     {}
@@ -66,8 +77,7 @@ public:
     { return covariance_; }
 
 private:
-    /// jacobian for transformation from polar to cartesian
-    SquareMatrix<T, 2> jacobian(const polar& pol) const
+    SquareMatrix<T, 2> jacobian(const polar<T>& pol) const
     { return SquareMatrix<T, 2>({cos(pol.phi()), -pol.r()*sin(pol.phi()),
                                  sin(pol.phi()),  pol.r()*cos(pol.phi()) }); }
 
@@ -81,12 +91,26 @@ template <typename T>
 class polar {
 public:
     /// constructor
+    /// jacobian for transformation from polar to cartesian
+    /// \param r radius
+    /// \param phi angle
+    /// \param cov covariance
     polar(T r, T phi, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
         value_({r, phi}), covariance_(cov)
     {}
 
+    /// constructor
+    /// jacobian for transformation from polar to cartesian
+    /// \param r radius
+    /// \param phi angle
+    /// \param varR variance of the radius
+    /// \param varPhi variance of the angle
+    polar(T r, T phi, T varR, T varPhi) :
+        value_({r, phi}), covariance_({varR, 0, 0, varPhi})
+    {}
+
     /// conversion constructor
-    polar(const cartesian& cart) :
+    polar(const cartesian<T>& cart) :
         value_( sqrt(pow(cart.real(), 2) + pow(cart.imag(), 2)), atan2(cart.imag(), cart.real()) ),
         covariance_(jacobian(cart)*cart.covariance()*jacobian(cart).transpose())
     {}
@@ -95,7 +119,7 @@ public:
     const T r() const
     { return value_[0]; }
 
-    /// \return angle
+    /// \return angle [rad]
     const T phi() const
     { return value_[1]; }
 
@@ -105,7 +129,7 @@ public:
 
 private:
     /// jacobian for transformation from cartesian to polar
-    SquareMatrix<T, 2> jacobian(const cartesian& cart) const
+    SquareMatrix<T, 2> jacobian(const cartesian<T>& cart) const
     { return SquareMatrix<T, 2>({ cart.real()/r(),         cart.imag()/r,
                                  -cart.imag()/pow(r(), 2), cart.real()/pow(r(), 2) }); }
 
