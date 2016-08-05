@@ -118,6 +118,30 @@ const SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
     return D;
 }
 
+/// symmetric matrix
+/// \param list of entries, starting with the diagonal, 1st off diagonal ...
+template <typename T, size_t N>
+const SquareMatrix<T, N> symmetricMatrix(std::initializer_list<T> elements)
+{
+    size_t diag(0), i(0), j(0);
+
+    SquareMatrix<T, N> D = zeroMatrix<T, N, N>();
+    for (const T& el : elements) {
+        if (j>=N)
+            throw exceptions::Exception("too many elements given", "symmetricMatrix");
+
+        D[i][j] = el;
+        D[j++][i++] = el;
+
+        if (j>=N) {
+            i = 0;
+            j = ++diag;
+        }
+    }
+
+    return D;
+}
+
 /// transpose a matrix
 template <typename T, size_t R, size_t C>
 const Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)

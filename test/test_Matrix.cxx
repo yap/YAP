@@ -25,6 +25,10 @@ TEST_CASE( "Matrix" )
 
         auto u = yap::unitMatrix<double, 3>();
         REQUIRE(u == unit);
+
+        const yap::ThreeMatrix<double> cov({1, 4, 6,  4, 2, 5,  6, 5, 3});
+        const auto cov2 = yap::symmetricMatrix<double, 3>({1, 2, 3,  4, 5,  6});
+        REQUIRE(cov == cov2);
     }
 
     SECTION( "Transpose" ) {
