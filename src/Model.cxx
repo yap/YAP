@@ -320,8 +320,6 @@ void Model::addDataAccessor(DataAccessorSet::value_type da)
     // add DataAccessor
     if (DataAccessors_.insert(da).second) {
         // if insertion was successful
-        // set its index
-        da->setIndex(DataAccessors_.size() - 1);
 
         // if HelicityAngles is empty and DataAccessor requires
         // HelicityAngles, create HelicityAngles. Calling before
@@ -385,33 +383,10 @@ void Model::lock()
             ++it;
     }
 
-    // fix indices:
-    // collect used indices
-    std::set<unsigned> used;
+    // set DataAccessor indices
+    int index = -1;
     for (const auto& da : DataAccessors_)
-        used.insert(da->index());
-
-    // repair
-    unsigned index = 0;
-    while (index < used.size()) {
-
-        // if index is not used
-        if (used.find(index) == used.end()) {
-            // clear used
-            used.clear();
-            // reduce all DataAccessor indices greater than index by 1
-            // and rebuild used
-            for (auto& da : DataAccessors_) {
-                if (da->index() > (int)index)
-                    da->setIndex(da->index() - 1);
-                used.insert(da->index());
-            }
-        }
-
-        // if index is now used, increment it by 1
-        if (used.find(index) != used.end())
-            index += 1;
-    }
+        da->setIndex(++index);
 
     Locked_ = true;
 }

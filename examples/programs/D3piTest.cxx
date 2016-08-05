@@ -118,6 +118,8 @@ int main( int argc, char** argv)
     else
         LOG(INFO) << "inconsistent!";
 
+    M.lock();
+
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
 
