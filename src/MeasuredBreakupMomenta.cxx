@@ -15,8 +15,18 @@ MeasuredBreakupMomenta::MeasuredBreakupMomenta(Model& m) :
     StaticDataAccessor(m, equal_down_by_orderless_content),
     Q2_(RealCachedValue::create(*this))
 {
-    if (!model()->fourMomenta())
-        throw exceptions::Exception("Model's FourMomenta unset", "MeasuredBreakupMomenta::MeasuredBreakupMomenta");
+    registerWithModel();
+}
+
+//-------------------------
+void MeasuredBreakupMomenta::addToStaticDataAccessors()
+{
+    // look for Model's FourMomenta_
+    auto it_fm = std::find(staticDataAccessors().begin(), staticDataAccessors().end(), model()->fourMomenta().get());
+    if (it_fm == staticDataAccessors().end())
+        throw exceptions::Exception("MeasuredBreakupMomenta cannot be registered with the model before FourMomenta", "HelicityAngles::registerWithModel");
+    // add this to just after FourMomenta_
+    const_cast<StaticDataAccessorVector&>(staticDataAccessors()).insert(it_fm + 1, this);
 }
 
 //-------------------------

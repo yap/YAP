@@ -27,7 +27,6 @@
 #include "fwd/StatusManager.h"
 
 #include "DataAccessor.h"
-#include "Exceptions.h"
 
 namespace yap {
 
@@ -47,10 +46,7 @@ public:
     /// \param model Raw pointer to owning Model
     /// \param equal ParticleCombination equality struct for determining index assignments
     StaticDataAccessor(Model& m, const ParticleCombinationEqualTo& equal)
-        : DataAccessor(equal), Model_(nullptr)
-    {
-        setModel(m);
-    }
+        : DataAccessor(equal), Model_(&m) {}
 
     /// Set the Model
     virtual void setModel(Model& m)
@@ -64,6 +60,17 @@ public:
     const Model* model() const override
     { return Model_; }
 
+protected:
+
+    /// register with Model
+    void virtual registerWithModel() override;
+
+    /// add to model's StaticDataAccessors_
+    void virtual addToStaticDataAccessors();
+
+    /// access to the model's StaticDataAccessors_
+    StaticDataAccessorVector& staticDataAccessors();
+
 private:
 
     Model* Model_;
@@ -71,12 +78,7 @@ private:
 };
 
 /// remove expired elements of set
-inline void remove_expired(StaticDataAccessorVector& S)
-{
-    for (auto it = S.begin(); it != S.end(); )
-        if (!*it) it = S.erase(it);
-        else ++it;
-}
+void remove_expired(StaticDataAccessorVector& S);
 
 }
 

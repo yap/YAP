@@ -17,6 +17,18 @@ HelicityAngles::HelicityAngles(Model& m) :
     Phi_(RealCachedValue::create(*this)),
     Theta_(RealCachedValue::create(*this))
 {
+    registerWithModel();
+}
+
+//-------------------------
+void HelicityAngles::addToStaticDataAccessors()
+{
+    // look for Model's FourMomenta_
+    auto it_fm = std::find(staticDataAccessors().begin(), staticDataAccessors().end(), model()->fourMomenta().get());
+    if (it_fm == staticDataAccessors().end())
+        throw exceptions::Exception("HelicityAngles cannot be registered with the model before FourMomenta", "HelicityAngles::registerWithModel");
+    // add this to just after FourMomenta_
+    const_cast<StaticDataAccessorVector&>(staticDataAccessors()).insert(it_fm + 1, this);
 }
 
 //-------------------------

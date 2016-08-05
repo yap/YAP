@@ -98,6 +98,9 @@ public:
 
 protected:
 
+    /// add to model's StaticDataAccessors_
+    void virtual addToStaticDataAccessors() override;
+
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
@@ -105,6 +108,8 @@ protected:
 
     /// override to throw on adding non-two-body PC
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
+private:
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedValue> Phi_;

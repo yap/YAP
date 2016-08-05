@@ -214,6 +214,12 @@ public:
 
     /// @}
 
+    /// tell model to calculate and store helicity angles
+    void requireHelicityAngles();
+
+    /// tell model to calculate and store measured breakup momenta
+    void requireMeasuredBreakupMomenta();
+
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
@@ -230,6 +236,12 @@ public:
     /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
 
+    /// grant friend status to DataAccessor to register itself with this
+    friend class RecalculableDataAccessor;
+
+    /// grant friend status to DataAccessor to register itself with this
+    friend class StaticDataAccessor;
+
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 
@@ -239,9 +251,6 @@ protected:
     /// MeasuredBreakupMomenta_ (along with it's daughters through
     /// recursive calling) if it is NOT for a FSP.
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
-
-    /// register a DataAccessor with this Model
-    virtual void addDataAccessor(DataAccessorSet::value_type da);
 
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */

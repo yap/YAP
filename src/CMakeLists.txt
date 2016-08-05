@@ -42,6 +42,7 @@ set(YAP_SOURCES
 	RelativisticBreitWigner.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
+  StaticDataAccessor.cxx
 	StatusManager.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx

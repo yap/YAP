@@ -81,6 +81,9 @@ public:
 
 protected:
 
+    /// add to model's StaticDataAccessors_
+    void virtual addToStaticDataAccessors() override;
+
     /// override to throw on adding final-state PC or more-than-two-body PC
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
 

@@ -299,54 +299,17 @@ void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 }
 
 //-------------------------
-void Model::addDataAccessor(DataAccessorSet::value_type da)
+void Model::requireHelicityAngles()
 {
-    if (locked())
-        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addDataAccessor");
+    if (!HelicityAngles_)
+        HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
+}
 
-    // check if already in DataAccessors_
-    if (DataAccessors_.find(da) != DataAccessors_.end())
-        // do nothing
-        return;
-
-    if (da->model() != this)
-        throw exceptions::Exception("DataAccessor's Model is not this", "Model::addDataAccessor");
-
-    // if DataAccessor stores nothing
-    if (da->size() == 0)
-        // do nothing
-        return;
-
-    // add DataAccessor
-    if (DataAccessors_.insert(da).second) {
-        // if insertion was successful
-
-        // if HelicityAngles is empty and DataAccessor requires
-        // HelicityAngles, create HelicityAngles. Calling before
-        // adding to StaticDataAccessorVector insures that
-        // HelicityAngles are called before any newly created
-        // StaticDataAccessors
-        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)
-                and dynamic_cast<RequiresHelicityAngles*>(da)->requiresHelicityAngles()) {
-            HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
-            HelicityAngles_->registerWithModel();
-        }
-
-        // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
-        if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
-                and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta()) {
-            MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
-            MeasuredBreakupMomenta_->registerWithModel();
-        }
-
-        // if StaticDataAccessor, add to StaticDataAccessors_
-        if (dynamic_cast<StaticDataAccessor*>(da))
-            StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
-
-        // if RecalculableDataAccessor, add to RecalculableDataAccessors_
-        if (dynamic_cast<RecalculableDataAccessor*>(da))
-            RecalculableDataAccessors_.insert(static_cast<RecalculableDataAccessor*>(da));
-    }
+//-------------------------
+void Model::requireMeasuredBreakupMomenta()
+{
+    if (!MeasuredBreakupMomenta_)
+        MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
 }
 
 //-------------------------
