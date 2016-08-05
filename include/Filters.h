@@ -61,7 +61,9 @@ typename container::value_type lone_elt(container&& C)
     return *C.begin();
 }
 
-/// filter through only the members of a container of shared_ptr's that evaluate to true with all of the predicates given
+/// filter through only the members of a container of shared_ptr's
+/// that evaluate to true with all of the predicates given
+/// \todo generalize beyond std::set
 template <typename T, typename Last, typename ... UnaryPredicates>
 std::set<std::shared_ptr<T> > filter(const std::set<std::shared_ptr<T> >& S, Last p, UnaryPredicates ... P)
 {

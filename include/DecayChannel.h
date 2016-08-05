@@ -23,7 +23,6 @@
 
 #include "fwd/DecayChannel.h"
 
-#include "fwd/FinalStateParticle.h"
 #include "fwd/Model.h"
 #include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
@@ -53,9 +52,6 @@ public:
 
     /// check consistency of object
     virtual bool consistent() const;
-
-    /// \return vector of shared_ptr's to final-state particles of channel (recursively checked)
-    FinalStateParticleVector finalStateParticles() const;
 
     /// \name Getters
     /// @{

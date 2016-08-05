@@ -102,12 +102,12 @@ int main()
     m.GetParameter("N_1").Fix(1);
 
     // set fit fractions to fit
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(rho))),      20e-2,   quad(2.3e-2, 0.9e-2));
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_2))),      18.2e-2, quad(2.6e-2, 0.7e-2));
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_980))),  4.1e-2,  quad(0.9e-2, 0.3e-2));
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_1370))), 2.6e-2,  quad(1.8e-2, 0.6e-2));
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(f_0_1500))), 3.4e-2,  quad(1.0e-2, 0.8e-2));
-    m.setFitFraction(lone_elt(D->decayTreeSet(yap::to(sigma))),    41.8e-2, quad(1.4e-2, 2.5e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(rho)),      20e-2,   quad(2.3e-2, 0.9e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(f_2)),      18.2e-2, quad(2.6e-2, 0.7e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(f_0_980)),  4.1e-2,  quad(0.9e-2, 0.3e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(f_0_1370)), 2.6e-2,  quad(1.8e-2, 0.6e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(f_0_1500)), 3.4e-2,  quad(1.0e-2, 0.8e-2));
+    m.setFitFraction(decay_tree(*D, yap::to(sigma)),    41.8e-2, quad(1.4e-2, 2.5e-2));
 
     // set free amplitude parameters of fit
     m.fix(free_amplitude(*m.model(), yap::to(rho)), 1., 0.);

@@ -266,11 +266,11 @@ std::string to_string(const AdmixtureMap& mix)
 }
 
 //-------------------------
-size_t n_fixed(const AdmixtureMap& mix)
+size_t all_fixed(const AdmixtureMap& mix)
 {
-    return std::count_if(mix.begin(), mix.end(),
-                         [](const AdmixtureMap::value_type& m_b)
-                         {return m_b.second->variableStatus() == VariableStatus::fixed;});
+    return std::all_of(mix.begin(), mix.end(),
+                       [](const AdmixtureMap::value_type& m_b)
+                       {return m_b.second->variableStatus() == VariableStatus::fixed;});
 }
 
 //-------------------------
@@ -279,13 +279,13 @@ std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model
     std::vector<std::shared_ptr<DecayingParticle> > isps;
     isps.reserve(M.initialStateParticles().size());
     // collect first those particles for whom all admixture factors are fixed
-    for (const auto& kv : M.initialStateParticles())
-        if (kv.first->finalStateParticles(0).size() == M.finalStateParticles().size() and n_fixed(kv.second) == kv.second.size())
-            isps.push_back(kv.first);
+    for (const auto& isp_am : M.initialStateParticles())
+        if (decays_to_full_final_state(*isp_am.first) and all_fixed(isp_am.second))
+            isps.push_back(isp_am.first);
     // then collect the rest
-    for (const auto& kv : M.initialStateParticles())
-        if (kv.first->finalStateParticles(0).size() == M.finalStateParticles().size() and n_fixed(kv.second) < kv.second.size())
-            isps.push_back(kv.first);
+    for (const auto& isp_am : M.initialStateParticles())
+        if (decays_to_full_final_state(*isp_am.first) and !all_fixed(isp_am.second))
+            isps.push_back(isp_am.first);
     return isps;
 }
 

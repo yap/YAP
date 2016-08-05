@@ -86,7 +86,6 @@ public:
     const ParticleCombinationVector& particleCombinations() const
     { return ParticleCombinations_; }
 
-
     /// @}
 
     /// grant friend status to DecayChannel to call addParticleCombination
@@ -124,6 +123,9 @@ private:
 
 /// \return SpinVector from ParticleVector
 const SpinVector spins(const ParticleVector& v);
+
+/// \return whether a particle decays to its model's full final state
+const bool decays_to_full_final_state(const Particle& p);
 
 /// convert to string
 std::string to_string(const Particle& p);

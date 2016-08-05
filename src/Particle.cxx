@@ -63,6 +63,14 @@ const SpinVector spins(const ParticleVector& v)
 }
 
 //-------------------------
+const bool decays_to_full_final_state(const Particle& p)
+{
+    return std::any_of(p.particleCombinations().begin(), p.particleCombinations().end(),
+                       [&p](const std::shared_ptr<ParticleCombination>& pc)
+                       {return pc->indices().size() == p.model()->finalStateParticles().size();});
+}
+
+//-------------------------
 std::string to_string(const Particle& p)
 {
     return p.name() + "(" + to_string(p.quantumNumbers()) + "), mass = " + std::to_string(p.mass()->value());

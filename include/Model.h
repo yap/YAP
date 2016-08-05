@@ -292,6 +292,9 @@ private:
 /// \return string of AdmixtureMap
 std::string to_string(const AdmixtureMap& mix);
 
+/// \return whether a particle decays to its model's full final state
+const bool decays_to_full_final_state(const Particle& p);
+
 /// \return vector of shared_ptr to DecayingParticles inside Model
 /// that decay to its full final state, sorted such that the first
 /// entries have fixed prefactors
