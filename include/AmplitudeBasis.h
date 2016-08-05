@@ -97,7 +97,7 @@ protected:
     // conversion constructor
     explicit basis(const basis<T>& other, const SquareMatrix<T, 3>& jacobian) :
         coordinates_(jacobian * other.coordinates_),
-        covariance_(jacobian * other.covariance_ * jacobian.transpose())
+        covariance_(jacobian * other.covariance_ * transpose(jacobian))
     {}
 
 private:

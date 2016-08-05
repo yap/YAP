@@ -2,11 +2,24 @@
 #include <catch_capprox.hpp>
 
 #include <AmplitudeBasis.h>
+#include <ComplexBasis.h>
 #include <Constants.h>
 #include <logging.h>
 #include <Matrix.h>
 
-TEST_CASE( "BasisTransformations" )
+TEST_CASE( "ComplexBasisTransformations" )
+{
+    yap::complexBasis::polar<double>     p1(1.1, yap::rad(73.),  0.1, yap::rad(10.));
+
+    yap::complexBasis::cartesian<double> c1(p1);
+    yap::complexBasis::polar<double>     p2(c1);
+
+    REQUIRE( p1.r() == p2.r() );
+    REQUIRE( p1.phi() == p2.phi() );
+    REQUIRE( p1.covariance() == p2.covariance() );
+}
+
+TEST_CASE( "SpinBasisTransformations" )
 {
 
     // transversity

@@ -57,16 +57,16 @@ public:
     /// \param pol complex number on polar representation
     cartesian(const polar<T>& pol) :
         value_( pol.r()*cos(pol.phi()), pol.r()*sin(pol.phi()) ),
-        covariance_(jacobian(pol)*pol.covariance()*jacobian(pol).transpose())
+        covariance_(jacobian(pol) * pol.covariance() * transpose(jacobian(pol)))
     {}
 
     /// \return real part
     const T real() const
-    { return real(value_); }
+    { return std::real(value_); }
 
     /// \return imaginary part
     const T imag() const
-    { return imag(value_); }
+    { return std::imag(value_); }
 
     /// casting operator to std::complex
     operator std::complex<T>&()
@@ -111,8 +111,8 @@ public:
 
     /// conversion constructor
     polar(const cartesian<T>& cart) :
-        value_( sqrt(pow(cart.real(), 2) + pow(cart.imag(), 2)), atan2(cart.imag(), cart.real()) ),
-        covariance_(jacobian(cart)*cart.covariance()*jacobian(cart).transpose())
+        value_({ sqrt(pow(cart.real(), 2) + pow(cart.imag(), 2)), atan2(cart.imag(), cart.real()) }),
+        covariance_(jacobian(cart) * cart.covariance() * transpose(jacobian(cart)))
     {}
 
     /// \return radius
@@ -130,7 +130,7 @@ public:
 private:
     /// jacobian for transformation from cartesian to polar
     SquareMatrix<T, 2> jacobian(const cartesian<T>& cart) const
-    { return SquareMatrix<T, 2>({ cart.real()/r(),         cart.imag()/r,
+    { return SquareMatrix<T, 2>({ cart.real()/r(),         cart.imag()/r(),
                                  -cart.imag()/pow(r(), 2), cart.real()/pow(r(), 2) }); }
 
     /// radius, polar angle [rad]
