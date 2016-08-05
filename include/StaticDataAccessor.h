@@ -71,7 +71,7 @@ private:
 };
 
 /// remove expired elements of set
-inline void removeExpiredStatic(StaticDataAccessorVector& S)
+inline void remove_expired(StaticDataAccessorVector& S)
 {
     for (auto it = S.begin(); it != S.end(); )
         if (!*it) it = S.erase(it);

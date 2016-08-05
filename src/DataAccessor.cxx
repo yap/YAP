@@ -146,7 +146,7 @@ void DataAccessor::addCachedValue(std::shared_ptr<CachedValue> c)
 }
 
 //-------------------------
-void removeExpired(DataAccessorSet& S)
+void remove_expired(DataAccessorSet& S)
 {
     for (auto it = S.begin(); it != S.end(); )
         if (!*it) it = S.erase(it);

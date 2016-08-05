@@ -136,7 +136,7 @@ private:
 };
 
 /// remove expired elements of set
-void removeExpired(DataAccessorSet& S);
+void remove_expired(DataAccessorSet& S);
 
 }
 

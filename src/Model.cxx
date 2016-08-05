@@ -370,8 +370,8 @@ void Model::lock()
         InitialStateParticles_.begin()->second.begin()->second->variableStatus() = VariableStatus::fixed;
 
     // remove expired elements of DataAccessors_
-    removeExpired(DataAccessors_);
-    removeExpiredStatic(StaticDataAccessors_);
+    remove_expired(DataAccessors_);
+    remove_expired(StaticDataAccessors_);
 
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
