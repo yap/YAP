@@ -27,13 +27,8 @@ class testHelicitySpinAmplitude : public HelicitySpinAmplitude
 {
 public:
 
-    /// Constructor
-    /// \param two_J twice the spin of initial state
-    /// \param two_j SpinVector of daughters
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin angular momentum
-    testHelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
-        HelicitySpinAmplitude(two_J, two_j, l, two_s)
+    testHelicitySpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
+        HelicitySpinAmplitude(m, two_J, two_j, l, two_s)
     { }
 };
 
@@ -65,12 +60,16 @@ TEST_CASE( "UnitSpinAmplitude" )
 
                         try {
                             auto sa = formalism.spinAmplitude(two_J, two_j, l, two_s);
-                            auto sa_test = yap::testHelicitySpinAmplitude(two_J, two_j, l, two_s);
-                            sa_test.setModel(*M);
+                            auto sa_test = yap::testHelicitySpinAmplitude(*M, two_J, two_j, l, two_s);
 
                             DEBUG("two_J = " << two_J << "; two_j1 = " << two_j1 << "; two_j2 = " << two_j2
-                                    << "; two_s = " << two_s << "; l = " << l);
+                                  << "; two_s = " << two_s << "; l = " << l);
 
+                            REQUIRE( sa->twoM() == sa_test.twoM() );
+
+                            for (auto two_M : sa_test.twoM())
+                                REQUIRE( sa->twoM(two_M) == sa_test.twoM(two_M) );
+                                                        
                             for (auto pc_cache : M->particleCombinationCache()) {
                                 auto pc = pc_cache.lock();
                                 if (not pc
@@ -78,20 +77,17 @@ TEST_CASE( "UnitSpinAmplitude" )
                                         or not is_initial_state_particle_combination(*pc->origin(), M.get()))
                                     continue;
 
-                                //DEBUG("pc " << to_string_with_parent(*pc));
-
-                                REQUIRE( sa->twoM() == sa_test.twoM() );
-
                                 // loop over spin projections
                                 for (int two_M : sa_test.twoM()) {
-
-                                    REQUIRE( sa->twoM(two_M) == sa_test.twoM(two_M) );
-
+                                    
                                     for (auto two_m : sa_test.twoM(two_M)) {
+                                        
                                         auto amp = sa_test.calc(two_M, two_m, data[0], pc);
+
                                         if (std::dynamic_pointer_cast<yap::UnitSpinAmplitude>(sa))
                                             // if it is a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is 1
                                             REQUIRE(amp == Catch::Detail::CApprox(yap::Complex_1));
+
                                         else {
                                             // if it is NOT a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is != 1
                                             //REQUIRE(amp != yap::Complex_1);

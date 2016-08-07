@@ -21,12 +21,12 @@
 #ifndef yap_RecalculableDataAccessor_h
 #define yap_RecalculableDataAccessor_h
 
-#include "fwd/CalculationStatus.h"
+#include "fwd/RecalculableDataAccessor.h"
+
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
 
@@ -39,6 +39,9 @@
 
 namespace yap {
 
+/// \class RecalculateDataAccessor
+/// \brief Base class for all data accessors that will need to be updated
+/// \author Daniel Greenwald
 class RecalculableDataAccessor : public DataAccessor
 {
 public:

@@ -54,8 +54,8 @@ bool equal_zemach(const std::shared_ptr<const ParticleCombination>& A, const std
 }
 
 //-------------------------
-ZemachSpinAmplitude::ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
-    SpinAmplitude(two_J, two_j, l, two_s, ParticleCombinationEqualTo(equal_zemach))
+ZemachSpinAmplitude::ZemachSpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
+    SpinAmplitude(m, two_J, two_j, l, two_s, ParticleCombinationEqualTo(equal_zemach))
 {
     if (finalTwoJ().size() != 2)
         throw exceptions::Exception("Wrong number of daughter spins specified (" + std::to_string(finalTwoJ().size()) + " != 2)",

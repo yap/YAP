@@ -32,7 +32,7 @@
 
 namespace yap {
 
-/// \name DataAccessor
+/// \class DataAccessor
 /// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 class DataAccessor

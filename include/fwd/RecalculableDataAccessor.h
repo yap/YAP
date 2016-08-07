@@ -22,6 +22,7 @@
 #define yap_RecalculableDataAccessorFwd_h
 
 #include <set>
+#include <vector>
 
 namespace yap {
 

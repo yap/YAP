@@ -22,6 +22,7 @@
 #define yap_ZemachFormalism_h
 
 #include "fwd/DataPoint.h"
+#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/Spin.h"
 
@@ -43,11 +44,12 @@ class ZemachSpinAmplitude : public SpinAmplitude
 protected:
 
     /// Constructor
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    ZemachSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
+    ZemachSpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 public:
 
@@ -73,6 +75,10 @@ public:
     virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
                                             const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const override
+    { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
+
     /// \return "Zemach formalism"
     virtual std::string formalism() const override
     { return "Zemach formalism"; }
@@ -84,12 +90,6 @@ protected:
 
     /// call SpinAmplitude::addParticleCombination only if pc has more than 2 indices
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
-
-private:
-
-    /// check equality
-    virtual bool equals(const SpinAmplitude& other) const override
-    { return dynamic_cast<const ZemachSpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
 };
 
@@ -107,12 +107,13 @@ private:
 
     /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
-    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(two_J, two_j, l, two_s)); }
+    virtual std::shared_ptr<SpinAmplitude> create(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
+    { return std::shared_ptr<SpinAmplitude>(new ZemachSpinAmplitude(m, two_J, two_j, l, two_s)); }
 
 };
 

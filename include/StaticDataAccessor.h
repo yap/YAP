@@ -30,7 +30,7 @@
 
 namespace yap {
 
-/// \name StaticDataAccessor
+/// \class StaticDataAccessor
 /// \brief Base class for all data accessors that will only write to DataPoint once at initial data loading
 /// \author Johannes Rauch, Daniel Greenwald
 class StaticDataAccessor : public DataAccessor
@@ -38,19 +38,10 @@ class StaticDataAccessor : public DataAccessor
 public:
 
     /// Constructor
-    /// \param equal ParticleCombination equality struct for determining index assignments
-    StaticDataAccessor(const ParticleCombinationEqualTo& equal)
-        : DataAccessor(equal), Model_(nullptr) {}
-
-    /// Constructor
-    /// \param model Raw pointer to owning Model
+    /// \param model owning Model
     /// \param equal ParticleCombination equality struct for determining index assignments
     StaticDataAccessor(Model& m, const ParticleCombinationEqualTo& equal)
         : DataAccessor(equal), Model_(&m) {}
-
-    /// Set the Model
-    virtual void setModel(Model& m)
-    { Model_ = &m; }
 
     /// calculate CachedValues, store to DataPoint, and update StatusManager.
     /// Must be overriden in derived classes.
