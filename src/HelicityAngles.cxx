@@ -62,7 +62,7 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
                                      StatusManager& sm) const
 {
     // terminate recursion
-    if (pc->isFinalStateParticle())
+    if (is_final_state_particle_combination(*pc))
         return;
 
     // get pc's 4-mom in data frame

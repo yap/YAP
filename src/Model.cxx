@@ -160,7 +160,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addParticleCombination");
 
     // if does not trace up to an ISP, halt
-    if (not is_initial_state_particle_combination(*pc, this))
+    if (!is_from_initial_state_particle_combination(*pc, *this))
         return;
 
     FourMomenta_->addParticleCombination(pc);

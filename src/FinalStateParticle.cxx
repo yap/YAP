@@ -20,7 +20,7 @@ FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::s
 void FinalStateParticle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
 {
     // pc must be final state particle
-    if (!pc->isFinalStateParticle())
+    if (!is_final_state_particle_combination(*pc))
         throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
     // if pc not already in particleCombinations vector, add it

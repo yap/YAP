@@ -36,27 +36,6 @@ void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 }
 
 //-------------------------
-const std::shared_ptr<const ParticleCombination> ParticleCombination::origin() const
-{
-    auto pc = shared_from_this();
-    while (pc->parent())
-        pc = pc->parent();
-    return pc;
-}
-
-//-------------------------
-bool ParticleCombination::contains(const std::shared_ptr<const ParticleCombination>& B) const
-{
-    std::set<unsigned> setA(Indices_.begin(), Indices_.end());
-
-    const std::vector<unsigned>& indicesB(B->indices());
-    std::set<unsigned> setB(indicesB.begin(), indicesB.end());
-
-    // check if B is subset of A
-    return std::includes(setA.begin(), setA.end(), setB.begin(), setB.end());
-}
-
-//-------------------------
 bool ParticleCombination::consistent() const
 {
     bool C = true;
@@ -116,14 +95,11 @@ bool disjoint(const ParticleCombinationVector& pcv)
 }
 
 //-------------------------
-bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m)
+const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
 {
-    auto p = pc.origin();
-
-    for (auto& isp : m->initialStateParticles())
-        if (any_of(isp.first->particleCombinations(), p))
+    for (auto& isp : m.initialStateParticles())
+        if (any_of(isp.first->particleCombinations(), pc.shared_from_this()))
             return true;
-
     return false;
 }
 
@@ -133,10 +109,9 @@ void prune_particle_combinations(ParticleCombinationVector& PCs)
     // get ISP PCs
     size_t ispNIndices(0);
     for (auto& pc : PCs)
-        ispNIndices = std::max(ispNIndices, pc->origin()->indices().size());
+        ispNIndices = std::max(ispNIndices, origin(*pc).indices().size());
 
-    PCs.erase(std::remove_if(PCs.begin(), PCs.end(),
-    [&] (std::shared_ptr<yap::ParticleCombination>& pc) { return (pc->origin()->indices().size() < ispNIndices); }),
+    PCs.erase(std::remove_if(PCs.begin(), PCs.end(), [&](std::shared_ptr<yap::ParticleCombination>& pc){return (origin(*pc).indices().size() < ispNIndices);}),
     PCs.end());
 
     if (PCs.empty())
@@ -173,7 +148,7 @@ std::string to_string(const ParticleCombination& pc)
     }
     s.erase(s.size() - 3, 3);
     for (auto& d : pc.daughters())
-        if (!d->isFinalStateParticle())
+        if (!is_final_state_particle_combination(*d))
             s += "; " + to_string(*d);
     return s;
 }
@@ -184,7 +159,7 @@ std::string to_string_with_parent(const ParticleCombination& pc)
     if (!pc.parent())
         return to_string(pc);
 
-    return to_string(pc) + " in " + to_string(*pc.origin());
+    return to_string(pc) + " in " + to_string(origin(pc));
 }
 
 //-------------------------

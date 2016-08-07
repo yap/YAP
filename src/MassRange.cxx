@@ -1,5 +1,6 @@
 #include "MassRange.h"
 
+#include "container_utils.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "FinalStateParticle.h"
@@ -34,7 +35,7 @@ const MassRange mass_range(const std::shared_ptr<ParticleCombination>& pc, std::
         throw exceptions::Exception("FSPs not a final state of ISP", "mass_range");
 
     // pc must be a subset of one of these PCs
-    auto it = std::find_if(isp_pcs.begin(), isp_pcs.end(), std::bind(std::mem_fn(&ParticleCombination::contains), std::placeholders::_1, pc));
+    auto it = std::find_if(isp_pcs.begin(), isp_pcs.end(), [&](const std::shared_ptr<ParticleCombination>& isp){return contains(isp->indices(), pc->indices());});
     if (it == isp_pcs.end())
         throw exceptions::Exception("pc does not match ISP and FPSs", "mass_range");
 

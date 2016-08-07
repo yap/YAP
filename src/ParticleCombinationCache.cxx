@@ -12,7 +12,7 @@ namespace yap {
 //-------------------------
 ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(const ParticleCombination& other) const
 {
-    if (other.isFinalStateParticle())
+    if (is_final_state_particle_combination(other))
         return create_fsp(other.indices()[0]);
 
     auto pc = shared_ptr_type(new ParticleCombination());

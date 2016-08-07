@@ -41,6 +41,26 @@ namespace yap {
 /// created through the ParticleCombinationCache
 class ParticleCombination : public std::enable_shared_from_this<ParticleCombination>
 {
+private:
+
+    /// default constructor
+    ParticleCombination() = default;
+
+    /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
+    ParticleCombination(unsigned index) : Indices_(1, index) {}
+
+    /// Copy constructor is deleted
+    ParticleCombination(const ParticleCombination&) = delete;
+
+    /// Move constructor is deleted
+    ParticleCombination(ParticleCombination&&) = delete;
+
+    /// Copy assignment is deleted
+    ParticleCombination& operator=(const ParticleCombination&) = delete;
+
+    /// Move assignment is deleted
+    ParticleCombination& operator=(ParticleCombination&&) = delete;
+
 public:
 
     /// \name Getters
@@ -59,16 +79,6 @@ public:
     { return Parent_.lock(); }
 
     /// @}
-
-    /// \return whether ParticleCombination is for a final state particle
-    bool isFinalStateParticle() const
-    { return Daughters_.empty() and Indices_.size() == 1; }
-
-    /// \return top of decay tree this ParticleCombination belongs to
-    const std::shared_ptr<const ParticleCombination> origin() const;
-
-    /// \return whether the indices of B are a subset this' indices
-    bool contains(const std::shared_ptr<const ParticleCombination>& B) const;
 
     /// Checks consistency of object
     bool consistent() const;
@@ -92,30 +102,6 @@ private:
 
     /// vector indices of daughters
     std::vector<unsigned> Indices_;
-
-    /// \name private constructors
-    /// for valid use of shared_from_this()
-    /// @{
-
-    /// default constructor
-    ParticleCombination() = default;
-
-    /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
-    ParticleCombination(unsigned index) : Indices_(1, index) {}
-
-    /// Copy constructor is deleted
-    ParticleCombination(const ParticleCombination&) = delete;
-
-    /// Move constructor is deleted
-    ParticleCombination(ParticleCombination&&) = delete;
-
-    /// Copy assignment is deleted
-    ParticleCombination& operator=(const ParticleCombination&) = delete;
-
-    /// Move assignment is deleted
-    ParticleCombination& operator=(ParticleCombination&&) = delete;
-
-    /// @}
 
 };
 
@@ -164,8 +150,20 @@ inline bool any_of(const ParticleCombinationVector& PCs,
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
 
+/// \return whether ParticleCombination is for a final state particle
+inline const bool is_final_state_particle_combination(const ParticleCombination& pc)
+{ return pc.daughters().empty() and pc.indices().size() == 1; }
+
+/// \return top of decay tree this ParticleCombination belongs to
+inline const ParticleCombination& origin(const ParticleCombination& pc)
+{ return pc.parent() ? origin(*pc.parent()) : pc; }
+
 /// \return whether pc is a pc of an initial state particle
-bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m);
+const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m);
+
+/// \return whether pc is or is from a pc of an initial state particle
+inline const bool is_from_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
+{ return is_initial_state_particle_combination(origin(pc), m); }
 
 /// only keep particleCombinations with the highest number of indices in their top-most parent
 void prune_particle_combinations(ParticleCombinationVector& PCs);

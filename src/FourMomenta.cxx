@@ -51,7 +51,7 @@ void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc
         TotalIndex_ = index;
 
     /// check for FSP
-    if (pc->isFinalStateParticle()) {
+    if (is_final_state_particle_combination(*pc)) {
         if (pc->indices()[0] + 1 > FSPIndices_.size())
             FSPIndices_.resize(pc->indices()[0] + 1, -1);
         if (FSPIndices_[pc->indices()[0]] < 0)
@@ -157,44 +157,44 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
     std::set<unsigned> used;
 
     // print the ISP
-    for (auto& kv : symmetrizationIndices())
+    for (auto& pc_i : symmetrizationIndices())
         // if ISP and not yet printed (should only print once)
-        if (kv.first->indices().size() == n_fsp and used.find(kv.second) == used.end()) {
+        if (pc_i.first->indices().size() == n_fsp and used.find(pc_i.second) == used.end()) {
             os << "    ISP : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
+            print_mp_string(os, n, m_p, pc_i.first, m(d, pc_i.first), p(d, pc_i.first));
             os << std::endl;
-            used.insert(kv.second);
+            used.insert(pc_i.second);
         }
 
     // print the FSP's
     for (size_t i = 0; i < FSPIndices_.size(); ++i)
-        for (auto& kv : symmetrizationIndices())
-            if (kv.first->isFinalStateParticle() and kv.first->indices()[0] == i and used.find(kv.second) == used.end()) {
+        for (auto& pc_i : symmetrizationIndices())
+            if (is_final_state_particle_combination(*pc_i.first) and pc_i.first->indices()[0] == i and used.find(pc_i.second) == used.end()) {
                 os << "    FSP : ";
-                print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first), model()->finalStateParticles()[i]->mass());
+                print_mp_string(os, n, m_p, pc_i.first, m(d, pc_i.first), p(d, pc_i.first), model()->finalStateParticles()[i]->mass());
                 os << std::endl;
-                used.insert(kv.second);
+                used.insert(pc_i.second);
             }
 
 
     // print the rest in increasing number of particle content
     for (unsigned i = 2; i < n_fsp; ++i)
-        for (auto& kv : symmetrizationIndices())
+        for (auto& pc_i : symmetrizationIndices())
             // if i-particle mass and not yet printed
-            if (kv.first->indices().size() == i and used.find(kv.second) == used.end()) {
+            if (pc_i.first->indices().size() == i and used.find(pc_i.second) == used.end()) {
                 os << "    " << i << "-p : ";
-                print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
+                print_mp_string(os, n, m_p, pc_i.first, m(d, pc_i.first), p(d, pc_i.first));
                 os << std::endl;
-                used.insert(kv.second);
+                used.insert(pc_i.second);
             }
 
     // print unused
-    for (auto& kv : symmetrizationIndices())
-        if (used.find(kv.second) == used.end()) {
+    for (auto& pc_i : symmetrizationIndices())
+        if (used.find(pc_i.second) == used.end()) {
             os << "        : ";
-            print_mp_string(os, n, m_p, kv.first, m(d, kv.first), p(d, kv.first));
+            print_mp_string(os, n, m_p, pc_i.first, m(d, pc_i.first), p(d, pc_i.first));
             os << std::endl;
-            used.insert(kv.second);
+            used.insert(pc_i.second);
         }
 
     return os;
