@@ -45,29 +45,6 @@ const std::shared_ptr<const ParticleCombination> ParticleCombination::origin() c
 }
 
 //-------------------------
-ParticleCombinationVector ParticleCombination::leaves()
-{
-    if (Daughters_.empty())
-        return ParticleCombinationVector(1, shared_from_this());
-
-    ParticleCombinationVector V;
-    for (const auto& d : Daughters_) {
-        auto v = d->leaves();
-        V.insert(V.end(), v.begin(), v.end());
-    }
-    return V;
-}
-
-//-------------------------
-bool ParticleCombination::decaysToFinalStateParticles() const
-{
-    for (auto& leaf : const_cast<ParticleCombination*>(this)->leaves())
-        if (!leaf->isFinalStateParticle())
-            return false;
-    return true;
-}
-
-//-------------------------
 bool ParticleCombination::contains(const std::shared_ptr<const ParticleCombination>& B) const
 {
     std::set<unsigned> setA(Indices_.begin(), Indices_.end());

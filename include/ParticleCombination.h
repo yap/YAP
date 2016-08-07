@@ -67,12 +67,6 @@ public:
     /// \return top of decay tree this ParticleCombination belongs to
     const std::shared_ptr<const ParticleCombination> origin() const;
 
-    /// \return vector of all leaves of decay tree below this ParticleCombination
-    ParticleCombinationVector leaves();
-
-    /// \return whether all leaves are final state particles
-    bool decaysToFinalStateParticles() const;
-
     /// \return whether the indices of B are a subset this' indices
     bool contains(const std::shared_ptr<const ParticleCombination>& B) const;
 
