@@ -24,7 +24,10 @@
 
 namespace yap {
 
-namespace complexBasis {
+namespace complex_basis {
+
+template <typename T>
+class basis;
 
 template <typename T>
 class cartesian;
