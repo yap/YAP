@@ -29,8 +29,7 @@ namespace yap {
 /// \brief Struct to calculate a compensated sum using the Kahan summation algorithm
 /// \author Johannes Rauch, Daniel Greenwald
 template <typename T>
-struct CompensatedSum
-{
+struct CompensatedSum {
     /// sum
     T sum;
 

@@ -123,18 +123,18 @@ void DataAccessor::registerWithModel()
 {
     if (!model())
         throw exceptions::Exception("Model unset", "DataAccessor::registerWithModel");
-    
+
     if (model()->locked())
         throw exceptions::Exception("Model is locked and cannot be modified", "DataAccessor::registerWithModel");
-    
+
     // if HelicityAngles is required
     if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles*>(this)->requiresHelicityAngles())
         const_cast<Model*>(model())->requireHelicityAngles();
-    
+
     // if MeasuredBreakupMomenta is required
     if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta*>(this)->requiresMeasuredBreakupMomenta())
         const_cast<Model*>(model())->requireMeasuredBreakupMomenta();
-    
+
     // if stores nothing, do nothing
     if (size() == 0)
         return;

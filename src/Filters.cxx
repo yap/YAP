@@ -25,7 +25,7 @@ const bool filter_decay_channel::operator()(const FreeAmplitude& fa) const
 //-------------------------
 const bool filter_spin_amplitude::operator()(const FreeAmplitude& fa) const
 {
-    return by_ptr(*this,fa.spinAmplitude());
+    return by_ptr(*this, fa.spinAmplitude());
 }
 
 //-------------------------

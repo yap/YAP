@@ -100,7 +100,7 @@ int main( int argc, char** argv)
     D->addChannel(sigma, piPlus);
 
     FLOG(INFO) << "number of free amplitudes = " << free_amplitudes(M).size();
-    
+
     // Add channels to D
     *free_amplitude(*D, yap::to(rho))      = std::polar(1., 0.);
     *free_amplitude(*D, yap::to(f_0_980))  = std::polar(1.4, yap::rad(12.));

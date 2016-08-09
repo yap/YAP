@@ -279,8 +279,7 @@ ParticleSet particles(const DecayChannel& dc)
         else if (is_decaying_particle(d)) {
             auto s = particles(*std::static_pointer_cast<DecayingParticle>(d));
             S.insert(s.begin(), s.end());
-        }
-        else
+        } else
             throw exceptions::Exception("neither final-state particle nor decaying particle", "find_particles");
     }
     return S;

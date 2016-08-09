@@ -16,7 +16,7 @@ TEST_CASE("CompensatedSum")
 
     unsigned long N = 1000000;
 
-    for (unsigned long i=0; i<N; ++i) {
+    for (unsigned long i = 0; i < N; ++i) {
         kahanSum += 1;
         normalSum += 1;
     }

@@ -62,7 +62,7 @@ public:
     virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const override
     { return (initialTwoJ() == 0) ? Coefficients_.at(two_m) : SpinAmplitude::amplitude(d, pc, two_M, two_m); }
-    
+
     /// Overrides SpinAmplitude::calculate to do nothing if initialTwoJ() == 0
     /// \param d DataPoint to calculate into
     /// \param sm StatusManager to update

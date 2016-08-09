@@ -167,7 +167,7 @@ void bat_fit::setParameters(const std::vector<double>& p)
 {
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
         *FreeAmplitudes_[i] = std::polar(p[i * 2], yap::rad(p[i * 2 + 1]));
-    
+
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
     Integrator_(Integral_, IntegralPartitions_);

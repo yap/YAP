@@ -48,7 +48,7 @@ int main()
 
     // create model
     auto m = d3pi_fit("D3PI_fit", std::make_unique<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
-    
+
     // load fit data and partition it
     load_data(m.fitData(), *m.model(), m.axes(), m.isp()->mass()->value(), *t_mcmc, 10000, 1);
     m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);

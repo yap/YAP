@@ -46,7 +46,7 @@ double fit_fitFraction::LogLikelihood(const std::vector<double>& p)
 
     setParameters(P);
     unsigned c = GetCurrentChain();
-    
+
     double L = 0;
     for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
         if (FitFractions_[i][0] > 0)

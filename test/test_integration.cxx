@@ -34,7 +34,7 @@ namespace yap {
 //-------------------------
 // hidden helper function,
 // resolves C++ problem related to naming of functions and call to std::async below
-    const double sum_of_intensities(const Model& M, DataPartition& D, double ped)
+const double sum_of_intensities(const Model& M, DataPartition& D, double ped)
 {
     // calculate components
     M.calculate(D);

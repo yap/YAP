@@ -50,10 +50,10 @@ TEST_CASE( "UnitSpinAmplitude" )
     static const unsigned J_max = 4;
     unsigned false_unit(0);
 
-    for (unsigned two_J = 0; two_J < 2*J_max; two_J += 2)
-        for (unsigned two_j2 = 0; two_j2 < 2*J_max; two_j2 += 2)
-            for (unsigned two_j1 = 0; two_j1 < 2*J_max; two_j1 += 2)
-                for (unsigned two_s = 0; two_s < 2*J_max; two_s += 2)
+    for (unsigned two_J = 0; two_J < 2 * J_max; two_J += 2)
+        for (unsigned two_j2 = 0; two_j2 < 2 * J_max; two_j2 += 2)
+            for (unsigned two_j1 = 0; two_j1 < 2 * J_max; two_j1 += 2)
+                for (unsigned two_s = 0; two_s < 2 * J_max; two_s += 2)
                     for (unsigned l = 0; l < J_max; ++l) {
 
                         const yap::SpinVector two_j({two_j1, two_j2});
@@ -69,7 +69,7 @@ TEST_CASE( "UnitSpinAmplitude" )
 
                             for (auto two_M : sa_test.twoM())
                                 REQUIRE( sa->twoM(two_M) == sa_test.twoM(two_M) );
-                                                        
+
                             for (auto pc_cache : M->particleCombinationCache()) {
                                 auto pc = pc_cache.lock();
                                 if (not pc
@@ -79,9 +79,9 @@ TEST_CASE( "UnitSpinAmplitude" )
 
                                 // loop over spin projections
                                 for (int two_M : sa_test.twoM()) {
-                                    
+
                                     for (auto two_m : sa_test.twoM(two_M)) {
-                                        
+
                                         auto amp = sa_test.calc(two_M, two_m, data[0], pc);
 
                                         if (std::dynamic_pointer_cast<yap::UnitSpinAmplitude>(sa))
@@ -100,8 +100,7 @@ TEST_CASE( "UnitSpinAmplitude" )
                                     }
                                 }
                             }
-                        }
-                        catch (const yap::exceptions::AngularMomentumNotConserved&) { /* ignore */ }
+                        } catch (const yap::exceptions::AngularMomentumNotConserved&) { /* ignore */ }
                     }
 
     // if false_unit is a big number, one can probably make UnitSpinAmplitudes in more cases

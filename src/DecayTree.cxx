@@ -155,8 +155,8 @@ std::shared_ptr<DecayingParticle> DecayTree::decayingParticle() const
 
     if (S.size() > 1)
         throw exceptions::Exception("more than one decaying particle found", "DecayTree::decayingParticle");
- 
-   return std::dynamic_pointer_cast<DecayingParticle>(lone_elt(S));
+
+    return std::dynamic_pointer_cast<DecayingParticle>(lone_elt(S));
 }
 
 //-------------------------

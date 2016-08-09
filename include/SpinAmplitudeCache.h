@@ -51,7 +51,7 @@ public:
     { return (A.get() == B.get()) or A->equalTo(*B); }
 
     using WeakPtrCache::find;
-    
+
     /// check if cache contains element matching arguments
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
