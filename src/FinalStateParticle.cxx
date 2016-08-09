@@ -24,7 +24,7 @@ void FinalStateParticle::addParticleCombination(const std::shared_ptr<ParticleCo
         throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
     // if pc not already in particleCombinations vector, add it
-    if (!any_of(particleCombinations(), pc))
+    if (particleCombinations().find(pc) == particleCombinations().end())
         Particle::addParticleCombination(pc);
 }
 

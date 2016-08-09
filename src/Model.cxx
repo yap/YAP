@@ -413,7 +413,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
         auto pc = particleCombinationCache().composite(pcv);
 
         // check that pc isn't already in M
-        if (any_of(M, pc, equal_by_orderless_content))
+        if (std::any_of(M.begin(), M.end(), std::bind(&equal_by_orderless_content, pc, std::placeholders::_1)))
             throw exceptions::Exception("axis requested twice", "Model::massAxes");
 
         M.push_back(pc);

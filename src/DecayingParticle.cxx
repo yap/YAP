@@ -134,7 +134,8 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                 // loop over decay trees of daughter with appropriate spin projection
                                 for (const auto& dt : dp->DecayTrees_[two_m[d]]) {
                                     // check that decay channel of free amplitude of decay tree has particle combination
-                                    if (any_of(dt->freeAmplitude()->decayChannel()->particleCombinations(), pc->daughters()[d])) {
+                                    if (dt->freeAmplitude()->decayChannel()->particleCombinations().find(pc->daughters()[d])
+                                        != dt->freeAmplitude()->decayChannel()->particleCombinations().end()) {
                                         for (const auto& DT : DTV) {
                                             // add copy of DT to DTV_temp
                                             DTV_temp.push_back(std::make_shared<DecayTree>(*DT));
@@ -156,7 +157,8 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                         else {
 
                             // check that particle has daughter particle combination
-                            if (any_of(Channels_.back()->daughters()[d]->particleCombinations(), pc->daughters()[d])) {
+                            if (Channels_.back()->daughters()[d]->particleCombinations().find(pc->daughters()[d])
+                                != Channels_.back()->daughters()[d]->particleCombinations().end()) {
                                 // set all elts of DTV to have proper daughter spin projection
                                 for (auto& DT : DTV)
                                     DT->setDaughterSpinProjection(d, two_m[d]);
@@ -227,7 +229,7 @@ void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleComb
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (any_of(dc->particleCombinations(), pc, equal_down))
+        if (std::any_of(dc->particleCombinations().begin(), dc->particleCombinations().end(), std::bind(&equal_down, pc, std::placeholders::_1)))
             dc->addParticleCombination(pc);
     }
 }

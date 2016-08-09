@@ -21,8 +21,9 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
-#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
+
+#include "fwd/Model.h"
 
 #include <algorithm>
 #include <functional>
@@ -137,15 +138,6 @@ bool equal_down_by_orderless_content(const std::shared_ptr<const ParticleCombina
 
 /// @}
 
-/// \return if the given ParticleCombination is in ParticleCombinations
-/// \param PCs ParticleCombinations
-/// \param c ParticleCombination to look for equivalent of in ParticleCombinations
-/// \param equal ParticleCombinationEqualTo object for checking equality
-inline bool any_of(const ParticleCombinationVector& PCs,
-                   const std::shared_ptr<const ParticleCombination>& c,
-                   const ParticleCombinationEqualTo& equal = equal_by_shared_pointer)
-{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
-
 /// \return whether all members of ParticleCombinationVector are non-overlapping with each other
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
@@ -166,7 +158,7 @@ inline const bool is_from_initial_state_particle_combination(const ParticleCombi
 { return is_initial_state_particle_combination(origin(pc), m); }
 
 /// only keep particleCombinations with the highest number of indices in their top-most parent
-void prune_particle_combinations(ParticleCombinationVector& PCs);
+void prune_particle_combinations(ParticleCombinationSet& PCs);
 
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc, std::string before = "(", std::string after = ")");

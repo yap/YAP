@@ -65,7 +65,7 @@ public:
     { return SpinAmplitudes_; }
 
     /// \return vector of ParticleCombinations
-    const ParticleCombinationVector& particleCombinations() const
+    const ParticleCombinationSet& particleCombinations() const
     { return ParticleCombinations_; }
 
     /// \return raw pointer to model through first Daughter
@@ -105,7 +105,7 @@ private:
     SpinAmplitudeVector SpinAmplitudes_;
 
     /// vector of shared_ptr<ParticleCombination>
-    ParticleCombinationVector ParticleCombinations_;
+    ParticleCombinationSet ParticleCombinations_;
 
 };
 

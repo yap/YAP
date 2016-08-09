@@ -97,25 +97,27 @@ bool disjoint(const ParticleCombinationVector& pcv)
 //-------------------------
 const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
 {
-    for (auto& isp : m.initialStateParticles())
-        if (any_of(isp.first->particleCombinations(), pc.shared_from_this()))
+    for (auto& isp_am : m.initialStateParticles())
+        if (isp_am.first->particleCombinations().find(std::const_pointer_cast<ParticleCombination>(pc.shared_from_this()))
+            != isp_am.first->particleCombinations().end())
             return true;
     return false;
 }
 
 //-------------------------
-void prune_particle_combinations(ParticleCombinationVector& PCs)
+void prune_particle_combinations(ParticleCombinationSet& PCs)
 {
     // get ISP PCs
     size_t ispNIndices(0);
     for (auto& pc : PCs)
         ispNIndices = std::max(ispNIndices, origin(*pc).indices().size());
 
-    PCs.erase(std::remove_if(PCs.begin(), PCs.end(), [&](std::shared_ptr<yap::ParticleCombination>& pc){return (origin(*pc).indices().size() < ispNIndices);}),
-    PCs.end());
-
-    if (PCs.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "prune_particle_combinations");
+    for (auto it = PCs.begin(); it != PCs.end(); ) {
+        if (origin(**it).indices().size() < ispNIndices)
+            it = PCs.erase(it);
+        else
+            ++it;
+    }
 }
 
 //-------------------------

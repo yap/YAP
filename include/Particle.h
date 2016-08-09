@@ -82,8 +82,8 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
-    /// \return ParticleCombinationVector
-    const ParticleCombinationVector& particleCombinations() const
+    /// \return ParticleCombinations_
+    const ParticleCombinationSet& particleCombinations() const
     { return ParticleCombinations_; }
 
     /// @}
@@ -96,7 +96,7 @@ protected:
     /// set mass parameter
     void setMass(std::shared_ptr<RealParameter> m);
 
-    /// add ParticleCombination to ParticleCombinationVector_
+    /// add ParticleCombination to ParticleCombinations_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) = 0;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
@@ -117,7 +117,7 @@ private:
     std::string Name_;
 
     /// vector of ParticleCombinations that can comprise this particle
-    ParticleCombinationVector ParticleCombinations_;
+    ParticleCombinationSet ParticleCombinations_;
 
 };
 
