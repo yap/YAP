@@ -24,7 +24,7 @@
 
 namespace yap {
 
-namespace basis {
+namespace amplitude_basis {
 
 template <typename T>
 class basis;

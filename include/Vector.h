@@ -32,6 +32,7 @@
 #include <numeric>
 #include <ostream>
 #include <string>
+#include <type_traits>
 
 namespace yap {
 
@@ -176,8 +177,8 @@ public:
     { for (size_t i = 0; i < V.size(); ++i) Elements_[i] = V[i]; }
 
     /// Default constructor
-    Vector()
-    { Elements_.fill(T(0)); }
+    Vector(T element = 0)
+    { Elements_.fill(element); }
 
     /// element access operator
     T& operator[](size_t i)
@@ -212,8 +213,9 @@ public:
     { return VectorIterator<const T, N>(Elements_.end()); }
 
     /// inner (dot) product of #Vector's
-    virtual T operator*(const Vector<T, N>& B) const
-    { return std::inner_product(Elements_.begin(), Elements_.end(), B.Elements_.begin(), T(0)); }
+    virtual auto operator*(const Vector<T, N>& B) const
+    -> decltype(T(0) * T(0))
+    { return std::inner_product(Elements_.begin(), Elements_.end(), B.Elements_.begin(), T(0) * T(0)); }
 
     /// equality operator
     friend bool operator==(const Vector<T, N>& lhs, const Vector<T, N>& rhs)
@@ -379,7 +381,19 @@ const Vector<T, N> unit(const Vector<T, N>& V)
 template <typename T, size_t R, size_t C>
 const Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
 {
-    Vector<T, R> v = {};
+    Vector<T, R> v;
+    for (size_t r = 0; r < R; ++r)
+        for (size_t c = 0; c < C; ++c)
+            v[r] += M[r][c] * V[c];
+    return v;
+}
+
+/// Matrix * Vector with different template types
+template <typename T1, typename T2, size_t R, size_t C>
+const auto operator*(const Matrix<T1, R, C>& M, const Vector<T2, C>& V)
+-> const Vector<typename std::remove_cv<decltype(operator*(M[0][0], V[0]))>::type, R>
+{
+    Vector<typename std::remove_cv<decltype(operator*(M[0][0], V[0]))>::type, R> v;
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             v[r] += M[r][c] * V[c];

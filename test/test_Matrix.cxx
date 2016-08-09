@@ -68,6 +68,20 @@ TEST_CASE( "Matrix" )
         const auto v4 = yap::FourVector<double>({4, 3, 2, 1});
         REQUIRE( m * yap::FourVector<double>({4, 4, 3, 2}) == yap::FourVector<double>({4, 16, 43, 70}) );
         REQUIRE( m4 * v4 == yap::FourVector<double>({20, 60, 100, 140}) );
+
+        // non-trivial template arguments
+        yap::ThreeMatrix<yap::SquareMatrix<double, 2>> meh;
+        meh[0][0] = yap::symmetricMatrix<double, 2>({1,2,3});
+        meh[1][1] = yap::symmetricMatrix<double, 2>({4,5,6});
+        meh[2][2] = yap::symmetricMatrix<double, 2>({7,8,9});
+
+        REQUIRE( meh * unit == meh );
+        REQUIRE( unit * meh == meh );
+        REQUIRE( -unit * meh == -meh );
+        REQUIRE( zero * meh == meh * zero );
+        REQUIRE( meh - meh == meh * zero );
+        REQUIRE( meh + meh == 2. * meh );
+        REQUIRE( zero * meh != meh );
     }
 
     SECTION("boost") {
