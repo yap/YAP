@@ -19,8 +19,8 @@
 /// \file
 /// Contains forward declarations only
 
-#ifndef yap_AComplexBasisFwd_h
-#define yap_AComplexBasisFwd_h
+#ifndef yap_ComplexBasisFwd_h
+#define yap_ComplexBasisFwd_h
 
 namespace yap {
 
