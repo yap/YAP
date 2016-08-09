@@ -109,12 +109,36 @@ template <typename T>
 class canonical : public basis<T> {
 
 public:
-    /// todo get rid of forwarding, or at least make sure casting constructor DOES NOT forward to base copy constructor
-    /// forward all base class constructors
-    // order of the amplitudes is: S, P, D
-    template<typename... Args>
-    canonical(Args&&... args) :
-        basis<T>(std::forward<Args>(args)...)
+    /// constructor
+    /// \param c1 S amplitude
+    /// \param c2 P amplitude
+    /// \param c3 D amplitude
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit canonical(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c1, c2, c3, cov)
+    {}
+
+    /// constructor
+    /// \param c vector of amplitudes
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit canonical(Vector<Vector<T, 2>, 3> c,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c, cov)
+    {}
+
+    /// constructor
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit canonical(const covariance_type<T>& cov) :
+        basis<T>(cov)
+    {}
+
+    /// constructor
+    /// \param c1 S amplitude with covariance
+    /// \param c2 P amplitude with covariance
+    /// \param c3 D amplitude with covariance
+    canonical(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
+        basis<T>(c1, c2, c3)
     {}
 
     /// casting constructor
@@ -170,11 +194,36 @@ template <typename T>
 class transversity : public basis<T> {
 
 public:
-    /// forward all base class constructors
-    // order of the amplitudes is: longitudinal, parallel, perpendicular
-    template<typename... Args>
-    transversity(Args&&... args) :
-        basis<T>(std::forward<Args>(args)...)
+    /// constructor
+    /// \param c1 longitudinal amplitude
+    /// \param c2 parallel amplitude
+    /// \param c3 perpendicular amplitude
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit transversity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c1, c2, c3, cov)
+    {}
+
+    /// constructor
+    /// \param c vector of amplitudes
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit transversity(Vector<Vector<T, 2>, 3> c,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c, cov)
+    {}
+
+    /// constructor
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit transversity(const covariance_type<T>& cov) :
+        basis<T>(cov)
+    {}
+
+    /// constructor
+    /// \param c1 longitudinal amplitude with covariance
+    /// \param c2 parallel amplitude with covariance
+    /// \param c3 perpendicular amplitude with covariance
+    transversity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
+        basis<T>(c1, c2, c3)
     {}
 
     /// casting constructor
@@ -215,11 +264,36 @@ template <typename T>
 class helicity : public basis<T> {
 
 public:
-    /// forward all base class constructors
-    // order of the amplitudes is: zero, plus, minus
-    template<typename... Args>
-    helicity(Args&&... args) :
-        basis<T>(std::forward<Args>(args)...)
+    /// constructor
+    /// \param c1 zero amplitude
+    /// \param c2 plus amplitude
+    /// \param c3 minus amplitude
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit helicity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c1, c2, c3, cov)
+    {}
+
+    /// constructor
+    /// \param c vector of amplitudes
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
+    explicit helicity(Vector<Vector<T, 2>, 3> c,
+            covariance_type<T> cov = covariance_type<T>()) :
+        basis<T>(c, cov)
+    {}
+
+    /// constructor
+    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
+    explicit helicity(const covariance_type<T>& cov) :
+        basis<T>(cov)
+    {}
+
+    /// constructor
+    /// \param c1 zero amplitude with covariance
+    /// \param c2 plus amplitude with covariance
+    /// \param c3 minus amplitude with covariance
+    helicity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
+        basis<T>(c1, c2, c3)
     {}
 
     /// casting constructor
