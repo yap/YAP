@@ -41,12 +41,13 @@ using covariance_matrix = SquareMatrix<T, 2>;
 /// complex number representation
 template <typename T>
 class basis {
-public:
+protected:
     /// constructor
     basis(const Vector<T, 2>& val, const covariance_matrix<T>& cov) :
         Value_(val), Covariance_(cov)
     {}
 
+public:
     /// casting operator to std::complex
     virtual operator std::complex<T>() const = 0;
 
@@ -57,9 +58,6 @@ public:
     /// \return covariance
     const covariance_matrix<T>& covariance() const
     { return Covariance_; }
-
-    /// \return names of basis as string
-    virtual std::string basisString() const = 0;
 
 private:
     const Vector<T, 2> Value_;
@@ -110,9 +108,6 @@ public:
     /// casting operator to std::complex
     virtual operator std::complex<T>() const override
     { return std::complex<T>(basis<T>::value()[0], basis<T>::value()[1]); }
-
-    virtual std::string basisString() const override
-    { return "(real, imag)"; }
 };
 
 /// \class polar
@@ -154,9 +149,6 @@ public:
     /// casting operator to std::complex
     virtual operator std::complex<T>() const override
     { return std::polar<T>(basis<T>::value()[0], basis<T>::value()[1]); }
-
-    virtual std::string basisString() const override
-    { return "(abs, arg)"; }
 };
 
 /// jacobian from polar to cartesian
@@ -179,13 +171,19 @@ SquareMatrix<T, 2> jacobian_c_p(const cartesian<T>& cart)
 
 /// convert to string
 template <typename T>
-inline std::string to_string(const basis<T>& b)
+inline std::string to_string(const cartesian<T>& z)
 {
-    std::string s = b.basisString() + " = ";
-    s += "(" + std::to_string(b.value()[0]) + ", " + std::to_string(b.value()[1]) + "); ";
-    auto c = std::complex<double>(b);
-    s += "as complex: (" + std::to_string(real(c)) + ", " + std::to_string(imag(c)) + ")\n";
-    s += "covariance = " + to_string(b.covariance());
+    std::string s = to_string(z.value()[0]) + " + i * " + to_string(z.value()[1]);
+    s += "covariance = " + to_string(z.covariance());
+    return s;
+}
+
+/// convert to string
+template <typename T>
+inline std::string to_string(const polar<T>& z)
+{
+    std::string s = to_string(z.value()[0]) + " * exp(i * " + to_string(z.value()[1]) + ")";
+    s += "covariance = " + to_string(z.covariance());
     return s;
 }
 

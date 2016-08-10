@@ -173,14 +173,16 @@ const operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
 }
 
 /// matrix multiplication with different template types
+/// \tparam T1 element type of matrix A
+/// \tparam T2 element type of matrix B
+/// \tparam R number of rows of matrix A
+/// \tparam K number of columns of matrix A, number of rows of matrix B
+/// \tparam C number of columns of matrix B
 template <typename T1, typename T2, size_t R, size_t K, size_t C>
 const auto operator*(const Matrix<T1, R, K>& A, const Matrix<T2, K, C>& B)
-//-> typename std::enable_if < (R != 1) or (C != 1), Matrix<decltype(operator*(A[0][0], B[0][0])), R, C> >::type
-//-> Matrix<decltype(operator*(A[0][0], B[0][0])), R, C>
 -> const typename std::enable_if < (R != 1) or (C != 1), Matrix<typename std::remove_cv<decltype(operator*(A[0][0], B[0][0]))>::type, R, C> >::type
 {
     Matrix<typename std::remove_cv<decltype(operator*(A[0][0], B[0][0]))>::type, R, C> res;
-    //Matrix<std::remove_cv<decltype(operator*(A[0][0], B[0][0]))>::type, R, C> res(0);
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             for (size_t k = 0; k < K; ++k)

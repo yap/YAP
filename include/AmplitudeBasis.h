@@ -76,7 +76,7 @@ private:
     covariance_matrix<T> Covariance_;
 };
 
-/// \struct canonical
+/// \class canonical
 /// stores amplitudes in canonical basis (S, P, D)
 /// \tparam T type stored in amplitudes
 /// \defgroup AmplitudeBasis struct for converting among amplitude bases
