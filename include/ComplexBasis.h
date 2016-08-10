@@ -33,44 +33,37 @@ namespace yap {
 
 namespace complex_basis {
 
-/// \typedef covariance_type
+/// \typedef covariance_matrix
 template <typename T>
-using covariance_type = SquareMatrix<T, 2>;
+using covariance_matrix = SquareMatrix<T, 2>;
 
 /// \class basis
 /// complex number representation
 template <typename T>
 class basis {
 public:
+    /// constructor
+    basis(const Vector<T, 2>& val, const covariance_matrix<T>& cov) :
+        Value_(val), Covariance_(cov)
+    {}
+
     /// casting operator to std::complex
     virtual operator std::complex<T>() const = 0;
 
     /// \return value
     const Vector<T, 2>& value() const
-    { return value_; }
+    { return Value_; }
 
     /// \return covariance
-    const SquareMatrix<T, 2>& covariance() const
-    { return covariance_; }
+    const covariance_matrix<T>& covariance() const
+    { return Covariance_; }
 
     /// \return names of basis as string
     virtual std::string basisString() const = 0;
 
-protected:
-    /// constructor
-    basis(const Vector<T, 2>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
-        value_(val), covariance_(cov)
-    {}
-
-    /// constructor
-    basis(T v1, T v2, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
-        value_({v1, v2}), covariance_(cov)
-    {}
-
-    const Vector<T, 2> value_;
-
 private:
-    const covariance_type<T> covariance_;
+    const Vector<T, 2> Value_;
+    const covariance_matrix<T> Covariance_;
 };
 
 /// \class cartesian
@@ -79,45 +72,44 @@ template <typename T>
 class cartesian : public basis<T> {
 public:
     /// constructor
-    /// \param v1 real
-    /// \param v2 imaginary
+    /// \param re real
+    /// \param im imaginary
     /// \param cov covariance
-    explicit cartesian(T v1, T v2, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
-        basis<T>(v1, v2, cov)
+    explicit cartesian(T re, T im, const covariance_matrix<T>& cov = covariance_matrix<T>()) :
+        basis<T>(Vector<T, 2>({re, im}), cov)
     {}
 
     /// constructor
     /// \param val real and imaginary
     /// \param cov covariance
-    explicit cartesian(const Vector<T, 2>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
+    explicit cartesian(const Vector<T, 2>& val, const covariance_matrix<T>& cov = covariance_matrix<T>()) :
         basis<T>(val, cov)
     {}
 
     /// constructor
     /// \param val complex value
     /// \param cov covariance
-    explicit cartesian(const std::complex<T>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
-        basis<T>(std::real(val), std::imag(val))
+    explicit cartesian(const std::complex<T>& val, const covariance_matrix<T>& cov = covariance_matrix<T>()) :
+        cartesian<T>(std::real(val), std::imag(val), cov)
     {}
 
     /// constructor
     /// \param val complex value
     /// \param cov_elements list of covariance entries, starting with the diagonal, 1st off diagonal ...
     explicit cartesian(const std::complex<T>& val, std::initializer_list<T> cov_elements) :
-        basis<T>(std::real(val), std::imag(val),
-                 symmetricMatrix<T, 2>(std::forward<std::initializer_list<T>>(cov_elements)))
+        cartesian<T>(val, symmetricMatrix<T, 2>(std::forward<std::initializer_list<T>>(cov_elements)))
     {}
 
     /// conversion constructor
     /// \param pol complex number in polar representation
     cartesian(const polar<T>& pol) :
-        basis<T>(std::real(std::complex<T>(pol)), std::imag(std::complex<T>(pol)),
-                 jac_p_c(pol) * pol.covariance() * transpose(jac_p_c(pol)))
+        cartesian<T>(std::complex<T>(pol),
+                 jacobian_p_c(pol) * pol.covariance() * transpose(jacobian_p_c(pol)))
     {}
 
     /// casting operator to std::complex
     virtual operator std::complex<T>() const override
-    { return std::complex<T>(basis<T>::value_[0], basis<T>::value_[1]); }
+    { return std::complex<T>(basis<T>::value()[0], basis<T>::value()[1]); }
 
     virtual std::string basisString() const override
     { return "(real, imag)"; }
@@ -129,39 +121,39 @@ template <typename T>
 class polar : public basis<T> {
 public:
     /// constructor
-    /// \param v1 radius
-    /// \param v2 angle
+    /// \param r radius
+    /// \param phi angle
     /// \param cov covariance
-    explicit polar(T v1, T v2, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
-        basis<T>(v1, v2, cov)
+    explicit polar(T r, T phi, const covariance_matrix<T>& cov = covariance_matrix<T>()) :
+        basis<T>(Vector<T, 2>({r, phi}), cov)
     {}
 
     /// constructor
     /// \param val radius and angle
     /// \param cov covariance
-    explicit polar(const Vector<T, 2>& val, const SquareMatrix<T, 2>& cov = SquareMatrix<T, 2>()) :
+    explicit polar(const Vector<T, 2>& val, const covariance_matrix<T>& cov = covariance_matrix<T>()) :
         basis<T>(val, cov)
     {}
 
     /// constructor
-    /// \param v1 radius
-    /// \param v2 angle
+    /// \param r radius
+    /// \param phi angle
     /// \param cov_elements list of covariance entries, starting with the diagonal, 1st off diagonal ...
-    explicit polar(T v1, T v2, std::initializer_list<T> cov_elements) :
-        basis<T>(v1, v2,
+    explicit polar(T r, T phi, std::initializer_list<T> cov_elements) :
+        polar<T>(r, phi,
                  symmetricMatrix<T, 2>(std::forward<std::initializer_list<T>>(cov_elements)))
     {}
 
     /// conversion constructor
     /// \param pol complex number in cartesian representation
     polar(const cartesian<T>& cart) :
-        basis<T>(std::abs(std::complex<T>(cart)), std::arg(std::complex<T>(cart)),
-                 jac_c_p(cart) * cart.covariance() * transpose(jac_c_p(cart)))
+        polar<T>(std::abs(std::complex<T>(cart)), std::arg(std::complex<T>(cart)),
+                 jacobian_c_p(cart) * cart.covariance() * transpose(jacobian_c_p(cart)))
     {}
 
     /// casting operator to std::complex
     virtual operator std::complex<T>() const override
-    { return std::polar<T>(basis<T>::value_[0], basis<T>::value_[1]); }
+    { return std::polar<T>(basis<T>::value()[0], basis<T>::value()[1]); }
 
     virtual std::string basisString() const override
     { return "(abs, arg)"; }
@@ -169,7 +161,7 @@ public:
 
 /// jacobian from polar to cartesian
 template <typename T>
-SquareMatrix<T, 2> jac_p_c(const polar<T>& pol)
+SquareMatrix<T, 2> jacobian_p_c(const polar<T>& pol)
 {
     std::complex<T> v(pol);
     return SquareMatrix<T, 2>({cos(std::arg(v)), -std::abs(v)*sin(std::arg(v)),
@@ -178,11 +170,11 @@ SquareMatrix<T, 2> jac_p_c(const polar<T>& pol)
 
 /// jacobian for transformation from cartesian to polar
 template <typename T>
-SquareMatrix<T, 2> jac_c_p(const cartesian<T>& cart)
+SquareMatrix<T, 2> jacobian_c_p(const cartesian<T>& cart)
 {
     std::complex<T> v(cart);
-    return SquareMatrix<T, 2>({ std::real(v)/std::abs(v),         std::imag(v)/std::abs(v),
-                               -std::imag(v)/pow(std::abs(v), 2), std::real(v)/pow(std::abs(v), 2) });
+    return SquareMatrix<T, 2>({ std::real(v)/std::abs(v),  std::imag(v)/std::abs(v),
+                               -std::imag(v)/std::norm(v), std::real(v)/std::norm(v) });
 }
 
 /// convert to string

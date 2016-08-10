@@ -35,9 +35,9 @@ namespace yap {
 
 namespace amplitude_basis {
 
-/// \typedef covariance_type
+/// \typedef covariance_matrix
 template <typename T>
-using covariance_type = SquareMatrix<complex_basis::covariance_type<T>, 3>;
+using covariance_matrix = SquareMatrix<complex_basis::covariance_matrix<T>, 3>;
 
 /// \class basis
 /// base class for spin amplitude bases
@@ -45,60 +45,35 @@ using covariance_type = SquareMatrix<complex_basis::covariance_type<T>, 3>;
 template <typename T>
 class basis {
 
-public:
-    /// constructor
-    /// \param c1 1st amplitude
-    /// \param c2 2nd amplitude
-    /// \param c3 3rd amplitude
-    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit basis(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
-            covariance_type<T> cov = covariance_type<T>()) :
-        coordinates_({c1, c2, c3}), covariance_(cov)
-    {}
-
+protected:
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit basis(Vector<Vector<T, 2>, 3> c,
-            covariance_type<T> cov = covariance_type<T>()) :
-        coordinates_(c), covariance_(cov)
+    basis(Vector<Vector<T, 2>, 3> c,
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
+        Amplitudes_(c), Covariance_(cov)
     {}
 
-    /// constructor
-    /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
-    explicit basis(const covariance_type<T>& cov) :
-        coordinates_({0, 0, 0}), covariance_(cov)
-    {}
-
-    /// constructor
-    /// \param c1 1st amplitude with covariance
-    /// \param c2 2nd amplitude with covariance
-    /// \param c3 3rd amplitude with covariance
-    basis(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        coordinates_({c1.value(), c2.value(), c3.value()}),
-        covariance_(diagonalMatrix<complex_basis::covariance_type<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
-    {}
-
-    /// \return coordinates
-    const Vector<Vector<T, 2>, 3>& coordinates() const
-    { return coordinates_; }
-
-    /// \return covariance matrix
-    const covariance_type<T>& covariance() const
-    { return covariance_; }
-
-protected:
     // conversion constructor
     explicit basis(const basis<T>& other, const SquareMatrix<T, 3>& jacobian) :
-        coordinates_(jacobian * other.coordinates_),
-        covariance_(jacobian * other.covariance_ * transpose(jacobian))
+        Amplitudes_(jacobian * other.Amplitudes_),
+        Covariance_(jacobian * other.Covariance_ * transpose(jacobian))
     {}
 
+public:
+    /// \return coordinates
+    const Vector<Vector<T, 2>, 3>& coordinates() const
+    { return Amplitudes_; }
+
+    /// \return covariance matrix
+    const covariance_matrix<T>& covariance() const
+    { return Covariance_; }
+
 private:
-    /// vector of coordinates
-    Vector<Vector<T, 2>, 3> coordinates_;
+    /// vector of amplitudes
+    Vector<Vector<T, 2>, 3> Amplitudes_;
     /// covariance matrix
-    covariance_type<T> covariance_;
+    covariance_matrix<T> Covariance_;
 };
 
 /// \struct canonical
@@ -115,22 +90,22 @@ public:
     /// \param c3 D amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit canonical(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
-            covariance_type<T> cov = covariance_type<T>()) :
-        basis<T>(c1, c2, c3, cov)
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
+        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit canonical(Vector<Vector<T, 2>, 3> c,
-            covariance_type<T> cov = covariance_type<T>()) :
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
 
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
-    explicit canonical(const covariance_type<T>& cov) :
-        basis<T>(cov)
+    explicit canonical(const covariance_matrix<T>& cov) :
+        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
@@ -138,17 +113,18 @@ public:
     /// \param c2 P amplitude with covariance
     /// \param c3 D amplitude with covariance
     canonical(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(c1, c2, c3)
+        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+                 diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
     /// casting constructor
     explicit constexpr canonical(const transversity<T>& t) :
-        basis<T>(t, t_to_c)
+        basis<T>(t, jacobian_t_to_c)
     {}
 
     /// casting constructor
     explicit constexpr canonical(const helicity<T>& h) :
-        basis<T>(h, h_to_c)
+        basis<T>(h, jacobian_h_to_c)
     {}
 
     /// \return S amplitude (l=0)
@@ -181,10 +157,10 @@ public:
 
 private:
     // transformation matrix (jacobian) from transversity to canonical
-    static const SquareMatrix<T, 3> t_to_c;
+    static const SquareMatrix<T, 3> jacobian_t_to_c;
 
     // transformation matrix (jacobian) from helicity to canonical
-    static const SquareMatrix<T, 3> h_to_c;
+    static const SquareMatrix<T, 3> jacobian_h_to_c;
 };
 
 /// \class transversity
@@ -200,22 +176,22 @@ public:
     /// \param c3 perpendicular amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit transversity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
-            covariance_type<T> cov = covariance_type<T>()) :
-        basis<T>(c1, c2, c3, cov)
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
+        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit transversity(Vector<Vector<T, 2>, 3> c,
-            covariance_type<T> cov = covariance_type<T>()) :
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
 
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
-    explicit transversity(const covariance_type<T>& cov) :
-        basis<T>(cov)
+    explicit transversity(const covariance_matrix<T>& cov) :
+        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
@@ -223,17 +199,18 @@ public:
     /// \param c2 parallel amplitude with covariance
     /// \param c3 perpendicular amplitude with covariance
     transversity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(c1, c2, c3)
+        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+                 diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
     /// casting constructor
     explicit constexpr transversity(const canonical<T>& c) :
-        basis<T>(c, c_to_t)
+        basis<T>(c, jacobian_c_to_t)
     {}
 
     /// casting constructor
     explicit constexpr transversity(const helicity<T>& h) :
-        basis<T>(h, h_to_t)
+        basis<T>(h, jacobian_h_to_t)
     {}
 
     /// \return longitudinal amplitude
@@ -250,10 +227,10 @@ public:
 
 private:
     // transformation matrix (jacobian) from canonical to transversity
-    static const SquareMatrix<T, 3> c_to_t;
+    static const SquareMatrix<T, 3> jacobian_c_to_t;
 
     // transformation matrix (jacobian) from helicity to transversity
-    static const SquareMatrix<T, 3> h_to_t;
+    static const SquareMatrix<T, 3> jacobian_h_to_t;
 };
 
 
@@ -270,22 +247,22 @@ public:
     /// \param c3 minus amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit helicity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
-            covariance_type<T> cov = covariance_type<T>()) :
-        basis<T>(c1, c2, c3, cov)
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
+        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
     explicit helicity(Vector<Vector<T, 2>, 3> c,
-            covariance_type<T> cov = covariance_type<T>()) :
+            covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
 
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
-    explicit helicity(const covariance_type<T>& cov) :
-        basis<T>(cov)
+    explicit helicity(const covariance_matrix<T>& cov) :
+        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
@@ -293,17 +270,18 @@ public:
     /// \param c2 plus amplitude with covariance
     /// \param c3 minus amplitude with covariance
     helicity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(c1, c2, c3)
+        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+                 diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
     /// casting constructor
     explicit constexpr helicity(const canonical<T>& c) :
-        basis<T>(c, c_to_h)
+        basis<T>(c, jacobian_c_to_h)
     {}
 
     /// casting constructor
     explicit constexpr helicity(const transversity<T>& t) :
-        basis<T>(t, t_to_h)
+        basis<T>(t, jacobian_t_to_h)
     {}
 
     /// \return zero amplitude A_0
@@ -320,44 +298,56 @@ public:
 
 private:
     // transformation matrix (jacobian) from canonical to helicity
-    static const SquareMatrix<T, 3> c_to_h;
+    static const SquareMatrix<T, 3> jacobian_c_to_h;
 
     // transformation matrix (jacobian) from transversity to helicity
-    static const SquareMatrix<T, 3> t_to_h;
+    static const SquareMatrix<T, 3> jacobian_t_to_h;
 };
 
 
 /// transformation matrix definitions
 
-template <typename T>                        //  longitudinal parallel     perpendicular
-const SquareMatrix<T, 3> canonical<T>::t_to_c({-sqrt(1./3.), sqrt(2./3.), 0,     // S
-                                                0,           0,           1,     // P
-                                                sqrt(2./3.), sqrt(1./3.), 0});   // D
+template <typename T>
+const SquareMatrix<T, 3> canonical<T>::jacobian_t_to_c(
+      //  longitudinal parallel     perpendicular
+        {-sqrt(1./3.), sqrt(2./3.), 0,     // S
+          0,           0,           1,     // P
+          sqrt(2./3.), sqrt(1./3.), 0});   // D
 
-template <typename T>                        //  zero         plus          minus
-const SquareMatrix<T, 3> canonical<T>::h_to_c({-sqrt(1./3.), sqrt(1./3.),  sqrt(1./3.),    // S
-                                                0,           sqrt(0.5),   -sqrt(0.5)  ,    // P
-                                                sqrt(2./3.), sqrt(1./6.),  sqrt(1./6.)});  // D
+template <typename T>
+const SquareMatrix<T, 3> canonical<T>::jacobian_h_to_c(
+      //  zero         plus          minus
+        {-sqrt(1./3.), sqrt(1./3.),  sqrt(1./3.),    // S
+          0,           sqrt(0.5),   -sqrt(0.5)  ,    // P
+          sqrt(2./3.), sqrt(1./6.),  sqrt(1./6.)});  // D
 
-template <typename T>                           //  S              P  D
-const SquareMatrix<T, 3> transversity<T>::c_to_t({-sqrt(1. / 3.), 0, sqrt(2. / 3.),   // longitudinal
-                                                   sqrt(2. / 3.), 0, sqrt(1. / 3.),   // parallel
-                                                   0,             1, 0            }); // perpendicular
+template <typename T>
+const SquareMatrix<T, 3> transversity<T>::jacobian_c_to_t(
+      //  S              P  D
+        {-sqrt(1. / 3.), 0, sqrt(2. / 3.),   // longitudinal
+          sqrt(2. / 3.), 0, sqrt(1. / 3.),   // parallel
+          0,             1, 0            }); // perpendicular
 
-template <typename T>                           // zero plus        minus
-const SquareMatrix<T, 3> transversity<T>::h_to_t({1,   0,          0        ,    // longitudinal
-                                                  0,   sqrt(0.5),  sqrt(0.5),    // parallel
-                                                  0,   sqrt(0.5), -sqrt(0.5)});  // perpendicular
+template <typename T>
+const SquareMatrix<T, 3> transversity<T>::jacobian_h_to_t(
+      // zero plus        minus
+        {1,   0,          0        ,    // longitudinal
+         0,   sqrt(0.5),  sqrt(0.5),    // parallel
+         0,   sqrt(0.5), -sqrt(0.5)});  // perpendicular
 
-template <typename T>                       //  S             P          D
-const SquareMatrix<T, 3> helicity<T>::c_to_h({-sqrt(1./3.),  0,         sqrt(2./3.),    // zero
-                                               sqrt(1./3.),  sqrt(0.5), sqrt(1./6.),    // plus
-                                               sqrt(1./3.), -sqrt(0.5), sqrt(1./6.)});  // minus
+template <typename T>
+const SquareMatrix<T, 3> helicity<T>::jacobian_c_to_h(
+      //  S             P          D
+        {-sqrt(1./3.),  0,         sqrt(2./3.),    // zero
+          sqrt(1./3.),  sqrt(0.5), sqrt(1./6.),    // plus
+          sqrt(1./3.), -sqrt(0.5), sqrt(1./6.)});  // minus
 
-template <typename T>                       // longitudinal parallel    perpendicular
-const SquareMatrix<T, 3> helicity<T>::t_to_h({1,           0,          0        ,    // zero
-                                              0,           sqrt(0.5),  sqrt(0.5),    // plus
-                                              0,           sqrt(0.5), -sqrt(0.5)});  // minus
+template <typename T>
+const SquareMatrix<T, 3> helicity<T>::jacobian_t_to_h(
+      // longitudinal parallel    perpendicular
+        {1,           0,          0        ,    // zero
+         0,           sqrt(0.5),  sqrt(0.5),    // plus
+         0,           sqrt(0.5), -sqrt(0.5)});  // minus
 }
 
 }
