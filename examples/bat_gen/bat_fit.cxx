@@ -127,15 +127,10 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
     unsigned Iteration;
     t_mcmc.SetBranchAddress("Iteration", &Iteration);
 
-    long long n = 0;
-    // find first entry of main run
-    while (Phase <= 0 and n < t_mcmc.GetEntries())
-        t_mcmc.GetEntry(n++);
-
     int n_attempted = 0;
     size_t old_size = data.size();
 
-    for (; n < t_mcmc.GetEntries() and (N < 0 or n_attempted < N); ++n) {
+    for (long long n = 0; n < t_mcmc.GetEntries() and (N < 0 or n_attempted < N); ++n) {
         t_mcmc.GetEntry(n);
 
         if (Phase <= 0)

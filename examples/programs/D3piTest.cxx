@@ -78,8 +78,8 @@ int main( int argc, char** argv)
 
     // f_0(980)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(0.406 * 2, factory.particleTableEntry("K+").Mass);
+    f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
+    f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *factory.fsp(321), *factory.fsp(-321))); // K+K-
     auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);

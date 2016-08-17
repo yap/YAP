@@ -22,6 +22,7 @@
 #include <QuantumNumbers.h>
 #include <Resonance.h>
 #include <Parameter.h>
+#include <RelativisticBreitWigner.h>
 #include <SpinAmplitudeCache.h>
 
 #include <complex>
@@ -47,44 +48,45 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitude
 
     // f_0(500), aka "sigma" (as PoleMass)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, 0.220)));
+    /* auto sigma = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.470, "f_0(500)", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.220 * 2)); */
     sigma->addChannel(piZero, piZero);
     D->addChannel(sigma, Kshort);
     
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    f_0_980_flatte->addChannel(0.406, piZero->mass()->value());
-    f_0_980_flatte->addChannel(0.406 * 2, Kshort->mass()->value());
+    f_0_980_flatte->add(FlatteChannel(0.406, *piZero, *piZero));
+    f_0_980_flatte->add(FlatteChannel(0.406 * 2, *Kshort, *Kshort));
     auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
     f_0_980->addChannel(piZero, piZero);
     D->addChannel(f_0_980, Kshort);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.350, "f_0_1370", radialSize, std::make_shared<yap::BreitWigner>(0.265));
+    auto f_0_1370 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.350, "f_0_1370", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.265));
     f_0_1370->addChannel(piZero, piZero);
     D->addChannel(f_0_1370, Kshort);
 
     // f_0(1500)
-    auto f_0_1500 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.505, "f_0_1500", radialSize, std::make_shared<yap::BreitWigner>(0.109));
+    auto f_0_1500 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.505, "f_0_1500", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.109));
     f_0_1500->addChannel(piZero, piZero);
     D->addChannel(f_0_1500, Kshort);
 
     // f_2(1270)
-    auto f_2_1270 = yap::Resonance::create(yap::QuantumNumbers(2 * 2, 0), 1.2751, "f_2_1270", radialSize, std::make_shared<yap::BreitWigner>(0.185));
+    auto f_2_1270 = yap::Resonance::create(yap::QuantumNumbers(2 * 2, 0), 1.2751, "f_2_1270", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.185));
     f_2_1270->addChannel(piZero, piZero);
     D->addChannel(f_2_1270, Kshort);
 
     // K*(892)
-    auto Kstar_892 = yap::Resonance::create(yap::QuantumNumbers(1 * 2, 0), 0.896, "Kstar_892", radialSize, std::make_shared<yap::BreitWigner>(0.0503));
+    auto Kstar_892 = yap::Resonance::create(yap::QuantumNumbers(1 * 2, 0), 0.896, "Kstar_892", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.0503));
     Kstar_892->addChannel(Kshort, piZero);
     D->addChannel(Kstar_892, piZero);
 
     // K*_2(1430)
-    auto Kstar_2_1430 = yap::Resonance::create(yap::QuantumNumbers(2 * 2, 0), 1.4324, "Kstar_2_1430", radialSize, std::make_shared<yap::BreitWigner>(0.109));
+    auto Kstar_2_1430 = yap::Resonance::create(yap::QuantumNumbers(2 * 2, 0), 1.4324, "Kstar_2_1430", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.109));
     Kstar_2_1430->addChannel(Kshort, piZero);
     D->addChannel(Kstar_2_1430, piZero);
 
     // K*(1680)
-    auto Kstar_1680 = yap::Resonance::create(yap::QuantumNumbers(1 * 2, 0), 1.717, "Kstar_1680", radialSize, std::make_shared<yap::BreitWigner>(0.322));
+    auto Kstar_1680 = yap::Resonance::create(yap::QuantumNumbers(1 * 2, 0), 1.717, "Kstar_1680", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.322));
     Kstar_1680->addChannel(Kshort, piZero);
     D->addChannel(Kstar_1680, piZero);
 

@@ -37,7 +37,7 @@ namespace yap {
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay
-/// \authors Johannes Rauch, Daniel Greenwald
+/// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 ///
 /// The amplitude function returns a sum over the amplitudes of all

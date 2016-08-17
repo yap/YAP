@@ -21,8 +21,11 @@
 #ifndef yap_Flatte_h
 #define yap_Flatte_h
 
+#include "fwd/Flatte.h"
+
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
+#include "fwd/FinalStateParticle.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
@@ -45,29 +48,19 @@ class Flatte : public MassShapeWithNominalMass
 {
 public:
 
-    struct FlatteChannel {
-        /// [GeV]
-        std::shared_ptr<RealParameter> Coupling;
-
-        /// [GeV]
-        std::shared_ptr<RealParameter> Mass;
-
-        FlatteChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
-            : Coupling(coupling), Mass(mass) {}
-    };
-
     /// Constructor
     Flatte() : MassShapeWithNominalMass() {}
 
     /// Add FlatteChannel
-    void addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass);
-
-    /// Add FlatteChannel
-    void addChannel(double coupling, double mass);
+    void add(FlatteChannel fc);
 
     /// Get FlatteChannel's
     const std::vector<FlatteChannel>& channels() const
     { return FlatteChannels_; }
+
+    /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
+    /// Cheks that decay is to a channel of the Flatte
+    virtual void checkDecayChannel(const DecayChannel& c) const override;
 
     /// Check consistency of object
     virtual bool consistent() const override;
@@ -82,6 +75,25 @@ protected:
 
     std::vector<FlatteChannel> FlatteChannels_;
 
+};
+
+/// \struct FlatteChannel
+/// \brief Stores information on channel used in calculating Flatte mass shape
+/// \ingroup MassShapes
+/// \author Daniel Greenwald
+struct FlatteChannel {
+    /// coupling constant [GeV^2]
+    std::shared_ptr<RealParameter> Coupling;
+    
+    /// Particles of the channel
+    std::array<std::shared_ptr<FinalStateParticle>, 2> Particles;
+    
+    /// constructor
+    FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B);
+    
+    /// constructor
+    FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B) :
+    FlatteChannel(std::make_shared<RealParameter>(coupling), A, B) {}
 };
 
 }

@@ -24,16 +24,19 @@
 #include <complex>
 #include <memory>
 
-inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+using namespace std;
+using namespace yap;
+
+inline unique_ptr<Model> dkkpi(unique_ptr<SpinAmplitudeCache> SAC)
 {
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto kPlus  = F.fsp(+321);
     auto kMinus = F.fsp(-321);
     auto piPlus = F.fsp(+211);
 
-    auto M = std::make_unique<yap::Model>(std::move(SAC));
+    auto M = make_unique<Model>(move(SAC));
 
     M->setFinalState(kPlus, kMinus, piPlus);
 
@@ -43,36 +46,79 @@ inline std::unique_ptr<yap::Model> dkkpi(std::unique_ptr<yap::SpinAmplitudeCache
     // initial state particle
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
-    auto KK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 1.1, "KK0", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
+    auto KK0 = Resonance::create(QuantumNumbers(0, 0), 1.1, "KK0", radialSize, make_shared<BreitWigner>(0.075));
     KK0->addChannel(kPlus, kMinus);
     D->addChannel(KK0, piPlus);
-    *free_amplitude(*D, to(KK0)) = 1.;
-
-    auto KK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.35, "KK1", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
+    *free_amplitude(*D, to(KK0)) = polar(0.15, rad(39.));
+    
+    auto KK1 = Resonance::create(QuantumNumbers(2, 0), 1.35, "KK1", radialSize, make_shared<BreitWigner>(0.125));
     KK1->addChannel(kPlus, kMinus);
     D->addChannel(KK1, piPlus);
-    *free_amplitude(*D, to(KK1)) = 2.;
-
-    auto KK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.6, "KK2", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.025));
+    *free_amplitude(*D, to(KK1)) = 1.;
+    
+    auto KK2 = Resonance::create(QuantumNumbers(4, 0), 1.6, "KK2", radialSize, make_shared<BreitWigner>(0.100));
     KK2->addChannel(kPlus, kMinus);
     D->addChannel(KK2, piPlus);
-    *free_amplitude(*D, to(KK2)) = 30.;
+    *free_amplitude(*D, to(KK2)) = polar(10., rad(-12.));
+    
+    auto piK0 = Resonance::create(QuantumNumbers(0, 0), 0.75, "piK0", radialSize, make_shared<BreitWigner>(0.085));
+    piK0->addChannel(piPlus, kMinus);
+    D->addChannel(piK0, kPlus);
+    *free_amplitude(*D, to(piK0)) = polar(0.23, rad(112.));
 
-    /* auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", radialSize, std::make_shared<yap::BreitWigner>(0.025)); */
-    /* piK0->addChannel(piPlus, kMinus); */
-    /* D->addChannel(piK0, kPlus)->freeAmplitudes().begin()->get()->setValue(std::polar<double>(1, 180 * yap::rad_per_deg<double>())); */
+    auto piK1 = Resonance::create(QuantumNumbers(2, 0), 1.00, "piK1", radialSize, make_shared<BreitWigner>(0.125));
+    piK1->addChannel(piPlus, kMinus);
+    D->addChannel(piK1, kPlus);
+    *free_amplitude(*D, to(piK1)) = polar(1.2, rad(-76.));
 
-    /* auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", radialSize, std::make_shared<yap::BreitWigner>(0.025)); */
-    /* piK1->addChannel(piPlus, kMinus); */
-    /* D->addChannel(piK1, kPlus)->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1); */
-
-    // auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", radialSize, std::make_shared<yap::BreitWigner>(1.25, 0.025));
-    // piK2->addChannel(piPlus, kMinus);
-    // D->addChannel(piK2, kPlus)->freeAmplitudes().begin()->get()->setValue(1. * yap::Complex_1);
-
+    auto piK2 = Resonance::create(QuantumNumbers(4, 0), 1.25, "piK2", radialSize, make_shared<BreitWigner>(0.065));
+    piK2->addChannel(piPlus, kMinus);
+    D->addChannel(piK2, kPlus);
+    *free_amplitude(*D, to(piK2)) = polar(7.8, rad(56.));
+    
     M->addInitialStateParticle(D);
 
     return M;
+}
+
+inline bat_fit dkkpi_fit(string name, unique_ptr<SpinAmplitudeCache> SAC, vector<vector<unsigned> > pcs = {})
+{
+    bat_fit m(name, dkkpi(move(SAC)), pcs);
+    
+    auto KK0 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("KK0")));
+    auto KK1 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("KK1")));
+    auto KK2 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("KK2")));
+
+    auto piK0 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("piK0")));
+    auto piK1 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("piK1")));
+    auto piK2 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("piK2")));
+
+    m.setPrior(free_amplitude(*m.model(), to(KK0)), 0.05, 0.25, -160., 160.);
+    m.fix(free_amplitude(*m.model(), to(KK1)), 1., 0.);
+    m.setPrior(free_amplitude(*m.model(), to(KK2)), 1., 25., -160., 160.);
+
+    m.setPrior(free_amplitude(*m.model(), to(piK0)), 0.05, 0.45, -160., 160.);
+    m.setPrior(free_amplitude(*m.model(), to(piK1)), 0.2, 3., -160., 160.);
+    m.setPrior(free_amplitude(*m.model(), to(piK2)), 1., 25., -160., 160.);
+
+    // fix some phases
+    m.GetParameter(m.findFreeAmplitude(free_amplitude(*m.model(), to(piK0))) + 1).Fix(112.);
+    m.GetParameter(m.findFreeAmplitude(free_amplitude(*m.model(), to(piK1))) + 1).Fix(-76.);
+    m.GetParameter(m.findFreeAmplitude(free_amplitude(*m.model(), to(piK2))) + 1).Fix(56.);
+
+    /* m.addParameter("KK0_mass", KK0->mass(), 1.1 - 2e-3, 1.1 + 2e-3); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
+    
+    /* m.addParameter("KK0_width", static_pointer_cast<RelativisticBreitWigner>(KK0->massShape())->width(), 25e-3 - 5e-3, 25e-3 + 5e-3); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
+
+    /* m.addParameter("KK1_mass", KK1->mass(), 1.35 - 10e-3, 1.35 + 10e-3); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
+    
+    /* m.addParameter("KK1_width", static_pointer_cast<BreitWigner>(KK1->massShape())->width(), 50e-3 - 5e-3, 50e-3 + 5e-3); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
+
+    return m;
 }
 
 #endif

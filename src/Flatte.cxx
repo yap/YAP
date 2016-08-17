@@ -4,9 +4,12 @@
 #include "Constants.h"
 #include "DataPoint.h"
 #include "DataPartition.h"
+#include "DecayChannel.h"
 #include "Exceptions.h"
+#include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "logging.h"
+#include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "Resonance.h"
@@ -15,52 +18,92 @@
 namespace yap {
 
 //-------------------------
-void Flatte::addChannel(std::shared_ptr<RealParameter> coupling, std::shared_ptr<RealParameter> mass)
+FlatteChannel::FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B) :
+    Coupling(coupling),
+    Particles({std::static_pointer_cast<FinalStateParticle>(A.shared_from_this()),
+                std::static_pointer_cast<FinalStateParticle>(B.shared_from_this())})
 {
-    if (!coupling)
-        throw exceptions::Exception("Coupling is unset", "Flatte::addChannel");
-    if (!mass)
-        throw exceptions::Exception("Mass is unset", "Flatte::addChannel");
-    FlatteChannels_.push_back(FlatteChannel(coupling, mass));
-
-    addParameter(coupling);
-    addParameter(mass);
 }
 
 //-------------------------
-void Flatte::addChannel(double coupling, double mass)
+void Flatte::add(FlatteChannel fc)
 {
-    addChannel(std::make_shared<RealParameter>(coupling), std::make_shared<RealParameter>(mass));
+    if (!fc.Coupling)
+        throw exceptions::Exception("Coupling is unset", "Flatte::add");
+    if (!fc.Particles[0] or !fc.Particles[1])
+        throw exceptions::Exception("Particles unset", "Flatte::add");
+    // check if channel already contained
+    for (const auto& FC : FlatteChannels_)
+        if (FC.Particles == fc.Particles or (FC.Particles[0] == fc.Particles[1] and FC.Particles[1] == fc.Particles[0]))
+            throw exceptions::Exception("Channel already held", "Flatte::add");
+
+    FlatteChannels_.push_back(fc);
+
+    addParameter(FlatteChannels_.back().Coupling);
+    for (const auto& p : FlatteChannels_.back().Particles)
+        addParameter(p->mass());
+}
+
+//-------------------------
+void Flatte::checkDecayChannel(const DecayChannel& c) const
+{
+    // check Flatte has channels
+    if (FlatteChannels_.empty())
+        throw exceptions::Exception("Add FlatteChannels to Flatte before adding DecayChannels to resonance", "Flatte::checkDecayChannel");
+
+    // check channel has right number of daughters
+    if (c.daughters().size() != FlatteChannels_[0].Particles.size())
+        throw exceptions::Exception("Wrong number of daughters (" + std::to_string(c.daughters().size())
+                                    + " != " + std::to_string(FlatteChannels_[0].Particles.size()),
+                                    "Flatte::checkDecayChannel");
+
+    // check that Flatte has FlatteChannel with correct particle content
+    for (const auto& fc : FlatteChannels_)
+        if ((fc.Particles[0] == c.daughters()[0] and fc.Particles[1] == c.daughters()[1])
+            or
+            (fc.Particles[0] == c.daughters()[1] and fc.Particles[1] == c.daughters()[0]))
+            // if found, return before exception can be thrown
+            return;
+    throw exceptions::Exception("Flatte doesn't contain channel for " + to_string(c), "Flatte::checkDecayChannel");
 }
 
 //-------------------------
 void Flatte::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
+    /////////////////////////
     // precalculate
-    std::vector<std::complex<double> > fc_c2;
-    std::vector<std::complex<double> > fc_4m2c2;
-    fc_c2.reserve(FlatteChannels_.size());
-    fc_4m2c2.reserve(FlatteChannels_.size());
-    for (const auto& fc : FlatteChannels_) {
-        fc_4m2c2.push_back(Complex_1 * 4. * pow(fc.Mass->value() * fc.Coupling->value(), 2));
-        fc_c2.push_back(Complex_1 * pow(fc.Coupling->value(), 2));
-    }
 
-    const double M2 = pow(mass()->value(), 2);
+    const auto M2 = pow(mass()->value(), 2);
+
+    // const auto& FSPs = model()->finalStateParticles();
+
+    // // get channel particles (both orderings):
+    // std::array<std::shared_ptr<FinalStateParticle>, 2> AB = {FSPs[pc->indices()[0]], FSPs[pc->indices()[1]]};
+    // std::array<std::shared_ptr<FinalStateParticle>, 2> BA = {AB[1], AB[0]};
+    
+    // auto it = std::find_if(FlatteChannels_.begin(), FlatteChannels_.end(),
+    //                        [&](const FlatteChannel& fc)
+    //                        {return fc.Particles == AB or fc.Particles == BA;});
+    // if (it == FlatteChannels_.end())
+    //     throw exceptions::Exception("FlatteChannel not found", "Flatte::calculateT");
+    
+    // double mG0 = 2. / mass()->value()
+    //     * it->Coupling->value()
+    //     * sqrt(squared_breakup_momentum(M2, it->Particles[0]->mass()->value(), it->Particles[1]->mass()->value()));
+
+    /////////////////////////
 
     for (auto& d : D) {
 
         const double m2 = model()->fourMomenta()->m2(d, pc);
 
-        // calculate width term
+        // calculate width term := sum of coupling * complex-breakup-momentum
         auto w = Complex_0;
-
-        // sum of coupling * complex-breakup-momentum * 2 * i / m
-        for (size_t i = 0; i < FlatteChannels_.size(); ++i)
-            w += std::sqrt(fc_4m2c2[i] / m2 - fc_c2[i]);
+        for (const auto& fc : FlatteChannels_)
+            w += fc.Coupling->value() * std::sqrt(std::complex<double>(squared_breakup_momentum(m2, fc.Particles[0]->mass()->value(), fc.Particles[1]->mass()->value())));
 
         // T = 1 / (M^2 - m^2 - width-term)
-        T()->setValue(1. / (M2 - m2 - w), d, si, D);
+        T()->setValue(1. / (M2 - m2 - Complex_i * 2. * w / sqrt(m2)), d, si, D);
     }
 }
 
@@ -69,17 +112,12 @@ bool Flatte::consistent() const
 {
     bool C = MassShapeWithNominalMass::consistent();
 
-    for (const auto& fc : FlatteChannels_) {
+    for (const auto& fc : FlatteChannels_)
         if (fc.Coupling->value() <= 0) {
             FLOG(ERROR) << "coupling constant <= 0";
             C &= false;
         }
-        if (fc.Mass->value() <= 0) {
-            FLOG(ERROR) << "mass <= 0";
-            C &= false;
-        }
-    }
-
+    
     return C;
 }
 

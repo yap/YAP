@@ -1,9 +1,9 @@
 void dalitz_scatter()
 {
 
-    TFile* F = TFile::Open("DKSPIPI_mcmc.root", "READ");
+    TFile* F = TFile::Open("output/DKSPIPI_Zemach_mcmc.root", "READ");
     TTree* T = 0;
-    F->GetObject("DKSPIPI_mcmc", T);
+    F->GetObject("DKSPIPI_Zemach_mcmc", T);
     if (!T)
         return;
 

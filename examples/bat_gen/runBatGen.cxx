@@ -31,8 +31,8 @@ int main()
 
     std::vector<bat_gen*> test_models = {
         // new bat_gen("D3PI_PHSP", d3pi_phsp(std::make_unique<yap::ZemachFormalism>()))
-        new bat_gen("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()))
-        // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>()))
+        // new bat_gen("D3PI", d3pi(std::make_unique<yap::ZemachFormalism>()))
+        new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(std::make_unique<yap::ZemachFormalism>()))
         // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(std::make_unique<yap::HelicityFormalism>()))
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::ZemachFormalism>()))
         // new bat_gen("DKKPI", dkkpi(std::make_unique<yap::HelicityFormalism>()))
@@ -47,10 +47,10 @@ int main()
         // set precision
         m->SetPrecision(BCEngineMCMC::kMedium);
         m->SetNChains(4);
-        m->SetMinimumEfficiency(0.85);
-        m->SetMaximumEfficiency(0.99);
+        m->SetMinimumEfficiency(0.15);
+        m->SetMaximumEfficiency(0.35);
 
-        m->SetNIterationsRun(static_cast<int>(1e6 / m->GetNChains()));
+        m->SetNIterationsRun(static_cast<int>(4e6 / m->GetNChains()));
 
         m->WriteMarkovChain("output/" + m->GetSafeName() + "_mcmc.root", "RECREATE");
 

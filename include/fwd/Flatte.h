@@ -25,6 +25,7 @@
 namespace yap {
 
 class Flatte;
+class FlatteChannel;
 
 }
 

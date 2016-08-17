@@ -34,15 +34,18 @@
 #include <complex>
 #include <memory>
 
-inline std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+using namespace std;
+using namespace yap;
+
+inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
 {
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
 
-    auto M = std::make_unique<yap::Model>(std::move(SAC));
+    auto M = make_unique<Model>(move(SAC));
     M->setFinalState(piPlus, piMinus, piPlus);
 
     // use common radial size for all resonances
@@ -52,57 +55,57 @@ inline std::unique_ptr<yap::Model> d3pi(std::unique_ptr<yap::SpinAmplitudeCache>
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
     // rho
-    /* auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>()); */
-    auto rho = yap::Resonance::create(F.quantumNumbers(113), 775.49e-3, "rho", radialSize, std::make_shared<yap::RelativisticBreitWigner>(149.4e-3));
+    /* auto rho = F.resonance(113, radialSize, make_shared<RelativisticBreitWigner>()); */
+    auto rho = Resonance::create(F.quantumNumbers(113), 775.49e-3, "rho", radialSize, make_shared<RelativisticBreitWigner>(149.4e-3));
     rho->addChannel(piPlus, piMinus);
     D->addChannel(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
+    auto f_2 = F.resonance(225, radialSize, make_shared<RelativisticBreitWigner>());
     f_2->addChannel(piPlus, piMinus);
     D->addChannel(f_2, piPlus);
 
     // f_0(980)
-    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(0.406 * 2, F.particleTableEntry("K+").Mass);
-    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
+    auto f_0_980_flatte = make_shared<Flatte>();
+    f_0_980_flatte->add(FlatteChannel(0.406, *piPlus, *piMinus));
+    f_0_980_flatte->add(FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
+    auto f_0_980 = Resonance::create(QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(F.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::RelativisticBreitWigner>(0.265));
+    auto f_0_1370 = Resonance::create(F.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, make_unique<RelativisticBreitWigner>(0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::RelativisticBreitWigner>());
+    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, make_unique<RelativisticBreitWigner>());
     f_0_1500->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
+    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
     sigma->addChannel(piPlus, piMinus);
     D->addChannel(sigma, piPlus);
 
     M->addInitialStateParticle(D);
 
     // Add channels to D
-    *free_amplitude(*M, yap::to(rho))      = std::polar(1., 0.);
-    *free_amplitude(*M, yap::to(f_0_980))  = std::polar(1.4, yap::rad(12.));
-    *free_amplitude(*M, yap::to(f_2))      = std::polar(2.1, yap::rad(-123.));
-    *free_amplitude(*M, yap::to(f_0_1370)) = std::polar(1.3, yap::rad(-21.));
-    *free_amplitude(*M, yap::to(f_0_1500)) = std::polar(1.1, yap::rad(-44.));
-    *free_amplitude(*M, yap::to(sigma))    = std::polar(3.7, yap::rad(-3.));
+    *free_amplitude(*M, to(rho))      = polar(1., 0.);
+    *free_amplitude(*M, to(f_0_980))  = polar(1.4, rad(12.));
+    *free_amplitude(*M, to(f_2))      = polar(2.1, rad(-123.));
+    *free_amplitude(*M, to(f_0_1370)) = polar(1.3, rad(-21.));
+    *free_amplitude(*M, to(f_0_1500)) = polar(1.1, rad(-44.));
+    *free_amplitude(*M, to(sigma))    = polar(3.7, rad(-3.));
 
     return M;
 }
 
-inline bat_fit d3pi_fit(std::string name, std::unique_ptr<yap::SpinAmplitudeCache> SAC, std::vector<std::vector<unsigned> > pcs = {})
+inline bat_fit d3pi_fit(string name, unique_ptr<SpinAmplitudeCache> SAC, vector<vector<unsigned> > pcs = {})
 {
-    bat_fit m(name, d3pi(std::move(SAC)), pcs);
+    bat_fit m(name, d3pi(move(SAC)), pcs);
 
-    auto rho = std::dynamic_pointer_cast<yap::Resonance>(particle(*m.model(), yap::is_named("rho")));
+    auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho")));
 
     // m.fix(D->freeAmplitudes(rho, piPlus)[0], 1, 0);
     // m.setPrior(D->freeAmplitudes(f_0_980,  piPlus)[0], 0.,  100., -180, 180);
@@ -114,7 +117,7 @@ inline bat_fit d3pi_fit(std::string name, std::unique_ptr<yap::SpinAmplitudeCach
 
     m.addParameter("rho_mass", rho->mass(), 0.5, 1.2);
     m.GetParameters().Back().SetPriorConstant();
-    m.addParameter("rho_width", std::static_pointer_cast<yap::RelativisticBreitWigner>(rho->massShape())->width(), 0.1, 0.2);
+    m.addParameter("rho_width", static_pointer_cast<RelativisticBreitWigner>(rho->massShape())->width(), 0.1, 0.2);
     m.GetParameters().Back().SetPriorConstant();
     // m.addParameter("rho_radialSize", rho->radialSize(), 1, 5);
     // m.GetParameters().Back().SetPriorConstant();

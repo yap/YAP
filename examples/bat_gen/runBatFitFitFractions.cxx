@@ -39,67 +39,19 @@ int main()
 {
     yap::plainLogs(el::Level::Info);
 
-    //
-    // CREATE yap::Model
-    //
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
-
-    // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
-
-    auto M = std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>());
-    M->setFinalState(piPlus, piMinus, piPlus);
-
-    // use common radial size for all resonances
-    double radialSize = 3.; // [GeV^-1]
-
-    // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
-
-    // rho
-    auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
-    rho->addChannel(piPlus, piMinus);
-    D->addChannel(rho, piPlus);
-
-    // f_2(1270)
-    auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
-    f_2->addChannel(piPlus, piMinus);
-    D->addChannel(f_2, piPlus);
-
-    // f_0(980)
-    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    // f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(0.329, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(2 * f_0_980_flatte->channels().back().Coupling->value(), F.particleTableEntry("K+").Mass);
-    // auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
-    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.953, "f_0_980", radialSize, f_0_980_flatte);
-    f_0_980->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_980, piPlus);
-
-    // f_0(1370)
-    // auto f_0_1370 = yap::Resonance::create(F.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::RelativisticBreitWigner>(0.265));
-    auto f_0_1370 = yap::Resonance::create(F.quantumNumbers("f_0"), 1.259, "f_0_1370", radialSize, std::make_unique<yap::RelativisticBreitWigner>(0.298));
-    f_0_1370->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1370, piPlus);
-
-    // f_0(1500)
-    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::RelativisticBreitWigner>());
-    f_0_1500->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1500, piPlus);
-
-    // sigma a.k.a. f_0(500)
-    // auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.466, -0.223)));
-    sigma->addChannel(piPlus, piMinus);
-    D->addChannel(sigma, piPlus);
-
-    M->addInitialStateParticle(D);
-
     // create bat_fit object
-    fit_fitFraction m("D3PI_frac_fit", std::move(M));
+    fit_fitFraction m("D3PI_frac_fit", d3pi(std::make_unique<yap::ZemachFormalism>()));
 
     m.GetParameter("N_1").Fix(1);
+
+    // find particles
+    auto D        = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D+")));
+    auto rho      = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho")));
+    auto f_2      = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
+    auto f_0_980  = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0_980")));
+    auto f_0_1370 = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0_1370")));
+    auto f_0_1500 = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0_1500")));
+    auto sigma    = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("sigma")));
 
     // set fit fractions to fit
     m.setFitFraction(decay_tree(*D, yap::to(rho)),      20e-2,   quad(2.3e-2, 0.9e-2));
@@ -120,8 +72,8 @@ int main()
     // add shape parameters
     m.addParameter("f_0_980_mass", f_0_980->mass(), 0.953 - 3 * 0.02, 0.953 + 3 * 0.02);
     m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.953, 0.02));
-    m.addParameter("f_0_980_coupling", f_0_980_flatte->channels()[0].Coupling, 0.329 - 3 * 0.096, 0.329 + 3 * 0.096);
-    m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.329, 0.096));
+    // m.addParameter("f_0_980_coupling", f_0_980_flatte->channels()[0].Coupling, 0.329 - 3 * 0.096, 0.329 + 3 * 0.096);
+    // m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.329, 0.096));
     m.addParameter("f_0_1370_mass", f_0_1370->mass(), 1.259 - 3 * 0.055, 1.259 + 3 * 0.055);
     m.GetParameters().Back().SetPrior(new BCGaussianPrior(1.259, 0.055));
     m.addParameter("f_0_1370_width", std::dynamic_pointer_cast<yap::BreitWigner>(f_0_1370->massShape())->width(),

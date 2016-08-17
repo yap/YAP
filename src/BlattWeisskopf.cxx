@@ -48,23 +48,6 @@ const double squared_barrier_factor(unsigned l, double z)
 }
 
 //-------------------------
-double f_inverse_square(unsigned l, double z)
-{
-    switch (l) {
-        case 0:
-            return 1.;
-        case 1:
-            return 1. + z;
-        case 2:
-            return 9. + 3. * z + z * z;
-        default:
-            /// \todo put in generic formula for L > 2
-            throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(l) + " > 2",
-                                        "f_inverse_square");
-    }
-}
-
-//-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     RecalculableDataAccessor(equal_down_by_orderless_content),
     RequiresMeasuredBreakupMomenta(L > 0),
@@ -82,9 +65,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
                                     "BlattWeisskopf::BlattWeisskopf");
 
     if (L_ > 0) {
-        addParameter(DecayingParticle_->mass());
         addParameter(DecayingParticle_->radialSize());
-
         BarrierFactor_ = RealCachedValue::create(*this);
     }
 
@@ -110,30 +91,16 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 
         // check if barrier factor is uncalculated
         if (D.status(*BarrierFactor_, pc_symIndex.second) == CalculationStatus::uncalculated) {
-
+            
             DEBUG("calculate BlattWeisskopf");
+
+            double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
 
             // calculate on all data points in D
             for (auto& d : D) {
-
-                double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-                double m_a = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[0]);
-                double m_b = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[1]);
-
-                // nominal breakup momentum
-                double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
-
                 // measured breakup momentum
                 double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc_symIndex.first);
-
-                double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
-                double f2_nomi = f_inverse_square(L_, r2 * q2_nomi);
-                double f2_meas = f_inverse_square(L_, r2 * q2_meas);
-
-                double barrier_factor = sqrt(f2_nomi / f2_meas);
-
-                // store result in data point
-                BarrierFactor_->setValue(barrier_factor, d, pc_symIndex.second, D);
+                BarrierFactor_->setValue(sqrt(squared_barrier_factor(L(), q2_meas * r2)), d, pc_symIndex.second, D);
             }
 
             // update status

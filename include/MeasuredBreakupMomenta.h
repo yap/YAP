@@ -62,12 +62,6 @@ public:
     double q(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return sqrt(q2(d, pc)); }
 
-    /// Calculate breakup momentum from parent and daughter masses
-    /// \param m2_R squared mass of parent
-    /// \param m_a mass of first daughter
-    /// \param m_b mass of second daughter
-    static double calcQ2(double m2_R, double m_a, double m_b);
-
     /// \return Breakup Momentum
     std::shared_ptr<RealCachedValue> breakupMomenta()
     { return Q2_; }
@@ -91,6 +85,20 @@ protected:
     std::shared_ptr<RealCachedValue> Q2_;
 
 };
+
+/// Calculate breakup momentum from parent and daughter masses
+/// \param m2_R squared mass of parent
+/// \param m_a mass of first daughter
+/// \param m_b mass of second daughter
+inline constexpr double squared_breakup_momentum(double m2_R, double m_a, double m_b)
+{
+    return (m_a == m_b)
+        ?
+        m2_R / 4. - m_a * m_a
+        :
+        (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.;
+}
+
 
 }
 
