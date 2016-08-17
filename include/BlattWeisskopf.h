@@ -100,6 +100,11 @@ private:
 
 };
 
+/// squared Blatt-Weisskopf barrier factor;
+/// \param l Orbital angular momentum
+/// \param z squared breakup momentum / squared radius
+/// \warning approximate result for l >= 8 is not properly tested, nor streamlined!
+const double squared_barrier_factor(unsigned l, double z);
 }
 
 #endif

@@ -14,6 +14,40 @@
 namespace yap {
 
 //-------------------------
+const double squared_barrier_factor(unsigned l, double z)
+{
+    switch (l) {
+    case 0:
+        return 1;
+    case 1:
+        return 2 * z / (z + 1);
+    case 2:
+        return 13 * pow(z, l) / (z * (z + 3) + 9);
+    case 3:
+        return 277 * pow(z, l) / (z * (z * (z + 6) + 45) + 225);
+    case 4:
+        return 12746 * pow(z, l) / (z * (z * (z * (z + 10) + 135) + 1575) + 11025);
+    case 5:
+        return 998881 * pow(z, l) / (z * (z * (z * (z * (z + 15) + 315) + 6300) + 99225) + 893025);
+    case 6:
+        return 118394977 * pow(z, l) / (z * (z * (z * (z * (z * (z + 21) + 630) + 18900) + 496125) + 9823275) + 108056025);
+    case 7:
+        return 19727003738LL * pow(z, l) / (z * (z * (z * (z * (z * (z * (z + 28) + 1134) + 47250) + 1819125) + 58939650) + 1404728325L) + 18261468225LL);
+    default:
+        /// \todo: speed this up. And check how well it approximates.
+        // approximated:
+        double num = 0;
+        double den = 0;
+         for (int n = l; n >= 0; --n) {
+             double coef = exp(0.5 * l * n);
+             num += coef;
+             den += coef / pow(z, n);
+         }
+         return num / den;
+    }
+}
+
+//-------------------------
 double f_inverse_square(unsigned l, double z)
 {
     switch (l) {
