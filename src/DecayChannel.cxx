@@ -274,9 +274,9 @@ ParticleSet particles(const DecayChannel& dc)
 {
     ParticleSet S;
     for (const auto& d : dc.daughters()) {
-        if (is_final_state_particle(d))
+        if (is_final_state_particle(*d))
             S.insert(d);
-        else if (is_decaying_particle(d)) {
+        else if (is_decaying_particle(*d)) {
             auto s = particles(*std::static_pointer_cast<DecayingParticle>(d));
             S.insert(s.begin(), s.end());
         } else

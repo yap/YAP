@@ -23,14 +23,12 @@
 
 #include "fwd/Particle.h"
 
-#include <memory>
-
 namespace yap {
 
 class DecayingParticle;
 
-/// \return whether shared_ptr to Particle is shared_ptr to DecayingParticle
-bool is_decaying_particle(const std::shared_ptr<Particle>& p);
+/// \return whether Particle is from DecayingParticle
+bool is_decaying_particle(const Particle& p);
 
 }
 

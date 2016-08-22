@@ -9,8 +9,8 @@
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(const QuantumNumbers& q, double mass, std::string name, double radialSize, std::shared_ptr<MassShape> massShape) :
-    DecayingParticle(q, mass, name, radialSize),
+Resonance::Resonance(const QuantumNumbers& q, std::string name, double radialSize, std::shared_ptr<MassShape> massShape) :
+    DecayingParticle(q, name, radialSize),
     MassShape_(massShape)
 {
     if (!MassShape_)
@@ -70,6 +70,12 @@ void Resonance::modifyDecayTree(DecayTree& dt) const
 {
     DecayingParticle::modifyDecayTree(dt);
     dt.addRecalculableDataAccessor(*MassShape_);
+}
+
+//-------------------------
+const bool is_resonance(const Particle& p)
+{
+    return dynamic_cast<const Resonance*>(&p) != nullptr;
 }
 
 }

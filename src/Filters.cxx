@@ -4,8 +4,12 @@
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
 #include "DecayTree.h"
+#include "FinalStateParticle.h"
 #include "FreeAmplitude.h"
+#include "MassShape.h"
+#include "MassShapeWithNominalMass.h"
 #include "Particle.h"
+#include "Resonance.h"
 #include "SpinAmplitude.h"
 
 namespace yap {
@@ -33,6 +37,22 @@ const bool filter_decaying_particle::operator()(const Particle& p) const
 {
     if (dynamic_cast<const DecayingParticle*>(&p))
         return operator()(static_cast<const DecayingParticle&>(p));
+    return false;
+}
+
+//-------------------------
+const bool filter_resonance::operator()(const DecayingParticle& p) const
+{
+    if (dynamic_cast<const Resonance*>(&p))
+        return operator()(static_cast<const Resonance&>(p));
+    return false;
+}
+
+//-------------------------
+const bool filter_mass_shape::operator()(const Resonance& p) const
+{
+    if (p.massShape())
+        return operator()(*p.massShape());
     return false;
 }
 
@@ -116,6 +136,24 @@ const bool has_free_amplitude::operator()(const DecayingParticle& dp) const
 const bool from::operator()(const Particle& p) const
 {
     return to(std::const_pointer_cast<Particle>(p.shared_from_this()))(*DecayingParticle_);
+}
+
+//-------------------------
+const bool has_mass::operator()(const Particle& p) const
+{
+    if (dynamic_cast<const DecayingParticle*>(&p))
+        return operator()(*static_cast<const DecayingParticle*>(&p));
+    if (dynamic_cast<const FinalStateParticle*>(&p))
+        return operator()(*static_cast<const FinalStateParticle*>(&p));
+    return false;
+}
+
+//-------------------------
+const bool has_mass::operator()(const MassShape& m) const
+{
+    if (dynamic_cast<const MassShapeWithNominalMass*>(&m))
+        return operator()(*static_cast<const MassShapeWithNominalMass*>(&m));
+    return false;
 }
 
 }

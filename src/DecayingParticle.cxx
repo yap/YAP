@@ -18,8 +18,8 @@
 namespace yap {
 
 //-------------------------
-DecayingParticle::DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize) :
-    Particle(q, mass, name),
+DecayingParticle::DecayingParticle(const QuantumNumbers& q, std::string name, double radialSize) :
+    Particle(q, name),
     RadialSize_(std::make_shared<RealParameter>(radialSize))
 {
 }
@@ -332,9 +332,9 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
 }
 
 //-------------------------
-bool is_decaying_particle(const std::shared_ptr<Particle>& p)
+bool is_decaying_particle(const Particle& p)
 {
-    return std::dynamic_pointer_cast<DecayingParticle>(p) != nullptr;
+    return dynamic_cast<const DecayingParticle*>(&p) != nullptr;
 }
 
 //-------------------------

@@ -33,8 +33,8 @@ class FinalStateParticle;
 /// \typedef FinalStateParticleVector
 using FinalStateParticleVector = std::vector<std::shared_ptr<FinalStateParticle> >;
 
-/// \return whether shared_ptr to Particle is shared_ptr to FinalStateParticle
-bool is_final_state_particle(const std::shared_ptr<Particle>& p);
+/// \return whether Particle is FinalStateParticle
+bool is_final_state_particle(const Particle& p);
 
 }
 

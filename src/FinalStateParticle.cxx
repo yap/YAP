@@ -8,12 +8,16 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
-    : Particle(q, m, name),
-      Model_(nullptr)
+bool FinalStateParticle::consistent() const
 {
-    // final state particles have fixed mass
-    mass()->variableStatus() = VariableStatus::fixed;
+    bool C = Particle::consistent();
+
+    if (Mass_ < 0.) {
+        FLOG(ERROR) << "mass is negative";
+        C &= false;
+    }
+
+    return C;
 }
 
 //-------------------------
@@ -50,9 +54,9 @@ bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const Fin
 }
 
 //-------------------------
-bool is_final_state_particle(const std::shared_ptr<Particle>& p)
+bool is_final_state_particle(const Particle& p)
 {
-    return std::dynamic_pointer_cast<FinalStateParticle>(p) != nullptr;
+    return dynamic_cast<const FinalStateParticle*>(&p) != nullptr;
 }
 
 
