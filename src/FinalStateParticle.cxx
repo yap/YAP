@@ -8,16 +8,13 @@
 namespace yap {
 
 //-------------------------
-bool FinalStateParticle::consistent() const
+FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name) :
+    Particle(q, name),
+    Model_(nullptr),
+    Mass_(m)
 {
-    bool C = Particle::consistent();
-
-    if (Mass_ < 0.) {
-        FLOG(ERROR) << "mass is negative";
-        C &= false;
-    }
-
-    return C;
+    if (Mass_ < 0)
+        throw exceptions::Exception("Mass is negative", "FinalStateParticle::FinalStateParticle");
 }
 
 //-------------------------
