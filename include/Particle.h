@@ -50,10 +50,11 @@ class Particle :
 protected:
 
     /// Constructor
-    /// \param q Quantum numbers of particle
-    /// \param m Mass of particle
     /// \param name Name of particle
-    Particle(const QuantumNumbers& q, std::string name);
+    /// \param q Quantum numbers of particle
+    Particle(std::string name, const QuantumNumbers& q)
+        : std::enable_shared_from_this<Particle>(),
+        QuantumNumbers_(q), Name_(name) {}
 
 public:
 

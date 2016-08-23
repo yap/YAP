@@ -8,8 +8,8 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name) :
-    Particle(q, name),
+FinalStateParticle::FinalStateParticle(std::string name, const QuantumNumbers& q, double m) :
+    Particle(name, q),
     Model_(nullptr),
     Mass_(m)
 {

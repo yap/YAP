@@ -55,8 +55,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
     auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
     // rho
-    /* auto rho = F.resonance(113, radialSize, make_shared<RelativisticBreitWigner>()); */
-    auto rho = Resonance::create(F.quantumNumbers(113), "rho", radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
+    auto rho = F.resonance(113, radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
     rho->addChannel(piPlus, piMinus);
     D->addChannel(rho, piPlus);
 
@@ -69,12 +68,12 @@ inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
     auto f_0_980_flatte = make_shared<Flatte>(0.965);
     f_0_980_flatte->add(FlatteChannel(0.406, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
-    auto f_0_980 = Resonance::create(QuantumNumbers(0, 0), "f_0_980", radialSize, f_0_980_flatte);
+    auto f_0_980 = Resonance::create("f_0_980", QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = Resonance::create(F["f_0"], "f_0_1370", radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
+    auto f_0_1370 = Resonance::create("f_0_1370", F["f_0"], radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 
@@ -105,7 +104,7 @@ inline bat_fit d3pi_fit(string name, unique_ptr<SpinAmplitudeCache> SAC, vector<
 {
     bat_fit m(name, d3pi(move(SAC)), pcs);
 
-    auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho")));
+    auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
 
     // m.fix(D->freeAmplitudes(rho, piPlus)[0], 1, 0);
     // m.setPrior(D->freeAmplitudes(f_0_980,  piPlus)[0], 0.,  100., -180, 180);

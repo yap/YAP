@@ -18,8 +18,8 @@
 namespace yap {
 
 //-------------------------
-DecayingParticle::DecayingParticle(const QuantumNumbers& q, std::string name, double radialSize) :
-    Particle(q, name),
+DecayingParticle::DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize) :
+    Particle(name, q),
     RadialSize_(std::make_shared<RealParameter>(radialSize))
 {
 }

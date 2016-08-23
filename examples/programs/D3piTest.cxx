@@ -82,12 +82,12 @@ int main( int argc, char** argv)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
     f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
     f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *factory.fsp(321), *factory.fsp(-321))); // K+K-
-    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), "f_0_980", radialSize, f_0_980_flatte);
+    auto f_0_980 = yap::Resonance::create("f_0_980", yap::QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(factory.quantumNumbers("f_0"), "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
+    auto f_0_1370 = yap::Resonance::create("f_0_1370", factory.quantumNumbers("f_0"), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 

@@ -40,14 +40,14 @@ bool ParticleTableEntry::consistent() const
 std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 {
     const auto& p = (*this)[PDG];
-    return FinalStateParticle::create(p, p.Mass, p.Name);
+    return FinalStateParticle::create(p.Name, p, p.Mass);
 }
 
 //-------------------------
 std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize) const
 {
     const auto& p = (*this)[PDG];
-    return DecayingParticle::create(p, p.Name, radialSize);
+    return DecayingParticle::create(p.Name, p, radialSize);
 }
 
 //-------------------------
@@ -55,7 +55,7 @@ std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize
 {
     const auto& p = (*this)[PDG];
     massShape->setParameters(p);
-    return Resonance::create(p, p.Name, radialSize, std::move(massShape));
+    return Resonance::create(p.Name, p, radialSize, std::move(massShape));
 }
 
 //-------------------------

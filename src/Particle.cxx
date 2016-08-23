@@ -7,13 +7,6 @@
 namespace yap {
 
 //-------------------------
-Particle::Particle(const QuantumNumbers& q, std::string name) :
-    std::enable_shared_from_this<Particle>(),
-    QuantumNumbers_(q),
-    Name_(name)
-{}
-
-//-------------------------
 bool Particle::consistent() const
 {
     bool C = true;
