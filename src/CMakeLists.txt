@@ -23,6 +23,7 @@ set(YAP_SOURCES
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
 	ImportanceSampler.cxx
+	InvariantMassBinning.cxx
 	Integrator.cxx
 	MassRange.cxx
 	MassShape.cxx
