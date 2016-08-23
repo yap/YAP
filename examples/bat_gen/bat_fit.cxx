@@ -140,8 +140,8 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
         if (Iteration % lag != 0)
             continue;
 
-        if (abs(m2[0] - 1.35 * 1.35) > 0.1 or m2[1] > 1.55 or m2[1] < 0.58)
-            continue;
+        // if (fabs(m2[0] - 1.35 * 1.35) > 0.1 or m2[1] > 1.55 or m2[1] < 0.58)
+        //     continue;
 
         ++n_attempted;
 

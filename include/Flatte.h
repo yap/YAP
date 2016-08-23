@@ -32,6 +32,7 @@
 
 #include "MassShapeWithNominalMass.h"
 
+#include <array>
 #include <complex>
 #include <memory>
 
