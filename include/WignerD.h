@@ -35,8 +35,8 @@
 /// We only cache matrix elements with M in [-J, J] and N in [-J, min(0, m)].
 /// This amounts to the lower triangle and the diagonal without the bottom right corner.
 /// The uncached matrix elements are given by the by the symmetries
-///   - \f$ d^{J}_{MN}(\beta) = (-)^(M-N) d^{J}_{NM}(\beta)\f$
-///   - \f$ d^{J}_{MN}(\beta) = (-)^{M-N) d^{J}_{-N-M}(\beta)\f$
+///   - \f$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{NM}(\beta)\f$
+///   - \f$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{-N-M}(\beta)\f$
 
 #ifndef yap_WignerD_h
 #define yap_WignerD_h
