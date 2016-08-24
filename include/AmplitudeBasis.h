@@ -34,7 +34,7 @@ namespace basis {
 /// \struct canonical
 /// stores amplitudes in canonical basis
 /// \tparam T type stored in amplitudes
-/// \defgroup AmplitudeBasis struct for converting among amplitude bases
+/// \defgroup AmplitudeBasis Amplitude bases
 template <typename T>
 struct canonical {
     /// S amplitude (l=0)
