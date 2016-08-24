@@ -22,42 +22,77 @@
 #ifndef  yap_InvariantMassBinning_h
 #define  yap_InvariantMassBinning_h
 
+#include "fwd/InvariantMassBinning.h"
+
 #include "fwd/CachedValue.h"
+#include "fwd/DataPoint.h"
+#include "fwd/Model.h"
+#include "fwd/StatusManager.h"
 
 #include "StaticDataAccessor.h"
 
+#include <memory>
+#include <vector>
+
 namespace yap {
 
-/// \class InvariantMassBinning
+/// \brief Partitions the invariant-mass range in \f$n\f$ bins, whose (constant) lower
+/// edges are stored in BinLowEdges_.
+/// \details BinLowEdges_ is a \f$(n+1)\f$-element vector whose entries partition the
+/// axis in an closed-open fashion as follows:
+/// \f[
+/// [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n).
+/// \f]
+/// InvariantMassBinning has a function to calculate which bin the invariant mass of a
+/// ParticleCombination lies in:
+///  * In case of underflow (i.e. \f$m < m_0\f$), the bin will be set to `-1`.
+///  * In case of overflow (i.e. \f$m > m_n\f$), the bin will be set to `n`.
+///
 /// \author Paolo Di Giglio.
-/// Partitions the invariant-mass range in bins, whose (constant) lower bonuds
-/// are stored in the class. Offers a function to calculate which bin the
-/// invariant mass of a #ParticleCombination lies in.
 class InvariantMassBinning : public StaticDataAccessor
 {
 public:
     /// Constructor.
-    /// The #ParticleCombinationEqualTo is defaulted to #equal_by_orderless_content.
+    /// \param m    The owning Model.
+    /// \param bins The user-specified partition of the invariant-mass axis.
     explicit InvariantMassBinning(Model& m, const std::vector<double>& bins);
 
-    /// Calculate which bin the invatiant mass of the #ParticleCombination's
-    /// belong to.
-    /// \param d  The #DataPoint to calculate into.
-    /// \param sm The #StatusManager to update.
+    /// \brief Calculate which bin the invatiant mass of the
+    /// ParticleCombination's belong to.
+    /// \details The class description explains which bin value is used
+    /// in case of overflow or underflow.
+    /// \param d  The DataPoint to calculate into.
+    /// \param sm The StatusManager to update.
     virtual void calculate(DataPoint& d, StatusManager& sm) const override;
+
+    /// Access the partition.
+    const std::vector<double>& lowEdges() const
+    { return BinLowEdges_; }
+
+    /// Access the bin number.
+    /// \todo Enforce `const`ness on the pointed-to value!!
+    const std::shared_ptr<RealCachedValue>& bin() const
+    { return Bin_; }
+
 private:
 
-    /// Partitioning of the mass axis.
-    /// It contains the \f$n\f$ lower bounds of the bins plus
-    /// the upper bound of the last bin:
-    /// \f[
-    /// [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n).
-    /// \f]
-    const std::vector<double> Bins_;
+    /// Lower edges of the bins.
+    const std::vector<double> BinLowEdges_;
 
-    /// The bin the masses of the #ParticleCombination's belong to.
-    std::shared_ptr<RealCachedValue> BinNumber_;
+    /// The bin the masses of the ParticleCombination's belong to.
+    std::shared_ptr<RealCachedValue> Bin_;
 };
+
+/// Check if n corresponds to an underflow value.
+/// \param n The index to check agains the bin underflow value.
+inline const bool is_underflow(int n)
+{ return n < 0; }
+
+/// Check if n corresponds to an overflow value.
+/// \param n The index to check agains the bin overflow value.
+/// \param B The partition the bin overflow value has to be evaluated from.
+inline const bool is_overflow(int n, const InvariantMassBinning& B)
+{ return n >= static_cast<int>(B.lowEdges().size()) - 1; }
 
 }
 
