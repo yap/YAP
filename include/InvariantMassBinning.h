@@ -37,12 +37,13 @@
 namespace yap {
 
 /// \brief Partitions the invariant-mass range in \f$n\f$ bins, whose (constant) lower
-/// edges are stored in BinLowEdges_.
-/// \details BinLowEdges_ is a \f$(n+1)\f$-element vector whose entries partition the
+/// edges are stored in `BinLowEdges_`.
+/// \details `BinLowEdges_` is a \f$(n+1)\f$-element vector whose entries partition the
 /// axis in an closed-open fashion as follows:
 /// \f[
-/// [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n).
+/// (-\infty, m_0) \cup [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n) \cup [m_n, +\infty).
 /// \f]
+/// The `0`-th value of `BinLowEdges_` corresponds to \f$m_0\f$; the `n`-th to \f$m_n\f$.
 /// InvariantMassBinning has a function to calculate which bin the invariant mass of a
 /// ParticleCombination lies in:
 ///  * In case of underflow (i.e. \f$m < m_0\f$), the bin will be set to `-1`.
