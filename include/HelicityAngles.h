@@ -46,8 +46,8 @@ namespace yap {
 ///      the \f$ z \f$ axis of its parent frame \f$ \hat{z}_0 \f$,
 ///      define the reference frame:
 ///      - \f$ \hat{z} \equiv \hat{p} \f$
-///      - \f$ \hat{y} \equiv \hat{z}_0 \cross \hat{z} \f$
-///      - \f$ \hat{x} \equiv \hat{y} \cross \hat{z} \f$
+///      - \f$ \hat{y} \equiv \hat{z}_0 \times \hat{z} \f$
+///      - \f$ \hat{x} \equiv \hat{y} \times \hat{z} \f$
 ///   -# Given daughter particle with momentum \f$ \vec{q} \f$
 ///      in the decaying particle's rest frame, the angles are
 ///      - \f$ \cos\theta \equiv \hat{q} \cdot \hat{z} \f$
