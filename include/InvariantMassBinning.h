@@ -29,24 +29,34 @@
 namespace yap {
 
 /// \class InvariantMassBinning
-/// \author Paolo Di Giglio
+/// \author Paolo Di Giglio.
+/// Partitions the invariant-mass range in bins, whose (constant) lower bonuds
+/// are stored in the class. Offers a function to calculate which bin the
+/// invariant mass of a #ParticleCombination lies in.
 class InvariantMassBinning : public StaticDataAccessor
 {
 public:
-	/// Constructor.
-	/// The #ParticleCombinationEqualTo is defaulted to #equal_by_orderless_content.
-	explicit InvariantMassBinning(Model& m, const std::vector<double>& bins);
-	virtual void calculate(DataPoint& d, StatusManager& sm) const override;
-private:
-	/// Partitioning of the mass axis.
-	/// It contains the \f$n\f$ lower bounds of the bins plus
-	/// the upper bound of the last bin:
-	/// \f[
-	/// [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n).
-	/// \f]
-	const std::vector<double> Bins_;
+    /// Constructor.
+    /// The #ParticleCombinationEqualTo is defaulted to #equal_by_orderless_content.
+    explicit InvariantMassBinning(Model& m, const std::vector<double>& bins);
 
-	std::shared_ptr<RealCachedValue> BinNumber_;
+    /// Calculate which bin the invatiant mass of the #ParticleCombination's
+    /// belong to.
+    /// \param d  The #DataPoint to calculate into.
+    /// \param sm The #StatusManager to update.
+    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
+private:
+
+    /// Partitioning of the mass axis.
+    /// It contains the \f$n\f$ lower bounds of the bins plus
+    /// the upper bound of the last bin:
+    /// \f[
+    /// [m_0,m_1) \cup [m_1,m_2) \dots [m_{n-1}, m_n).
+    /// \f]
+    const std::vector<double> Bins_;
+
+    /// The bin the masses of the #ParticleCombination's belong to.
+    std::shared_ptr<RealCachedValue> BinNumber_;
 };
 
 }
