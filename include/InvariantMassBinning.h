@@ -54,9 +54,9 @@ class InvariantMassBinning : public StaticDataAccessor
 {
 public:
     /// Constructor.
-    /// \param m    The owning Model.
-    /// \param bins The user-specified partition of the invariant-mass axis.
-    explicit InvariantMassBinning(Model& m, const std::vector<double>& bins);
+    /// \param m         The owning Model.
+    /// \param low_edges Low edges of the bins; the last element is the upper edge of the las bin.
+    explicit InvariantMassBinning(Model& m, const std::vector<double>& low_edges);
 
     /// \brief Calculate which bin the invatiant mass of the
     /// ParticleCombination's belong to.
