@@ -85,14 +85,6 @@ public:
     /// \param d DataPoint to get data from
     const std::vector<FourVector<double> > finalStateMomenta(const DataPoint& d) const;
 
-    /// \return masses
-    std::shared_ptr<RealCachedValue> mass()
-    { return M_; }
-
-    /// \return masses (const)
-    std::shared_ptr<RealCachedValue> mass() const
-    { return M_; }
-
     /// \return momentum
     std::shared_ptr<FourVectorCachedValue> momentum()
     { return P_; }
