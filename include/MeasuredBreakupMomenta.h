@@ -62,14 +62,6 @@ public:
     double q(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return sqrt(q2(d, pc)); }
 
-    /// \return Breakup Momentum
-    std::shared_ptr<RealCachedValue> breakupMomenta()
-    { return Q2_; }
-
-    /// \return Breakup Momentum (const)
-    std::shared_ptr<RealCachedValue> breakupMomenta() const
-    { return Q2_; }
-
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
 
