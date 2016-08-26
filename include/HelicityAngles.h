@@ -74,24 +74,8 @@ public:
     /// get azimuthal angle
     double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
-    /// access azimuthal angle
-    std::shared_ptr<RealCachedValue>& phi()
-    { return Phi_; }
-
-    /// access azimuthal angle (const)
-    const std::shared_ptr<RealCachedValue>& phi() const
-    { return Phi_; }
-
     /// get polar angle
     double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
-
-    /// access polar angle
-    std::shared_ptr<RealCachedValue>& theta()
-    { return Theta_; }
-
-    /// access polar angle (const)
-    const std::shared_ptr<RealCachedValue>& theta() const
-    { return Theta_; }
 
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
