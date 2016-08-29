@@ -390,7 +390,7 @@ const Vector<T, R> operator*(const Matrix<T, R, C>& M, const Vector<T, C>& V)
 
 /// Matrix * Vector with different template types
 template <typename T1, typename T2, size_t R, size_t C>
-const auto operator*(const Matrix<T1, R, C>& M, const Vector<T2, C>& V)
+auto operator*(const Matrix<T1, R, C>& M, const Vector<T2, C>& V)
 -> const Vector<typename std::remove_cv<decltype(operator*(M[0][0], V[0]))>::type, R>
 {
     Vector<typename std::remove_cv<decltype(operator*(M[0][0], V[0]))>::type, R> v;

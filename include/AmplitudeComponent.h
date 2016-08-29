@@ -65,7 +65,7 @@ public:
         : AmplitudeComponent(), StaticDataAccessor(m, equal) {}
 
     /// \return whether AmplitudeComponent can calculate for particular ParticleCombination
-    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const
+    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const override
     { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
 
     /// \return VariableStatus::fixed
@@ -84,7 +84,7 @@ public:
         : RecalculableDataAccessor(equal) {}
 
     /// \return whether AmplitudeComponent can calculate for particular ParticleCombination
-    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const
+    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const override
     { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
 
     /// calls variable_status on parameters of object
