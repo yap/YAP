@@ -24,7 +24,7 @@ void MeasuredBreakupMomenta::addToStaticDataAccessors()
     // look for Model's FourMomenta_
     auto it_fm = std::find(staticDataAccessors().begin(), staticDataAccessors().end(), model()->fourMomenta().get());
     if (it_fm == staticDataAccessors().end())
-        throw exceptions::Exception("MeasuredBreakupMomenta cannot be registered with the model before FourMomenta", "HelicityAngles::registerWithModel");
+        throw exceptions::Exception("MeasuredBreakupMomenta cannot be registered with the model before FourMomenta", "MeasuredBreakupMomenta::registerWithModel");
     // add this to just after FourMomenta_
     const_cast<StaticDataAccessorVector&>(staticDataAccessors()).insert(it_fm + 1, this);
 }
@@ -35,6 +35,11 @@ double MeasuredBreakupMomenta::q2(const DataPoint& d, const std::shared_ptr<Part
     return Q2_->value(d, symmetrizationIndex(pc));
 }
 
+//-------------------------
+double MeasuredBreakupMomenta::rho(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return 2. * sqrt(q2(d, pc) / model()->fourMomenta()->m2(d, pc));
+}
 
 //-------------------------
 void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
