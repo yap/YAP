@@ -49,7 +49,7 @@ const double squared_barrier_factor(unsigned l, double z)
 
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
-    RecalculableDataAccessor(equal_down_by_orderless_content),
+    RecalculableAmplitudeComponent(equal_down_by_orderless_content),
     RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
     L_(L)
@@ -74,7 +74,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
 }
 
 //-------------------------
-std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+const std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return (L_ == 0) ? 1 : BarrierFactor_->value(d, symmetrizationIndex(pc));
 }
@@ -112,7 +112,7 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 //-------------------------
 void BlattWeisskopf::updateCalculationStatus(StatusManager& D) const
 {
-    if (variable_status(*this) == VariableStatus::changed)
+    if (VariableStatus() == VariableStatus::changed)
         D.set(*BarrierFactor_, CalculationStatus::uncalculated);
 }
 

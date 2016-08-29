@@ -39,8 +39,7 @@
 
 namespace yap {
 
-/// \class RecalculateDataAccessor
-/// \brief Base class for all data accessors that will need to be updated
+/// Base class for all DataAccessor's that will need to be updated
 /// \author Daniel Greenwald
 class RecalculableDataAccessor : public DataAccessor
 {
@@ -60,32 +59,25 @@ public:
     /// set VariableStatus of all Parameters to unchanged (or leave fixed)
     void setParameterFlagsToUnchanged();
 
-    /// \return value calculated for DataPoint and ParticleCombination
-    /// \param d DataPoint
-    /// \param pc shared_ptr to ParticleCombination
-    /// must be overloaded in derived class
-    virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
-
     /// \return Parameters of this object
     const ParameterSet& parameters() const
-    { return parameters_; }
+    { return Parameters_; }
 
 protected:
 
     /// register with Model
     void virtual registerWithModel() override;
 
+    /// add a parameter for evaluating variableStatus
     void addParameter(std::shared_ptr<ParameterBase> p)
-    { parameters_.insert(p); }
+    { Parameters_.insert(p); }
 
 private:
-
-    /// Set of parameters this RecalculableDataAccessor depends on
-    ParameterSet parameters_;
+    
+    /// Parameters of object
+    ParameterSet Parameters_;
 
 };
-
-const VariableStatus variable_status(const RecalculableDataAccessor&);
 
 }
 

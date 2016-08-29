@@ -69,7 +69,7 @@ void Resonance::addParticleCombination(const std::shared_ptr<ParticleCombination
 void Resonance::modifyDecayTree(DecayTree& dt) const
 {
     DecayingParticle::modifyDecayTree(dt);
-    dt.addRecalculableDataAccessor(*MassShape_);
+    dt.addAmplitudeComponent(*MassShape_);
 }
 
 //-------------------------

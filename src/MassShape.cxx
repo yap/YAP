@@ -14,7 +14,7 @@ namespace yap {
 
 //-------------------------
 MassShape::MassShape() :
-    RecalculableDataAccessor(equal_by_orderless_content),
+    RecalculableAmplitudeComponent(equal_by_orderless_content),
     Resonance_(nullptr),
     T_(ComplexCachedValue::create(*this))
 {}
@@ -38,12 +38,12 @@ void MassShape::calculate(DataPartition& D) const
 //-------------------------
 void MassShape::updateCalculationStatus(StatusManager& D) const
 {
-    if (variable_status(*this) == VariableStatus::changed)
+    if (VariableStatus() == VariableStatus::changed)
         D.set(*T(), CalculationStatus::uncalculated);
 }
 
 //-------------------------
-std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+const std::complex<double> MassShape::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     return T_->value(d, symmetrizationIndex(pc));
 }

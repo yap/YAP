@@ -319,7 +319,7 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt) const
             throw exceptions::Exception("BlattWeisskopf is nullptr", "DecayingParticle::modifyDecayTree");
 
         // Add BlattWeisskopf object
-        dt.addRecalculableDataAccessor(*bw->second);
+        dt.addAmplitudeComponent(*bw->second);
     }
 }
 

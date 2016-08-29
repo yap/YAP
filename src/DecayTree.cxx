@@ -1,5 +1,6 @@
 #include "DecayTree.h"
 
+#include "AmplitudeComponent.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
@@ -8,7 +9,6 @@
 #include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
-#include "RecalculableDataAccessor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -76,9 +76,9 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
 
-    // recalculable amplitude
-    for (const auto& rda : RecalculableDataAccessors_)
-        A *= rda->value(d, pc);
+    // amplitude components
+    for (const auto& ac : AmplitudeComponents_)
+        A *= ac->value(d, pc);
 
     // likewise for daughters
     for (const auto& d_dt : DaughterDecayTrees_)
@@ -90,11 +90,11 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d,
 //-------------------------
 const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
 {
-    // check status of recalculable components, terminating as soon as one is seen to have changed
-    for (const auto& rda : RecalculableDataAccessors_)
-        if (variable_status(*rda) == VariableStatus::changed)
+    // return `changed` if any amplitude component has changed
+    for (const auto& ac : AmplitudeComponents_)
+        if (ac->variableStatus() == VariableStatus::changed)
             return VariableStatus::changed;
-    // check daughters, terminating as soon as one is seen to have changed
+    // return `changed` if any daughter has changed
     for (const auto& d_dt : DaughterDecayTrees_)
         if (d_dt.second->dataDependentAmplitudeStatus() == VariableStatus::changed)
             return VariableStatus::changed;
@@ -130,16 +130,17 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 }
 
 //-------------------------
-void DecayTree::addRecalculableDataAccessor(const RecalculableDataAccessor& rda)
+void DecayTree::addAmplitudeComponent(const AmplitudeComponent& ac)
 {
     if (!FreeAmplitude_)
-        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addRecalculableDataAccessor");
+        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addAmplitudeComponent");
 
-    if (!FreeAmplitude_->checkParticleCombinations(rda))
-        throw exceptions::Exception("RecalculableDataAccessor doesn't have all ParticleCombinations required by FreeAmplitude",
-                                    "DecayTree::addRecalculableDataAccessor");
+    for (const auto& pc : FreeAmplitude_->particleCombinations())
+        if (!ac.validFor(pc))
+            throw exceptions::Exception("AmplitudeComponent not valid for all ParticleCombinations required by FreeAmplitude",
+                                        "DecayTree::addAmplitudeComponent");
 
-    RecalculableDataAccessors_.push_back(&rda);
+    AmplitudeComponents_.push_back(&ac);
 }
 
 //-------------------------

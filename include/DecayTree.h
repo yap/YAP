@@ -23,12 +23,12 @@
 
 #include "fwd/DecayTree.h"
 
+#include "fwd/AmplitudeComponent.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/RecalculableDataAccessor.h"
 #include "fwd/Spin.h"
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
@@ -111,8 +111,8 @@ protected:
     void setDaughterSpinProjection(unsigned i, int two_m)
     { DaughtersTwoM_.at(i) = two_m; }
 
-    /// Add a RecalculableDataAccessor
-    void addRecalculableDataAccessor(const RecalculableDataAccessor& rda);
+    /// Add an AmplitudeComponent
+    void addAmplitudeComponent(const AmplitudeComponent& rda);
 
 private:
 
@@ -122,8 +122,8 @@ private:
     /// daughter spin projections
     SpinProjectionVector DaughtersTwoM_;
 
-    /// vector of RecalculableDataAccessor's
-    std::vector<const RecalculableDataAccessor*> RecalculableDataAccessors_;
+    /// vector of AmplitudeComponent's
+    std::vector<const AmplitudeComponent*> AmplitudeComponents_;
 
     /// map of daughter index -> daughter DecayTree
     DaughterDecayTreeMap DaughterDecayTrees_;

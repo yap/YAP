@@ -3,6 +3,7 @@ set(INCLUDE_DIRECTORIES
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
+  AmplitudeComponent.cxx
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
 	CachedValue.cxx

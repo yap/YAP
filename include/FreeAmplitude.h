@@ -26,9 +26,9 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/Model.h"
 #include "fwd/DataAccessor.h"
+#include "fwd/ParticleCombination.h"
 #include "fwd/SpinAmplitude.h"
 
-#include "Constants.h"
 #include "Parameter.h"
 
 #include <complex>
@@ -55,7 +55,7 @@ public:
     /// \param two_m (twice) the parent spin projection
     /// \param a value to initialize to
     FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<SpinAmplitude> sa,
-                  int two_m, std::complex<double> a = Complex_1);
+                  int two_m, std::complex<double> a = 1);
 
     /// \return DecayChannel_
     const std::shared_ptr<DecayChannel>& decayChannel() const
@@ -69,11 +69,9 @@ public:
     const int twoM() const
     { return TwoM_; }
 
-    /// check that object reporting ParticleCombinations has all
-    /// particle combinations required by DecayChannel
-    /// \param PC object inheriting from DataAccessor
-    bool checkParticleCombinations(const DataAccessor& da) const;
-
+    /// \return set of ParticleCombinations (via DecayChannel)
+    const ParticleCombinationSet& particleCombinations() const;
+    
     /// \return Model this FreeAmplitude belongs to (via DecayChannel)
     const Model* model() const;
 

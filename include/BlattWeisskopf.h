@@ -29,7 +29,7 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
-#include "RecalculableDataAccessor.h"
+#include "AmplitudeComponent.h"
 #include "RequiresMeasuredBreakupMomenta.h"
 
 #include <complex>
@@ -43,7 +43,7 @@ namespace yap {
 /// \author Johannes Rauch, Daniel Greenwald
 
 class BlattWeisskopf :
-    public RecalculableDataAccessor,
+    public RecalculableAmplitudeComponent,
     public RequiresMeasuredBreakupMomenta
 {
 public:
@@ -60,7 +60,7 @@ public:
     /// \return Blatt-Weisskopf barrier factor for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
-    std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
     /// Calculate barrier factors for and store into each data point in a data partition
     /// \param D DataPartition to calculate over
