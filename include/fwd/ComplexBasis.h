@@ -19,24 +19,21 @@
 /// \file
 /// Contains forward declarations only
 
-#ifndef yap_AmplitudeBasisFwd_h
-#define yap_AmplitudeBasisFwd_h
+#ifndef yap_ComplexBasisFwd_h
+#define yap_ComplexBasisFwd_h
 
 namespace yap {
 
-namespace amplitude_basis {
+namespace complex_basis {
 
 template <typename T>
 class basis;
 
 template <typename T>
-class canonical;
+class cartesian;
 
 template <typename T>
-class transversity;
-
-template <typename T>
-class helicity;
+class polar;
 
 }
 

@@ -28,6 +28,7 @@
 
 #include <array>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 namespace yap {
@@ -44,11 +45,12 @@ public:
     constexpr Matrix(const std::array<std::array<T, C>, R>& m) noexcept : std::array<std::array<T, C>, R>(m) {}
 
     /// Default constructor;
-    /// produces a zero matrix
-    Matrix()
+    /// produces a matrix with all elements having the same value (0 by default)
+    /// \param element element which will be assigned to all elements
+    Matrix(T element = 0)
     {
         for (size_t i = 0; i < this->size(); ++i)
-            this->at(i).fill(T(0));
+            this->at(i).fill(element);
     }
 
     /// Use std::array's assignment operators
@@ -117,6 +119,30 @@ const SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
     return D;
 }
 
+/// symmetric matrix
+/// \param list of entries, starting with the diagonal, 1st off diagonal ...
+template <typename T, size_t N>
+const SquareMatrix<T, N> symmetricMatrix(std::initializer_list<T> elements)
+{
+    size_t diag(0), i(0), j(0);
+
+    SquareMatrix<T, N> D = zeroMatrix<T, N, N>();
+    for (const T& el : elements) {
+        if (j>=N)
+            throw exceptions::Exception("too many elements given", "symmetricMatrix");
+
+        D[i][j] = el;
+        D[j++][i++] = el;
+
+        if (j>=N) {
+            i = 0;
+            j = ++diag;
+        }
+    }
+
+    return D;
+}
+
 /// transpose a matrix
 template <typename T, size_t R, size_t C>
 const Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
@@ -130,8 +156,8 @@ const Matrix<T, C, R> transpose(const Matrix<T, R, C>& M)
 
 /// unary minus
 template <typename T, size_t R, size_t C>
-constexpr Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
-{ return T(-1) * M; }
+const Matrix<T, C, R> operator-(const Matrix<T, R, C>& M)
+{ return -1 * M; }
 
 /// matrix multiplication
 template <typename T, size_t R, size_t K, size_t C>
@@ -139,6 +165,24 @@ typename std::enable_if < (R != 1) or (C != 1), Matrix<T, R, C> >::type
 const operator*(const Matrix<T, R, K>& A, const Matrix<T, K, C>& B)
 {
     Matrix<T, R, C> res = zeroMatrix<T, R, C>();
+    for (size_t r = 0; r < R; ++r)
+        for (size_t c = 0; c < C; ++c)
+            for (size_t k = 0; k < K; ++k)
+                res[r][c] += A[r][k] * B[k][c];
+    return res;
+}
+
+/// matrix multiplication with different template types
+/// \tparam T1 element type of matrix A
+/// \tparam T2 element type of matrix B
+/// \tparam R number of rows of matrix A
+/// \tparam K number of columns of matrix A, number of rows of matrix B
+/// \tparam C number of columns of matrix B
+template <typename T1, typename T2, size_t R, size_t K, size_t C>
+const auto operator*(const Matrix<T1, R, K>& A, const Matrix<T2, K, C>& B)
+-> const typename std::enable_if < (R != 1) or (C != 1), Matrix<typename std::remove_cv<decltype(operator*(A[0][0], B[0][0]))>::type, R, C> >::type
+{
+    Matrix<typename std::remove_cv<decltype(operator*(A[0][0], B[0][0]))>::type, R, C> res;
     for (size_t r = 0; r < R; ++r)
         for (size_t c = 0; c < C; ++c)
             for (size_t k = 0; k < K; ++k)
@@ -166,14 +210,29 @@ Matrix<T, R, C>& operator*=(Matrix<T, R, C>& M, const T& c)
     return M;
 }
 
+/// assignment by multiplication by a single element with different template types
+template <typename T1, typename T2, size_t R, size_t C>
+Matrix<T2, R, C>& operator*=(Matrix<T2, R, C>& M, const T1& c)
+{
+    for (auto& row : M)
+        for (auto& elt : row)
+            elt *= c;
+    return M;
+}
+
 /// multiplication by a single element
 template <typename T, size_t R, size_t C>
 const Matrix<T, R, C> operator*(const T& c, const Matrix<T, R, C>& M)
 { auto m = M; m *= c; return m; }
 
-/// multiplication by a single element
-template <typename T, size_t R, size_t C>
-const Matrix<T, R, C> operator*(const Matrix<T, R, C>& M, const T& c)
+/// multiplication by a single element with different template types
+template <typename T1, typename T2, size_t R, size_t C>
+const Matrix<T2, R, C> operator*(const T1& c, const Matrix<T2, R, C>& M)
+{ auto m = M; m *= c; return m; }
+
+/// multiplication by a single element with different template types
+template <typename T1, typename T2, size_t R, size_t C>
+const Matrix<T2, R, C> operator*(const Matrix<T1, R, C>& M, const T2& c)
 { return c * M; }
 
 /// addition assignment
