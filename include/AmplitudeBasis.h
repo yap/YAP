@@ -49,7 +49,7 @@ protected:
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    basis(Vector<Vector<T, 2>, 3> c,
+    basis(Vector<std::complex<T>, 3> c,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
         Amplitudes_(c), Covariance_(cov)
     {}
@@ -62,7 +62,7 @@ protected:
 
 public:
     /// \return coordinates
-    const Vector<Vector<T, 2>, 3>& coordinates() const
+    const Vector<std::complex<T>, 3>& coordinates() const
     { return Amplitudes_; }
 
     /// \return covariance matrix
@@ -71,7 +71,7 @@ public:
 
 private:
     /// vector of amplitudes
-    Vector<Vector<T, 2>, 3> Amplitudes_;
+    Vector<std::complex<T>, 3> Amplitudes_;
     /// covariance matrix
     covariance_matrix<T> Covariance_;
 };
@@ -89,15 +89,15 @@ public:
     /// \param c2 P amplitude
     /// \param c3 D amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit canonical(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+    explicit canonical(const std::complex<T>& c1, const std::complex<T>& c2, const std::complex<T>& c3,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit canonical(Vector<Vector<T, 2>, 3> c,
+    explicit canonical(Vector<std::complex<T>, 3> c,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
@@ -105,15 +105,15 @@ public:
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
     explicit canonical(const covariance_matrix<T>& cov) :
-        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
     /// \param c1 S amplitude with covariance
     /// \param c2 P amplitude with covariance
     /// \param c3 D amplitude with covariance
-    canonical(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+    canonical(const complex_basis::cartesian<T>& c1, const complex_basis::cartesian<T>& c2, const complex_basis::cartesian<T>& c3) :
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}),
                  diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
@@ -128,20 +128,20 @@ public:
     {}
 
     /// \return S amplitude (l=0)
-    const Vector<T, 2> s() const
+    const std::complex<T> s() const
     { return basis<T>::coordinates()[0]; }
 
     /// \return P amplitude (l=1)
-    const Vector<T, 2> p() const
+    const std::complex<T> p() const
     { return basis<T>::coordinates()[1]; }
 
     /// \return D amplitude (l=2)
-    const Vector<T, 2> d() const
+    const std::complex<T> d() const
     { return basis<T>::coordinates()[2]; }
 
     /// access canonical amplitude via angular momentum
     /// \param l angular momentum to retrieve amplitude for
-    const Vector<T, 2> operator[] (size_t l) const
+    const std::complex<T> operator[] (size_t l) const
     {
         switch (l) {
             case 0:
@@ -175,15 +175,15 @@ public:
     /// \param c2 parallel amplitude
     /// \param c3 perpendicular amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit transversity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+    explicit transversity(const std::complex<T>& c1, const std::complex<T>& c2, const std::complex<T>& c3,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit transversity(Vector<Vector<T, 2>, 3> c,
+    explicit transversity(Vector<std::complex<T>, 3> c,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
@@ -191,15 +191,15 @@ public:
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
     explicit transversity(const covariance_matrix<T>& cov) :
-        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
     /// \param c1 longitudinal amplitude with covariance
     /// \param c2 parallel amplitude with covariance
     /// \param c3 perpendicular amplitude with covariance
-    transversity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+    transversity(const complex_basis::cartesian<T>& c1, const complex_basis::cartesian<T>& c2, const complex_basis::cartesian<T>& c3) :
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}),
                  diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
@@ -214,15 +214,15 @@ public:
     {}
 
     /// \return longitudinal amplitude
-    const Vector<T, 2> longitudinal() const
+    const std::complex<T> longitudinal() const
     { return basis<T>::coordinates()[0]; }
 
     /// \return parallel amplitude
-    const Vector<T, 2> parallel() const
+    const std::complex<T> parallel() const
     { return basis<T>::coordinates()[1]; }
 
     /// \return perpendicular amplitude
-    const Vector<T, 2> perpendicular() const
+    const std::complex<T> perpendicular() const
     { return basis<T>::coordinates()[2]; }
 
 private:
@@ -246,15 +246,15 @@ public:
     /// \param c2 plus amplitude
     /// \param c3 minus amplitude
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit helicity(const Vector<T, 2>& c1, const Vector<T, 2>& c2, const Vector<T, 2>& c3,
+    explicit helicity(const std::complex<T>& c1, const std::complex<T>& c2, const std::complex<T>& c3,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1, c2, c3}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}), cov)
     {}
 
     /// constructor
     /// \param c vector of amplitudes
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes), defaults to 0
-    explicit helicity(Vector<Vector<T, 2>, 3> c,
+    explicit helicity(Vector<std::complex<T>, 3> c,
             covariance_matrix<T> cov = covariance_matrix<T>()) :
         basis<T>(c, cov)
     {}
@@ -262,15 +262,15 @@ public:
     /// constructor
     /// \param cov 3x3 covariance matrix of 2x2 covariances (between real and imaginary parts of amplitudes)
     explicit helicity(const covariance_matrix<T>& cov) :
-        basis<T>(Vector<Vector<T, 2>, 3>({0, 0, 0}), cov)
+        basis<T>(Vector<std::complex<T>, 3>({0, 0, 0}), cov)
     {}
 
     /// constructor
     /// \param c1 zero amplitude with covariance
     /// \param c2 plus amplitude with covariance
     /// \param c3 minus amplitude with covariance
-    helicity(const complex_basis::basis<T>& c1, const complex_basis::basis<T>& c2, const complex_basis::basis<T>& c3) :
-        basis<T>(Vector<Vector<T, 2>, 3>({c1.value(), c2.value(), c3.value()}),
+    helicity(const complex_basis::cartesian<T>& c1, const complex_basis::cartesian<T>& c2, const complex_basis::cartesian<T>& c3) :
+        basis<T>(Vector<std::complex<T>, 3>({c1, c2, c3}),
                  diagonalMatrix<complex_basis::covariance_matrix<T>, 3>({c1.covariance(), c2.covariance(), c3.covariance()}))
     {}
 
@@ -285,15 +285,15 @@ public:
     {}
 
     /// \return zero amplitude A_0
-    const Vector<T, 2> zero() const
+    const std::complex<T> zero() const
     { return basis<T>::coordinates()[0]; }
 
     /// \return plus amplitude A_+
-    const Vector<T, 2> plus() const
+    const std::complex<T> plus() const
     { return basis<T>::coordinates()[1]; }
 
     /// \return minus amplitude A_-
-    const Vector<T, 2> minus() const
+    const std::complex<T> minus() const
     { return basis<T>::coordinates()[2]; }
 
 private:

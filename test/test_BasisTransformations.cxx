@@ -40,9 +40,8 @@ inline bool compare_basis(const yap::complex_basis::basis<double>& c1, const yap
 inline bool compare_basis(const yap::amplitude_basis::basis<double>& a1, const yap::amplitude_basis::basis<double>& a2)
 {
     for (unsigned i=0; i<a1.coordinates().size(); ++i)
-        for (unsigned j=0; j<a1.coordinates()[0].size(); ++j)
-            if (not (a1.coordinates()[i][j] == Approx(a2.coordinates()[i][j])))
-                return false;
+        if (not (a1.coordinates()[i] == Catch::Detail::CApprox(a2.coordinates()[i])))
+            return false;
 
     if (not compare_covariances(a1.covariance(), a2.covariance()) )
         return false;
@@ -107,19 +106,13 @@ TEST_CASE( "SpinBasisTransformations" )
         REQUIRE(cart_1.covariance()[0][0] != pol_1.covariance()[0][0]);
 
         // transversity
-        const yap::amplitude_basis::transversity<double> t1_pol(pol_1, pol_2, pol_3);
         const yap::amplitude_basis::transversity<double> t1_cart(cart_1, cart_2, cart_3);
 
         const auto c1_cart = yap::amplitude_basis::canonical<double>(t1_cart);
-        const auto c1_pol = yap::amplitude_basis::canonical<double>(t1_pol);
         const auto t2 = yap::amplitude_basis::transversity<double>(c1_cart);
 
-        REQUIRE(t1_pol.covariance()[0][0][0][0] != 0);
         REQUIRE(t1_cart.covariance()[0][0][0][0] != 0);
-        REQUIRE(t1_pol.covariance()[0][0][0][0] != t1_cart.covariance()[0][0][0][0]);
-        REQUIRE( not (t1_pol.coordinates() == t1_cart.coordinates()) );
         REQUIRE( not (c1_cart.coordinates() == t1_cart.coordinates()) );
-        REQUIRE( not (c1_pol.coordinates() == t1_pol.coordinates()) );
         REQUIRE( not (t2.coordinates() == c1_cart.coordinates()) );
 
 
@@ -132,15 +125,6 @@ TEST_CASE( "SpinBasisTransformations" )
         const yap::complex_basis::polar<double> pol_1_A(cart_1_A);
         const yap::complex_basis::polar<double> pol_2_A(cart_2_A);
         const yap::complex_basis::polar<double> pol_3_A(cart_3_A);
-
-        // real and imag really are abs and arg
-        const yap::complex_basis::polar<double> pol_1_B(c1_pol.coordinates()[0], c1_pol.covariance()[0][0]);
-        const yap::complex_basis::polar<double> pol_2_B(c1_pol.coordinates()[1], c1_pol.covariance()[1][1]);
-        const yap::complex_basis::polar<double> pol_3_B(c1_pol.coordinates()[2], c1_pol.covariance()[2][2]);
-
-        /*REQUIRE( compare_basis(pol_1_A, pol_1_B) );
-        REQUIRE( compare_basis(pol_2_A, pol_2_B) );
-        REQUIRE( compare_basis(pol_3_A, pol_3_B) );*/
 
         REQUIRE( compare_basis(t1_cart, t2) );
 
@@ -170,19 +154,13 @@ TEST_CASE( "SpinBasisTransformations" )
         REQUIRE(cart_1.covariance()[0][0] != pol_1.covariance()[0][0]);
 
         // transversity
-        yap::amplitude_basis::transversity<double> t1_pol(pol_1, pol_2, pol_3);
         yap::amplitude_basis::transversity<double> t1_cart(cart_1, cart_2, cart_3);
 
         auto c1_cart = yap::amplitude_basis::canonical<double>(t1_cart);
-        auto c1_pol = yap::amplitude_basis::canonical<double>(t1_pol);
         auto t2 = yap::amplitude_basis::transversity<double>(c1_cart);
 
-        REQUIRE(t1_pol.covariance()[0][0][0][0] != 0);
         REQUIRE(t1_cart.covariance()[0][0][0][0] != 0);
-        REQUIRE(t1_pol.covariance()[0][0][0][0] != t1_cart.covariance()[0][0][0][0]);
-        REQUIRE( not (t1_pol.coordinates() == t1_cart.coordinates()) );
         REQUIRE( not (c1_cart.coordinates() == t1_cart.coordinates()) );
-        REQUIRE( not (c1_pol.coordinates() == t1_pol.coordinates()) );
         REQUIRE( not (t2.coordinates() == c1_cart.coordinates()) );
 
 
@@ -195,15 +173,6 @@ TEST_CASE( "SpinBasisTransformations" )
         yap::complex_basis::polar<double> pol_1_A(cart_1_A);
         yap::complex_basis::polar<double> pol_2_A(cart_2_A);
         yap::complex_basis::polar<double> pol_3_A(cart_3_A);
-
-        // real and imag really are abs and arg
-        yap::complex_basis::polar<double> pol_1_B(c1_pol.coordinates()[0], c1_pol.covariance()[0][0]);
-        yap::complex_basis::polar<double> pol_2_B(c1_pol.coordinates()[1], c1_pol.covariance()[1][1]);
-        yap::complex_basis::polar<double> pol_3_B(c1_pol.coordinates()[2], c1_pol.covariance()[2][2]);
-
-        /*REQUIRE( compare_basis(pol_1_A, pol_1_B) );
-        REQUIRE( compare_basis(pol_2_A, pol_2_B) );
-        REQUIRE( compare_basis(pol_3_A, pol_3_B) );*/
 
         REQUIRE( compare_basis(t1_cart, t2) );
 
