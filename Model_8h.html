@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/Model.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/Model.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,16 +88,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Model.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="CoordinateSystem_8h_source.html">CoordinateSystem.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="DataPartition_8h_source.html">DataPartition.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="DataSet_8h_source.html">DataSet.h</a>&quot;</code><br/>
-<code>#include &quot;FourVector.h&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/DataAccessor.h&quot;</code><br/>
+<code>#include &quot;fwd/DataPartition.h&quot;</code><br/>
+<code>#include &quot;fwd/DataPoint.h&quot;</code><br/>
+<code>#include &quot;fwd/DataSet.h&quot;</code><br/>
+<code>#include &quot;fwd/DecayingParticle.h&quot;</code><br/>
+<code>#include &quot;fwd/Filters.h&quot;</code><br/>
+<code>#include &quot;fwd/FinalStateParticle.h&quot;</code><br/>
+<code>#include &quot;fwd/FourMomenta.h&quot;</code><br/>
+<code>#include &quot;fwd/FourVector.h&quot;</code><br/>
+<code>#include &quot;fwd/FreeAmplitude.h&quot;</code><br/>
+<code>#include &quot;fwd/HelicityAngles.h&quot;</code><br/>
+<code>#include &quot;fwd/MassAxes.h&quot;</code><br/>
+<code>#include &quot;fwd/MeasuredBreakupMomenta.h&quot;</code><br/>
+<code>#include &quot;fwd/Parameter.h&quot;</code><br/>
+<code>#include &quot;fwd/Particle.h&quot;</code><br/>
+<code>#include &quot;fwd/RecalculableDataAccessor.h&quot;</code><br/>
+<code>#include &quot;fwd/StaticDataAccessor.h&quot;</code><br/>
+<code>#include &quot;fwd/StatusManager.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="CoordinateSystem_8h_source.html">CoordinateSystem.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="ParticleCombinationCache_8h_source.html">ParticleCombinationCache.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="SpinAmplitudeCache_8h_source.html">SpinAmplitudeCache.h</a>&quot;</code><br/>
 <code>#include &lt;complex&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;vector&gt;</code><br/>
@@ -106,7 +123,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html">yap::Model</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html">Model</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class implementing a PWA model.  <a href="classyap_1_1Model.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -115,6 +132,40 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceyap"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html">yap</a></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a84b05b450d64cf1349cffd4c53129df4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a84b05b450d64cf1349cffd4c53129df4">to_string</a> (const AdmixtureMap &amp;mix)</td></tr>
+<tr class="separator:a84b05b450d64cf1349cffd4c53129df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00a4818edb9aae843171efc4a515a3c1"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a00a4818edb9aae843171efc4a515a3c1">decays_to_full_final_state</a> (const Particle &amp;p)</td></tr>
+<tr class="separator:a00a4818edb9aae843171efc4a515a3c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97dfb42b7342f10a6b0515ca03ae02b8"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr<br class="typebreak"/>
+&lt; DecayingParticle &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a97dfb42b7342f10a6b0515ca03ae02b8">full_final_state_isp</a> (const Model &amp;M)</td></tr>
+<tr class="separator:a97dfb42b7342f10a6b0515ca03ae02b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8305dbb77411c33ca771bf27c5365ac1"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a8305dbb77411c33ca771bf27c5365ac1">intensity</a> (const InitialStateParticleMap::value_type &amp;isp_mix, const DataPoint &amp;d)</td></tr>
+<tr class="separator:a8305dbb77411c33ca771bf27c5365ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab846d331f4968cf2ddc6bab0c306934d"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab846d331f4968cf2ddc6bab0c306934d">intensity</a> (const InitialStateParticleMap &amp;isp_map, const DataPoint &amp;d)</td></tr>
+<tr class="separator:ab846d331f4968cf2ddc6bab0c306934d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d4ae25eca55347cb928324f9efe1bf9"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a3d4ae25eca55347cb928324f9efe1bf9">sum_of_log_intensity</a> (const Model &amp;M, DataPartition &amp;D, double ped=0)</td></tr>
+<tr class="separator:a3d4ae25eca55347cb928324f9efe1bf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62bd9b62fe9ccb97452a59e0d7a351e1"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a62bd9b62fe9ccb97452a59e0d7a351e1">sum_of_log_intensity</a> (const Model &amp;M, DataPartitionVector &amp;DP, double ped=0)</td></tr>
+<tr class="separator:a62bd9b62fe9ccb97452a59e0d7a351e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97be934ddfd15f2b23488fd0f1547143"><td class="memItemLeft" align="right" valign="top">FreeAmplitudeSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a97be934ddfd15f2b23488fd0f1547143">free_amplitudes</a> (const Model &amp;M)</td></tr>
+<tr class="separator:a97be934ddfd15f2b23488fd0f1547143"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97a02e142077b6a006a8cadac4a7ae4"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:ab97a02e142077b6a006a8cadac4a7ae4"><td class="memTemplItemLeft" align="right" valign="top">FreeAmplitudeSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab97a02e142077b6a006a8cadac4a7ae4">free_amplitudes</a> (const Model &amp;M, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:ab97a02e142077b6a006a8cadac4a7ae4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a4cb79020a3a907b5698ad9faa112ee"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:a8a4cb79020a3a907b5698ad9faa112ee"><td class="memTemplItemLeft" align="right" valign="top">FreeAmplitudeSet::value_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a8a4cb79020a3a907b5698ad9faa112ee">free_amplitude</a> (const Model &amp;M, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:a8a4cb79020a3a907b5698ad9faa112ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3a7365eea72cb2e951a5426b627dab6"><td class="memItemLeft" align="right" valign="top">ParticleSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ac3a7365eea72cb2e951a5426b627dab6">particles</a> (const Model &amp;M)</td></tr>
+<tr class="separator:ac3a7365eea72cb2e951a5426b627dab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa094f2a84b61b11f5ef256c8ce86d9e"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:aaa094f2a84b61b11f5ef256c8ce86d9e"><td class="memTemplItemLeft" align="right" valign="top">ParticleSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aaa094f2a84b61b11f5ef256c8ce86d9e">particles</a> (const Model &amp;M, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:aaa094f2a84b61b11f5ef256c8ce86d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff9785995baa16dfdd4111ab74475f05"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:aff9785995baa16dfdd4111ab74475f05"><td class="memTemplItemLeft" align="right" valign="top">ParticleSet::value_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aff9785995baa16dfdd4111ab74475f05">particle</a> (const Model &amp;M, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:aff9785995baa16dfdd4111ab74475f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

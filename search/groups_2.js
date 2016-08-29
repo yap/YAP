@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mass_20shapes',['Mass Shapes',['../group__MassShapes.html',1,'']]]
+  ['data_2drelated_20classes',['Data-related classes',['../group__Data.html',1,'']]]
 ];

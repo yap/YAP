@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['j',['J',['../classyap_1_1QuantumNumbers.html#af7a42d9ce3b410ff3e2c461d5894cb61',1,'yap::QuantumNumbers']]]
+  ['j',['J',['../classyap_1_1QuantumNumbers.html#a277bb0ca94f2c95809fa091f6aaebc24',1,'yap::QuantumNumbers']]]
 ];

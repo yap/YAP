@@ -1,13 +1,15 @@
 var searchData=
 [
-  ['value',['value',['../classyap_1_1CachedDataValue.html#a3d3fbccf6b38a2a96916506e6c420d38',1,'yap::CachedDataValue::value()'],['../classyap_1_1RealCachedDataValue.html#ac19bdbc5bb58614bbe42d1d580917e75',1,'yap::RealCachedDataValue::value()'],['../classyap_1_1ComplexCachedDataValue.html#a2ca49d3c9be55e62419843b23afeaa80',1,'yap::ComplexCachedDataValue::value()'],['../classyap_1_1FourVectorCachedDataValue.html#a3e26314444cc46cafdf5e75cff3703b7',1,'yap::FourVectorCachedDataValue::value()'],['../classyap_1_1Parameter.html#a559fb3b24f8cd480edf10da77de02f94',1,'yap::Parameter::value()'],['../classyap_1_1ComplexComponentParameter.html#a2e3bb50eb89212ae276d1aff3e5538cb',1,'yap::ComplexComponentParameter::value()']]],
-  ['variable',['Variable',['../structyap_1_1CachedDataValue_1_1Status.html#a4d1526175ce98ef082d40a8a030565e3',1,'yap::CachedDataValue::Status']]],
-  ['variablestatus',['variableStatus',['../classyap_1_1ParameterBase.html#a499e1c740c55434957fb4c06c491b5e9',1,'yap::ParameterBase::variableStatus()'],['../namespaceyap.html#a583b6c2a52cb4797f7059601d859a742',1,'yap::VariableStatus()']]],
-  ['variablestatus_2eh',['VariableStatus.h',['../VariableStatus_8h.html',1,'']]],
-  ['vect',['vect',['../namespaceyap.html#a4c035994c4ef4ae966ee547b0caf8e91',1,'yap']]],
-  ['vector',['Vector',['../classyap_1_1Vector.html',1,'yap']]],
-  ['vector',['Vector',['../classyap_1_1Vector.html#a7ec18c7b8d435b10017ac004ca00bb58',1,'yap::Vector::Vector(const std::array&lt; T, N &gt; &amp;v) noexcept'],['../classyap_1_1Vector.html#a042e13ecbefe64ce6b4314b00e0e4024',1,'yap::Vector::Vector()']]],
-  ['vector_2eh',['Vector.h',['../Vector_8h.html',1,'']]],
-  ['vector_3c_20t_2c_204_20_3e',['Vector&lt; T, 4 &gt;',['../classyap_1_1Vector.html',1,'yap']]],
-  ['vectoralgebra',['VectorAlgebra',['../group__VectorAlgebra.html',1,'']]]
+  ['wave',['Wave',['../classyap_1_1Wave.html',1,'yap']]],
+  ['wave',['Wave',['../classyap_1_1Wave.html#a28adb736ed47e7ab1a5269937030be73',1,'yap::Wave']]],
+  ['wave_2eh',['Wave.h',['../Wave_8h.html',1,'']]],
+  ['weak_5fptr_5ftype',['weak_ptr_type',['../classyap_1_1WeakPtrCache.html#a6b8dfe36a5a2917902a5e14823da2f46',1,'yap::WeakPtrCache']]],
+  ['weakptrcache',['WeakPtrCache',['../classyap_1_1WeakPtrCache.html#a6b3650ff06bfee0efdac1798291bde13',1,'yap::WeakPtrCache::WeakPtrCache()=default'],['../classyap_1_1WeakPtrCache.html#ad71ff5b25e83b1f34e75ccba6c8523e9',1,'yap::WeakPtrCache::WeakPtrCache(const WeakPtrCache &amp;)=default'],['../classyap_1_1WeakPtrCache.html#a8dd89eeb8600e8db1c2d00fb4d3c126c',1,'yap::WeakPtrCache::WeakPtrCache(WeakPtrCache &amp;&amp;)=default'],['../classyap_1_1WeakPtrCache.html#a0a48fa77362ed244100f0ffc6b4c1459',1,'yap::WeakPtrCache::WeakPtrCache(std::vector&lt; shared_ptr_type &gt; V)']]],
+  ['weakptrcache',['WeakPtrCache',['../classyap_1_1WeakPtrCache.html',1,'yap']]],
+  ['weakptrcache_2eh',['WeakPtrCache.h',['../WeakPtrCache_8h.html',1,'']]],
+  ['weakptrcache_3c_20particlecombination_20_3e',['WeakPtrCache&lt; ParticleCombination &gt;',['../classyap_1_1WeakPtrCache.html',1,'yap']]],
+  ['weakptrcache_3c_20spinamplitude_20_3e',['WeakPtrCache&lt; SpinAmplitude &gt;',['../classyap_1_1WeakPtrCache.html',1,'yap']]],
+  ['width',['width',['../classyap_1_1BreitWigner.html#aea34f5f6484f88b40336dc9223610ded',1,'yap::BreitWigner::width()'],['../classyap_1_1BreitWigner.html#a7c263ab0743e9db822051c1348e196ca',1,'yap::BreitWigner::width() const ']]],
+  ['width_5f',['Width_',['../classyap_1_1BreitWigner.html#a45d9eeb63325006fe574dc3f262ce83c',1,'yap::BreitWigner']]],
+  ['wignerd_2eh',['WignerD.h',['../WignerD_8h.html',1,'']]]
 ];

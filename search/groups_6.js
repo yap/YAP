@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['yap_20exceptions',['YAP exceptions',['../group__Exceptions.html',1,'']]]
+  ['spin_20amplitudes',['Spin Amplitudes',['../group__SpinAmplitude.html',1,'']]]
 ];

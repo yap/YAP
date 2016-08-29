@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['weakptrcache_2eh',['WeakPtrCache.h',['../WeakPtrCache_8h.html',1,'']]],
-  ['wignerd_2eh',['WignerD.h',['../WignerD_8h.html',1,'']]]
+  ['unitspinamplitude_2eh',['UnitSpinAmplitude.h',['../UnitSpinAmplitude_8h.html',1,'']]]
 ];

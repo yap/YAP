@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['spacing_5f',['Spacing_',['../classyap_1_1DataPartitionWeave.html#a69099c628a8b138e7429128e43ff3d46',1,'yap::DataPartitionWeave']]]
+  ['helicityangles_5f',['HelicityAngles_',['../classyap_1_1Model.html#a31ac81b5695de3275c7003de8e23025e',1,'yap::Model']]]
 ];

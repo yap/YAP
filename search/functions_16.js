@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['zemachformalism',['ZemachFormalism',['../classyap_1_1ZemachFormalism.html#aaa0f3b934f1e176dc2c336324811f0fb',1,'yap::ZemachFormalism']]],
-  ['zemachspinamplitude',['ZemachSpinAmplitude',['../classyap_1_1ZemachSpinAmplitude.html#a6df2deff5e03a11203606027361f4d80',1,'yap::ZemachSpinAmplitude']]],
-  ['zeromatrix',['zeroMatrix',['../namespaceyap.html#a095ba96f0e1b73b37a2726a1d5005eae',1,'yap::zeroMatrix()'],['../namespaceyap.html#a79c13521cefdb9afba9f13dcccb2bdd8',1,'yap::zeroMatrix()']]]
+  ['zemachformalism',['ZemachFormalism',['../classyap_1_1ZemachFormalism.html#a2d906c3894c43ec08d134a36e4d930cf',1,'yap::ZemachFormalism']]],
+  ['zemachspinamplitude',['ZemachSpinAmplitude',['../classyap_1_1ZemachSpinAmplitude.html#abe139ac479e49b2032c040faad4394b7',1,'yap::ZemachSpinAmplitude']]],
+  ['zeromatrix',['zeroMatrix',['../namespaceyap.html#aaa9ea1361f23bf780fcee418748d571c',1,'yap::zeroMatrix()'],['../namespaceyap.html#aeadcf1e60b9bf3fb2d9f7b029863599f',1,'yap::zeroMatrix()']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/easylogging++.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/easylogging++.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -830,7 +830,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00827"></a><span class="lineno">  827</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> Level kPerformanceTrackerDefaultLevel         =      Level::Info;</div>
 <div class="line"><a name="l00828"></a><span class="lineno">  828</span>&#160;<span class="keyword">const</span> <span class="keyword">struct </span>{</div>
 <div class="line"><a name="l00829"></a><span class="lineno">  829</span>&#160;    <span class="keywordtype">double</span> value;</div>
-<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    <span class="keyword">const</span> base::type::char_t* <a class="code" href="namespaceyap.html#aa0a27d9bfe0d583501692c30fe7b68d0">unit</a>;</div>
+<div class="line"><a name="l00830"></a><span class="lineno">  830</span>&#160;    <span class="keyword">const</span> base::type::char_t* <a class="code" href="namespaceyap.html#acf82c8d362b8fec685e67b3cd90d1c69">unit</a>;</div>
 <div class="line"><a name="l00831"></a><span class="lineno">  831</span>&#160;} kTimeFormats[] = {</div>
 <div class="line"><a name="l00832"></a><span class="lineno">  832</span>&#160;    { 1000.0f, ELPP_LITERAL(<span class="stringliteral">&quot;mis&quot;</span>) },</div>
 <div class="line"><a name="l00833"></a><span class="lineno">  833</span>&#160;    { 1000.0f, ELPP_LITERAL(<span class="stringliteral">&quot;ms&quot;</span>) },</div>
@@ -887,7 +887,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    MillisecondsWidth(<span class="keywordtype">void</span>) { init(base::consts::kDefaultMillisecondsWidth); }</div>
 <div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;    <span class="keyword">explicit</span> MillisecondsWidth(<span class="keywordtype">int</span> width) { init(width); }</div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#ac918e9adacbf230832e17402f801154c">operator==</a>(<span class="keyword">const</span> MillisecondsWidth&amp; msWidth) { <span class="keywordflow">return</span> m_width == msWidth.m_width &amp;&amp; m_offset == msWidth.m_offset; }</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">operator==</a>(<span class="keyword">const</span> MillisecondsWidth&amp; msWidth) { <span class="keywordflow">return</span> m_width == msWidth.m_width &amp;&amp; m_offset == msWidth.m_offset; }</div>
 <div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    <span class="keywordtype">int</span> m_width;</div>
 <div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_offset;</div>
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;<span class="keyword">private</span>:</div>
@@ -1165,9 +1165,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;        }</div>
 <div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;        std::streampos currPos = fs-&gt;tellg();</div>
 <div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;        fs-&gt;seekg(0, fs-&gt;end);</div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        std::size_t size = <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(fs-&gt;tellg());</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        std::size_t <a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a> = <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(fs-&gt;tellg());</div>
 <div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        fs-&gt;seekg(currPos);</div>
-<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;        <span class="keywordflow">return</span> size;</div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>;</div>
 <div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;    }</div>
 <div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;</div>
 <div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> pathExists(<span class="keyword">const</span> <span class="keywordtype">char</span>* path, <span class="keywordtype">bool</span> considerFile = <span class="keyword">false</span>)</div>
@@ -1397,7 +1397,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;    }</div>
 <div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;</div>
-<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="container__utils_8h.html#a846396c9faabf6ca2feb3fb385eb531d">contains</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* str, <span class="keywordtype">char</span> c)</div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="container__utils_8h.html#aabcaffe3d6309741c0f3489d3e54979d">contains</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* str, <span class="keywordtype">char</span> c)</div>
 <div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;    {</div>
 <div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;        <span class="keywordflow">for</span> (; *str; ++str) {</div>
 <div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;            <span class="keywordflow">if</span> (*str == c)</div>
@@ -1629,7 +1629,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01719"></a><span class="lineno"> 1719</span>&#160;    {</div>
 <div class="line"><a name="l01720"></a><span class="lineno"> 1720</span>&#160;        <span class="keywordtype">double</span> result = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(time);</div>
 <div class="line"><a name="l01721"></a><span class="lineno"> 1721</span>&#160;        base::type::EnumType start = <span class="keyword">static_cast&lt;</span>base::type::EnumType<span class="keyword">&gt;</span>(timestampUnit);</div>
-<div class="line"><a name="l01722"></a><span class="lineno"> 1722</span>&#160;        <span class="keyword">const</span> base::type::char_t* <a class="code" href="namespaceyap.html#aa0a27d9bfe0d583501692c30fe7b68d0">unit</a> = base::consts::kTimeFormats[start].unit;</div>
+<div class="line"><a name="l01722"></a><span class="lineno"> 1722</span>&#160;        <span class="keyword">const</span> base::type::char_t* <a class="code" href="namespaceyap.html#acf82c8d362b8fec685e67b3cd90d1c69">unit</a> = base::consts::kTimeFormats[start].unit;</div>
 <div class="line"><a name="l01723"></a><span class="lineno"> 1723</span>&#160;        <span class="keywordflow">for</span> (base::type::EnumType i = start; i &lt; base::consts::kTimeFormatsCount - 1; ++i) {</div>
 <div class="line"><a name="l01724"></a><span class="lineno"> 1724</span>&#160;            <span class="keywordflow">if</span> (result &lt;= base::consts::kTimeFormats[i].value) {</div>
 <div class="line"><a name="l01725"></a><span class="lineno"> 1725</span>&#160;                <span class="keywordflow">break</span>;</div>
@@ -1638,7 +1638,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01728"></a><span class="lineno"> 1728</span>&#160;            unit = base::consts::kTimeFormats[i + 1].unit;</div>
 <div class="line"><a name="l01729"></a><span class="lineno"> 1729</span>&#160;        }</div>
 <div class="line"><a name="l01730"></a><span class="lineno"> 1730</span>&#160;        base::type::stringstream_t ss;</div>
-<div class="line"><a name="l01731"></a><span class="lineno"> 1731</span>&#160;        ss &lt;&lt; result &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; <a class="code" href="namespaceyap.html#aa0a27d9bfe0d583501692c30fe7b68d0">unit</a>;</div>
+<div class="line"><a name="l01731"></a><span class="lineno"> 1731</span>&#160;        ss &lt;&lt; result &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; <a class="code" href="namespaceyap.html#acf82c8d362b8fec685e67b3cd90d1c69">unit</a>;</div>
 <div class="line"><a name="l01732"></a><span class="lineno"> 1732</span>&#160;        <span class="keywordflow">return</span> ss.str();</div>
 <div class="line"><a name="l01733"></a><span class="lineno"> 1733</span>&#160;    }</div>
 <div class="line"><a name="l01734"></a><span class="lineno"> 1734</span>&#160;</div>
@@ -1806,11 +1806,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01905"></a><span class="lineno"> 1905</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l01906"></a><span class="lineno"> 1906</span>&#160;        <span class="keywordflow">return</span> m_params.empty() &amp;&amp; m_paramsWithValue.empty();</div>
 <div class="line"><a name="l01907"></a><span class="lineno"> 1907</span>&#160;    }</div>
-<div class="line"><a name="l01909"></a><span class="lineno"> 1909</span>&#160;    <span class="keyword">inline</span> std::size_t size(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
+<div class="line"><a name="l01909"></a><span class="lineno"> 1909</span>&#160;    <span class="keyword">inline</span> std::size_t <a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>(<span class="keywordtype">void</span>)<span class="keyword"> const</span></div>
 <div class="line"><a name="l01910"></a><span class="lineno"> 1910</span>&#160;<span class="keyword">    </span>{</div>
 <div class="line"><a name="l01911"></a><span class="lineno"> 1911</span>&#160;        <span class="keywordflow">return</span> m_params.size() + m_paramsWithValue.size();</div>
 <div class="line"><a name="l01912"></a><span class="lineno"> 1912</span>&#160;    }</div>
-<div class="line"><a name="l01913"></a><span class="lineno"> 1913</span>&#160;    <span class="keyword">inline</span> <span class="keyword">friend</span> base::type::ostream_t&amp; operator&lt;&lt;(base::type::ostream_t&amp; os, <span class="keyword">const</span> CommandLineArgs&amp; c)</div>
+<div class="line"><a name="l01913"></a><span class="lineno"> 1913</span>&#160;    <span class="keyword">inline</span> <span class="keyword">friend</span> base::type::ostream_t&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(base::type::ostream_t&amp; os, <span class="keyword">const</span> CommandLineArgs&amp; c)</div>
 <div class="line"><a name="l01914"></a><span class="lineno"> 1914</span>&#160;    {</div>
 <div class="line"><a name="l01915"></a><span class="lineno"> 1915</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; c.m_argc; ++i) {</div>
 <div class="line"><a name="l01916"></a><span class="lineno"> 1916</span>&#160;            os &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;[&quot;</span>) &lt;&lt; c.m_argv[i] &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;]&quot;</span>);</div>
@@ -1845,9 +1845,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01953"></a><span class="lineno"> 1953</span>&#160;        m_list = std::move(sr.m_list);</div>
 <div class="line"><a name="l01954"></a><span class="lineno"> 1954</span>&#160;    }</div>
 <div class="line"><a name="l01955"></a><span class="lineno"> 1955</span>&#160;</div>
-<div class="line"><a name="l01956"></a><span class="lineno"> 1956</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#ac918e9adacbf230832e17402f801154c">operator==</a>(<span class="keyword">const</span> AbstractRegistry&lt;T_Ptr, Container&gt;&amp; other)</div>
+<div class="line"><a name="l01956"></a><span class="lineno"> 1956</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">operator==</a>(<span class="keyword">const</span> AbstractRegistry&lt;T_Ptr, Container&gt;&amp; other)</div>
 <div class="line"><a name="l01957"></a><span class="lineno"> 1957</span>&#160;    {</div>
-<div class="line"><a name="l01958"></a><span class="lineno"> 1958</span>&#160;        <span class="keywordflow">if</span> (size() != other.size()) {</div>
+<div class="line"><a name="l01958"></a><span class="lineno"> 1958</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>() != other.size()) {</div>
 <div class="line"><a name="l01959"></a><span class="lineno"> 1959</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l01960"></a><span class="lineno"> 1960</span>&#160;        }</div>
 <div class="line"><a name="l01961"></a><span class="lineno"> 1961</span>&#160;        <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; m_list.size(); ++i) {</div>
@@ -1858,9 +1858,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l01966"></a><span class="lineno"> 1966</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l01967"></a><span class="lineno"> 1967</span>&#160;    }</div>
 <div class="line"><a name="l01968"></a><span class="lineno"> 1968</span>&#160;</div>
-<div class="line"><a name="l01969"></a><span class="lineno"> 1969</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#acbf4d2f2e57ff45680fc517c27d2a0ac">operator!=</a>(<span class="keyword">const</span> AbstractRegistry&lt;T_Ptr, Container&gt;&amp; other)</div>
+<div class="line"><a name="l01969"></a><span class="lineno"> 1969</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a70244ef6cb2636468c0bf12fb34ee6e1">operator!=</a>(<span class="keyword">const</span> AbstractRegistry&lt;T_Ptr, Container&gt;&amp; other)</div>
 <div class="line"><a name="l01970"></a><span class="lineno"> 1970</span>&#160;    {</div>
-<div class="line"><a name="l01971"></a><span class="lineno"> 1971</span>&#160;        <span class="keywordflow">if</span> (size() != other.size()) {</div>
+<div class="line"><a name="l01971"></a><span class="lineno"> 1971</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>() != other.size()) {</div>
 <div class="line"><a name="l01972"></a><span class="lineno"> 1972</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l01973"></a><span class="lineno"> 1973</span>&#160;        }</div>
 <div class="line"><a name="l01974"></a><span class="lineno"> 1974</span>&#160;        <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; m_list.size(); ++i) {</div>
@@ -1909,7 +1909,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l02023"></a><span class="lineno"> 2023</span>&#160;        <span class="keywordflow">return</span> m_list.empty();</div>
 <div class="line"><a name="l02024"></a><span class="lineno"> 2024</span>&#160;    }</div>
 <div class="line"><a name="l02025"></a><span class="lineno"> 2025</span>&#160;</div>
-<div class="line"><a name="l02027"></a><span class="lineno"> 2027</span>&#160;    <span class="keyword">virtual</span> <span class="keyword">inline</span> std::size_t size(<span class="keywordtype">void</span>) const ELPP_FINAL</div>
+<div class="line"><a name="l02027"></a><span class="lineno"> 2027</span>&#160;    <span class="keyword">virtual</span> <span class="keyword">inline</span> std::size_t <a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>(<span class="keywordtype">void</span>) const ELPP_FINAL</div>
 <div class="line"><a name="l02028"></a><span class="lineno"> 2028</span>&#160;    {</div>
 <div class="line"><a name="l02029"></a><span class="lineno"> 2029</span>&#160;        <span class="keywordflow">return</span> m_list.size();</div>
 <div class="line"><a name="l02030"></a><span class="lineno"> 2030</span>&#160;    }</div>
@@ -2043,7 +2043,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l02181"></a><span class="lineno"> 2181</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l02182"></a><span class="lineno"> 2182</span>&#160;    }</div>
 <div class="line"><a name="l02183"></a><span class="lineno"> 2183</span>&#160;</div>
-<div class="line"><a name="l02184"></a><span class="lineno"> 2184</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> base::type::ostream_t&amp; operator&lt;&lt;(base::type::ostream_t&amp; os, <span class="keyword">const</span> RegistryWithPred&amp; sr)</div>
+<div class="line"><a name="l02184"></a><span class="lineno"> 2184</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> base::type::ostream_t&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(base::type::ostream_t&amp; os, <span class="keyword">const</span> RegistryWithPred&amp; sr)</div>
 <div class="line"><a name="l02185"></a><span class="lineno"> 2185</span>&#160;    {</div>
 <div class="line"><a name="l02186"></a><span class="lineno"> 2186</span>&#160;        <span class="keywordflow">for</span> (const_iterator it = sr.list().begin(); it != sr.list().end(); ++it) {</div>
 <div class="line"><a name="l02187"></a><span class="lineno"> 2187</span>&#160;            os &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;    &quot;</span>) &lt;&lt; **it &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;\n&quot;</span>);</div>
@@ -2109,7 +2109,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l02252"></a><span class="lineno"> 2252</span>&#160;    <span class="keyword">virtual</span> ~Loggable(<span class="keywordtype">void</span>) {}</div>
 <div class="line"><a name="l02253"></a><span class="lineno"> 2253</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> log(el::base::type::ostream_t&amp;) <span class="keyword">const</span> = 0;</div>
 <div class="line"><a name="l02254"></a><span class="lineno"> 2254</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l02255"></a><span class="lineno"> 2255</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> el::base::type::ostream_t&amp; operator&lt;&lt;(el::base::type::ostream_t&amp; os, <span class="keyword">const</span> Loggable&amp; loggable)</div>
+<div class="line"><a name="l02255"></a><span class="lineno"> 2255</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> el::base::type::ostream_t&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(el::base::type::ostream_t&amp; os, <span class="keyword">const</span> Loggable&amp; loggable)</div>
 <div class="line"><a name="l02256"></a><span class="lineno"> 2256</span>&#160;    {</div>
 <div class="line"><a name="l02257"></a><span class="lineno"> 2257</span>&#160;        loggable.log(os);</div>
 <div class="line"><a name="l02258"></a><span class="lineno"> 2258</span>&#160;        <span class="keywordflow">return</span> os;</div>
@@ -2165,7 +2165,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l02309"></a><span class="lineno"> 2309</span>&#160;    {</div>
 <div class="line"><a name="l02310"></a><span class="lineno"> 2310</span>&#160;    }</div>
 <div class="line"><a name="l02311"></a><span class="lineno"> 2311</span>&#160;</div>
-<div class="line"><a name="l02312"></a><span class="lineno"> 2312</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#ac918e9adacbf230832e17402f801154c">operator==</a>(<span class="keyword">const</span> LogFormat&amp; other)</div>
+<div class="line"><a name="l02312"></a><span class="lineno"> 2312</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">operator==</a>(<span class="keyword">const</span> LogFormat&amp; other)</div>
 <div class="line"><a name="l02313"></a><span class="lineno"> 2313</span>&#160;    {</div>
 <div class="line"><a name="l02314"></a><span class="lineno"> 2314</span>&#160;        <span class="keywordflow">return</span> m_level == other.m_level &amp;&amp; m_userFormat == other.m_userFormat &amp;&amp; m_format == other.m_format &amp;&amp;</div>
 <div class="line"><a name="l02315"></a><span class="lineno"> 2315</span>&#160;               m_dateTimeFormat == other.m_dateTimeFormat &amp;&amp; m_flags == other.m_flags;</div>
@@ -2369,7 +2369,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l02523"></a><span class="lineno"> 2523</span>&#160;        m_formatSpecifier(formatSpecifier), m_resolver(resolver) {}</div>
 <div class="line"><a name="l02524"></a><span class="lineno"> 2524</span>&#160;    <span class="keyword">inline</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* formatSpecifier(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_formatSpecifier; }</div>
 <div class="line"><a name="l02525"></a><span class="lineno"> 2525</span>&#160;    <span class="keyword">inline</span> <span class="keyword">const</span> FormatSpecifierValueResolver&amp; resolver(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_resolver; }</div>
-<div class="line"><a name="l02526"></a><span class="lineno"> 2526</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#ac918e9adacbf230832e17402f801154c">operator==</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* formatSpecifier)</div>
+<div class="line"><a name="l02526"></a><span class="lineno"> 2526</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">operator==</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* formatSpecifier)</div>
 <div class="line"><a name="l02527"></a><span class="lineno"> 2527</span>&#160;    {</div>
 <div class="line"><a name="l02528"></a><span class="lineno"> 2528</span>&#160;        <span class="keywordflow">return</span> strcmp(m_formatSpecifier, formatSpecifier) == 0;</div>
 <div class="line"><a name="l02529"></a><span class="lineno"> 2529</span>&#160;    }</div>
@@ -3482,7 +3482,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l03769"></a><span class="lineno"> 3769</span>&#160;    <span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> isValidId(<span class="keyword">const</span> std::string&amp; <span class="keywordtype">id</span>)</div>
 <div class="line"><a name="l03770"></a><span class="lineno"> 3770</span>&#160;    {</div>
 <div class="line"><a name="l03771"></a><span class="lineno"> 3771</span>&#160;        <span class="keywordflow">for</span> (std::string::const_iterator it = <span class="keywordtype">id</span>.begin(); it != <span class="keywordtype">id</span>.end(); ++it) {</div>
-<div class="line"><a name="l03772"></a><span class="lineno"> 3772</span>&#160;            <span class="keywordflow">if</span> (!<a class="code" href="container__utils_8h.html#a846396c9faabf6ca2feb3fb385eb531d">base::utils::Str::contains</a>(base::consts::kValidLoggerIdSymbols, *it)) {</div>
+<div class="line"><a name="l03772"></a><span class="lineno"> 3772</span>&#160;            <span class="keywordflow">if</span> (!<a class="code" href="container__utils_8h.html#aabcaffe3d6309741c0f3489d3e54979d">base::utils::Str::contains</a>(base::consts::kValidLoggerIdSymbols, *it)) {</div>
 <div class="line"><a name="l03773"></a><span class="lineno"> 3773</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l03774"></a><span class="lineno"> 3774</span>&#160;            }</div>
 <div class="line"><a name="l03775"></a><span class="lineno"> 3775</span>&#160;        }</div>
@@ -3548,7 +3548,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l03836"></a><span class="lineno"> 3836</span>&#160;    LOGGER_LEVEL_WRITERS_SIGNATURES(warn)</div>
 <div class="line"><a name="l03837"></a><span class="lineno"> 3837</span>&#160;    LOGGER_LEVEL_WRITERS_SIGNATURES(error)</div>
 <div class="line"><a name="l03838"></a><span class="lineno"> 3838</span>&#160;    LOGGER_LEVEL_WRITERS_SIGNATURES(fatal)</div>
-<div class="line"><a name="l03839"></a><span class="lineno"> 3839</span>&#160;    LOGGER_LEVEL_WRITERS_SIGNATURES(<a class="code" href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">trace</a>)</div>
+<div class="line"><a name="l03839"></a><span class="lineno"> 3839</span>&#160;    LOGGER_LEVEL_WRITERS_SIGNATURES(<a class="code" href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">trace</a>)</div>
 <div class="line"><a name="l03840"></a><span class="lineno"> 3840</span>&#160;<span class="preprocessor">#   undef LOGGER_LEVEL_WRITERS_SIGNATURES</span></div>
 <div class="line"><a name="l03841"></a><span class="lineno"> 3841</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif // ELPP_VARIADIC_TEMPLATES_SUPPORTED</span></div>
 <div class="line"><a name="l03842"></a><span class="lineno"> 3842</span>&#160;<span class="preprocessor"></span><span class="keyword">private</span>:</div>
@@ -3863,7 +3863,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l04155"></a><span class="lineno"> 4155</span>&#160;    LogMessage(Level level, <span class="keyword">const</span> std::string&amp; file, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">int</span> line, <span class="keyword">const</span> std::string&amp; func,</div>
 <div class="line"><a name="l04156"></a><span class="lineno"> 4156</span>&#160;               base::type::VerboseLevel verboseLevel, Logger* logger) :</div>
 <div class="line"><a name="l04157"></a><span class="lineno"> 4157</span>&#160;        m_level(level), m_file(file), m_line(line), m_func(func),</div>
-<div class="line"><a name="l04158"></a><span class="lineno"> 4158</span>&#160;        m_verboseLevel(verboseLevel), m_logger(logger), m_message(std::move(logger-&gt;stream().str()))</div>
+<div class="line"><a name="l04158"></a><span class="lineno"> 4158</span>&#160;        m_verboseLevel(verboseLevel), m_logger(logger), m_message(logger-&gt;stream().str())</div>
 <div class="line"><a name="l04159"></a><span class="lineno"> 4159</span>&#160;    {</div>
 <div class="line"><a name="l04160"></a><span class="lineno"> 4160</span>&#160;    }</div>
 <div class="line"><a name="l04161"></a><span class="lineno"> 4161</span>&#160;    <span class="keyword">inline</span> Level level(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_level; }</div>
@@ -4251,8 +4251,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l04544"></a><span class="lineno"> 4544</span>&#160;    <span class="keywordtype">void</span> handle(<span class="keyword">const</span> LogDispatchData* data)</div>
 <div class="line"><a name="l04545"></a><span class="lineno"> 4545</span>&#160;    {</div>
 <div class="line"><a name="l04546"></a><span class="lineno"> 4546</span>&#160;        m_data = data;</div>
-<div class="line"><a name="l04547"></a><span class="lineno"> 4547</span>&#160;        dispatch(std::move(m_data-&gt;logMessage()-&gt;logger()-&gt;logBuilder()-&gt;build(m_data-&gt;logMessage(),</div>
-<div class="line"><a name="l04548"></a><span class="lineno"> 4548</span>&#160;                           m_data-&gt;dispatchAction() == base::DispatchAction::NormalLog)));</div>
+<div class="line"><a name="l04547"></a><span class="lineno"> 4547</span>&#160;        dispatch(m_data-&gt;logMessage()-&gt;logger()-&gt;logBuilder()-&gt;build(m_data-&gt;logMessage(),</div>
+<div class="line"><a name="l04548"></a><span class="lineno"> 4548</span>&#160;                                                                     m_data-&gt;dispatchAction() == base::DispatchAction::NormalLog));</div>
 <div class="line"><a name="l04549"></a><span class="lineno"> 4549</span>&#160;    }</div>
 <div class="line"><a name="l04550"></a><span class="lineno"> 4550</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l04551"></a><span class="lineno"> 4551</span>&#160;    <span class="keyword">const</span> LogDispatchData* m_data;</div>
@@ -4680,9 +4680,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l04984"></a><span class="lineno"> 4984</span>&#160;<span class="preprocessor">        return *this;\</span></div>
 <div class="line"><a name="l04985"></a><span class="lineno"> 4985</span>&#160;<span class="preprocessor">    }</span></div>
 <div class="line"><a name="l04986"></a><span class="lineno"> 4986</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l04987"></a><span class="lineno"> 4987</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> std::string&amp; msg)</div>
+<div class="line"><a name="l04987"></a><span class="lineno"> 4987</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> std::string&amp; msg)</div>
 <div class="line"><a name="l04988"></a><span class="lineno"> 4988</span>&#160;    {</div>
-<div class="line"><a name="l04989"></a><span class="lineno"> 4989</span>&#160;        <span class="keywordflow">return</span> operator&lt;&lt;(msg.c_str());</div>
+<div class="line"><a name="l04989"></a><span class="lineno"> 4989</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(msg.c_str());</div>
 <div class="line"><a name="l04990"></a><span class="lineno"> 4990</span>&#160;    }</div>
 <div class="line"><a name="l04991"></a><span class="lineno"> 4991</span>&#160;    ELPP_SIMPLE_LOG(<span class="keywordtype">char</span>)</div>
 <div class="line"><a name="l04992"></a><span class="lineno"> 4992</span>&#160;    ELPP_SIMPLE_LOG(<span class="keywordtype">bool</span>)</div>
@@ -4700,9 +4700,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05004"></a><span class="lineno"> 5004</span>&#160;    ELPP_SIMPLE_LOG(<span class="keywordtype">long</span> <span class="keywordtype">double</span>)</div>
 <div class="line"><a name="l05005"></a><span class="lineno"> 5005</span>&#160;    inline MessageBuilder&amp; operator&lt;&lt;(const std::wstring&amp; msg)</div>
 <div class="line"><a name="l05006"></a><span class="lineno"> 5006</span>&#160;    {</div>
-<div class="line"><a name="l05007"></a><span class="lineno"> 5007</span>&#160;        <span class="keywordflow">return</span> operator&lt;&lt;(msg.c_str());</div>
+<div class="line"><a name="l05007"></a><span class="lineno"> 5007</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(msg.c_str());</div>
 <div class="line"><a name="l05008"></a><span class="lineno"> 5008</span>&#160;    }</div>
-<div class="line"><a name="l05009"></a><span class="lineno"> 5009</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* msg)</div>
+<div class="line"><a name="l05009"></a><span class="lineno"> 5009</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span>* msg)</div>
 <div class="line"><a name="l05010"></a><span class="lineno"> 5010</span>&#160;    {</div>
 <div class="line"><a name="l05011"></a><span class="lineno"> 5011</span>&#160;        <span class="keywordflow">if</span> (msg == <span class="keyword">nullptr</span>) {</div>
 <div class="line"><a name="l05012"></a><span class="lineno"> 5012</span>&#160;            m_logger-&gt;stream() &lt;&lt; base::consts::kNullPointer;</div>
@@ -4721,7 +4721,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05025"></a><span class="lineno"> 5025</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05026"></a><span class="lineno"> 5026</span>&#160;    }</div>
 <div class="line"><a name="l05027"></a><span class="lineno"> 5027</span>&#160;    <span class="comment">// ostream manipulators</span></div>
-<div class="line"><a name="l05028"></a><span class="lineno"> 5028</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(std::ostream &amp; (*OStreamMani)(std::ostream&amp;))</div>
+<div class="line"><a name="l05028"></a><span class="lineno"> 5028</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(std::ostream &amp; (*OStreamMani)(std::ostream&amp;))</div>
 <div class="line"><a name="l05029"></a><span class="lineno"> 5029</span>&#160;    {</div>
 <div class="line"><a name="l05030"></a><span class="lineno"> 5030</span>&#160;        m_logger-&gt;stream() &lt;&lt; OStreamMani;</div>
 <div class="line"><a name="l05031"></a><span class="lineno"> 5031</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
@@ -4795,7 +4795,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05099"></a><span class="lineno"> 5099</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(const std::bitset&lt;Size&gt;&amp; bitset_)</div>
 <div class="line"><a name="l05100"></a><span class="lineno"> 5100</span>&#160;    {</div>
 <div class="line"><a name="l05101"></a><span class="lineno"> 5101</span>&#160;        m_logger-&gt;stream() &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;[&quot;</span>);</div>
-<div class="line"><a name="l05102"></a><span class="lineno"> 5102</span>&#160;        operator &lt;&lt; (bitset_.to_string());</div>
+<div class="line"><a name="l05102"></a><span class="lineno"> 5102</span>&#160;        <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator &lt;&lt; </a>(bitset_.to_string());</div>
 <div class="line"><a name="l05103"></a><span class="lineno"> 5103</span>&#160;        m_logger-&gt;stream() &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;]&quot;</span>);</div>
 <div class="line"><a name="l05104"></a><span class="lineno"> 5104</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05105"></a><span class="lineno"> 5105</span>&#160;    }</div>
@@ -4816,7 +4816,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05120"></a><span class="lineno"> 5120</span>&#160;<span class="preprocessor">#   endif  // defined(ELPP_LOG_UNORDERED_SET)</span></div>
 <div class="line"><a name="l05121"></a><span class="lineno"> 5121</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif  // defined(ELPP_STL_LOGGING)</span></div>
 <div class="line"><a name="l05122"></a><span class="lineno"> 5122</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if defined(ELPP_QT_LOGGING)</span></div>
-<div class="line"><a name="l05123"></a><span class="lineno"> 5123</span>&#160;<span class="preprocessor"></span>    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> QString&amp; msg)</div>
+<div class="line"><a name="l05123"></a><span class="lineno"> 5123</span>&#160;<span class="preprocessor"></span>    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> QString&amp; msg)</div>
 <div class="line"><a name="l05124"></a><span class="lineno"> 5124</span>&#160;    {</div>
 <div class="line"><a name="l05125"></a><span class="lineno"> 5125</span>&#160;<span class="preprocessor">#   if defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05126"></a><span class="lineno"> 5126</span>&#160;<span class="preprocessor"></span>        m_logger-&gt;stream() &lt;&lt; msg.toStdWString();</div>
@@ -4825,15 +4825,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05129"></a><span class="lineno"> 5129</span>&#160;<span class="preprocessor">#   endif  // defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05130"></a><span class="lineno"> 5130</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05131"></a><span class="lineno"> 5131</span>&#160;    }</div>
-<div class="line"><a name="l05132"></a><span class="lineno"> 5132</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> QByteArray&amp; msg)</div>
+<div class="line"><a name="l05132"></a><span class="lineno"> 5132</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> QByteArray&amp; msg)</div>
 <div class="line"><a name="l05133"></a><span class="lineno"> 5133</span>&#160;    {</div>
-<div class="line"><a name="l05134"></a><span class="lineno"> 5134</span>&#160;        <span class="keywordflow">return</span> operator &lt;&lt; (QString(msg));</div>
+<div class="line"><a name="l05134"></a><span class="lineno"> 5134</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator &lt;&lt; </a>(QString(msg));</div>
 <div class="line"><a name="l05135"></a><span class="lineno"> 5135</span>&#160;    }</div>
-<div class="line"><a name="l05136"></a><span class="lineno"> 5136</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> QStringRef&amp; msg)</div>
+<div class="line"><a name="l05136"></a><span class="lineno"> 5136</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> QStringRef&amp; msg)</div>
 <div class="line"><a name="l05137"></a><span class="lineno"> 5137</span>&#160;    {</div>
-<div class="line"><a name="l05138"></a><span class="lineno"> 5138</span>&#160;        <span class="keywordflow">return</span> operator&lt;&lt;(msg.toString());</div>
+<div class="line"><a name="l05138"></a><span class="lineno"> 5138</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(msg.toString());</div>
 <div class="line"><a name="l05139"></a><span class="lineno"> 5139</span>&#160;    }</div>
-<div class="line"><a name="l05140"></a><span class="lineno"> 5140</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(qint64 msg)</div>
+<div class="line"><a name="l05140"></a><span class="lineno"> 5140</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(qint64 msg)</div>
 <div class="line"><a name="l05141"></a><span class="lineno"> 5141</span>&#160;    {</div>
 <div class="line"><a name="l05142"></a><span class="lineno"> 5142</span>&#160;<span class="preprocessor">#   if defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05143"></a><span class="lineno"> 5143</span>&#160;<span class="preprocessor"></span>        m_logger-&gt;stream() &lt;&lt; QString::number(msg).toStdWString();</div>
@@ -4842,7 +4842,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05146"></a><span class="lineno"> 5146</span>&#160;<span class="preprocessor">#   endif  // defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05147"></a><span class="lineno"> 5147</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05148"></a><span class="lineno"> 5148</span>&#160;    }</div>
-<div class="line"><a name="l05149"></a><span class="lineno"> 5149</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(quint64 msg)</div>
+<div class="line"><a name="l05149"></a><span class="lineno"> 5149</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(quint64 msg)</div>
 <div class="line"><a name="l05150"></a><span class="lineno"> 5150</span>&#160;    {</div>
 <div class="line"><a name="l05151"></a><span class="lineno"> 5151</span>&#160;<span class="preprocessor">#   if defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05152"></a><span class="lineno"> 5152</span>&#160;<span class="preprocessor"></span>        m_logger-&gt;stream() &lt;&lt; QString::number(msg).toStdWString();</div>
@@ -4851,12 +4851,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05155"></a><span class="lineno"> 5155</span>&#160;<span class="preprocessor">#   endif  // defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l05156"></a><span class="lineno"> 5156</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05157"></a><span class="lineno"> 5157</span>&#160;    }</div>
-<div class="line"><a name="l05158"></a><span class="lineno"> 5158</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(QChar msg)</div>
+<div class="line"><a name="l05158"></a><span class="lineno"> 5158</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(QChar msg)</div>
 <div class="line"><a name="l05159"></a><span class="lineno"> 5159</span>&#160;    {</div>
 <div class="line"><a name="l05160"></a><span class="lineno"> 5160</span>&#160;        m_logger-&gt;stream() &lt;&lt; msg.toLatin1();</div>
 <div class="line"><a name="l05161"></a><span class="lineno"> 5161</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05162"></a><span class="lineno"> 5162</span>&#160;    }</div>
-<div class="line"><a name="l05163"></a><span class="lineno"> 5163</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; operator&lt;&lt;(<span class="keyword">const</span> QLatin1String&amp; msg)</div>
+<div class="line"><a name="l05163"></a><span class="lineno"> 5163</span>&#160;    <span class="keyword">inline</span> MessageBuilder&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> QLatin1String&amp; msg)</div>
 <div class="line"><a name="l05164"></a><span class="lineno"> 5164</span>&#160;    {</div>
 <div class="line"><a name="l05165"></a><span class="lineno"> 5165</span>&#160;        m_logger-&gt;stream() &lt;&lt; msg.latin1();</div>
 <div class="line"><a name="l05166"></a><span class="lineno"> 5166</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
@@ -4992,7 +4992,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05304"></a><span class="lineno"> 5304</span>&#160;    {</div>
 <div class="line"><a name="l05305"></a><span class="lineno"> 5305</span>&#160;        m_logger-&gt;stream() &lt;&lt; ELPP_LITERAL(<span class="stringliteral">&quot;[&quot;</span>);</div>
 <div class="line"><a name="l05306"></a><span class="lineno"> 5306</span>&#160;        <span class="keywordflow">for</span> (std::size_t i = 0; begin_ != end_ &amp;&amp; i &lt; base::consts::kMaxLogPerContainer; ++i, ++begin_) {</div>
-<div class="line"><a name="l05307"></a><span class="lineno"> 5307</span>&#160;            operator &lt;&lt; (*begin_);</div>
+<div class="line"><a name="l05307"></a><span class="lineno"> 5307</span>&#160;            <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator &lt;&lt; </a>(*begin_);</div>
 <div class="line"><a name="l05308"></a><span class="lineno"> 5308</span>&#160;            m_logger-&gt;stream() &lt;&lt; ((i &lt; size_ - 1) ? m_containerLogSeperator : ELPP_LITERAL(<span class="stringliteral">&quot;&quot;</span>));</div>
 <div class="line"><a name="l05309"></a><span class="lineno"> 5309</span>&#160;        }</div>
 <div class="line"><a name="l05310"></a><span class="lineno"> 5310</span>&#160;        <span class="keywordflow">if</span> (begin_ != end_) {</div>
@@ -5011,13 +5011,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05324"></a><span class="lineno"> 5324</span>&#160;    NullWriter(<span class="keywordtype">void</span>) {}</div>
 <div class="line"><a name="l05325"></a><span class="lineno"> 5325</span>&#160;</div>
 <div class="line"><a name="l05326"></a><span class="lineno"> 5326</span>&#160;    <span class="comment">// Null manipulator</span></div>
-<div class="line"><a name="l05327"></a><span class="lineno"> 5327</span>&#160;    <span class="keyword">inline</span> NullWriter&amp; operator&lt;&lt;(std::ostream &amp; (*)(std::ostream&amp;))</div>
+<div class="line"><a name="l05327"></a><span class="lineno"> 5327</span>&#160;    <span class="keyword">inline</span> NullWriter&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(std::ostream &amp; (*)(std::ostream&amp;))</div>
 <div class="line"><a name="l05328"></a><span class="lineno"> 5328</span>&#160;    {</div>
 <div class="line"><a name="l05329"></a><span class="lineno"> 5329</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05330"></a><span class="lineno"> 5330</span>&#160;    }</div>
 <div class="line"><a name="l05331"></a><span class="lineno"> 5331</span>&#160;</div>
 <div class="line"><a name="l05332"></a><span class="lineno"> 5332</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l05333"></a><span class="lineno"> 5333</span>&#160;    <span class="keyword">inline</span> NullWriter&amp; operator&lt;&lt;(<span class="keyword">const</span> T&amp;)</div>
+<div class="line"><a name="l05333"></a><span class="lineno"> 5333</span>&#160;    <span class="keyword">inline</span> NullWriter&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> T&amp;)</div>
 <div class="line"><a name="l05334"></a><span class="lineno"> 5334</span>&#160;    {</div>
 <div class="line"><a name="l05335"></a><span class="lineno"> 5335</span>&#160;        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05336"></a><span class="lineno"> 5336</span>&#160;    }</div>
@@ -5039,7 +5039,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05353"></a><span class="lineno"> 5353</span>&#160;    }</div>
 <div class="line"><a name="l05354"></a><span class="lineno"> 5354</span>&#160;</div>
 <div class="line"><a name="l05355"></a><span class="lineno"> 5355</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l05356"></a><span class="lineno"> 5356</span>&#160;    <span class="keyword">inline</span> Writer&amp; operator&lt;&lt;(<span class="keyword">const</span> T&amp; log)</div>
+<div class="line"><a name="l05356"></a><span class="lineno"> 5356</span>&#160;    <span class="keyword">inline</span> Writer&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(<span class="keyword">const</span> T&amp; log)</div>
 <div class="line"><a name="l05357"></a><span class="lineno"> 5357</span>&#160;    {</div>
 <div class="line"><a name="l05358"></a><span class="lineno"> 5358</span>&#160;<span class="preprocessor">#if ELPP_LOGGING_ENABLED</span></div>
 <div class="line"><a name="l05359"></a><span class="lineno"> 5359</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">if</span> (m_proceed) {</div>
@@ -5049,7 +5049,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05363"></a><span class="lineno"> 5363</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l05364"></a><span class="lineno"> 5364</span>&#160;    }</div>
 <div class="line"><a name="l05365"></a><span class="lineno"> 5365</span>&#160;</div>
-<div class="line"><a name="l05366"></a><span class="lineno"> 5366</span>&#160;    <span class="keyword">inline</span> Writer&amp; operator&lt;&lt;(std::ostream &amp; (*log)(std::ostream&amp;))</div>
+<div class="line"><a name="l05366"></a><span class="lineno"> 5366</span>&#160;    <span class="keyword">inline</span> Writer&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(std::ostream &amp; (*log)(std::ostream&amp;))</div>
 <div class="line"><a name="l05367"></a><span class="lineno"> 5367</span>&#160;    {</div>
 <div class="line"><a name="l05368"></a><span class="lineno"> 5368</span>&#160;<span class="preprocessor">#if ELPP_LOGGING_ENABLED</span></div>
 <div class="line"><a name="l05369"></a><span class="lineno"> 5369</span>&#160;<span class="preprocessor"></span>        <span class="keywordflow">if</span> (m_proceed) {</div>
@@ -5336,9 +5336,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05650"></a><span class="lineno"> 5650</span>&#160;<span class="preprocessor"></span>LOGGER_LEVEL_WRITERS_DISABLED(fatal, Level::Fatal)</div>
 <div class="line"><a name="l05651"></a><span class="lineno"> 5651</span>&#160;<span class="preprocessor">#   endif // ELPP_FATAL_LOG</span></div>
 <div class="line"><a name="l05652"></a><span class="lineno"> 5652</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#   if ELPP_TRACE_LOG</span></div>
-<div class="line"><a name="l05653"></a><span class="lineno"> 5653</span>&#160;<span class="preprocessor"></span>LOGGER_LEVEL_WRITERS(<a class="code" href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">trace</a>, Level::Trace)</div>
+<div class="line"><a name="l05653"></a><span class="lineno"> 5653</span>&#160;<span class="preprocessor"></span>LOGGER_LEVEL_WRITERS(<a class="code" href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">trace</a>, Level::Trace)</div>
 <div class="line"><a name="l05654"></a><span class="lineno"> 5654</span>&#160;<span class="preprocessor">#   else</span></div>
-<div class="line"><a name="l05655"></a><span class="lineno"> 5655</span>&#160;<span class="preprocessor"></span>LOGGER_LEVEL_WRITERS_DISABLED(<a class="code" href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">trace</a>, Level::Trace)</div>
+<div class="line"><a name="l05655"></a><span class="lineno"> 5655</span>&#160;<span class="preprocessor"></span>LOGGER_LEVEL_WRITERS_DISABLED(<a class="code" href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">trace</a>, Level::Trace)</div>
 <div class="line"><a name="l05656"></a><span class="lineno"> 5656</span>&#160;<span class="preprocessor">#   endif // ELPP_TRACE_LOG</span></div>
 <div class="line"><a name="l05657"></a><span class="lineno"> 5657</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#   undef LOGGER_LEVEL_WRITERS</span></div>
 <div class="line"><a name="l05658"></a><span class="lineno"> 5658</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#   undef LOGGER_LEVEL_WRITERS_DISABLED</span></div>
@@ -5614,7 +5614,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05933"></a><span class="lineno"> 5933</span>&#160;        std::string m_demangled;</div>
 <div class="line"><a name="l05934"></a><span class="lineno"> 5934</span>&#160;        std::string m_hex;</div>
 <div class="line"><a name="l05935"></a><span class="lineno"> 5935</span>&#160;        std::string m_addr;</div>
-<div class="line"><a name="l05936"></a><span class="lineno"> 5936</span>&#160;        <span class="keyword">friend</span> std::ostream&amp; operator&lt;&lt;(std::ostream&amp; ss, <span class="keyword">const</span> StackTraceEntry&amp; si)</div>
+<div class="line"><a name="l05936"></a><span class="lineno"> 5936</span>&#160;        <span class="keyword">friend</span> std::ostream&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(std::ostream&amp; ss, <span class="keyword">const</span> StackTraceEntry&amp; si)</div>
 <div class="line"><a name="l05937"></a><span class="lineno"> 5937</span>&#160;        {</div>
 <div class="line"><a name="l05938"></a><span class="lineno"> 5938</span>&#160;            ss &lt;&lt; <span class="stringliteral">&quot;[&quot;</span> &lt;&lt; si.m_index &lt;&lt; <span class="stringliteral">&quot;] &quot;</span> &lt;&lt; si.m_location &lt;&lt; (si.m_demangled.empty() ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;:&quot;</span>) &lt;&lt; si.m_demangled</div>
 <div class="line"><a name="l05939"></a><span class="lineno"> 5939</span>&#160;               &lt;&lt; (si.m_hex.empty() ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;+&quot;</span>) &lt;&lt; si.m_hex &lt;&lt; si.m_addr;</div>
@@ -5639,7 +5639,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05958"></a><span class="lineno"> 5958</span>&#160;        <span class="keywordflow">return</span> m_stack;</div>
 <div class="line"><a name="l05959"></a><span class="lineno"> 5959</span>&#160;    }</div>
 <div class="line"><a name="l05960"></a><span class="lineno"> 5960</span>&#160;</div>
-<div class="line"><a name="l05961"></a><span class="lineno"> 5961</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, <span class="keyword">const</span> StackTrace&amp; st)</div>
+<div class="line"><a name="l05961"></a><span class="lineno"> 5961</span>&#160;    <span class="keyword">friend</span> <span class="keyword">inline</span> std::ostream&amp; <a class="code" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a>(std::ostream&amp; os, <span class="keyword">const</span> StackTrace&amp; st)</div>
 <div class="line"><a name="l05962"></a><span class="lineno"> 5962</span>&#160;    {</div>
 <div class="line"><a name="l05963"></a><span class="lineno"> 5963</span>&#160;        std::vector&lt;StackTraceEntry&gt;::const_iterator it = st.m_stack.begin();</div>
 <div class="line"><a name="l05964"></a><span class="lineno"> 5964</span>&#160;        <span class="keywordflow">while</span> (it != st.m_stack.end()) {</div>
@@ -5659,7 +5659,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l05978"></a><span class="lineno"> 5978</span>&#160;        std::size_t size = backtrace(stack, kMaxStack);</div>
 <div class="line"><a name="l05979"></a><span class="lineno"> 5979</span>&#160;        <span class="keywordtype">char</span>** strings = backtrace_symbols(stack, size);</div>
 <div class="line"><a name="l05980"></a><span class="lineno"> 5980</span>&#160;        <span class="keywordflow">if</span> (size &gt; kStackStart) {  <span class="comment">// Skip StackTrace c&#39;tor and generateNew</span></div>
-<div class="line"><a name="l05981"></a><span class="lineno"> 5981</span>&#160;            <span class="keywordflow">for</span> (std::size_t i = kStackStart; i &lt; size; ++i) {</div>
+<div class="line"><a name="l05981"></a><span class="lineno"> 5981</span>&#160;            <span class="keywordflow">for</span> (std::size_t i = kStackStart; i &lt; <a class="code" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a>; ++i) {</div>
 <div class="line"><a name="l05982"></a><span class="lineno"> 5982</span>&#160;                <span class="keywordtype">char</span>* mangName = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l05983"></a><span class="lineno"> 5983</span>&#160;                <span class="keywordtype">char</span>* hex = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l05984"></a><span class="lineno"> 5984</span>&#160;                <span class="keywordtype">char</span>* addr = <span class="keyword">nullptr</span>;</div>
@@ -6798,11 +6798,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l07200"></a><span class="lineno"> 7200</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#   define START_EASYLOGGINGPP(argc, argv) el::Helpers::setArgs(argc, argv)</span></div>
 <div class="line"><a name="l07201"></a><span class="lineno"> 7201</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif  // defined(ELPP_UNICODE)</span></div>
 <div class="line"><a name="l07202"></a><span class="lineno"> 7202</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif // EASYLOGGINGPP_H</span></div>
-<div class="ttc" id="namespaceyap_html_ac918e9adacbf230832e17402f801154c"><div class="ttname"><a href="namespaceyap.html#ac918e9adacbf230832e17402f801154c">yap::operator==</a></div><div class="ttdeci">bool operator==(const QuantumNumbers &amp;lhs, const QuantumNumbers &amp;rhs)</div><div class="ttdoc">equality operator </div><div class="ttdef"><b>Definition:</b> QuantumNumbers.cxx:34</div></div>
-<div class="ttc" id="namespaceyap_html_ac38d70cc6b0e7a1aafec1ccfc9fb7079"><div class="ttname"><a href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">yap::trace</a></div><div class="ttdeci">T trace(const SquareMatrix&lt; T, N &gt; &amp;M)</div><div class="ttdoc">trace </div><div class="ttdef"><b>Definition:</b> Matrix.h:294</div></div>
-<div class="ttc" id="container__utils_8h_html_a846396c9faabf6ca2feb3fb385eb531d"><div class="ttname"><a href="container__utils_8h.html#a846396c9faabf6ca2feb3fb385eb531d">contains</a></div><div class="ttdeci">bool contains(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, BinaryPredicate p)</div><div class="ttdef"><b>Definition:</b> container_utils.h:49</div></div>
-<div class="ttc" id="namespaceyap_html_acbf4d2f2e57ff45680fc517c27d2a0ac"><div class="ttname"><a href="namespaceyap.html#acbf4d2f2e57ff45680fc517c27d2a0ac">yap::operator!=</a></div><div class="ttdeci">bool operator!=(const QuantumNumbers &amp;lhs, const QuantumNumbers &amp;rhs)</div><div class="ttdoc">returns NOT == </div><div class="ttdef"><b>Definition:</b> QuantumNumbers.h:144</div></div>
-<div class="ttc" id="namespaceyap_html_aa0a27d9bfe0d583501692c30fe7b68d0"><div class="ttname"><a href="namespaceyap.html#aa0a27d9bfe0d583501692c30fe7b68d0">yap::unit</a></div><div class="ttdeci">CoordinateSystem&lt; T, N &gt; unit(const CoordinateSystem&lt; T, N &gt; &amp;C)</div><div class="ttdef"><b>Definition:</b> CoordinateSystem.h:55</div></div>
+<div class="ttc" id="container__utils_8h_html_aabcaffe3d6309741c0f3489d3e54979d"><div class="ttname"><a href="container__utils_8h.html#aabcaffe3d6309741c0f3489d3e54979d">contains</a></div><div class="ttdeci">bool contains(InputIt1 first_haystack, InputIt1 last_haystack, InputIt2 first_needle, InputIt2 last_needle, BinaryPredicate p)</div><div class="ttdef"><b>Definition:</b> container_utils.h:49</div></div>
+<div class="ttc" id="namespaceyap_html_a17160ce48eaa352913bdb21886a85d95"><div class="ttname"><a href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">yap::operator==</a></div><div class="ttdeci">bool operator==(const CachedValue::Status &amp;S, const CalculationStatus &amp;s)</div><div class="ttdoc">equality operator for checking the CalculationStatus </div><div class="ttdef"><b>Definition:</b> CachedValue.h:153</div></div>
+<div class="ttc" id="namespaceyap_html_a70244ef6cb2636468c0bf12fb34ee6e1"><div class="ttname"><a href="namespaceyap.html#a70244ef6cb2636468c0bf12fb34ee6e1">yap::operator!=</a></div><div class="ttdeci">bool operator!=(const CachedValue::Status &amp;S, const CalculationStatus &amp;s)</div><div class="ttdoc">inequality operator for checking the CalculationStatus </div><div class="ttdef"><b>Definition:</b> CachedValue.h:157</div></div>
+<div class="ttc" id="namespaceyap_html_a5bb2bb4f10e5236eca04962b469df92c"><div class="ttname"><a href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">yap::size</a></div><div class="ttdeci">const size_t size(const ParameterVector &amp;V)</div><div class="ttdef"><b>Definition:</b> Parameter.h:283</div></div>
+<div class="ttc" id="namespaceyap_html_ade46cbdf18fdb953382b20c9c3de989f"><div class="ttname"><a href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">yap::operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;os, const DecayChannel &amp;dc)</div><div class="ttdoc">&lt;&lt; operator </div><div class="ttdef"><b>Definition:</b> DecayChannel.h:119</div></div>
+<div class="ttc" id="namespaceyap_html_acf82c8d362b8fec685e67b3cd90d1c69"><div class="ttname"><a href="namespaceyap.html#acf82c8d362b8fec685e67b3cd90d1c69">yap::unit</a></div><div class="ttdeci">const CoordinateSystem&lt; T, N &gt; unit(const CoordinateSystem&lt; T, N &gt; &amp;C)</div><div class="ttdef"><b>Definition:</b> CoordinateSystem.h:52</div></div>
+<div class="ttc" id="namespaceyap_html_aec11611a6ef78e7a13e0da56b5ea8108"><div class="ttname"><a href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">yap::trace</a></div><div class="ttdeci">const T trace(const SquareMatrix&lt; T, N &gt; &amp;M)</div><div class="ttdoc">trace </div><div class="ttdef"><b>Definition:</b> Matrix.h:340</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

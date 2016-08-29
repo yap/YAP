@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['dataiterator',['DataIterator',['../classyap_1_1DataPartitionBase.html#a88d91c1ba82c43b5465f8241327d25d8',1,'yap::DataPartitionBase']]],
-  ['datapartitionbase',['DataPartitionBase',['../classyap_1_1DataIterator.html#ab0e6cd2fad27cc9e96ec9398c88906c4',1,'yap::DataIterator::DataPartitionBase()'],['../classyap_1_1DataSet.html#a99402f39deda4bd700a4cf51d2f3e315',1,'yap::DataSet::DataPartitionBase()']]],
-  ['dataset',['DataSet',['../classyap_1_1DataPoint.html#a556d0774dd7d7e8c02bd6f6896df5b92',1,'yap::DataPoint']]],
-  ['daughter',['Daughter',['../structyap_1_1DaughterCachedDataValue.html#abbabf995ad186bde7e8852d87eade8fd',1,'yap::DaughterCachedDataValue']]],
-  ['decaychannel',['DecayChannel',['../classyap_1_1DecayingParticle.html#a302d139a7897e2305944d7dfb7eaf0c0',1,'yap::DecayingParticle']]],
-  ['decayingparticle',['DecayingParticle',['../classyap_1_1DecayChannel.html#af530d0849c5b2eac802da5259c6353d2',1,'yap::DecayChannel']]]
+  ['b_5f',['B_',['../classyap_1_1VectorAddition.html#a65ce852caaf9c538a16666e3ad9caa4c',1,'yap::VectorAddition::B_()'],['../classyap_1_1VectorSubtraction.html#a65ce852caaf9c538a16666e3ad9caa4c',1,'yap::VectorSubtraction::B_()']]],
+  ['barrierfactor_5f',['BarrierFactor_',['../classyap_1_1BlattWeisskopf.html#a41c21e8064ad952df1facbf05517b519',1,'yap::BlattWeisskopf']]],
+  ['begin_5f',['Begin_',['../classyap_1_1DataPartition.html#ab539c712eb4f7089fe042a545e9fdaa3',1,'yap::DataPartition']]],
+  ['blattweisskopf_5f',['BlattWeisskopf_',['../classyap_1_1RelativisticBreitWigner.html#a2e5e54a4d0ee9e9a5c1540aaa31354b9',1,'yap::RelativisticBreitWigner']]],
+  ['blattweisskopfs_5f',['BlattWeisskopfs_',['../classyap_1_1DecayingParticle.html#afa8def11c04b6bb622c5fc59dfa7c918',1,'yap::DecayingParticle']]]
 ];

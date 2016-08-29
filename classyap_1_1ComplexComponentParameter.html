@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: yap::ComplexComponentParameter Class Reference</title>
+<title>YAP: ComplexComponentParameter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -90,126 +90,137 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classyap_1_1ComplexComponentParameter-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">yap::ComplexComponentParameter Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">ComplexComponentParameter Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Abstract base allowing access to the components of a ComplexParameter as a RealParameter.  
+<p>Abstract base allowing access to the components of a <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> as a <a class="el" href="classyap_1_1RealParameter.html">RealParameter</a>.  
  <a href="classyap_1_1ComplexComponentParameter.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Parameter_8h_source.html">Parameter.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for yap::ComplexComponentParameter:</div>
+Inheritance diagram for ComplexComponentParameter:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classyap_1_1ComplexComponentParameter.png" usemap="#yap::ComplexComponentParameter_map" alt=""/>
-  <map id="yap::ComplexComponentParameter_map" name="yap::ComplexComponentParameter_map">
-<area href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. " alt="yap::Parameter&lt; T &gt;" shape="rect" coords="112,56,327,80"/>
-<area href="classyap_1_1ParameterBase.html" title="Class holding basic properties of a parameter, but not a value! " alt="yap::ParameterBase" shape="rect" coords="112,0,327,24"/>
-<area href="classyap_1_1ImaginaryComponentParameter.html" title="ImaginaryParameter accessing imaginary component of ComplexParameter. " alt="yap::ImaginaryComponentParameter" shape="rect" coords="0,168,215,192"/>
-<area href="classyap_1_1RealComponentParameter.html" title="RealParameter accessing real component of ComplexParameter. " alt="yap::RealComponentParameter" shape="rect" coords="225,168,440,192"/>
+  <img src="classyap_1_1ComplexComponentParameter.png" usemap="#ComplexComponentParameter_map" alt=""/>
+  <map id="ComplexComponentParameter_map" name="ComplexComponentParameter_map">
+<area href="classyap_1_1RealParameter.html" alt="RealParameter" shape="rect" coords="99,112,287,136"/>
+<area href="classyap_1_1Parameter.html" alt="Parameter&lt; double &gt;" shape="rect" coords="99,56,287,80"/>
+<area href="classyap_1_1ParameterBase.html" title="Class holding basic properties of a parameter, but not a value! " alt="ParameterBase" shape="rect" coords="99,0,287,24"/>
+<area href="classyap_1_1ImaginaryComponentParameter.html" title="ImaginaryParameter accessing imaginary component of ComplexParameter. " alt="ImaginaryComponentParameter" shape="rect" coords="0,224,188,248"/>
+<area href="classyap_1_1RealComponentParameter.html" title="RealParameter accessing real component of ComplexParameter. " alt="RealComponentParameter" shape="rect" coords="198,224,386,248"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a02178154224f1b33eed03e681ca3850f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a02178154224f1b33eed03e681ca3850f">ComplexComponentParameter</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1Parameter.html">ComplexParameter</a> &gt; par)</td></tr>
-<tr class="separator:a02178154224f1b33eed03e681ca3850f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e3bb50eb89212ae276d1aff3e5538cb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a2e3bb50eb89212ae276d1aff3e5538cb">value</a> () const override</td></tr>
-<tr class="separator:a2e3bb50eb89212ae276d1aff3e5538cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92cf2f3c9d22bbe828ebdfa6fd7b8d3f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a92cf2f3c9d22bbe828ebdfa6fd7b8d3f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a92cf2f3c9d22bbe828ebdfa6fd7b8d3f">setValue</a> (double val) override</td></tr>
-<tr class="memdesc:a92cf2f3c9d22bbe828ebdfa6fd7b8d3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value by accessing parent <br/></td></tr>
-<tr class="separator:a92cf2f3c9d22bbe828ebdfa6fd7b8d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6db60b4b16047110ae37bd8e24d4a228"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1Parameter.html">ComplexParameter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a6db60b4b16047110ae37bd8e24d4a228">parent</a> ()</td></tr>
-<tr class="separator:a6db60b4b16047110ae37bd8e24d4a228"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1Parameter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1Parameter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1Parameter.html">yap::Parameter&lt; T &gt;</a></td></tr>
-<tr class="memitem:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae24507e4e3f37324bd1a38ac3b9f088"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#aae24507e4e3f37324bd1a38ac3b9f088">Parameter</a> ()</td></tr>
-<tr class="memdesc:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
-<tr class="separator:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7fb36d698e48445ddc2149396435bd14"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a7fb36d698e48445ddc2149396435bd14">Parameter</a> (T t)</td></tr>
-<tr class="memdesc:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value-assigning constructor. <br/></td></tr>
-<tr class="separator:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34f77132284f79627fe4ef0f0259ed80"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a34f77132284f79627fe4ef0f0259ed80">~Parameter</a> ()=default</td></tr>
-<tr class="memdesc:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor defaulted <br/></td></tr>
-<tr class="separator:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63ccf080c8b4bf9c181ccd4f7432c567"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a63ccf080c8b4bf9c181ccd4f7432c567">Parameter</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
-<tr class="memdesc:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor defaulted <br/></td></tr>
-<tr class="separator:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12365e97e1bcc373763595d31ab6e9ef"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a12365e97e1bcc373763595d31ab6e9ef">Parameter</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor defaulted <br/></td></tr>
-<tr class="separator:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86a1420a3a064e434d455f0ffda47718"></a>
-<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a86a1420a3a064e434d455f0ffda47718">operator=</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
-<tr class="memdesc:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment defaulted <br/></td></tr>
-<tr class="separator:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21cda2efbd8dea83c6068843907836e7"></a>
-<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a21cda2efbd8dea83c6068843907836e7">operator=</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment defaulted <br/></td></tr>
-<tr class="separator:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1707616c08b775f9bbeabb240e30644c inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1707616c08b775f9bbeabb240e30644c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a1707616c08b775f9bbeabb240e30644c">setValue</a> (T val)</td></tr>
-<tr class="memdesc:a1707616c08b775f9bbeabb240e30644c inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value <br/></td></tr>
-<tr class="separator:a1707616c08b775f9bbeabb240e30644c inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1ParameterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1ParameterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1ParameterBase.html">yap::ParameterBase</a></td></tr>
-<tr class="memitem:a499e1c740c55434957fb4c06c491b5e9 inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#a499e1c740c55434957fb4c06c491b5e9">variableStatus</a> () const </td></tr>
-<tr class="separator:a499e1c740c55434957fb4c06c491b5e9 inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8af828448283fb2a1be6a6b857d70f41"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#a8af828448283fb2a1be6a6b857d70f41">setVariableStatus</a> (<a class="el" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a> stat)</td></tr>
-<tr class="memdesc:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">set VariableStatus <br/></td></tr>
-<tr class="separator:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa778ffe6bcba2acd5714b3a08f8e13a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#aa778ffe6bcba2acd5714b3a08f8e13a4">ComplexComponentParameter</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> &gt; par)</td></tr>
+<tr class="separator:aa778ffe6bcba2acd5714b3a08f8e13a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57ddd70642919f8daff1d20651e3f08c"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a57ddd70642919f8daff1d20651e3f08c">value</a> () const override</td></tr>
+<tr class="separator:a57ddd70642919f8daff1d20651e3f08c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfa5fe1e25187c1d3a181440d8536b65"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acfa5fe1e25187c1d3a181440d8536b65"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#acfa5fe1e25187c1d3a181440d8536b65">setValue</a> (double val) override</td></tr>
+<tr class="memdesc:acfa5fe1e25187c1d3a181440d8536b65"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value by accessing parent <br/></td></tr>
+<tr class="separator:acfa5fe1e25187c1d3a181440d8536b65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfd78e045f6a25611ec1fee07d0041f0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#abfd78e045f6a25611ec1fee07d0041f0">parent</a> ()</td></tr>
+<tr class="separator:abfd78e045f6a25611ec1fee07d0041f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1RealParameter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1RealParameter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1RealParameter.html">RealParameter</a></td></tr>
+<tr class="memitem:a04cf7decd1a28207b26fe54da8152ac8 inherit pub_methods_classyap_1_1RealParameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04cf7decd1a28207b26fe54da8152ac8"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealParameter.html#a04cf7decd1a28207b26fe54da8152ac8">RealParameter</a> (double t=0)</td></tr>
+<tr class="memdesc:a04cf7decd1a28207b26fe54da8152ac8 inherit pub_methods_classyap_1_1RealParameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor <br/></td></tr>
+<tr class="separator:a04cf7decd1a28207b26fe54da8152ac8 inherit pub_methods_classyap_1_1RealParameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad946b8f6f79a9ee73d674f86a7964100 inherit pub_methods_classyap_1_1RealParameter"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealParameter.html#ad946b8f6f79a9ee73d674f86a7964100">size</a> () const </td></tr>
+<tr class="separator:ad946b8f6f79a9ee73d674f86a7964100 inherit pub_methods_classyap_1_1RealParameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a9a62456a2894875b6ba783eda6d86 inherit pub_methods_classyap_1_1RealParameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a53a9a62456a2894875b6ba783eda6d86"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealParameter.html#a53a9a62456a2894875b6ba783eda6d86">setValue</a> (const std::vector&lt; double &gt; &amp;V)</td></tr>
+<tr class="memdesc:a53a9a62456a2894875b6ba783eda6d86 inherit pub_methods_classyap_1_1RealParameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set value from vector. <br/></td></tr>
+<tr class="separator:a53a9a62456a2894875b6ba783eda6d86 inherit pub_methods_classyap_1_1RealParameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1Parameter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1Parameter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1Parameter.html">Parameter&lt; double &gt;</a></td></tr>
+<tr class="memitem:a6f4aa72c1075260366dbfb2030e9a44f inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f4aa72c1075260366dbfb2030e9a44f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a6f4aa72c1075260366dbfb2030e9a44f">Parameter</a> ()=default</td></tr>
+<tr class="memdesc:a6f4aa72c1075260366dbfb2030e9a44f inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
+<tr class="separator:a6f4aa72c1075260366dbfb2030e9a44f inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a462f209abe1866e0bd0c34daa065822b inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a462f209abe1866e0bd0c34daa065822b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a462f209abe1866e0bd0c34daa065822b">Parameter</a> (doublet)</td></tr>
+<tr class="memdesc:a462f209abe1866e0bd0c34daa065822b inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value-assigning constructor. <br/></td></tr>
+<tr class="separator:a462f209abe1866e0bd0c34daa065822b inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6537ee0888dc85ebbd6582329277bd9 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6537ee0888dc85ebbd6582329277bd9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#ab6537ee0888dc85ebbd6582329277bd9">Parameter</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
+<tr class="memdesc:ab6537ee0888dc85ebbd6582329277bd9 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor defaulted <br/></td></tr>
+<tr class="separator:ab6537ee0888dc85ebbd6582329277bd9 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2e0cb7272acc882b496e0fb18725a09 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad2e0cb7272acc882b496e0fb18725a09"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#ad2e0cb7272acc882b496e0fb18725a09">Parameter</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:ad2e0cb7272acc882b496e0fb18725a09 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor defaulted <br/></td></tr>
+<tr class="separator:ad2e0cb7272acc882b496e0fb18725a09 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7021af4575acb5d45e17015b92a5a57e inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7021af4575acb5d45e17015b92a5a57e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a7021af4575acb5d45e17015b92a5a57e">~Parameter</a> ()=default</td></tr>
+<tr class="memdesc:a7021af4575acb5d45e17015b92a5a57e inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor defaulted <br/></td></tr>
+<tr class="separator:a7021af4575acb5d45e17015b92a5a57e inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe7124861022f271aec60c929f6dda8e inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe7124861022f271aec60c929f6dda8e"></a>
+<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#afe7124861022f271aec60c929f6dda8e">operator=</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
+<tr class="memdesc:afe7124861022f271aec60c929f6dda8e inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment defaulted <br/></td></tr>
+<tr class="separator:afe7124861022f271aec60c929f6dda8e inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af225e919a8cf73f4d4be000637783943 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af225e919a8cf73f4d4be000637783943"></a>
+<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#af225e919a8cf73f4d4be000637783943">operator=</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:af225e919a8cf73f4d4be000637783943 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment defaulted <br/></td></tr>
+<tr class="separator:af225e919a8cf73f4d4be000637783943 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc6ce65695744e59b42221d3c20b71eb inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc6ce65695744e59b42221d3c20b71eb"></a>
+<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#adc6ce65695744e59b42221d3c20b71eb">operator=</a> (typename std::conditional&lt; std::is_fundamental&lt; double &gt;::<a class="el" href="classyap_1_1Parameter.html#a6376692b0a248ee5cfb4f130a1007f24">value</a>, const double, const double &amp; &gt;::type t)</td></tr>
+<tr class="memdesc:adc6ce65695744e59b42221d3c20b71eb inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value by operator <br/></td></tr>
+<tr class="separator:adc6ce65695744e59b42221d3c20b71eb inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81f2154880c51327854b5adc19d49662 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a81f2154880c51327854b5adc19d49662"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a81f2154880c51327854b5adc19d49662">setValue</a> (typename std::conditional&lt; std::is_fundamental&lt; double &gt;::<a class="el" href="classyap_1_1Parameter.html#a6376692b0a248ee5cfb4f130a1007f24">value</a>, const double, const double &amp; &gt;::type val)</td></tr>
+<tr class="memdesc:a81f2154880c51327854b5adc19d49662 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value <br/></td></tr>
+<tr class="separator:a81f2154880c51327854b5adc19d49662 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1ParameterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1ParameterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1ParameterBase.html">ParameterBase</a></td></tr>
+<tr class="memitem:ac2460105f9cf611c6bfa1514c97c9aeb inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#ac2460105f9cf611c6bfa1514c97c9aeb">variableStatus</a> ()</td></tr>
+<tr class="separator:ac2460105f9cf611c6bfa1514c97c9aeb inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada982d80d9c45dface01a17a1fad8e91 inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#ada982d80d9c45dface01a17a1fad8e91">variableStatus</a> () const </td></tr>
+<tr class="separator:ada982d80d9c45dface01a17a1fad8e91 inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a63a5c44ba084d97fdde5a32d487dffa1"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a63a5c44ba084d97fdde5a32d487dffa1">component</a> (const std::complex&lt; double &gt; &amp;c) const =0</td></tr>
-<tr class="separator:a63a5c44ba084d97fdde5a32d487dffa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5a0070ae8ec671314c4e14a97da2017"><td class="memItemLeft" align="right" valign="top">virtual std::complex&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#af5a0070ae8ec671314c4e14a97da2017">setComponent</a> (const std::complex&lt; double &gt; &amp;c, double v) const =0</td></tr>
-<tr class="separator:af5a0070ae8ec671314c4e14a97da2017"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81cef2912b31e7a08b530e8c28b77d37"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a81cef2912b31e7a08b530e8c28b77d37">component</a> (const std::complex&lt; double &gt; &amp;c) const =0</td></tr>
+<tr class="separator:a81cef2912b31e7a08b530e8c28b77d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b1fd23cabd2e3688f5cc1461a1a8274"><td class="memItemLeft" align="right" valign="top">virtual std::complex&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a3b1fd23cabd2e3688f5cc1461a1a8274">setComponent</a> (const std::complex&lt; double &gt; &amp;c, double v) const =0</td></tr>
+<tr class="separator:a3b1fd23cabd2e3688f5cc1461a1a8274"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classyap_1_1ParameterBase"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1ParameterBase')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1ParameterBase.html">ParameterBase</a></td></tr>
+<tr class="memitem:a129973a25570718c1cb10c6f01d1c5e9 inherit pro_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a129973a25570718c1cb10c6f01d1c5e9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#a129973a25570718c1cb10c6f01d1c5e9">ParameterBase</a> ()</td></tr>
+<tr class="memdesc:a129973a25570718c1cb10c6f01d1c5e9 inherit pro_methods_classyap_1_1ParameterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br/></td></tr>
+<tr class="separator:a129973a25570718c1cb10c6f01d1c5e9 inherit pro_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_attribs_classyap_1_1Parameter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classyap_1_1Parameter')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classyap_1_1Parameter.html">yap::Parameter&lt; T &gt;</a></td></tr>
-<tr class="memitem:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a358eeb122a877453dd478047996a0e35"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a358eeb122a877453dd478047996a0e35">ParameterValue_</a></td></tr>
-<tr class="memdesc:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value stored. <br/></td></tr>
-<tr class="separator:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a36286124e45b633622a6b49b8d227d21"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a36286124e45b633622a6b49b8d227d21"></a>
+std::shared_ptr&lt; <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html#a36286124e45b633622a6b49b8d227d21">Parent_</a></td></tr>
+<tr class="memdesc:a36286124e45b633622a6b49b8d227d21"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> this object points to a component of. <br/></td></tr>
+<tr class="separator:a36286124e45b633622a6b49b8d227d21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Abstract base allowing access to the components of a ComplexParameter as a RealParameter. </p>
+<div class="textblock"><p>Abstract base allowing access to the components of a <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> as a <a class="el" href="classyap_1_1RealParameter.html">RealParameter</a>. </p>
 <dl class="section author"><dt>Author</dt><dd>Daniel Greenwald </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a02178154224f1b33eed03e681ca3850f"></a>
+<a class="anchor" id="aa778ffe6bcba2acd5714b3a08f8e13a4"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">yap::ComplexComponentParameter::ComplexComponentParameter </td>
+          <td class="memname"><a class="el" href="classyap_1_1ComplexComponentParameter.html">ComplexComponentParameter</a> </td>
           <td>(</td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1Parameter.html">ComplexParameter</a> &gt;&#160;</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> &gt;&#160;</td>
           <td class="paramname"><em>par</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 <p>Constructor </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">par</td><td>shared_ptr to ComplexParameter to access </td></tr>
+    <tr><td class="paramname">par</td><td>shared_ptr to <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> to access </td></tr>
   </table>
   </dd>
 </dl>
@@ -217,7 +228,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a63a5c44ba084d97fdde5a32d487dffa1"></a>
+<a class="anchor" id="a81cef2912b31e7a08b530e8c28b77d37"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -225,7 +236,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual double yap::ComplexComponentParameter::component </td>
+          <td class="memname">virtual double component </td>
           <td>(</td>
           <td class="paramtype">const std::complex&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>c</em></td><td>)</td>
@@ -240,11 +251,11 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>component value from whole value </dd></dl>
 
-<p>Implemented in <a class="el" href="classyap_1_1ImaginaryComponentParameter.html#a5a405e61d3ab816f43fb6f644adf43f4">yap::ImaginaryComponentParameter</a>, and <a class="el" href="classyap_1_1RealComponentParameter.html#a4874bd0dfb38176cc1bdc680ffac725d">yap::RealComponentParameter</a>.</p>
+<p>Implemented in <a class="el" href="classyap_1_1ImaginaryComponentParameter.html#a95ccfd492c77971ef1c27c935cbbab0f">ImaginaryComponentParameter</a>, and <a class="el" href="classyap_1_1RealComponentParameter.html#a95ccfd492c77971ef1c27c935cbbab0f">RealComponentParameter</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a6db60b4b16047110ae37bd8e24d4a228"></a>
+<a class="anchor" id="abfd78e045f6a25611ec1fee07d0041f0"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -252,7 +263,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1Parameter.html">ComplexParameter</a>&gt; yap::ComplexComponentParameter::parent </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a>&gt; parent </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -268,7 +279,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
 
 </div>
 </div>
-<a class="anchor" id="af5a0070ae8ec671314c4e14a97da2017"></a>
+<a class="anchor" id="a3b1fd23cabd2e3688f5cc1461a1a8274"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -276,7 +287,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::complex&lt;double&gt; yap::ComplexComponentParameter::setComponent </td>
+          <td class="memname">virtual std::complex&lt;double&gt; setComponent </td>
           <td>(</td>
           <td class="paramtype">const std::complex&lt; double &gt; &amp;&#160;</td>
           <td class="paramname"><em>c</em>, </td>
@@ -301,11 +312,11 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>complex value with component changed </dd></dl>
 
-<p>Implemented in <a class="el" href="classyap_1_1ImaginaryComponentParameter.html#af38e910d4f48ff94f6aa09ed4c0f9e1b">yap::ImaginaryComponentParameter</a>, and <a class="el" href="classyap_1_1RealComponentParameter.html#a14d1c7c7bfc9eb5213fa7572ab6b4886">yap::RealComponentParameter</a>.</p>
+<p>Implemented in <a class="el" href="classyap_1_1ImaginaryComponentParameter.html#afc5f7a79c6d6aa6161883072454a2f15">ImaginaryComponentParameter</a>, and <a class="el" href="classyap_1_1RealComponentParameter.html#afc5f7a79c6d6aa6161883072454a2f15">RealComponentParameter</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a2e3bb50eb89212ae276d1aff3e5538cb"></a>
+<a class="anchor" id="a57ddd70642919f8daff1d20651e3f08c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -313,7 +324,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double yap::ComplexComponentParameter::value </td>
+          <td class="memname">const double value </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -328,12 +339,13 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classya
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>value of parameter by accessing parent </dd></dl>
 
-<p>Reimplemented from <a class="el" href="classyap_1_1Parameter.html#a559fb3b24f8cd480edf10da77de02f94">yap::Parameter&lt; T &gt;</a>.</p>
+<p>Reimplemented from <a class="el" href="classyap_1_1Parameter.html#a6376692b0a248ee5cfb4f130a1007f24">Parameter&lt; double &gt;</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/<a class="el" href="Parameter_8h_source.html">Parameter.h</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>/home/dgreenw/work/belle/YAP/include/<a class="el" href="Parameter_8h_source.html">Parameter.h</a></li>
+<li>/home/dgreenw/work/belle/YAP/src/Parameter.cxx</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

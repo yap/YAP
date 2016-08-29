@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: yap::CachedValue&lt; T &gt; Class Template Reference</title>
+<title>YAP: CachedValue Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,136 +88,155 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classyap_1_1CachedValue-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">yap::CachedValue&lt; T &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Parameters.html">Parameters</a> &#124; <a class="el" href="group__Cache.html">Cache</a></div></div>  </div>
+<div class="title">CachedValue Class Reference<div class="ingroups"><a class="el" href="group__Data.html">Data-related classes</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Class for linking <a class="el" href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. ">CachedValueBase</a> and <a class="el" href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. ">Parameter</a>.  
+<p>Class for managing cached values inside a <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a>.  
  <a href="classyap_1_1CachedValue.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="CachedValue_8h_source.html">CachedValue.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for yap::CachedValue&lt; T &gt;:</div>
+Inheritance diagram for CachedValue:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classyap_1_1CachedValue.png" usemap="#yap::CachedValue&lt; T &gt;_map" alt=""/>
-  <map id="yap::CachedValue&lt; T &gt;_map" name="yap::CachedValue&lt; T &gt;_map">
-<area href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. " alt="yap::CachedValueBase" shape="rect" coords="0,56,147,80"/>
-<area href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. " alt="yap::Parameter&lt; T &gt;" shape="rect" coords="157,56,304,80"/>
-<area href="classyap_1_1ParameterBase.html" title="Class holding basic properties of a parameter, but not a value! " alt="yap::ParameterBase" shape="rect" coords="157,0,304,24"/>
+  <img src="classyap_1_1CachedValue.png" usemap="#CachedValue_map" alt=""/>
+  <map id="CachedValue_map" name="CachedValue_map">
+<area href="classyap_1_1ComplexCachedValue.html" title="Class for managing a complex cached value inside a #DataPoint. " alt="ComplexCachedValue" shape="rect" coords="0,112,255,136"/>
+<area href="classyap_1_1FourVectorCachedValue.html" title="Class for managing a four-vector cached value inside a #DataPoint. " alt="FourVectorCachedValue" shape="rect" coords="265,112,520,136"/>
+<area href="classyap_1_1RealCachedValue.html" title="Class for managing a single real cached value inside a #DataPoint. " alt="RealCachedValue" shape="rect" coords="530,112,785,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1CachedValue_1_1Status.html">Status</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores calculation and variable statuses for a <a class="el" href="classyap_1_1CachedValue.html" title="Class for managing cached values inside a DataPoint. ">CachedValue</a>  <a href="structyap_1_1CachedValue_1_1Status.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aba286c7e79afa64c138325fdc315fb14"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#aba286c7e79afa64c138325fdc315fb14">CachedValue</a> (<a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a> pars={})</td></tr>
-<tr class="separator:aba286c7e79afa64c138325fdc315fb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f9373bd37cd8e813f7227de0e8f9dd3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8f9373bd37cd8e813f7227de0e8f9dd3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a8f9373bd37cd8e813f7227de0e8f9dd3">setValue</a> (T val)</td></tr>
-<tr class="memdesc:a8f9373bd37cd8e813f7227de0e8f9dd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set value and set CalculationStatus_ to kCalculated <br/></td></tr>
-<tr class="separator:a8f9373bd37cd8e813f7227de0e8f9dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1CachedValueBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1CachedValueBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1CachedValueBase.html">yap::CachedValueBase</a></td></tr>
-<tr class="memitem:a384fd4a9a88c03e39841daae4b348f82 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#a384fd4a9a88c03e39841daae4b348f82">CachedValueBase</a> (<a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a> pars={})</td></tr>
-<tr class="separator:a384fd4a9a88c03e39841daae4b348f82 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7af97d10ad8eb7aeae93492d62bd4d7 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad7af97d10ad8eb7aeae93492d62bd4d7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#ad7af97d10ad8eb7aeae93492d62bd4d7">addDependencies</a> (<a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a> deps)</td></tr>
-<tr class="memdesc:ad7af97d10ad8eb7aeae93492d62bd4d7 inherit pub_methods_classyap_1_1CachedValueBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">add Parameters this <a class="el" href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. ">CachedValueBase</a> depends on <br/></td></tr>
-<tr class="separator:ad7af97d10ad8eb7aeae93492d62bd4d7 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78b616d5926dbe92371fb72116cfdce2 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78b616d5926dbe92371fb72116cfdce2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#a78b616d5926dbe92371fb72116cfdce2">addDependency</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1ParameterBase.html">ParameterBase</a> &gt; dep)</td></tr>
-<tr class="memdesc:a78b616d5926dbe92371fb72116cfdce2 inherit pub_methods_classyap_1_1CachedValueBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">add <a class="el" href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. ">Parameter</a> this <a class="el" href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. ">CachedValueBase</a> depends on <br/></td></tr>
-<tr class="separator:a78b616d5926dbe92371fb72116cfdce2 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e92dee54bf554df6f24eab0b8df0253 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e92dee54bf554df6f24eab0b8df0253"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#a6e92dee54bf554df6f24eab0b8df0253">removeDependency</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1ParameterBase.html">ParameterBase</a> &gt; dep)</td></tr>
-<tr class="memdesc:a6e92dee54bf554df6f24eab0b8df0253 inherit pub_methods_classyap_1_1CachedValueBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove <a class="el" href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. ">Parameter</a> from list of dependencies <br/></td></tr>
-<tr class="separator:a6e92dee54bf554df6f24eab0b8df0253 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66e7c5b284c6dd714f235a0d3fe8f360 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66e7c5b284c6dd714f235a0d3fe8f360"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#a66e7c5b284c6dd714f235a0d3fe8f360">removeDependencies</a> (<a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a> deps)</td></tr>
-<tr class="memdesc:a66e7c5b284c6dd714f235a0d3fe8f360 inherit pub_methods_classyap_1_1CachedValueBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove dependencies <br/></td></tr>
-<tr class="separator:a66e7c5b284c6dd714f235a0d3fe8f360 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d4646617ec35da58e9908cfce7ea363 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top">const CalculationStatus &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html#a7d4646617ec35da58e9908cfce7ea363">calculationStatus</a> ()</td></tr>
-<tr class="separator:a7d4646617ec35da58e9908cfce7ea363 inherit pub_methods_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1Parameter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1Parameter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1Parameter.html">yap::Parameter&lt; T &gt;</a></td></tr>
-<tr class="memitem:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aae24507e4e3f37324bd1a38ac3b9f088"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#aae24507e4e3f37324bd1a38ac3b9f088">Parameter</a> ()</td></tr>
-<tr class="memdesc:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
-<tr class="separator:aae24507e4e3f37324bd1a38ac3b9f088 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7fb36d698e48445ddc2149396435bd14"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a7fb36d698e48445ddc2149396435bd14">Parameter</a> (T t)</td></tr>
-<tr class="memdesc:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value-assigning constructor. <br/></td></tr>
-<tr class="separator:a7fb36d698e48445ddc2149396435bd14 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a34f77132284f79627fe4ef0f0259ed80"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a34f77132284f79627fe4ef0f0259ed80">~Parameter</a> ()=default</td></tr>
-<tr class="memdesc:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor defaulted <br/></td></tr>
-<tr class="separator:a34f77132284f79627fe4ef0f0259ed80 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63ccf080c8b4bf9c181ccd4f7432c567"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a63ccf080c8b4bf9c181ccd4f7432c567">Parameter</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
-<tr class="memdesc:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor defaulted <br/></td></tr>
-<tr class="separator:a63ccf080c8b4bf9c181ccd4f7432c567 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12365e97e1bcc373763595d31ab6e9ef"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a12365e97e1bcc373763595d31ab6e9ef">Parameter</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor defaulted <br/></td></tr>
-<tr class="separator:a12365e97e1bcc373763595d31ab6e9ef inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86a1420a3a064e434d455f0ffda47718"></a>
-<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a86a1420a3a064e434d455f0ffda47718">operator=</a> (const <a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;)=default</td></tr>
-<tr class="memdesc:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment defaulted <br/></td></tr>
-<tr class="separator:a86a1420a3a064e434d455f0ffda47718 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21cda2efbd8dea83c6068843907836e7"></a>
-<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a21cda2efbd8dea83c6068843907836e7">operator=</a> (<a class="el" href="classyap_1_1Parameter.html">Parameter</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment defaulted <br/></td></tr>
-<tr class="separator:a21cda2efbd8dea83c6068843907836e7 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a559fb3b24f8cd480edf10da77de02f94 inherit pub_methods_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top">virtual std::conditional<br class="typebreak"/>
-&lt; std::is_fundamental&lt; T &gt;<br class="typebreak"/>
-::value, T, const T &amp; &gt;::type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a559fb3b24f8cd480edf10da77de02f94">value</a> () const </td></tr>
-<tr class="separator:a559fb3b24f8cd480edf10da77de02f94 inherit pub_methods_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1ParameterBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1ParameterBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1ParameterBase.html">yap::ParameterBase</a></td></tr>
-<tr class="memitem:a499e1c740c55434957fb4c06c491b5e9 inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#a499e1c740c55434957fb4c06c491b5e9">variableStatus</a> () const </td></tr>
-<tr class="separator:a499e1c740c55434957fb4c06c491b5e9 inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8af828448283fb2a1be6a6b857d70f41"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html#a8af828448283fb2a1be6a6b857d70f41">setVariableStatus</a> (<a class="el" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a> stat)</td></tr>
-<tr class="memdesc:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">set VariableStatus <br/></td></tr>
-<tr class="separator:a8af828448283fb2a1be6a6b857d70f41 inherit pub_methods_classyap_1_1ParameterBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
+<tr class="memitem:a01b12601cc7b5be954596422cb0da305"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a01b12601cc7b5be954596422cb0da305">owner</a> () const </td></tr>
+<tr class="separator:a01b12601cc7b5be954596422cb0da305"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8db1d9a6836a01d9ea4b9ca0bf316730"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a8db1d9a6836a01d9ea4b9ca0bf316730">index</a> () const </td></tr>
+<tr class="separator:a8db1d9a6836a01d9ea4b9ca0bf316730"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af01eb0dc0a004c1857cc6f0c5e870699"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#af01eb0dc0a004c1857cc6f0c5e870699">value</a> (unsigned <a class="el" href="classyap_1_1CachedValue.html#a8db1d9a6836a01d9ea4b9ca0bf316730">index</a>, const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, unsigned sym_index) const </td></tr>
+<tr class="separator:af01eb0dc0a004c1857cc6f0c5e870699"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a280150d837c082a5d465cc12952aa496"><td class="memItemLeft" align="right" valign="top">virtual const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a280150d837c082a5d465cc12952aa496">size</a> () const </td></tr>
+<tr class="separator:a280150d837c082a5d465cc12952aa496"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Setters</div></td></tr>
+<tr class="memitem:abd64e68cef29ca6a50b38aa6e65a555c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#abd64e68cef29ca6a50b38aa6e65a555c">setValue</a> (unsigned <a class="el" href="classyap_1_1CachedValue.html#a8db1d9a6836a01d9ea4b9ca0bf316730">index</a>, double val, <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, unsigned sym_index) const </td></tr>
+<tr class="separator:abd64e68cef29ca6a50b38aa6e65a555c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_attribs_classyap_1_1CachedValueBase"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classyap_1_1CachedValueBase')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classyap_1_1CachedValueBase.html">yap::CachedValueBase</a></td></tr>
-<tr class="memitem:a77b5cb2e075e9353fd6fff5add6afc87 inherit pro_attribs_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77b5cb2e075e9353fd6fff5add6afc87"></a>
-<a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ParametersItDependsOn_</b></td></tr>
-<tr class="separator:a77b5cb2e075e9353fd6fff5add6afc87 inherit pro_attribs_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaabd62321e1dc5854d14c5f5f589aae9 inherit pro_attribs_classyap_1_1CachedValueBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaabd62321e1dc5854d14c5f5f589aae9"></a>
-CalculationStatus&#160;</td><td class="memItemRight" valign="bottom"><b>CalculationStatus_</b></td></tr>
-<tr class="separator:aaabd62321e1dc5854d14c5f5f589aae9 inherit pro_attribs_classyap_1_1CachedValueBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_attribs_classyap_1_1Parameter"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classyap_1_1Parameter')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classyap_1_1Parameter.html">yap::Parameter&lt; T &gt;</a></td></tr>
-<tr class="memitem:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a358eeb122a877453dd478047996a0e35"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html#a358eeb122a877453dd478047996a0e35">ParameterValue_</a></td></tr>
-<tr class="memdesc:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Value stored. <br/></td></tr>
-<tr class="separator:a358eeb122a877453dd478047996a0e35 inherit pro_attribs_classyap_1_1Parameter"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a3765c671f8944de050c4ade8291c72ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a3765c671f8944de050c4ade8291c72ef">CachedValue</a> (unsigned <a class="el" href="classyap_1_1CachedValue.html#a280150d837c082a5d465cc12952aa496">size</a>, <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> &amp;da)</td></tr>
+<tr class="separator:a3765c671f8944de050c4ade8291c72ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96d81e615bb4e5f27ec35a7f863d174d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a96d81e615bb4e5f27ec35a7f863d174d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a96d81e615bb4e5f27ec35a7f863d174d">addToDataAccessor</a> ()</td></tr>
+<tr class="memdesc:a96d81e615bb4e5f27ec35a7f863d174d"><td class="mdescLeft">&#160;</td><td class="mdescRight">add to the Owner_ <br/></td></tr>
+<tr class="separator:a96d81e615bb4e5f27ec35a7f863d174d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f6dddb34141ffe1bb4373bbc12f2412"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f6dddb34141ffe1bb4373bbc12f2412"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a5f6dddb34141ffe1bb4373bbc12f2412">setIndex</a> (int i)</td></tr>
+<tr class="memdesc:a5f6dddb34141ffe1bb4373bbc12f2412"><td class="mdescLeft">&#160;</td><td class="mdescRight">set index <br/></td></tr>
+<tr class="separator:a5f6dddb34141ffe1bb4373bbc12f2412"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd36619d380e01481f1ac64c6155e0b8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd36619d380e01481f1ac64c6155e0b8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#afd36619d380e01481f1ac64c6155e0b8">setPosition</a> (int p)</td></tr>
+<tr class="memdesc:afd36619d380e01481f1ac64c6155e0b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">set position <br/></td></tr>
+<tr class="separator:afd36619d380e01481f1ac64c6155e0b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a6507e5a09d152fa6a5bfc0bf78f1d402"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6507e5a09d152fa6a5bfc0bf78f1d402"></a>
+<a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a6507e5a09d152fa6a5bfc0bf78f1d402">Owner_</a></td></tr>
+<tr class="memdesc:a6507e5a09d152fa6a5bfc0bf78f1d402"><td class="mdescLeft">&#160;</td><td class="mdescRight">Owning <a class="el" href="classyap_1_1DataAccessor.html" title="Abstract base class for all objects accessing DataPoint&#39;s. ">DataAccessor</a>. <br/></td></tr>
+<tr class="separator:a6507e5a09d152fa6a5bfc0bf78f1d402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c1f9fad6d8724ea6237561ee0d46c97"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c1f9fad6d8724ea6237561ee0d46c97"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a3c1f9fad6d8724ea6237561ee0d46c97">Index_</a></td></tr>
+<tr class="memdesc:a3c1f9fad6d8724ea6237561ee0d46c97"><td class="mdescLeft">&#160;</td><td class="mdescRight">index within owner <br/></td></tr>
+<tr class="separator:a3c1f9fad6d8724ea6237561ee0d46c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39f09884c5168b7c7f2eae10c196a213"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39f09884c5168b7c7f2eae10c196a213"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a39f09884c5168b7c7f2eae10c196a213">Position_</a></td></tr>
+<tr class="memdesc:a39f09884c5168b7c7f2eae10c196a213"><td class="mdescLeft">&#160;</td><td class="mdescRight">Position of first element of cached value within data vector. <br/></td></tr>
+<tr class="separator:a39f09884c5168b7c7f2eae10c196a213"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac47bff61083be1382c674c8466527c2f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac47bff61083be1382c674c8466527c2f"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#ac47bff61083be1382c674c8466527c2f">Size_</a></td></tr>
+<tr class="memdesc:ac47bff61083be1382c674c8466527c2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of cached value (number of real elements) <br/></td></tr>
+<tr class="separator:ac47bff61083be1382c674c8466527c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a020aaf73a17fc102c9dbf1190f83f531"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a020aaf73a17fc102c9dbf1190f83f531"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html#a020aaf73a17fc102c9dbf1190f83f531">DataAccessor</a></td></tr>
+<tr class="memdesc:a020aaf73a17fc102c9dbf1190f83f531"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DataAccessor.html" title="Abstract base class for all objects accessing DataPoint&#39;s. ">DataAccessor</a> to set itself owner <br/></td></tr>
+<tr class="separator:a020aaf73a17fc102c9dbf1190f83f531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T&gt;<br/>
-class yap::CachedValue&lt; T &gt;</h3>
-
-<p>Class for linking <a class="el" href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. ">CachedValueBase</a> and <a class="el" href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. ">Parameter</a>. </p>
+<div class="textblock"><p>Class for managing cached values inside a <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a>. </p>
 <dl class="section author"><dt>Author</dt><dd>Johannes Rauch, Daniel Greenwald </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="aba286c7e79afa64c138325fdc315fb14"></a>
+<a class="anchor" id="a3765c671f8944de050c4ade8291c72ef"></a>
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classyap_1_1CachedValue.html">yap::CachedValue</a>&lt; T &gt;::<a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> </td>
+          <td class="memname"><a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a>&#160;</td>
-          <td class="paramname"><em>pars</em> = <code>{}</code></td><td>)</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> &amp;&#160;</td>
+          <td class="paramname"><em>da</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Constructor (protected) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>number of real elements in cached value </td></tr>
+    <tr><td class="paramname">da</td><td><a class="el" href="classyap_1_1DataAccessor.html" title="Abstract base class for all objects accessing DataPoint&#39;s. ">DataAccessor</a> it to belong to </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8db1d9a6836a01d9ea4b9ca0bf316730"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int index </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -226,18 +245,167 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructor </p>
+<dl class="section return"><dt>Returns</dt><dd>index within owner </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a01b12601cc7b5be954596422cb0da305"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a>* owner </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>raw pointer owning <a class="el" href="classyap_1_1DataAccessor.html" title="Abstract base class for all objects accessing DataPoint&#39;s. ">DataAccessor</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="abd64e68cef29ca6a50b38aa6e65a555c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setValue </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>val</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>sym_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Set value into #DataPoint for particular symmetrization (No update to VariableStatus or CalculationStatus is made!) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pars</td><td>set of shared pointers to Parameters cached value depends on </td></tr>
+    <tr><td class="paramname">index</td><td>index of value to get from within cached value (must be less than <a class="el" href="classyap_1_1CachedValue.html#ac47bff61083be1382c674c8466527c2f" title="Size of cached value (number of real elements) ">Size_</a>) </td></tr>
+    <tr><td class="paramname">val</td><td>Value to set to </td></tr>
+    <tr><td class="paramname">d</td><td>#DataPoint to update </td></tr>
+    <tr><td class="paramname">sym_index</td><td>index of symmetrization to apply to </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/<a class="el" href="CachedValue_8h_source.html">CachedValue.h</a></li>
+<a class="anchor" id="a280150d837c082a5d465cc12952aa496"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const unsigned size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Size of cached value (number of real elements) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af01eb0dc0a004c1857cc6f0c5e870699"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const double value </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>sym_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Get value from #DataPoint for particular symmetrization </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>index of value to get from within cached value (must be less than <a class="el" href="classyap_1_1CachedValue.html#ac47bff61083be1382c674c8466527c2f" title="Size of cached value (number of real elements) ">Size_</a>) </td></tr>
+    <tr><td class="paramname">d</td><td>#DataPoint to get value from </td></tr>
+    <tr><td class="paramname">sym_index</td><td>index of symmetrization to grab from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value of <a class="el" href="classyap_1_1CachedValue.html" title="Class for managing cached values inside a DataPoint. ">CachedValue</a> inside the data point </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>/home/dgreenw/work/belle/YAP/include/<a class="el" href="CachedValue_8h_source.html">CachedValue.h</a></li>
+<li>/home/dgreenw/work/belle/YAP/src/CachedValue.cxx</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

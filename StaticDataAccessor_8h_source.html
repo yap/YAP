@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/StaticDataAccessor.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/StaticDataAccessor.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,70 +112,60 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef yap_StaticDataAccessor_h</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define yap_StaticDataAccessor_h</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="DataAccessor_8h.html">DataAccessor.h</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Exceptions_8h.html">Exceptions.h</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ParticleCombination_8h.html">ParticleCombination.h</a>&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">namespace </span>yap {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">class </span>StatusManager;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">class </span>Model;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1StaticDataAccessor.html">StaticDataAccessor</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1DataAccessor.html">DataAccessor</a></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;{</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#ae33b5a35ca60bb52255c65539253b0cc">   43</a></span>&#160;    <a class="code" href="classyap_1_1StaticDataAccessor.html#ae33b5a35ca60bb52255c65539253b0cc">StaticDataAccessor</a>(<a class="code" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a>* equiv = &amp;ParticleCombination::equivBySharedPointer)</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        : <a class="code" href="classyap_1_1DataAccessor.html">DataAccessor</a>(equiv), Model_(nullptr) {}</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;fwd/Model.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;fwd/ParticleCombination.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;fwd/StaticDataAccessor.h&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;fwd/StatusManager.h&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="DataAccessor_8h.html">DataAccessor.h</a>&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html">   36</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1StaticDataAccessor.html">StaticDataAccessor</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1DataAccessor.html">DataAccessor</a></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#a2130ee867589cdd328d53df6cbc78976">   43</a></span>&#160;    <a class="code" href="classyap_1_1StaticDataAccessor.html#a2130ee867589cdd328d53df6cbc78976">StaticDataAccessor</a>(<a class="code" href="classyap_1_1Model.html">Model</a>&amp; m, <span class="keyword">const</span> ParticleCombinationEqualTo&amp; <a class="code" href="classyap_1_1DataAccessor.html#ac5ddf803db4cefeaf74a84a1b6187d1b">equal</a>)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        : <a class="code" href="classyap_1_1DataAccessor.html">DataAccessor</a>(equal), Model_(&amp;m) {}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#a21c52840e769e582f92284bc353d2862">   49</a></span>&#160;    <a class="code" href="classyap_1_1StaticDataAccessor.html#a21c52840e769e582f92284bc353d2862">StaticDataAccessor</a>(<a class="code" href="classyap_1_1Model.html">Model</a>* m, <a class="code" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a>* equiv = &amp;ParticleCombination::equivBySharedPointer)</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        : <a class="code" href="classyap_1_1DataAccessor.html">DataAccessor</a>(equiv), Model_(nullptr)</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classyap_1_1StaticDataAccessor.html#a392d09809cc980f948db769f29084cee">setModel</a>(m);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#a392d09809cc980f948db769f29084cee">   56</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1StaticDataAccessor.html#a392d09809cc980f948db769f29084cee">setModel</a>(<a class="code" href="classyap_1_1Model.html">Model</a>* m)</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        Model_ = m;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordflow">if</span> (!<a class="code" href="classyap_1_1StaticDataAccessor.html#abfd7ec41fdd83347fe1b4aad67db4e26">model</a>())</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keywordflow">throw</span> <a class="code" href="structyap_1_1exceptions_1_1Exception.html">exceptions::Exception</a>(<span class="stringliteral">&quot;Model unset&quot;</span>, <span class="stringliteral">&quot;StaticDataAccessor::StaticDataAccessor&quot;</span>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="comment">// register with Model</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <a class="code" href="classyap_1_1DataAccessor.html#ae439dd12766124fd32cdaca0cdc983fb">addToModel</a>();</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1StaticDataAccessor.html#a06a2985afc397828faa36377b9d751e6">calculate</a>(<a class="code" href="classyap_1_1DataPoint.html">DataPoint</a>&amp; d, <a class="code" href="classyap_1_1StatusManager.html">StatusManager</a>&amp; sm) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#a220410581dfbb18c4372595b79d7cbe1">   51</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="classyap_1_1Model.html">Model</a>* <a class="code" href="classyap_1_1StaticDataAccessor.html#a220410581dfbb18c4372595b79d7cbe1">model</a>()<span class="keyword"> const override</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> Model_; }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> <span class="keyword">virtual</span> <a class="code" href="classyap_1_1StaticDataAccessor.html#a713ca7d20f25d9e111a5b782d9989b7f">registerWithModel</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> <span class="keyword">virtual</span> <a class="code" href="classyap_1_1StaticDataAccessor.html#a9a4ac1435c069190fafd12284a9b467c">addToStaticDataAccessors</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    StaticDataAccessorVector&amp; <a class="code" href="classyap_1_1StaticDataAccessor.html#acdfcda68d77f845443a077f2c96e3c54">staticDataAccessors</a>();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1StaticDataAccessor.html#a9af66d5a812d6daae8e28ecf66b9f6e3">calculate</a>(<a class="code" href="classyap_1_1DataPoint.html">DataPoint</a>&amp; d, <a class="code" href="classyap_1_1StatusManager.html">StatusManager</a>&amp; sm) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="classyap_1_1Model.html">Model</a>* Model_;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;};</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classyap_1_1StaticDataAccessor.html#abfd7ec41fdd83347fe1b4aad67db4e26">   72</a></span>&#160;    <span class="keyword">const</span> <a class="code" href="classyap_1_1Model.html">Model</a>* <a class="code" href="classyap_1_1StaticDataAccessor.html#abfd7ec41fdd83347fe1b4aad67db4e26">model</a>()<span class="keyword"> const override</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> Model_; }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classyap_1_1Model.html">Model</a>* Model_;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html_ae33b5a35ca60bb52255c65539253b0cc"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#ae33b5a35ca60bb52255c65539253b0cc">yap::StaticDataAccessor::StaticDataAccessor</a></div><div class="ttdeci">StaticDataAccessor(ParticleCombination::Equiv *equiv=&amp;ParticleCombination::equivBySharedPointer)</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:43</div></div>
-<div class="ttc" id="structyap_1_1ParticleCombination_1_1Equiv_html"><div class="ttname"><a href="structyap_1_1ParticleCombination_1_1Equiv.html">yap::ParticleCombination::Equiv</a></div><div class="ttdoc">base class for equivalence (with functor), compares shared_ptr&#39;s only </div><div class="ttdef"><b>Definition:</b> ParticleCombination.h:137</div></div>
-<div class="ttc" id="classyap_1_1DataPoint_html"><div class="ttname"><a href="classyap_1_1DataPoint.html">yap::DataPoint</a></div><div class="ttdoc">Class for holding data and cached values per data point for fast calculation. </div><div class="ttdef"><b>Definition:</b> DataPoint.h:40</div></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html">yap::StaticDataAccessor</a></div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:37</div></div>
-<div class="ttc" id="Exceptions_8h_html"><div class="ttname"><a href="Exceptions_8h.html">Exceptions.h</a></div></div>
-<div class="ttc" id="classyap_1_1DataAccessor_html_ae439dd12766124fd32cdaca0cdc983fb"><div class="ttname"><a href="classyap_1_1DataAccessor.html#ae439dd12766124fd32cdaca0cdc983fb">yap::DataAccessor::addToModel</a></div><div class="ttdeci">virtual void addToModel()</div><div class="ttdoc">register with Model </div><div class="ttdef"><b>Definition:</b> DataAccessor.cxx:160</div></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a9af66d5a812d6daae8e28ecf66b9f6e3"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a9af66d5a812d6daae8e28ecf66b9f6e3">yap::StaticDataAccessor::calculate</a></div><div class="ttdeci">virtual void calculate(DataPoint &amp;d, StatusManager &amp;sm) const =0</div></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a392d09809cc980f948db769f29084cee"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a392d09809cc980f948db769f29084cee">yap::StaticDataAccessor::setModel</a></div><div class="ttdeci">virtual void setModel(Model *m)</div><div class="ttdoc">Set the Model and add this DataAccessor to the Model&#39;s DataAccessorSet. </div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:56</div></div>
-<div class="ttc" id="structyap_1_1exceptions_1_1Exception_html"><div class="ttname"><a href="structyap_1_1exceptions_1_1Exception.html">yap::exceptions::Exception</a></div><div class="ttdoc">Base class for handling YAP exceptions. </div><div class="ttdef"><b>Definition:</b> Exceptions.h:39</div></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespaceyap.html#a28bf2e0e8f09e755c3b017c247632caa">remove_expired</a>(StaticDataAccessorVector&amp; S);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_acdfcda68d77f845443a077f2c96e3c54"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#acdfcda68d77f845443a077f2c96e3c54">yap::StaticDataAccessor::staticDataAccessors</a></div><div class="ttdeci">StaticDataAccessorVector &amp; staticDataAccessors()</div><div class="ttdoc">access to the model&#39;s StaticDataAccessors_ </div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.cxx:8</div></div>
+<div class="ttc" id="classyap_1_1DataAccessor_html_ac5ddf803db4cefeaf74a84a1b6187d1b"><div class="ttname"><a href="classyap_1_1DataAccessor.html#ac5ddf803db4cefeaf74a84a1b6187d1b">yap::DataAccessor::equal</a></div><div class="ttdeci">const ParticleCombinationEqualTo &amp; equal() const </div><div class="ttdef"><b>Definition:</b> DataAccessor.h:47</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a713ca7d20f25d9e111a5b782d9989b7f"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a713ca7d20f25d9e111a5b782d9989b7f">yap::StaticDataAccessor::registerWithModel</a></div><div class="ttdeci">virtual void registerWithModel() override</div><div class="ttdoc">register with Model </div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.cxx:16</div></div>
+<div class="ttc" id="classyap_1_1DataPoint_html"><div class="ttname"><a href="classyap_1_1DataPoint.html">yap::DataPoint</a></div><div class="ttdoc">Class for holding data and cached values per data point for fast calculation. </div><div class="ttdef"><b>Definition:</b> DataPoint.h:35</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a06a2985afc397828faa36377b9d751e6"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a06a2985afc397828faa36377b9d751e6">yap::StaticDataAccessor::calculate</a></div><div class="ttdeci">virtual void calculate(DataPoint &amp;d, StatusManager &amp;sm) const =0</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a2130ee867589cdd328d53df6cbc78976"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a2130ee867589cdd328d53df6cbc78976">yap::StaticDataAccessor::StaticDataAccessor</a></div><div class="ttdeci">StaticDataAccessor(Model &amp;m, const ParticleCombinationEqualTo &amp;equal)</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:43</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html">yap::StaticDataAccessor</a></div><div class="ttdoc">Base class for all data accessors that will only write to DataPoint once at initial data loading...</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:36</div></div>
 <div class="ttc" id="classyap_1_1StatusManager_html"><div class="ttname"><a href="classyap_1_1StatusManager.html">yap::StatusManager</a></div><div class="ttdef"><b>Definition:</b> StatusManager.h:32</div></div>
-<div class="ttc" id="classyap_1_1Model_html"><div class="ttname"><a href="classyap_1_1Model.html">yap::Model</a></div><div class="ttdoc">Class implementing a PWA model. </div><div class="ttdef"><b>Definition:</b> Model.h:50</div></div>
-<div class="ttc" id="ParticleCombination_8h_html"><div class="ttname"><a href="ParticleCombination_8h.html">ParticleCombination.h</a></div></div>
+<div class="ttc" id="classyap_1_1Model_html"><div class="ttname"><a href="classyap_1_1Model.html">yap::Model</a></div><div class="ttdoc">Class implementing a PWA model. </div><div class="ttdef"><b>Definition:</b> Model.h:56</div></div>
+<div class="ttc" id="namespaceyap_html_a28bf2e0e8f09e755c3b017c247632caa"><div class="ttname"><a href="namespaceyap.html#a28bf2e0e8f09e755c3b017c247632caa">yap::remove_expired</a></div><div class="ttdeci">void remove_expired(DataAccessorSet &amp;S)</div><div class="ttdoc">remove expired elements of set </div><div class="ttdef"><b>Definition:</b> DataAccessor.cxx:168</div></div>
 <div class="ttc" id="DataAccessor_8h_html"><div class="ttname"><a href="DataAccessor_8h.html">DataAccessor.h</a></div></div>
-<div class="ttc" id="classyap_1_1DataAccessor_html"><div class="ttname"><a href="classyap_1_1DataAccessor.html">yap::DataAccessor</a></div><div class="ttdef"><b>Definition:</b> DataAccessor.h:40</div></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html_abfd7ec41fdd83347fe1b4aad67db4e26"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#abfd7ec41fdd83347fe1b4aad67db4e26">yap::StaticDataAccessor::model</a></div><div class="ttdeci">const Model * model() const override</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:72</div></div>
-<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a21c52840e769e582f92284bc353d2862"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a21c52840e769e582f92284bc353d2862">yap::StaticDataAccessor::StaticDataAccessor</a></div><div class="ttdeci">StaticDataAccessor(Model *m, ParticleCombination::Equiv *equiv=&amp;ParticleCombination::equivBySharedPointer)</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:49</div></div>
+<div class="ttc" id="classyap_1_1DataAccessor_html"><div class="ttname"><a href="classyap_1_1DataAccessor.html">yap::DataAccessor</a></div><div class="ttdoc">Abstract base class for all objects accessing DataPoint&#39;s. </div><div class="ttdef"><b>Definition:</b> DataAccessor.h:38</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a9a4ac1435c069190fafd12284a9b467c"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a9a4ac1435c069190fafd12284a9b467c">yap::StaticDataAccessor::addToStaticDataAccessors</a></div><div class="ttdeci">virtual void addToStaticDataAccessors()</div><div class="ttdoc">add to model&#39;s StaticDataAccessors_ </div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.cxx:27</div></div>
+<div class="ttc" id="classyap_1_1StaticDataAccessor_html_a220410581dfbb18c4372595b79d7cbe1"><div class="ttname"><a href="classyap_1_1StaticDataAccessor.html#a220410581dfbb18c4372595b79d7cbe1">yap::StaticDataAccessor::model</a></div><div class="ttdeci">const Model * model() const override</div><div class="ttdef"><b>Definition:</b> StaticDataAccessor.h:51</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

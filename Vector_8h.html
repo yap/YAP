@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/Vector.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/Vector.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -94,20 +94,35 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Vector.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Matrix_8h_source.html">Matrix.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/Vector.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="Matrix_8h_source.html">Matrix.h</a>&quot;</code><br/>
 <code>#include &lt;algorithm&gt;</code><br/>
 <code>#include &lt;array&gt;</code><br/>
 <code>#include &lt;cmath&gt;</code><br/>
+<code>#include &lt;iterator&gt;</code><br/>
 <code>#include &lt;numeric&gt;</code><br/>
 <code>#include &lt;ostream&gt;</code><br/>
 <code>#include &lt;string&gt;</code><br/>
+<code>#include &lt;type_traits&gt;</code><br/>
 </div>
 <p><a href="Vector_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Vector.html">yap::Vector&lt; T, N &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">N-dimensional column vector ATTENTION: You have to take care about initialization of vectors!!!  <a href="classyap_1_1Vector.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1VectorIterator.html">VectorIterator&lt; T, N &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator for <a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector. ">Vector</a> class.  <a href="classyap_1_1VectorIterator.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1VectorExpression.html">VectorExpression&lt; T, N, E &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for holding vector expressions.  <a href="classyap_1_1VectorExpression.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Vector.html">Vector&lt; T, N &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">N-dimensional column vector.  <a href="classyap_1_1Vector.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1VectorAddition.html">VectorAddition&lt; T, N, E1, E2 &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expression for addition of two VectorExpressions.  <a href="classyap_1_1VectorAddition.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1VectorSubtraction.html">VectorSubtraction&lt; T, N, E1, E2 &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expression for subtraction of two VectorExpressions.  <a href="classyap_1_1VectorSubtraction.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -118,83 +133,112 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a82a3ff5e1051d8f9175cf0bd73169bdc"><td class="memTemplParams" colspan="2"><a class="anchor" id="a82a3ff5e1051d8f9175cf0bd73169bdc"></a>
+template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:a82a3ff5e1051d8f9175cf0bd73169bdc"><td class="memTemplItemLeft" align="right" valign="top">const VectorIterator&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a82a3ff5e1051d8f9175cf0bd73169bdc">operator+</a> (VectorIterator&lt; T, N &gt; a, typename VectorIterator&lt; T, N &gt;::difference_type n)</td></tr>
+<tr class="memdesc:a82a3ff5e1051d8f9175cf0bd73169bdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition operator <br/></td></tr>
+<tr class="separator:a82a3ff5e1051d8f9175cf0bd73169bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5122b8f3283931ee69827a461f684e71"><td class="memTemplParams" colspan="2"><a class="anchor" id="a5122b8f3283931ee69827a461f684e71"></a>
+template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:a5122b8f3283931ee69827a461f684e71"><td class="memTemplItemLeft" align="right" valign="top">const VectorIterator&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a5122b8f3283931ee69827a461f684e71">operator+</a> (typename VectorIterator&lt; T, N &gt;::difference_type n, VectorIterator&lt; T, N &gt; a)</td></tr>
+<tr class="memdesc:a5122b8f3283931ee69827a461f684e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition operator <br/></td></tr>
+<tr class="separator:a5122b8f3283931ee69827a461f684e71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66b2a2a4bef0ad344d30cc10915d4aba"><td class="memTemplParams" colspan="2"><a class="anchor" id="a66b2a2a4bef0ad344d30cc10915d4aba"></a>
+template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:a66b2a2a4bef0ad344d30cc10915d4aba"><td class="memTemplItemLeft" align="right" valign="top">const VectorIterator&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a66b2a2a4bef0ad344d30cc10915d4aba">operator-</a> (VectorIterator&lt; T, N &gt; a, typename VectorIterator&lt; T, N &gt;::difference_type n)</td></tr>
+<tr class="memdesc:a66b2a2a4bef0ad344d30cc10915d4aba"><td class="mdescLeft">&#160;</td><td class="mdescRight">subtraction operator <br/></td></tr>
+<tr class="separator:a66b2a2a4bef0ad344d30cc10915d4aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2eded0c94a41895979cf113874c35ad"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad2eded0c94a41895979cf113874c35ad"></a>
+template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:ad2eded0c94a41895979cf113874c35ad"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ad2eded0c94a41895979cf113874c35ad">operator&gt;=</a> (VectorIterator&lt; T, N &gt; a, VectorIterator&lt; T, N &gt; b)</td></tr>
+<tr class="memdesc:ad2eded0c94a41895979cf113874c35ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">greater-than-or-equal operator <br/></td></tr>
+<tr class="separator:ad2eded0c94a41895979cf113874c35ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad88f2a59ac0771f586eccbdc971567c1"><td class="memTemplParams" colspan="2"><a class="anchor" id="ad88f2a59ac0771f586eccbdc971567c1"></a>
+template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:ad88f2a59ac0771f586eccbdc971567c1"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ad88f2a59ac0771f586eccbdc971567c1">operator&lt;=</a> (VectorIterator&lt; T, N &gt; a, VectorIterator&lt; T, N &gt; b)</td></tr>
+<tr class="memdesc:ad88f2a59ac0771f586eccbdc971567c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">less-than-or-equal operator <br/></td></tr>
+<tr class="separator:ad88f2a59ac0771f586eccbdc971567c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c83d97a093307cbd7978f6ce2ee1c89"><td class="memTemplParams" colspan="2"><a class="anchor" id="a9c83d97a093307cbd7978f6ce2ee1c89"></a>
+template&lt;typename T , size_t N, typename E1 , typename E2 &gt; </td></tr>
+<tr class="memitem:a9c83d97a093307cbd7978f6ce2ee1c89"><td class="memTemplItemLeft" align="right" valign="top">constexpr VectorAddition&lt; T, N, <br class="typebreak"/>
+E1, E2 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9c83d97a093307cbd7978f6ce2ee1c89">operator+</a> (const VectorExpression&lt; T, N, E1 &gt; &amp;a, const VectorExpression&lt; T, N, E2 &gt; &amp;b)</td></tr>
+<tr class="memdesc:a9c83d97a093307cbd7978f6ce2ee1c89"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition of two vectors <br/></td></tr>
+<tr class="separator:a9c83d97a093307cbd7978f6ce2ee1c89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2e0a3ab36169030ea70267421b6be49"><td class="memTemplParams" colspan="2"><a class="anchor" id="af2e0a3ab36169030ea70267421b6be49"></a>
+template&lt;typename T , size_t N, typename E1 , typename E2 &gt; </td></tr>
+<tr class="memitem:af2e0a3ab36169030ea70267421b6be49"><td class="memTemplItemLeft" align="right" valign="top">constexpr VectorSubtraction&lt; T, <br class="typebreak"/>
+N, E1, E2 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af2e0a3ab36169030ea70267421b6be49">operator-</a> (const VectorExpression&lt; T, N, E1 &gt; &amp;a, const VectorExpression&lt; T, N, E2 &gt; &amp;b)</td></tr>
+<tr class="memdesc:af2e0a3ab36169030ea70267421b6be49"><td class="mdescLeft">&#160;</td><td class="mdescRight">subtraction of two vectors <br/></td></tr>
+<tr class="separator:af2e0a3ab36169030ea70267421b6be49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a033098ccab6653964b7fc307f5f8ab9f"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a033098ccab6653964b7fc307f5f8ab9f"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a033098ccab6653964b7fc307f5f8ab9f">yap::to_string</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
+<tr class="memitem:a033098ccab6653964b7fc307f5f8ab9f"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a033098ccab6653964b7fc307f5f8ab9f">to_string</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
 <tr class="separator:a033098ccab6653964b7fc307f5f8ab9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd3d2796f9f7c79b31298800b5f143e5"><td class="memTemplParams" colspan="2"><a class="anchor" id="abd3d2796f9f7c79b31298800b5f143e5"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:abd3d2796f9f7c79b31298800b5f143e5"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#abd3d2796f9f7c79b31298800b5f143e5">yap::operator&lt;&lt;</a> (std::ostream &amp;os, const Vector&lt; T, N &gt; &amp;V)</td></tr>
+<tr class="memitem:abd3d2796f9f7c79b31298800b5f143e5"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#abd3d2796f9f7c79b31298800b5f143e5">operator&lt;&lt;</a> (std::ostream &amp;os, const Vector&lt; T, N &gt; &amp;V)</td></tr>
 <tr class="memdesc:abd3d2796f9f7c79b31298800b5f143e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">streamer <br/></td></tr>
 <tr class="separator:abd3d2796f9f7c79b31298800b5f143e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0938e380061218ef70df82a2215b0849"><td class="memTemplParams" colspan="2"><a class="anchor" id="a0938e380061218ef70df82a2215b0849"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a0938e380061218ef70df82a2215b0849"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a0938e380061218ef70df82a2215b0849">yap::operator+=</a> (Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
+<tr class="memitem:a0938e380061218ef70df82a2215b0849"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a0938e380061218ef70df82a2215b0849">operator+=</a> (Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
 <tr class="memdesc:a0938e380061218ef70df82a2215b0849"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition assignment <br/></td></tr>
 <tr class="separator:a0938e380061218ef70df82a2215b0849"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a246dd6160e02e90b18839611d90014da"><td class="memTemplParams" colspan="2"><a class="anchor" id="a246dd6160e02e90b18839611d90014da"></a>
-template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a246dd6160e02e90b18839611d90014da"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a246dd6160e02e90b18839611d90014da">yap::operator+</a> (const Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
-<tr class="memdesc:a246dd6160e02e90b18839611d90014da"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition <br/></td></tr>
-<tr class="separator:a246dd6160e02e90b18839611d90014da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19fc856c4018f7a31502bedeb4483d69"><td class="memTemplParams" colspan="2"><a class="anchor" id="a19fc856c4018f7a31502bedeb4483d69"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a19fc856c4018f7a31502bedeb4483d69"><td class="memTemplItemLeft" align="right" valign="top">constexpr Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a19fc856c4018f7a31502bedeb4483d69">yap::operator-</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
+<tr class="memitem:a19fc856c4018f7a31502bedeb4483d69"><td class="memTemplItemLeft" align="right" valign="top">constexpr Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a19fc856c4018f7a31502bedeb4483d69">operator-</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
 <tr class="memdesc:a19fc856c4018f7a31502bedeb4483d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">unary minus <br/></td></tr>
 <tr class="separator:a19fc856c4018f7a31502bedeb4483d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadb713c3accd4cc9204d074e98f82345"><td class="memTemplParams" colspan="2"><a class="anchor" id="aadb713c3accd4cc9204d074e98f82345"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:aadb713c3accd4cc9204d074e98f82345"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aadb713c3accd4cc9204d074e98f82345">yap::operator-=</a> (Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
+<tr class="memitem:aadb713c3accd4cc9204d074e98f82345"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aadb713c3accd4cc9204d074e98f82345">operator-=</a> (Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
 <tr class="memdesc:aadb713c3accd4cc9204d074e98f82345"><td class="mdescLeft">&#160;</td><td class="mdescRight">subtraction assignment <br/></td></tr>
 <tr class="separator:aadb713c3accd4cc9204d074e98f82345"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8581735c59071887f40c0739428f333"><td class="memTemplParams" colspan="2"><a class="anchor" id="aa8581735c59071887f40c0739428f333"></a>
-template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:aa8581735c59071887f40c0739428f333"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa8581735c59071887f40c0739428f333">yap::operator-</a> (const Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
-<tr class="memdesc:aa8581735c59071887f40c0739428f333"><td class="mdescLeft">&#160;</td><td class="mdescRight">subtraction <br/></td></tr>
-<tr class="separator:aa8581735c59071887f40c0739428f333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ea3cd531bb82b3c1a7477c9a9d3e79a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a2ea3cd531bb82b3c1a7477c9a9d3e79a"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a2ea3cd531bb82b3c1a7477c9a9d3e79a"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a2ea3cd531bb82b3c1a7477c9a9d3e79a">yap::operator*=</a> (Vector&lt; T, N &gt; &amp;A, const T &amp;B)</td></tr>
+<tr class="memitem:a2ea3cd531bb82b3c1a7477c9a9d3e79a"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a2ea3cd531bb82b3c1a7477c9a9d3e79a">operator*=</a> (Vector&lt; T, N &gt; &amp;A, const T &amp;B)</td></tr>
 <tr class="memdesc:a2ea3cd531bb82b3c1a7477c9a9d3e79a"><td class="mdescLeft">&#160;</td><td class="mdescRight">(assignment) multiplication by a single element <br/></td></tr>
 <tr class="separator:a2ea3cd531bb82b3c1a7477c9a9d3e79a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abea7ae9c560b8ef2c3d5c893bba61929"><td class="memTemplParams" colspan="2"><a class="anchor" id="abea7ae9c560b8ef2c3d5c893bba61929"></a>
+<tr class="memitem:ab04152d4c5fe3651d23e6e5035e1bb9d"><td class="memTemplParams" colspan="2"><a class="anchor" id="ab04152d4c5fe3651d23e6e5035e1bb9d"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:abea7ae9c560b8ef2c3d5c893bba61929"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#abea7ae9c560b8ef2c3d5c893bba61929">yap::operator*</a> (const Vector&lt; T, N &gt; &amp;A, const T &amp;c)</td></tr>
-<tr class="memdesc:abea7ae9c560b8ef2c3d5c893bba61929"><td class="mdescLeft">&#160;</td><td class="mdescRight">multiplication: #Vector&lt;T&gt; * T <br/></td></tr>
-<tr class="separator:abea7ae9c560b8ef2c3d5c893bba61929"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04152d4c5fe3651d23e6e5035e1bb9d"><td class="memTemplItemLeft" align="right" valign="top">const Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab04152d4c5fe3651d23e6e5035e1bb9d">operator*</a> (const Vector&lt; T, N &gt; &amp;A, const T &amp;c)</td></tr>
+<tr class="memdesc:ab04152d4c5fe3651d23e6e5035e1bb9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">multiplication: #Vector&lt;T&gt; * T <br/></td></tr>
+<tr class="separator:ab04152d4c5fe3651d23e6e5035e1bb9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5bdc4e04f745595087a929cda92254f"><td class="memTemplParams" colspan="2"><a class="anchor" id="af5bdc4e04f745595087a929cda92254f"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:af5bdc4e04f745595087a929cda92254f"><td class="memTemplItemLeft" align="right" valign="top">constexpr Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af5bdc4e04f745595087a929cda92254f">yap::operator*</a> (const T &amp;c, const Vector&lt; T, N &gt; &amp;A)</td></tr>
+<tr class="memitem:af5bdc4e04f745595087a929cda92254f"><td class="memTemplItemLeft" align="right" valign="top">constexpr Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af5bdc4e04f745595087a929cda92254f">operator*</a> (const T &amp;c, const Vector&lt; T, N &gt; &amp;A)</td></tr>
 <tr class="memdesc:af5bdc4e04f745595087a929cda92254f"><td class="mdescLeft">&#160;</td><td class="mdescRight">multiplication: T * #Vector&lt;T&gt; <br/></td></tr>
 <tr class="separator:af5bdc4e04f745595087a929cda92254f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e0aa74b9df80f69b0e748c308be9df5"><td class="memTemplParams" colspan="2"><a class="anchor" id="a7e0aa74b9df80f69b0e748c308be9df5"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a7e0aa74b9df80f69b0e748c308be9df5"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7e0aa74b9df80f69b0e748c308be9df5">yap::operator/=</a> (Vector&lt; T, N &gt; &amp;A, const T &amp;B)</td></tr>
+<tr class="memitem:a7e0aa74b9df80f69b0e748c308be9df5"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7e0aa74b9df80f69b0e748c308be9df5">operator/=</a> (Vector&lt; T, N &gt; &amp;A, const T &amp;B)</td></tr>
 <tr class="memdesc:a7e0aa74b9df80f69b0e748c308be9df5"><td class="mdescLeft">&#160;</td><td class="mdescRight">(assignment) division by a single element <br/></td></tr>
 <tr class="separator:a7e0aa74b9df80f69b0e748c308be9df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e7df4529e879a97b67fe4044783aa9d"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6e7df4529e879a97b67fe4044783aa9d"></a>
+<tr class="memitem:a6620d10ad54b4a97173664574e35aac0"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6620d10ad54b4a97173664574e35aac0"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a6e7df4529e879a97b67fe4044783aa9d"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6e7df4529e879a97b67fe4044783aa9d">yap::operator/</a> (const Vector&lt; T, N &gt; &amp;A, const T &amp;c)</td></tr>
-<tr class="memdesc:a6e7df4529e879a97b67fe4044783aa9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">division: #Vector&lt;T&gt; / T <br/></td></tr>
-<tr class="separator:a6e7df4529e879a97b67fe4044783aa9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a082aac83dc4112382cac687d20582861"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a082aac83dc4112382cac687d20582861"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a082aac83dc4112382cac687d20582861">yap::norm</a> (const Vector&lt; T, N &gt; &amp;A)</td></tr>
-<tr class="separator:a082aac83dc4112382cac687d20582861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6620d10ad54b4a97173664574e35aac0"><td class="memTemplItemLeft" align="right" valign="top">const Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6620d10ad54b4a97173664574e35aac0">operator/</a> (const Vector&lt; T, N &gt; &amp;A, const T &amp;c)</td></tr>
+<tr class="memdesc:a6620d10ad54b4a97173664574e35aac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">division: #Vector&lt;T&gt; / T <br/></td></tr>
+<tr class="separator:a6620d10ad54b4a97173664574e35aac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae358795df4c13c7db1685177c61039be"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:ae358795df4c13c7db1685177c61039be"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ae358795df4c13c7db1685177c61039be">yap::abs</a> (const Vector&lt; T, N &gt; &amp;A)</td></tr>
+<tr class="memitem:ae358795df4c13c7db1685177c61039be"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ae358795df4c13c7db1685177c61039be">abs</a> (const Vector&lt; T, N &gt; &amp;A)</td></tr>
 <tr class="separator:ae358795df4c13c7db1685177c61039be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd0e3083639d11dc62da5475f8032ab5"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:afd0e3083639d11dc62da5475f8032ab5"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#afd0e3083639d11dc62da5475f8032ab5">yap::unit</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
-<tr class="separator:afd0e3083639d11dc62da5475f8032ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeec175dd77c3098eecb8eca3c790369"><td class="memTemplParams" colspan="2"><a class="anchor" id="aeeec175dd77c3098eecb8eca3c790369"></a>
+<tr class="memitem:af0f029994c12bd77ab4abba6951fb2fb"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:af0f029994c12bd77ab4abba6951fb2fb"><td class="memTemplItemLeft" align="right" valign="top">const Vector&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af0f029994c12bd77ab4abba6951fb2fb">unit</a> (const Vector&lt; T, N &gt; &amp;V)</td></tr>
+<tr class="separator:af0f029994c12bd77ab4abba6951fb2fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af65dc608177c1d6974f0fe08bcef24d9"><td class="memTemplParams" colspan="2"><a class="anchor" id="af65dc608177c1d6974f0fe08bcef24d9"></a>
 template&lt;typename T , size_t R, size_t C&gt; </td></tr>
-<tr class="memitem:aeeec175dd77c3098eecb8eca3c790369"><td class="memTemplItemLeft" align="right" valign="top">Vector&lt; T, R &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aeeec175dd77c3098eecb8eca3c790369">yap::operator*</a> (const Matrix&lt; T, R, C &gt; &amp;M, const Vector&lt; T, C &gt; &amp;V)</td></tr>
-<tr class="memdesc:aeeec175dd77c3098eecb8eca3c790369"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1Matrix.html">Matrix</a> * <a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector ATTENTION: You have to take care about initialization of vectors!!! ...">Vector</a>. <br/></td></tr>
-<tr class="separator:aeeec175dd77c3098eecb8eca3c790369"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2d2f2081601d9ee3fed0952a1ef9852"><td class="memTemplParams" colspan="2"><a class="anchor" id="af2d2f2081601d9ee3fed0952a1ef9852"></a>
+<tr class="memitem:af65dc608177c1d6974f0fe08bcef24d9"><td class="memTemplItemLeft" align="right" valign="top">const Vector&lt; T, R &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af65dc608177c1d6974f0fe08bcef24d9">operator*</a> (const Matrix&lt; T, R, C &gt; &amp;M, const Vector&lt; T, C &gt; &amp;V)</td></tr>
+<tr class="memdesc:af65dc608177c1d6974f0fe08bcef24d9"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1Matrix.html">Matrix</a> * <a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector. ">Vector</a>. <br/></td></tr>
+<tr class="separator:af65dc608177c1d6974f0fe08bcef24d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24427ba63a0596128a69adcefdb65b38"><td class="memTemplParams" colspan="2"><a class="anchor" id="a24427ba63a0596128a69adcefdb65b38"></a>
+template&lt;typename T1 , typename T2 , size_t R, size_t C&gt; </td></tr>
+<tr class="memitem:a24427ba63a0596128a69adcefdb65b38"><td class="memTemplItemLeft" align="right" valign="top">const auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a24427ba63a0596128a69adcefdb65b38">operator*</a> (const Matrix&lt; T1, R, C &gt; &amp;M, const Vector&lt; T2, C &gt; &amp;V) -&gt; const Vector&lt; typename std::remove_cv&lt; decltype(operator*(M[0][0], V[0]))&gt;::type, R &gt;</td></tr>
+<tr class="memdesc:a24427ba63a0596128a69adcefdb65b38"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1Matrix.html">Matrix</a> * <a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector. ">Vector</a> with different template types. <br/></td></tr>
+<tr class="separator:a24427ba63a0596128a69adcefdb65b38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f5101caf8f17ab0238d94325a371cee"><td class="memTemplParams" colspan="2"><a class="anchor" id="a6f5101caf8f17ab0238d94325a371cee"></a>
 template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:af2d2f2081601d9ee3fed0952a1ef9852"><td class="memTemplItemLeft" align="right" valign="top">SquareMatrix&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af2d2f2081601d9ee3fed0952a1ef9852">yap::outer</a> (const Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
-<tr class="memdesc:af2d2f2081601d9ee3fed0952a1ef9852"><td class="mdescLeft">&#160;</td><td class="mdescRight">outer product <br/></td></tr>
-<tr class="separator:af2d2f2081601d9ee3fed0952a1ef9852"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f5101caf8f17ab0238d94325a371cee"><td class="memTemplItemLeft" align="right" valign="top">const SquareMatrix&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6f5101caf8f17ab0238d94325a371cee">outer</a> (const Vector&lt; T, N &gt; &amp;A, const Vector&lt; T, N &gt; &amp;B)</td></tr>
+<tr class="memdesc:a6f5101caf8f17ab0238d94325a371cee"><td class="mdescLeft">&#160;</td><td class="mdescRight">outer product <br/></td></tr>
+<tr class="separator:a6f5101caf8f17ab0238d94325a371cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

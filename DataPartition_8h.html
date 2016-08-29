@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/DataPartition.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/DataPartition.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,31 +89,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">DataPartition.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="DataPoint_8h_source.html">DataPoint.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/DataPartition.h&quot;</code><br/>
+<code>#include &quot;fwd/DataPoint.h&quot;</code><br/>
+<code>#include &quot;fwd/DataSet.h&quot;</code><br/>
 <code>#include &quot;<a class="el" href="StatusManager_8h_source.html">StatusManager.h</a>&quot;</code><br/>
-<code>#include &lt;algorithm&gt;</code><br/>
 <code>#include &lt;iterator&gt;</code><br/>
-<code>#include &lt;memory&gt;</code><br/>
-<code>#include &lt;vector&gt;</code><br/>
 </div>
 <p><a href="DataPartition_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataIterator.html">yap::DataIterator</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for iterating over a <a class="el" href="classyap_1_1DataIterator.html#ab0e6cd2fad27cc9e96ec9398c88906c4" title="grant friend status to DataPartitionBase to access Iterator_ ">DataPartitionBase</a>.  <a href="classyap_1_1DataIterator.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataIterator.html">DataIterator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for iterating over a <a class="el" href="classyap_1_1DataIterator.html#a3591e9e71b1b8ad0af27a7ffa7f9eade" title="grant friend status to DataPartition to access Iterator_ ">DataPartition</a>.  <a href="classyap_1_1DataIterator.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html">yap::DataPartitionBase</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html">DataPartition</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class defining a partition of the <a class="el" href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. ">DataSet</a>.  <a href="classyap_1_1DataPartition.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html">yap::DataPartitionWeave</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E)  <a href="classyap_1_1DataPartitionWeave.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html">DataPartitionWeave</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partition that iterates from begin to end jumping a specified spacing every increase.  <a href="classyap_1_1DataPartitionWeave.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html">yap::DataPartitionBlock</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html">DataPartitionBlock</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A contiguous block of data.  <a href="classyap_1_1DataPartitionBlock.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -123,12 +123,32 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:ab9702dc96044dc1be8d435616c394979"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9702dc96044dc1be8d435616c394979"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">yap::DataPartitionVector</a> = std::vector&lt; std::unique_ptr&lt; DataPartitionBase &gt; &gt;</td></tr>
-<tr class="memdesc:ab9702dc96044dc1be8d435616c394979"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector ATTENTION: You have to take care about initialization of vectors!!! ...">Vector</a> of unique_ptr's to <a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a>. <br/></td></tr>
-<tr class="separator:ab9702dc96044dc1be8d435616c394979"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:acaa16473dabb686acdf0c7c19f61ead5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acaa16473dabb686acdf0c7c19f61ead5"></a>
+const DataIterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acaa16473dabb686acdf0c7c19f61ead5">operator+</a> (DataIterator lhs, DataIterator::difference_type n)</td></tr>
+<tr class="memdesc:acaa16473dabb686acdf0c7c19f61ead5"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition operator <br/></td></tr>
+<tr class="separator:acaa16473dabb686acdf0c7c19f61ead5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad596115f76020fbd4c09ab78280373c5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad596115f76020fbd4c09ab78280373c5"></a>
+const DataIterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ad596115f76020fbd4c09ab78280373c5">operator+</a> (DataIterator::difference_type n, const DataIterator &amp;rhs)</td></tr>
+<tr class="memdesc:ad596115f76020fbd4c09ab78280373c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">addition operator <br/></td></tr>
+<tr class="separator:ad596115f76020fbd4c09ab78280373c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acec0e7d2211e5063ca342e2abaaf096c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acec0e7d2211e5063ca342e2abaaf096c"></a>
+const DataIterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acec0e7d2211e5063ca342e2abaaf096c">operator-</a> (const DataIterator &amp;lhs, DataIterator::difference_type n)</td></tr>
+<tr class="memdesc:acec0e7d2211e5063ca342e2abaaf096c"><td class="mdescLeft">&#160;</td><td class="mdescRight">subraction operator <br/></td></tr>
+<tr class="separator:acec0e7d2211e5063ca342e2abaaf096c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefb8fad3791264e11a307a6fdb292650"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aefb8fad3791264e11a307a6fdb292650"></a>
+const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aefb8fad3791264e11a307a6fdb292650">operator&lt;=</a> (const DataIterator &amp;lhs, const DataIterator &amp;rhs)</td></tr>
+<tr class="memdesc:aefb8fad3791264e11a307a6fdb292650"><td class="mdescLeft">&#160;</td><td class="mdescRight">less-than-or-equal operator <br/></td></tr>
+<tr class="separator:aefb8fad3791264e11a307a6fdb292650"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ec483ef5d59d7c678701caddd544012"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9ec483ef5d59d7c678701caddd544012"></a>
+const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9ec483ef5d59d7c678701caddd544012">operator&gt;=</a> (const DataIterator &amp;lhs, const DataIterator &amp;rhs)</td></tr>
+<tr class="memdesc:a9ec483ef5d59d7c678701caddd544012"><td class="mdescLeft">&#160;</td><td class="mdescRight">greater-than-or-equal operator <br/></td></tr>
+<tr class="separator:a9ec483ef5d59d7c678701caddd544012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bd8e70b1464845c08ee22188d865999"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bd8e70b1464845c08ee22188d865999"></a>
+const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a5bd8e70b1464845c08ee22188d865999">operator!=</a> (const DataIterator &amp;lhs, const DataIterator &amp;rhs)</td></tr>
+<tr class="memdesc:a5bd8e70b1464845c08ee22188d865999"><td class="mdescLeft">&#160;</td><td class="mdescRight">inequality operator <br/></td></tr>
+<tr class="separator:a5bd8e70b1464845c08ee22188d865999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

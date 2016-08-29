@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cacheddatavalue',['CachedDataValue',['../classyap_1_1DataAccessor.html#ace9cf1075fda477fc3901c34a015c386',1,'yap::DataAccessor::CachedDataValue()'],['../classyap_1_1DataPoint.html#ace9cf1075fda477fc3901c34a015c386',1,'yap::DataPoint::CachedDataValue()']]]
+  ['angle',['angle',['../classyap_1_1Vector.html#a403e08c7b5e1d9102377d5927fec9498',1,'yap::Vector']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/SpinAmplitude.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/SpinAmplitude.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,24 +89,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">SpinAmplitude.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="CachedDataValue_8h_source.html">CachedDataValue.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/SpinAmplitude.h&quot;</code><br/>
+<code>#include &quot;fwd/Model.h&quot;</code><br/>
+<code>#include &quot;fwd/ParticleCombination.h&quot;</code><br/>
+<code>#include &quot;fwd/Spin.h&quot;</code><br/>
+<code>#include &quot;fwd/StatusManager.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="CachedValue_8h_source.html">CachedValue.h</a>&quot;</code><br/>
 <code>#include &quot;MathUtilities.h&quot;</code><br/>
 <code>#include &quot;<a class="el" href="StaticDataAccessor_8h_source.html">StaticDataAccessor.h</a>&quot;</code><br/>
 <code>#include &lt;array&gt;</code><br/>
-<code>#include &lt;cstdlib&gt;</code><br/>
+<code>#include &lt;complex&gt;</code><br/>
+<code>#include &lt;iostream&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 </div>
 <p><a href="SpinAmplitude_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1SpinAmplitude.html">yap::SpinAmplitude</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1SpinAmplitude.html">SpinAmplitude</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class implementing a spin amplitude.  <a href="classyap_1_1SpinAmplitude.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -116,29 +121,20 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:ab2000a0e0bec81f0072ef802c6c5d771"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab2000a0e0bec81f0072ef802c6c5d771"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::SpinAmplitudeVector</b> = std::vector&lt; std::shared_ptr&lt; SpinAmplitude &gt; &gt;</td></tr>
-<tr class="separator:ab2000a0e0bec81f0072ef802c6c5d771"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86c16d4965a6f4f4cdfdba717a720040"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a86c16d4965a6f4f4cdfdba717a720040"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a86c16d4965a6f4f4cdfdba717a720040">yap::SpinAmplitudeMap</a> = std::map&lt; std::shared_ptr&lt; SpinAmplitude &gt;, T, std::owner_less&lt; std::shared_ptr&lt; SpinAmplitude &gt; &gt; &gt;</td></tr>
-<tr class="separator:a86c16d4965a6f4f4cdfdba717a720040"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aa1b4004298516cfeb9bf2712651ef648"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa1b4004298516cfeb9bf2712651ef648"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa1b4004298516cfeb9bf2712651ef648">yap::to_string</a> (const SpinAmplitude &amp;sa)</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa1b4004298516cfeb9bf2712651ef648">to_string</a> (const SpinAmplitude &amp;sa)</td></tr>
 <tr class="memdesc:aa1b4004298516cfeb9bf2712651ef648"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
 <tr class="separator:aa1b4004298516cfeb9bf2712651ef648"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6751a39611544ea1715ac20811ff8da2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6751a39611544ea1715ac20811ff8da2"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6751a39611544ea1715ac20811ff8da2">yap::operator&lt;&lt;</a> (std::ostream &amp;os, const SpinAmplitude &amp;sa)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6751a39611544ea1715ac20811ff8da2">operator&lt;&lt;</a> (std::ostream &amp;os, const SpinAmplitude &amp;sa)</td></tr>
 <tr class="memdesc:a6751a39611544ea1715ac20811ff8da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt;&lt; operator <br/></td></tr>
 <tr class="separator:a6751a39611544ea1715ac20811ff8da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a030b07cf752e16814265c796fbba00d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a030b07cf752e16814265c796fbba00d6"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a030b07cf752e16814265c796fbba00d6">yap::to_string</a> (const SpinAmplitudeVector &amp;saV)</td></tr>
-<tr class="memdesc:a030b07cf752e16814265c796fbba00d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
-<tr class="separator:a030b07cf752e16814265c796fbba00d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8a92529d74fc40f254993164927ddac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8a92529d74fc40f254993164927ddac"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa8a92529d74fc40f254993164927ddac">to_string</a> (const SpinAmplitudeVector &amp;saV)</td></tr>
+<tr class="memdesc:aa8a92529d74fc40f254993164927ddac"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
+<tr class="separator:aa8a92529d74fc40f254993164927ddac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

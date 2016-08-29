@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/Particle.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/Particle.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,26 +89,29 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Particle.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="Parameter_8h_source.html">Parameter.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/Particle.h&quot;</code><br/>
+<code>#include &quot;fwd/DataPoint.h&quot;</code><br/>
+<code>#include &quot;fwd/FinalStateParticle.h&quot;</code><br/>
+<code>#include &quot;fwd/Model.h&quot;</code><br/>
+<code>#include &quot;fwd/Parameter.h&quot;</code><br/>
+<code>#include &quot;fwd/Spin.h&quot;</code><br/>
+<code>#include &quot;fwd/StatusManager.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="ParticleCombination_8h_source.html">ParticleCombination.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="QuantumNumbers_8h_source.html">QuantumNumbers.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="ReportsModel_8h_source.html">ReportsModel.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="ReportsParticleCombinations_8h_source.html">ReportsParticleCombinations.h</a>&quot;</code><br/>
+<code>#include &lt;iostream&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;string&gt;</code><br/>
-<code>#include &lt;vector&gt;</code><br/>
 </div>
 <p><a href="Particle_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Particle.html">yap::Particle</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Particle.html">Particle</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract <a class="el" href="classyap_1_1Particle.html" title="Abstract Particle base class. ">Particle</a> base class.  <a href="classyap_1_1Particle.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -118,20 +121,22 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:gac2d0a7b6e8ec4c89b6a6e07a9635b952"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac2d0a7b6e8ec4c89b6a6e07a9635b952"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::ParticleVector</b> = std::vector&lt; std::shared_ptr&lt; Particle &gt; &gt;</td></tr>
-<tr class="separator:gac2d0a7b6e8ec4c89b6a6e07a9635b952"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a5256bac82329ca4eeb6b67d75f3d825f"><td class="memItemLeft" align="right" valign="top">const SpinVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a5256bac82329ca4eeb6b67d75f3d825f">spins</a> (const ParticleVector &amp;v)</td></tr>
+<tr class="separator:a5256bac82329ca4eeb6b67d75f3d825f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00a4818edb9aae843171efc4a515a3c1"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a00a4818edb9aae843171efc4a515a3c1">decays_to_full_final_state</a> (const Particle &amp;p)</td></tr>
+<tr class="separator:a00a4818edb9aae843171efc4a515a3c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b9ced2d67240a4227a0d6105604460b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b9ced2d67240a4227a0d6105604460b"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7b9ced2d67240a4227a0d6105604460b">yap::to_string</a> (const Particle &amp;p)</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7b9ced2d67240a4227a0d6105604460b">to_string</a> (const Particle &amp;p)</td></tr>
 <tr class="memdesc:a7b9ced2d67240a4227a0d6105604460b"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
 <tr class="separator:a7b9ced2d67240a4227a0d6105604460b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af540557a69ef4228befb79c24815707a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af540557a69ef4228befb79c24815707a"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af540557a69ef4228befb79c24815707a">to_string</a> (const ParticleVector &amp;p)</td></tr>
+<tr class="memdesc:af540557a69ef4228befb79c24815707a"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
+<tr class="separator:af540557a69ef4228befb79c24815707a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ee65e2bc859ad6625a9bc8d5baef461"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ee65e2bc859ad6625a9bc8d5baef461"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6ee65e2bc859ad6625a9bc8d5baef461">yap::operator&lt;&lt;</a> (std::ostream &amp;os, const Particle &amp;p)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6ee65e2bc859ad6625a9bc8d5baef461">operator&lt;&lt;</a> (std::ostream &amp;os, const Particle &amp;p)</td></tr>
 <tr class="memdesc:a6ee65e2bc859ad6625a9bc8d5baef461"><td class="mdescLeft">&#160;</td><td class="mdescRight">streamer <br/></td></tr>
 <tr class="separator:a6ee65e2bc859ad6625a9bc8d5baef461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

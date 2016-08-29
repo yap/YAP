@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['helicityformalism',['HelicityFormalism',['../classyap_1_1HelicitySpinAmplitude.html#aa9e23db7233d74036944053409012f71',1,'yap::HelicitySpinAmplitude']]]
+  ['equalstructure',['equalStructure',['../classyap_1_1DataPoint.html#a6bfca0c1eaa882ad801dc779819449ec',1,'yap::DataPoint']]]
 ];

@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['name',['name',['../classyap_1_1Particle.html#a271d203bd63ab24c999b9f93278dc31c',1,'yap::Particle::name() const '],['../classyap_1_1Particle.html#a36cd39282defab4a10d5f39a52e4fe64',1,'yap::Particle::name()']]],
-  ['nchannels',['nChannels',['../classyap_1_1DecayingParticle.html#a6b7abbcea4f5467d6699ccf3c4ddf5c8',1,'yap::DecayingParticle']]],
-  ['ndataaccessors',['nDataAccessors',['../classyap_1_1DataPoint.html#acb7da5f4ca2c0531230ef9dc0b1ede1c',1,'yap::DataPoint']]],
-  ['nelements',['nElements',['../classyap_1_1DataPoint.html#afc50d2539736a710decb2899315e45eb',1,'yap::DataPoint']]],
-  ['norm',['norm',['../namespaceyap.html#a082aac83dc4112382cac687d20582861',1,'yap']]],
-  ['nsymindices',['nSymIndices',['../classyap_1_1DataPoint.html#a2fceff42be0dd9678fa93ba5945490e5',1,'yap::DataPoint']]]
+  ['name',['name',['../classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959',1,'yap::Particle::name() const '],['../classyap_1_1Particle.html#aca097b1e7c93e744d08c0c58e506e6ec',1,'yap::Particle::name()']]],
+  ['ndataaccessors',['nDataAccessors',['../classyap_1_1DataPoint.html#a886a00e418a42243b2e0df6494c337a9',1,'yap::DataPoint']]],
+  ['nelements',['nElements',['../classyap_1_1DataPoint.html#a5c45235ac6c238a0a1203478f2408c25',1,'yap::DataPoint']]],
+  ['nsymindices',['nSymIndices',['../classyap_1_1DataPoint.html#ae2633c8ffc86af177b744ba4ed5cf561',1,'yap::DataPoint']]],
+  ['nsymmetrizationindices',['nSymmetrizationIndices',['../classyap_1_1DataAccessor.html#aeebabae7bba365b9c1ad710819426871',1,'yap::DataAccessor']]]
 ];

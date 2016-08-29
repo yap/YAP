@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/WignerD.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/WignerD.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -109,29 +109,29 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab37686b34fcdc4416527622694dbd3e3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab37686b34fcdc4416527622694dbd3e3">yap::dFunction</a> (unsigned twoJ, int twoM, int twoN, double beta)</td></tr>
-<tr class="separator:ab37686b34fcdc4416527622694dbd3e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b20c42fb4534afc1aaa50834602c869"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b20c42fb4534afc1aaa50834602c869"></a>
-std::complex&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a1b20c42fb4534afc1aaa50834602c869">yap::DFunction</a> (unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)</td></tr>
-<tr class="memdesc:a1b20c42fb4534afc1aaa50834602c869"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wigner D-function <img class="formulaInl" alt="$ D^{J}_{M N}(\alpha, \beta, \gamma) $" src="form_23.png"/>. <br/></td></tr>
-<tr class="separator:a1b20c42fb4534afc1aaa50834602c869"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fc6e5a03f05bec3abaf6ebf1c606eaa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>yap::dMatrix::cache</b> (unsigned int twoJ)</td></tr>
+<tr class="memitem:aad2ddf369fd0609109c4adb62d797458"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aad2ddf369fd0609109c4adb62d797458">dFunction</a> (unsigned twoJ, int twoM, int twoN, double beta)</td></tr>
+<tr class="separator:aad2ddf369fd0609109c4adb62d797458"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af129382e9453b38e34decbe456d64278"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af129382e9453b38e34decbe456d64278"></a>
+const std::complex&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af129382e9453b38e34decbe456d64278">DFunction</a> (unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)</td></tr>
+<tr class="memdesc:af129382e9453b38e34decbe456d64278"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wigner D-function <img class="formulaInl" alt="$ D^{J}_{M N}(\alpha, \beta, \gamma) $" src="form_26.png"/>. <br/></td></tr>
+<tr class="separator:af129382e9453b38e34decbe456d64278"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fc6e5a03f05bec3abaf6ebf1c606eaa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>cache</b> (unsigned int twoJ)</td></tr>
 <tr class="separator:a8fc6e5a03f05bec3abaf6ebf1c606eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7abe830fc38ebb6a6cf7a23dd04ec45a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>yap::dMatrix::cacheSize</b> ()</td></tr>
-<tr class="separator:a7abe830fc38ebb6a6cf7a23dd04ec45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02dea562b6f4c7e8d889da18e8bb7f91"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>cacheSize</b> ()</td></tr>
+<tr class="separator:a02dea562b6f4c7e8d889da18e8bb7f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions for caching and calculating Wigner d and D functions. </p>
 <dl class="section author"><dt>Author</dt><dd>Daniel Greenwald, Johannes Rauch</dd></dl>
 <p>Calculation is based on M. E. Rose's <em>Elementary Theory of Angular Momentum</em> (1957):</p>
-<p><img class="formulaInl" alt="$ D^{J}_{MN}(\alpha, \beta, \gamma) \equiv \exp(-iM\alpha) d^{J}_{MN}(\beta) \exp(-iN\gamma)$" src="form_14.png"/></p>
-<p><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) \equiv \sum_{K} A (-)^{K+M-N} B_{K} (\cos\frac{\beta}{2})^{2J+N-M-2K} (\sin\frac{\beta}{2})^{M-N+2K} $" src="form_15.png"/></p>
-<p>with <img class="formulaInl" alt="$ A \equiv (J+N)!(J-N)!(J+M)!(J-M)!$" src="form_16.png"/> and <img class="formulaInl" alt="$ B_{K} \equiv (J-M-K)!((J+N-K)!(K+M-N)!K!$" src="form_17.png"/>.</p>
-<p>The limits on K are governed by the factorials, since <img class="formulaInl" alt="$ (1 / X!) = 0 $" src="form_18.png"/> if <img class="formulaInl" alt="$ X < 0$" src="form_19.png"/>.</p>
+<p><img class="formulaInl" alt="$ D^{J}_{MN}(\alpha, \beta, \gamma) \equiv \exp(-iM\alpha) d^{J}_{MN}(\beta) \exp(-iN\gamma)$" src="form_17.png"/></p>
+<p><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) \equiv \sum_{K} A (-)^{K+M-N} B_{K} (\cos\frac{\beta}{2})^{2J+N-M-2K} (\sin\frac{\beta}{2})^{M-N+2K} $" src="form_18.png"/></p>
+<p>with <img class="formulaInl" alt="$ A \equiv (J+N)!(J-N)!(J+M)!(J-M)!$" src="form_19.png"/> and <img class="formulaInl" alt="$ B_{K} \equiv (J-M-K)!((J+N-K)!(K+M-N)!K!$" src="form_20.png"/>.</p>
+<p>The limits on K are governed by the factorials, since <img class="formulaInl" alt="$ (1 / X!) = 0 $" src="form_21.png"/> if <img class="formulaInl" alt="$ X < 0$" src="form_22.png"/>.</p>
 <p>We only cache matrix elements with M in [-J, J] and N in [-J, min(0, m)]. This amounts to the lower triangle and the diagonal without the bottom right corner. The uncached matrix elements are given by the by the symmetries</p>
 <ul>
-<li><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{NM}(\beta)$" src="form_20.png"/></li>
-<li><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{-N-M}(\beta)$" src="form_21.png"/> </li>
+<li><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{NM}(\beta)$" src="form_23.png"/></li>
+<li><img class="formulaInl" alt="$ d^{J}_{MN}(\beta) = (-)^{M-N} d^{J}_{-N-M}(\beta)$" src="form_24.png"/> </li>
 </ul>
 </div></div><!-- contents -->
 <!-- start footer part -->

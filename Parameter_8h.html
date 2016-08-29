@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/Parameter.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/Parameter.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,37 +89,41 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">Parameter.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Exceptions_8h_source.html">Exceptions.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="logging_8h_source.html">logging.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/Parameter.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="Exceptions_8h_source.html">Exceptions.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="VariableStatus_8h_source.html">VariableStatus.h</a>&quot;</code><br/>
+<code>#include &lt;algorithm&gt;</code><br/>
 <code>#include &lt;complex&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
-<code>#include &lt;set&gt;</code><br/>
-<code>#include &lt;vector&gt;</code><br/>
+<code>#include &lt;numeric&gt;</code><br/>
 </div>
 <p><a href="Parameter_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html">yap::ParameterBase</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParameterBase.html">ParameterBase</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class holding basic properties of a parameter, but not a value!  <a href="classyap_1_1ParameterBase.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html">yap::Parameter&lt; T &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Parameter.html">Parameter&lt; T &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Template class holding also a value for a parameter.  <a href="classyap_1_1Parameter.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html">yap::ComplexComponentParameter</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base allowing access to the components of a ComplexParameter as a RealParameter.  <a href="classyap_1_1ComplexComponentParameter.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealParameter.html">RealParameter</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealComponentParameter.html">yap::RealComponentParameter</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">RealParameter accessing real component of ComplexParameter.  <a href="classyap_1_1RealComponentParameter.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ImaginaryComponentParameter.html">yap::ImaginaryComponentParameter</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ImaginaryParameter accessing imaginary component of ComplexParameter.  <a href="classyap_1_1ImaginaryComponentParameter.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexComponentParameter.html">ComplexComponentParameter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base allowing access to the components of a <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a> as a <a class="el" href="classyap_1_1RealParameter.html">RealParameter</a>.  <a href="classyap_1_1ComplexComponentParameter.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealComponentParameter.html">RealComponentParameter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1RealParameter.html">RealParameter</a> accessing real component of <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a>.  <a href="classyap_1_1RealComponentParameter.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ImaginaryComponentParameter.html">ImaginaryComponentParameter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ImaginaryParameter accessing imaginary component of <a class="el" href="classyap_1_1ComplexParameter.html">ComplexParameter</a>.  <a href="classyap_1_1ImaginaryComponentParameter.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -128,24 +132,29 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:gaccf1bfc7fbc130ddf4144378dd6af817"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Parameters.html#gaccf1bfc7fbc130ddf4144378dd6af817">yap::ParameterVector</a> = std::vector&lt; std::shared_ptr&lt; ParameterBase &gt; &gt;</td></tr>
-<tr class="separator:gaccf1bfc7fbc130ddf4144378dd6af817"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga82369af3c05386dd63443fdc838e0326"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">yap::ParameterSet</a> = std::set&lt; std::shared_ptr&lt; ParameterBase &gt; &gt;</td></tr>
-<tr class="separator:ga82369af3c05386dd63443fdc838e0326"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab42660d3ddf0a9e8fb3355ac22a3c588"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab42660d3ddf0a9e8fb3355ac22a3c588"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::ComplexParameter</b> = Parameter&lt; std::complex&lt; double &gt; &gt;</td></tr>
-<tr class="separator:gab42660d3ddf0a9e8fb3355ac22a3c588"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga816399320a08c3dc8fd18c7f6fc5d919"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga816399320a08c3dc8fd18c7f6fc5d919"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::RealParameter</b> = Parameter&lt; double &gt;</td></tr>
-<tr class="separator:ga816399320a08c3dc8fd18c7f6fc5d919"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2011aed99c8740f81e760771eb448e38"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2011aed99c8740f81e760771eb448e38"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::ComplexParameterVector</b> = std::vector&lt; std::shared_ptr&lt; ComplexParameter &gt; &gt;</td></tr>
-<tr class="separator:ga2011aed99c8740f81e760771eb448e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga772d55213a973097dad3b33deaa4af8d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga772d55213a973097dad3b33deaa4af8d"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::RealParameterVector</b> = std::vector&lt; std::shared_ptr&lt; RealParameter &gt; &gt;</td></tr>
-<tr class="separator:ga772d55213a973097dad3b33deaa4af8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a7c71162ee890075fcf93880a3189dba5"><td class="memTemplParams" colspan="2">template&lt;typename IterType &gt; </td></tr>
+<tr class="memitem:a7c71162ee890075fcf93880a3189dba5"><td class="memTemplItemLeft" align="right" valign="top">constexpr VariableStatus&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7c71162ee890075fcf93880a3189dba5">variable_status</a> (IterType first, IterType last)</td></tr>
+<tr class="separator:a7c71162ee890075fcf93880a3189dba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d828e7790c288a3f409f08cf51044a2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7d828e7790c288a3f409f08cf51044a2"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7d828e7790c288a3f409f08cf51044a2">to_string</a> (const Parameter&lt; T &gt; &amp;P)</td></tr>
+<tr class="separator:a7d828e7790c288a3f409f08cf51044a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bb2bb4f10e5236eca04962b469df92c"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a5bb2bb4f10e5236eca04962b469df92c">size</a> (const ParameterVector &amp;V)</td></tr>
+<tr class="separator:a5bb2bb4f10e5236eca04962b469df92c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd2b47f94ff9e9fe4a6069c20682ea0f"><td class="memTemplParams" colspan="2">template&lt;class InputIt &gt; </td></tr>
+<tr class="memitem:acd2b47f94ff9e9fe4a6069c20682ea0f"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; double &gt;<br class="typebreak"/>
+::const_iterator&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acd2b47f94ff9e9fe4a6069c20682ea0f">set_value</a> (ParameterBase &amp;P, InputIt first)</td></tr>
+<tr class="separator:acd2b47f94ff9e9fe4a6069c20682ea0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044396c0adca9b7acc0fdd662ef8b183"><td class="memTemplParams" colspan="2"><a class="anchor" id="a044396c0adca9b7acc0fdd662ef8b183"></a>
+template&lt;class InputIt &gt; </td></tr>
+<tr class="memitem:a044396c0adca9b7acc0fdd662ef8b183"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a044396c0adca9b7acc0fdd662ef8b183">set_values</a> (ParameterVector::iterator first_par, ParameterVector::iterator last_par, InputIt first_val, InputIt last_val)</td></tr>
+<tr class="memdesc:a044396c0adca9b7acc0fdd662ef8b183"><td class="mdescLeft">&#160;</td><td class="mdescRight">set values in ParameterVector from iterators <br/></td></tr>
+<tr class="separator:a044396c0adca9b7acc0fdd662ef8b183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38c8c3544c9de08bd79b00fab5699bf5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38c8c3544c9de08bd79b00fab5699bf5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a38c8c3544c9de08bd79b00fab5699bf5">set_values</a> (ParameterVector &amp;pars, const std::vector&lt; double &gt; &amp;vals)</td></tr>
+<tr class="memdesc:a38c8c3544c9de08bd79b00fab5699bf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set values in ParameterVector from values in vector&lt;double&gt; <br/></td></tr>
+<tr class="separator:a38c8c3544c9de08bd79b00fab5699bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

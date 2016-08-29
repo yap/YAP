@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/DecayingParticle.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/DecayingParticle.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,25 +88,25 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">DecayingParticle.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="DataAccessor_8h_source.html">DataAccessor.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="DecayChannel_8h_source.html">DecayChannel.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="make__unique_8h_source.html">make_unique.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/BlattWeisskopf.h&quot;</code><br/>
+<code>#include &quot;fwd/DecayChannel.h&quot;</code><br/>
+<code>#include &quot;fwd/DecayTree.h&quot;</code><br/>
+<code>#include &quot;fwd/Model.h&quot;</code><br/>
+<code>#include &quot;fwd/ParticleCombination.h&quot;</code><br/>
+<code>#include &quot;fwd/QuantumNumbers.h&quot;</code><br/>
 <code>#include &quot;<a class="el" href="Particle_8h_source.html">Particle.h</a>&quot;</code><br/>
-<code>#include &lt;complex&gt;</code><br/>
-<code>#include &lt;map&gt;</code><br/>
-<code>#include &lt;memory&gt;</code><br/>
-<code>#include &lt;vector&gt;</code><br/>
 </div>
 <p><a href="DecayingParticle_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html">yap::DecayingParticle</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for a particle that will decay.  <a href="classyap_1_1DecayingParticle.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -115,6 +115,37 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceyap"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html">yap</a></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:afe377ad062b25b82cf5bb665c487909c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe377ad062b25b82cf5bb665c487909c"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#afe377ad062b25b82cf5bb665c487909c">to_string</a> (const DecayTreeVectorMap &amp;m_dtv_map)</td></tr>
+<tr class="memdesc:afe377ad062b25b82cf5bb665c487909c"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to (multiline) string <br/></td></tr>
+<tr class="separator:afe377ad062b25b82cf5bb665c487909c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9066f097cedb8c7b3e5670008e4a8db5"><td class="memItemLeft" align="right" valign="top">DecayTreeSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9066f097cedb8c7b3e5670008e4a8db5">decay_trees</a> (const DecayingParticle &amp;dp)</td></tr>
+<tr class="separator:a9066f097cedb8c7b3e5670008e4a8db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada438b422037e8a75e29156634784039"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... Predicates&gt; </td></tr>
+<tr class="memitem:ada438b422037e8a75e29156634784039"><td class="memTemplItemLeft" align="right" valign="top">DecayTreeSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ada438b422037e8a75e29156634784039">decay_trees</a> (const DecayingParticle &amp;dp, Last p, Predicates...P)</td></tr>
+<tr class="separator:ada438b422037e8a75e29156634784039"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d8eef3be971b204d561e75d273f9f9c"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... Predicates&gt; </td></tr>
+<tr class="memitem:a8d8eef3be971b204d561e75d273f9f9c"><td class="memTemplItemLeft" align="right" valign="top">DecayTreeSet::value_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a8d8eef3be971b204d561e75d273f9f9c">decay_tree</a> (const DecayingParticle &amp;dp, Last p, Predicates...P)</td></tr>
+<tr class="separator:a8d8eef3be971b204d561e75d273f9f9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a168c18b1c65b8317967955055192662d"><td class="memItemLeft" align="right" valign="top">FreeAmplitudeSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a168c18b1c65b8317967955055192662d">free_amplitudes</a> (const DecayingParticle &amp;dp)</td></tr>
+<tr class="separator:a168c18b1c65b8317967955055192662d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cc5cdefb5df3d39a4cc418e9905bf46"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:a9cc5cdefb5df3d39a4cc418e9905bf46"><td class="memTemplItemLeft" align="right" valign="top">FreeAmplitudeSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9cc5cdefb5df3d39a4cc418e9905bf46">free_amplitudes</a> (const DecayingParticle &amp;dp, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:a9cc5cdefb5df3d39a4cc418e9905bf46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8d0aa9acc5b5be6bd59edb0c540c07f"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:ae8d0aa9acc5b5be6bd59edb0c540c07f"><td class="memTemplItemLeft" align="right" valign="top">FreeAmplitudeSet::value_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ae8d0aa9acc5b5be6bd59edb0c540c07f">free_amplitude</a> (const DecayingParticle &amp;dp, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:ae8d0aa9acc5b5be6bd59edb0c540c07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b9df5f32d12b17e3a17ec798e185a57"><td class="memItemLeft" align="right" valign="top">ParticleSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a8b9df5f32d12b17e3a17ec798e185a57">particles</a> (DecayingParticle &amp;dp)</td></tr>
+<tr class="separator:a8b9df5f32d12b17e3a17ec798e185a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafcb58da93ead0000579cdd601a98dc6"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:aafcb58da93ead0000579cdd601a98dc6"><td class="memTemplItemLeft" align="right" valign="top">DecayChannelSet&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aafcb58da93ead0000579cdd601a98dc6">decay_channels</a> (const DecayingParticle &amp;dp, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:aafcb58da93ead0000579cdd601a98dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3add0f117e780f6b423e1add9a69d1d"><td class="memTemplParams" colspan="2">template&lt;typename Last , typename... UnaryPredicates&gt; </td></tr>
+<tr class="memitem:ab3add0f117e780f6b423e1add9a69d1d"><td class="memTemplItemLeft" align="right" valign="top">DecayChannelSet::value_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab3add0f117e780f6b423e1add9a69d1d">decay_channel</a> (const DecayingParticle &amp;dp, Last p, UnaryPredicates...P)</td></tr>
+<tr class="separator:ab3add0f117e780f6b423e1add9a69d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

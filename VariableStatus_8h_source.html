@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/VariableStatus.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/VariableStatus.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,35 +112,38 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef yap_VariableStatus_h</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define yap_VariableStatus_h</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">   27</a></span>&#160;<span class="keyword">enum</span> <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a> {</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a11b17618858f3233f0ed2a4f4ff80ef8">   28</a></span>&#160;    <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a11b17618858f3233f0ed2a4f4ff80ef8">kChanged</a>   = -1,        </div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a76686f6ed2af79f56322e3ec641ca0d6">   29</a></span>&#160;    <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a76686f6ed2af79f56322e3ec641ca0d6">kFixed</a>     = 0,         </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742af3d5db3fee2f71092f39cd068b6291ca">   30</a></span>&#160;    <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742af3d5db3fee2f71092f39cd068b6291ca">kUnchanged</a> = +1,        </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">inline</span> std::ostream&amp; operator&lt;&lt;(std::ostream&amp; str, <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a> s)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">switch</span> (s) {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a11b17618858f3233f0ed2a4f4ff80ef8">kChanged</a>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            <span class="keywordflow">return</span> str &lt;&lt; <span class="stringliteral">&quot;kChanged&quot;</span>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a76686f6ed2af79f56322e3ec641ca0d6">kFixed</a>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">return</span> str &lt;&lt; <span class="stringliteral">&quot;kFixed&quot;</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742af3d5db3fee2f71092f39cd068b6291ca">kUnchanged</a>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> str &lt;&lt; <span class="stringliteral">&quot;kUnchanged&quot;</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordflow">return</span> str &lt;&lt; (int) s;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">   29</a></span>&#160;<span class="keyword">enum class</span> <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a> : int {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8977dfac2f8e04cb96e66882235f5aba">changed</a>   = -1,        </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecdacec315e3d0975e5cc2811d5d8725f149">fixed</a>     = 0,         </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8d7b3d6b83c0a517eac07e1aac94b773">unchanged</a> = +1,        </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">inline</span> std::string <a class="code" href="namespaceyap.html#a875ac54f5ce1af16984a6fbda4fd63c0">to_string</a>(<span class="keyword">const</span> <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a>&amp; s)</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;{</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">switch</span> (s) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8977dfac2f8e04cb96e66882235f5aba">VariableStatus::changed</a>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;changed&quot;</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecdacec315e3d0975e5cc2811d5d8725f149">VariableStatus::fixed</a>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;fixed&quot;</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8d7b3d6b83c0a517eac07e1aac94b773">VariableStatus::unchanged</a>:</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keywordflow">return</span> <span class="stringliteral">&quot;unchanged&quot;</span>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keywordflow">return</span> std::to_string(static_cast&lt;int&gt;(s));</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    }</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="namespaceyap_html_a583b6c2a52cb4797f7059601d859a742"><div class="ttname"><a href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">yap::VariableStatus</a></div><div class="ttdeci">VariableStatus</div><div class="ttdef"><b>Definition:</b> VariableStatus.h:27</div></div>
-<div class="ttc" id="namespaceyap_html_a583b6c2a52cb4797f7059601d859a742af3d5db3fee2f71092f39cd068b6291ca"><div class="ttname"><a href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742af3d5db3fee2f71092f39cd068b6291ca">yap::kUnchanged</a></div><div class="ttdoc">Parameter is free but has not been changed. </div><div class="ttdef"><b>Definition:</b> VariableStatus.h:30</div></div>
-<div class="ttc" id="namespaceyap_html_a583b6c2a52cb4797f7059601d859a742a11b17618858f3233f0ed2a4f4ff80ef8"><div class="ttname"><a href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a11b17618858f3233f0ed2a4f4ff80ef8">yap::kChanged</a></div><div class="ttdoc">Parameter is free and has been changed. </div><div class="ttdef"><b>Definition:</b> VariableStatus.h:28</div></div>
-<div class="ttc" id="namespaceyap_html_a583b6c2a52cb4797f7059601d859a742a76686f6ed2af79f56322e3ec641ca0d6"><div class="ttname"><a href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742a76686f6ed2af79f56322e3ec641ca0d6">yap::kFixed</a></div><div class="ttdoc">Parameter is fixed. </div><div class="ttdef"><b>Definition:</b> VariableStatus.h:29</div></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="namespaceyap_html_a742aec35ceeb6c7f2904e4063bfdaecd"><div class="ttname"><a href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">yap::VariableStatus</a></div><div class="ttdeci">VariableStatus</div><div class="ttdef"><b>Definition:</b> VariableStatus.h:29</div></div>
+<div class="ttc" id="namespaceyap_html_a742aec35ceeb6c7f2904e4063bfdaecda8977dfac2f8e04cb96e66882235f5aba"><div class="ttname"><a href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8977dfac2f8e04cb96e66882235f5aba">yap::VariableStatus::changed</a></div><div class="ttdoc">Variable is free and has been changed. </div></div>
+<div class="ttc" id="namespaceyap_html_a742aec35ceeb6c7f2904e4063bfdaecda8d7b3d6b83c0a517eac07e1aac94b773"><div class="ttname"><a href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecda8d7b3d6b83c0a517eac07e1aac94b773">yap::VariableStatus::unchanged</a></div><div class="ttdoc">Variable is free but has not been changed. </div></div>
+<div class="ttc" id="namespaceyap_html_a875ac54f5ce1af16984a6fbda4fd63c0"><div class="ttname"><a href="namespaceyap.html#a875ac54f5ce1af16984a6fbda4fd63c0">yap::to_string</a></div><div class="ttdeci">std::string to_string(const CachedValue::Status &amp;S)</div><div class="ttdoc">streaming operator for CachedValue::Status </div><div class="ttdef"><b>Definition:</b> CachedValue.cxx:27</div></div>
+<div class="ttc" id="namespaceyap_html_a742aec35ceeb6c7f2904e4063bfdaecdacec315e3d0975e5cc2811d5d8725f149"><div class="ttname"><a href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecdacec315e3d0975e5cc2811d5d8725f149">yap::VariableStatus::fixed</a></div><div class="ttdoc">Variable is fixed. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

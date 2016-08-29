@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['logging_2eh',['logging.h',['../logging_8h.html',1,'']]],
-  ['lorentztransformation_2eh',['LorentzTransformation.h',['../LorentzTransformation_8h.html',1,'']]]
+  ['importancesampler_2eh',['ImportanceSampler.h',['../ImportanceSampler_8h.html',1,'']]],
+  ['integralelement_2eh',['IntegralElement.h',['../IntegralElement_8h.html',1,'']]],
+  ['integrator_2eh',['Integrator.h',['../Integrator_8h.html',1,'']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['datapartitionvector',['DataPartitionVector',['../namespaceyap.html#ab9702dc96044dc1be8d435616c394979',1,'yap']]],
-  ['datapointvector',['DataPointVector',['../namespaceyap.html#ae645e1989d033de78b4c1e611b2161e1',1,'yap']]]
+  ['daughterdecaytreemap',['DaughterDecayTreeMap',['../classyap_1_1DecayTree.html#a0adb5c1337729d4371ae747fd6383118',1,'yap::DecayTree']]]
 ];

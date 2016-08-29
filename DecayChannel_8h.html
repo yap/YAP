@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/DecayChannel.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/DecayChannel.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,32 +89,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">DecayChannel.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="Constants_8h_source.html">Constants.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="DataAccessor_8h_source.html">DataAccessor.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="Parameter_8h_source.html">Parameter.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="Particle_8h_source.html">Particle.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="SpinAmplitude_8h_source.html">SpinAmplitude.h</a>&quot;</code><br/>
-<code>#include &lt;complex&gt;</code><br/>
-<code>#include &lt;map&gt;</code><br/>
-<code>#include &lt;memory&gt;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/DecayChannel.h&quot;</code><br/>
+<code>#include &quot;fwd/Model.h&quot;</code><br/>
+<code>#include &quot;fwd/Particle.h&quot;</code><br/>
+<code>#include &quot;fwd/ParticleCombination.h&quot;</code><br/>
+<code>#include &quot;fwd/SpinAmplitude.h&quot;</code><br/>
 <code>#include &lt;string&gt;</code><br/>
-<code>#include &lt;vector&gt;</code><br/>
 </div>
 <p><a href="DecayChannel_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html">yap::DecayChannel</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html">DecayChannel</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class implementing a decay channel.  <a href="classyap_1_1DecayChannel.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1DecayChannel_1_1AmplitudePair.html">yap::DecayChannel::AmplitudePair</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -123,20 +115,16 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:aad015d9662feef297471a825e4d9f0ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad015d9662feef297471a825e4d9f0ab"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::DecayChannelVector</b> = std::vector&lt; std::shared_ptr&lt; DecayChannel &gt; &gt;</td></tr>
-<tr class="separator:aad015d9662feef297471a825e4d9f0ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a79baddb9da1b2a0e17df4ae88fa17602"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a79baddb9da1b2a0e17df4ae88fa17602"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a79baddb9da1b2a0e17df4ae88fa17602">yap::to_string</a> (const DecayChannel &amp;dc)</td></tr>
-<tr class="memdesc:a79baddb9da1b2a0e17df4ae88fa17602"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
-<tr class="separator:a79baddb9da1b2a0e17df4ae88fa17602"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b419abfd363e82617cda5f28ed20a1a"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9b419abfd363e82617cda5f28ed20a1a">charge</a> (const DecayChannel &amp;dc)</td></tr>
+<tr class="separator:a9b419abfd363e82617cda5f28ed20a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b44b331abf733f13fba054fa74f57c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa7b44b331abf733f13fba054fa74f57c"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa7b44b331abf733f13fba054fa74f57c">to_string</a> (const DecayChannel &amp;dc)</td></tr>
+<tr class="memdesc:aa7b44b331abf733f13fba054fa74f57c"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert to string <br/></td></tr>
+<tr class="separator:aa7b44b331abf733f13fba054fa74f57c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade46cbdf18fdb953382b20c9c3de989f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade46cbdf18fdb953382b20c9c3de989f"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">yap::operator&lt;&lt;</a> (std::ostream &amp;os, const DecayChannel &amp;dc)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ade46cbdf18fdb953382b20c9c3de989f">operator&lt;&lt;</a> (std::ostream &amp;os, const DecayChannel &amp;dc)</td></tr>
 <tr class="memdesc:ade46cbdf18fdb953382b20c9c3de989f"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt;&lt; operator <br/></td></tr>
 <tr class="separator:ade46cbdf18fdb953382b20c9c3de989f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

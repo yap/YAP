@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cache',['Cache',['../group__Cache.html',1,'']]]
+  ['amplitude_20bases',['Amplitude bases',['../group__AmplitudeBasis.html',1,'']]]
 ];

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: yap::DataPartitionBlock Class Reference</title>
+<title>YAP: DataPartitionBlock Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,12 +88,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classyap_1_1DataPartitionBlock-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">yap::DataPartitionBlock Class Reference<div class="ingroups"><a class="el" href="group__Data.html">Data-related classes</a></div></div>  </div>
+<div class="title">DataPartitionBlock Class Reference<div class="ingroups"><a class="el" href="group__Data.html">Data-related classes</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -102,136 +101,141 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><code>#include &lt;<a class="el" href="DataPartition_8h_source.html">DataPartition.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for yap::DataPartitionBlock:</div>
+Inheritance diagram for DataPartitionBlock:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classyap_1_1DataPartitionBlock.png" usemap="#yap::DataPartitionBlock_map" alt=""/>
-  <map id="yap::DataPartitionBlock_map" name="yap::DataPartitionBlock_map">
-<area href="classyap_1_1DataPartitionWeave.html" title="A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E) " alt="yap::DataPartitionWeave" shape="rect" coords="0,112,150,136"/>
-<area href="classyap_1_1DataPartitionBase.html" alt="yap::DataPartitionBase" shape="rect" coords="0,56,150,80"/>
-<area href="classyap_1_1StatusManager.html" alt="yap::StatusManager" shape="rect" coords="0,0,150,24"/>
-<area href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. " alt="yap::DataSet" shape="rect" coords="0,224,150,248"/>
+  <img src="classyap_1_1DataPartitionBlock.png" usemap="#DataPartitionBlock_map" alt=""/>
+  <map id="DataPartitionBlock_map" name="DataPartitionBlock_map">
+<area href="classyap_1_1DataPartitionWeave.html" title="Partition that iterates from begin to end jumping a specified spacing every increase. " alt="DataPartitionWeave" shape="rect" coords="0,112,123,136"/>
+<area href="classyap_1_1DataPartition.html" title="Class defining a partition of the DataSet. " alt="DataPartition" shape="rect" coords="0,56,123,80"/>
+<area href="classyap_1_1StatusManager.html" alt="StatusManager" shape="rect" coords="0,0,123,24"/>
+<area href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. " alt="DataSet" shape="rect" coords="0,224,123,248"/>
 </map>
  </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:abbebb10f94091f86208ed42e502b33c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#abbebb10f94091f86208ed42e502b33c3">DataPartitionBlock</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a456326a8de5bc8228a3d80d1749d1323">begin</a>, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a69e03e0e1934a8a85ec0e97213e6935a">end</a>)</td></tr>
-<tr class="separator:abbebb10f94091f86208ed42e502b33c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">yap::DataPartitionWeave</a></td></tr>
-<tr class="memitem:af43f1f5cbc73918997570b8101198198 inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#af43f1f5cbc73918997570b8101198198">DataPartitionWeave</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a456326a8de5bc8228a3d80d1749d1323">begin</a>, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a69e03e0e1934a8a85ec0e97213e6935a">end</a>, unsigned spacing)</td></tr>
-<tr class="separator:af43f1f5cbc73918997570b8101198198 inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1DataPartitionBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataPartitionBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionBase.html">yap::DataPartitionBase</a></td></tr>
-<tr class="memitem:a801683ae44c92c5b1a1099114cbdf159 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a801683ae44c92c5b1a1099114cbdf159">DataPartitionBase</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a456326a8de5bc8228a3d80d1749d1323">begin</a>, const DataPointVector::iterator &amp;<a class="el" href="classyap_1_1DataPartitionBase.html#a69e03e0e1934a8a85ec0e97213e6935a">end</a>)</td></tr>
-<tr class="separator:a801683ae44c92c5b1a1099114cbdf159 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0b3816ee6a4a77eddf4ad1b53071591 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0b3816ee6a4a77eddf4ad1b53071591"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#ab0b3816ee6a4a77eddf4ad1b53071591">~DataPartitionBase</a> ()=default</td></tr>
-<tr class="memdesc:ab0b3816ee6a4a77eddf4ad1b53071591 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor (defaulted) <br/></td></tr>
-<tr class="separator:ab0b3816ee6a4a77eddf4ad1b53071591 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73f6fdfb0cf567eefc02791271e4f819 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a73f6fdfb0cf567eefc02791271e4f819"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a73f6fdfb0cf567eefc02791271e4f819">DataPartitionBase</a> (const <a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;)=default</td></tr>
-<tr class="memdesc:a73f6fdfb0cf567eefc02791271e4f819 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor (defaulted) <br/></td></tr>
-<tr class="separator:a73f6fdfb0cf567eefc02791271e4f819 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27dda828341ec830c82615633d62a834 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27dda828341ec830c82615633d62a834"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a27dda828341ec830c82615633d62a834">DataPartitionBase</a> (<a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a27dda828341ec830c82615633d62a834 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor (defaulted) <br/></td></tr>
-<tr class="separator:a27dda828341ec830c82615633d62a834 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac09ad2b64166df22aab286bca2f26630 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac09ad2b64166df22aab286bca2f26630"></a>
-<a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#ac09ad2b64166df22aab286bca2f26630">operator=</a> (const <a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;)=default</td></tr>
-<tr class="memdesc:ac09ad2b64166df22aab286bca2f26630 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment operator (defaulted) <br/></td></tr>
-<tr class="separator:ac09ad2b64166df22aab286bca2f26630 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8480b2e90045a1a0d3527570ed7e8a49 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8480b2e90045a1a0d3527570ed7e8a49"></a>
-<a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a8480b2e90045a1a0d3527570ed7e8a49">operator=</a> (<a class="el" href="classyap_1_1DataPartitionBase.html">DataPartitionBase</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a8480b2e90045a1a0d3527570ed7e8a49 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment operator (defaulted) <br/></td></tr>
-<tr class="separator:a8480b2e90045a1a0d3527570ed7e8a49 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a456326a8de5bc8228a3d80d1749d1323 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a456326a8de5bc8228a3d80d1749d1323">begin</a> () const </td></tr>
-<tr class="separator:a456326a8de5bc8228a3d80d1749d1323 inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69e03e0e1934a8a85ec0e97213e6935a inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a69e03e0e1934a8a85ec0e97213e6935a">end</a> () const </td></tr>
-<tr class="separator:a69e03e0e1934a8a85ec0e97213e6935a inherit pub_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1StatusManager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1StatusManager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1StatusManager.html">yap::StatusManager</a></td></tr>
-<tr class="memitem:a06b34b51769ff8e3048ad6e727bd915f inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a06b34b51769ff8e3048ad6e727bd915f">StatusManager</a> (const DataAccessorSet &amp;sDA)</td></tr>
-<tr class="separator:a06b34b51769ff8e3048ad6e727bd915f inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab161d1e03204f2237b635d19fb339f73 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#ab161d1e03204f2237b635d19fb339f73">set</a> (const <a class="el" href="classyap_1_1CachedDataValue.html">CachedDataValue</a> &amp;cdv, const CalculationStatus &amp;stat)</td></tr>
-<tr class="separator:ab161d1e03204f2237b635d19fb339f73 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adca01a871702419cd69b0034fcaef1d9 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#adca01a871702419cd69b0034fcaef1d9">set</a> (const <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> &amp;da, const CalculationStatus &amp;stat)</td></tr>
-<tr class="separator:adca01a871702419cd69b0034fcaef1d9 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c1f458223b838242faae47aae6619b5 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a1c1f458223b838242faae47aae6619b5">setAll</a> (const <a class="el" href="namespaceyap.html#a583b6c2a52cb4797f7059601d859a742">VariableStatus</a> &amp;stat)</td></tr>
-<tr class="separator:a1c1f458223b838242faae47aae6619b5 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeebb8bff33fbb95326894d7c84523584 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#aeebb8bff33fbb95326894d7c84523584">copyCalculationStatuses</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm)</td></tr>
-<tr class="separator:aeebb8bff33fbb95326894d7c84523584 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a334545a2467c9b36a623bb9d2aa778bb inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a334545a2467c9b36a623bb9d2aa778bb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a334545a2467c9b36a623bb9d2aa778bb">updateCalculationStatuses</a> (const DataAccessorSet &amp;sDA)</td></tr>
-<tr class="memdesc:a334545a2467c9b36a623bb9d2aa778bb inherit pub_methods_classyap_1_1StatusManager"><td class="mdescLeft">&#160;</td><td class="mdescRight">update CalculationStatus'es <br/></td></tr>
-<tr class="separator:a334545a2467c9b36a623bb9d2aa778bb inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20d07cec94713b72ec5e62478a35bbe6 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structyap_1_1CachedDataValue_1_1Status.html">CachedDataValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a20d07cec94713b72ec5e62478a35bbe6">status</a> (size_t da_index, size_t cdv_index, size_t sym_index)</td></tr>
-<tr class="separator:a20d07cec94713b72ec5e62478a35bbe6 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98b82f6e9a10dd28b4df6242ee031114 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structyap_1_1CachedDataValue_1_1Status.html">CachedDataValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a98b82f6e9a10dd28b4df6242ee031114">status</a> (size_t da_index, size_t cdv_index, size_t sym_index) const </td></tr>
-<tr class="separator:a98b82f6e9a10dd28b4df6242ee031114 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af25ff6fa3c012750c3f6c6c81cb8ed46 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structyap_1_1CachedDataValue_1_1Status.html">CachedDataValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#af25ff6fa3c012750c3f6c6c81cb8ed46">status</a> (const <a class="el" href="classyap_1_1CachedDataValue.html">CachedDataValue</a> &amp;cdv, size_t sym_index)</td></tr>
-<tr class="separator:af25ff6fa3c012750c3f6c6c81cb8ed46 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7e22d1b3d4658b2a0255e9c48fa042d inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structyap_1_1CachedDataValue_1_1Status.html">CachedDataValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#af7e22d1b3d4658b2a0255e9c48fa042d">status</a> (const <a class="el" href="classyap_1_1CachedDataValue.html">CachedDataValue</a> &amp;cdv, size_t sym_index) const </td></tr>
-<tr class="separator:af7e22d1b3d4658b2a0255e9c48fa042d inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3d132604ef99f598a12f4ac314995130"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">DataPartitionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#a3d132604ef99f598a12f4ac314995130">create</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, unsigned n)</td></tr>
-<tr class="separator:a3d132604ef99f598a12f4ac314995130"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1da0c2fed57330d9639626d4a139f61"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">DataPartitionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#af1da0c2fed57330d9639626d4a139f61">createBySize</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, size_t s)</td></tr>
-<tr class="separator:af1da0c2fed57330d9639626d4a139f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_static_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">yap::DataPartitionWeave</a></td></tr>
-<tr class="memitem:a85059cd018d85a03432d405549e91e93 inherit pub_static_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">DataPartitionVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a85059cd018d85a03432d405549e91e93">create</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, unsigned n)</td></tr>
-<tr class="separator:a85059cd018d85a03432d405549e91e93 inherit pub_static_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcb4177f9c435ce2554cb16309eb815e"><td class="memItemLeft" align="right" valign="top">static DataPartitionVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#abcb4177f9c435ce2554cb16309eb815e">create</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, unsigned n)</td></tr>
+<tr class="separator:abcb4177f9c435ce2554cb16309eb815e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac988c5859f17decb96985aec067aac74"><td class="memItemLeft" align="right" valign="top">static DataPartitionVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#ac988c5859f17decb96985aec067aac74">createBySize</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, size_t s)</td></tr>
+<tr class="separator:ac988c5859f17decb96985aec067aac74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">DataPartitionWeave</a></td></tr>
+<tr class="memitem:abcb4177f9c435ce2554cb16309eb815e inherit pub_static_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">static DataPartitionVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#abcb4177f9c435ce2554cb16309eb815e">create</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;dataSet, unsigned n)</td></tr>
+<tr class="separator:abcb4177f9c435ce2554cb16309eb815e inherit pub_static_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a99eaa6186f8ef75ca181e0eafc10375b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#a99eaa6186f8ef75ca181e0eafc10375b">DataPartitionBlock</a> (const DataAccessorSet &amp;sDA)</td></tr>
-<tr class="separator:a99eaa6186f8ef75ca181e0eafc10375b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">yap::DataPartitionWeave</a></td></tr>
-<tr class="memitem:a5e593ced49aabbb9cb7eb950d495a2f3 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a5e593ced49aabbb9cb7eb950d495a2f3">DataPartitionWeave</a> (const DataAccessorSet &amp;sDA, unsigned spacing)</td></tr>
-<tr class="separator:a5e593ced49aabbb9cb7eb950d495a2f3 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8abf040b55e434b74e5b4634614b87bc inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a8abf040b55e434b74e5b4634614b87bc">increment</a> (<a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;it) override</td></tr>
-<tr class="separator:a8abf040b55e434b74e5b4634614b87bc inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classyap_1_1DataPartitionBase"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataPartitionBase')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionBase.html">yap::DataPartitionBase</a></td></tr>
-<tr class="memitem:a7f89310a4e9f8da9e79afbb74ef965f6 inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a7f89310a4e9f8da9e79afbb74ef965f6">DataPartitionBase</a> (const DataAccessorSet &amp;sDA)</td></tr>
-<tr class="separator:a7f89310a4e9f8da9e79afbb74ef965f6 inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11e1db42daa124d3492d6d5fa9903099 inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top">DataPointVector::iterator &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a11e1db42daa124d3492d6d5fa9903099">rawIterator</a> (<a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;it)</td></tr>
-<tr class="separator:a11e1db42daa124d3492d6d5fa9903099 inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa24e896ca3b20653e209281d2059bcde inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa24e896ca3b20653e209281d2059bcde"></a>
-const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#aa24e896ca3b20653e209281d2059bcde">setBegin</a> (const DataPointVector::iterator &amp;it)</td></tr>
-<tr class="memdesc:aa24e896ca3b20653e209281d2059bcde inherit pro_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">set begin <br/></td></tr>
-<tr class="separator:aa24e896ca3b20653e209281d2059bcde inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af71d137e8500d00d3042aa118260c1dc inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af71d137e8500d00d3042aa118260c1dc"></a>
-const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#af71d137e8500d00d3042aa118260c1dc">setEnd</a> (const DataPointVector::iterator &amp;it)</td></tr>
-<tr class="memdesc:af71d137e8500d00d3042aa118260c1dc inherit pro_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">set end <br/></td></tr>
-<tr class="separator:af71d137e8500d00d3042aa118260c1dc inherit pro_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c9a8ff0cfeba1ae1c72072e3f8c859c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#a8c9a8ff0cfeba1ae1c72072e3f8c859c">DataPartitionBlock</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a2a5d32844e65fd92551d0e9a3b6afa34">begin</a>, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a4678e0907aec6c79309436f35c5a170f">end</a>)</td></tr>
+<tr class="separator:a8c9a8ff0cfeba1ae1c72072e3f8c859c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecc0dc5adb301fbb6fc0d58fdb9ecac6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBlock.html#aecc0dc5adb301fbb6fc0d58fdb9ecac6">DataPartitionBlock</a> (const DataAccessorSet &amp;sDA)</td></tr>
+<tr class="separator:aecc0dc5adb301fbb6fc0d58fdb9ecac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">DataPartitionWeave</a></td></tr>
+<tr class="memitem:adb12dedcb517d6e68ea9f7f394a48e80 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#adb12dedcb517d6e68ea9f7f394a48e80">DataPartitionWeave</a> (const DataAccessorSet &amp;sDA, unsigned spacing)</td></tr>
+<tr class="separator:adb12dedcb517d6e68ea9f7f394a48e80 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21595a91e34f52eadcb6f6700cea4232 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a21595a91e34f52eadcb6f6700cea4232">increment</a> (<a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;it, DataIterator::difference_type n) const override</td></tr>
+<tr class="separator:a21595a91e34f52eadcb6f6700cea4232 inherit pro_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classyap_1_1DataPartition"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataPartition')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a></td></tr>
+<tr class="memitem:a07a23a0d4c9b6dfaafb4af356e803068 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a07a23a0d4c9b6dfaafb4af356e803068">DataPartition</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a2a5d32844e65fd92551d0e9a3b6afa34">begin</a>, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a4678e0907aec6c79309436f35c5a170f">end</a>)</td></tr>
+<tr class="separator:a07a23a0d4c9b6dfaafb4af356e803068 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa540fc72c3198d76843ab3b7d2f198d0 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#aa540fc72c3198d76843ab3b7d2f198d0">DataPartition</a> (const DataAccessorSet &amp;sDA)</td></tr>
+<tr class="separator:aa540fc72c3198d76843ab3b7d2f198d0 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1e07a210932c729bb645ee07d634c46 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">DataPointVector::iterator &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#aa1e07a210932c729bb645ee07d634c46">rawIterator</a> (<a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;it) const </td></tr>
+<tr class="separator:aa1e07a210932c729bb645ee07d634c46 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0da73448d5345de703043250f7475f44 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">const DataPointVector::iterator &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a0da73448d5345de703043250f7475f44">rawIterator</a> (const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;it) const </td></tr>
+<tr class="separator:a0da73448d5345de703043250f7475f44 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e8fa5081c322be59b8e6ab84c14a928 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1DataIterator.html">DataIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a9e8fa5081c322be59b8e6ab84c14a928">dataIterator</a> (DataPointVector::iterator it, const <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> *part) const </td></tr>
+<tr class="separator:a9e8fa5081c322be59b8e6ab84c14a928 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8401b2eb55b3beb4dfc9cb50396e782 inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8401b2eb55b3beb4dfc9cb50396e782"></a>
+const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#ab8401b2eb55b3beb4dfc9cb50396e782">setBegin</a> (DataPointVector::iterator it)</td></tr>
+<tr class="memdesc:ab8401b2eb55b3beb4dfc9cb50396e782 inherit pro_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">set begin <br/></td></tr>
+<tr class="separator:ab8401b2eb55b3beb4dfc9cb50396e782 inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a490d5b1022031a08ba30634e6938d38b inherit pro_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a490d5b1022031a08ba30634e6938d38b"></a>
+const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a490d5b1022031a08ba30634e6938d38b">setEnd</a> (DataPointVector::iterator it)</td></tr>
+<tr class="memdesc:a490d5b1022031a08ba30634e6938d38b inherit pro_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">set end <br/></td></tr>
+<tr class="separator:a490d5b1022031a08ba30634e6938d38b inherit pro_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_attribs_classyap_1_1DataPartitionBase"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classyap_1_1DataPartitionBase')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classyap_1_1DataPartitionBase.html">yap::DataPartitionBase</a></td></tr>
-<tr class="memitem:a88d91c1ba82c43b5465f8241327d25d8 inherit pub_attribs_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a88d91c1ba82c43b5465f8241327d25d8"></a>
-friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#a88d91c1ba82c43b5465f8241327d25d8">DataIterator</a></td></tr>
-<tr class="memdesc:a88d91c1ba82c43b5465f8241327d25d8 inherit pub_attribs_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DataIterator.html" title="Class for iterating over a DataPartitionBase. ">DataIterator</a> to call increment <br/></td></tr>
-<tr class="separator:a88d91c1ba82c43b5465f8241327d25d8 inherit pub_attribs_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_static_methods_classyap_1_1DataPartitionBase"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classyap_1_1DataPartitionBase')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionBase.html">yap::DataPartitionBase</a></td></tr>
-<tr class="memitem:af18b549edca4067b6560256d93e353ae inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af18b549edca4067b6560256d93e353ae"></a>
-static DataPointVector::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#af18b549edca4067b6560256d93e353ae">begin</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;ds)</td></tr>
-<tr class="memdesc:af18b549edca4067b6560256d93e353ae inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">get non-const begin from <a class="el" href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. ">DataSet</a> <br/></td></tr>
-<tr class="separator:af18b549edca4067b6560256d93e353ae inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec52f9ea782d9a488f1e3ed43bd9f32e inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aec52f9ea782d9a488f1e3ed43bd9f32e"></a>
-static DataPointVector::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionBase.html#aec52f9ea782d9a488f1e3ed43bd9f32e">end</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;ds)</td></tr>
-<tr class="memdesc:aec52f9ea782d9a488f1e3ed43bd9f32e inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">get non-const end from <a class="el" href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. ">DataSet</a> <br/></td></tr>
-<tr class="separator:aec52f9ea782d9a488f1e3ed43bd9f32e inherit pro_static_methods_classyap_1_1DataPartitionBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_attribs_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">yap::DataPartitionWeave</a></td></tr>
-<tr class="memitem:a69099c628a8b138e7429128e43ff3d46 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a69099c628a8b138e7429128e43ff3d46"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a69099c628a8b138e7429128e43ff3d46">Spacing_</a></td></tr>
-<tr class="memdesc:a69099c628a8b138e7429128e43ff3d46 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="mdescLeft">&#160;</td><td class="mdescRight">spacing between data points for the weaving <br/></td></tr>
-<tr class="separator:a69099c628a8b138e7429128e43ff3d46 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">DataPartitionWeave</a></td></tr>
+<tr class="memitem:a0e51a47b147c0a8e650491c45c5a988a inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#a0e51a47b147c0a8e650491c45c5a988a">DataPartitionWeave</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a2a5d32844e65fd92551d0e9a3b6afa34">begin</a>, DataPointVector::iterator <a class="el" href="classyap_1_1DataPartition.html#a4678e0907aec6c79309436f35c5a170f">end</a>, unsigned spacing)</td></tr>
+<tr class="separator:a0e51a47b147c0a8e650491c45c5a988a inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af743d17a2f0e4b7c60076505f1487409 inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top">virtual const <br class="typebreak"/>
+DataIterator::difference_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#af743d17a2f0e4b7c60076505f1487409">difference</a> (const DataPointVector::iterator &amp;lhs, const DataPointVector::iterator &amp;rhs) const override</td></tr>
+<tr class="separator:af743d17a2f0e4b7c60076505f1487409 inherit pub_methods_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1DataPartition"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataPartition')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a></td></tr>
+<tr class="memitem:a97bca59096ff3d7638c5e581c19e7ccd inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a97bca59096ff3d7638c5e581c19e7ccd"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a97bca59096ff3d7638c5e581c19e7ccd">~DataPartition</a> ()=default</td></tr>
+<tr class="memdesc:a97bca59096ff3d7638c5e581c19e7ccd inherit pub_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor (defaulted) <br/></td></tr>
+<tr class="separator:a97bca59096ff3d7638c5e581c19e7ccd inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb9c522945e3a9186b6ff130d222e68f inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeb9c522945e3a9186b6ff130d222e68f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#aeb9c522945e3a9186b6ff130d222e68f">DataPartition</a> (const <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;)=default</td></tr>
+<tr class="memdesc:aeb9c522945e3a9186b6ff130d222e68f inherit pub_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor (defaulted) <br/></td></tr>
+<tr class="separator:aeb9c522945e3a9186b6ff130d222e68f inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60177435ab18df0266f8acd93e44f932 inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60177435ab18df0266f8acd93e44f932"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a60177435ab18df0266f8acd93e44f932">DataPartition</a> (<a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a60177435ab18df0266f8acd93e44f932 inherit pub_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor (defaulted) <br/></td></tr>
+<tr class="separator:a60177435ab18df0266f8acd93e44f932 inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09b8ee4aba62897f7c1dcba5dc348339 inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09b8ee4aba62897f7c1dcba5dc348339"></a>
+<a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a09b8ee4aba62897f7c1dcba5dc348339">operator=</a> (const <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;)=default</td></tr>
+<tr class="memdesc:a09b8ee4aba62897f7c1dcba5dc348339 inherit pub_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy assignment operator (defaulted) <br/></td></tr>
+<tr class="separator:a09b8ee4aba62897f7c1dcba5dc348339 inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a437423862a9f2cabc29c364ecc2b9cd4 inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a437423862a9f2cabc29c364ecc2b9cd4"></a>
+<a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a437423862a9f2cabc29c364ecc2b9cd4">operator=</a> (<a class="el" href="classyap_1_1DataPartition.html">DataPartition</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a437423862a9f2cabc29c364ecc2b9cd4 inherit pub_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment operator (defaulted) <br/></td></tr>
+<tr class="separator:a437423862a9f2cabc29c364ecc2b9cd4 inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a5d32844e65fd92551d0e9a3b6afa34 inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a2a5d32844e65fd92551d0e9a3b6afa34">begin</a> () const </td></tr>
+<tr class="separator:a2a5d32844e65fd92551d0e9a3b6afa34 inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4678e0907aec6c79309436f35c5a170f inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classyap_1_1DataIterator.html">DataIterator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a4678e0907aec6c79309436f35c5a170f">end</a> () const </td></tr>
+<tr class="separator:a4678e0907aec6c79309436f35c5a170f inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac65249ec9b4bf86a9b6b15d0a0b3ea6c inherit pub_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top">virtual const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#ac65249ec9b4bf86a9b6b15d0a0b3ea6c">size</a> () const </td></tr>
+<tr class="separator:ac65249ec9b4bf86a9b6b15d0a0b3ea6c inherit pub_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1StatusManager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1StatusManager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a></td></tr>
+<tr class="memitem:ac0303ad93faca194b85be2cf1e9e5efe inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#ac0303ad93faca194b85be2cf1e9e5efe">StatusManager</a> (const DataAccessorSet &amp;sDA)</td></tr>
+<tr class="separator:ac0303ad93faca194b85be2cf1e9e5efe inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a908d389fc0b30636a6c8eaf90d4c89e3 inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a908d389fc0b30636a6c8eaf90d4c89e3 inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a908d389fc0b30636a6c8eaf90d4c89e3">set</a> (const <a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> &amp;cdv, const T &amp;stat)</td></tr>
+<tr class="separator:a908d389fc0b30636a6c8eaf90d4c89e3 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad85b0f82fb1d549ef05d428159c5b4bb inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:ad85b0f82fb1d549ef05d428159c5b4bb inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#ad85b0f82fb1d549ef05d428159c5b4bb">set</a> (const <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> &amp;da, const T &amp;stat)</td></tr>
+<tr class="separator:ad85b0f82fb1d549ef05d428159c5b4bb inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac779d6709b35d360094d6732325cec97 inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:ac779d6709b35d360094d6732325cec97 inherit pub_methods_classyap_1_1StatusManager"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#ac779d6709b35d360094d6732325cec97">setAll</a> (const T &amp;stat)</td></tr>
+<tr class="separator:ac779d6709b35d360094d6732325cec97 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a115bb7964b320836a94d51078b14a94b inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a115bb7964b320836a94d51078b14a94b">copyCalculationStatuses</a> (const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm)</td></tr>
+<tr class="separator:a115bb7964b320836a94d51078b14a94b inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a361f2b9e02ef61d2b221aca75488ac inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structyap_1_1CachedValue_1_1Status.html">CachedValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a9a361f2b9e02ef61d2b221aca75488ac">status</a> (size_t da_index, size_t cdv_index, size_t sym_index)</td></tr>
+<tr class="separator:a9a361f2b9e02ef61d2b221aca75488ac inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0acfb6b3655f1fa8ecf89673e590683 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structyap_1_1CachedValue_1_1Status.html">CachedValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#ac0acfb6b3655f1fa8ecf89673e590683">status</a> (size_t da_index, size_t cdv_index, size_t sym_index) const </td></tr>
+<tr class="separator:ac0acfb6b3655f1fa8ecf89673e590683 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6412cacccabf753e646db1bb109f2eea inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structyap_1_1CachedValue_1_1Status.html">CachedValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#a6412cacccabf753e646db1bb109f2eea">status</a> (const <a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> &amp;cdv, size_t sym_index)</td></tr>
+<tr class="separator:a6412cacccabf753e646db1bb109f2eea inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac4091fa60c29594ae0f8bb0bd3927a8 inherit pub_methods_classyap_1_1StatusManager"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structyap_1_1CachedValue_1_1Status.html">CachedValue::Status</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StatusManager.html#aac4091fa60c29594ae0f8bb0bd3927a8">status</a> (const <a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> &amp;cdv, size_t sym_index) const </td></tr>
+<tr class="separator:aac4091fa60c29594ae0f8bb0bd3927a8 inherit pub_methods_classyap_1_1StatusManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_classyap_1_1DataPartition"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classyap_1_1DataPartition')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a></td></tr>
+<tr class="memitem:ae96f61a38b509df8d45558a37f563b35 inherit pub_attribs_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae96f61a38b509df8d45558a37f563b35"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#ae96f61a38b509df8d45558a37f563b35">DataIterator</a></td></tr>
+<tr class="memdesc:ae96f61a38b509df8d45558a37f563b35 inherit pub_attribs_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DataIterator.html" title="Class for iterating over a DataPartition. ">DataIterator</a> to call increment <br/></td></tr>
+<tr class="separator:ae96f61a38b509df8d45558a37f563b35 inherit pub_attribs_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_static_methods_classyap_1_1DataPartition"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classyap_1_1DataPartition')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classyap_1_1DataPartition.html">DataPartition</a></td></tr>
+<tr class="memitem:aee0177a7c91e402c3c33b8f211a6e5a2 inherit pro_static_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee0177a7c91e402c3c33b8f211a6e5a2"></a>
+static DataPointVector::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#aee0177a7c91e402c3c33b8f211a6e5a2">begin</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;ds)</td></tr>
+<tr class="memdesc:aee0177a7c91e402c3c33b8f211a6e5a2 inherit pro_static_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">get non-const begin from <a class="el" href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. ">DataSet</a> <br/></td></tr>
+<tr class="separator:aee0177a7c91e402c3c33b8f211a6e5a2 inherit pro_static_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2be1c16cb4b9f9ec3d1f7e057a682983 inherit pro_static_methods_classyap_1_1DataPartition"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2be1c16cb4b9f9ec3d1f7e057a682983"></a>
+static DataPointVector::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartition.html#a2be1c16cb4b9f9ec3d1f7e057a682983">end</a> (<a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;ds)</td></tr>
+<tr class="memdesc:a2be1c16cb4b9f9ec3d1f7e057a682983 inherit pro_static_methods_classyap_1_1DataPartition"><td class="mdescLeft">&#160;</td><td class="mdescRight">get non-const end from <a class="el" href="classyap_1_1DataSet.html" title="Class holding a set of DataPoint objects. ">DataSet</a> <br/></td></tr>
+<tr class="separator:a2be1c16cb4b9f9ec3d1f7e057a682983 inherit pro_static_methods_classyap_1_1DataPartition"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classyap_1_1DataPartitionWeave"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classyap_1_1DataPartitionWeave')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classyap_1_1DataPartitionWeave.html">DataPartitionWeave</a></td></tr>
+<tr class="memitem:ae9553381bd0ff62fd815ef0af92a7ea0 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9553381bd0ff62fd815ef0af92a7ea0"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataPartitionWeave.html#ae9553381bd0ff62fd815ef0af92a7ea0">Spacing_</a></td></tr>
+<tr class="memdesc:ae9553381bd0ff62fd815ef0af92a7ea0 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="mdescLeft">&#160;</td><td class="mdescRight">spacing between data points for the weaving <br/></td></tr>
+<tr class="separator:ae9553381bd0ff62fd815ef0af92a7ea0 inherit pro_attribs_classyap_1_1DataPartitionWeave"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A contiguous block of data. </p>
 <dl class="section author"><dt>Author</dt><dd>Johannes Rauch, Daniel Greenwald </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="abbebb10f94091f86208ed42e502b33c3"></a>
+<a class="anchor" id="a8c9a8ff0cfeba1ae1c72072e3f8c859c"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -239,7 +243,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">yap::DataPartitionBlock::DataPartitionBlock </td>
+          <td class="memname"><a class="el" href="classyap_1_1DataPartitionBlock.html">DataPartitionBlock</a> </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;&#160;</td>
           <td class="paramname"><em>sm</em>, </td>
@@ -247,13 +251,13 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const DataPointVector::iterator &amp;&#160;</td>
+          <td class="paramtype">DataPointVector::iterator&#160;</td>
           <td class="paramname"><em>begin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const DataPointVector::iterator &amp;&#160;</td>
+          <td class="paramtype">DataPointVector::iterator&#160;</td>
           <td class="paramname"><em>end</em>&#160;</td>
         </tr>
         <tr>
@@ -264,7 +268,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -280,7 +284,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 
 </div>
 </div>
-<a class="anchor" id="a99eaa6186f8ef75ca181e0eafc10375b"></a>
+<a class="anchor" id="aecc0dc5adb301fbb6fc0d58fdb9ecac6"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -288,7 +292,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">yap::DataPartitionBlock::DataPartitionBlock </td>
+          <td class="memname"><a class="el" href="classyap_1_1DataPartitionBlock.html">DataPartitionBlock</a> </td>
           <td>(</td>
           <td class="paramtype">const DataAccessorSet &amp;&#160;</td>
           <td class="paramname"><em>sDA</em></td><td>)</td>
@@ -312,7 +316,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a3d132604ef99f598a12f4ac314995130"></a>
+<a class="anchor" id="abcb4177f9c435ce2554cb16309eb815e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -320,7 +324,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">DataPartitionVector</a> yap::DataPartitionBlock::create </td>
+          <td class="memname">DataPartitionVector create </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;&#160;</td>
           <td class="paramname"><em>dataSet</em>, </td>
@@ -354,7 +358,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 
 </div>
 </div>
-<a class="anchor" id="af1da0c2fed57330d9639626d4a139f61"></a>
+<a class="anchor" id="ac988c5859f17decb96985aec067aac74"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -362,7 +366,7 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceyap.html#ab9702dc96044dc1be8d435616c394979">DataPartitionVector</a> yap::DataPartitionBlock::createBySize </td>
+          <td class="memname">DataPartitionVector createBySize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classyap_1_1DataSet.html">DataSet</a> &amp;&#160;</td>
           <td class="paramname"><em>dataSet</em>, </td>
@@ -397,8 +401,8 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/<a class="el" href="DataPartition_8h_source.html">DataPartition.h</a></li>
-<li>src/DataPartition.cxx</li>
+<li>/home/dgreenw/work/belle/YAP/include/<a class="el" href="DataPartition_8h_source.html">DataPartition.h</a></li>
+<li>/home/dgreenw/work/belle/YAP/src/DataPartition.cxx</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

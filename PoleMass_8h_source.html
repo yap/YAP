@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/PoleMass.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/PoleMass.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,70 +112,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef yap_PoleMass_h</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define yap_PoleMass_h</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CachedValue_8h.html">CachedValue.h</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MassShape_8h.html">MassShape.h</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Parameter_8h.html">Parameter.h</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;fwd/DataPoint.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;fwd/Parameter.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;fwd/ParticleCombination.h&quot;</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;complex&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MassShape_8h.html">MassShape.h</a>&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;complex&gt;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">class </span>DataPoint;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">class </span>ParticleCombination;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html">   44</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1PoleMass.html">PoleMass</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1MassShape.html">MassShape</a></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classyap_1_1PoleMass.html#a5ae10560b604fee0e8474f31850a9ed1">PoleMass</a>(std::complex&lt;double&gt; <a class="code" href="classyap_1_1PoleMass.html#ac2ecbd279c84b93356f5e0d79778d813">mass</a> = std::complex&lt;double&gt;(-1, -1));</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">virtual</span> std::complex&lt;double&gt; <a class="code" href="classyap_1_1PoleMass.html#a13e73bb0385bdd40cd445512cf72d8c9">amplitude</a>(<a class="code" href="classyap_1_1DataPoint.html">DataPoint</a>&amp; d, <span class="keyword">const</span> std::shared_ptr&lt;ParticleCombination&gt;&amp; pc, <a class="code" href="classyap_1_1StatusManager.html">StatusManager</a>&amp; sm) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1PoleMass.html#aedd28c84b473548784bf698d55865b21">setParameters</a>(<span class="keyword">const</span> <a class="code" href="structyap_1_1ParticleTableEntry.html">ParticleTableEntry</a>&amp; entry) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1PoleMass.html">PoleMass</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1MassShape.html">MassShape</a></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="classyap_1_1PoleMass.html#a79a4cb7f985c88523b62904c3b63ebdd">PoleMass</a>(std::complex&lt;double&gt; <a class="code" href="classyap_1_1PoleMass.html#a6f985de0f09c80d802f5bc6e2469361a">mass</a> = std::complex&lt;double&gt;(-1, -1));</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1PoleMass.html#ab1f56789f06cc42e07d2f3f4b4aa299f">setParameters</a>(<span class="keyword">const</span> <a class="code" href="structyap_1_1ParticleTableEntry.html">ParticleTableEntry</a>&amp; entry) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#a6f985de0f09c80d802f5bc6e2469361a">   57</a></span>&#160;    std::shared_ptr&lt;ComplexParameter&gt; <a class="code" href="classyap_1_1PoleMass.html#a6f985de0f09c80d802f5bc6e2469361a">mass</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classyap_1_1PoleMass.html#a23211d52d92647448cbad14dc24e661d">Mass_</a>; }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classyap_1_1PoleMass.html#a6081d9a060768e5a5e6b110e79dac56b">consistent</a>() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#ac2ecbd279c84b93356f5e0d79778d813">   64</a></span>&#160;    std::shared_ptr&lt;ComplexParameter&gt; <a class="code" href="classyap_1_1PoleMass.html#ac2ecbd279c84b93356f5e0d79778d813">mass</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <a class="code" href="classyap_1_1PoleMass.html#a65acc10d6a66b2ecb31518457c408b68">Mass_</a>; }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classyap_1_1PoleMass.html#ad4fc7031510d202b64df0b98badefd72">consistent</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#a957bcd8bf1169c8196f5b19e541e4803">   70</a></span>&#160;    <span class="keyword">virtual</span> std::string <a class="code" href="classyap_1_1PoleMass.html#a957bcd8bf1169c8196f5b19e541e4803">data_accessor_type</a>()<span class="keyword"> const override</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">    </span>{<span class="keywordflow">return</span> <span class="stringliteral">&quot;PoleMass&quot;</span>; }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1PoleMass.html#a0f12b1dc4b386aa420c0bf82429f7ec9">setDependenciesFromResonance</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1PoleMass.html#ae3c1cb1caa2f5a085bcfd85ca7b4eee9">calculateT</a>(<a class="code" href="classyap_1_1DataPartition.html">DataPartition</a>&amp; D, <span class="keyword">const</span> std::shared_ptr&lt;ParticleCombination&gt;&amp; pc, <span class="keywordtype">unsigned</span> si) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#a23211d52d92647448cbad14dc24e661d">   72</a></span>&#160;    std::shared_ptr&lt;ComplexParameter&gt; <a class="code" href="classyap_1_1PoleMass.html#a23211d52d92647448cbad14dc24e661d">Mass_</a>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1PoleMass.html#a22c2e85052330969deea62d15c1b0cda">setDependenciesFromModel</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#a65acc10d6a66b2ecb31518457c408b68">   82</a></span>&#160;    std::shared_ptr&lt;ComplexParameter&gt; <a class="code" href="classyap_1_1PoleMass.html#a65acc10d6a66b2ecb31518457c408b68">Mass_</a>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classyap_1_1PoleMass.html#a4512634536055304c0f8e8fab99c297f">   85</a></span>&#160;    std::shared_ptr&lt;ComplexCachedDataValue&gt; <a class="code" href="classyap_1_1PoleMass.html#a4512634536055304c0f8e8fab99c297f">T_</a>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;};</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a0f12b1dc4b386aa420c0bf82429f7ec9"><div class="ttname"><a href="classyap_1_1PoleMass.html#a0f12b1dc4b386aa420c0bf82429f7ec9">yap::PoleMass::setDependenciesFromResonance</a></div><div class="ttdeci">virtual void setDependenciesFromResonance() override</div><div class="ttdoc">borrow mass from owner </div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:31</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a22c2e85052330969deea62d15c1b0cda"><div class="ttname"><a href="classyap_1_1PoleMass.html#a22c2e85052330969deea62d15c1b0cda">yap::PoleMass::setDependenciesFromModel</a></div><div class="ttdeci">virtual void setDependenciesFromModel() override</div><div class="ttdoc">set dependency on masses from model </div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:42</div></div>
-<div class="ttc" id="structyap_1_1ParticleTableEntry_html"><div class="ttname"><a href="structyap_1_1ParticleTableEntry.html">yap::ParticleTableEntry</a></div><div class="ttdoc">Data container for storing particle information in database. </div><div class="ttdef"><b>Definition:</b> ParticleFactory.h:41</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a13e73bb0385bdd40cd445512cf72d8c9"><div class="ttname"><a href="classyap_1_1PoleMass.html#a13e73bb0385bdd40cd445512cf72d8c9">yap::PoleMass::amplitude</a></div><div class="ttdeci">virtual std::complex&lt; double &gt; amplitude(DataPoint &amp;d, const std::shared_ptr&lt; ParticleCombination &gt; &amp;pc, StatusManager &amp;sm) const override</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:53</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a4512634536055304c0f8e8fab99c297f"><div class="ttname"><a href="classyap_1_1PoleMass.html#a4512634536055304c0f8e8fab99c297f">yap::PoleMass::T_</a></div><div class="ttdeci">std::shared_ptr&lt; ComplexCachedDataValue &gt; T_</div><div class="ttdoc">Cached dynamic amplitude. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:85</div></div>
-<div class="ttc" id="Parameter_8h_html"><div class="ttname"><a href="Parameter_8h.html">Parameter.h</a></div></div>
-<div class="ttc" id="classyap_1_1DataPoint_html"><div class="ttname"><a href="classyap_1_1DataPoint.html">yap::DataPoint</a></div><div class="ttdoc">Class for holding data and cached values per data point for fast calculation. </div><div class="ttdef"><b>Definition:</b> DataPoint.h:40</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a65acc10d6a66b2ecb31518457c408b68"><div class="ttname"><a href="classyap_1_1PoleMass.html#a65acc10d6a66b2ecb31518457c408b68">yap::PoleMass::Mass_</a></div><div class="ttdeci">std::shared_ptr&lt; ComplexParameter &gt; Mass_</div><div class="ttdoc">Complex mass [GeV]. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:82</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a957bcd8bf1169c8196f5b19e541e4803"><div class="ttname"><a href="classyap_1_1PoleMass.html#a957bcd8bf1169c8196f5b19e541e4803">yap::PoleMass::data_accessor_type</a></div><div class="ttdeci">virtual std::string data_accessor_type() const override</div><div class="ttdef"><b>Definition:</b> PoleMass.h:70</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_a5ae10560b604fee0e8474f31850a9ed1"><div class="ttname"><a href="classyap_1_1PoleMass.html#a5ae10560b604fee0e8474f31850a9ed1">yap::PoleMass::PoleMass</a></div><div class="ttdeci">PoleMass(std::complex&lt; double &gt; mass=std::complex&lt; double &gt;(-1,-1))</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:12</div></div>
-<div class="ttc" id="classyap_1_1StatusManager_html"><div class="ttname"><a href="classyap_1_1StatusManager.html">yap::StatusManager</a></div><div class="ttdef"><b>Definition:</b> StatusManager.h:32</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_aedd28c84b473548784bf698d55865b21"><div class="ttname"><a href="classyap_1_1PoleMass.html#aedd28c84b473548784bf698d55865b21">yap::PoleMass::setParameters</a></div><div class="ttdeci">virtual void setParameters(const ParticleTableEntry &amp;entry) override</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:20</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_ac2ecbd279c84b93356f5e0d79778d813"><div class="ttname"><a href="classyap_1_1PoleMass.html#ac2ecbd279c84b93356f5e0d79778d813">yap::PoleMass::mass</a></div><div class="ttdeci">std::shared_ptr&lt; ComplexParameter &gt; mass() const </div><div class="ttdoc">Get mass. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:64</div></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_a79a4cb7f985c88523b62904c3b63ebdd"><div class="ttname"><a href="classyap_1_1PoleMass.html#a79a4cb7f985c88523b62904c3b63ebdd">yap::PoleMass::PoleMass</a></div><div class="ttdeci">PoleMass(std::complex&lt; double &gt; mass=std::complex&lt; double &gt;(-1,-1))</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:16</div></div>
+<div class="ttc" id="structyap_1_1ParticleTableEntry_html"><div class="ttname"><a href="structyap_1_1ParticleTableEntry.html">yap::ParticleTableEntry</a></div><div class="ttdoc">Data container for storing particle information in database. </div><div class="ttdef"><b>Definition:</b> ParticleFactory.h:42</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_a6f985de0f09c80d802f5bc6e2469361a"><div class="ttname"><a href="classyap_1_1PoleMass.html#a6f985de0f09c80d802f5bc6e2469361a">yap::PoleMass::mass</a></div><div class="ttdeci">std::shared_ptr&lt; ComplexParameter &gt; mass() const </div><div class="ttdoc">Get mass. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:57</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_ab1f56789f06cc42e07d2f3f4b4aa299f"><div class="ttname"><a href="classyap_1_1PoleMass.html#ab1f56789f06cc42e07d2f3f4b4aa299f">yap::PoleMass::setParameters</a></div><div class="ttdeci">virtual void setParameters(const ParticleTableEntry &amp;entry) override</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:24</div></div>
+<div class="ttc" id="classyap_1_1DataPartition_html"><div class="ttname"><a href="classyap_1_1DataPartition.html">yap::DataPartition</a></div><div class="ttdoc">Class defining a partition of the DataSet. </div><div class="ttdef"><b>Definition:</b> DataPartition.h:158</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_a23211d52d92647448cbad14dc24e661d"><div class="ttname"><a href="classyap_1_1PoleMass.html#a23211d52d92647448cbad14dc24e661d">yap::PoleMass::Mass_</a></div><div class="ttdeci">std::shared_ptr&lt; ComplexParameter &gt; Mass_</div><div class="ttdoc">Complex mass [GeV]. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:72</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_ae3c1cb1caa2f5a085bcfd85ca7b4eee9"><div class="ttname"><a href="classyap_1_1PoleMass.html#ae3c1cb1caa2f5a085bcfd85ca7b4eee9">yap::PoleMass::calculateT</a></div><div class="ttdeci">virtual void calculateT(DataPartition &amp;D, const std::shared_ptr&lt; ParticleCombination &gt; &amp;pc, unsigned si) const override</div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:39</div></div>
 <div class="ttc" id="MassShape_8h_html"><div class="ttname"><a href="MassShape_8h.html">MassShape.h</a></div></div>
-<div class="ttc" id="CachedValue_8h_html"><div class="ttname"><a href="CachedValue_8h.html">CachedValue.h</a></div></div>
-<div class="ttc" id="classyap_1_1MassShape_html"><div class="ttname"><a href="classyap_1_1MassShape.html">yap::MassShape</a></div><div class="ttdoc">Abstract base class for all mass shapes. </div><div class="ttdef"><b>Definition:</b> MassShape.h:45</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html_ad4fc7031510d202b64df0b98badefd72"><div class="ttname"><a href="classyap_1_1PoleMass.html#ad4fc7031510d202b64df0b98badefd72">yap::PoleMass::consistent</a></div><div class="ttdeci">virtual bool consistent() const override</div><div class="ttdoc">Check consistency of object. </div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:76</div></div>
-<div class="ttc" id="classyap_1_1PoleMass_html"><div class="ttname"><a href="classyap_1_1PoleMass.html">yap::PoleMass</a></div><div class="ttdoc">Class for pole-mass resonance shape. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:44</div></div>
+<div class="ttc" id="classyap_1_1MassShape_html"><div class="ttname"><a href="classyap_1_1MassShape.html">yap::MassShape</a></div><div class="ttdoc">Abstract base class for all mass shapes. </div><div class="ttdef"><b>Definition:</b> MassShape.h:46</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html_a6081d9a060768e5a5e6b110e79dac56b"><div class="ttname"><a href="classyap_1_1PoleMass.html#a6081d9a060768e5a5e6b110e79dac56b">yap::PoleMass::consistent</a></div><div class="ttdeci">virtual bool consistent() const override</div><div class="ttdoc">Check consistency of object. </div><div class="ttdef"><b>Definition:</b> PoleMass.cxx:49</div></div>
+<div class="ttc" id="classyap_1_1PoleMass_html"><div class="ttname"><a href="classyap_1_1PoleMass.html">yap::PoleMass</a></div><div class="ttdoc">Class for pole-mass resonance shape. </div><div class="ttdef"><b>Definition:</b> PoleMass.h:43</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

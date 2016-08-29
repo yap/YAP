@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: yap::AmplitudeComponent Class Reference</title>
+<title>YAP: AmplitudeComponent Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -91,67 +91,44 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classyap_1_1AmplitudeComponent-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">yap::AmplitudeComponent Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">AmplitudeComponent Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for yap::AmplitudeComponent:</div>
+Inheritance diagram for AmplitudeComponent:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classyap_1_1AmplitudeComponent.png" usemap="#yap::AmplitudeComponent_map" alt=""/>
-  <map id="yap::AmplitudeComponent_map" name="yap::AmplitudeComponent_map">
-<area href="classyap_1_1BlattWeisskopf.html" title="Class implementing BlattWeisskopf barrier factors. " alt="yap::BlattWeisskopf" shape="rect" coords="0,56,204,80"/>
-<area href="classyap_1_1DecayChannel.html" title="Class implementing a decay channel. " alt="yap::DecayChannel" shape="rect" coords="214,56,418,80"/>
-<area href="classyap_1_1MassShape.html" title="Abstract base class for all mass shapes. " alt="yap::MassShape" shape="rect" coords="428,56,632,80"/>
-<area href="classyap_1_1Particle.html" title="Abstract Particle base class. " alt="yap::Particle" shape="rect" coords="856,56,1060,80"/>
-<area href="classyap_1_1MassShapeWithNominalMass.html" title="Class for MassShape that gets its nominal mass from its owning resonance. " alt="yap::MassShapeWithNominalMass" shape="rect" coords="321,112,525,136"/>
-<area href="classyap_1_1PoleMass.html" title="Class for pole-mass resonance shape. " alt="yap::PoleMass" shape="rect" coords="535,112,739,136"/>
-<area href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. " alt="yap::DecayingParticle" shape="rect" coords="749,112,953,136"/>
-<area href="classyap_1_1FinalStateParticle.html" title="Class representing a final-state particle. " alt="yap::FinalStateParticle" shape="rect" coords="963,112,1167,136"/>
-<area href="classyap_1_1BreitWigner.html" title="Class for Breit-Wigner resonance shape. " alt="yap::BreitWigner" shape="rect" coords="214,168,418,192"/>
-<area href="classyap_1_1Flatte.html" title="Class for Flatte resonance shape. " alt="yap::Flatte" shape="rect" coords="428,168,632,192"/>
-<area href="classyap_1_1Resonance.html" title="Class for a particle that will decay and has a mass shape. " alt="yap::Resonance" shape="rect" coords="749,168,953,192"/>
+  <img src="classyap_1_1AmplitudeComponent.png" usemap="#AmplitudeComponent_map" alt=""/>
+  <map id="AmplitudeComponent_map" name="AmplitudeComponent_map">
+<area href="classyap_1_1RecalculableAmplitudeComponent.html" title="Base class for AmplitudeComponent&#39;s that are also RecalculableDataAccessor&#39;s. " alt="RecalculableAmplitudeComponent" shape="rect" coords="106,56,309,80"/>
+<area href="classyap_1_1StaticAmplitudeComponent.html" alt="StaticAmplitudeComponent" shape="rect" coords="319,56,522,80"/>
+<area href="classyap_1_1BlattWeisskopf.html" title="Class implementing BlattWeisskopf barrier factors. " alt="BlattWeisskopf" shape="rect" coords="0,112,203,136"/>
+<area href="classyap_1_1MassShape.html" title="Abstract base class for all mass shapes. " alt="MassShape" shape="rect" coords="213,112,416,136"/>
+<area href="classyap_1_1MassShapeWithNominalMass.html" title="Class for MassShape that gets its nominal mass from its owning resonance. " alt="MassShapeWithNominalMass" shape="rect" coords="106,168,309,192"/>
+<area href="classyap_1_1PoleMass.html" title="Class for pole-mass resonance shape. " alt="PoleMass" shape="rect" coords="319,168,522,192"/>
+<area href="classyap_1_1BreitWigner.html" title="Class for Breit-Wigner resonance shape. " alt="BreitWigner" shape="rect" coords="0,224,203,248"/>
+<area href="classyap_1_1Flatte.html" title="Class for Flatte resonance shape. " alt="Flatte" shape="rect" coords="213,224,416,248"/>
+<area href="classyap_1_1RelativisticBreitWigner.html" title="Class for Relativistic Breit-Wigner resonance shape. " alt="RelativisticBreitWigner" shape="rect" coords="0,280,203,304"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a06a6265ed8e43828dc00f86dfe726acf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06a6265ed8e43828dc00f86dfe726acf"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a06a6265ed8e43828dc00f86dfe726acf">consistent</a> () const =0</td></tr>
-<tr class="memdesc:a06a6265ed8e43828dc00f86dfe726acf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> is consistent. <br/></td></tr>
-<tr class="separator:a06a6265ed8e43828dc00f86dfe726acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa92adb0ee16f0eee09ea7704aeae434b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#aa92adb0ee16f0eee09ea7704aeae434b">parametersItDependsOn</a> ()</td></tr>
-<tr class="separator:aa92adb0ee16f0eee09ea7704aeae434b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7eb5ad3543a4a2f5230eb68dd3e0d18"><td class="memItemLeft" align="right" valign="top">virtual CachedDataValueSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ac7eb5ad3543a4a2f5230eb68dd3e0d18">cachedDataValuesItDependsOn</a> ()</td></tr>
-<tr class="separator:ac7eb5ad3543a4a2f5230eb68dd3e0d18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Constructors and assignment operators</div></td></tr>
-<tr class="memitem:ac98bc4c9c790a1b942c9b4ee21df1fcb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac98bc4c9c790a1b942c9b4ee21df1fcb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ac98bc4c9c790a1b942c9b4ee21df1fcb">AmplitudeComponent</a> ()=default</td></tr>
-<tr class="memdesc:ac98bc4c9c790a1b942c9b4ee21df1fcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">default constructor <br/></td></tr>
-<tr class="separator:ac98bc4c9c790a1b942c9b4ee21df1fcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a241ef08a3450b57e53b5c4d6de9360db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a241ef08a3450b57e53b5c4d6de9360db"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a241ef08a3450b57e53b5c4d6de9360db">AmplitudeComponent</a> (const <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;)=default</td></tr>
-<tr class="memdesc:a241ef08a3450b57e53b5c4d6de9360db"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy constructor <br/></td></tr>
-<tr class="separator:a241ef08a3450b57e53b5c4d6de9360db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74c4de3b4b6b286ad40546fd01178f41"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74c4de3b4b6b286ad40546fd01178f41"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a74c4de3b4b6b286ad40546fd01178f41">AmplitudeComponent</a> (<a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:a74c4de3b4b6b286ad40546fd01178f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move constructor <br/></td></tr>
-<tr class="separator:a74c4de3b4b6b286ad40546fd01178f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9c1a3998d31a04662b464307fe09871"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9c1a3998d31a04662b464307fe09871"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ae9c1a3998d31a04662b464307fe09871">~AmplitudeComponent</a> ()=default</td></tr>
-<tr class="memdesc:ae9c1a3998d31a04662b464307fe09871"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual default destructor <br/></td></tr>
-<tr class="separator:ae9c1a3998d31a04662b464307fe09871"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e84cbb2839d44d6c275951939879598"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e84cbb2839d44d6c275951939879598"></a>
-<a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a0e84cbb2839d44d6c275951939879598">operator=</a> (const <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;)=default</td></tr>
-<tr class="memdesc:a0e84cbb2839d44d6c275951939879598"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy operator <br/></td></tr>
-<tr class="separator:a0e84cbb2839d44d6c275951939879598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac743b53b2f29a1c842e364061bfb4d1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac743b53b2f29a1c842e364061bfb4d1f"></a>
-<a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ac743b53b2f29a1c842e364061bfb4d1f">operator=</a> (<a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> &amp;&amp;)=default</td></tr>
-<tr class="memdesc:ac743b53b2f29a1c842e364061bfb4d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move operator <br/></td></tr>
-<tr class="separator:ac743b53b2f29a1c842e364061bfb4d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c2e030ab66a9a528e5ed9a6d0808c68"><td class="memItemLeft" align="right" valign="top">virtual const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a8c2e030ab66a9a528e5ed9a6d0808c68">validFor</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const =0</td></tr>
+<tr class="separator:a8c2e030ab66a9a528e5ed9a6d0808c68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6e8c0c0e24344516f29f29fb749bba7"><td class="memItemLeft" align="right" valign="top">virtual const std::complex<br class="typebreak"/>
+&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ad6e8c0c0e24344516f29f29fb749bba7">value</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const =0</td></tr>
+<tr class="separator:ad6e8c0c0e24344516f29f29fb749bba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca8834fbfbf34ac761f05ff2c44a3602"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#aca8834fbfbf34ac761f05ff2c44a3602">variableStatus</a> () const =0</td></tr>
+<tr class="separator:aca8834fbfbf34ac761f05ff2c44a3602"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ac7eb5ad3543a4a2f5230eb68dd3e0d18"></a>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Base class for objects that are multiplicatively incorporated into an amplitude </p>
+<dl class="section author"><dt>Author</dt><dd>Daniel Greenwald </dd></dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a8c2e030ab66a9a528e5ed9a6d0808c68"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -159,27 +136,26 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual CachedDataValueSet yap::AmplitudeComponent::cachedDataValuesItDependsOn </td>
+          <td class="memname">virtual const bool validFor </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>pc</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>a list of CachedDataValues this <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> depends on to be overridden in the concrete <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> </dd>
-<dd>
-empty vector </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>whether <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> can calculate for particular <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> </dd></dl>
 
-<p>Reimplemented in <a class="el" href="classyap_1_1DecayingParticle.html#a3aacb123a7d78f4a3d18b05996ee5b4a">yap::DecayingParticle</a>, <a class="el" href="classyap_1_1DecayChannel.html#a902519c9a338245bb5c06acbc42f11c2">yap::DecayChannel</a>, and <a class="el" href="classyap_1_1BlattWeisskopf.html#a2f50ccf94a6e24cfc20ddf0471cb63a4">yap::BlattWeisskopf</a>.</p>
+<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#abf75da617100c1b09083e09595d99308">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#abf75da617100c1b09083e09595d99308">StaticAmplitudeComponent</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa92adb0ee16f0eee09ea7704aeae434b"></a>
+<a class="anchor" id="ad6e8c0c0e24344516f29f29fb749bba7"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -187,26 +163,70 @@ empty vector </dd></dl>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="group__Parameters.html#ga82369af3c05386dd63443fdc838e0326">ParameterSet</a> yap::AmplitudeComponent::parametersItDependsOn </td>
+          <td class="memname">virtual const std::complex&lt;double&gt; value </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>pc</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>a set of parameters this <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> depends on to be overridden in the concrete <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> </dd>
-<dd>
-empty set </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>value for <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a> and <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td><a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a> </td></tr>
+    <tr><td class="paramname">pc</td><td>shared_ptr to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> must be overloaded in derived class </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classyap_1_1BlattWeisskopf.html#a7fe1b6d6f2ca2c0af9e95c7c3d253a63">BlattWeisskopf</a>, and <a class="el" href="classyap_1_1MassShape.html#a3357e13b61cf74177a5b55bae565294a">MassShape</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aca8834fbfbf34ac761f05ff2c44a3602"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a> variableStatus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>a VariableStatus for this <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> </dd></dl>
+
+<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#a6ba7b2ace13c5987d4a3ae94c0b83cdc">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#a7f844d5cddfb6bc88b3026904422547d">StaticAmplitudeComponent</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a></li>
+<li>/home/dgreenw/work/belle/YAP/include/<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

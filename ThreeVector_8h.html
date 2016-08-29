@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/ThreeVector.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/ThreeVector.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -88,13 +88,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ThreeVector.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Matrix_8h_source.html">Matrix.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/ThreeVector.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="Matrix_8h_source.html">Matrix.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="Vector_8h_source.html">Vector.h</a>&quot;</code><br/>
 </div>
 <p><a href="ThreeVector_8h_source.html">Go to the source code of this file.</a></p>
@@ -105,24 +105,14 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:gaef9b8559fd57eadbfb11f347b6c11b9b"><td class="memTemplParams" colspan="2"><a class="anchor" id="gaef9b8559fd57eadbfb11f347b6c11b9b"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:gaef9b8559fd57eadbfb11f347b6c11b9b"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>yap::ThreeVector</b> = Vector&lt; T, 3 &gt;</td></tr>
-<tr class="separator:gaef9b8559fd57eadbfb11f347b6c11b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a510ac21b18baa972888e74645af8c3fe"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a510ac21b18baa972888e74645af8c3fe"><td class="memTemplItemLeft" align="right" valign="top">constexpr ThreeVector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">yap::cross</a> (const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B) noexcept</td></tr>
+<tr class="memitem:a510ac21b18baa972888e74645af8c3fe"><td class="memTemplItemLeft" align="right" valign="top">constexpr ThreeVector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">cross</a> (const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B) noexcept</td></tr>
 <tr class="separator:a510ac21b18baa972888e74645af8c3fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04309628c353a38c3115f6f1968efaec"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a04309628c353a38c3115f6f1968efaec"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a04309628c353a38c3115f6f1968efaec">yap::angle</a> (const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B)</td></tr>
-<tr class="separator:a04309628c353a38c3115f6f1968efaec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac44ad66820f6c7149a8173f26dcafe21"><td class="memTemplParams" colspan="2"><a class="anchor" id="ac44ad66820f6c7149a8173f26dcafe21"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ac44ad66820f6c7149a8173f26dcafe21"><td class="memTemplItemLeft" align="right" valign="top">constexpr SquareMatrix&lt; T, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">yap::skewSymmetric</a> (const ThreeVector&lt; T &gt; V) noexcept</td></tr>
+<tr class="memitem:ac44ad66820f6c7149a8173f26dcafe21"><td class="memTemplItemLeft" align="right" valign="top">constexpr SquareMatrix&lt; T, 3 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">skewSymmetric</a> (const ThreeVector&lt; T &gt; V) noexcept</td></tr>
 <tr class="memdesc:ac44ad66820f6c7149a8173f26dcafe21"><td class="mdescLeft">&#160;</td><td class="mdescRight">skew symmetric matrix formed from a 3 vector <br/></td></tr>
 <tr class="separator:ac44ad66820f6c7149a8173f26dcafe21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

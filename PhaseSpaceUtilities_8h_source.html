@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/PhaseSpaceUtilities.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/PhaseSpaceUtilities.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -147,51 +147,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;T <a class="code" href="namespaceyap.html#ae7dfbc4a1b2ae22bacfffd8bb73bc065">delta</a>(<span class="keyword">const</span> SquareMatrix&lt;T, N&gt;&amp; M, <span class="keywordtype">size_t</span> l)</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="namespaceyap.html#a0aeda5e2e228706f11a877151c390cda">   62</a></span>&#160;T <a class="code" href="namespaceyap.html#a0aeda5e2e228706f11a877151c390cda">delta</a>(<span class="keyword">const</span> SquareMatrix&lt;T, N&gt;&amp; M, <span class="keywordtype">size_t</span> l)</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;{</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">if</span> (l == 0)</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">throw</span> exceptions::Exception(<span class="stringliteral">&quot;l must be greater than 0&quot;</span>, <span class="stringliteral">&quot;delta&quot;</span>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">throw</span> <a class="code" href="structyap_1_1exceptions_1_1Exception.html">exceptions::Exception</a>(<span class="stringliteral">&quot;l must be greater than 0&quot;</span>, <span class="stringliteral">&quot;delta&quot;</span>);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">if</span> (l &gt; N)</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">throw</span> exceptions::Exception(<span class="stringliteral">&quot;l must be less than or equal to N&quot;</span>, <span class="stringliteral">&quot;delta&quot;</span>);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">throw</span> <a class="code" href="structyap_1_1exceptions_1_1Exception.html">exceptions::Exception</a>(<span class="stringliteral">&quot;l must be less than or equal to N&quot;</span>, <span class="stringliteral">&quot;delta&quot;</span>);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">if</span> (l == 1)</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">trace</a>(M);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">trace</a>(M);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">if</span> (l == N)</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#ad3c87a75f36a255ae2298d1ae34017f7">det</a>(M) * <a class="code" href="namespaceyap.html#a0c8b1f91173bb2f78d081b745173d449">pow_negative_one</a>(1 - 1);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespaceyap.html#a41edfe6f49a1fe6034d80b1141c07dc1">det</a>(M) * <a class="code" href="namespaceyap.html#a0c8b1f91173bb2f78d081b745173d449">pow_negative_one</a>(1 - 1);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">auto</span> C = <a class="code" href="namespaceyap.html#a9f359cf1e294c77bb3ec3afa1bdeea44">combinations</a>(N, l);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    T d = 0;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; c : C)</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        d += <a class="code" href="namespaceyap.html#ad3c87a75f36a255ae2298d1ae34017f7">det</a>(<a class="code" href="namespaceyap.html#a47cdd8a03310b0d5bfec03082d6fb42a">diagonal_minor</a>(M, c));</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        d += <a class="code" href="namespaceyap.html#a41edfe6f49a1fe6034d80b1141c07dc1">det</a>(<a class="code" href="namespaceyap.html#a836e9cb28b1e8e290504bb81fd34ce45">diagonal_minor</a>(M, c));</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">return</span> d * <a class="code" href="namespaceyap.html#a0c8b1f91173bb2f78d081b745173d449">pow_negative_one</a>(l - 1);</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keywordtype">size_t</span> N&gt;</div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="namespaceyap.html#a8fc5eee096898fc4cac2f57e7f4d7ebc">   93</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a8fc5eee096898fc4cac2f57e7f4d7ebc">check_deltas</a>(<span class="keyword">const</span> <a class="code" href="classyap_1_1Matrix.html">SquareMatrix&lt;T, N&gt;</a>&amp; M)</div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="namespaceyap.html#a8fc5eee096898fc4cac2f57e7f4d7ebc">   93</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespaceyap.html#a8fc5eee096898fc4cac2f57e7f4d7ebc">check_deltas</a>(<span class="keyword">const</span> SquareMatrix&lt;T, N&gt;&amp; M)</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;{</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="comment">// check that first four Delta&#39;s are greater than zero</span></div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 1; i &lt; M.size() and i &lt;= 4; ++i)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#ae7dfbc4a1b2ae22bacfffd8bb73bc065">delta</a>(M, i) &lt; 0)</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#a0aeda5e2e228706f11a877151c390cda">delta</a>(M, i) &lt; 0)</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="comment">// check that remaining Delta&#39;s are zero</span></div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 5; i &lt; M.size(); ++i)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#ae7dfbc4a1b2ae22bacfffd8bb73bc065">delta</a>(M, i) != 0)</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespaceyap.html#a0aeda5e2e228706f11a877151c390cda">delta</a>(M, i) != 0)</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
-<div class="ttc" id="namespaceyap_html_ae7dfbc4a1b2ae22bacfffd8bb73bc065"><div class="ttname"><a href="namespaceyap.html#ae7dfbc4a1b2ae22bacfffd8bb73bc065">yap::delta</a></div><div class="ttdeci">T delta(const SquareMatrix&lt; T, N &gt; &amp;M, size_t n)</div><div class="ttdef"><b>Definition:</b> Matrix.h:305</div></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor"></span></div>
+<div class="ttc" id="namespaceyap_html_a41edfe6f49a1fe6034d80b1141c07dc1"><div class="ttname"><a href="namespaceyap.html#a41edfe6f49a1fe6034d80b1141c07dc1">yap::det</a></div><div class="ttdeci">const T det(SquareMatrix&lt; T, N &gt; M)</div><div class="ttdef"><b>Definition:</b> Matrix.h:300</div></div>
 <div class="ttc" id="namespaceyap_html_a9f359cf1e294c77bb3ec3afa1bdeea44"><div class="ttname"><a href="namespaceyap.html#a9f359cf1e294c77bb3ec3afa1bdeea44">yap::combinations</a></div><div class="ttdeci">std::vector&lt; std::vector&lt; size_t &gt; &gt; combinations(size_t N, size_t n, const std::vector&lt; std::vector&lt; size_t &gt; &gt; &amp;C=std::vector&lt; std::vector&lt; size_t &gt; &gt;())</div><div class="ttdef"><b>Definition:</b> PhaseSpaceUtilities.h:33</div></div>
 <div class="ttc" id="Exceptions_8h_html"><div class="ttname"><a href="Exceptions_8h.html">Exceptions.h</a></div></div>
-<div class="ttc" id="namespaceyap_html_a47cdd8a03310b0d5bfec03082d6fb42a"><div class="ttname"><a href="namespaceyap.html#a47cdd8a03310b0d5bfec03082d6fb42a">yap::diagonal_minor</a></div><div class="ttdeci">SquareMatrix&lt; T, M &gt; diagonal_minor(const SquareMatrix&lt; T, N &gt; m, std::vector&lt; size_t &gt; indices)</div><div class="ttdoc">diagonal minor matrix </div><div class="ttdef"><b>Definition:</b> Matrix.h:280</div></div>
-<div class="ttc" id="namespaceyap_html_ac38d70cc6b0e7a1aafec1ccfc9fb7079"><div class="ttname"><a href="namespaceyap.html#ac38d70cc6b0e7a1aafec1ccfc9fb7079">yap::trace</a></div><div class="ttdeci">T trace(const SquareMatrix&lt; T, N &gt; &amp;M)</div><div class="ttdoc">trace </div><div class="ttdef"><b>Definition:</b> Matrix.h:294</div></div>
 <div class="ttc" id="namespaceyap_html_a8fc5eee096898fc4cac2f57e7f4d7ebc"><div class="ttname"><a href="namespaceyap.html#a8fc5eee096898fc4cac2f57e7f4d7ebc">yap::check_deltas</a></div><div class="ttdeci">bool check_deltas(const SquareMatrix&lt; T, N &gt; &amp;M)</div><div class="ttdef"><b>Definition:</b> PhaseSpaceUtilities.h:93</div></div>
 <div class="ttc" id="structyap_1_1exceptions_1_1Exception_html"><div class="ttname"><a href="structyap_1_1exceptions_1_1Exception.html">yap::exceptions::Exception</a></div><div class="ttdoc">Base class for handling YAP exceptions. </div><div class="ttdef"><b>Definition:</b> Exceptions.h:39</div></div>
+<div class="ttc" id="namespaceyap_html_a836e9cb28b1e8e290504bb81fd34ce45"><div class="ttname"><a href="namespaceyap.html#a836e9cb28b1e8e290504bb81fd34ce45">yap::diagonal_minor</a></div><div class="ttdeci">const SquareMatrix&lt; T, M &gt; diagonal_minor(const SquareMatrix&lt; T, N &gt; m, std::vector&lt; size_t &gt; indices)</div><div class="ttdoc">diagonal minor matrix </div><div class="ttdef"><b>Definition:</b> Matrix.h:326</div></div>
+<div class="ttc" id="namespaceyap_html_a0aeda5e2e228706f11a877151c390cda"><div class="ttname"><a href="namespaceyap.html#a0aeda5e2e228706f11a877151c390cda">yap::delta</a></div><div class="ttdeci">T delta(const SquareMatrix&lt; T, N &gt; &amp;M, size_t l)</div><div class="ttdef"><b>Definition:</b> PhaseSpaceUtilities.h:62</div></div>
 <div class="ttc" id="Matrix_8h_html"><div class="ttname"><a href="Matrix_8h.html">Matrix.h</a></div></div>
-<div class="ttc" id="namespaceyap_html_ad3c87a75f36a255ae2298d1ae34017f7"><div class="ttname"><a href="namespaceyap.html#ad3c87a75f36a255ae2298d1ae34017f7">yap::det</a></div><div class="ttdeci">T det(SquareMatrix&lt; T, N &gt; M)</div><div class="ttdef"><b>Definition:</b> Matrix.h:254</div></div>
-<div class="ttc" id="classyap_1_1Matrix_html"><div class="ttname"><a href="classyap_1_1Matrix.html">yap::Matrix</a></div><div class="ttdef"><b>Definition:</b> Matrix.h:38</div></div>
+<div class="ttc" id="namespaceyap_html_aec11611a6ef78e7a13e0da56b5ea8108"><div class="ttname"><a href="namespaceyap.html#aec11611a6ef78e7a13e0da56b5ea8108">yap::trace</a></div><div class="ttdeci">const T trace(const SquareMatrix&lt; T, N &gt; &amp;M)</div><div class="ttdoc">trace </div><div class="ttdef"><b>Definition:</b> Matrix.h:340</div></div>
 <div class="ttc" id="namespaceyap_html_a0c8b1f91173bb2f78d081b745173d449"><div class="ttname"><a href="namespaceyap.html#a0c8b1f91173bb2f78d081b745173d449">yap::pow_negative_one</a></div><div class="ttdeci">constexpr int pow_negative_one(int exponent)</div><div class="ttdoc">optimized function for (-1)^n </div><div class="ttdef"><b>Definition:</b> MathUtilities.h:44</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

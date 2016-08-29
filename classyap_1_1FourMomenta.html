@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: yap::FourMomenta Class Reference</title>
+<title>YAP: FourMomenta Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -90,10 +90,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classyap_1_1FourMomenta-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">yap::FourMomenta Class Reference</div>  </div>
+<div class="title">FourMomenta Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -102,199 +103,188 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><code>#include &lt;<a class="el" href="FourMomenta_8h_source.html">FourMomenta.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for yap::FourMomenta:</div>
+Inheritance diagram for FourMomenta:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classyap_1_1FourMomenta.png" usemap="#yap::FourMomenta_map" alt=""/>
-  <map id="yap::FourMomenta_map" name="yap::FourMomenta_map">
-<area href="classyap_1_1StaticDataAccessor.html" alt="yap::StaticDataAccessor" shape="rect" coords="105,112,305,136"/>
-<area href="classyap_1_1DataAccessor.html" alt="yap::DataAccessor" shape="rect" coords="105,56,305,80"/>
-<area href="classyap_1_1ReportsModel.html" alt="yap::ReportsModel" shape="rect" coords="0,0,200,24"/>
-<area href="classyap_1_1ReportsParticleCombinations.html" alt="yap::ReportsParticleCombinations" shape="rect" coords="210,0,410,24"/>
+  <img src="classyap_1_1FourMomenta.png" usemap="#FourMomenta_map" alt=""/>
+  <map id="FourMomenta_map" name="FourMomenta_map">
+<area href="classyap_1_1StaticDataAccessor.html" title="Base class for all data accessors that will only write to DataPoint once at initial data loading..." alt="StaticDataAccessor" shape="rect" coords="0,56,123,80"/>
+<area href="classyap_1_1DataAccessor.html" title="Abstract base class for all objects accessing DataPoint&#39;s. " alt="DataAccessor" shape="rect" coords="0,0,123,24"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a21bf1e608c21cda7c56d7ee199926335"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a21bf1e608c21cda7c56d7ee199926335"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a21bf1e608c21cda7c56d7ee199926335">FourMomenta</a> (<a class="el" href="classyap_1_1Model.html">Model</a> *<a class="el" href="classyap_1_1FourMomenta.html#ab3b75cd8422922528c2c09151667f22a">m</a>)</td></tr>
-<tr class="memdesc:a21bf1e608c21cda7c56d7ee199926335"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br/></td></tr>
-<tr class="separator:a21bf1e608c21cda7c56d7ee199926335"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4519349b33976251ae86c215a569be1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4519349b33976251ae86c215a569be1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ac4519349b33976251ae86c215a569be1">consistent</a> () const </td></tr>
-<tr class="memdesc:ac4519349b33976251ae86c215a569be1"><td class="mdescLeft">&#160;</td><td class="mdescRight">check consistency <br/></td></tr>
-<tr class="separator:ac4519349b33976251ae86c215a569be1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0f8a459c4d8939e67a93380c1ab9df0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#aa0f8a459c4d8939e67a93380c1ab9df0">calculate</a> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm) const override</td></tr>
-<tr class="separator:aa0f8a459c4d8939e67a93380c1ab9df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9dc7639011ea5dd511375679575f220c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9dc7639011ea5dd511375679575f220c"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a9dc7639011ea5dd511375679575f220c">printMasses</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, std::ostream &amp;os=std::cout) const </td></tr>
-<tr class="memdesc:a9dc7639011ea5dd511375679575f220c"><td class="mdescLeft">&#160;</td><td class="mdescRight">print all masses <br/></td></tr>
-<tr class="separator:a9dc7639011ea5dd511375679575f220c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c8338998dad475b0ad5117b0a29e3c9"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a4c8338998dad475b0ad5117b0a29e3c9">data_accessor_type</a> () const override</td></tr>
-<tr class="separator:a4c8338998dad475b0ad5117b0a29e3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a290aa1bd8022f46146d39af64e5b84df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a290aa1bd8022f46146d39af64e5b84df">FourMomenta</a> (<a class="el" href="classyap_1_1Model.html">Model</a> &amp;<a class="el" href="classyap_1_1FourMomenta.html#a6904d015b5df4f46e6dd3338486bccb8">m</a>)</td></tr>
+<tr class="separator:a290aa1bd8022f46146d39af64e5b84df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d6673c276c83c3b8c34df9cfd235559"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d6673c276c83c3b8c34df9cfd235559"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a5d6673c276c83c3b8c34df9cfd235559">consistent</a> () const </td></tr>
+<tr class="memdesc:a5d6673c276c83c3b8c34df9cfd235559"><td class="mdescLeft">&#160;</td><td class="mdescRight">check consistency <br/></td></tr>
+<tr class="separator:a5d6673c276c83c3b8c34df9cfd235559"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92e8c9e9bffb40bc8cee91475fcaeeae"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a92e8c9e9bffb40bc8cee91475fcaeeae">calculate</a> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm) const override</td></tr>
+<tr class="separator:a92e8c9e9bffb40bc8cee91475fcaeeae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6409aece02b645d0f148e0fb3b817f98"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6409aece02b645d0f148e0fb3b817f98"></a>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a6409aece02b645d0f148e0fb3b817f98">printMasses</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, std::ostream &amp;os=std::cout) const </td></tr>
+<tr class="memdesc:a6409aece02b645d0f148e0fb3b817f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">print all masses <br/></td></tr>
+<tr class="separator:a6409aece02b645d0f148e0fb3b817f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
-<tr class="memitem:a3df2294878bc464d123dfc4f3603763c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a3df2294878bc464d123dfc4f3603763c">p</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
-<tr class="separator:a3df2294878bc464d123dfc4f3603763c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b4827900db34988b042313f837feecb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a3b4827900db34988b042313f837feecb">m2</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
-<tr class="separator:a3b4827900db34988b042313f837feecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3b75cd8422922528c2c09151667f22a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ab3b75cd8422922528c2c09151667f22a">m</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
-<tr class="separator:ab3b75cd8422922528c2c09151667f22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba304731513254cb57c84f70012eb01a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#aba304731513254cb57c84f70012eb01a">initialStateMomentum</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d) const </td></tr>
-<tr class="separator:aba304731513254cb57c84f70012eb01a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6068f72d1e2076af10fc064d316b8da4"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a><br class="typebreak"/>
-&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a6068f72d1e2076af10fc064d316b8da4">finalStateMomenta</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d) const </td></tr>
-<tr class="separator:a6068f72d1e2076af10fc064d316b8da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49bb799558eb02bf63814c8272b65f5c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classyap_1_1RealCachedDataValue.html">RealCachedDataValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a49bb799558eb02bf63814c8272b65f5c">mass</a> ()</td></tr>
-<tr class="separator:a49bb799558eb02bf63814c8272b65f5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2afb3c251d8b7a2127bb11a4742fdfd"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classyap_1_1RealCachedDataValue.html">RealCachedDataValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ae2afb3c251d8b7a2127bb11a4742fdfd">mass</a> () const </td></tr>
-<tr class="separator:ae2afb3c251d8b7a2127bb11a4742fdfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9dd15957acd510adc745e487846f8cf"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classyap_1_1FourVectorCachedDataValue.html">FourVectorCachedDataValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#af9dd15957acd510adc745e487846f8cf">momentum</a> ()</td></tr>
-<tr class="separator:af9dd15957acd510adc745e487846f8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12f668c169218a42562b4e297c7c43bf"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classyap_1_1FourVectorCachedDataValue.html">FourVectorCachedDataValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a12f668c169218a42562b4e297c7c43bf">momentum</a> () const </td></tr>
-<tr class="separator:a12f668c169218a42562b4e297c7c43bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1StaticDataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1StaticDataAccessor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1StaticDataAccessor.html">yap::StaticDataAccessor</a></td></tr>
-<tr class="memitem:ae33b5a35ca60bb52255c65539253b0cc inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#ae33b5a35ca60bb52255c65539253b0cc">StaticDataAccessor</a> (<a class="el" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a> *equiv=&amp;ParticleCombination::equivBySharedPointer)</td></tr>
-<tr class="separator:ae33b5a35ca60bb52255c65539253b0cc inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21c52840e769e582f92284bc353d2862 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a21c52840e769e582f92284bc353d2862">StaticDataAccessor</a> (<a class="el" href="classyap_1_1Model.html">Model</a> *m, <a class="el" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a> *equiv=&amp;ParticleCombination::equivBySharedPointer)</td></tr>
-<tr class="separator:a21c52840e769e582f92284bc353d2862 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a392d09809cc980f948db769f29084cee inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a392d09809cc980f948db769f29084cee"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a392d09809cc980f948db769f29084cee">setModel</a> (<a class="el" href="classyap_1_1Model.html">Model</a> *m)</td></tr>
-<tr class="memdesc:a392d09809cc980f948db769f29084cee inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> and add this <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> to the <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a>'s DataAccessorSet. <br/></td></tr>
-<tr class="separator:a392d09809cc980f948db769f29084cee inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfd7ec41fdd83347fe1b4aad67db4e26 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1Model.html">Model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#abfd7ec41fdd83347fe1b4aad67db4e26">model</a> () const override</td></tr>
-<tr class="separator:abfd7ec41fdd83347fe1b4aad67db4e26 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1DataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataAccessor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataAccessor.html">yap::DataAccessor</a></td></tr>
-<tr class="memitem:a67fe0454239cd8cb22ab0ba8d22ec37d inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a67fe0454239cd8cb22ab0ba8d22ec37d">DataAccessor</a> (<a class="el" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a> *equiv=&amp;ParticleCombination::equivBySharedPointer)</td></tr>
-<tr class="separator:a67fe0454239cd8cb22ab0ba8d22ec37d inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91c3ab7e3a18f6e3386a9aa6639dc505 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const CachedDataValueSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a91c3ab7e3a18f6e3386a9aa6639dc505">cachedDataValues</a> () const </td></tr>
-<tr class="separator:a91c3ab7e3a18f6e3386a9aa6639dc505 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acaebab7294fcd91608597d3a55e28560 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#acaebab7294fcd91608597d3a55e28560">size</a> () const </td></tr>
-<tr class="separator:acaebab7294fcd91608597d3a55e28560 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38136daedb5f5f9e05a05eb826fed981 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a38136daedb5f5f9e05a05eb826fed981"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a38136daedb5f5f9e05a05eb826fed981">consistent</a> () const </td></tr>
-<tr class="memdesc:a38136daedb5f5f9e05a05eb826fed981 inherit pub_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check consistency of object. <br/></td></tr>
-<tr class="separator:a38136daedb5f5f9e05a05eb826fed981 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a674000d2cec4cd9346e54a8efecf537b inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a674000d2cec4cd9346e54a8efecf537b">index</a> () const </td></tr>
-<tr class="separator:a674000d2cec4cd9346e54a8efecf537b inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f0c56c1a061ce95221c3b65076c864d inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a5f0c56c1a061ce95221c3b65076c864d">hasParticleCombination</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;c) const </td></tr>
-<tr class="separator:a5f0c56c1a061ce95221c3b65076c864d inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad984da10b4bb02a825596f078bc17256 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ad984da10b4bb02a825596f078bc17256">hasParticleCombination</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;c, const <a class="el" href="structyap_1_1ParticleCombination_1_1Equiv.html">ParticleCombination::Equiv</a> &amp;equiv) const </td></tr>
-<tr class="separator:ad984da10b4bb02a825596f078bc17256 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8780dfc1660c9ad461a5dbca69e6936b inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a8780dfc1660c9ad461a5dbca69e6936b">symmetrizationIndex</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;c) const </td></tr>
-<tr class="separator:a8780dfc1660c9ad461a5dbca69e6936b inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e21d71433564802a39905a15800d1b9 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceyap.html#a9f3ae2e2fae301d24b4b7900569f00b7">ParticleCombinationMap</a><br class="typebreak"/>
-&lt; unsigned &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a0e21d71433564802a39905a15800d1b9">symmetrizationIndices</a> () const </td></tr>
-<tr class="separator:a0e21d71433564802a39905a15800d1b9 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adae656c229b8cd1d65f02831bbef5000 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#adae656c229b8cd1d65f02831bbef5000">maxSymmetrizationIndex</a> () const </td></tr>
-<tr class="separator:adae656c229b8cd1d65f02831bbef5000 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a739500ce8affc4684ee0052e0f8bff57 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">ParticleCombinationVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a739500ce8affc4684ee0052e0f8bff57">particleCombinations</a> () const override</td></tr>
-<tr class="separator:a739500ce8affc4684ee0052e0f8bff57 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a721483f9ecec2a5652a1b824ac9e02ad inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a721483f9ecec2a5652a1b824ac9e02ad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a721483f9ecec2a5652a1b824ac9e02ad">printParticleCombinations</a> () const </td></tr>
-<tr class="memdesc:a721483f9ecec2a5652a1b824ac9e02ad inherit pub_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">print <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> map <br/></td></tr>
-<tr class="separator:a721483f9ecec2a5652a1b824ac9e02ad inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1ReportsModel"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1ReportsModel')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1ReportsModel.html">yap::ReportsModel</a></td></tr>
-<tr class="memitem:a1f0c3f11ec63f5845029e998330c7517 inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1f0c3f11ec63f5845029e998330c7517"></a>
-<a class="el" href="classyap_1_1Model.html">Model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a1f0c3f11ec63f5845029e998330c7517">model</a> ()</td></tr>
-<tr class="memdesc:a1f0c3f11ec63f5845029e998330c7517 inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">get raw pointer to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> <br/></td></tr>
-<tr class="separator:a1f0c3f11ec63f5845029e998330c7517 inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86206bd98b3ef5b721d563d80be39c87 inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86206bd98b3ef5b721d563d80be39c87"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a86206bd98b3ef5b721d563d80be39c87">ReportsModel</a> ()</td></tr>
-<tr class="memdesc:a86206bd98b3ef5b721d563d80be39c87 inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
-<tr class="separator:a86206bd98b3ef5b721d563d80be39c87 inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55cc4002269508bff520923a4dc4aa8b inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a55cc4002269508bff520923a4dc4aa8b"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a55cc4002269508bff520923a4dc4aa8b">~ReportsModel</a> ()=default</td></tr>
-<tr class="memdesc:a55cc4002269508bff520923a4dc4aa8b inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor <br/></td></tr>
-<tr class="separator:a55cc4002269508bff520923a4dc4aa8b inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d6f64ba11ded0759cc2f422edcd97f9 inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d6f64ba11ded0759cc2f422edcd97f9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a3d6f64ba11ded0759cc2f422edcd97f9">ReportsModel</a> (const <a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;other)=default</td></tr>
-<tr class="memdesc:a3d6f64ba11ded0759cc2f422edcd97f9 inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy constructor <br/></td></tr>
-<tr class="separator:a3d6f64ba11ded0759cc2f422edcd97f9 inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd05c840d1abd28510e4f53583355ec1 inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acd05c840d1abd28510e4f53583355ec1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#acd05c840d1abd28510e4f53583355ec1">ReportsModel</a> (<a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;&amp;other)=default</td></tr>
-<tr class="memdesc:acd05c840d1abd28510e4f53583355ec1 inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move constructor <br/></td></tr>
-<tr class="separator:acd05c840d1abd28510e4f53583355ec1 inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80b4aa986349438a8b6fdaa4ecd1bd2b inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80b4aa986349438a8b6fdaa4ecd1bd2b"></a>
-<a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a80b4aa986349438a8b6fdaa4ecd1bd2b">operator=</a> (const <a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;rhs)=default</td></tr>
-<tr class="memdesc:a80b4aa986349438a8b6fdaa4ecd1bd2b inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy assignment operator <br/></td></tr>
-<tr class="separator:a80b4aa986349438a8b6fdaa4ecd1bd2b inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a845b88707e6d192dac0738b83f76b45e inherit pub_methods_classyap_1_1ReportsModel"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a845b88707e6d192dac0738b83f76b45e"></a>
-<a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsModel.html#a845b88707e6d192dac0738b83f76b45e">operator=</a> (<a class="el" href="classyap_1_1ReportsModel.html">ReportsModel</a> &amp;&amp;rhs)=default</td></tr>
-<tr class="memdesc:a845b88707e6d192dac0738b83f76b45e inherit pub_methods_classyap_1_1ReportsModel"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move assignment operator <br/></td></tr>
-<tr class="separator:a845b88707e6d192dac0738b83f76b45e inherit pub_methods_classyap_1_1ReportsModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classyap_1_1ReportsParticleCombinations"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1ReportsParticleCombinations')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1ReportsParticleCombinations.html">yap::ReportsParticleCombinations</a></td></tr>
-<tr class="memitem:a3edb31bbb8d137c753b18a8ac74c8419 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3edb31bbb8d137c753b18a8ac74c8419"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#a3edb31bbb8d137c753b18a8ac74c8419">ReportsParticleCombinations</a> ()=default</td></tr>
-<tr class="memdesc:a3edb31bbb8d137c753b18a8ac74c8419 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
-<tr class="separator:a3edb31bbb8d137c753b18a8ac74c8419 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9af5f99b586211ee1bffbb8cdd11523b inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9af5f99b586211ee1bffbb8cdd11523b"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#a9af5f99b586211ee1bffbb8cdd11523b">~ReportsParticleCombinations</a> ()=default</td></tr>
-<tr class="memdesc:a9af5f99b586211ee1bffbb8cdd11523b inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual destructor <br/></td></tr>
-<tr class="separator:a9af5f99b586211ee1bffbb8cdd11523b inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad68c5a9f136f5e1f04dfa25ead41e31f inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad68c5a9f136f5e1f04dfa25ead41e31f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#ad68c5a9f136f5e1f04dfa25ead41e31f">ReportsParticleCombinations</a> (const <a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;other)=default</td></tr>
-<tr class="memdesc:ad68c5a9f136f5e1f04dfa25ead41e31f inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy constructor <br/></td></tr>
-<tr class="separator:ad68c5a9f136f5e1f04dfa25ead41e31f inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a41dfe3515a604e3da7d7871838f868 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a41dfe3515a604e3da7d7871838f868"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#a7a41dfe3515a604e3da7d7871838f868">ReportsParticleCombinations</a> (<a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;&amp;other)=default</td></tr>
-<tr class="memdesc:a7a41dfe3515a604e3da7d7871838f868 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move constructor <br/></td></tr>
-<tr class="separator:a7a41dfe3515a604e3da7d7871838f868 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f00100a79dd4b4d98b60e52a47bf410 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f00100a79dd4b4d98b60e52a47bf410"></a>
-<a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#a0f00100a79dd4b4d98b60e52a47bf410">operator=</a> (const <a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;rhs)=default</td></tr>
-<tr class="memdesc:a0f00100a79dd4b4d98b60e52a47bf410 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">default copy assignment operator <br/></td></tr>
-<tr class="separator:a0f00100a79dd4b4d98b60e52a47bf410 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac04db2505b1c3dd380d440d11498c121 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac04db2505b1c3dd380d440d11498c121"></a>
-<a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ReportsParticleCombinations.html#ac04db2505b1c3dd380d440d11498c121">operator=</a> (<a class="el" href="classyap_1_1ReportsParticleCombinations.html">ReportsParticleCombinations</a> &amp;&amp;rhs)=default</td></tr>
-<tr class="memdesc:ac04db2505b1c3dd380d440d11498c121 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="mdescLeft">&#160;</td><td class="mdescRight">default move assignment operator <br/></td></tr>
-<tr class="separator:ac04db2505b1c3dd380d440d11498c121 inherit pub_methods_classyap_1_1ReportsParticleCombinations"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7fca2af044e8ca7f57dfe3fbc202473"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ac7fca2af044e8ca7f57dfe3fbc202473">p</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
+<tr class="separator:ac7fca2af044e8ca7f57dfe3fbc202473"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a09f94cc39f5a09dfeb44b486a7db82"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a2a09f94cc39f5a09dfeb44b486a7db82">m2</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
+<tr class="separator:a2a09f94cc39f5a09dfeb44b486a7db82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6904d015b5df4f46e6dd3338486bccb8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a6904d015b5df4f46e6dd3338486bccb8">m</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const </td></tr>
+<tr class="separator:a6904d015b5df4f46e6dd3338486bccb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adab04bed2bc92aa75411deefc53ad66e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#adab04bed2bc92aa75411deefc53ad66e">totalMomentum</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d) const </td></tr>
+<tr class="separator:adab04bed2bc92aa75411deefc53ad66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34dfdcf128330bd788616f89146ee77f"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a><br class="typebreak"/>
+&lt; double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a34dfdcf128330bd788616f89146ee77f">finalStateMomenta</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d) const </td></tr>
+<tr class="separator:a34dfdcf128330bd788616f89146ee77f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a107340da7e055efc136d0d681b6a8b6e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a107340da7e055efc136d0d681b6a8b6e">mass</a> ()</td></tr>
+<tr class="separator:a107340da7e055efc136d0d681b6a8b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17a935f419d87e19b64a6dc20f771552"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a17a935f419d87e19b64a6dc20f771552">mass</a> () const </td></tr>
+<tr class="separator:a17a935f419d87e19b64a6dc20f771552"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2acb996ce3ecfaa90a387a3a26f2d9f8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a2acb996ce3ecfaa90a387a3a26f2d9f8">momentum</a> ()</td></tr>
+<tr class="separator:a2acb996ce3ecfaa90a387a3a26f2d9f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5e4bc3de39eef9cc9831a60aafb21b3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#af5e4bc3de39eef9cc9831a60aafb21b3">momentum</a> () const </td></tr>
+<tr class="separator:af5e4bc3de39eef9cc9831a60aafb21b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1StaticDataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1StaticDataAccessor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1StaticDataAccessor.html">StaticDataAccessor</a></td></tr>
+<tr class="memitem:a2130ee867589cdd328d53df6cbc78976 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a2130ee867589cdd328d53df6cbc78976">StaticDataAccessor</a> (<a class="el" href="classyap_1_1Model.html">Model</a> &amp;m, const ParticleCombinationEqualTo &amp;<a class="el" href="classyap_1_1DataAccessor.html#ac5ddf803db4cefeaf74a84a1b6187d1b">equal</a>)</td></tr>
+<tr class="separator:a2130ee867589cdd328d53df6cbc78976 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a220410581dfbb18c4372595b79d7cbe1 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1Model.html">Model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a220410581dfbb18c4372595b79d7cbe1">model</a> () const override</td></tr>
+<tr class="separator:a220410581dfbb18c4372595b79d7cbe1 inherit pub_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classyap_1_1DataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classyap_1_1DataAccessor')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a></td></tr>
+<tr class="memitem:ac4904f8423fe21d09a4b315f7c886800 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ac4904f8423fe21d09a4b315f7c886800">DataAccessor</a> (const ParticleCombinationEqualTo &amp;<a class="el" href="classyap_1_1DataAccessor.html#ac5ddf803db4cefeaf74a84a1b6187d1b">equal</a>)</td></tr>
+<tr class="separator:ac4904f8423fe21d09a4b315f7c886800 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5ddf803db4cefeaf74a84a1b6187d1b inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const ParticleCombinationEqualTo &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ac5ddf803db4cefeaf74a84a1b6187d1b">equal</a> () const </td></tr>
+<tr class="separator:ac5ddf803db4cefeaf74a84a1b6187d1b inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9c88ed5e8125d66291acd55da72d73e inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ad9c88ed5e8125d66291acd55da72d73e">index</a> () const </td></tr>
+<tr class="separator:ad9c88ed5e8125d66291acd55da72d73e inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23267c4f02f8c2ac29186a34bd1913c2 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a23267c4f02f8c2ac29186a34bd1913c2">symmetrizationIndex</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;c) const </td></tr>
+<tr class="separator:a23267c4f02f8c2ac29186a34bd1913c2 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf30d31ffcf53f887fac89bc0e46fc2a inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const ParticleCombinationMap<br class="typebreak"/>
+&lt; unsigned &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#aaf30d31ffcf53f887fac89bc0e46fc2a">symmetrizationIndices</a> () const </td></tr>
+<tr class="separator:aaf30d31ffcf53f887fac89bc0e46fc2a inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeebabae7bba365b9c1ad710819426871 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#aeebabae7bba365b9c1ad710819426871">nSymmetrizationIndices</a> () const </td></tr>
+<tr class="separator:aeebabae7bba365b9c1ad710819426871 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd2c68c83d9f61e66ec99fa199c8c301 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd2c68c83d9f61e66ec99fa199c8c301"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#abd2c68c83d9f61e66ec99fa199c8c301">printParticleCombinations</a> () const </td></tr>
+<tr class="memdesc:abd2c68c83d9f61e66ec99fa199c8c301 inherit pub_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">print <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> map <br/></td></tr>
+<tr class="separator:abd2c68c83d9f61e66ec99fa199c8c301 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c640911512e10657bfb87e042175190 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const CachedValueSet &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a8c640911512e10657bfb87e042175190">CachedValues</a> () const </td></tr>
+<tr class="separator:a8c640911512e10657bfb87e042175190 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a543fba15e7ef1f249481c57746d91f68 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a543fba15e7ef1f249481c57746d91f68">size</a> () const </td></tr>
+<tr class="separator:a543fba15e7ef1f249481c57746d91f68 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe41331efc9a76116b6dcf9c2cf3189 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#abfe41331efc9a76116b6dcf9c2cf3189">requiresStorage</a> () const </td></tr>
+<tr class="separator:abfe41331efc9a76116b6dcf9c2cf3189 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d6673c276c83c3b8c34df9cfd235559 inherit pub_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5d6673c276c83c3b8c34df9cfd235559"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a5d6673c276c83c3b8c34df9cfd235559">consistent</a> () const </td></tr>
+<tr class="memdesc:a5d6673c276c83c3b8c34df9cfd235559 inherit pub_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check consistency of object. <br/></td></tr>
+<tr class="separator:a5d6673c276c83c3b8c34df9cfd235559 inherit pub_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a9cd11a51905ec1cd03f6771130ea44f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a9cd11a51905ec1cd03f6771130ea44f5">setFinalStateMomenta</a> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; &gt; &amp;P, <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm) const </td></tr>
-<tr class="separator:a9cd11a51905ec1cd03f6771130ea44f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae59865960e23e46746566288fac43536"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ae59865960e23e46746566288fac43536">addParticleCombination</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; pc) override</td></tr>
-<tr class="memdesc:ae59865960e23e46746566288fac43536"><td class="mdescLeft">&#160;</td><td class="mdescRight">looks for ISP when adding <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a>'s  <a href="#ae59865960e23e46746566288fac43536">More...</a><br/></td></tr>
-<tr class="separator:ae59865960e23e46746566288fac43536"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acae87eab54e6526acff9133f2fd30cf7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acae87eab54e6526acff9133f2fd30cf7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#acae87eab54e6526acff9133f2fd30cf7">pruneSymmetrizationIndices</a> () override</td></tr>
-<tr class="memdesc:acae87eab54e6526acff9133f2fd30cf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">override to do nothing, since <a class="el" href="classyap_1_1FourMomenta.html" title="Stores and gives access to four-momenta and invariant masses. ">FourMomenta</a> doesn't rely on parents being set. <br/></td></tr>
-<tr class="separator:acae87eab54e6526acff9133f2fd30cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classyap_1_1DataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataAccessor')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataAccessor.html">yap::DataAccessor</a></td></tr>
-<tr class="memitem:ae439dd12766124fd32cdaca0cdc983fb inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae439dd12766124fd32cdaca0cdc983fb"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ae439dd12766124fd32cdaca0cdc983fb">addToModel</a> ()</td></tr>
-<tr class="memdesc:ae439dd12766124fd32cdaca0cdc983fb inherit pro_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">register with <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> <br/></td></tr>
-<tr class="separator:ae439dd12766124fd32cdaca0cdc983fb inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a346d2b92421f9c95ed9c70e4aa12d9b1 inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a346d2b92421f9c95ed9c70e4aa12d9b1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a346d2b92421f9c95ed9c70e4aa12d9b1">addCachedDataValue</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1CachedDataValue.html">CachedDataValue</a> &gt; c)</td></tr>
-<tr class="memdesc:a346d2b92421f9c95ed9c70e4aa12d9b1 inherit pro_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">add <a class="el" href="classyap_1_1CachedDataValue.html">CachedDataValue</a> <br/></td></tr>
-<tr class="separator:a346d2b92421f9c95ed9c70e4aa12d9b1 inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a49db88790a9c6bb57780d757c0f554 inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a7a49db88790a9c6bb57780d757c0f554">increaseSize</a> (unsigned n)</td></tr>
-<tr class="separator:a7a49db88790a9c6bb57780d757c0f554 inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a332783235b6006dbff1e17ca25778124 inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a332783235b6006dbff1e17ca25778124"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a332783235b6006dbff1e17ca25778124">setIndex</a> (size_t i)</td></tr>
-<tr class="memdesc:a332783235b6006dbff1e17ca25778124 inherit pro_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">set storage index used in <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a>. Must be unique. <br/></td></tr>
-<tr class="separator:a332783235b6006dbff1e17ca25778124 inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4af03dbbab38489483f98095f62d683"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ac4af03dbbab38489483f98095f62d683">setFinalStateMomenta</a> (<a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; &gt; &amp;P, <a class="el" href="classyap_1_1StatusManager.html">StatusManager</a> &amp;sm) const </td></tr>
+<tr class="separator:ac4af03dbbab38489483f98095f62d683"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4ebb82f6e0f3d4ca621ca14d9aff37e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ae4ebb82f6e0f3d4ca621ca14d9aff37e">addParticleCombination</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; pc) override</td></tr>
+<tr class="memdesc:ae4ebb82f6e0f3d4ca621ca14d9aff37e"><td class="mdescLeft">&#160;</td><td class="mdescRight">looks for ISP when adding <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a>'s  <a href="#ae4ebb82f6e0f3d4ca621ca14d9aff37e">More...</a><br/></td></tr>
+<tr class="separator:ae4ebb82f6e0f3d4ca621ca14d9aff37e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5c53fcb89da4015d41f2993985cb399"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5c53fcb89da4015d41f2993985cb399"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#ad5c53fcb89da4015d41f2993985cb399">pruneSymmetrizationIndices</a> () override</td></tr>
+<tr class="memdesc:ad5c53fcb89da4015d41f2993985cb399"><td class="mdescLeft">&#160;</td><td class="mdescRight">override to do nothing, since <a class="el" href="classyap_1_1FourMomenta.html" title="Stores and gives access to four-momenta and invariant masses. ">FourMomenta</a> doesn't rely on parents being set. <br/></td></tr>
+<tr class="separator:ad5c53fcb89da4015d41f2993985cb399"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classyap_1_1StaticDataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1StaticDataAccessor')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1StaticDataAccessor.html">StaticDataAccessor</a></td></tr>
+<tr class="memitem:a713ca7d20f25d9e111a5b782d9989b7f inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a713ca7d20f25d9e111a5b782d9989b7f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a713ca7d20f25d9e111a5b782d9989b7f">registerWithModel</a> () override</td></tr>
+<tr class="memdesc:a713ca7d20f25d9e111a5b782d9989b7f inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">register with <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> <br/></td></tr>
+<tr class="separator:a713ca7d20f25d9e111a5b782d9989b7f inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a4ac1435c069190fafd12284a9b467c inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a4ac1435c069190fafd12284a9b467c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#a9a4ac1435c069190fafd12284a9b467c">addToStaticDataAccessors</a> ()</td></tr>
+<tr class="memdesc:a9a4ac1435c069190fafd12284a9b467c inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">add to model's StaticDataAccessors_ <br/></td></tr>
+<tr class="separator:a9a4ac1435c069190fafd12284a9b467c inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdfcda68d77f845443a077f2c96e3c54 inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acdfcda68d77f845443a077f2c96e3c54"></a>
+StaticDataAccessorVector &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1StaticDataAccessor.html#acdfcda68d77f845443a077f2c96e3c54">staticDataAccessors</a> ()</td></tr>
+<tr class="memdesc:acdfcda68d77f845443a077f2c96e3c54 inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to the model's StaticDataAccessors_ <br/></td></tr>
+<tr class="separator:acdfcda68d77f845443a077f2c96e3c54 inherit pro_methods_classyap_1_1StaticDataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classyap_1_1DataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DataAccessor')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a></td></tr>
+<tr class="memitem:ad1318fc417e03966932f53574353546a inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad1318fc417e03966932f53574353546a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ad1318fc417e03966932f53574353546a">addCachedValue</a> (std::shared_ptr&lt; <a class="el" href="classyap_1_1CachedValue.html">CachedValue</a> &gt; c)</td></tr>
+<tr class="memdesc:ad1318fc417e03966932f53574353546a inherit pro_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">add <a class="el" href="classyap_1_1CachedValue.html" title="Class for managing cached values inside a DataPoint. ">CachedValue</a> <br/></td></tr>
+<tr class="separator:ad1318fc417e03966932f53574353546a inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a635f04e4fa35b97a06f5d1ac0c55fc74 inherit pro_methods_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a635f04e4fa35b97a06f5d1ac0c55fc74"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a635f04e4fa35b97a06f5d1ac0c55fc74">setIndex</a> (size_t i)</td></tr>
+<tr class="memdesc:a635f04e4fa35b97a06f5d1ac0c55fc74 inherit pro_methods_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">set storage index used in <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a>. Must be unique. <br/></td></tr>
+<tr class="separator:a635f04e4fa35b97a06f5d1ac0c55fc74 inherit pro_methods_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a005c457108af59fd554525696755e132"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a005c457108af59fd554525696755e132"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a005c457108af59fd554525696755e132">TotalIndex_</a></td></tr>
+<tr class="memdesc:a005c457108af59fd554525696755e132"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symmetrization index of an initial state that is composed from ALL final state particles. <br/></td></tr>
+<tr class="separator:a005c457108af59fd554525696755e132"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96f4eb36bf6dbacb88ffd5714cb533f0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a96f4eb36bf6dbacb88ffd5714cb533f0"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a96f4eb36bf6dbacb88ffd5714cb533f0">FSPIndices_</a></td></tr>
+<tr class="memdesc:a96f4eb36bf6dbacb88ffd5714cb533f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symmetrization indices of final states. <br/></td></tr>
+<tr class="separator:a96f4eb36bf6dbacb88ffd5714cb533f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48d06b1e7d80846c26b8551a1909bab3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48d06b1e7d80846c26b8551a1909bab3"></a>
+std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a48d06b1e7d80846c26b8551a1909bab3">P_</a></td></tr>
+<tr class="memdesc:a48d06b1e7d80846c26b8551a1909bab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">four-vector of particle combinations <br/></td></tr>
+<tr class="separator:a48d06b1e7d80846c26b8551a1909bab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5dbd8f1342031e818c35997f36d5d287"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5dbd8f1342031e818c35997f36d5d287"></a>
+std::shared_ptr&lt; <a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a5dbd8f1342031e818c35997f36d5d287">M_</a></td></tr>
+<tr class="memdesc:a5dbd8f1342031e818c35997f36d5d287"><td class="mdescLeft">&#160;</td><td class="mdescRight">invariant mass of particle combinations [GeV] <br/></td></tr>
+<tr class="separator:a5dbd8f1342031e818c35997f36d5d287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a2bf2a0e9b454c55aa5dcb5aa4698697b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2bf2a0e9b454c55aa5dcb5aa4698697b"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a2bf2a0e9b454c55aa5dcb5aa4698697b">Model</a></td></tr>
-<tr class="memdesc:a2bf2a0e9b454c55aa5dcb5aa4698697b"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> to call addParticleCombination <br/></td></tr>
+<tr class="memdesc:a2bf2a0e9b454c55aa5dcb5aa4698697b"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> to call addParticleCombination and setFinalStateMomenta <br/></td></tr>
 <tr class="separator:a2bf2a0e9b454c55aa5dcb5aa4698697b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a584d66859d692988084558aff0da481d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a584d66859d692988084558aff0da481d"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourMomenta.html#a584d66859d692988084558aff0da481d">DataPoint</a></td></tr>
-<tr class="memdesc:a584d66859d692988084558aff0da481d"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a> to call setFourMomenta <br/></td></tr>
-<tr class="separator:a584d66859d692988084558aff0da481d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_attribs_classyap_1_1DataAccessor"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classyap_1_1DataAccessor')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a></td></tr>
+<tr class="memitem:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab24e80cfd7ddce846f45480037f424be"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#ab24e80cfd7ddce846f45480037f424be">Model</a></td></tr>
+<tr class="memdesc:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> to access CachedValues_ <br/></td></tr>
+<tr class="separator:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01b5d468d53956cb80ba27b950c3195a inherit pub_attribs_classyap_1_1DataAccessor"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a01b5d468d53956cb80ba27b950c3195a"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DataAccessor.html#a01b5d468d53956cb80ba27b950c3195a">CachedValue</a></td></tr>
+<tr class="memdesc:a01b5d468d53956cb80ba27b950c3195a inherit pub_attribs_classyap_1_1DataAccessor"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1CachedValue.html" title="Class for managing cached values inside a DataPoint. ">CachedValue</a> to call addCachedValue <br/></td></tr>
+<tr class="separator:a01b5d468d53956cb80ba27b950c3195a inherit pub_attribs_classyap_1_1DataAccessor"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Stores and gives access to four-momenta and invariant masses. </p>
 <dl class="section author"><dt>Author</dt><dd>Johannes Rauch, Daniel Greenwald </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="ae59865960e23e46746566288fac43536"></a>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a290aa1bd8022f46146d39af64e5b84df"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classyap_1_1FourMomenta.html">FourMomenta</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classyap_1_1Model.html">Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>m</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>Owning model </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ae4ebb82f6e0f3d4ca621ca14d9aff37e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -302,7 +292,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned yap::FourMomenta::addParticleCombination </td>
+          <td class="memname">void addParticleCombination </td>
           <td>(</td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt;&#160;</td>
           <td class="paramname"><em>pc</em></td><td>)</td>
@@ -319,11 +309,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>looks for ISP when adding <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a>'s </p>
 <p>check for FSP </p>
 
-<p>Reimplemented from <a class="el" href="classyap_1_1DataAccessor.html#ae03ccb6dd7602f4c64e705a965468dad">yap::DataAccessor</a>.</p>
+<p>Reimplemented from <a class="el" href="classyap_1_1DataAccessor.html#ade46c774692d85af958eb0e0239440d0">DataAccessor</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa0f8a459c4d8939e67a93380c1ab9df0"></a>
+<a class="anchor" id="a92e8c9e9bffb40bc8cee91475fcaeeae"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -331,7 +321,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void yap::FourMomenta::calculate </td>
+          <td class="memname">void calculate </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
@@ -363,43 +353,16 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classyap_1_1StaticDataAccessor.html#a9af66d5a812d6daae8e28ecf66b9f6e3">yap::StaticDataAccessor</a>.</p>
+<p>Implements <a class="el" href="classyap_1_1StaticDataAccessor.html#a06a2985afc397828faa36377b9d751e6">StaticDataAccessor</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a4c8338998dad475b0ad5117b0a29e3c9"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string yap::FourMomenta::data_accessor_type </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>string denoting <a class="el" href="classyap_1_1DataAccessor.html">DataAccessor</a> type </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>REMOVE </dd></dl>
-
-<p>Implements <a class="el" href="classyap_1_1DataAccessor.html#a5ee09a8bce41a46f3cde4b7914f6dd75">yap::DataAccessor</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6068f72d1e2076af10fc064d316b8da4"></a>
+<a class="anchor" id="a34dfdcf128330bd788616f89146ee77f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; &gt; yap::FourMomenta::finalStateMomenta </td>
+          <td class="memname">const std::vector&lt; <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; &gt; finalStateMomenta </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em></td><td>)</td>
@@ -417,35 +380,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="aba304731513254cb57c84f70012eb01a"></a>
+<a class="anchor" id="a6904d015b5df4f46e6dd3338486bccb8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; yap::FourMomenta::initialStateMomentum </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
-          <td class="paramname"><em>d</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>initial-state four-momentum (const) </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">d</td><td><a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a> to get data from </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="ab3b75cd8422922528c2c09151667f22a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double yap::FourMomenta::m </td>
+          <td class="memname">double m </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
@@ -474,7 +414,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a3b4827900db34988b042313f837feecb"></a>
+<a class="anchor" id="a2a09f94cc39f5a09dfeb44b486a7db82"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -482,7 +422,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double yap::FourMomenta::m2 </td>
+          <td class="memname">double m2 </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
@@ -516,7 +456,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a49bb799558eb02bf63814c8272b65f5c"></a>
+<a class="anchor" id="a107340da7e055efc136d0d681b6a8b6e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -524,7 +464,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1RealCachedDataValue.html">RealCachedDataValue</a>&gt; yap::FourMomenta::mass </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a>&gt; mass </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -540,7 +480,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="ae2afb3c251d8b7a2127bb11a4742fdfd"></a>
+<a class="anchor" id="a17a935f419d87e19b64a6dc20f771552"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -548,7 +488,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1RealCachedDataValue.html">RealCachedDataValue</a>&gt; yap::FourMomenta::mass </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a>&gt; mass </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -564,7 +504,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="af9dd15957acd510adc745e487846f8cf"></a>
+<a class="anchor" id="a2acb996ce3ecfaa90a387a3a26f2d9f8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -572,7 +512,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1FourVectorCachedDataValue.html">FourVectorCachedDataValue</a>&gt; yap::FourMomenta::momentum </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a>&gt; momentum </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -588,7 +528,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a12f668c169218a42562b4e297c7c43bf"></a>
+<a class="anchor" id="af5e4bc3de39eef9cc9831a60aafb21b3"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -596,7 +536,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1FourVectorCachedDataValue.html">FourVectorCachedDataValue</a>&gt; yap::FourMomenta::momentum </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a>&gt; momentum </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -612,12 +552,12 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a3df2294878bc464d123dfc4f3603763c"></a>
+<a class="anchor" id="ac7fca2af044e8ca7f57dfe3fbc202473"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; yap::FourMomenta::p </td>
+          <td class="memname"><a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; p </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
@@ -646,7 +586,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
-<a class="anchor" id="a9cd11a51905ec1cd03f6771130ea44f5"></a>
+<a class="anchor" id="ac4af03dbbab38489483f98095f62d683"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -654,7 +594,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void yap::FourMomenta::setFinalStateMomenta </td>
+          <td class="memname">void setFinalStateMomenta </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
           <td class="paramname"><em>d</em>, </td>
@@ -695,9 +635,32 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 
 </div>
 </div>
+<a class="anchor" id="adab04bed2bc92aa75411deefc53ad66e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classyap_1_1FourVector.html">FourVector</a>&lt; double &gt; totalMomentum </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>total four-momentum (const) </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td><a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a> to get data from </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/<a class="el" href="FourMomenta_8h_source.html">FourMomenta.h</a></li>
-<li>src/FourMomenta.cxx</li>
+<li>/home/dgreenw/work/belle/YAP/include/<a class="el" href="FourMomenta_8h_source.html">FourMomenta.h</a></li>
+<li>/home/dgreenw/work/belle/YAP/src/FourMomenta.cxx</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

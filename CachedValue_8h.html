@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/CachedValue.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/CachedValue.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,25 +89,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">CachedValue.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="CalculationStatus_8h_source.html">CalculationStatus.h</a>&quot;</code><br/>
-<code>#include &quot;<a class="el" href="Parameter_8h_source.html">Parameter.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/CachedValue.h&quot;</code><br/>
+<code>#include &quot;fwd/CalculationStatus.h&quot;</code><br/>
+<code>#include &quot;fwd/FourVector.h&quot;</code><br/>
+<code>#include &quot;fwd/Parameter.h&quot;</code><br/>
+<code>#include &quot;fwd/ParticleCombination.h&quot;</code><br/>
+<code>#include &quot;fwd/StatusManager.h&quot;</code><br/>
+<code>#include &quot;fwd/VariableStatus.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="DataAccessor_8h_source.html">DataAccessor.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="DataPoint_8h_source.html">DataPoint.h</a>&quot;</code><br/>
+<code>#include &lt;complex&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;set&gt;</code><br/>
+<code>#include &lt;string&gt;</code><br/>
+<code>#include &lt;utility&gt;</code><br/>
+<code>#include &lt;vector&gt;</code><br/>
 </div>
 <p><a href="CachedValue_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValueBase.html">yap::CachedValueBase</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for cached value managers.  <a href="classyap_1_1CachedValueBase.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html">CachedValue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for managing cached values inside a <a class="el" href="classyap_1_1DataPoint.html" title="Class for holding data and cached values per data point for fast calculation. ">DataPoint</a>.  <a href="classyap_1_1CachedValue.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1CachedValue.html">yap::CachedValue&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for linking <a class="el" href="classyap_1_1CachedValueBase.html" title="Base class for cached value managers. ">CachedValueBase</a> and <a class="el" href="classyap_1_1Parameter.html" title="Template class holding also a value for a parameter. ">Parameter</a>.  <a href="classyap_1_1CachedValue.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1CachedValue_1_1Status.html">CachedValue::Status</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">stores calculation and variable statuses for a <a class="el" href="classyap_1_1CachedValue.html" title="Class for managing cached values inside a DataPoint. ">CachedValue</a>  <a href="structyap_1_1CachedValue_1_1Status.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1RealCachedValue.html">RealCachedValue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for managing a single real cached value inside a #DataPoint.  <a href="classyap_1_1RealCachedValue.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ComplexCachedValue.html">ComplexCachedValue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for managing a complex cached value inside a #DataPoint.  <a href="classyap_1_1ComplexCachedValue.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1FourVectorCachedValue.html">FourVectorCachedValue</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class for managing a four-vector cached value inside a #DataPoint.  <a href="classyap_1_1FourVectorCachedValue.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -116,17 +136,28 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:gaf04c2bd63eba531e2d0cf221c6d6a225"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf04c2bd63eba531e2d0cf221c6d6a225"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::CachedValueSet</b> = std::set&lt; std::shared_ptr&lt; CachedValueBase &gt; &gt;</td></tr>
-<tr class="separator:gaf04c2bd63eba531e2d0cf221c6d6a225"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1c38f56db4b7f5a9039690cb3f9c4a7c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1c38f56db4b7f5a9039690cb3f9c4a7c"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::ComplexCachedValue</b> = CachedValue&lt; std::complex&lt; double &gt; &gt;</td></tr>
-<tr class="separator:ga1c38f56db4b7f5a9039690cb3f9c4a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa6ed2e3c681bd41fbff0c2d9280f27e4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa6ed2e3c681bd41fbff0c2d9280f27e4"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::RealCachedValue</b> = CachedValue&lt; double &gt;</td></tr>
-<tr class="separator:gaa6ed2e3c681bd41fbff0c2d9280f27e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a17160ce48eaa352913bdb21886a85d95"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a17160ce48eaa352913bdb21886a85d95"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a17160ce48eaa352913bdb21886a85d95">operator==</a> (const CachedValue::Status &amp;S, const CalculationStatus &amp;s)</td></tr>
+<tr class="memdesc:a17160ce48eaa352913bdb21886a85d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">equality operator for checking the CalculationStatus <br/></td></tr>
+<tr class="separator:a17160ce48eaa352913bdb21886a85d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70244ef6cb2636468c0bf12fb34ee6e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70244ef6cb2636468c0bf12fb34ee6e1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a70244ef6cb2636468c0bf12fb34ee6e1">operator!=</a> (const CachedValue::Status &amp;S, const CalculationStatus &amp;s)</td></tr>
+<tr class="memdesc:a70244ef6cb2636468c0bf12fb34ee6e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">inequality operator for checking the CalculationStatus <br/></td></tr>
+<tr class="separator:a70244ef6cb2636468c0bf12fb34ee6e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a78223d85cdfd9011b6101e7350f36d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a78223d85cdfd9011b6101e7350f36d"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6a78223d85cdfd9011b6101e7350f36d">operator==</a> (const CachedValue::Status &amp;S, const VariableStatus &amp;s)</td></tr>
+<tr class="memdesc:a6a78223d85cdfd9011b6101e7350f36d"><td class="mdescLeft">&#160;</td><td class="mdescRight">equality operator for checking the VariableStatus <br/></td></tr>
+<tr class="separator:a6a78223d85cdfd9011b6101e7350f36d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc9b38323cb70888dd72efcb68f06292"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc9b38323cb70888dd72efcb68f06292"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#adc9b38323cb70888dd72efcb68f06292">operator!=</a> (const CachedValue::Status &amp;S, const VariableStatus &amp;s)</td></tr>
+<tr class="memdesc:adc9b38323cb70888dd72efcb68f06292"><td class="mdescLeft">&#160;</td><td class="mdescRight">inequality operator for checking the VariableStatus <br/></td></tr>
+<tr class="separator:adc9b38323cb70888dd72efcb68f06292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a875ac54f5ce1af16984a6fbda4fd63c0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a875ac54f5ce1af16984a6fbda4fd63c0"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a875ac54f5ce1af16984a6fbda4fd63c0">to_string</a> (const CachedValue::Status &amp;S)</td></tr>
+<tr class="memdesc:a875ac54f5ce1af16984a6fbda4fd63c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">streaming operator for <a class="el" href="structyap_1_1CachedValue_1_1Status.html" title="stores calculation and variable statuses for a CachedValue ">CachedValue::Status</a> <br/></td></tr>
+<tr class="separator:a875ac54f5ce1af16984a6fbda4fd63c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/ThreeVector.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/ThreeVector.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,49 +112,32 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef yap_ThreeVector_h</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define yap_ThreeVector_h</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Matrix_8h.html">Matrix.h</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Vector_8h.html">Vector.h</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;fwd/ThreeVector.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Matrix_8h.html">Matrix.h</a>&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Vector_8h.html">Vector.h</a>&quot;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">using</span> ThreeVector = Vector&lt;T, 3&gt;;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">   36</a></span>&#160;constexpr <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a> <a class="code" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">cross</a>(<span class="keyword">const</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a>&amp; A, <span class="keyword">const</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a>&amp; B) noexcept</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{ <span class="keywordflow">return</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a>({A[1]* B[2] - A[2]* B[1], A[2]* B[0] - A[0]* B[2], A[0]* B[1] - A[1]* B[0]}); }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="namespaceyap.html#a04309628c353a38c3115f6f1968efaec">   41</a></span>&#160;T <a class="code" href="namespaceyap.html#a04309628c353a38c3115f6f1968efaec">angle</a>(<span class="keyword">const</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a>&amp; A, <span class="keyword">const</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a>&amp; B)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    T arg = A * B / <a class="code" href="namespaceyap.html#ae358795df4c13c7db1685177c61039be">abs</a>(A) / <a class="code" href="namespaceyap.html#ae358795df4c13c7db1685177c61039be">abs</a>(B);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="comment">// correct for arg just outside boundary (by numerical precision)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">if</span> (std::isfinite(arg) and fabs(arg) &gt; 1)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        arg = (arg &gt; 0) ? (T)1 : (T) - 1;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> acos(arg);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">   54</a></span>&#160;constexpr <a class="code" href="classyap_1_1Matrix.html">SquareMatrix&lt;T, 3&gt;</a> <a class="code" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">skewSymmetric</a>(<span class="keyword">const</span> <a class="code" href="classyap_1_1Vector.html">ThreeVector&lt;T&gt;</a> V) noexcept</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classyap_1_1Matrix.html">SquareMatrix&lt;T, 3&gt;</a>({(T)0,  -V[2], +V[1],</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                               +V[2],  (T)0, -V[0],</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                               -V[1], +V[0],  (T)0</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                              });</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="namespaceyap_html_ae358795df4c13c7db1685177c61039be"><div class="ttname"><a href="namespaceyap.html#ae358795df4c13c7db1685177c61039be">yap::abs</a></div><div class="ttdeci">constexpr T abs(const Vector&lt; T, N &gt; &amp;A)</div><div class="ttdef"><b>Definition:</b> Vector.h:134</div></div>
-<div class="ttc" id="namespaceyap_html_ac44ad66820f6c7149a8173f26dcafe21"><div class="ttname"><a href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">yap::skewSymmetric</a></div><div class="ttdeci">constexpr SquareMatrix&lt; T, 3 &gt; skewSymmetric(const ThreeVector&lt; T &gt; V) noexcept</div><div class="ttdoc">skew symmetric matrix formed from a 3 vector </div><div class="ttdef"><b>Definition:</b> ThreeVector.h:54</div></div>
-<div class="ttc" id="namespaceyap_html_a04309628c353a38c3115f6f1968efaec"><div class="ttname"><a href="namespaceyap.html#a04309628c353a38c3115f6f1968efaec">yap::angle</a></div><div class="ttdeci">T angle(const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B)</div><div class="ttdef"><b>Definition:</b> ThreeVector.h:41</div></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">   33</a></span>&#160;constexpr ThreeVector&lt;T&gt; <a class="code" href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">cross</a>(<span class="keyword">const</span> ThreeVector&lt;T&gt;&amp; A, <span class="keyword">const</span> ThreeVector&lt;T&gt;&amp; B) noexcept</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{ <span class="keywordflow">return</span> ThreeVector&lt;T&gt;({A[1]* B[2] - A[2]* B[1], A[2]* B[0] - A[0]* B[2], A[0]* B[1] - A[1]* B[0]}); }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">   38</a></span>&#160;constexpr SquareMatrix&lt;T, 3&gt; <a class="code" href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">skewSymmetric</a>(<span class="keyword">const</span> ThreeVector&lt;T&gt; V) noexcept</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">return</span> SquareMatrix&lt;T, 3&gt;({(T)0,  -V[2], +V[1],</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                               +V[2],  (T)0, -V[0],</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                               -V[1], +V[0],  (T)0</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                              });</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="namespaceyap_html_ac44ad66820f6c7149a8173f26dcafe21"><div class="ttname"><a href="namespaceyap.html#ac44ad66820f6c7149a8173f26dcafe21">yap::skewSymmetric</a></div><div class="ttdeci">constexpr SquareMatrix&lt; T, 3 &gt; skewSymmetric(const ThreeVector&lt; T &gt; V) noexcept</div><div class="ttdoc">skew symmetric matrix formed from a 3 vector </div><div class="ttdef"><b>Definition:</b> ThreeVector.h:38</div></div>
 <div class="ttc" id="Matrix_8h_html"><div class="ttname"><a href="Matrix_8h.html">Matrix.h</a></div></div>
 <div class="ttc" id="Vector_8h_html"><div class="ttname"><a href="Vector_8h.html">Vector.h</a></div></div>
-<div class="ttc" id="classyap_1_1Matrix_html"><div class="ttname"><a href="classyap_1_1Matrix.html">yap::Matrix</a></div><div class="ttdef"><b>Definition:</b> Matrix.h:38</div></div>
-<div class="ttc" id="namespaceyap_html_a510ac21b18baa972888e74645af8c3fe"><div class="ttname"><a href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">yap::cross</a></div><div class="ttdeci">constexpr ThreeVector&lt; T &gt; cross(const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B) noexcept</div><div class="ttdef"><b>Definition:</b> ThreeVector.h:36</div></div>
-<div class="ttc" id="classyap_1_1Vector_html"><div class="ttname"><a href="classyap_1_1Vector.html">yap::Vector</a></div><div class="ttdoc">N-dimensional column vector ATTENTION: You have to take care about initialization of vectors!!! ...</div><div class="ttdef"><b>Definition:</b> Vector.h:41</div></div>
+<div class="ttc" id="namespaceyap_html_a510ac21b18baa972888e74645af8c3fe"><div class="ttname"><a href="namespaceyap.html#a510ac21b18baa972888e74645af8c3fe">yap::cross</a></div><div class="ttdeci">constexpr ThreeVector&lt; T &gt; cross(const ThreeVector&lt; T &gt; &amp;A, const ThreeVector&lt; T &gt; &amp;B) noexcept</div><div class="ttdef"><b>Definition:</b> ThreeVector.h:33</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

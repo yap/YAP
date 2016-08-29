@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/ParticleCombination.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/ParticleCombination.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,13 +89,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ParticleCombination.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;map&gt;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/ParticleCombination.h&quot;</code><br/>
+<code>#include &quot;fwd/Model.h&quot;</code><br/>
+<code>#include &lt;algorithm&gt;</code><br/>
+<code>#include &lt;functional&gt;</code><br/>
 <code>#include &lt;memory&gt;</code><br/>
 <code>#include &lt;ostream&gt;</code><br/>
 <code>#include &lt;string&gt;</code><br/>
@@ -105,35 +107,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleCombination.html">yap::ParticleCombination</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores combinations of particle indices.  <a href="classyap_1_1ParticleCombination.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1Equiv.html">yap::ParticleCombination::Equiv</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">base class for equivalence (with functor), compares shared_ptr's only  <a href="structyap_1_1ParticleCombination_1_1Equiv.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivByOrderedContent.html">yap::ParticleCombination::EquivByOrderedContent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks objects referenced by shared pointers, check indices only.  <a href="structyap_1_1ParticleCombination_1_1EquivByOrderedContent.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivDown.html">yap::ParticleCombination::EquivDown</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks objects referenced by shared pointers, check self and all daughters (down the decay tree) for equality.  <a href="structyap_1_1ParticleCombination_1_1EquivDown.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivUp.html">yap::ParticleCombination::EquivUp</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects referenced by shared pointers, check self and parent (up the decay tree) for equality.  <a href="structyap_1_1ParticleCombination_1_1EquivUp.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivUpAndDown.html">yap::ParticleCombination::EquivUpAndDown</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects referenced by shared pointers, check self, all daughters (down-), and parent (up the decay tree) for equality.  <a href="structyap_1_1ParticleCombination_1_1EquivUpAndDown.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivByOrderlessContent.html">yap::ParticleCombination::EquivByOrderlessContent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects referenced by shared pointers, check indices only, disregarding order.  <a href="structyap_1_1ParticleCombination_1_1EquivByOrderlessContent.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivDownByOrderlessContent.html">yap::ParticleCombination::EquivDownByOrderlessContent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects referenced by shared pointers, check indices only, disregarding order, and check daughters (but not daughter's daughters) Use e.g. for breakup momenta.  <a href="structyap_1_1ParticleCombination_1_1EquivDownByOrderlessContent.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivByReferenceFrame.html">yap::ParticleCombination::EquivByReferenceFrame</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects referenced by shared pointers, Checks parents (and up) for orderless content Returns equivalent for content sitting in same reference frame.  <a href="structyap_1_1ParticleCombination_1_1EquivByReferenceFrame.html#details">More...</a><br/></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structyap_1_1ParticleCombination_1_1EquivZemach.html">yap::ParticleCombination::EquivZemach</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check objects reference by shared pointers; treats all two-particle states as equal, compares three particle states by unordered content of resonance, and throws on 4 or more particles.  <a href="structyap_1_1ParticleCombination_1_1EquivZemach.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -142,29 +117,69 @@ Namespaces</h2></td></tr>
 <tr class="memdesc:namespaceyap"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:aa8ebfee68a77c73e822d02f17d35dbe2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8ebfee68a77c73e822d02f17d35dbe2"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>yap::ParticleCombinationVector</b> = std::vector&lt; std::shared_ptr&lt; ParticleCombination &gt; &gt;</td></tr>
-<tr class="separator:aa8ebfee68a77c73e822d02f17d35dbe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f3ae2e2fae301d24b4b7900569f00b7"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9f3ae2e2fae301d24b4b7900569f00b7"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a9f3ae2e2fae301d24b4b7900569f00b7">yap::ParticleCombinationMap</a> = std::map&lt; std::shared_ptr&lt; ParticleCombination &gt;, T, std::owner_less&lt; std::shared_ptr&lt; ParticleCombination &gt; &gt; &gt;</td></tr>
-<tr class="separator:a9f3ae2e2fae301d24b4b7900569f00b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8914635118b28d7d6b629ea4efdb5b73"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8914635118b28d7d6b629ea4efdb5b73"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a8914635118b28d7d6b629ea4efdb5b73">yap::indices_string</a> (const ParticleCombination &amp;pc)</td></tr>
-<tr class="memdesc:a8914635118b28d7d6b629ea4efdb5b73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get indices listed as string. <br/></td></tr>
-<tr class="separator:a8914635118b28d7d6b629ea4efdb5b73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcfb5b0c1a1b9c79e14fd979bf59f92b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abcfb5b0c1a1b9c79e14fd979bf59f92b"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#abcfb5b0c1a1b9c79e14fd979bf59f92b">yap::to_string</a> (const ParticleCombination &amp;pc)</td></tr>
-<tr class="memdesc:abcfb5b0c1a1b9c79e14fd979bf59f92b"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> to string <br/></td></tr>
-<tr class="separator:abcfb5b0c1a1b9c79e14fd979bf59f92b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1673b6076ee9bc60758e39f735b8512b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a1673b6076ee9bc60758e39f735b8512b">disjoint</a> (const ParticleCombinationVector &amp;pcv)</td></tr>
+<tr class="separator:a1673b6076ee9bc60758e39f735b8512b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf319aa9eaf2af31a82345c3c7dc9656"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acf319aa9eaf2af31a82345c3c7dc9656">is_final_state_particle_combination</a> (const ParticleCombination &amp;pc)</td></tr>
+<tr class="separator:acf319aa9eaf2af31a82345c3c7dc9656"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b1ef78a04f654e9d1decdb3cdc55f24"><td class="memItemLeft" align="right" valign="top">const ParticleCombination &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a6b1ef78a04f654e9d1decdb3cdc55f24">origin</a> (const ParticleCombination &amp;pc)</td></tr>
+<tr class="separator:a6b1ef78a04f654e9d1decdb3cdc55f24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c339df31ee499170a2bb03f3d39e264"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a3c339df31ee499170a2bb03f3d39e264">is_initial_state_particle_combination</a> (const ParticleCombination &amp;pc, const Model &amp;m)</td></tr>
+<tr class="separator:a3c339df31ee499170a2bb03f3d39e264"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36ef7b0b9d7b6ace7926988874d174b2"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a36ef7b0b9d7b6ace7926988874d174b2">is_from_initial_state_particle_combination</a> (const ParticleCombination &amp;pc, const Model &amp;m)</td></tr>
+<tr class="separator:a36ef7b0b9d7b6ace7926988874d174b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a502dd56a4cf67e36d65116c0daa75f91"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a502dd56a4cf67e36d65116c0daa75f91"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a502dd56a4cf67e36d65116c0daa75f91">prune_particle_combinations</a> (ParticleCombinationSet &amp;PCs)</td></tr>
+<tr class="memdesc:a502dd56a4cf67e36d65116c0daa75f91"><td class="mdescLeft">&#160;</td><td class="mdescRight">only keep particleCombinations with the highest number of indices in their top-most parent <br/></td></tr>
+<tr class="separator:a502dd56a4cf67e36d65116c0daa75f91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af86006076e947b08c2e39649703d88de"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af86006076e947b08c2e39649703d88de"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#af86006076e947b08c2e39649703d88de">indices_string</a> (const ParticleCombination &amp;pc, std::string before=&quot;(&quot;, std::string after=&quot;)&quot;)</td></tr>
+<tr class="memdesc:af86006076e947b08c2e39649703d88de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get indices listed as string. <br/></td></tr>
+<tr class="separator:af86006076e947b08c2e39649703d88de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a770e51a57bb49909a1d96b18588b7fed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a770e51a57bb49909a1d96b18588b7fed"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a770e51a57bb49909a1d96b18588b7fed">to_string</a> (const ParticleCombination &amp;pc)</td></tr>
+<tr class="memdesc:a770e51a57bb49909a1d96b18588b7fed"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> to string <br/></td></tr>
+<tr class="separator:a770e51a57bb49909a1d96b18588b7fed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b09e7eeba72c6374b63cbde5806e479"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b09e7eeba72c6374b63cbde5806e479"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a1b09e7eeba72c6374b63cbde5806e479">to_string_with_parent</a> (const ParticleCombination &amp;pc)</td></tr>
+<tr class="memdesc:a1b09e7eeba72c6374b63cbde5806e479"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> with top-most parent to string <br/></td></tr>
+<tr class="separator:a1b09e7eeba72c6374b63cbde5806e479"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5ff93b1c92d0c05cd85d72700f206a1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac5ff93b1c92d0c05cd85d72700f206a1"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ac5ff93b1c92d0c05cd85d72700f206a1">yap::operator&lt;&lt;</a> (std::ostream &amp;os, const ParticleCombination &amp;PC)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ac5ff93b1c92d0c05cd85d72700f206a1">operator&lt;&lt;</a> (std::ostream &amp;os, const ParticleCombination &amp;PC)</td></tr>
 <tr class="memdesc:ac5ff93b1c92d0c05cd85d72700f206a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">streamer <br/></td></tr>
 <tr class="separator:ac5ff93b1c92d0c05cd85d72700f206a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">ParticleCombinationEqualTo functions</div></td></tr>
+<tr class="memitem:a3e3d6ee16b7e3bc8f5fff93ce4806bda"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e3d6ee16b7e3bc8f5fff93ce4806bda"></a>
+constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a3e3d6ee16b7e3bc8f5fff93ce4806bda">equal_always</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:a3e3d6ee16b7e3bc8f5fff93ce4806bda"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a>, returning true always <br/></td></tr>
+<tr class="separator:a3e3d6ee16b7e3bc8f5fff93ce4806bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6e61227909cfeb96366fb104618c49a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6e61227909cfeb96366fb104618c49a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab6e61227909cfeb96366fb104618c49a">equal_by_shared_pointer</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:ab6e61227909cfeb96366fb104618c49a"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by shared_ptr only <br/></td></tr>
+<tr class="separator:ab6e61227909cfeb96366fb104618c49a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a825f9fe3205e78ef0a880342c3cbe6d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a825f9fe3205e78ef0a880342c3cbe6d7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a825f9fe3205e78ef0a880342c3cbe6d7">equal_by_ordered_content</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:a825f9fe3205e78ef0a880342c3cbe6d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by indices only <br/></td></tr>
+<tr class="separator:a825f9fe3205e78ef0a880342c3cbe6d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7364384eb2b6514e4f2f8f8ceafe462f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7364384eb2b6514e4f2f8f8ceafe462f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7364384eb2b6514e4f2f8f8ceafe462f">equal_by_orderless_content</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:a7364384eb2b6514e4f2f8f8ceafe462f"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by indices, disregarding order <br/></td></tr>
+<tr class="separator:a7364384eb2b6514e4f2f8f8ceafe462f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf56b668d0a08a46086c5aa20ef683c4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf56b668d0a08a46086c5aa20ef683c4"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#adf56b668d0a08a46086c5aa20ef683c4">equal_down</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:adf56b668d0a08a46086c5aa20ef683c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by checking selves and then all daughters <br/></td></tr>
+<tr class="separator:adf56b668d0a08a46086c5aa20ef683c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b976cfea0ebaee5402a74d0bc471142"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b976cfea0ebaee5402a74d0bc471142"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a1b976cfea0ebaee5402a74d0bc471142">equal_up</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:a1b976cfea0ebaee5402a74d0bc471142"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by checking selves and then parents <br/></td></tr>
+<tr class="separator:a1b976cfea0ebaee5402a74d0bc471142"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab444bf21d352ff4226b6bf7e663792d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab444bf21d352ff4226b6bf7e663792d1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab444bf21d352ff4226b6bf7e663792d1">equal_up_and_down</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="memdesc:ab444bf21d352ff4226b6bf7e663792d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">compare shared_ptr's to <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> by checking selves, daughters, and parents <br/></td></tr>
+<tr class="separator:ab444bf21d352ff4226b6bf7e663792d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a703882cf55f3e756224fb05e4c348a79"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a703882cf55f3e756224fb05e4c348a79">equal_down_by_orderless_content</a> (const std::shared_ptr&lt; const ParticleCombination &gt; &amp;A, const std::shared_ptr&lt; const ParticleCombination &gt; &amp;B)</td></tr>
+<tr class="separator:a703882cf55f3e756224fb05e4c348a79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['mass',['Mass',['../structyap_1_1Flatte_1_1FlatteChannel.html#a8f73fadeb91bc6c5e172b6eee2a487c2',1,'yap::Flatte::FlatteChannel']]],
-  ['mass_5f',['Mass_',['../classyap_1_1PoleMass.html#a65acc10d6a66b2ecb31518457c408b68',1,'yap::PoleMass']]],
-  ['massshape',['MassShape',['../classyap_1_1Resonance.html#a27fd89de4ce8d4c7455ea07a42c5ccf0',1,'yap::Resonance']]]
+  ['elements_5f',['Elements_',['../classyap_1_1Vector.html#a6649a245e523bde061330249b9bedc78',1,'yap::Vector']]],
+  ['end_5f',['End_',['../classyap_1_1DataPartition.html#a7f0a6f7c755122f1315691699d2544cb',1,'yap::DataPartition']]],
+  ['equal_5f',['Equal_',['../classyap_1_1DataAccessor.html#ab8db8f5499f87749be93d962c2d8d4d2',1,'yap::DataAccessor']]]
 ];

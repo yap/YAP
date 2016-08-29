@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/BreitWigner.h Source File</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/BreitWigner.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -112,62 +112,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef yap_BreitWigner_h</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define yap_BreitWigner_h</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CachedValue_8h.html">CachedValue.h</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MassShapeWithNominalMass_8h.html">MassShapeWithNominalMass.h</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;complex&gt;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">namespace </span>yap {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">class </span>DataPoint;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">class </span>ParticleCombination;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1BreitWigner.html">BreitWigner</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1MassShapeWithNominalMass.html">MassShapeWithNominalMass</a></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classyap_1_1BreitWigner.html#ad37b9907dcd9f2827e0f09e7ababbe55">BreitWigner</a>(<span class="keywordtype">double</span> w = -1);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">virtual</span> std::complex&lt;double&gt; <a class="code" href="classyap_1_1BreitWigner.html#a9de2f56bfebdfb2ede7ef19ec6265d3b">amplitude</a>(<a class="code" href="classyap_1_1DataPoint.html">DataPoint</a>&amp; d, <span class="keyword">const</span> std::shared_ptr&lt;ParticleCombination&gt;&amp; pc, <a class="code" href="classyap_1_1StatusManager.html">StatusManager</a>&amp; sm) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;fwd/DataPartition.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;fwd/DataPoint.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;fwd/ParticleCombination.h&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;fwd/StatusManager.h&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MassShapeWithNominalMass_8h.html">MassShapeWithNominalMass.h</a>&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;complex&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span>yap {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html">   43</a></span>&#160;<span class="keyword">class </span><a class="code" href="classyap_1_1BreitWigner.html">BreitWigner</a> : <span class="keyword">public</span> <a class="code" href="classyap_1_1MassShapeWithNominalMass.html">MassShapeWithNominalMass</a></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classyap_1_1BreitWigner.html#ad111921d2c70990075630aae2b8080f1">BreitWigner</a>(<span class="keywordtype">double</span> <a class="code" href="classyap_1_1MassShapeWithNominalMass.html#acb773c8b27a76d1ba0afdadf8ff56bd9">mass</a> = -1, <span class="keywordtype">double</span> w = -1);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1BreitWigner.html#ab1f56789f06cc42e07d2f3f4b4aa299f">setParameters</a>(<span class="keyword">const</span> <a class="code" href="structyap_1_1ParticleTableEntry.html">ParticleTableEntry</a>&amp; entry) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1BreitWigner.html#a24855c5dd5d8a8512fb486132de11b78">setParameters</a>(<span class="keyword">const</span> <a class="code" href="structyap_1_1ParticleTableEntry.html">ParticleTableEntry</a>&amp; entry) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#aea34f5f6484f88b40336dc9223610ded">   57</a></span>&#160;    std::shared_ptr&lt;RealParameter&gt; <a class="code" href="classyap_1_1BreitWigner.html#aea34f5f6484f88b40336dc9223610ded">width</a>()</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    { <span class="keywordflow">return</span> <a class="code" href="classyap_1_1BreitWigner.html#a45d9eeb63325006fe574dc3f262ce83c">Width_</a>; }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#a09f1fed3d69338f9c0f6918043e52f45">   61</a></span>&#160;    std::shared_ptr&lt;RealParameter&gt; <a class="code" href="classyap_1_1BreitWigner.html#a09f1fed3d69338f9c0f6918043e52f45">width</a>()</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    { <span class="keywordflow">return</span> Width_; }</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#a7c263ab0743e9db822051c1348e196ca">   61</a></span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;RealParameter&gt; <a class="code" href="classyap_1_1BreitWigner.html#a7c263ab0743e9db822051c1348e196ca">width</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <span class="keyword">const_cast&lt;</span><a class="code" href="classyap_1_1BreitWigner.html">BreitWigner</a>*<span class="keyword">&gt;</span>(<span class="keyword">this</span>)-&gt;<a class="code" href="classyap_1_1BreitWigner.html#aea34f5f6484f88b40336dc9223610ded">width</a>(); }</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#a1db947348aa0acd63176ce76ffd0ad8c">   65</a></span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;RealParameter&gt; <a class="code" href="classyap_1_1BreitWigner.html#a1db947348aa0acd63176ce76ffd0ad8c">width</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">    </span>{ <span class="keywordflow">return</span> <span class="keyword">const_cast&lt;</span><a class="code" href="classyap_1_1BreitWigner.html">BreitWigner</a>*<span class="keyword">&gt;</span>(<span class="keyword">this</span>)-&gt;<a class="code" href="classyap_1_1BreitWigner.html#a09f1fed3d69338f9c0f6918043e52f45">width</a>(); }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classyap_1_1BreitWigner.html#a6081d9a060768e5a5e6b110e79dac56b">consistent</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classyap_1_1BreitWigner.html#ad399d0415a1069cf3c205700b0775750">consistent</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#a76f3355cb432dc1302e8449f8bb15e4d">   70</a></span>&#160;    <span class="keyword">virtual</span> std::string <a class="code" href="classyap_1_1BreitWigner.html#a76f3355cb432dc1302e8449f8bb15e4d">data_accessor_type</a>()<span class="keyword"> const override</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">    </span>{<span class="keywordflow">return</span> <span class="stringliteral">&quot;BreitWigner&quot;</span>; }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    std::shared_ptr&lt;RealParameter&gt; Width_; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classyap_1_1BreitWigner.html#ae3c1cb1caa2f5a085bcfd85ca7b4eee9">calculateT</a>(<a class="code" href="classyap_1_1DataPartition.html">DataPartition</a>&amp; D, <span class="keyword">const</span> std::shared_ptr&lt;ParticleCombination&gt;&amp; pc, <span class="keywordtype">unsigned</span> si) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classyap_1_1BreitWigner.html#a45d9eeb63325006fe574dc3f262ce83c">   77</a></span>&#160;    std::shared_ptr&lt;RealParameter&gt; <a class="code" href="classyap_1_1BreitWigner.html#a45d9eeb63325006fe574dc3f262ce83c">Width_</a>;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_a1db947348aa0acd63176ce76ffd0ad8c"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a1db947348aa0acd63176ce76ffd0ad8c">yap::BreitWigner::width</a></div><div class="ttdeci">const std::shared_ptr&lt; RealParameter &gt; width() const </div><div class="ttdoc">Get width (const) </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:65</div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_a76f3355cb432dc1302e8449f8bb15e4d"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a76f3355cb432dc1302e8449f8bb15e4d">yap::BreitWigner::data_accessor_type</a></div><div class="ttdeci">virtual std::string data_accessor_type() const override</div><div class="ttdef"><b>Definition:</b> BreitWigner.h:70</div></div>
-<div class="ttc" id="structyap_1_1ParticleTableEntry_html"><div class="ttname"><a href="structyap_1_1ParticleTableEntry.html">yap::ParticleTableEntry</a></div><div class="ttdoc">Data container for storing particle information in database. </div><div class="ttdef"><b>Definition:</b> ParticleFactory.h:41</div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_ad399d0415a1069cf3c205700b0775750"><div class="ttname"><a href="classyap_1_1BreitWigner.html#ad399d0415a1069cf3c205700b0775750">yap::BreitWigner::consistent</a></div><div class="ttdeci">virtual bool consistent() const override</div><div class="ttdoc">Check consistency of object. </div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:54</div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_a9de2f56bfebdfb2ede7ef19ec6265d3b"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a9de2f56bfebdfb2ede7ef19ec6265d3b">yap::BreitWigner::amplitude</a></div><div class="ttdeci">virtual std::complex&lt; double &gt; amplitude(DataPoint &amp;d, const std::shared_ptr&lt; ParticleCombination &gt; &amp;pc, StatusManager &amp;sm) const override</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:31</div></div>
-<div class="ttc" id="classyap_1_1DataPoint_html"><div class="ttname"><a href="classyap_1_1DataPoint.html">yap::DataPoint</a></div><div class="ttdoc">Class for holding data and cached values per data point for fast calculation. </div><div class="ttdef"><b>Definition:</b> DataPoint.h:40</div></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classyap_1_1MassShapeWithNominalMass_html_acb773c8b27a76d1ba0afdadf8ff56bd9"><div class="ttname"><a href="classyap_1_1MassShapeWithNominalMass.html#acb773c8b27a76d1ba0afdadf8ff56bd9">yap::MassShapeWithNominalMass::mass</a></div><div class="ttdeci">std::shared_ptr&lt; RealParameter &gt; mass()</div><div class="ttdoc">Get mass. </div><div class="ttdef"><b>Definition:</b> MassShapeWithNominalMass.h:52</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_ad111921d2c70990075630aae2b8080f1"><div class="ttname"><a href="classyap_1_1BreitWigner.html#ad111921d2c70990075630aae2b8080f1">yap::BreitWigner::BreitWigner</a></div><div class="ttdeci">BreitWigner(double mass=-1, double w=-1)</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:17</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_ab1f56789f06cc42e07d2f3f4b4aa299f"><div class="ttname"><a href="classyap_1_1BreitWigner.html#ab1f56789f06cc42e07d2f3f4b4aa299f">yap::BreitWigner::setParameters</a></div><div class="ttdeci">virtual void setParameters(const ParticleTableEntry &amp;entry) override</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:25</div></div>
+<div class="ttc" id="structyap_1_1ParticleTableEntry_html"><div class="ttname"><a href="structyap_1_1ParticleTableEntry.html">yap::ParticleTableEntry</a></div><div class="ttdoc">Data container for storing particle information in database. </div><div class="ttdef"><b>Definition:</b> ParticleFactory.h:42</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_a45d9eeb63325006fe574dc3f262ce83c"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a45d9eeb63325006fe574dc3f262ce83c">yap::BreitWigner::Width_</a></div><div class="ttdeci">std::shared_ptr&lt; RealParameter &gt; Width_</div><div class="ttdoc">Width [GeV]. </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:77</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_a7c263ab0743e9db822051c1348e196ca"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a7c263ab0743e9db822051c1348e196ca">yap::BreitWigner::width</a></div><div class="ttdeci">const std::shared_ptr&lt; RealParameter &gt; width() const </div><div class="ttdoc">Get width (const) </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:61</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_ae3c1cb1caa2f5a085bcfd85ca7b4eee9"><div class="ttname"><a href="classyap_1_1BreitWigner.html#ae3c1cb1caa2f5a085bcfd85ca7b4eee9">yap::BreitWigner::calculateT</a></div><div class="ttdeci">virtual void calculateT(DataPartition &amp;D, const std::shared_ptr&lt; ParticleCombination &gt; &amp;pc, unsigned si) const override</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:37</div></div>
 <div class="ttc" id="MassShapeWithNominalMass_8h_html"><div class="ttname"><a href="MassShapeWithNominalMass_8h.html">MassShapeWithNominalMass.h</a></div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_a09f1fed3d69338f9c0f6918043e52f45"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a09f1fed3d69338f9c0f6918043e52f45">yap::BreitWigner::width</a></div><div class="ttdeci">std::shared_ptr&lt; RealParameter &gt; width()</div><div class="ttdoc">Get width. </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:61</div></div>
-<div class="ttc" id="classyap_1_1StatusManager_html"><div class="ttname"><a href="classyap_1_1StatusManager.html">yap::StatusManager</a></div><div class="ttdef"><b>Definition:</b> StatusManager.h:32</div></div>
-<div class="ttc" id="classyap_1_1MassShapeWithNominalMass_html"><div class="ttname"><a href="classyap_1_1MassShapeWithNominalMass.html">yap::MassShapeWithNominalMass</a></div><div class="ttdoc">Class for MassShape that gets its nominal mass from its owning resonance. </div><div class="ttdef"><b>Definition:</b> MassShapeWithNominalMass.h:37</div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_ad37b9907dcd9f2827e0f09e7ababbe55"><div class="ttname"><a href="classyap_1_1BreitWigner.html#ad37b9907dcd9f2827e0f09e7ababbe55">yap::BreitWigner::BreitWigner</a></div><div class="ttdeci">BreitWigner(double w=-1)</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:11</div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html_a24855c5dd5d8a8512fb486132de11b78"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a24855c5dd5d8a8512fb486132de11b78">yap::BreitWigner::setParameters</a></div><div class="ttdeci">virtual void setParameters(const ParticleTableEntry &amp;entry) override</div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:19</div></div>
-<div class="ttc" id="CachedValue_8h_html"><div class="ttname"><a href="CachedValue_8h.html">CachedValue.h</a></div></div>
-<div class="ttc" id="classyap_1_1BreitWigner_html"><div class="ttname"><a href="classyap_1_1BreitWigner.html">yap::BreitWigner</a></div><div class="ttdoc">Class for Breit-Wigner resonance shape. </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:42</div></div>
+<div class="ttc" id="classyap_1_1DataPartition_html"><div class="ttname"><a href="classyap_1_1DataPartition.html">yap::DataPartition</a></div><div class="ttdoc">Class defining a partition of the DataSet. </div><div class="ttdef"><b>Definition:</b> DataPartition.h:158</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_aea34f5f6484f88b40336dc9223610ded"><div class="ttname"><a href="classyap_1_1BreitWigner.html#aea34f5f6484f88b40336dc9223610ded">yap::BreitWigner::width</a></div><div class="ttdeci">std::shared_ptr&lt; RealParameter &gt; width()</div><div class="ttdoc">Get width. </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:57</div></div>
+<div class="ttc" id="classyap_1_1MassShapeWithNominalMass_html"><div class="ttname"><a href="classyap_1_1MassShapeWithNominalMass.html">yap::MassShapeWithNominalMass</a></div><div class="ttdoc">Class for MassShape that gets its nominal mass from its owning resonance. </div><div class="ttdef"><b>Definition:</b> MassShapeWithNominalMass.h:39</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html_a6081d9a060768e5a5e6b110e79dac56b"><div class="ttname"><a href="classyap_1_1BreitWigner.html#a6081d9a060768e5a5e6b110e79dac56b">yap::BreitWigner::consistent</a></div><div class="ttdeci">virtual bool consistent() const override</div><div class="ttdoc">Check consistency of object. </div><div class="ttdef"><b>Definition:</b> BreitWigner.cxx:48</div></div>
+<div class="ttc" id="classyap_1_1BreitWigner_html"><div class="ttname"><a href="classyap_1_1BreitWigner.html">yap::BreitWigner</a></div><div class="ttdoc">Class for Breit-Wigner resonance shape. </div><div class="ttdef"><b>Definition:</b> BreitWigner.h:43</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

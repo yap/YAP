@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['spin_2eh',['spin.h',['../spin_8h.html',1,'']]],
-  ['spinamplitude_2eh',['SpinAmplitude.h',['../SpinAmplitude_8h.html',1,'']]],
-  ['spinamplitudecache_2eh',['SpinAmplitudeCache.h',['../SpinAmplitudeCache_8h.html',1,'']]],
-  ['staticdataaccessor_2eh',['StaticDataAccessor.h',['../StaticDataAccessor_8h.html',1,'']]],
-  ['statusmanager_2eh',['StatusManager.h',['../StatusManager_8h.html',1,'']]]
+  ['recalculabledataaccessor_2eh',['RecalculableDataAccessor.h',['../RecalculableDataAccessor_8h.html',1,'']]],
+  ['relativisticbreitwigner_2eh',['RelativisticBreitWigner.h',['../RelativisticBreitWigner_8h.html',1,'']]],
+  ['requireshelicityangles_2eh',['RequiresHelicityAngles.h',['../RequiresHelicityAngles_8h.html',1,'']]],
+  ['requiresmeasuredbreakupmomenta_2eh',['RequiresMeasuredBreakupMomenta.h',['../RequiresMeasuredBreakupMomenta_8h.html',1,'']]],
+  ['resonance_2eh',['Resonance.h',['../Resonance_8h.html',1,'']]],
+  ['rotation_2eh',['Rotation.h',['../Rotation_8h.html',1,'']]]
 ];

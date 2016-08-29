@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zemachformalism',['ZemachFormalism',['../classyap_1_1ZemachSpinAmplitude.html#a6a90cc3688e0d324c7795fd74ad98bde',1,'yap::ZemachSpinAmplitude']]]
+  ['particlecombinationcache',['ParticleCombinationCache',['../classyap_1_1ParticleCombination.html#a0e2798707ba8a7b30ed58db59eee254c',1,'yap::ParticleCombination']]]
 ];

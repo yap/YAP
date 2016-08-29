@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['parameter_2eh',['Parameter.h',['../Parameter_8h.html',1,'']]],
-  ['particle_2eh',['Particle.h',['../Particle_8h.html',1,'']]],
-  ['particlecombination_2eh',['ParticleCombination.h',['../ParticleCombination_8h.html',1,'']]],
-  ['particlecombinationcache_2eh',['ParticleCombinationCache.h',['../ParticleCombinationCache_8h.html',1,'']]],
-  ['particlefactory_2eh',['ParticleFactory.h',['../ParticleFactory_8h.html',1,'']]],
-  ['phasespaceutilities_2eh',['PhaseSpaceUtilities.h',['../PhaseSpaceUtilities_8h.html',1,'']]],
-  ['polemass_2eh',['PoleMass.h',['../PoleMass_8h.html',1,'']]]
+  ['make_5funique_2eh',['make_unique.h',['../make__unique_8h.html',1,'']]],
+  ['massaxes_2eh',['MassAxes.h',['../MassAxes_8h.html',1,'']]],
+  ['massrange_2eh',['MassRange.h',['../MassRange_8h.html',1,'']]],
+  ['massshape_2eh',['MassShape.h',['../MassShape_8h.html',1,'']]],
+  ['massshapewithnominalmass_2eh',['MassShapeWithNominalMass.h',['../MassShapeWithNominalMass_8h.html',1,'']]],
+  ['matrix_2eh',['Matrix.h',['../Matrix_8h.html',1,'']]],
+  ['measuredbreakupmomenta_2eh',['MeasuredBreakupMomenta.h',['../MeasuredBreakupMomenta_8h.html',1,'']]],
+  ['model_2eh',['Model.h',['../Model_8h.html',1,'']]],
+  ['modelintegral_2eh',['ModelIntegral.h',['../ModelIntegral_8h.html',1,'']]]
 ];

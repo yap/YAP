@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>YAP: include/CoordinateSystem.h File Reference</title>
+<title>YAP: /home/dgreenw/work/belle/YAP/include/CoordinateSystem.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -89,13 +89,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">CoordinateSystem.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Vector_8h_source.html">Vector.h</a>&quot;</code><br/>
+<div class="textblock"><code>#include &quot;fwd/CoordinateSystem.h&quot;</code><br/>
+<code>#include &quot;<a class="el" href="Vector_8h_source.html">Vector.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="Matrix_8h_source.html">Matrix.h</a>&quot;</code><br/>
 <code>#include &quot;<a class="el" href="ThreeVector_8h_source.html">ThreeVector.h</a>&quot;</code><br/>
 <code>#include &lt;algorithm&gt;</code><br/>
@@ -116,39 +116,32 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VECTOREPSILON</b>&#160;&#160;&#160;1e-10</td></tr>
 <tr class="separator:aef943e09a0bd6ddec44092c17824fee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:ga8be52097ff8da267b5f2d9934f01d722"><td class="memTemplParams" colspan="2"><a class="anchor" id="ga8be52097ff8da267b5f2d9934f01d722"></a>
-template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:ga8be52097ff8da267b5f2d9934f01d722"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>yap::CoordinateSystem</b> = std::array&lt; Vector&lt; T, N &gt;, N &gt;</td></tr>
-<tr class="separator:ga8be52097ff8da267b5f2d9934f01d722"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:acbd61e077bb9241306f7d4269c01af37"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:acbd61e077bb9241306f7d4269c01af37"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acbd61e077bb9241306f7d4269c01af37">yap::to_string</a> (const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
+<tr class="memitem:acbd61e077bb9241306f7d4269c01af37"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acbd61e077bb9241306f7d4269c01af37">to_string</a> (const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
 <tr class="separator:acbd61e077bb9241306f7d4269c01af37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0a27d9bfe0d583501692c30fe7b68d0"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:aa0a27d9bfe0d583501692c30fe7b68d0"><td class="memTemplItemLeft" align="right" valign="top">CoordinateSystem&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#aa0a27d9bfe0d583501692c30fe7b68d0">yap::unit</a> (const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
-<tr class="separator:aa0a27d9bfe0d583501692c30fe7b68d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02bce93c6ef95505d43f5d5eebf5deab"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
-<tr class="memitem:a02bce93c6ef95505d43f5d5eebf5deab"><td class="memTemplItemLeft" align="right" valign="top">CoordinateSystem&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a02bce93c6ef95505d43f5d5eebf5deab">yap::operator*</a> (const SquareMatrix&lt; T, N &gt; &amp;M, const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
-<tr class="separator:a02bce93c6ef95505d43f5d5eebf5deab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf82c8d362b8fec685e67b3cd90d1c69"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:acf82c8d362b8fec685e67b3cd90d1c69"><td class="memTemplItemLeft" align="right" valign="top">const CoordinateSystem&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#acf82c8d362b8fec685e67b3cd90d1c69">unit</a> (const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
+<tr class="separator:acf82c8d362b8fec685e67b3cd90d1c69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1159c4fea75cd66b45b594a43839d2b1"><td class="memTemplParams" colspan="2">template&lt;typename T , size_t N&gt; </td></tr>
+<tr class="memitem:a1159c4fea75cd66b45b594a43839d2b1"><td class="memTemplItemLeft" align="right" valign="top">const CoordinateSystem&lt; T, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a1159c4fea75cd66b45b594a43839d2b1">operator*</a> (const SquareMatrix&lt; T, N &gt; &amp;M, const CoordinateSystem&lt; T, N &gt; &amp;C)</td></tr>
+<tr class="separator:a1159c4fea75cd66b45b594a43839d2b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Specifically for 3D systems</div></td></tr>
 <tr class="memitem:a758bed54b4ea007df754f6b0ce68f26f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a758bed54b4ea007df754f6b0ce68f26f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a758bed54b4ea007df754f6b0ce68f26f">yap::isRightHanded</a> (const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
+<tr class="memitem:a758bed54b4ea007df754f6b0ce68f26f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a758bed54b4ea007df754f6b0ce68f26f">isRightHanded</a> (const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
 <tr class="separator:a758bed54b4ea007df754f6b0ce68f26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3eddd939241a751545baea5879d9f50f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a3eddd939241a751545baea5879d9f50f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a3eddd939241a751545baea5879d9f50f">yap::isLeftHanded</a> (const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
+<tr class="memitem:a3eddd939241a751545baea5879d9f50f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a3eddd939241a751545baea5879d9f50f">isLeftHanded</a> (const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
 <tr class="separator:a3eddd939241a751545baea5879d9f50f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fe51eb7ede1145c72871182724bc127"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a7fe51eb7ede1145c72871182724bc127"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7fe51eb7ede1145c72871182724bc127">yap::phi</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
+<tr class="memitem:a7fe51eb7ede1145c72871182724bc127"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a7fe51eb7ede1145c72871182724bc127">phi</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
 <tr class="separator:a7fe51eb7ede1145c72871182724bc127"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a930a4ee87c3b5961f36db5de2ed71e61"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a930a4ee87c3b5961f36db5de2ed71e61"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a930a4ee87c3b5961f36db5de2ed71e61">yap::theta</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
+<tr class="memitem:a930a4ee87c3b5961f36db5de2ed71e61"><td class="memTemplItemLeft" align="right" valign="top">constexpr T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#a930a4ee87c3b5961f36db5de2ed71e61">theta</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
 <tr class="separator:a930a4ee87c3b5961f36db5de2ed71e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3741df745c905fd825d12ee4f159dcd"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab3741df745c905fd825d12ee4f159dcd"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::array&lt; T, 2 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab3741df745c905fd825d12ee4f159dcd">yap::angles</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
+<tr class="memitem:ab3741df745c905fd825d12ee4f159dcd"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::array&lt; T, 2 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceyap.html#ab3741df745c905fd825d12ee4f159dcd">angles</a> (const ThreeVector&lt; T &gt; &amp;V, const CoordinateSystem&lt; T, 3 &gt; &amp;C)</td></tr>
 <tr class="separator:ab3741df745c905fd825d12ee4f159dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
