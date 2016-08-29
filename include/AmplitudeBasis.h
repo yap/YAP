@@ -119,12 +119,12 @@ public:
 
     /// casting constructor
     explicit constexpr canonical(const transversity<T>& t) :
-        basis<T>(t, jacobian_t_to_c)
+        basis<T>(t, jacobian_from_transversity)
     {}
 
     /// casting constructor
     explicit constexpr canonical(const helicity<T>& h) :
-        basis<T>(h, jacobian_h_to_c)
+        basis<T>(h, jacobian_from_helicity)
     {}
 
     /// \return S amplitude (l=0)
@@ -156,11 +156,12 @@ public:
     }
 
 private:
+
     // transformation matrix (jacobian) from transversity to canonical
-    static const SquareMatrix<T, 3> jacobian_t_to_c;
+    static const SquareMatrix<T, 3> jacobian_from_transversity;
 
     // transformation matrix (jacobian) from helicity to canonical
-    static const SquareMatrix<T, 3> jacobian_h_to_c;
+    static const SquareMatrix<T, 3> jacobian_from_helicity;
 };
 
 /// \class transversity
@@ -205,12 +206,12 @@ public:
 
     /// casting constructor
     explicit constexpr transversity(const canonical<T>& c) :
-        basis<T>(c, jacobian_c_to_t)
+        basis<T>(c, jacobian_from_canonical)
     {}
 
     /// casting constructor
     explicit constexpr transversity(const helicity<T>& h) :
-        basis<T>(h, jacobian_h_to_t)
+        basis<T>(h, jacobian_from_helicity)
     {}
 
     /// \return longitudinal amplitude
@@ -226,11 +227,12 @@ public:
     { return basis<T>::coordinates()[2]; }
 
 private:
+
     // transformation matrix (jacobian) from canonical to transversity
-    static const SquareMatrix<T, 3> jacobian_c_to_t;
+    static const SquareMatrix<T, 3> jacobian_from_canonical;
 
     // transformation matrix (jacobian) from helicity to transversity
-    static const SquareMatrix<T, 3> jacobian_h_to_t;
+    static const SquareMatrix<T, 3> jacobian_from_helicity;
 };
 
 
@@ -276,12 +278,12 @@ public:
 
     /// casting constructor
     explicit constexpr helicity(const canonical<T>& c) :
-        basis<T>(c, jacobian_c_to_h)
+        basis<T>(c, jacobian_from_canonical)
     {}
 
     /// casting constructor
     explicit constexpr helicity(const transversity<T>& t) :
-        basis<T>(t, jacobian_t_to_h)
+        basis<T>(t, jacobian_from_transversity)
     {}
 
     /// \return zero amplitude A_0
@@ -297,53 +299,54 @@ public:
     { return basis<T>::coordinates()[2]; }
 
 private:
+
     // transformation matrix (jacobian) from canonical to helicity
-    static const SquareMatrix<T, 3> jacobian_c_to_h;
+    static const SquareMatrix<T, 3> jacobian_from_canonical;
 
     // transformation matrix (jacobian) from transversity to helicity
-    static const SquareMatrix<T, 3> jacobian_t_to_h;
+    static const SquareMatrix<T, 3> jacobian_from_transversity;
 };
 
 
 /// transformation matrix definitions
 
 template <typename T>
-const SquareMatrix<T, 3> canonical<T>::jacobian_t_to_c(
+const SquareMatrix<T, 3> canonical<T>::jacobian_from_transversity(
       //  longitudinal parallel     perpendicular
         {-sqrt(1./3.), sqrt(2./3.), 0,     // S
           0,           0,           1,     // P
           sqrt(2./3.), sqrt(1./3.), 0});   // D
 
 template <typename T>
-const SquareMatrix<T, 3> canonical<T>::jacobian_h_to_c(
+const SquareMatrix<T, 3> canonical<T>::jacobian_from_helicity(
       //  zero         plus          minus
         {-sqrt(1./3.), sqrt(1./3.),  sqrt(1./3.),    // S
           0,           sqrt(0.5),   -sqrt(0.5)  ,    // P
           sqrt(2./3.), sqrt(1./6.),  sqrt(1./6.)});  // D
 
 template <typename T>
-const SquareMatrix<T, 3> transversity<T>::jacobian_c_to_t(
+const SquareMatrix<T, 3> transversity<T>::jacobian_from_canonical(
       //  S              P  D
         {-sqrt(1. / 3.), 0, sqrt(2. / 3.),   // longitudinal
           sqrt(2. / 3.), 0, sqrt(1. / 3.),   // parallel
           0,             1, 0            }); // perpendicular
 
 template <typename T>
-const SquareMatrix<T, 3> transversity<T>::jacobian_h_to_t(
+const SquareMatrix<T, 3> transversity<T>::jacobian_from_helicity(
       // zero plus        minus
         {1,   0,          0        ,    // longitudinal
          0,   sqrt(0.5),  sqrt(0.5),    // parallel
          0,   sqrt(0.5), -sqrt(0.5)});  // perpendicular
 
 template <typename T>
-const SquareMatrix<T, 3> helicity<T>::jacobian_c_to_h(
+const SquareMatrix<T, 3> helicity<T>::jacobian_from_canonical(
       //  S             P          D
         {-sqrt(1./3.),  0,         sqrt(2./3.),    // zero
           sqrt(1./3.),  sqrt(0.5), sqrt(1./6.),    // plus
           sqrt(1./3.), -sqrt(0.5), sqrt(1./6.)});  // minus
 
 template <typename T>
-const SquareMatrix<T, 3> helicity<T>::jacobian_t_to_h(
+const SquareMatrix<T, 3> helicity<T>::jacobian_from_transversity(
       // longitudinal parallel    perpendicular
         {1,           0,          0        ,    // zero
          0,           sqrt(0.5),  sqrt(0.5),    // plus

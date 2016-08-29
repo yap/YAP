@@ -37,6 +37,29 @@ namespace complex_basis {
 template <typename T>
 using covariance_matrix = SquareMatrix<T, 2>;
 
+
+namespace jacobian {
+
+/// jacobian from polar to cartesian
+template <typename T>
+SquareMatrix<T, 2> polar_to_cartesian(const polar<T>& pol)
+{
+    std::complex<T> v(pol);
+    return SquareMatrix<T, 2>({cos(std::arg(v)), -std::abs(v)*sin(std::arg(v)),
+                               sin(std::arg(v)),  std::abs(v)*cos(std::arg(v)) });
+}
+
+/// jacobian for transformation from cartesian to polar
+template <typename T>
+SquareMatrix<T, 2> cartesian_to_polar(const cartesian<T>& cart)
+{
+    std::complex<T> v(cart);
+    return SquareMatrix<T, 2>({ std::real(v)/std::abs(v),  std::imag(v)/std::abs(v),
+                               -std::imag(v)/std::norm(v), std::real(v)/std::norm(v) });
+}
+
+}
+
 /// \class basis
 /// complex number representation
 template <typename T>
@@ -102,7 +125,7 @@ public:
     /// \param pol complex number in polar representation
     cartesian(const polar<T>& pol) :
         cartesian<T>(std::complex<T>(pol),
-                 jacobian_p_c(pol) * pol.covariance() * transpose(jacobian_p_c(pol)))
+                jacobian::polar_to_cartesian(pol) * pol.covariance() * transpose(jacobian::polar_to_cartesian(pol)))
     {}
 
     /// casting operator to std::complex
@@ -143,7 +166,7 @@ public:
     /// \param pol complex number in cartesian representation
     polar(const cartesian<T>& cart) :
         polar<T>(std::abs(std::complex<T>(cart)), std::arg(std::complex<T>(cart)),
-                 jacobian_c_p(cart) * cart.covariance() * transpose(jacobian_c_p(cart)))
+                jacobian::cartesian_to_polar(cart) * cart.covariance() * transpose(jacobian::cartesian_to_polar(cart)))
     {}
 
     /// casting operator to std::complex
@@ -151,23 +174,6 @@ public:
     { return std::polar<T>(basis<T>::value()[0], basis<T>::value()[1]); }
 };
 
-/// jacobian from polar to cartesian
-template <typename T>
-SquareMatrix<T, 2> jacobian_p_c(const polar<T>& pol)
-{
-    std::complex<T> v(pol);
-    return SquareMatrix<T, 2>({cos(std::arg(v)), -std::abs(v)*sin(std::arg(v)),
-                               sin(std::arg(v)),  std::abs(v)*cos(std::arg(v)) });
-}
-
-/// jacobian for transformation from cartesian to polar
-template <typename T>
-SquareMatrix<T, 2> jacobian_c_p(const cartesian<T>& cart)
-{
-    std::complex<T> v(cart);
-    return SquareMatrix<T, 2>({ std::real(v)/std::abs(v),  std::imag(v)/std::abs(v),
-                               -std::imag(v)/std::norm(v), std::real(v)/std::norm(v) });
-}
 
 /// convert to string
 template <typename T>
