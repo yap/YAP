@@ -3,6 +3,8 @@
 #include "CachedValue.h"
 #include "logging.h"
 #include "Model.h"
+#include "RequiresHelicityAngles.h"
+#include "RequiresMeasuredBreakupMomenta.h"
 
 namespace yap {
 
@@ -72,7 +74,7 @@ void DataAccessor::pruneSymmetrizationIndices()
 
     // remove entries that don't trace back to an ISP
     for (auto it = SymmetrizationIndices_.begin(); it != SymmetrizationIndices_.end(); ) {
-        if (is_initial_state_particle_combination(*it->first, model()))
+        if (is_from_initial_state_particle_combination(*it->first, *model()))
             ++it;
         else
             it = SymmetrizationIndices_.erase(it);
@@ -121,7 +123,24 @@ void DataAccessor::registerWithModel()
 {
     if (!model())
         throw exceptions::Exception("Model unset", "DataAccessor::registerWithModel");
-    const_cast<Model*>(static_cast<const DataAccessor*>(this)->model())->addDataAccessor(this);
+
+    if (model()->locked())
+        throw exceptions::Exception("Model is locked and cannot be modified", "DataAccessor::registerWithModel");
+
+    // if HelicityAngles is required
+    if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles*>(this)->requiresHelicityAngles())
+        const_cast<Model*>(model())->requireHelicityAngles();
+
+    // if MeasuredBreakupMomenta is required
+    if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta*>(this)->requiresMeasuredBreakupMomenta())
+        const_cast<Model*>(model())->requireMeasuredBreakupMomenta();
+
+    // if stores nothing, do nothing
+    if (size() == 0)
+        return;
+
+    // insert this into Model's DataAccessors_
+    const_cast<Model*>(model())->DataAccessors_.insert(this);
 }
 
 //-------------------------
@@ -146,7 +165,7 @@ void DataAccessor::addCachedValue(std::shared_ptr<CachedValue> c)
 }
 
 //-------------------------
-void removeExpired(DataAccessorSet& S)
+void remove_expired(DataAccessorSet& S)
 {
     for (auto it = S.begin(); it != S.end(); )
         if (!*it) it = S.erase(it);

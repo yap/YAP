@@ -24,6 +24,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace yap {
@@ -36,6 +37,9 @@ using ParticleCombinationEqualTo = std::function<bool(const std::shared_ptr<cons
 
 /// \typedef ParticleCombinationVector
 using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
+
+/// \typedef ParticleCombinationSet
+using ParticleCombinationSet = std::set<std::shared_ptr<ParticleCombination> >;
 
 /// \typedef ParticleCombinationMap
 /// \tparam T Object to store in map, with shared_ptr to ParticleCombination as key

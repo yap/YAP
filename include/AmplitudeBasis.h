@@ -79,7 +79,7 @@ private:
 /// \class canonical
 /// stores amplitudes in canonical basis (S, P, D)
 /// \tparam T type stored in amplitudes
-/// \defgroup AmplitudeBasis struct for converting among amplitude bases
+/// \defgroup AmplitudeBasis Amplitude bases
 template <typename T>
 class canonical : public basis<T> {
 

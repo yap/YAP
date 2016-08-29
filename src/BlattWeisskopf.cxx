@@ -14,19 +14,36 @@
 namespace yap {
 
 //-------------------------
-double f_inverse_square(unsigned l, double z)
+const double squared_barrier_factor(unsigned l, double z)
 {
     switch (l) {
-        case 0:
-            return 1.;
-        case 1:
-            return 1. + z;
-        case 2:
-            return 9. + 3. * z + z * z;
-        default:
-            /// \todo put in generic formula for L > 2
-            throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(l) + " > 2",
-                                        "f_inverse_square");
+    case 0:
+        return 1;
+    case 1:
+        return 2 * z / (z + 1);
+    case 2:
+        return 13 * pow(z, l) / (z * (z + 3) + 9);
+    case 3:
+        return 277 * pow(z, l) / (z * (z * (z + 6) + 45) + 225);
+    case 4:
+        return 12746 * pow(z, l) / (z * (z * (z * (z + 10) + 135) + 1575) + 11025);
+    case 5:
+        return 998881 * pow(z, l) / (z * (z * (z * (z * (z + 15) + 315) + 6300) + 99225) + 893025);
+    case 6:
+        return 118394977 * pow(z, l) / (z * (z * (z * (z * (z * (z + 21) + 630) + 18900) + 496125) + 9823275) + 108056025);
+    case 7:
+        return 19727003738LL * pow(z, l) / (z * (z * (z * (z * (z * (z * (z + 28) + 1134) + 47250) + 1819125) + 58939650) + 1404728325L) + 18261468225LL);
+    default:
+        /// \todo: speed this up. And check how well it approximates.
+        // approximated:
+        double num = 0;
+        double den = 0;
+         for (int n = l; n >= 0; --n) {
+             double coef = exp(0.5 * l * n);
+             num += coef;
+             den += coef / pow(z, n);
+         }
+         return num / den;
     }
 }
 
@@ -48,9 +65,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
                                     "BlattWeisskopf::BlattWeisskopf");
 
     if (L_ > 0) {
-        addParameter(DecayingParticle_->mass());
         addParameter(DecayingParticle_->radialSize());
-
         BarrierFactor_ = RealCachedValue::create(*this);
     }
 
@@ -76,30 +91,16 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 
         // check if barrier factor is uncalculated
         if (D.status(*BarrierFactor_, pc_symIndex.second) == CalculationStatus::uncalculated) {
-
+            
             DEBUG("calculate BlattWeisskopf");
+
+            double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
 
             // calculate on all data points in D
             for (auto& d : D) {
-
-                double m2_R = pow(DecayingParticle_->mass()->value(), 2);
-                double m_a = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[0]);
-                double m_b = model()->fourMomenta()->m(d, pc_symIndex.first->daughters()[1]);
-
-                // nominal breakup momentum
-                double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
-
                 // measured breakup momentum
                 double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc_symIndex.first);
-
-                double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
-                double f2_nomi = f_inverse_square(L_, r2 * q2_nomi);
-                double f2_meas = f_inverse_square(L_, r2 * q2_meas);
-
-                double barrier_factor = sqrt(f2_nomi / f2_meas);
-
-                // store result in data point
-                BarrierFactor_->setValue(barrier_factor, d, pc_symIndex.second, D);
+                BarrierFactor_->setValue(sqrt(squared_barrier_factor(L(), q2_meas * r2)), d, pc_symIndex.second, D);
             }
 
             // update status

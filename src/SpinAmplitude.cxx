@@ -10,8 +10,8 @@
 namespace yap {
 
 //-------------------------
-SpinAmplitude::SpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s, const ParticleCombinationEqualTo& equal) :
-    StaticDataAccessor(equal),
+SpinAmplitude::SpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s, const ParticleCombinationEqualTo& equal) :
+    StaticDataAccessor(m, equal),
     InitialTwoJ_(two_J),
     FinalTwoJ_(two_j),
     L_(l),
@@ -36,12 +36,12 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 
         // loop over mapping of parent spin projection to AmplitudeSubmap
         for (auto& aM_kv : Amplitudes_) {
-            
+
             const auto& two_M = aM_kv.first; // parent spin projection
-            
+
             // loop over mappin of daughter spin projection pairs to amplitudes
             for (auto& aSM_kv : aM_kv.second)
-                
+
                 // if yet uncalculated
                 if (sm.status(*aSM_kv.second, pc_i.second) == CalculationStatus::uncalculated)
                     aSM_kv.second->setValue(calc(two_M, aSM_kv.first, d, pc_i.first), d, pc_i.second, sm);

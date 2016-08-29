@@ -23,6 +23,7 @@
 
 #include "fwd/SpinAmplitude.h"
 
+#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/Spin.h"
 #include "fwd/StatusManager.h"
@@ -44,6 +45,19 @@ namespace yap {
 /// \defgroup SpinAmplitude Spin Amplitudes
 class SpinAmplitude : public StaticDataAccessor
 {
+protected:
+
+    /// Constructor;
+    /// declared protected to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
+    /// \param m Owning Model
+    /// \param two_J twice the spin of Initial-state
+    /// \param two_j SpinVector of daughters
+    /// \param l orbital angular momentum
+    /// \param two_s twice the total spin angular momentum
+    /// \param equal ParticleCombination equality struct for determining index assignments
+    SpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s,
+                  const ParticleCombinationEqualTo& equal);
+
 public:
 
     /// \typedef AmplitudeSubmap
@@ -108,11 +122,14 @@ public:
                                          int two_M, const SpinProjectionVector& two_m) const
     { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
 
+    /// check equivalence: only check spins and angular momenta
+    bool equalTo(const SpinAmplitude& other) const;
+
+    /// check equality: calls #equalTo and checks symmetrizationIndices
+    virtual bool equals(const SpinAmplitude& other) const;
+
     /// \return a string naming the formalism used for the SpinAmplitude calculation
     virtual std::string formalism() const = 0;
-
-    /// grant friend access to SpinAmplitudeCache to set Model
-    friend class SpinAmplitudeCache;
 
     /// grant friend access to DecayChannel to call addParticleCombination
     friend class DecayChannel;
@@ -125,22 +142,6 @@ protected:
     /// \param two_m SpinProjectionVector of daughters
     /// \param store_null store a NULL CachedValue shared_pointer (set true for use from UnitSpinAmplitude)
     void addAmplitude(int two_M, const SpinProjectionVector& two_m, bool store_null = false);
-
-    /// check equivalence: only check spins and angular momenta
-    bool equalTo(const SpinAmplitude& other) const;
-
-    /// check equality: calls #equalTo and checks symmetrizationIndices
-    virtual bool equals(const SpinAmplitude& other) const;
-
-    /// Constructor
-    /// declared private to ensure SpinAmplitude's are only created by a SpinAmplitudeCache
-    /// \param two_J twice the spin of Initial-state
-    /// \param two_j SpinVector of daughters
-    /// \param l orbital angular momentum
-    /// \param two_s twice the total spin angular momentum
-    /// \param equal ParticleCombination equality struct for determining index assignments
-    SpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s,
-                  const ParticleCombinationEqualTo& equal);
 
 private:
 

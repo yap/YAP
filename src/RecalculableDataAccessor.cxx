@@ -1,5 +1,6 @@
 #include "RecalculableDataAccessor.h"
 
+#include "Model.h"
 #include "Parameter.h"
 
 namespace yap {
@@ -20,6 +21,13 @@ const VariableStatus variable_status(const RecalculableDataAccessor& rda)
             return VariableStatus::changed;
 
     return VariableStatus::unchanged;
+}
+
+//-------------------------
+void RecalculableDataAccessor::registerWithModel()
+{
+    DataAccessor::registerWithModel();
+    const_cast<Model*>(model())->RecalculableDataAccessors_.insert(this);
 }
 
 }

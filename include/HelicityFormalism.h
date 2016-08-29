@@ -22,6 +22,7 @@
 #define yap_HelicityFormalism_h
 
 #include "fwd/DataPoint.h"
+#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/Spin.h"
 
@@ -44,11 +45,12 @@ class HelicitySpinAmplitude : public SpinAmplitude, public RequiresHelicityAngle
 protected:
 
     /// Constructor
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    HelicitySpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
+    HelicitySpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s);
 
 public:
 
@@ -60,7 +62,7 @@ public:
     virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const override
     { return (initialTwoJ() == 0) ? Coefficients_.at(two_m) : SpinAmplitude::amplitude(d, pc, two_M, two_m); }
-    
+
     /// Overrides SpinAmplitude::calculate to do nothing if initialTwoJ() == 0
     /// \param d DataPoint to calculate into
     /// \param sm StatusManager to update
@@ -75,6 +77,10 @@ public:
     virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
                                             const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
 
+    /// check equality
+    virtual bool equals(const SpinAmplitude& other) const override
+    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
+
     /// \return "helicity formalism"
     virtual std::string formalism() const override
     { return "helicity formalism"; }
@@ -83,10 +89,6 @@ public:
     friend class HelicityFormalism;
 
 private:
-
-    /// check equality
-    virtual bool equals(const SpinAmplitude& other) const override
-    { return dynamic_cast<const HelicitySpinAmplitude*>(&other) and SpinAmplitude::equals(other); }
 
     /// map from (m1,m2) -> L-S * S-S coupling coefficients
     /// value is sqrt((2L+1)/4pi) * (L 0 S m1-m2 | J m1-m2) * (j1 m1 j2 m2 | S m1-m2);
@@ -108,12 +110,13 @@ private:
 
     /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector for daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
-    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(two_J, two_j, l, two_s)); }
+    virtual std::shared_ptr<SpinAmplitude> create(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) const override
+    { return std::shared_ptr<SpinAmplitude>(new HelicitySpinAmplitude(m, two_J, two_j, l, two_s)); }
 
 };
 

@@ -32,7 +32,7 @@
 
 namespace yap {
 
-/// \name DataAccessor
+/// \class DataAccessor
 /// \brief Abstract base class for all objects accessing DataPoint's
 /// \author Johannes Rauch, Daniel Greenwald
 class DataAccessor
@@ -136,7 +136,7 @@ private:
 };
 
 /// remove expired elements of set
-void removeExpired(DataAccessorSet& S);
+void remove_expired(DataAccessorSet& S);
 
 }
 

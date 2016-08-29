@@ -22,9 +22,15 @@
 #ifndef yap_MassShapeWithNominalMassFwd_h
 #define yap_MassShapeWithNominalMassFwd_h
 
+#include "fwd/Parameter.h"
+#include "fwd/Particle.h"
+
 namespace yap {
 
 class MassShapeWithNominalMass;
+
+/// \return mass parameter
+RealParameter& mass_parameter(Particle& p);
 
 }
 

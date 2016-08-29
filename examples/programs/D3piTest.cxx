@@ -53,6 +53,8 @@ int main( int argc, char** argv)
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
+    auto D_mass = factory["D+"].Mass;
+
     LOG(INFO) << "D created";
 
     // final state particles
@@ -77,15 +79,15 @@ int main( int argc, char** argv)
     D->addChannel(f_2, piPlus);
 
     // f_0(980)
-    auto f_0_980_flatte = std::make_shared<yap::Flatte>();
-    f_0_980_flatte->addChannel(0.406, piPlus->mass()->value());
-    f_0_980_flatte->addChannel(0.406 * 2, factory.particleTableEntry("K+").Mass);
-    auto f_0_980 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.965, "f_0_980", radialSize, f_0_980_flatte);
+    auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
+    f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
+    f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *factory.fsp(321), *factory.fsp(-321))); // K+K-
+    auto f_0_980 = yap::Resonance::create("f_0_980", yap::QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create(factory.quantumNumbers("f_0"), 1.350, "f_0_1370", radialSize, std::make_unique<yap::BreitWigner>(0.265));
+    auto f_0_1370 = yap::Resonance::create("f_0_1370", factory.quantumNumbers("f_0"), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 
@@ -100,7 +102,7 @@ int main( int argc, char** argv)
     D->addChannel(sigma, piPlus);
 
     FLOG(INFO) << "number of free amplitudes = " << free_amplitudes(M).size();
-    
+
     // Add channels to D
     *free_amplitude(*D, yap::to(rho))      = std::polar(1., 0.);
     *free_amplitude(*D, yap::to(f_0_980))  = std::polar(1.4, yap::rad(12.));
@@ -117,6 +119,8 @@ int main( int argc, char** argv)
         LOG(INFO) << "consistent!";
     else
         LOG(INFO) << "inconsistent!";
+
+    M.lock();
 
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
@@ -135,7 +139,7 @@ int main( int argc, char** argv)
 
     // get default Dalitz axes
     auto A = M.massAxes();
-    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
+    auto m2r = yap::squared(yap::mass_range(D_mass, A, M.finalStateParticles()));
 
     // generate points randomly in phase space of model
     std::mt19937 g(0);
@@ -145,7 +149,7 @@ int main( int argc, char** argv)
 
     // generate 10,000 phase-space-distributed data points
     std::generate_n(std::back_inserter(data), 10000,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
+                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D_mass, A, m2r, g, std::numeric_limits<unsigned>::max()));
 
     LOG(INFO) << data.size() << " data points of " << data[0].bytes() << " bytes each = " << (data.size() * data[0].bytes()) * 1.e-6 << " MB";
 

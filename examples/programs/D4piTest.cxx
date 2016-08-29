@@ -4,6 +4,7 @@
 #include "DataSet.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
+#include "Filters.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "FourVector.h"
@@ -13,6 +14,7 @@
 #include "logging.h"
 #include "make_unique.h"
 #include "MassAxes.h"
+#include "MassShapeWithNominalMass.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "Particle.h"
@@ -46,6 +48,8 @@ int main( int argc, char** argv)
 
     // initial state particle
     auto D = factory.decayingParticle(421, radialSize);
+
+    auto D_mass = factory[421].Mass;
 
     // final state particles
     auto piPlus = factory.fsp(211);
@@ -95,6 +99,7 @@ int main( int argc, char** argv)
     else
         LOG(INFO) << "inconsistent!";
 
+    M.lock();
 
     // print stuff
     //yap::ParticleCombination::printParticleCombinationSet();
@@ -123,9 +128,9 @@ int main( int argc, char** argv)
     LOG(INFO) << "create dataPoints";
 
     // create default mass axes
-
+    
     auto A = M.massAxes();
-    auto m2r = yap::squared(yap::mass_range(A, D, M.finalStateParticles()));
+    auto m2r = yap::squared(yap::mass_range(D_mass, A, M.finalStateParticles()));
 
     // create data set
     yap::DataSet data = M.createDataSet();
@@ -133,7 +138,7 @@ int main( int argc, char** argv)
     std::mt19937 g(0);
     // fill data set with 1 point
     std::generate_n(std::back_inserter(data), 1,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D->mass()->value(), A, m2r, g, std::numeric_limits<unsigned>::max()));
+                    std::bind(yap::phsp<std::mt19937>, std::cref(M), D_mass, A, m2r, g, std::numeric_limits<unsigned>::max()));
 
     LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
     LOG(INFO) << "Printing data:";
@@ -166,12 +171,11 @@ int main( int argc, char** argv)
 
         // change masses
         if (uniform(g) > 0.5)
-            for (auto& c : D->channels())
-                for (auto& d : c->daughters())
-                    if (d->mass()->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5) {
-                        DEBUG("change mass for " << to_string(*d));
-                        d->mass()->setValue(uniform2(g) * d->mass()->value());
-                    }
+            for (auto& d : particles(M, yap::is_resonance, yap::has_mass()))
+                if (uniform(g) > 0.5 and yap::mass_parameter(*d).variableStatus() != yap::VariableStatus::fixed) {
+                    DEBUG("change mass for " << to_string(*d));
+                    yap::mass_parameter(*d) = uniform2(g) * mass_parameter(*d).value();
+                }
 
         DEBUG("===================================================================================================================== ");
 

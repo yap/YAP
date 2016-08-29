@@ -259,7 +259,7 @@ private:
 };
 
 /// \class DataPartitionWeave
-/// \brief A set of data spaced over the range [B,E) with spacing S = [B+0S, B+1S, B+2S, B+3S, ..., E)
+/// \brief Partition that iterates from begin to end jumping a specified spacing every increase
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 class DataPartitionWeave : public DataPartition

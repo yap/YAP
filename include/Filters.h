@@ -26,8 +26,12 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayingParticle.h"
 #include "fwd/DecayTree.h"
+#include "fwd/FinalStateParticle.h"
 #include "fwd/FreeAmplitude.h"
+#include "fwd/MassShape.h"
+#include "fwd/MassShapeWithNominalMass.h"
 #include "fwd/Particle.h"
+#include "fwd/Resonance.h"
 #include "fwd/SpinAmplitude.h"
 
 #include "Exceptions.h"
@@ -47,7 +51,7 @@ template <typename container>
 typename container::value_type lone_elt(container& C)
 {
     if (C.size() != 1)
-        throw yap::exceptions::Exception("Container size not 1 (" + std::to_string(C.size())+ ")", "lone_elt");
+        throw yap::exceptions::Exception("Container size not 1 (" + std::to_string(C.size()) + ")", "lone_elt");
     return *C.begin();
 }
 
@@ -84,20 +88,18 @@ const std::set<std::shared_ptr<T> >& filter(const std::set<std::shared_ptr<T> >&
 
 /// \class filter_decay_tree
 /// \brief helper base class for functor classes that can filter DecayTree's
-struct filter_decay_tree
-{
+struct filter_decay_tree {
     /// DecayTree functor
     virtual const bool operator()(const DecayTree& dt) const = 0;
 };
 
 /// \class filter_free_amplitude
 /// \brief helper base class for functor classes that can filter FreeAmplitude's
-struct filter_free_amplitude : public filter_decay_tree
-{
+struct filter_free_amplitude : public filter_decay_tree {
     using filter_decay_tree::operator();
-    
+
     /// DecayTree functor
-    virtual const bool operator()(const DecayTree& dt) const;
+    virtual const bool operator()(const DecayTree& dt) const override;
 
     /// FreeAmplitude functor
     virtual const bool operator()(const FreeAmplitude& fa) const = 0;
@@ -105,12 +107,11 @@ struct filter_free_amplitude : public filter_decay_tree
 
 /// \class filter_decay_channel
 /// \brief helper base class for functor classes that can filter DecayChannel's
-struct filter_decay_channel : public filter_free_amplitude
-{
+struct filter_decay_channel : public filter_free_amplitude {
     using filter_free_amplitude::operator();
 
     /// FreeAmplitude functor
-    virtual const bool operator()(const FreeAmplitude& fa) const;
+    virtual const bool operator()(const FreeAmplitude& fa) const override;
 
     /// DecayChannel functor
     virtual const bool operator()(const DecayChannel& dc) const = 0;
@@ -118,12 +119,11 @@ struct filter_decay_channel : public filter_free_amplitude
 
 /// \class filter_spin_amplitude
 /// \brief helper base class for functor classes that can filter SpinAmplitude's
-struct filter_spin_amplitude : public filter_free_amplitude
-{
+struct filter_spin_amplitude : public filter_free_amplitude {
     using filter_free_amplitude::operator();
 
     /// FreeAmplitude functor
-    virtual const bool operator()(const FreeAmplitude& fa) const;
+    virtual const bool operator()(const FreeAmplitude& fa) const override;
 
     /// SpinAmplitude functor
     virtual const bool operator()(const SpinAmplitude& dc) const = 0;
@@ -131,23 +131,46 @@ struct filter_spin_amplitude : public filter_free_amplitude
 
 /// \class filter_particle
 /// \brief helper base class for filtering Particle's
-struct filter_particle
-{
+struct filter_particle {
     /// Particle functor
     virtual const bool operator()(const Particle& p) const = 0;
 };
 
 /// \class filter_decaying_particle
 /// \brief helper base class for filtering DecayingParticle's
-struct filter_decaying_particle : public filter_particle
-{
+struct filter_decaying_particle : public filter_particle {
     using filter_particle::operator();
 
     /// Particle functor
-    virtual const bool operator()(const Particle& p) const;
+    virtual const bool operator()(const Particle& p) const override;
 
     /// DecayingParticle functor
     virtual const bool operator()(const DecayingParticle& dp) const = 0;
+};
+
+/// \class filter_resonance
+/// \brief helper base class for filtering Resonance's
+struct filter_resonance : public filter_decaying_particle {
+    using filter_decaying_particle::operator();
+
+    /// DecayingParticle functor
+    virtual const bool operator()(const DecayingParticle& dp) const override;
+
+    /// Resonance functor
+    virtual const bool operator()(const Resonance& dp) const = 0;
+};
+
+/// \class filter_mass_shape
+/// \brief helper base class for filtering MassShape's
+struct filter_mass_shape : public filter_resonance {
+    using filter_resonance::operator();
+
+    /// Resonance functor
+    virtual const bool operator()(const Resonance& dp) const override;
+
+    /// MassShape functor
+    virtual const bool operator()(const MassShape& dp) const = 0;
+
 };
 
 /// calls functor with shared_ptr to object;
@@ -231,7 +254,7 @@ private:
     /// SpinAmplitude pointer to check equality to
     const SpinAmplitude* SpinAmplitude_;
 };
- 
+
 /// \class to
 /// \brief Functor class for filtering by particle content
 class to : public filter_decay_channel, public filter_decaying_particle
@@ -277,7 +300,7 @@ protected:
 /// \brief Functor class for filtering by exact particle content
 class exactly_to : public to
 {
- public:
+public:
     /// constructor
     /// \param daughters Daughter particles to check for
     exactly_to(const ParticleVector& daughters) : to(daughters) {}
@@ -292,13 +315,13 @@ class exactly_to : public to
     /// DecayChannel functor
     virtual const bool operator()(const DecayChannel& dc) const override;
 };
-     
+
 /// \class l_equals
 /// \brief Functor object for filtering by orbital angular momentum
 class l_equals : public filter_spin_amplitude
 {
 public:
-    
+
     /// constructor
     l_equals(unsigned l) : filter_spin_amplitude(), L_(l) {}
 
@@ -319,7 +342,7 @@ private:
 class m_equals : filter_free_amplitude
 {
 public:
-    
+
     /// constructor
     m_equals(int two_m) : filter_free_amplitude(), TwoM_(two_m) {}
 
@@ -327,7 +350,7 @@ public:
 
     /// FreeAmplitude functor
     virtual const bool operator()(const FreeAmplitude& fa) const override;
-    
+
 private:
 
     /// spin projection to check equality to
@@ -456,6 +479,34 @@ private:
     const DecayingParticle* DecayingParticle_;
 };
 
+
+/// \class has_mass
+/// \brief Functors return true if particle is a final state particle
+/// or if a mass shape can be found that inherits from
+/// MassShapeWithNominalMass
+class has_mass : public filter_mass_shape
+{
+public:
+    /// constructor
+    has_mass() : filter_mass_shape() {}
+
+    using filter_mass_shape::operator();
+
+    /// Particle functor
+    virtual const bool operator()(const Particle& p) const override;
+
+    /// FinalStateParticle functor
+    const bool operator()(const FinalStateParticle& p) const
+    { return true; }
+
+    /// MassShape functor
+    virtual const bool operator()(const MassShape& m) const override;
+
+    /// MassShapeWithNominalMass functor
+    const bool operator()(const MassShapeWithNominalMass& m) const
+    { return true; }
+
+};
 
 /// @}
 // end of defgroup filters

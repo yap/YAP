@@ -25,15 +25,13 @@ void RelativisticBreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
     // add parameters of BlattWeisskopf to this object
     for (const auto& p : BlattWeisskopf_->parameters())
         addParameter(p);
+    addParameter(resonance()->radialSize());
+    addParameter(mass());
 }
 
 //-------------------------
 void RelativisticBreitWigner::checkDecayChannel(const DecayChannel& c) const
 {
-    // check decaying resonance does not yet have a channel
-    if (resonance() and !resonance()->channels().empty())
-        throw exceptions::Exception("Resonance already has DecayChannel", "RelativisticBreitWigner");
-
     // check channel is only to two daughters
     if (c.daughters().size() != 2)
         throw exceptions::Exception("Wrong number of daughters (" + std::to_string(c.daughters().size()) + " != 2",
@@ -48,13 +46,28 @@ void RelativisticBreitWigner::checkDecayChannel(const DecayChannel& c) const
 //-------------------------
 void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
 {
+    /////////////////////////
     // common factors:
-    // resonance mass^2
-    double m2_R = pow(resonance()->mass()->value(), 2);
+
+    // radial size squared
+    double r2 = pow(resonance()->radialSize()->value(), 2);
+
+    // squared resonance mass
+    double m2_R = pow(mass()->value(), 2);
+
     // i * mass^2 * nominal width
     auto im2w_R = Complex_i * m2_R * width()->value();
+
+    // // nominal mass * nominal width
+    // double mG = mass()->value() * width()->value();
+
     // J + 1/2
     unsigned twoLp1 = BlattWeisskopf_->L() + 1;
+
+    /////////////////////////
+
+    // calculate BlattWeisskopf
+    BlattWeisskopf_->calculate(D);
 
     // T := 1 / (M^2 - m^2 - i * M * Gamma)
     for (auto& d : D) {
@@ -65,14 +78,14 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
         double m_b  = model()->fourMomenta()->m(d, pc->daughters()[1]);
 
         // calculate nominal breakup momentum
-        double q2_nomi = MeasuredBreakupMomenta::calcQ2(m2_R, m_a, m_b);
+        double q2_nomi = squared_breakup_momentum(m2_R, m_a, m_b);
 
-        // calculate measured breakup momentum
+        // retrieve measured breakup momentum
         double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc);
 
         double Q = sqrt(q2_meas / q2_nomi);
 
-        auto imw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2);
+        auto imw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2) / squared_barrier_factor(BlattWeisskopf_->L(), q2_nomi * r2);
 
         T()->setValue(1. / (m2_R - pow(m_ab, 2) - imw), d, si, D);
 

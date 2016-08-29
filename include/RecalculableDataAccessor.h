@@ -21,12 +21,12 @@
 #ifndef yap_RecalculableDataAccessor_h
 #define yap_RecalculableDataAccessor_h
 
-#include "fwd/CalculationStatus.h"
+#include "fwd/RecalculableDataAccessor.h"
+
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/RecalculableDataAccessor.h"
 #include "fwd/StatusManager.h"
 #include "fwd/VariableStatus.h"
 
@@ -39,6 +39,9 @@
 
 namespace yap {
 
+/// \class RecalculateDataAccessor
+/// \brief Base class for all data accessors that will need to be updated
+/// \author Daniel Greenwald
 class RecalculableDataAccessor : public DataAccessor
 {
 public:
@@ -63,10 +66,14 @@ public:
     /// must be overloaded in derived class
     virtual std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
+    /// \return Parameters of this object
     const ParameterSet& parameters() const
     { return parameters_; }
 
 protected:
+
+    /// register with Model
+    void virtual registerWithModel() override;
 
     void addParameter(std::shared_ptr<ParameterBase> p)
     { parameters_.insert(p); }

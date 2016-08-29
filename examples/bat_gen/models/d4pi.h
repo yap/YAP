@@ -83,8 +83,8 @@ inline std::unique_ptr<Model> d4pi()
     auto piZero = F.fsp(111);
     auto Kshort = F.fsp(310);
     auto f_0_980_flatte = std::make_shared<Flatte>();
-    f_0_980_flatte->addChannel(0.20, piZero->mass()->value());
-    f_0_980_flatte->addChannel(0.50, Kshort->mass()->value());
+    f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
+    f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
        

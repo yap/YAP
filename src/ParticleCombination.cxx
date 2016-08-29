@@ -36,50 +36,6 @@ void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daugh
 }
 
 //-------------------------
-const std::shared_ptr<const ParticleCombination> ParticleCombination::origin() const
-{
-    auto pc = shared_from_this();
-    while (pc->parent())
-        pc = pc->parent();
-    return pc;
-}
-
-//-------------------------
-ParticleCombinationVector ParticleCombination::leaves()
-{
-    if (Daughters_.empty())
-        return ParticleCombinationVector(1, shared_from_this());
-
-    ParticleCombinationVector V;
-    for (const auto& d : Daughters_) {
-        auto v = d->leaves();
-        V.insert(V.end(), v.begin(), v.end());
-    }
-    return V;
-}
-
-//-------------------------
-bool ParticleCombination::decaysToFinalStateParticles() const
-{
-    for (auto& leaf : const_cast<ParticleCombination*>(this)->leaves())
-        if (!leaf->isFinalStateParticle())
-            return false;
-    return true;
-}
-
-//-------------------------
-bool ParticleCombination::contains(const std::shared_ptr<const ParticleCombination>& B) const
-{
-    std::set<unsigned> setA(Indices_.begin(), Indices_.end());
-
-    const std::vector<unsigned>& indicesB(B->indices());
-    std::set<unsigned> setB(indicesB.begin(), indicesB.end());
-
-    // check if B is subset of A
-    return std::includes(setA.begin(), setA.end(), setB.begin(), setB.end());
-}
-
-//-------------------------
 bool ParticleCombination::consistent() const
 {
     bool C = true;
@@ -139,31 +95,29 @@ bool disjoint(const ParticleCombinationVector& pcv)
 }
 
 //-------------------------
-bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m)
+const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
 {
-    auto p = pc.origin();
-
-    for (auto& isp : m->initialStateParticles())
-        if (any_of(isp.first->particleCombinations(), p))
+    for (auto& isp_am : m.initialStateParticles())
+        if (isp_am.first->particleCombinations().find(std::const_pointer_cast<ParticleCombination>(pc.shared_from_this()))
+                != isp_am.first->particleCombinations().end())
             return true;
-
     return false;
 }
 
 //-------------------------
-void prune_particle_combinations(ParticleCombinationVector& PCs)
+void prune_particle_combinations(ParticleCombinationSet& PCs)
 {
     // get ISP PCs
     size_t ispNIndices(0);
     for (auto& pc : PCs)
-        ispNIndices = std::max(ispNIndices, pc->origin()->indices().size());
+        ispNIndices = std::max(ispNIndices, origin(*pc).indices().size());
 
-    PCs.erase(std::remove_if(PCs.begin(), PCs.end(),
-    [&] (std::shared_ptr<yap::ParticleCombination>& pc) { return (pc->origin()->indices().size() < ispNIndices); }),
-    PCs.end());
-
-    if (PCs.empty())
-        throw exceptions::Exception("ParticleCombinations empty after pruning", "prune_particle_combinations");
+    for (auto it = PCs.begin(); it != PCs.end(); ) {
+        if (origin(**it).indices().size() < ispNIndices)
+            it = PCs.erase(it);
+        else
+            ++it;
+    }
 }
 
 //-------------------------
@@ -196,7 +150,7 @@ std::string to_string(const ParticleCombination& pc)
     }
     s.erase(s.size() - 3, 3);
     for (auto& d : pc.daughters())
-        if (!d->isFinalStateParticle())
+        if (!is_final_state_particle_combination(*d))
             s += "; " + to_string(*d);
     return s;
 }
@@ -207,7 +161,7 @@ std::string to_string_with_parent(const ParticleCombination& pc)
     if (!pc.parent())
         return to_string(pc);
 
-    return to_string(pc) + " in " + to_string(*pc.origin());
+    return to_string(pc) + " in " + to_string(origin(pc));
 }
 
 //-------------------------

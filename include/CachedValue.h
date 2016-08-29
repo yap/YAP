@@ -41,8 +41,7 @@
 
 namespace yap {
 
-/// \class CachedValue
-/// \brief Class for managing cached values inside a #DataPoint
+/// \brief Class for managing cached values inside a DataPoint
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Data
 /// \ingroup Cache
@@ -58,7 +57,7 @@ protected:
 
 public:
 
-    /// \struct stores calculation and variable statuses for a CachedValue
+    /// stores calculation and variable statuses for a CachedValue
     struct Status {
 
         /// constructor

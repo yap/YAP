@@ -22,9 +22,14 @@
 #ifndef yap_ResonanceFwd_h
 #define yap_ResonanceFwd_h
 
+#include "fwd/Particle.h"
+
 namespace yap {
 
 class Resonance;
+
+/// \return whether particle is a resonance
+const bool is_resonance(const Particle& p);
 
 }
 

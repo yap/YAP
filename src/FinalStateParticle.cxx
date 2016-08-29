@@ -8,23 +8,24 @@
 namespace yap {
 
 //-------------------------
-FinalStateParticle::FinalStateParticle(const QuantumNumbers& q, double m, std::string name)
-    : Particle(q, m, name),
-      Model_(nullptr)
+FinalStateParticle::FinalStateParticle(std::string name, const QuantumNumbers& q, double m) :
+    Particle(name, q),
+    Model_(nullptr),
+    Mass_(m)
 {
-    // final state particles have fixed mass
-    mass()->variableStatus() = VariableStatus::fixed;
+    if (Mass_ < 0)
+        throw exceptions::Exception("Mass is negative", "FinalStateParticle::FinalStateParticle");
 }
 
 //-------------------------
 void FinalStateParticle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
 {
     // pc must be final state particle
-    if (!pc->isFinalStateParticle())
+    if (!is_final_state_particle_combination(*pc))
         throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
     // if pc not already in particleCombinations vector, add it
-    if (!any_of(particleCombinations(), pc))
+    if (particleCombinations().find(pc) == particleCombinations().end())
         Particle::addParticleCombination(pc);
 }
 
@@ -50,9 +51,9 @@ bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const Fin
 }
 
 //-------------------------
-bool is_final_state_particle(const std::shared_ptr<Particle>& p)
+bool is_final_state_particle(const Particle& p)
 {
-    return std::dynamic_pointer_cast<FinalStateParticle>(p) != nullptr;
+    return dynamic_cast<const FinalStateParticle*>(&p) != nullptr;
 }
 
 

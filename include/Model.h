@@ -26,6 +26,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
+#include "fwd/Filters.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
 #include "fwd/FourVector.h"
@@ -200,19 +201,16 @@ public:
     /// if argument is left empty, a default set of axes is constructed
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
+    /// \todo Find way to make const.
     const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {});
 
-    /// Calculate four-momenta for final-state particles for
-    /// phase-space coordinate.  if `initial_mass` is negative, the
-    /// mass of the first ISP decaying to the full final state is used
-    /// (preferentially taking one with a fixed fore-factor if there
-    /// is such a one)
-    /// \param axes phase-space axes
-    /// \param squared_masses phase-space coordinate
-    /// \param initial_mass initial mass of decaying system
-    std::vector<FourVector<double> > calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, double initial_mass = -1) const;
-
     /// @}
+
+    /// tell model to calculate and store helicity angles
+    void requireHelicityAngles();
+
+    /// tell model to calculate and store measured breakup momenta
+    void requireMeasuredBreakupMomenta();
 
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
@@ -230,6 +228,12 @@ public:
     /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
 
+    /// grant friend status to DataAccessor to register itself with this
+    friend class RecalculableDataAccessor;
+
+    /// grant friend status to DataAccessor to register itself with this
+    friend class StaticDataAccessor;
+
     /// grant friend status to DecayingParticle to call addParticleCombination
     friend class DecayingParticle;
 
@@ -239,9 +243,6 @@ protected:
     /// MeasuredBreakupMomenta_ (along with it's daughters through
     /// recursive calling) if it is NOT for a FSP.
     virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
-
-    /// register a DataAccessor with this Model
-    virtual void addDataAccessor(DataAccessorSet::value_type da);
 
     /* /// remove a DataAccessor from this Model */
     /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */

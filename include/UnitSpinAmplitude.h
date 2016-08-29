@@ -66,8 +66,8 @@ protected:
     /// \param two_j SpinVector of daughters
     /// \param l orbital angular momentum
     /// \param two_s twice the total spin angular momentum
-    UnitSpinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s)
-        : SpinAmplitude(two_J, two_j, l, two_s, equal_always)
+    UnitSpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s)
+        : SpinAmplitude(m, two_J, two_j, l, two_s, equal_always)
     {
         // check if all spins are 0 for non-res decays
         if (two_j.size() > 2 and (two_J != 0 or l != 0 or two_s != 0 or std::any_of(two_j.begin(), two_j.end(), [](unsigned j){return j != 0;})))

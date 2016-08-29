@@ -62,27 +62,26 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
     std::vector<ParticleCombinationVector> PCs;
     for (auto d : u_daughters) {
         // get daughter's list of particle combinations
-        ParticleCombinationVector v_d = d->particleCombinations();
+        const auto& all_d_pcs = d->particleCombinations();
 
-        // create vector to copy them into
-        ParticleCombinationVector v;
-        v.reserve(v_d.size());
-
+        // create set to copy them into
+        ParticleCombinationVector d_pcs;
+        
         // copy them if they aren't nullptr, aren't empty,
         // and aren't already contained in v, using equalDown to compare regardless of parent.
-        std::copy_if(v_d.begin(), v_d.end(), std::back_inserter(v),
+        std::copy_if(all_d_pcs.begin(), all_d_pcs.end(), std::back_inserter(d_pcs),
                      [&](const ParticleCombinationVector::value_type & pc) {
                          return pc and !pc->indices().empty() and
-                             std::none_of(v.begin(), v.end(), std::bind(equal_down, std::placeholders::_1, pc));
+                             std::none_of(d_pcs.begin(), d_pcs.end(), std::bind(equal_down, std::placeholders::_1, pc));
                      });
-
-        if (v.empty())
+        
+        if (d_pcs.empty())
             throw exceptions::Exception("No ParticleCombinations for daughter " + to_string(*d)
                                         + " in DecayChannel " + to_string(*this),
                                         "DecayChannel::DecayChannel");
 
         // create combinations of ParticleCombinations to accomodate occurance of daughter in final state
-        auto cv = combinations(v, std::count(Daughters_.begin(), Daughters_.end(), d));
+        auto cv = combinations(d_pcs, std::count(Daughters_.begin(), Daughters_.end(), d));
         if (cv.empty())
             throw exceptions::Exception("Could not form combinations of ParticleCombinations for daughter " + to_string(*d),
                                         "DecayChannel::DecayChannel");
@@ -153,7 +152,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
     // if pc already possessed, do nothing
-    if (any_of(particleCombinations(), pc))
+    if (particleCombinations().find(pc) != particleCombinations().end())
         return;
 
     // check number of daughters in pc
@@ -163,7 +162,7 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
                                     + std::to_string(Daughters_.size()) + ")",
                                     "DecayChannel::addParticleCombination");
 
-    ParticleCombinations_.push_back(pc);
+    ParticleCombinations_.insert(pc);
 
     // add pc's daughters to daughter particles;
     // pc's daughters have their parents set correctly.
@@ -275,13 +274,12 @@ ParticleSet particles(const DecayChannel& dc)
 {
     ParticleSet S;
     for (const auto& d : dc.daughters()) {
-        if (is_final_state_particle(d))
+        if (is_final_state_particle(*d))
             S.insert(d);
-        else if (is_decaying_particle(d)) {
+        else if (is_decaying_particle(*d)) {
             auto s = particles(*std::static_pointer_cast<DecayingParticle>(d));
             S.insert(s.begin(), s.end());
-        }
-        else
+        } else
             throw exceptions::Exception("neither final-state particle nor decaying particle", "find_particles");
     }
     return S;

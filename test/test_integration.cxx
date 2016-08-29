@@ -34,7 +34,7 @@ namespace yap {
 //-------------------------
 // hidden helper function,
 // resolves C++ problem related to naming of functions and call to std::async below
-    const double sum_of_intensities(const Model& M, DataPartition& D, double ped)
+const double sum_of_intensities(const Model& M, DataPartition& D, double ped)
 {
     // calculate components
     M.calculate(D);
@@ -102,7 +102,7 @@ TEST_CASE("integration")
     const unsigned nPoints = 1000;
 
     auto M = create_model();
-    auto data = generate_data(M, nPoints);
+    auto data = generate_data(*M, nPoints);
     auto partitions = yap::DataPartitionBlock::create(data, 4);
 
     double bruteForceIntegral = yap::sum_of_intensity(*M, partitions, 0) / nPoints;

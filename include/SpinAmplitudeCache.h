@@ -23,7 +23,6 @@
 
 #include "fwd/Spin.h"
 
-#include "Exceptions.h"
 #include "SpinAmplitude.h"
 #include "UnitSpinAmplitude.h"
 #include "WeakPtrCache.h"
@@ -51,31 +50,24 @@ public:
     bool equal(const std::shared_ptr<SpinAmplitude>& A, const std::shared_ptr<SpinAmplitude>& B) const override
     { return (A.get() == B.get()) or A->equalTo(*B); }
 
+    using WeakPtrCache::find;
+
+    /// check if cache contains element matching arguments
+    /// \param two_J twice the spin of initial state
+    /// \param two_j SpinVector of daughters
+    /// \param L orbital angular momentum
+    /// \param two_S 2 * the total spin angular momentum
+    weak_ptr_type find(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const;
+
     /// retrieve or create SpinAmplitude
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S)
-    {
-        auto retVal = (two_j.size() > 2) ?
-                // nonresonant for >2 daughters
-                unit(two_J, two_j, L, two_S) :
-                operator[](create(two_J, two_j, L, two_S));
-        if (Model_)
-            retVal->setModel(*Model_);
-        return retVal;
-    }
+    std::shared_ptr<SpinAmplitude> spinAmplitude(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S);
 
     /// Check consistency of cache. Skips expired entries.
-    bool consistent() const
-    {
-        bool C = true;
-        for (auto it = begin(); it != end(); ++it)
-            if (!it->expired())
-                C &= it->lock()->consistent();
-        return C;
-    }
+    bool consistent() const;
 
     /// grant friend status to Model to set itself owner
     friend class Model;
@@ -83,32 +75,27 @@ public:
 protected:
 
     /// set raw pointer to owning Model
-    void setModel(Model& model)
-    {
-        if (Model_ != nullptr and Model_ != &model)
-            throw exceptions::Exception("Model already set.", "SpinAmplitudeCache::setModel");
-        Model_ = &model;
-    }
-
-protected:
+    void setModel(Model& model);
 
     /// \return shared_ptr to UnitSpinAmplitude object
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    std::shared_ptr<SpinAmplitude> unit(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const
-    { return std::shared_ptr<SpinAmplitude>(new UnitSpinAmplitude(two_J, two_j, L, two_S)); }
+    std::shared_ptr<SpinAmplitude> unit(Model& m, unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const
+    { return std::shared_ptr<SpinAmplitude>(new UnitSpinAmplitude(m, two_J, two_j, L, two_S)); }
 
 private:
 
     /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
+    /// \param m Owning model
     /// \param two_J twice the spin of initial state
     /// \param two_j SpinVector of daughters
     /// \param L orbital angular momentum
     /// \param two_S 2 * the total spin angular momentum
-    virtual std::shared_ptr<SpinAmplitude> create(unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const = 0;
+    virtual std::shared_ptr<SpinAmplitude> create(Model& m, unsigned two_J, const SpinVector& two_j, unsigned L, unsigned two_S) const = 0;
 
     /// raw pointer to Model this cache belongs to
     Model* Model_;

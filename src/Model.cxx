@@ -160,7 +160,7 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addParticleCombination");
 
     // if does not trace up to an ISP, halt
-    if (not is_initial_state_particle_combination(*pc, this))
+    if (!is_from_initial_state_particle_combination(*pc, *this))
         return;
 
     FourMomenta_->addParticleCombination(pc);
@@ -299,56 +299,17 @@ void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 }
 
 //-------------------------
-void Model::addDataAccessor(DataAccessorSet::value_type da)
+void Model::requireHelicityAngles()
 {
-    if (locked())
-        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addDataAccessor");
+    if (!HelicityAngles_)
+        HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
+}
 
-    // check if already in DataAccessors_
-    if (DataAccessors_.find(da) != DataAccessors_.end())
-        // do nothing
-        return;
-
-    if (da->model() != this)
-        throw exceptions::Exception("DataAccessor's Model is not this", "Model::addDataAccessor");
-
-    // if DataAccessor stores nothing
-    if (da->size() == 0)
-        // do nothing
-        return;
-
-    // add DataAccessor
-    if (DataAccessors_.insert(da).second) {
-        // if insertion was successful
-        // set its index
-        da->setIndex(DataAccessors_.size() - 1);
-
-        // if HelicityAngles is empty and DataAccessor requires
-        // HelicityAngles, create HelicityAngles. Calling before
-        // adding to StaticDataAccessorVector insures that
-        // HelicityAngles are called before any newly created
-        // StaticDataAccessors
-        if (!HelicityAngles_ and dynamic_cast<RequiresHelicityAngles*>(da)
-                and dynamic_cast<RequiresHelicityAngles*>(da)->requiresHelicityAngles()) {
-            HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
-            HelicityAngles_->registerWithModel();
-        }
-
-        // if MeasuredBreakupMomenta is empty and DataAccessor required it, create it
-        if (!MeasuredBreakupMomenta_ and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)
-                and dynamic_cast<RequiresMeasuredBreakupMomenta*>(da)->requiresMeasuredBreakupMomenta()) {
-            MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
-            MeasuredBreakupMomenta_->registerWithModel();
-        }
-
-        // if StaticDataAccessor, add to StaticDataAccessors_
-        if (dynamic_cast<StaticDataAccessor*>(da))
-            StaticDataAccessors_.push_back(static_cast<StaticDataAccessor*>(da));
-
-        // if RecalculableDataAccessor, add to RecalculableDataAccessors_
-        if (dynamic_cast<RecalculableDataAccessor*>(da))
-            RecalculableDataAccessors_.insert(static_cast<RecalculableDataAccessor*>(da));
-    }
+//-------------------------
+void Model::requireMeasuredBreakupMomenta()
+{
+    if (!MeasuredBreakupMomenta_)
+        MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
 }
 
 //-------------------------
@@ -370,8 +331,8 @@ void Model::lock()
         InitialStateParticles_.begin()->second.begin()->second->variableStatus() = VariableStatus::fixed;
 
     // remove expired elements of DataAccessors_
-    removeExpired(DataAccessors_);
-    removeExpiredStatic(StaticDataAccessors_);
+    remove_expired(DataAccessors_);
+    remove_expired(StaticDataAccessors_);
 
     // prune remaining DataAccessor's
     for (auto& D : DataAccessors_)
@@ -385,33 +346,10 @@ void Model::lock()
             ++it;
     }
 
-    // fix indices:
-    // collect used indices
-    std::set<unsigned> used;
+    // set DataAccessor indices
+    int index = -1;
     for (const auto& da : DataAccessors_)
-        used.insert(da->index());
-
-    // repair
-    unsigned index = 0;
-    while (index < used.size()) {
-
-        // if index is not used
-        if (used.find(index) == used.end()) {
-            // clear used
-            used.clear();
-            // reduce all DataAccessor indices greater than index by 1
-            // and rebuild used
-            for (auto& da : DataAccessors_) {
-                if (da->index() > (int)index)
-                    da->setIndex(da->index() - 1);
-                used.insert(da->index());
-            }
-        }
-
-        // if index is now used, increment it by 1
-        if (used.find(index) != used.end())
-            index += 1;
-    }
+        da->setIndex(++index);
 
     Locked_ = true;
 }
@@ -475,172 +413,13 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
         auto pc = particleCombinationCache().composite(pcv);
 
         // check that pc isn't already in M
-        if (any_of(M, pc, equal_by_orderless_content))
+        if (std::any_of(M.begin(), M.end(), std::bind(&equal_by_orderless_content, pc, std::placeholders::_1)))
             throw exceptions::Exception("axis requested twice", "Model::massAxes");
 
         M.push_back(pc);
     }
 
     return MassAxes(M);
-}
-
-//-------------------------
-bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta)
-{
-    for (size_t i = 0; i < axes.size(); ++i) {
-        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector_0, [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
-        if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
-            return false;
-    }
-    return true;
-}
-
-//-------------------------
-std::vector<FourVector<double> > Model::calculateFourMomenta(const MassAxes& axes, const std::vector<double>& squared_masses, double initial_mass) const
-{
-    if (FinalStateParticles_.empty())
-        throw exceptions::Exception("Final state unset", "Model::calculateFourMomenta");
-
-    if (axes.size() != squared_masses.size())
-        throw exceptions::Exception("Incorrect number of masses provided ("
-                                    + std::to_string(squared_masses.size()) + " != " + std::to_string(axes.size()) + ")",
-                                    "Model::calculateFourMomenta");
-
-    // check none are negative
-    if (std::any_of(squared_masses.begin(), squared_masses.end(), std::bind(std::less<double>(), std::placeholders::_1, 0)))
-        throw exceptions::Exception("negative squared mass given", "Model::calculateFourMomenta");
-
-    unsigned n_fsp = finalStateParticles().size();
-
-    /// \todo: check sign determination on x component for particles 5 and higher
-    if (n_fsp > 4)
-        throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
-
-    if (initial_mass < 0) {
-        auto ISPs = full_final_state_isp(*this);
-        if (ISPs.empty())
-            throw exceptions::Exception("No proper initial-state particle found", "Model::calculateFourMomenta");
-        initial_mass = ISPs[0]->mass()->value();
-    }
-
-    // matrix of four-vector products
-    std::vector<std::vector<double> > pp(n_fsp, std::vector<double>(n_fsp, -1));
-
-    // set diagonal elements to squared masses, and store sum
-    double m2_sum_1 = 0;
-    double m_sum_1 = initial_mass;
-    for (size_t i = 0; i < n_fsp; ++i) {
-        pp[i][i] = pow(finalStateParticles()[i]->mass()->value(), 2);
-        m2_sum_1 += pp[i][i];
-        m_sum_1 -= finalStateParticles()[i]->mass()->value();
-    }
-
-    // add two-particle invariant masses for those provided
-    double m2_sum_2 = 0;
-    for (size_t i = 0; i < axes.size(); ++i) {
-        if (axes[i]->indices()[0] < axes[i]->indices()[1])
-            pp[axes[i]->indices()[0]][axes[i]->indices()[1]] = squared_masses[i];
-        else
-            pp[axes[i]->indices()[1]][axes[i]->indices()[0]] = squared_masses[i];
-        m2_sum_2 += squared_masses[i];
-    }
-
-    //////////////////////////////////////////////////
-    // find unset two-particle invariant mass
-    // and calculate fsp squared masses
-    for (unsigned i = 0; i < n_fsp; ++i)
-        for (unsigned j = i + 1; j < n_fsp; ++j)
-            if (pp[i][j] < 0)
-                // calculate unset mass: m^2_missing = M^2_isp + (n_fsp - 2) * sum_fsp (m^2) - sum_given(m^2)
-                pp[i][j] = pow(initial_mass, 2) + (n_fsp - 2.) * m2_sum_1 - m2_sum_2;
-    // upper triangular elements are now two-particle squared masses
-
-    double m_01 = sqrt(pp[0][1]);
-
-    // finish calculation of off diagonal elements
-    for (unsigned i = 0; i < n_fsp; ++i)
-        for (unsigned j = i + 1; j < n_fsp; ++j) {
-            // first check if m_ij > (M - sum_m + m_i + m_j)
-            if (pp[i][j] > pow(m_sum_1 + finalStateParticles()[i]->mass()->value() + finalStateParticles()[j]->mass()->value(), 2))
-                return std::vector<FourVector<double> >();
-
-            // P_i * P_j = (m^2_ij - m^2_i - m^2_j) / 2
-            pp[i][j] = (pp[i][j] - pp[i][i] - pp[j][j]) / 2;
-            // equal to: if m^2_ij < (m_i + m_j)^2
-            if (pp[i][j] < finalStateParticles()[i]->mass()->value() * finalStateParticles()[j]->mass()->value())
-                return std::vector<FourVector<double> >();
-
-            pp[j][i] = pp[i][j];
-        }
-
-    //////////////////////////////////////////////////
-    // calculate all four momenta in m_01 rest frame:
-
-    std::vector<FourVector<double> > P(n_fsp, FourVector_0);
-
-    for (unsigned i = 0; i < n_fsp; ++i) {
-
-        FourVector<double> p;
-
-        if (i < 2) {
-
-            P[i][0] = (pp[0][i] + pp[1][i]) / m_01; // E
-            P[i][3] = pow_negative_one(i) * P[i][0] * sqrt(1. - pp[i][i] / pow(P[i][0], 2)); // Z
-
-            if (!std::isfinite(P[i][3]))
-                return std::vector<FourVector<double> >();
-
-        } else {
-
-            // Energy E_i = (P_0 * P_i + P_1 * P_i) / (E_1 + E_0)
-            P[i][0] = (pp[0][i] + pp[1][i]) / (P[0][0] + P[1][0]);
-
-            // if E^2 < m^2
-            if (P[i][0] < sqrt(pp[i][i]))
-                return std::vector<FourVector<double> >();
-
-            // if p0 and p1 are at rest in m01 rest frame, Z_i := 0
-            // else Z_i = (P_1 * P_i - P_0 * P_i - (E_1 - E_0) * E_i) / 2 / Z_0
-            P[i][3] = (P[0][3] == 0) ? 0 : (pp[1][i] - pp[0][i] - (P[1][0] - P[0][0]) * P[i][0]) / 2. / P[0][3];
-
-            if (i < 3) {
-
-                // p2 in y-z plane, enforce P^2 = m^2
-                P[i][2] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
-
-                if (!std::isfinite(P[i][2]))
-                    return std::vector<FourVector<double> >();
-
-                // phasespace check for special case: p0 and p1 are at rest in m01 rest frame
-                if (n_fsp == 3 and P[0][3] == 0 and !check_invariant_masses(axes, squared_masses, P))
-                    return std::vector<FourVector<double> >();
-
-            } else {
-
-                // if Y_2 == 0, Y_i := 0
-                // else Y_i = (P_2 * P_i - P_2 * P_i) / Y_2
-                P[i][2] = (P[2][2] == 0) ? 0 : (P[2][0] * P[i][0] - pp[2][i] - P[2][3] * P[i][3]) / P[2][2];
-
-                if (i < 4) {
-
-                    // enforce P^2 = m^2
-                    P[i][1] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][2] / P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
-
-                    if (!std::isfinite(P[i][1]))
-                        return std::vector<FourVector<double> >();
-
-                } else
-                    throw exceptions::Exception("not yet supporting 5 or more particles", "Model::calculateFourMomenta");
-            }
-        }
-    }
-
-    // adjust for user-provided coordinate system
-    auto C = coordinateSystem();
-    for (auto& p : P)
-        p = FourVector<double>(p[0], p[1] * C[0] + p[2] * C[1] + p[3] * C[2]);
-
-    return P;
 }
 
 //-------------------------

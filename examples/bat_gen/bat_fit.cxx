@@ -4,6 +4,7 @@
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <DecayTree.h>
+#include <FourMomenta.h>
 #include <FourVector.h>
 #include <FreeAmplitude.h>
 #include <ImportanceSampler.h>
@@ -127,15 +128,10 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
     unsigned Iteration;
     t_mcmc.SetBranchAddress("Iteration", &Iteration);
 
-    long long n = 0;
-    // find first entry of main run
-    while (Phase <= 0 and n < t_mcmc.GetEntries())
-        t_mcmc.GetEntry(n++);
-
     int n_attempted = 0;
     size_t old_size = data.size();
 
-    for (; n < t_mcmc.GetEntries() and (N < 0 or n_attempted < N); ++n) {
+    for (long long n = 0; n < t_mcmc.GetEntries() and (N < 0 or n_attempted < N); ++n) {
         t_mcmc.GetEntry(n);
 
         if (Phase <= 0)
@@ -144,9 +140,12 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
         if (Iteration % lag != 0)
             continue;
 
+        // if (fabs(m2[0] - 1.35 * 1.35) > 0.1 or m2[1] > 1.55 or m2[1] < 0.58)
+        //     continue;
+
         ++n_attempted;
 
-        auto P = M.calculateFourMomenta(A, m2, initial_mass);
+        auto P = calculate_four_momenta(initial_mass, M, A, m2);
         if (P.empty())
             std::cout << "point is out of phase space!";
         data.push_back(P);
@@ -167,7 +166,7 @@ void bat_fit::setParameters(const std::vector<double>& p)
 {
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
         *FreeAmplitudes_[i] = std::polar(p[i * 2], yap::rad(p[i * 2 + 1]));
-    
+
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
     Integrator_(Integral_, IntegralPartitions_);

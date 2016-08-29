@@ -50,10 +50,11 @@ class Particle :
 protected:
 
     /// Constructor
-    /// \param q Quantum numbers of particle
-    /// \param m Mass of particle
     /// \param name Name of particle
-    Particle(const QuantumNumbers& q, double m, std::string name);
+    /// \param q Quantum numbers of particle
+    Particle(std::string name, const QuantumNumbers& q)
+        : std::enable_shared_from_this<Particle>(),
+        QuantumNumbers_(q), Name_(name) {}
 
 public:
 
@@ -67,10 +68,6 @@ public:
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
-    /// Get mass [GeV]
-    std::shared_ptr<RealParameter> mass() const
-    { return Mass_; }
-
     /// Get name (const)
     const std::string& name() const
     { return Name_; }
@@ -82,8 +79,8 @@ public:
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;
 
-    /// \return ParticleCombinationVector
-    const ParticleCombinationVector& particleCombinations() const
+    /// \return ParticleCombinations_
+    const ParticleCombinationSet& particleCombinations() const
     { return ParticleCombinations_; }
 
     /// @}
@@ -93,10 +90,7 @@ public:
 
 protected:
 
-    /// set mass parameter
-    void setMass(std::shared_ptr<RealParameter> m);
-
-    /// add ParticleCombination to ParticleCombinationVector_
+    /// add ParticleCombination to ParticleCombinations_
     virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) = 0;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
@@ -110,14 +104,11 @@ private:
     /// Quantum numbers of particle
     QuantumNumbers QuantumNumbers_;
 
-    /// Mass [GeV]
-    std::shared_ptr<RealParameter> Mass_;
-
     /// Name of particle
     std::string Name_;
 
     /// vector of ParticleCombinations that can comprise this particle
-    ParticleCombinationVector ParticleCombinations_;
+    ParticleCombinationSet ParticleCombinations_;
 
 };
 
@@ -128,7 +119,8 @@ const SpinVector spins(const ParticleVector& v);
 const bool decays_to_full_final_state(const Particle& p);
 
 /// convert to string
-std::string to_string(const Particle& p);
+inline std::string to_string(const Particle& p)
+{ return p.name() + "(" + to_string(p.quantumNumbers()) + ")"; }
 
 /// convert to string
 inline std::string to_string(const ParticleVector& p)

@@ -21,8 +21,9 @@
 #ifndef yap_ParticleCombination_h
 #define yap_ParticleCombination_h
 
-#include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
+
+#include "fwd/Model.h"
 
 #include <algorithm>
 #include <functional>
@@ -41,6 +42,26 @@ namespace yap {
 /// created through the ParticleCombinationCache
 class ParticleCombination : public std::enable_shared_from_this<ParticleCombination>
 {
+private:
+
+    /// default constructor
+    ParticleCombination() = default;
+
+    /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
+    ParticleCombination(unsigned index) : Indices_(1, index) {}
+
+    /// Copy constructor is deleted
+    ParticleCombination(const ParticleCombination&) = delete;
+
+    /// Move constructor is deleted
+    ParticleCombination(ParticleCombination&&) = delete;
+
+    /// Copy assignment is deleted
+    ParticleCombination& operator=(const ParticleCombination&) = delete;
+
+    /// Move assignment is deleted
+    ParticleCombination& operator=(ParticleCombination&&) = delete;
+
 public:
 
     /// \name Getters
@@ -59,22 +80,6 @@ public:
     { return Parent_.lock(); }
 
     /// @}
-
-    /// \return whether ParticleCombination is for a final state particle
-    bool isFinalStateParticle() const
-    { return Daughters_.empty() and Indices_.size() == 1; }
-
-    /// \return top of decay tree this ParticleCombination belongs to
-    const std::shared_ptr<const ParticleCombination> origin() const;
-
-    /// \return vector of all leaves of decay tree below this ParticleCombination
-    ParticleCombinationVector leaves();
-
-    /// \return whether all leaves are final state particles
-    bool decaysToFinalStateParticles() const;
-
-    /// \return whether the indices of B are a subset this' indices
-    bool contains(const std::shared_ptr<const ParticleCombination>& B) const;
 
     /// Checks consistency of object
     bool consistent() const;
@@ -98,30 +103,6 @@ private:
 
     /// vector indices of daughters
     std::vector<unsigned> Indices_;
-
-    /// \name private constructors
-    /// for valid use of shared_from_this()
-    /// @{
-
-    /// default constructor
-    ParticleCombination() = default;
-
-    /// Final-state-particle constructor, see ParticleCombinationCache::fsp for details
-    ParticleCombination(unsigned index) : Indices_(1, index) {}
-
-    /// Copy constructor is deleted
-    ParticleCombination(const ParticleCombination&) = delete;
-
-    /// Move constructor is deleted
-    ParticleCombination(ParticleCombination&&) = delete;
-
-    /// Copy assignment is deleted
-    ParticleCombination& operator=(const ParticleCombination&) = delete;
-
-    /// Move assignment is deleted
-    ParticleCombination& operator=(ParticleCombination&&) = delete;
-
-    /// @}
 
 };
 
@@ -157,24 +138,27 @@ bool equal_down_by_orderless_content(const std::shared_ptr<const ParticleCombina
 
 /// @}
 
-/// \return if the given ParticleCombination is in ParticleCombinations
-/// \param PCs ParticleCombinations
-/// \param c ParticleCombination to look for equivalent of in ParticleCombinations
-/// \param equal ParticleCombinationEqualTo object for checking equality
-inline bool any_of(const ParticleCombinationVector& PCs,
-                   const std::shared_ptr<const ParticleCombination>& c,
-                   const ParticleCombinationEqualTo& equal = equal_by_shared_pointer)
-{ return std::any_of(PCs.begin(), PCs.end(), [&](const ParticleCombinationVector::value_type & pc) {return equal(pc, c);}); }
-
 /// \return whether all members of ParticleCombinationVector are non-overlapping with each other
 /// \param pcv Vector check in
 bool disjoint(const ParticleCombinationVector& pcv);
 
+/// \return whether ParticleCombination is for a final state particle
+inline const bool is_final_state_particle_combination(const ParticleCombination& pc)
+{ return pc.daughters().empty() and pc.indices().size() == 1; }
+
+/// \return top of decay tree this ParticleCombination belongs to
+inline const ParticleCombination& origin(const ParticleCombination& pc)
+{ return pc.parent() ? origin(*pc.parent()) : pc; }
+
 /// \return whether pc is a pc of an initial state particle
-bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model* m);
+const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m);
+
+/// \return whether pc is or is from a pc of an initial state particle
+inline const bool is_from_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
+{ return is_initial_state_particle_combination(origin(pc), m); }
 
 /// only keep particleCombinations with the highest number of indices in their top-most parent
-void prune_particle_combinations(ParticleCombinationVector& PCs);
+void prune_particle_combinations(ParticleCombinationSet& PCs);
 
 /// Get indices listed as string
 std::string indices_string(const ParticleCombination& pc, std::string before = "(", std::string after = ")");

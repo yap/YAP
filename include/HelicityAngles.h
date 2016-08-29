@@ -46,8 +46,8 @@ namespace yap {
 ///      the \f$ z \f$ axis of its parent frame \f$ \hat{z}_0 \f$,
 ///      define the reference frame:
 ///      - \f$ \hat{z} \equiv \hat{p} \f$
-///      - \f$ \hat{y} \equiv \hat{z}_0 \cross \hat{z} \f$
-///      - \f$ \hat{x} \equiv \hat{y} \cross \hat{z} \f$
+///      - \f$ \hat{y} \equiv \hat{z}_0 \times \hat{z} \f$
+///      - \f$ \hat{x} \equiv \hat{y} \times \hat{z} \f$
 ///   -# Given daughter particle with momentum \f$ \vec{q} \f$
 ///      in the decaying particle's rest frame, the angles are
 ///      - \f$ \cos\theta \equiv \hat{q} \cdot \hat{z} \f$
@@ -98,6 +98,9 @@ public:
 
 protected:
 
+    /// add to model's StaticDataAccessors_
+    void virtual addToStaticDataAccessors() override;
+
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
@@ -105,6 +108,8 @@ protected:
 
     /// override to throw on adding non-two-body PC
     void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+
+private:
 
     /// Azimuthal angle
     std::shared_ptr<RealCachedValue> Phi_;

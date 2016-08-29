@@ -37,7 +37,7 @@ namespace yap {
 
 /// \class DecayingParticle
 /// \brief Class for a particle that will decay
-/// \authors Johannes Rauch, Daniel Greenwald
+/// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
 ///
 /// The amplitude function returns a sum over the amplitudes of all
@@ -52,16 +52,16 @@ protected:
 
     /// Constructor
     /// see #create
-    DecayingParticle(const QuantumNumbers& q, double mass, std::string name, double radialSize);
+    DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize);
 
 public:
 
     /// create
+    /// \param name Name of decaying particle
     /// \param q QuantumNumbers of decaying particle
-    /// \param mass mass of decaying particle
     /// \param radialSize radial size of decaying particle
-    static std::shared_ptr<DecayingParticle> create(const QuantumNumbers& q, double mass, std::string name, double radialSize)
-    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(q, mass, name, radialSize)); }
+    static std::shared_ptr<DecayingParticle> create(std::string name, const QuantumNumbers& q, double radialSize)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize)); }
 
     /// \return DecayTrees
     /// map key is spin projection
