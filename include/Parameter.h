@@ -26,6 +26,7 @@
 #include "Exceptions.h"
 #include "VariableStatus.h"
 
+#include <algorithm>
 #include <complex>
 #include <memory>
 #include <numeric>
@@ -65,6 +66,16 @@ private:
     VariableStatus VariableStatus_;
 
 };
+
+/// \return VariableStatus::changed if any element in range is changed; VariableStatus::unchanged otherwise
+template <typename IterType>
+constexpr VariableStatus variable_status(IterType first, IterType last)
+{
+    return std::any_of(first, last,
+                       [](const std::shared_ptr<ParameterBase>& p)
+                       {return p->variableStatus() == VariableStatus::changed;})
+        ? VariableStatus::changed : VariableStatus::unchanged;
+}
 
 /// \class Parameter
 /// \brief Template class holding also a value for a parameter

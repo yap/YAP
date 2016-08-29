@@ -27,9 +27,9 @@ namespace yap {
 
 /// \enum VariableStatus
 enum class VariableStatus : int {
-    changed   = -1,        ///< Parameter is free and has been changed
-    fixed     = 0,         ///< Parameter is fixed
-    unchanged = +1,        ///< Parameter is free but has not been changed
+    changed   = -1,        ///< Variable is free and has been changed
+    fixed     = 0,         ///< Variable is fixed
+    unchanged = +1,        ///< Variable is free but has not been changed
 };
 
 inline std::string to_string(const VariableStatus& s)
