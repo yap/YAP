@@ -44,8 +44,6 @@ Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
         throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
     SAC->setModel(*this);
     SpinAmplitudeCache_ = std::move(SAC);
-
-    FourMomenta_->registerWithModel();
 }
 
 //-------------------------

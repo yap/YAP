@@ -25,6 +25,7 @@ FourMomenta::FourMomenta(Model& m) :
     P_(FourVectorCachedValue::create(*this)),
     M_(RealCachedValue::create(*this))
 {
+    registerWithModel();
 }
 
 //-------------------------
