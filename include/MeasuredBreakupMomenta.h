@@ -78,6 +78,9 @@ public:
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
 
+    /// grant friend status to DataAccessor to call addParticleCombination
+    friend class DataAccessor;
+
 protected:
 
     /// add to model's StaticDataAccessors_
