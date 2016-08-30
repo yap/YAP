@@ -30,13 +30,15 @@ InvariantMassBinning::InvariantMassBinning(Model& m, const std::vector<double>& 
     if (!std::is_sorted(BinLowEdges_.cbegin(), BinLowEdges_.cend(), std::less_equal<double>()))
         throw exceptions::Exception("Elements of the vector are not monotonically increasing",
                                     "InvariantMassBinning::InvariantMassBinning");
+
+    registerWithModel();
 }
 
 //-------------------------
 void InvariantMassBinning::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set all bins to uncalculated
-    sm.set(*Bin_, CalculationStatus::uncalculated);
+    sm.set(*this, CalculationStatus::uncalculated);
 
     // loop over particle combinations -> indices
     for (auto& pc_i : symmetrizationIndices()) {
@@ -53,6 +55,12 @@ void InvariantMassBinning::calculate(DataPoint& d, StatusManager& sm) const
             Bin_->setValue(std::distance(BinLowEdges_.cbegin(), bin) - 1, d, pc_i.second, sm);
         }
     }
+}
+
+//-------------------------
+double InvariantMassBinning::bin(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+{
+    return Bin_->value(d, symmetrizationIndex(pc));
 }
 
 }

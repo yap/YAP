@@ -70,10 +70,8 @@ public:
     const std::vector<double>& lowEdges() const
     { return BinLowEdges_; }
 
-    /// Access the bin number.
-    /// \todo Enforce `const`ness on the pointed-to value!!
-    const std::shared_ptr<RealCachedValue>& bin() const
-    { return Bin_; }
+    /// Return the bin number.
+    double bin(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
 
 private:
 
