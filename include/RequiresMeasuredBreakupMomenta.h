@@ -21,11 +21,12 @@
 #ifndef yap_RequiresMeasuredBreakupMomenta_h
 #define yap_RequiresMeasuredBreakupMomenta_h
 
+#include "fwd/RequiresMeasuredBreakupMomenta.h"
+
 namespace yap {
 
-/// \class RequiresMeasuredBreakupMomenta
-/// \brief Base class to be inherited from to denote that an object
-/// requires a model calculate measured breakup momenta
+/// Base class to be inherited from to denote that an object may
+/// require a model calculate measured breakup momenta
 class RequiresMeasuredBreakupMomenta
 {
 public:
@@ -41,6 +42,7 @@ public:
 
 private:
 
+    /// Whether MeasuredBreakupMomenta is required
     bool Requires_;
 
 };

@@ -1,6 +1,7 @@
 #include "DataAccessor.h"
 
 #include "CachedValue.h"
+#include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "logging.h"
 #include "MeasuredBreakupMomenta.h"
@@ -128,6 +129,9 @@ void DataAccessor::registerWithModel()
 
     if (model()->locked())
         throw exceptions::Exception("Model is locked and cannot be modified", "DataAccessor::registerWithModel");
+
+    for (auto pc_i : symmetrizationIndices())
+        const_cast<Model*>(model())->fourMomenta()->addParticleCombination(pc_i.first);
 
     // if HelicityAngles is required
     if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles*>(this)->requiresHelicityAngles()) {
