@@ -38,7 +38,7 @@ void MassShape::calculate(DataPartition& D) const
 //-------------------------
 void MassShape::updateCalculationStatus(StatusManager& D) const
 {
-    if (VariableStatus() == VariableStatus::changed)
+    if (status() == VariableStatus::changed)
         D.set(*T(), CalculationStatus::uncalculated);
 }
 

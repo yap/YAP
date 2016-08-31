@@ -112,7 +112,7 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 //-------------------------
 void BlattWeisskopf::updateCalculationStatus(StatusManager& D) const
 {
-    if (VariableStatus() == VariableStatus::changed)
+    if (status() == VariableStatus::changed)
         D.set(*BarrierFactor_, CalculationStatus::uncalculated);
 }
 

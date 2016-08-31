@@ -25,6 +25,8 @@
 namespace yap {
 
 class AmplitudeComponent;
+class StaticAmplitudeComponent;
+class RecalculableAmplitudeComponent;
 
 }
 

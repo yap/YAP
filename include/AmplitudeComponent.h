@@ -36,6 +36,7 @@
 namespace yap {
 
 /// Base class for objects that are multiplicatively incorporated into an amplitude
+/// \defgroup AmplitudeComponent Base classes for multiplicative amplitude components
 /// \author Daniel Greenwald
 class AmplitudeComponent
 {
@@ -50,10 +51,11 @@ public:
     virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
 
     /// \return a VariableStatus for this AmplitudeComponent
-    virtual const VariableStatus variableStatus() const = 0;
+    virtual const VariableStatus status() const = 0;
 };
 
 /// Base class for AmplitudeComponent's that are also StaticDataAccessor's
+/// \ingroup AmplitudeComponent
 /// \author Daniel Greenwald
 class StaticAmplitudeComponent : public AmplitudeComponent, public StaticDataAccessor
 {
@@ -69,12 +71,14 @@ public:
     { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
 
     /// \return VariableStatus::fixed
-    virtual const VariableStatus variableStatus() const override
+    virtual const VariableStatus status() const override
     { return VariableStatus::fixed; }
 };    
 
 
 /// Base class for AmplitudeComponent's that are also RecalculableDataAccessor's
+/// \ingroup AmplitudeComponent
+/// \author Daniel Greenwald
 class RecalculableAmplitudeComponent : public AmplitudeComponent, public RecalculableDataAccessor
 {
 public:
@@ -88,7 +92,7 @@ public:
     { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
 
     /// calls variable_status on parameters of object
-    virtual const VariableStatus variableStatus() const override;
+    virtual const VariableStatus status() const override;
 };
 
 

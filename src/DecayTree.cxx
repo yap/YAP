@@ -92,7 +92,7 @@ const VariableStatus DecayTree::dataDependentAmplitudeStatus() const
 {
     // return `changed` if any amplitude component has changed
     for (const auto& ac : AmplitudeComponents_)
-        if (ac->variableStatus() == VariableStatus::changed)
+        if (ac->status() == VariableStatus::changed)
             return VariableStatus::changed;
     // return `changed` if any daughter has changed
     for (const auto& d_dt : DaughterDecayTrees_)
