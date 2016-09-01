@@ -36,7 +36,7 @@
 
 namespace yap {
 
-/// Base class for calculating a phase-space factor
+/// Base class for calculating a phase-space factor; #value function should return sqrt(phase space factor)
 /// \defgroup PhaseSpaceFactor Classes related to phase-space factor calculation
 /// \author Daniel Greenwald
 class PhaseSpaceFactor : public RecalculableAmplitudeComponent

@@ -1,9 +1,10 @@
 #include "TwoBodyPhaseSpaceFactor.h"
 
 #include "DecayChannel.h"
-#include "ParticleCombination.h"
+#include "FourMomenta.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
+#include "ParticleCombination.h"
 
 namespace yap {
 
@@ -18,7 +19,8 @@ TwoBodyPhaseSpaceFactor::TwoBodyPhaseSpaceFactor(const Model& m)
 //-------------------------
 const std::complex<double> TwoBodyPhaseSpaceFactor::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
-    return model()->measuredBreakupMomenta()->rho(d, pc);
+    return pow(4. * model()->measuredBreakupMomenta()->q2(d, pc) / model()->fourMomenta()->m2(d, pc), 0.25);
+    // return sqrt(model()->measuredBreakupMomenta()->rho(d, pc));
 }
 
 //-------------------------
