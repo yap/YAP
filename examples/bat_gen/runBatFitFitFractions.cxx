@@ -40,7 +40,7 @@ int main()
     yap::plainLogs(el::Level::Info);
 
     // create bat_fit object
-    fit_fitFraction m("D3PI_frac_fit", d3pi(std::make_unique<yap::ZemachFormalism>()));
+    fit_fitFraction m("D3PI_frac_fit", d3pi(std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>())));
 
     double D_mass = 1.86961;
 

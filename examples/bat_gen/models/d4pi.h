@@ -31,15 +31,13 @@
 
 using namespace yap;
 
-inline std::unique_ptr<Model> d4pi()
+inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
 {
     auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
-
-    auto M = std::make_unique<Model>(std::make_unique<HelicityFormalism>());
 
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 

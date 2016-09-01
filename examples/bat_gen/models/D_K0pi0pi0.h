@@ -29,7 +29,7 @@
 #include <memory>
 
 
-inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
 {
     auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
@@ -37,7 +37,6 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::SpinAmplitude
     auto piZero = F.fsp(F.pdgCode("pi0"));
     auto Kshort = F.fsp(F.pdgCode("K_S0"));
 
-    auto M = std::make_unique<yap::Model>(std::move(SAC));
     M->setFinalState(Kshort, piZero, piZero);
 
     // use common radial size for all resonances

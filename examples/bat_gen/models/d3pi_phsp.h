@@ -15,10 +15,8 @@
 
 #include <memory>
 
-inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::SpinAmplitudeCache> SAC)
+inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::Model> M)
 {
-    auto M = std::make_unique<yap::Model>(std::move(SAC));
-
     auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles

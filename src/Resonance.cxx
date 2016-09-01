@@ -4,19 +4,28 @@
 #include "Exceptions.h"
 #include "logging.h"
 #include "MassShape.h"
+#include "PhaseSpaceFactor.h"
 #include "StatusManager.h"
 
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape) :
-    DecayingParticle(name, q, radialSize),
+Resonance::Resonance(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory) :
+    DecayingParticle(name, q, radialSize, phsp_factory),
     MassShape_(massShape)
 {
     if (!MassShape_)
         throw exceptions::Exception("MassShape unset", "Resonance::Resonance");
 
     MassShape_->setResonance(this);
+}
+
+//-------------------------
+std::shared_ptr<PhaseSpaceFactor> Resonance::phaseSpaceFactor(const DecayChannel& dc, const SpinAmplitude& sa)
+{
+    if (!phaseSpaceFactorFactory())
+        throw exceptions::Exception("PhaseSpaceFactorFactory is nullptr", "DecayingParticle::phaseSpaceFactorFactory");
+    return phaseSpaceFactorFactory()->phaseSpaceFactor(dc, sa, MassShape_);
 }
 
 //-------------------------
@@ -66,7 +75,7 @@ void Resonance::addParticleCombination(const std::shared_ptr<ParticleCombination
 }
 
 //-------------------------
-void Resonance::modifyDecayTree(DecayTree& dt) const
+void Resonance::modifyDecayTree(DecayTree& dt)
 {
     DecayingParticle::modifyDecayTree(dt);
     dt.addAmplitudeComponent(*MassShape_);

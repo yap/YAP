@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
+#include "PhaseSpaceFactor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -19,9 +20,23 @@ namespace yap {
 
 //-------------------------
 DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
-    FreeAmplitude_(free_amp),
-    DaughtersTwoM_(FreeAmplitude_->spinAmplitude()->finalTwoJ().size())
-{}
+    FreeAmplitude_(free_amp)
+{
+    if (!FreeAmplitude_)
+        throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::DecayTree");
+
+    if (!FreeAmplitude_->spinAmplitude())
+        throw exceptions::Exception("FreeAmplitude's SpinAmplitude is nullptr", "DecayTree::DecayTree");
+    DaughtersTwoM_.assign(FreeAmplitude_->spinAmplitude()->finalTwoJ().size(), 0);
+
+    if (!FreeAmplitude_->decayChannel())
+        throw exceptions::Exception("FreeAmplitude's DecayChannel is nullptr", "DecayTree::DecayTree");
+    // search for phase-space factor
+    auto phsp = FreeAmplitude_->decayChannel()->phaseSpaceFactors().find(FreeAmplitude_->spinAmplitude());
+    // if a phsp factor is found, and it isn't nullptr, add it
+    if (phsp != FreeAmplitude_->decayChannel()->phaseSpaceFactors().end() and phsp->second)
+        addAmplitudeComponent(*phsp->second);
+}
 
 //-------------------------
 const Model* DecayTree::model() const

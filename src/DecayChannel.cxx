@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "ParticleCombination.h"
 #include "ParticleCombinationCache.h"
+#include "PhaseSpaceFactor.h"
 #include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
@@ -151,10 +152,6 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 //-------------------------
 void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
 {
-    // if pc already possessed, do nothing
-    if (particleCombinations().find(pc) != particleCombinations().end())
-        return;
-
     // check number of daughters in pc
     if (pc->daughters().size() != Daughters_.size())
         throw exceptions::Exception("ParticleCombination has wrong number of daughters ("
@@ -172,6 +169,10 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     // add to SpinAmplitude's
     for (auto& sa : SpinAmplitudes_)
         sa->addParticleCombination(pc);
+
+    // add to phase-space-factor calculators
+    for (auto l_phsp : PhaseSpaceFactors_)
+        if (l_phsp.second) l_phsp.second->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -182,6 +183,9 @@ void DecayChannel::registerWithModel()
 
     for (auto& sa : SpinAmplitudes_)
         sa->registerWithModel();
+
+    for (auto& l_phsp : PhaseSpaceFactors_)
+        if (l_phsp.second) l_phsp.second->registerWithModel();
 }
 
 //-------------------------

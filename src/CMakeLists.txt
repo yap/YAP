@@ -3,7 +3,7 @@ set(INCLUDE_DIRECTORIES
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
-  AmplitudeComponent.cxx
+	AmplitudeComponent.cxx
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
 	CachedValue.cxx
@@ -13,14 +13,14 @@ set(YAP_SOURCES
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
-	DecayingParticle.cxx
 	DecayTree.cxx
 	DecayTreeVectorIntegral.cxx
-  Filters.cxx
+	DecayingParticle.cxx
+	Filters.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
-	FreeAmplitude.cxx
 	FourMomenta.cxx
+	FreeAmplitude.cxx
 	HelicityAngles.cxx
 	HelicityFormalism.cxx
 	ImportanceSampler.cxx
@@ -31,21 +31,23 @@ set(YAP_SOURCES
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
 	ModelIntegral.cxx
+	PDL.cxx
 	Parameter.cxx
+	Particle.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
-	Particle.cxx
 	ParticleFactory.cxx
-	PDL.cxx
+	PhaseSpaceFactor.cxx
 	PoleMass.cxx
 	QuantumNumbers.cxx
 	RecalculableDataAccessor.cxx
 	RelativisticBreitWigner.cxx
 	Resonance.cxx
 	SpinAmplitude.cxx
-  SpinAmplitudeCache.cxx
-  StaticDataAccessor.cxx
+	SpinAmplitudeCache.cxx
+	StaticDataAccessor.cxx
 	StatusManager.cxx
+  TwoBodyPhaseSpaceFactor.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
 )

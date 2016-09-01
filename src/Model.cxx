@@ -33,9 +33,10 @@ INITIALIZE_EASYLOGGINGPP
 namespace yap {
 
 //-------------------------
-Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
+Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC, bool include_phsp_factors) :
     Locked_(false),
     CoordinateSystem_(ThreeAxes),
+    IncludePhaseSpaceFactors_(include_phsp_factors),
     FourMomenta_(std::make_shared<FourMomenta>(*this))
 {
     if (!SAC)

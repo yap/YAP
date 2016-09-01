@@ -6,26 +6,33 @@
 // ***************************************************************
 
 #include "bat_fit.h"
+#include "hist.h"
 #include "models/d3pi.h"
 #include "models/dkkpi.h"
 
-#include <RelativisticBreitWigner.h>
-#include <logging.h>
-#include <make_unique.h>
+#include <HelicityFormalism.h>
 #include <MassRange.h>
 #include <PHSP.h>
+#include <RelativisticBreitWigner.h>
 #include <ZemachFormalism.h>
+#include <logging.h>
+#include <make_unique.h>
 
 #include <BAT/BCAux.h>
 #include <BAT/BCLog.h>
 #include <BAT/BCParameterSet.h>
 
+#include <TCanvas.h>
 #include <TFile.h>
 #include <TTree.h>
 
 #include <algorithm>
 #include <chrono>
 #include <random>
+
+template <typename T>
+std::unique_ptr<yap::Model> fit_model(bool include_phsp_factors = true)
+{ return std::make_unique<yap::Model>(std::make_unique<T>(), include_phsp_factors); }
 
 int main()
 {
@@ -49,8 +56,8 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    // auto m = d3pi_fit("D3PI_fit", std::make_unique<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
-    auto m = dkkpi_fit(model_name + "_fit", std::make_unique<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
+    // auto m = d3pi_fit("D3PI_fit", fit_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
+    auto m = dkkpi_fit(model_name + "_fit", fit_model<yap::HelicityFormalism>(true), find_mass_axes(*t_pars));
 
     double D_mass = 1.86961;
 
@@ -69,6 +76,22 @@ int main()
 
     // partition integration data
     // m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
+
+    // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
+    // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
+
+    // TH1D* h1_fit_data = hist1(*m.model()->fourMomenta(), m.axes()[0], m2r[0], m.fitData());
+    // TH1D* h1_int_data = hist1(*m.model()->fourMomenta(), m.axes()[0], m2r[0], m.integralData());
+
+    // TCanvas* C = new TCanvas("C","C");
+    // C->Divide(1,2);
+    // C->cd(1);
+    // h2_fit_data->Draw("colz");
+    // C->cd(2);
+    // h2_int_data->Draw("colz");
+    // C->Print("data.pdf");
+
+    // return 0;
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);
