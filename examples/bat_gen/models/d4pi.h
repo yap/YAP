@@ -31,15 +31,13 @@
 
 using namespace yap;
 
-inline std::unique_ptr<Model> d4pi()
+inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
 {
     auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
-
-    auto M = std::make_unique<Model>(std::make_unique<HelicityFormalism>());
 
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
@@ -115,11 +113,11 @@ inline std::unique_ptr<Model> d4pi()
     
     // rho rho
     // transform into angular momentum basis
-    basis::canonical<double> c(basis::transversity<double>(
-                                   std::polar(0.624, rad(357.)),    // A_longitudinal
-                                   std::polar(0.157, rad(120.)),    // A_parallel
-                                   std::polar(0.384, rad(163.)) )); // A_perpendicular
-
+    amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
+                                             std::polar(0.624, rad(357.)),    // A_longitudinal
+                                             std::polar(0.157, rad(120.)),    // A_parallel
+                                             std::polar(0.384, rad(163.)) )); // A_perpendicular
+    
     for (unsigned l = 0; l < 3; ++l) {
         auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
         LOG(INFO) << to_string(*freeAmp);

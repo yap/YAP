@@ -17,16 +17,25 @@
 */
 
 /// \file
-/// Contains forward declarations only
+/// contains forward declaration only
 
-#ifndef yap_AmplitudeComponentFwd_h
-#define yap_AmplitudeComponentFwd_h
+#ifndef yap_PhaseSpaceFactorFwd_h
+#define yap_PhaseSpaceFactorFwd_h
+
+#include "fwd/SpinAmplitude.h"
+
+#include <map>
+#include <memory>
 
 namespace yap {
 
-class AmplitudeComponent;
-class StaticAmplitudeComponent;
-class RecalculableAmplitudeComponent;
+class PhaseSpaceFactor;
+class PhaseSpaceFactorFactory;
+
+/// \typedef PhaseSpaceFactorMap
+using PhaseSpaceFactorMap = std::map<std::shared_ptr<SpinAmplitude>, std::shared_ptr<PhaseSpaceFactor> >;
+
+extern std::shared_ptr<PhaseSpaceFactorFactory> DefaultPHSPFactory;
 
 }
 

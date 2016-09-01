@@ -59,7 +59,8 @@ public:
 
     /// Constructor
     /// \param SAC unique_ptr to SpinAmplitudeCache
-    Model(std::unique_ptr<SpinAmplitudeCache> SAC);
+    /// \param include_phsp_factors whether to include phase-space factors in amplitudes
+    Model(std::unique_ptr<SpinAmplitudeCache> SAC, bool include_phsp_factors = true);
 
     /// copy constructor deleted
     /// \todo Implement deep copy.
@@ -96,6 +97,10 @@ public:
 
     /// \name Getters
     /// @{
+
+    /// \return IncludePhaseSpaceFactors_
+    const bool includePhaseSpaceFactors() const
+    { return IncludePhaseSpaceFactors_; }
 
     /// \return coordinate system (const)
     const CoordinateSystem<double, 3>& coordinateSystem() const
@@ -160,7 +165,6 @@ public:
     /// \name Setters
     /// @{
 
-
     /// Set final-state particle content. The order in which particles
     /// are given dictates the order in which four-momenta must be
     /// given in data points. The FinalStateParticle's have their
@@ -190,6 +194,10 @@ public:
 
     /// set coordinate system
     void setCoordinateSystem(const CoordinateSystem<double, 3>& cs);
+
+    /// turn on/off inclusion of phase-space factors
+    void setIncludePhaseSpaceFactors(bool b)
+    { IncludePhaseSpaceFactors_ = b; }
 
     /// @}
 
@@ -255,6 +263,9 @@ private:
 
     /// Lab coordinate system to use in calculating helicity angles
     CoordinateSystem<double, 3> CoordinateSystem_;
+
+    /// whether to include phase-space factors
+    bool IncludePhaseSpaceFactors_;
 
     /// ParticleCombination cache
     ParticleCombinationCache ParticleCombinationCache_;

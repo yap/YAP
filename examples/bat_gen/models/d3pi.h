@@ -37,7 +37,7 @@
 using namespace std;
 using namespace yap;
 
-inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
+inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 {
     auto F = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
 
@@ -45,7 +45,6 @@ inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
 
-    auto M = make_unique<Model>(move(SAC));
     M->setFinalState(piPlus, piMinus, piPlus);
 
     // use common radial size for all resonances
@@ -100,9 +99,9 @@ inline unique_ptr<Model> d3pi(unique_ptr<SpinAmplitudeCache> SAC)
     return M;
 }
 
-inline bat_fit d3pi_fit(string name, unique_ptr<SpinAmplitudeCache> SAC, vector<vector<unsigned> > pcs = {})
+inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned> > pcs = {})
 {
-    bat_fit m(name, d3pi(move(SAC)), pcs);
+    bat_fit m(name, d3pi(move(M)), pcs);
 
     auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
 

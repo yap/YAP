@@ -17,16 +17,14 @@
 */
 
 /// \file
-/// Contains forward declarations only
 
-#ifndef yap_AmplitudeComponentFwd_h
-#define yap_AmplitudeComponentFwd_h
+#ifndef yap_TwoBodyPhaseSpaceFactorFwd_h
+#define yap_TwoBodyPhaseSpaceFactorFwd_h
 
 namespace yap {
 
-class AmplitudeComponent;
-class StaticAmplitudeComponent;
-class RecalculableAmplitudeComponent;
+class TwoBodyPhaseFactor;
+class TwoBodyPhaseFactorFactory;
 
 }
 

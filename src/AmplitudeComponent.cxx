@@ -5,7 +5,7 @@
 namespace yap {
 
 //-------------------------
-const VariableStatus RecalculableAmplitudeComponent::variableStatus() const
+const VariableStatus RecalculableAmplitudeComponent::status() const
 {
     return variable_status(parameters().begin(), parameters().end());
 }
