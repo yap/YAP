@@ -39,8 +39,8 @@ inline bool compare_basis(const yap::complex_basis::basis<double>& c1, const yap
 
 inline bool compare_basis(const yap::amplitude_basis::basis<double>& a1, const yap::amplitude_basis::basis<double>& a2)
 {
-    for (unsigned i=0; i<a1.coordinates().size(); ++i)
-        if (not (a1.coordinates()[i] == Catch::Detail::CApprox(a2.coordinates()[i])))
+    for (unsigned i=0; i<a1.amplitudes().size(); ++i)
+        if (not (a1.amplitudes()[i] == Catch::Detail::CApprox(a2.amplitudes()[i])))
             return false;
 
     if (not compare_covariances(a1.covariance(), a2.covariance()) )
@@ -112,15 +112,15 @@ TEST_CASE( "SpinBasisTransformations" )
         const auto t2 = yap::amplitude_basis::transversity<double>(c1_cart);
 
         REQUIRE(t1_cart.covariance()[0][0][0][0] != 0);
-        REQUIRE( not (c1_cart.coordinates() == t1_cart.coordinates()) );
-        REQUIRE( not (t2.coordinates() == c1_cart.coordinates()) );
+        REQUIRE( not (c1_cart.amplitudes() == t1_cart.amplitudes()) );
+        REQUIRE( not (t2.amplitudes() == c1_cart.amplitudes()) );
 
 
         // compare A  pol_x-cart-t1_cart-c1_cart-cart-pol_x_A
         // with    B  pol-       t1_pol -c1_pol -     pol_x_B
-        const yap::complex_basis::cartesian<double> cart_1_A(c1_cart.coordinates()[0], c1_cart.covariance()[0][0]);
-        const yap::complex_basis::cartesian<double> cart_2_A(c1_cart.coordinates()[1], c1_cart.covariance()[1][1]);
-        const yap::complex_basis::cartesian<double> cart_3_A(c1_cart.coordinates()[2], c1_cart.covariance()[2][2]);
+        const yap::complex_basis::cartesian<double> cart_1_A(c1_cart.amplitudes()[0], c1_cart.covariance()[0][0]);
+        const yap::complex_basis::cartesian<double> cart_2_A(c1_cart.amplitudes()[1], c1_cart.covariance()[1][1]);
+        const yap::complex_basis::cartesian<double> cart_3_A(c1_cart.amplitudes()[2], c1_cart.covariance()[2][2]);
 
         const yap::complex_basis::polar<double> pol_1_A(cart_1_A);
         const yap::complex_basis::polar<double> pol_2_A(cart_2_A);
@@ -160,15 +160,15 @@ TEST_CASE( "SpinBasisTransformations" )
         auto t2 = yap::amplitude_basis::transversity<double>(c1_cart);
 
         REQUIRE(t1_cart.covariance()[0][0][0][0] != 0);
-        REQUIRE( not (c1_cart.coordinates() == t1_cart.coordinates()) );
-        REQUIRE( not (t2.coordinates() == c1_cart.coordinates()) );
+        REQUIRE( not (c1_cart.amplitudes() == t1_cart.amplitudes()) );
+        REQUIRE( not (t2.amplitudes() == c1_cart.amplitudes()) );
 
 
         // compare A  pol_x-cart-t1_cart-c1_cart-cart-pol_x_A
         // with    B  pol-       t1_pol -c1_pol -     pol_x_B
-        yap::complex_basis::cartesian<double> cart_1_A(c1_cart.coordinates()[0], c1_cart.covariance()[0][0]);
-        yap::complex_basis::cartesian<double> cart_2_A(c1_cart.coordinates()[1], c1_cart.covariance()[1][1]);
-        yap::complex_basis::cartesian<double> cart_3_A(c1_cart.coordinates()[2], c1_cart.covariance()[2][2]);
+        yap::complex_basis::cartesian<double> cart_1_A(c1_cart.amplitudes()[0], c1_cart.covariance()[0][0]);
+        yap::complex_basis::cartesian<double> cart_2_A(c1_cart.amplitudes()[1], c1_cart.covariance()[1][1]);
+        yap::complex_basis::cartesian<double> cart_3_A(c1_cart.amplitudes()[2], c1_cart.covariance()[2][2]);
 
         yap::complex_basis::polar<double> pol_1_A(cart_1_A);
         yap::complex_basis::polar<double> pol_2_A(cart_2_A);
