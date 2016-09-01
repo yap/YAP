@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['yap_20exceptions',['YAP exceptions',['../group__Exceptions.html',1,'']]]
+  ['vectoralgebra',['VectorAlgebra',['../group__VectorAlgebra.html',1,'']]]
 ];

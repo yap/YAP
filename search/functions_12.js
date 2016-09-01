@@ -10,6 +10,8 @@ var searchData=
   ['transpose',['transpose',['../namespaceyap.html#a060f9bce2db7549a981e530acc87a622',1,'yap']]],
   ['transversity',['transversity',['../classyap_1_1amplitude__basis_1_1transversity.html#a420f614d487ad1bbafd1f7609c0b4fd9',1,'yap::amplitude_basis::transversity']]],
   ['triangle',['triangle',['../namespaceyap.html#a46e52f2f017fc0026d806b385e4eed7f',1,'yap']]],
+  ['twobodyphasespacefactor',['TwoBodyPhaseSpaceFactor',['../classyap_1_1TwoBodyPhaseSpaceFactor.html#a9fe6139ba8fda0e265dbb80494ef4bbc',1,'yap::TwoBodyPhaseSpaceFactor']]],
+  ['twobodyphasespacefactorfactory',['TwoBodyPhaseSpaceFactorFactory',['../classyap_1_1TwoBodyPhaseSpaceFactorFactory.html#a9cd58caa99f92767a3300add37733995',1,'yap::TwoBodyPhaseSpaceFactorFactory']]],
   ['twoi',['twoI',['../classyap_1_1QuantumNumbers.html#a0a4a8d5c5fbc127e5cace8fd43f7c18e',1,'yap::QuantumNumbers']]],
   ['twoj',['twoJ',['../classyap_1_1QuantumNumbers.html#a0ffd2c747d6425c4feb0e209e1a7b1b4',1,'yap::QuantumNumbers']]],
   ['twom',['twoM',['../classyap_1_1FreeAmplitude.html#ab6b38d98562277a95419a7917df98c81',1,'yap::FreeAmplitude::twoM()'],['../classyap_1_1SpinAmplitude.html#ac7b906743812257ffde313ff55f678c7',1,'yap::SpinAmplitude::twoM() const '],['../classyap_1_1SpinAmplitude.html#a7e792b18e5173d539093747cafd34d7f',1,'yap::SpinAmplitude::twoM(int two_M) const ']]],

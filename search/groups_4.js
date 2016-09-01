@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mass_20shapes',['Mass Shapes',['../group__MassShapes.html',1,'']]]
+  ['filters',['Filters',['../group__filters.html',1,'']]]
 ];

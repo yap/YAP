@@ -90,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classyap_1_1Resonance-members.html">List of all members</a>  </div>
@@ -108,7 +109,7 @@ Inheritance diagram for Resonance:</div>
  <div class="center">
   <img src="classyap_1_1Resonance.png" usemap="#Resonance_map" alt=""/>
   <map id="Resonance_map" name="Resonance_map">
-<area href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. " alt="DecayingParticle" shape="rect" coords="0,112,221,136"/>
+<area href="classyap_1_1DecayingParticle.html" alt="DecayingParticle" shape="rect" coords="0,112,221,136"/>
 <area href="classyap_1_1Particle.html" title="Abstract Particle base class. " alt="Particle" shape="rect" coords="0,56,221,80"/>
 </map>
  </div></div>
@@ -171,28 +172,47 @@ std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a59e527081fbf8f70c7de9e3d7bea6a73"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classyap_1_1Resonance.html">Resonance</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a59e527081fbf8f70c7de9e3d7bea6a73">create</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; <a class="el" href="classyap_1_1Resonance.html#a29826a11df733da8ddf1326f00ed6a97">massShape</a>)</td></tr>
-<tr class="separator:a59e527081fbf8f70c7de9e3d7bea6a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ec5a8763ed334f1b90b651fe15d381e"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classyap_1_1Resonance.html">Resonance</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a5ec5a8763ed334f1b90b651fe15d381e">create</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; <a class="el" href="classyap_1_1Resonance.html#a29826a11df733da8ddf1326f00ed6a97">massShape</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory=DefaultPHSPFactory)</td></tr>
+<tr class="separator:a5ec5a8763ed334f1b90b651fe15d381e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classyap_1_1DecayingParticle"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classyap_1_1DecayingParticle')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a></td></tr>
-<tr class="memitem:a3def399d1d5aafcfb9121cf860a6df33 inherit pub_static_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr<br class="typebreak"/>
-&lt; <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a3def399d1d5aafcfb9121cf860a6df33">create</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>)</td></tr>
-<tr class="separator:a3def399d1d5aafcfb9121cf860a6df33 inherit pub_static_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dedf0e205a449b9d084e91c1ba7f56a inherit pub_static_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a7dedf0e205a449b9d084e91c1ba7f56a">create</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory=DefaultPHSPFactory)</td></tr>
+<tr class="separator:a7dedf0e205a449b9d084e91c1ba7f56a inherit pub_static_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a94496a5664c0e576a1f2f88b334c13a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94496a5664c0e576a1f2f88b334c13a5"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a94496a5664c0e576a1f2f88b334c13a5">MassShape</a></td></tr>
+<tr class="memdesc:a94496a5664c0e576a1f2f88b334c13a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1MassShape.html" title="Abstract base class for all mass shapes. ">MassShape</a> to call <a class="el" href="classyap_1_1DecayingParticle.html#a38caee118c312c7fa965fe598ce3642b">DecayingParticle::phaseSpaceFactor</a> <br/></td></tr>
+<tr class="separator:a94496a5664c0e576a1f2f88b334c13a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_classyap_1_1DecayingParticle"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classyap_1_1DecayingParticle')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a></td></tr>
+<tr class="memitem:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab24e80cfd7ddce846f45480037f424be"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#ab24e80cfd7ddce846f45480037f424be">Model</a></td></tr>
+<tr class="memdesc:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> to call <a class="el" href="classyap_1_1DecayingParticle.html#a0e13e8bac9f9ee54ceb0083551829cb6" title="if only one decay channel is available, fix its free amplitude to the current value ...">fixSolitaryFreeAmplitudes()</a> <br/></td></tr>
+<tr class="separator:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a187df148e082a0db6ef186961919cded"></a>
+friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a187df148e082a0db6ef186961919cded">DecayChannel</a></td></tr>
+<tr class="memdesc:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DecayChannel.html" title="Class implementing a decay channel. ">DecayChannel</a> to call <a class="el" href="classyap_1_1DecayingParticle.html#a713ca7d20f25d9e111a5b782d9989b7f" title="register any necessary DataAccessor&#39;s with model ">registerWithModel()</a> <br/></td></tr>
+<tr class="separator:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ad654f3c61204787cdb2549f3ec113a4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#ad654f3c61204787cdb2549f3ec113a4c">Resonance</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; <a class="el" href="classyap_1_1Resonance.html#a29826a11df733da8ddf1326f00ed6a97">massShape</a>)</td></tr>
-<tr class="separator:ad654f3c61204787cdb2549f3ec113a4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a926b55bc168efff7035cbad05189e4a5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a926b55bc168efff7035cbad05189e4a5">Resonance</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; <a class="el" href="classyap_1_1Resonance.html#a29826a11df733da8ddf1326f00ed6a97">massShape</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory)</td></tr>
+<tr class="separator:a926b55bc168efff7035cbad05189e4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a713ca7d20f25d9e111a5b782d9989b7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a713ca7d20f25d9e111a5b782d9989b7f"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a713ca7d20f25d9e111a5b782d9989b7f">registerWithModel</a> () override</td></tr>
-<tr class="memdesc:a713ca7d20f25d9e111a5b782d9989b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overrides <a class="el" href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. ">DecayingParticle</a>'s function to register MassShape_ with <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> <br/></td></tr>
+<tr class="memdesc:a713ca7d20f25d9e111a5b782d9989b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overrides <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a>'s function to register MassShape_ with <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> <br/></td></tr>
 <tr class="separator:a713ca7d20f25d9e111a5b782d9989b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ee3c4301e2195555bc2067dcd66d7ae"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a6ee3c4301e2195555bc2067dcd66d7ae">addParticleCombination</a> (const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;c) override</td></tr>
 <tr class="separator:a6ee3c4301e2195555bc2067dcd66d7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05fe8c835719b8d676b22caa08f4591d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a05fe8c835719b8d676b22caa08f4591d">modifyDecayTree</a> (<a class="el" href="classyap_1_1DecayTree.html">DecayTree</a> &amp;dt) const override</td></tr>
-<tr class="separator:a05fe8c835719b8d676b22caa08f4591d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f773913f5b8d0055f65766f7790e59f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a1f773913f5b8d0055f65766f7790e59f">modifyDecayTree</a> (<a class="el" href="classyap_1_1DecayTree.html">DecayTree</a> &amp;dt) override</td></tr>
+<tr class="separator:a1f773913f5b8d0055f65766f7790e59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa68e2433dc6d49bd7d1dd0e4e98b3b7c"><td class="memItemLeft" align="right" valign="top">virtual std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1PhaseSpaceFactor.html">PhaseSpaceFactor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#aa68e2433dc6d49bd7d1dd0e4e98b3b7c">phaseSpaceFactor</a> (const <a class="el" href="classyap_1_1DecayChannel.html">DecayChannel</a> &amp;dc, const <a class="el" href="classyap_1_1SpinAmplitude.html">SpinAmplitude</a> &amp;sa) overridefinal</td></tr>
+<tr class="separator:aa68e2433dc6d49bd7d1dd0e4e98b3b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classyap_1_1DecayingParticle"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1DecayingParticle')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a></td></tr>
-<tr class="memitem:a435ded3632d5aaa4461b7823b9095d77 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a435ded3632d5aaa4461b7823b9095d77">DecayingParticle</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>)</td></tr>
-<tr class="separator:a435ded3632d5aaa4461b7823b9095d77 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ea8587c55b9f5b820520f61c7f24be6 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a5ea8587c55b9f5b820520f61c7f24be6">DecayingParticle</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q, double <a class="el" href="classyap_1_1DecayingParticle.html#a8e8d3f23db4b94ab7ba636144c362e0b">radialSize</a>, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory)</td></tr>
+<tr class="separator:a5ea8587c55b9f5b820520f61c7f24be6 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae688da0794daa7e192901b4ea0a25543 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae688da0794daa7e192901b4ea0a25543"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#ae688da0794daa7e192901b4ea0a25543">pruneParticleCombinations</a> () override</td></tr>
 <tr class="memdesc:ae688da0794daa7e192901b4ea0a25543 inherit pro_methods_classyap_1_1DecayingParticle"><td class="mdescLeft">&#160;</td><td class="mdescRight">prune ParticleCombinations_ to only contain <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a>'s tracing back up the ISP <br/></td></tr>
@@ -204,6 +224,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a6e9065bfb879a45defdf1fdb1a4b70eb inherit pro_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e9065bfb879a45defdf1fdb1a4b70eb"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>printDecayChainLevel</b> (int level) const </td></tr>
 <tr class="separator:a6e9065bfb879a45defdf1fdb1a4b70eb inherit pro_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcd0d5ac9983153957a554ea48110a62 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
+&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#abcd0d5ac9983153957a554ea48110a62">phaseSpaceFactorFactory</a> ()</td></tr>
+<tr class="separator:abcd0d5ac9983153957a554ea48110a62 inherit pro_methods_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classyap_1_1Particle"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classyap_1_1Particle')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classyap_1_1Particle.html">Particle</a></td></tr>
 <tr class="memitem:af6456329760cc63ce6c40c41228a9c8a inherit pro_methods_classyap_1_1Particle"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Particle.html#af6456329760cc63ce6c40c41228a9c8a">Particle</a> (std::string <a class="el" href="classyap_1_1Particle.html#a324e8c54c4c5161913681a1a52fef959">name</a>, const <a class="el" href="classyap_1_1QuantumNumbers.html">QuantumNumbers</a> &amp;q)</td></tr>
 <tr class="separator:af6456329760cc63ce6c40c41228a9c8a inherit pro_methods_classyap_1_1Particle"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,24 +235,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>printDecayChainLevel<
 Private Attributes</h2></td></tr>
 <tr class="memitem:a889f20428c2fb397e06cf079b4842cb9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Resonance.html#a889f20428c2fb397e06cf079b4842cb9">MassShape_</a></td></tr>
 <tr class="separator:a889f20428c2fb397e06cf079b4842cb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_attribs_classyap_1_1DecayingParticle"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classyap_1_1DecayingParticle')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a></td></tr>
-<tr class="memitem:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab24e80cfd7ddce846f45480037f424be"></a>
-friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#ab24e80cfd7ddce846f45480037f424be">Model</a></td></tr>
-<tr class="memdesc:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1Model.html" title="Class implementing a PWA model. ">Model</a> to call <a class="el" href="classyap_1_1DecayingParticle.html#a0e13e8bac9f9ee54ceb0083551829cb6" title="if only one decay channel is available, fix its free amplitude to the current value ...">fixSolitaryFreeAmplitudes()</a> <br/></td></tr>
-<tr class="separator:ab24e80cfd7ddce846f45480037f424be inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a187df148e082a0db6ef186961919cded"></a>
-friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayingParticle.html#a187df148e082a0db6ef186961919cded">DecayChannel</a></td></tr>
-<tr class="memdesc:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DecayChannel.html" title="Class implementing a decay channel. ">DecayChannel</a> to call <a class="el" href="classyap_1_1DecayingParticle.html#a713ca7d20f25d9e111a5b782d9989b7f" title="register any necessary DataAccessor&#39;s with model ">registerWithModel()</a> <br/></td></tr>
-<tr class="separator:a187df148e082a0db6ef186961919cded inherit pub_attribs_classyap_1_1DecayingParticle"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class for a particle that will decay and has a mass shape. </p>
 <dl class="section author"><dt>Author</dt><dd>Johannes Rauch, Daniel Greenwald </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ad654f3c61204787cdb2549f3ec113a4c"></a>
+<a class="anchor" id="a926b55bc168efff7035cbad05189e4a5"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -258,7 +269,13 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt;&#160;</td>
-          <td class="paramname"><em>massShape</em>&#160;</td>
+          <td class="paramname"><em>massShape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt;&#160;</td>
+          <td class="paramname"><em>phsp_factory</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -272,7 +289,7 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructor see <a class="el" href="classyap_1_1Resonance.html#a59e527081fbf8f70c7de9e3d7bea6a73">create</a> </p>
+<p>Constructor see <a class="el" href="classyap_1_1Resonance.html#a5ec5a8763ed334f1b90b651fe15d381e">create</a> </p>
 
 </div>
 </div>
@@ -365,7 +382,7 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
-<a class="anchor" id="a59e527081fbf8f70c7de9e3d7bea6a73"></a>
+<a class="anchor" id="a5ec5a8763ed334f1b90b651fe15d381e"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -394,7 +411,13 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt;&#160;</td>
-          <td class="paramname"><em>massShape</em>&#160;</td>
+          <td class="paramname"><em>massShape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt;&#160;</td>
+          <td class="paramname"><em>phsp_factory</em> = <code>DefaultPHSPFactory</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -421,7 +444,7 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
-<a class="anchor" id="a05fe8c835719b8d676b22caa08f4591d"></a>
+<a class="anchor" id="a1f773913f5b8d0055f65766f7790e59f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -433,7 +456,7 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
           <td>(</td>
           <td class="paramtype"><a class="el" href="classyap_1_1DecayTree.html">DecayTree</a> &amp;&#160;</td>
           <td class="paramname"><em>dt</em></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -450,7 +473,51 @@ friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classyap_1_1DecayingParticle.html#a7e48c3715f6dd2574f4b45a3482f8deb">DecayingParticle</a>.</p>
+<p>Reimplemented from <a class="el" href="classyap_1_1DecayingParticle.html#a491f6124565ed1977a4eb4912b53fd8c">DecayingParticle</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa68e2433dc6d49bd7d1dd0e4e98b3b7c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactor.html">PhaseSpaceFactor</a> &gt; phaseSpaceFactor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classyap_1_1DecayChannel.html">DecayChannel</a> &amp;&#160;</td>
+          <td class="paramname"><em>dc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classyap_1_1SpinAmplitude.html">SpinAmplitude</a> &amp;&#160;</td>
+          <td class="paramname"><em>sa</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>(create and) return a <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html">RecalculableAmplitudeComponent</a> that calculates a phase-space factor applicaple for the final state of <a class="el" href="classyap_1_1DecayChannel.html" title="Class implementing a decay channel. ">DecayChannel</a> and the orbital angular momentum of <a class="el" href="classyap_1_1SpinAmplitude.html" title="Abstract base class implementing a spin amplitude. ">SpinAmplitude</a> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dc</td><td><a class="el" href="classyap_1_1DecayChannel.html" title="Class implementing a decay channel. ">DecayChannel</a> </td></tr>
+    <tr><td class="paramname">sa</td><td><a class="el" href="classyap_1_1SpinAmplitude.html" title="Abstract base class implementing a spin amplitude. ">SpinAmplitude</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classyap_1_1DecayingParticle.html#a38caee118c312c7fa965fe598ce3642b">DecayingParticle</a>.</p>
 
 </div>
 </div>

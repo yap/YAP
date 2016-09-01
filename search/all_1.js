@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['base_20classes_20for_20multiplicative_20amplitude_20components',['Base classes for multiplicative amplitude components',['../group__AmplitudeComponent.html',1,'']]],
   ['b_5f',['B_',['../classyap_1_1VectorAddition.html#a65ce852caaf9c538a16666e3ad9caa4c',1,'yap::VectorAddition::B_()'],['../classyap_1_1VectorSubtraction.html#a65ce852caaf9c538a16666e3ad9caa4c',1,'yap::VectorSubtraction::B_()']]],
   ['back',['back',['../classyap_1_1DataSet.html#a2720e3e0579074e5bd27158ed6baaa63',1,'yap::DataSet']]],
   ['barrierfactor_5f',['BarrierFactor_',['../classyap_1_1BlattWeisskopf.html#a41c21e8064ad952df1facbf05517b519',1,'yap::BlattWeisskopf']]],

@@ -94,20 +94,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">AmplitudeComponent Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p><code>#include &lt;<a class="el" href="AmplitudeComponent_8h_source.html">AmplitudeComponent.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for AmplitudeComponent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classyap_1_1AmplitudeComponent.png" usemap="#AmplitudeComponent_map" alt=""/>
   <map id="AmplitudeComponent_map" name="AmplitudeComponent_map">
-<area href="classyap_1_1RecalculableAmplitudeComponent.html" title="Base class for AmplitudeComponent&#39;s that are also RecalculableDataAccessor&#39;s. " alt="RecalculableAmplitudeComponent" shape="rect" coords="106,56,309,80"/>
-<area href="classyap_1_1StaticAmplitudeComponent.html" alt="StaticAmplitudeComponent" shape="rect" coords="319,56,522,80"/>
+<area href="classyap_1_1RecalculableAmplitudeComponent.html" alt="RecalculableAmplitudeComponent" shape="rect" coords="213,56,416,80"/>
+<area href="classyap_1_1StaticAmplitudeComponent.html" alt="StaticAmplitudeComponent" shape="rect" coords="426,56,629,80"/>
 <area href="classyap_1_1BlattWeisskopf.html" title="Class implementing BlattWeisskopf barrier factors. " alt="BlattWeisskopf" shape="rect" coords="0,112,203,136"/>
 <area href="classyap_1_1MassShape.html" title="Abstract base class for all mass shapes. " alt="MassShape" shape="rect" coords="213,112,416,136"/>
+<area href="classyap_1_1PhaseSpaceFactor.html" alt="PhaseSpaceFactor" shape="rect" coords="532,112,735,136"/>
 <area href="classyap_1_1MassShapeWithNominalMass.html" title="Class for MassShape that gets its nominal mass from its owning resonance. " alt="MassShapeWithNominalMass" shape="rect" coords="106,168,309,192"/>
 <area href="classyap_1_1PoleMass.html" title="Class for pole-mass resonance shape. " alt="PoleMass" shape="rect" coords="319,168,522,192"/>
+<area href="classyap_1_1TwoBodyPhaseSpaceFactor.html" alt="TwoBodyPhaseSpaceFactor" shape="rect" coords="532,168,735,192"/>
 <area href="classyap_1_1BreitWigner.html" title="Class for Breit-Wigner resonance shape. " alt="BreitWigner" shape="rect" coords="0,224,203,248"/>
 <area href="classyap_1_1Flatte.html" title="Class for Flatte resonance shape. " alt="Flatte" shape="rect" coords="213,224,416,248"/>
 <area href="classyap_1_1RelativisticBreitWigner.html" title="Class for Relativistic Breit-Wigner resonance shape. " alt="RelativisticBreitWigner" shape="rect" coords="0,280,203,304"/>
@@ -121,13 +121,36 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad6e8c0c0e24344516f29f29fb749bba7"><td class="memItemLeft" align="right" valign="top">virtual const std::complex<br class="typebreak"/>
 &lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#ad6e8c0c0e24344516f29f29fb749bba7">value</a> (const <a class="el" href="classyap_1_1DataPoint.html">DataPoint</a> &amp;d, const std::shared_ptr&lt; <a class="el" href="classyap_1_1ParticleCombination.html">ParticleCombination</a> &gt; &amp;pc) const =0</td></tr>
 <tr class="separator:ad6e8c0c0e24344516f29f29fb749bba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca8834fbfbf34ac761f05ff2c44a3602"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#aca8834fbfbf34ac761f05ff2c44a3602">variableStatus</a> () const =0</td></tr>
-<tr class="separator:aca8834fbfbf34ac761f05ff2c44a3602"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4219cdda7f82e42cf3db3f364af74f7f"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1AmplitudeComponent.html#a4219cdda7f82e42cf3db3f364af74f7f">status</a> () const =0</td></tr>
+<tr class="separator:a4219cdda7f82e42cf3db3f364af74f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Base class for objects that are multiplicatively incorporated into an amplitude </p>
-<dl class="section author"><dt>Author</dt><dd>Daniel Greenwald </dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a4219cdda7f82e42cf3db3f364af74f7f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a> status </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>a VariableStatus for this <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> </dd></dl>
+
+<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#a472807e7bc9fa6a377a0375b309506f0">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#acdba8bb57d69a7f834cf10cc03fe7b00">StaticAmplitudeComponent</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a8c2e030ab66a9a528e5ed9a6d0808c68"></a>
 <div class="memitem">
 <div class="memproto">
@@ -151,7 +174,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>whether <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> can calculate for particular <a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> </dd></dl>
 
-<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#abf75da617100c1b09083e09595d99308">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#abf75da617100c1b09083e09595d99308">StaticAmplitudeComponent</a>.</p>
+<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#a1ce647db2a6319523202e5e0b25a65f0">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#a1ce647db2a6319523202e5e0b25a65f0">StaticAmplitudeComponent</a>.</p>
 
 </div>
 </div>
@@ -195,33 +218,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classyap_1_1BlattWeisskopf.html#a7fe1b6d6f2ca2c0af9e95c7c3d253a63">BlattWeisskopf</a>, and <a class="el" href="classyap_1_1MassShape.html#a3357e13b61cf74177a5b55bae565294a">MassShape</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aca8834fbfbf34ac761f05ff2c44a3602"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const <a class="el" href="namespaceyap.html#a742aec35ceeb6c7f2904e4063bfdaecd">VariableStatus</a> variableStatus </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>a VariableStatus for this <a class="el" href="classyap_1_1AmplitudeComponent.html">AmplitudeComponent</a> </dd></dl>
-
-<p>Implemented in <a class="el" href="classyap_1_1RecalculableAmplitudeComponent.html#a6ba7b2ace13c5987d4a3ae94c0b83cdc">RecalculableAmplitudeComponent</a>, and <a class="el" href="classyap_1_1StaticAmplitudeComponent.html#a7f844d5cddfb6bc88b3026904422547d">StaticAmplitudeComponent</a>.</p>
+<p>Implemented in <a class="el" href="classyap_1_1BlattWeisskopf.html#a7fe1b6d6f2ca2c0af9e95c7c3d253a63">BlattWeisskopf</a>, <a class="el" href="classyap_1_1MassShape.html#a3357e13b61cf74177a5b55bae565294a">MassShape</a>, and <a class="el" href="classyap_1_1TwoBodyPhaseSpaceFactor.html#ac3ed0f3d9438c2a3ef5b104418ed82dc">TwoBodyPhaseSpaceFactor</a>.</p>
 
 </div>
 </div>

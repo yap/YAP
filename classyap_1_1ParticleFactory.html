@@ -114,10 +114,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9a45e7a9e3c970be155670b529e88256"><td class="memItemLeft" align="right" valign="top">std::shared_ptr<br class="typebreak"/>
 &lt; <a class="el" href="classyap_1_1FinalStateParticle.html">FinalStateParticle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#a9a45e7a9e3c970be155670b529e88256">fsp</a> (int PDG) const </td></tr>
 <tr class="separator:a9a45e7a9e3c970be155670b529e88256"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d97ace3d264de982b18eee0ccb38a39"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#a6d97ace3d264de982b18eee0ccb38a39">decayingParticle</a> (int PDG, double radialSize) const </td></tr>
-<tr class="separator:a6d97ace3d264de982b18eee0ccb38a39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5ce5b6b79de406e6a8baf11bdb71a4f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1Resonance.html">Resonance</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#ac5ce5b6b79de406e6a8baf11bdb71a4f">resonance</a> (int PDG, double radialSize, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; massShape) const </td></tr>
-<tr class="separator:ac5ce5b6b79de406e6a8baf11bdb71a4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf69fcad430950bcf0d013c34292015c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#acf69fcad430950bcf0d013c34292015c">decayingParticle</a> (int PDG, double radialSize, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory=DefaultPHSPFactory) const </td></tr>
+<tr class="separator:acf69fcad430950bcf0d013c34292015c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5df1b24efc76b266d4871c5470d1f253"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1Resonance.html">Resonance</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#a5df1b24efc76b266d4871c5470d1f253">resonance</a> (int PDG, double radialSize, std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt; massShape, std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt; phsp_factory=DefaultPHSPFactory) const </td></tr>
+<tr class="separator:a5df1b24efc76b266d4871c5470d1f253"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39cda0de07080f425c50efa29990c73f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1ParticleFactory.html">ParticleFactory</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1ParticleFactory.html#a39cda0de07080f425c50efa29990c73f">operator+=</a> (const <a class="el" href="classyap_1_1ParticleFactory.html">ParticleFactory</a> &amp;rhs)</td></tr>
 <tr class="separator:a39cda0de07080f425c50efa29990c73f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -186,7 +186,7 @@ std::insert_iterator<br class="typebreak"/>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a6d97ace3d264de982b18eee0ccb38a39"></a>
+<a class="anchor" id="acf69fcad430950bcf0d013c34292015c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -200,7 +200,13 @@ std::insert_iterator<br class="typebreak"/>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>radialSize</em>&#160;</td>
+          <td class="paramname"><em>radialSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt;&#160;</td>
+          <td class="paramname"><em>phsp_factory</em> = <code>DefaultPHSPFactory</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -217,7 +223,7 @@ std::insert_iterator<br class="typebreak"/>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>shared pointer to new <a class="el" href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. ">DecayingParticle</a> object </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>shared pointer to new <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> object </dd></dl>
 
 </div>
 </div>
@@ -407,7 +413,7 @@ std::insert_iterator<br class="typebreak"/>
 
 </div>
 </div>
-<a class="anchor" id="ac5ce5b6b79de406e6a8baf11bdb71a4f"></a>
+<a class="anchor" id="a5df1b24efc76b266d4871c5470d1f253"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -427,7 +433,13 @@ std::insert_iterator<br class="typebreak"/>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1MassShape.html">MassShape</a> &gt;&#160;</td>
-          <td class="paramname"><em>massShape</em>&#160;</td>
+          <td class="paramname"><em>massShape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classyap_1_1PhaseSpaceFactorFactory.html">PhaseSpaceFactorFactory</a> &gt;&#160;</td>
+          <td class="paramname"><em>phsp_factory</em> = <code>DefaultPHSPFactory</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

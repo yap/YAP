@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['classes_20related_20to_20model_20integration',['Classes related to model integration',['../group__Integration.html',1,'']]]
+  ['base_20classes_20for_20multiplicative_20amplitude_20components',['Base classes for multiplicative amplitude components',['../group__AmplitudeComponent.html',1,'']]]
 ];

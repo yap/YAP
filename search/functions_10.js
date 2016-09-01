@@ -22,7 +22,7 @@ var searchData=
   ['requiresstorage',['requiresStorage',['../classyap_1_1DataAccessor.html#abfe41331efc9a76116b6dcf9c2cf3189',1,'yap::DataAccessor']]],
   ['reserve',['reserve',['../classyap_1_1DataSet.html#af45d30f307f301b9d43fcdf52897bbce',1,'yap::DataSet']]],
   ['reset',['reset',['../classyap_1_1IntegralElement.html#ad20897c5c8bd47f5d4005989bead0e55',1,'yap::IntegralElement::reset()'],['../classyap_1_1Integrator.html#a0171b74ca939298b4b73c0142979f2b8',1,'yap::Integrator::reset()']]],
-  ['resonance',['resonance',['../classyap_1_1MassShape.html#ac63302bd1afc143499c83b87867e0330',1,'yap::MassShape::resonance()'],['../classyap_1_1ParticleFactory.html#ac5ce5b6b79de406e6a8baf11bdb71a4f',1,'yap::ParticleFactory::resonance()'],['../classyap_1_1Resonance.html#ad654f3c61204787cdb2549f3ec113a4c',1,'yap::Resonance::Resonance()']]],
+  ['resonance',['Resonance',['../classyap_1_1Resonance.html#a926b55bc168efff7035cbad05189e4a5',1,'yap::Resonance::Resonance()'],['../classyap_1_1MassShape.html#ac63302bd1afc143499c83b87867e0330',1,'yap::MassShape::resonance()'],['../classyap_1_1ParticleFactory.html#a5df1b24efc76b266d4871c5470d1f253',1,'yap::ParticleFactory::resonance()']]],
   ['rho',['rho',['../classyap_1_1MeasuredBreakupMomenta.html#aef56920d6908df1912accbece4d6e2c8',1,'yap::MeasuredBreakupMomenta']]],
   ['rotation',['rotation',['../namespaceyap.html#a8d106003b0345707914c07f0692e3a63',1,'yap']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vectoralgebra',['VectorAlgebra',['../group__VectorAlgebra.html',1,'']]]
+  ['spin_20amplitudes',['Spin Amplitudes',['../group__SpinAmplitude.html',1,'']]]
 ];

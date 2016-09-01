@@ -126,6 +126,8 @@ const ParticleVector &amp;&#160;</td><td class="memItemRight" valign="bottom"><a
 const SpinAmplitudeVector &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a2a243641f4c63dc3e02bc14ff7a77eab">spinAmplitudes</a> () const </td></tr>
 <tr class="memdesc:a2a243641f4c63dc3e02bc14ff7a77eab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get <a class="el" href="classyap_1_1SpinAmplitude.html" title="Abstract base class implementing a spin amplitude. ">SpinAmplitude</a> objects. <br/></td></tr>
 <tr class="separator:a2a243641f4c63dc3e02bc14ff7a77eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa2f82d1c4a04acaf1a6992a5c046f8b"><td class="memItemLeft" align="right" valign="top">const PhaseSpaceFactorMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#afa2f82d1c4a04acaf1a6992a5c046f8b">phaseSpaceFactors</a> () const </td></tr>
+<tr class="separator:afa2f82d1c4a04acaf1a6992a5c046f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a645fb6495c529fc145dac49fb51b4035"><td class="memItemLeft" align="right" valign="top">const ParticleCombinationSet &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a645fb6495c529fc145dac49fb51b4035">particleCombinations</a> () const </td></tr>
 <tr class="separator:a645fb6495c529fc145dac49fb51b4035"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4531b4cf2073b73fc13810af5e015867"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1Model.html">Model</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a4531b4cf2073b73fc13810af5e015867">model</a> () const </td></tr>
@@ -156,6 +158,10 @@ ParticleVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 SpinAmplitudeVector&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a35183f3d89a950d1407230d765b158b5">SpinAmplitudes_</a></td></tr>
 <tr class="memdesc:a35183f3d89a950d1407230d765b158b5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1Vector.html" title="N-dimensional column vector. ">Vector</a> of SpinAmplitudes. <br/></td></tr>
 <tr class="separator:a35183f3d89a950d1407230d765b158b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a527f8aabc6e87331464baf2007333326"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a527f8aabc6e87331464baf2007333326"></a>
+PhaseSpaceFactorMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a527f8aabc6e87331464baf2007333326">PhaseSpaceFactors_</a></td></tr>
+<tr class="memdesc:a527f8aabc6e87331464baf2007333326"><td class="mdescLeft">&#160;</td><td class="mdescRight">map of <a class="el" href="classyap_1_1SpinAmplitude.html" title="Abstract base class implementing a spin amplitude. ">SpinAmplitude</a> to <a class="el" href="classyap_1_1PhaseSpaceFactor.html">PhaseSpaceFactor</a> <br/></td></tr>
+<tr class="separator:a527f8aabc6e87331464baf2007333326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8737bcc3aef1683f656b8f8fc98eb700"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8737bcc3aef1683f656b8f8fc98eb700"></a>
 ParticleCombinationSet&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1DecayChannel.html#a8737bcc3aef1683f656b8f8fc98eb700">ParticleCombinations_</a></td></tr>
 <tr class="memdesc:a8737bcc3aef1683f656b8f8fc98eb700"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector of shared_ptr&lt;ParticleCombination&gt; <br/></td></tr>
@@ -276,6 +282,30 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="afa2f82d1c4a04acaf1a6992a5c046f8b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const PhaseSpaceFactorMap&amp; phaseSpaceFactors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>PhaseSpaceFactors_ </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
 <a class="anchor" id="a1b60f793390f9e8f422b983e17d2ffbd"></a>
 <div class="memitem">
@@ -294,7 +324,7 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>grant friend status to <a class="el" href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. ">DecayingParticle</a> to call addParticleCombination and pruneParticleCombinations and registerWithModel </p>
+<p>grant friend status to <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> to call addParticleCombination, pruneParticleCombinations, registerWithModel, and to access PhaseSpaceFactors_ </p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['includephasespacefactors_5f',['IncludePhaseSpaceFactors_',['../classyap_1_1Model.html#a7f35ae0ca48f18ac240a17d7f78cc40c',1,'yap::Model']]],
   ['index_5f',['Index_',['../classyap_1_1CachedValue.html#a3c1f9fad6d8724ea6237561ee0d46c97',1,'yap::CachedValue::Index_()'],['../classyap_1_1DataAccessor.html#a3c1f9fad6d8724ea6237561ee0d46c97',1,'yap::DataAccessor::Index_()']]],
   ['indices_5f',['Indices_',['../classyap_1_1ParticleCombination.html#a31876ee352417cf5d7260e899852cc92',1,'yap::ParticleCombination']]],
   ['initialstateparticles_5f',['InitialStateParticles_',['../classyap_1_1Model.html#a59a5038c84b859dcc39b97a8062b7493',1,'yap::Model']]],

@@ -10,6 +10,9 @@ var searchData=
   ['particletable_5f',['ParticleTable_',['../classyap_1_1ParticleFactory.html#a70e044464791c1f2cdadeedbeb35cb97',1,'yap::ParticleFactory']]],
   ['partition_5f',['Partition_',['../classyap_1_1DataIterator.html#a829bc54832f5958f14de57d4a0c5a83b',1,'yap::DataIterator']]],
   ['pdg',['PDG',['../structyap_1_1ParticleTableEntry.html#ad9e2e53f21707e5cbcf317a820e984c1',1,'yap::ParticleTableEntry']]],
+  ['phasespacefactorfactory_5f',['PhaseSpaceFactorFactory_',['../classyap_1_1DecayingParticle.html#ae18a75597b5966f0bc71777734756a1d',1,'yap::DecayingParticle']]],
+  ['phasespacefactors_5f',['PhaseSpaceFactors_',['../classyap_1_1DecayChannel.html#a527f8aabc6e87331464baf2007333326',1,'yap::DecayChannel']]],
   ['phi_5f',['Phi_',['../classyap_1_1HelicityAngles.html#ae711e92086d3464373d6a7de292eb73e',1,'yap::HelicityAngles']]],
+  ['phspfactors_5f',['PHSPFactors_',['../classyap_1_1TwoBodyPhaseSpaceFactorFactory.html#a76a8365ffac15ddfb4ebf34fe7313908',1,'yap::TwoBodyPhaseSpaceFactorFactory']]],
   ['position_5f',['Position_',['../classyap_1_1CachedValue.html#a39f09884c5168b7c7f2eae10c196a213',1,'yap::CachedValue']]]
 ];

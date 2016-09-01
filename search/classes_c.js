@@ -11,7 +11,8 @@ var searchData=
   ['particlefactory',['ParticleFactory',['../classyap_1_1ParticleFactory.html',1,'yap']]],
   ['particletableentry',['ParticleTableEntry',['../structyap_1_1ParticleTableEntry.html',1,'yap']]],
   ['pdliterator',['PDLIterator',['../classyap_1_1PDLIterator.html',1,'yap']]],
-  ['phasespacefactor',['PhaseSpaceFactor',['../classPhaseSpaceFactor.html',1,'']]],
+  ['phasespacefactor',['PhaseSpaceFactor',['../classyap_1_1PhaseSpaceFactor.html',1,'yap']]],
+  ['phasespacefactorfactory',['PhaseSpaceFactorFactory',['../classyap_1_1PhaseSpaceFactorFactory.html',1,'yap']]],
   ['polar',['polar',['../classyap_1_1complex__basis_1_1polar.html',1,'yap::complex_basis']]],
   ['polemass',['PoleMass',['../classyap_1_1PoleMass.html',1,'yap']]]
 ];

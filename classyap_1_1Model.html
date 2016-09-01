@@ -105,8 +105,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a32514d039941a4ff5bd2b88c04b92aad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a32514d039941a4ff5bd2b88c04b92aad">Model</a> (std::unique_ptr&lt; <a class="el" href="classyap_1_1SpinAmplitudeCache.html">SpinAmplitudeCache</a> &gt; SAC)</td></tr>
-<tr class="separator:a32514d039941a4ff5bd2b88c04b92aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a8f0a26704e993e772fd7fbd37bd88e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a4a8f0a26704e993e772fd7fbd37bd88e">Model</a> (std::unique_ptr&lt; <a class="el" href="classyap_1_1SpinAmplitudeCache.html">SpinAmplitudeCache</a> &gt; SAC, bool include_phsp_factors=true)</td></tr>
+<tr class="separator:a4a8f0a26704e993e772fd7fbd37bd88e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaec00dd83d7a9ca7a1bf17c25ff7756"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#aeaec00dd83d7a9ca7a1bf17c25ff7756">Model</a> (const <a class="el" href="classyap_1_1Model.html">Model</a> &amp;)=delete</td></tr>
 <tr class="separator:aeaec00dd83d7a9ca7a1bf17c25ff7756"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2730536ffa21fc431f71cfe1b4568d41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classyap_1_1Model.html">Model</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a2730536ffa21fc431f71cfe1b4568d41">operator=</a> (const <a class="el" href="classyap_1_1Model.html">Model</a> &amp;)=delete</td></tr>
@@ -148,6 +148,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a8e66c6b762fafe5763cd71c4d4291231"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print all VariableStatus'es and CalculationStatus'es. <br/></td></tr>
 <tr class="separator:a8e66c6b762fafe5763cd71c4d4291231"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Getters</div></td></tr>
+<tr class="memitem:a6748fbf1af910e3c98cf5f76a70ca40c"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a6748fbf1af910e3c98cf5f76a70ca40c">includePhaseSpaceFactors</a> () const </td></tr>
+<tr class="separator:a6748fbf1af910e3c98cf5f76a70ca40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a1855feb1b99b66525ab293219d9110"><td class="memItemLeft" align="right" valign="top">const CoordinateSystem&lt; double, 3 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a7a1855feb1b99b66525ab293219d9110">coordinateSystem</a> () const </td></tr>
 <tr class="separator:a7a1855feb1b99b66525ab293219d9110"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ddd8c7dc2c7fa6e6527f0d403bfee10"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classyap_1_1FourMomenta.html">FourMomenta</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a1ddd8c7dc2c7fa6e6527f0d403bfee10">fourMomenta</a> ()</td></tr>
@@ -195,6 +197,10 @@ InitialStateParticleMap::value_type &amp;&#160;</td><td class="memItemRight" val
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a241ac332f77a20ec9e58ba50c7357bdf">setCoordinateSystem</a> (const CoordinateSystem&lt; double, 3 &gt; &amp;cs)</td></tr>
 <tr class="memdesc:a241ac332f77a20ec9e58ba50c7357bdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">set coordinate system <br/></td></tr>
 <tr class="separator:a241ac332f77a20ec9e58ba50c7357bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa701071db54f38309b06ec46ddec826e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa701071db54f38309b06ec46ddec826e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#aa701071db54f38309b06ec46ddec826e">setIncludePhaseSpaceFactors</a> (bool b)</td></tr>
+<tr class="memdesc:aa701071db54f38309b06ec46ddec826e"><td class="mdescLeft">&#160;</td><td class="mdescRight">turn on/off inclusion of phase-space factors <br/></td></tr>
+<tr class="separator:aa701071db54f38309b06ec46ddec826e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Monte Carlo Generation</div></td></tr>
 <tr class="memitem:a7e40b3b1916b2dce7983b34d93760633"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classyap_1_1MassAxes.html">MassAxes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a7e40b3b1916b2dce7983b34d93760633">massAxes</a> (std::vector&lt; std::vector&lt; unsigned &gt; &gt; pcs={})</td></tr>
 <tr class="separator:a7e40b3b1916b2dce7983b34d93760633"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,6 +218,10 @@ Private Attributes</h2></td></tr>
 CoordinateSystem&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a231d7db241ea5b20a185be7d9176cebf">CoordinateSystem_</a></td></tr>
 <tr class="memdesc:a231d7db241ea5b20a185be7d9176cebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lab coordinate system to use in calculating helicity angles. <br/></td></tr>
 <tr class="separator:a231d7db241ea5b20a185be7d9176cebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f35ae0ca48f18ac240a17d7f78cc40c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7f35ae0ca48f18ac240a17d7f78cc40c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a7f35ae0ca48f18ac240a17d7f78cc40c">IncludePhaseSpaceFactors_</a></td></tr>
+<tr class="memdesc:a7f35ae0ca48f18ac240a17d7f78cc40c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to include phase-space factors <br/></td></tr>
+<tr class="separator:a7f35ae0ca48f18ac240a17d7f78cc40c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab54d8d876a299d20b0569200bfe27420"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab54d8d876a299d20b0569200bfe27420"></a>
 <a class="el" href="classyap_1_1ParticleCombinationCache.html">ParticleCombinationCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#ab54d8d876a299d20b0569200bfe27420">ParticleCombinationCache_</a></td></tr>
 <tr class="memdesc:ab54d8d876a299d20b0569200bfe27420"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classyap_1_1ParticleCombination.html" title="Stores combinations of particle indices. ">ParticleCombination</a> cache. <br/></td></tr>
@@ -267,14 +277,14 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <tr class="separator:a086dea3729165ff2fa3cac45fc56c94f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b60f793390f9e8f422b983e17d2ffbd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1b60f793390f9e8f422b983e17d2ffbd"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classyap_1_1Model.html#a1b60f793390f9e8f422b983e17d2ffbd">DecayingParticle</a></td></tr>
-<tr class="memdesc:a1b60f793390f9e8f422b983e17d2ffbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DecayingParticle.html" title="Class for a particle that will decay. ">DecayingParticle</a> to call addParticleCombination <br/></td></tr>
+<tr class="memdesc:a1b60f793390f9e8f422b983e17d2ffbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">grant friend status to <a class="el" href="classyap_1_1DecayingParticle.html">DecayingParticle</a> to call addParticleCombination <br/></td></tr>
 <tr class="separator:a1b60f793390f9e8f422b983e17d2ffbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class implementing a PWA model. </p>
 <dl class="section author"><dt>Author</dt><dd>Johannes Rauch, Daniel Greenwald </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a32514d039941a4ff5bd2b88c04b92aad"></a>
+<a class="anchor" id="a4a8f0a26704e993e772fd7fbd37bd88e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -282,8 +292,18 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
           <td class="memname"><a class="el" href="classyap_1_1Model.html">Model</a> </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classyap_1_1SpinAmplitudeCache.html">SpinAmplitudeCache</a> &gt;&#160;</td>
-          <td class="paramname"><em>SAC</em></td><td>)</td>
+          <td class="paramname"><em>SAC</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>include_phsp_factors</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -291,6 +311,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">SAC</td><td>unique_ptr to <a class="el" href="classyap_1_1SpinAmplitudeCache.html" title="Caches SpinAmplitudes. ">SpinAmplitudeCache</a> </td></tr>
+    <tr><td class="paramname">include_phsp_factors</td><td>whether to include phase-space factors in amplitudes </td></tr>
   </table>
   </dd>
 </dl>
@@ -604,6 +625,30 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classyap_1_1HelicityAngles.html" title="Calculates, stores and gives access to helicity angles. ">HelicityAngles</a> accessor (const) is nullptr if not using helicity formalism </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a6748fbf1af910e3c98cf5f76a70ca40c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const bool includePhaseSpaceFactors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>IncludePhaseSpaceFactors_ </dd></dl>
 
 </div>
 </div>
