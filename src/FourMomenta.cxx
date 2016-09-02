@@ -110,7 +110,10 @@ FourVector<double> FourMomenta::p(const DataPoint& d, const std::shared_ptr<Part
 //-------------------------
 double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
-    return M_->value(d, symmetrizationIndex(pc));
+    return is_final_state_particle_combination(*pc) ?
+        model()->finalStateParticles()[pc->indices()[0]]->mass()
+        :
+        M_->value(d, symmetrizationIndex(pc));
 }
 
 //-------------------------

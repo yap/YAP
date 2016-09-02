@@ -36,12 +36,6 @@ double MeasuredBreakupMomenta::q2(const DataPoint& d, const std::shared_ptr<Part
 }
 
 //-------------------------
-double MeasuredBreakupMomenta::rho(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
-{
-    return 2. * sqrt(q2(d, pc) / model()->fourMomenta()->m2(d, pc));
-}
-
-//-------------------------
 void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
 {
     // set Q2 uncalculated

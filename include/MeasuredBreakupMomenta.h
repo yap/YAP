@@ -62,11 +62,6 @@ public:
     double q(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
     { return sqrt(q2(d, pc)); }
 
-    /// Access phase space factor (rho := 2 * q / m)
-    /// \param d DataPoint to get data from
-    /// \param pc ParticleCombination to return breakup momentum of
-    double rho(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
-    
     /// \return Breakup Momentum
     std::shared_ptr<RealCachedValue> breakupMomenta()
     { return Q2_; }

@@ -91,7 +91,7 @@ void BlattWeisskopf::calculate(DataPartition& D) const
 
         // check if barrier factor is uncalculated
         if (D.status(*BarrierFactor_, pc_symIndex.second) == CalculationStatus::uncalculated) {
-            
+
             DEBUG("calculate BlattWeisskopf");
 
             double r2 = pow(DecayingParticle_->radialSize()->value(), 2);
