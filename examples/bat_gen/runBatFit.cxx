@@ -39,8 +39,8 @@ int main()
     yap::plainLogs(el::Level::Info);
 
     // open file
-    // std::string model_name = "D3PI";
-    std::string model_name = "DKKPI";
+    std::string model_name = "D3PI";
+    // std::string model_name = "DKKPI";
     auto file = TFile::Open(("output/" + model_name + "_mcmc.root").data(), "READ");
     if (file->IsZombie())
         throw yap::exceptions::Exception("could not open file", "main");
@@ -56,13 +56,13 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    // auto m = d3pi_fit("D3PI_fit", fit_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
-    auto m = dkkpi_fit(model_name + "_fit", fit_model<yap::HelicityFormalism>(true), find_mass_axes(*t_pars));
+    auto m = d3pi_fit(model_name + "_fit", fit_model<yap::ZemachFormalism>(false), find_mass_axes(*t_pars));
+    // auto m = dkkpi_fit(model_name + "_fit", fit_model<yap::HelicityFormalism>(false), find_mass_axes(*t_pars));
 
     double D_mass = 1.86961;
 
     // load fit data and partition it
-    load_data(m.fitData(), *m.model(), m.axes(), D_mass, *t_mcmc, 10000, 5);
+    load_data(m.fitData(), *m.model(), m.axes(), D_mass, *t_mcmc, 20000, 45);
     // m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);
 
     // get FSP mass ranges

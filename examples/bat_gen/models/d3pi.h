@@ -103,7 +103,18 @@ inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned
 {
     bat_fit m(name, d3pi(move(M)), pcs);
 
-    auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
+    auto is_rho = is_named("rho0");
+
+    for (const auto& p : particles(*m.model(), is_resonance)) {
+        auto fa = free_amplitude(*m.model(), to(p));
+        if (is_rho(*p))
+            m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
+        else
+            m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()),
+                       deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);
+    }
+
+    /* auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0"))); */
 
     // m.fix(D->freeAmplitudes(rho, piPlus)[0], 1, 0);
     // m.setPrior(D->freeAmplitudes(f_0_980,  piPlus)[0], 0.,  100., -180, 180);
@@ -113,10 +124,10 @@ inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned
     // m.setPrior(D->freeAmplitudes(f_0_1500, piPlus)[0], 0.5, 2., -50, -30);
     // m.setPrior(D->freeAmplitudes(sigma,    piPlus)[0], 3.,  5., -10, 10);
 
-    m.addParameter("rho_mass", static_pointer_cast<BreitWigner>(rho->massShape())->mass(), 0.5, 1.2);
-    m.GetParameters().Back().SetPriorConstant();
-    m.addParameter("rho_width", static_pointer_cast<BreitWigner>(rho->massShape())->width(), 0.1, 0.2);
-    m.GetParameters().Back().SetPriorConstant();
+    /* m.addParameter("rho_mass", static_pointer_cast<BreitWigner>(rho->massShape())->mass(), 0.5, 1.2); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
+    /* m.addParameter("rho_width", static_pointer_cast<BreitWigner>(rho->massShape())->width(), 0.1, 0.2); */
+    /* m.GetParameters().Back().SetPriorConstant(); */
     // m.addParameter("rho_radialSize", rho->radialSize(), 1, 5);
     // m.GetParameters().Back().SetPriorConstant();
     
