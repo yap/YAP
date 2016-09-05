@@ -11,18 +11,22 @@
 #include <BreitWigner.h>
 #include <Constants.h>
 #include <DecayChannel.h>
-#include <DecayTree.h>
 #include <DecayingParticle.h>
+#include <DecayTree.h>
+#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <FreeAmplitude.h>
 #include <HelicityFormalism.h>
+#include <logging.h>
+#include <make_unique.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
+#include <RelativisticBreitWigner.h>
 #include <Resonance.h>
 #include <SpinAmplitudeCache.h>
 
@@ -52,7 +56,7 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     //
     
     // rho
-    auto rho = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<BreitWigner>());
+    auto rho = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<RelativisticBreitWigner>());
     rho->addChannel(piPlus, piMinus);
 
     // omega
@@ -69,13 +73,26 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     a_1->addChannel(sigma, piPlus);
 
     // a_1 -> rho pi
-    *free_amplitude(*a_1, to(rho), l_equals(0)) = 1; // S wave
-    free_amplitude(*a_1, to(rho), l_equals(0))->variableStatus() = VariableStatus::fixed;
-    *free_amplitude(*a_1, to(rho), l_equals(1)) = 0.; // P wave
-    *free_amplitude(*a_1, to(rho), l_equals(2)) = std::polar(0.241, rad(82.)); // D wave
+    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(0))) {
+        /// \todo has 3 amplitudes for 3 spin projections
+        // S wave
+        *f = 1;
+        f->variableStatus() = VariableStatus::fixed;
+    }
+    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(1))) {
+        /// \todo has 3 amplitudes for 3 spin projections
+        // P wave
+        *f = 0.;
+    }
+    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(2))) {
+        /// \todo has 3 amplitudes for 3 spin projections
+        // D wave
+        *f = std::polar(0.241, rad(82.));
+    }
 
     // a_1 -> sigma pi 
-    *free_amplitude(*a_1, to(sigma)) = std::polar(0.439, rad(193.));
+    for (auto& f : free_amplitudes(*a_1, to(sigma)))
+        *f = std::polar(0.439, rad(193.));
     
     // f_0(980) (as Flatte)
     auto piZero = F.fsp(111);
@@ -91,7 +108,7 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     f_2->addChannel(piPlus, piMinus); 
     
     // pi+ pi- flat
-    auto pipiFlat = F.decayingParticle(F.pdgCode("f_0"), radialSize); // just need any spin0 particle
+    auto pipiFlat = F.decayingParticle(F.pdgCode("pi0"), radialSize); // just need any spin0 particle
     pipiFlat->addChannel(piPlus, piMinus);   
     
     //
@@ -121,9 +138,12 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     for (unsigned l = 0; l < 3; ++l) {
         auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
         LOG(INFO) << to_string(*freeAmp);
-        *freeAmp = c[l];
+        *freeAmp = std::complex<double>(c[l]);
     }
     
+    LOG(INFO) << "D Decay trees:";
+    LOG(INFO) << to_string(D->decayTrees());
+
     return M;
 }
 
