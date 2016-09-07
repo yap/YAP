@@ -7,6 +7,7 @@
 #ifndef __BAT__D4PI__H
 #define __BAT__D4PI__H
 
+#include "../bat_fit.h"
 #include "../fit_fitFraction.h"
 
 #include <AmplitudeBasis.h>
@@ -49,7 +50,7 @@ template <typename ... Types>
 constexpr double quad(double s0, Types ... additional)
 { return quad({s0, additional...}); }
 
-inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
+inline std::unique_ptr<Model> d4pi()
 {
     auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
@@ -57,6 +58,7 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     auto piPlus = F.fsp(211);
     auto piMinus = F.fsp(-211);
 
+    auto M = std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // use common radial size for all resonances
@@ -161,11 +163,25 @@ inline std::unique_ptr<Model> d4pi(std::unique_ptr<yap::Model> M)
     return M;
 }
 
+inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pcs = {})
+{
+    bat_fit m(name, d4pi(), pcs);
+
+    // find particles
+    auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
+    auto rho   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
+    auto sigma = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(500)")));
+    auto a_1   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("a_1+")));
+    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
+    auto f_2   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
+
+    return m;
+}
 
 inline fit_fitFraction d4pi_fit_fitFraction()
 {
     // create bat_fit object
-    fit_fitFraction m("D4PI_frac_fit", d4pi(std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>())));
+    fit_fitFraction m("D4PI_frac_fit", d4pi());
 
     //double D_mass = 1.8648400;
 

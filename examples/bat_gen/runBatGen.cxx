@@ -38,12 +38,12 @@ int main()
 
     vector<bat_gen*> test_models = {
         // new bat_gen("D3PI_PHSP", d3pi_phsp(mc_model<ZemachFormalism>()), 1.86961),
-        new bat_gen("D3PI", d3pi(mc_model<ZemachFormalism>()), 1.86961)
+        // new bat_gen("D3PI", d3pi(mc_model<ZemachFormalism>()), 1.86961)
         // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(mc_model<ZemachFormalism>()), 1.86961)
         // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(mc_model<HelicityFormalism>()), 1.86961),
         // new bat_gen("DKKPI", dkkpi(mc_model<ZemachFormalism>()), 1.86961),
         // new bat_gen("DKKPI", dkkpi(mc_model<HelicityFormalism>()), 1.86961)
-        // new bat_gen("D4PI", d4pi(mc_model<HelicityFormalism>()), 1.86961)
+        new bat_gen("D4PI", d4pi(), 1.8648400)
     };
 
     for (bat_gen* m : test_models) {
