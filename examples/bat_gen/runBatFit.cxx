@@ -6,7 +6,7 @@
 // ***************************************************************
 
 #include "bat_fit.h"
-#include "hist.h"
+//#include "hist.h"
 #include "models/d3pi.h"
 #include "models/dkkpi.h"
 
