@@ -54,18 +54,17 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
 
     SetPriorConstantAll();
 
-    // add observables for all fit fractions
-    int N = std::accumulate(Integral_.integrals().begin(), Integral_.integrals().end(), 0,
-                            [](int n, const yap::IntegralMap::value_type& v)
-                            {return n + v.second.decayTrees().size();});
-    if (N > 1) {
-        for (const auto& b2_dtvi : Integral_.integrals())
-            for (const auto& dt : b2_dtvi.second.decayTrees()) {
-                DecayTrees_.push_back(dt);
-                AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
-            }
-        CalculatedFitFractions_.assign(1, yap::RealIntegralElementVector(DecayTrees_.size()));
-    }
+    // // add observables for all fit fractions
+    // int N = std::accumulate(Integral_.integrals().begin(), Integral_.integrals().end(), 0,
+    //                         [](int n, const yap::IntegralMap::value_type& v)
+    //                         {return n + v.second.decayTrees().size();});
+    // if (N > 1) {
+    for (const auto& b2_dtvi : Integral_.integrals())
+        for (const auto& dt : b2_dtvi.second.decayTrees()) {
+            DecayTrees_.push_back(dt);
+            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
+        }
+    // }
 }
 
 //-------------------------
@@ -177,15 +176,15 @@ void bat_fit::setParameters(const std::vector<double>& p)
     Integrator_(Integral_, IntegralPartitions_);
 
     // calculate fit fractions
-    if (!CalculatedFitFractions_.empty()) {
-        unsigned c = GetCurrentChain();
-        size_t i = 0;
-        for (const auto& b2_dtvi : Integral_.integrals()) {
-            auto ff = fit_fractions(b2_dtvi.second);
-            for (const auto& f : ff)
-                CalculatedFitFractions_[c][i++] = f;
-        }
+    // if (!CalculatedFitFractions_.empty()) {
+    unsigned c = GetCurrentChain();
+    size_t i = 0;
+    for (const auto& b2_dtvi : Integral_.integrals()) {
+        auto ff = fit_fractions(b2_dtvi.second);
+        for (const auto& f : ff)
+            CalculatedFitFractions_[c][i++] = f;
     }
+    // }
 }
 
 // ---------------------------------------------------------
@@ -201,11 +200,11 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
 //-------------------------
 void bat_fit::CalculateObservables(const std::vector<double>& p)
 {
-    if (!CalculatedFitFractions_.empty()) {
-        unsigned c = GetCurrentChain();
-        for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
-            GetObservables()[i] = CalculatedFitFractions_[c][i].value();
-    }
+    // if (!CalculatedFitFractions_.empty()) {
+    unsigned c = GetCurrentChain();
+    for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
+        GetObservables()[i] = CalculatedFitFractions_[c][i].value();
+    // }
 }
 
 //-------------------------
@@ -290,7 +289,7 @@ void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phas
 void bat_fit::MCMCUserInitialize()
 {
     bat_yap_base::MCMCUserInitialize();
-    if (!CalculatedFitFractions_.empty())
-        CalculatedFitFractions_.assign(GetNChains(), CalculatedFitFractions_[0]);
+    // if (!CalculatedFitFractions_.empty())
+    CalculatedFitFractions_.assign(GetNChains(), yap::RealIntegralElementVector(DecayTrees_.size()));
 }
 

@@ -18,13 +18,13 @@
 fit_fitFraction::fit_fitFraction(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_fit(name, std::move(M), pcs)
 {
-    AddParameter("N_0", 1.e-3, 50.);
+    AddParameter("N_0", 1.e-3, 1);
     AddParameter("N_1", 1.e-3, 1.e3);
     AddParameter("N_2", 1.e-3, 2);
 
     SetPriorConstantAll();
 
-    FitFractions_.assign(CalculatedFitFractions_[0].size(), { -1, 0});
+    FitFractions_.assign(DecayTrees_.size(), { -1, 0});
 }
 
 //-------------------------

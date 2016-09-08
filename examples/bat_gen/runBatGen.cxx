@@ -21,6 +21,7 @@
 #include "models/d4pi.h"
 #include "models/dkkpi.h"
 #include "models/D_K0pi0pi0.h"
+#include "tools.h"
 
 #include <chrono>
 #include <ratio>
@@ -28,22 +29,18 @@
 using namespace std;
 using namespace yap;
 
-template <typename T>
-unique_ptr<Model> mc_model()
-{ return make_unique<Model>(std::make_unique<T>(), false); }
-
 int main()
 {
     plainLogs(el::Level::Info);
 
     vector<bat_gen*> test_models = {
-        // new bat_gen("D3PI_PHSP", d3pi_phsp(mc_model<ZemachFormalism>()), 1.86961),
-        new bat_gen("D3PI", d3pi(mc_model<ZemachFormalism>()), 1.86961)
-        // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(mc_model<ZemachFormalism>()), 1.86961)
-        // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(mc_model<HelicityFormalism>()), 1.86961),
-        // new bat_gen("DKKPI", dkkpi(mc_model<ZemachFormalism>()), 1.86961),
-        // new bat_gen("DKKPI", dkkpi(mc_model<HelicityFormalism>()), 1.86961)
-        // new bat_gen("D4PI", d4pi(mc_model<HelicityFormalism>()), 1.86961)
+        // new bat_gen("D3PI_PHSP", d3pi_phsp(yap_model<ZemachFormalism>()), 1.86961),
+        new bat_gen("D3PI", d3pi(yap_model<ZemachFormalism>()), 1.86961)
+        // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(yap_model<ZemachFormalism>()), 1.86961)
+        // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(yap_model<HelicityFormalism>()), 1.86961),
+        // new bat_gen("DKKPI", dkkpi(yap_model<ZemachFormalism>()), 1.86961),
+        // new bat_gen("DKKPI", dkkpi(yap_model<HelicityFormalism>()), 1.86961)
+        // new bat_gen("D4PI", d4pi(yap_model<HelicityFormalism>()), 1.86961)
     };
 
     for (bat_gen* m : test_models) {
@@ -57,7 +54,7 @@ int main()
         m->SetMinimumEfficiency(0.15);
         m->SetMaximumEfficiency(0.35);
 
-        m->SetNIterationsRun(static_cast<int>(4e6 / m->GetNChains()));
+        m->SetNIterationsRun(static_cast<int>(12e6 / m->GetNChains()));
 
         m->WriteMarkovChain("output/" + m->GetSafeName() + "_mcmc.root", "RECREATE");
 
