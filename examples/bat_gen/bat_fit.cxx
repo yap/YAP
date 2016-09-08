@@ -20,16 +20,16 @@
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPartitionVector& D)
-{ yap::ImportanceSampler::calculate(M, D); }
+void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n)
+{ yap::ImportanceSampler::calculate(M, G, N, n); }
 
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
       FitPartitions_(1, &FitData_),
-      IntegralData_(model()->createDataSet()),
-      IntegralPartitions_(1, &IntegralData_),
+      NIntegrationPoints_(0),
+      NIntegrationPointsBatchSize_(0),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model()),
       FirstParameter_(-1)
@@ -173,7 +173,7 @@ void bat_fit::setParameters(const std::vector<double>& p)
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    Integrator_(Integral_, IntegralPartitions_);
+    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_);
 
     // calculate fit fractions
     // if (!CalculatedFitFractions_.empty()) {

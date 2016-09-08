@@ -46,13 +46,8 @@ int main()
 
     // generate integration data
     std::mt19937 g(0);
-    std::generate_n(std::back_inserter(m.integralData()), 1000000,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max()));
-    
-    LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
-
-    // partition integration data
-    m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
+    m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
+    m.setNIntegrationPoints(1e6, 1e5);
 
     // open log file
     BCLog::OpenLog("output/" + m.GetSafeName() + "_log.txt", BCLog::detail, BCLog::detail);

@@ -53,7 +53,7 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
+    auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(true), find_mass_axes(*t_pars));
     // auto m = dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars));
 
     double D_mass = 1.86961;
@@ -67,12 +67,9 @@ int main()
 
     // generate integration data
     std::mt19937 g(0);
-    std::generate_n(std::back_inserter(m.integralData()), 1000000,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max()));
-    LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
-
-    // partition integration data
-    // m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
+    m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
+    // m.setNIntegrationPoints(4e4, 4e4);
+    m.setNIntegrationPoints(10e6, 1e6);
 
     // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
     // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
