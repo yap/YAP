@@ -24,8 +24,12 @@
 #include "Integrator.h"
 
 #include "fwd/DataPartition.h"
+#include "fwd/DataPoint.h"
 #include "fwd/DecayTreeVectorIntegral.h"
+#include "fwd/FourVector.h"
 #include "fwd/ModelIntegral.h"
+
+#include <functional>
 
 namespace yap {
 
@@ -39,18 +43,34 @@ class ImportanceSampler : public Integrator
 public:
 
     /// Update calculation of ModelIntegral
+    /// \param I ModelIntegral to calculate
+    /// \param DPV vector of DataPartitions to calculate with
     static void calculate(ModelIntegral& I, DataPartitionVector& DPV);
 
     /// Update calculation of ModelIntegral
+    /// \param I ModelIntegral to calculate
+    /// \param D DataPartition to calculate with
     static void calculate(ModelIntegral& I, DataPartition& D);
 
-private:
+    /// \typedef Generator
+    /// function for generating new points for integration
+    using Generator = std::function<std::vector<FourVector<double> >()>;
+
+    /// Update calculation of ModelIntegral
+    /// \param I ModelIntegral to calculate
+    /// \param g Generator to generate new data points (as vectors of FourVector)
+    /// \param N number of points to generate
+    /// \param n batch size of points to generate
+    static void calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n);
+
+    /// calculate amplitudes
+    static void calculate(std::vector<std::complex<double> >& A, const DecayTreeVectorIntegral& I, const DataPoint& d);
+    
+    /// update DecayTreeVectorIntegral using amplitudes
+    static void update(const std::vector<std::complex<double> >& A, DecayTreeVectorIntegral& I, unsigned n);
 
     /// \return integral_sub_map for all changed trees
     static std::vector<DecayTreeVectorIntegral*> select_changed(ModelIntegral& I);
-
-    /// perform partial calculation of one integral component for one data partition
-    static unsigned partially_calculate_subIntegral(DecayTreeVectorIntegral& I, DataPartition& D);
 
     /// perform partial calculation for one data partition
     static unsigned partially_calculate(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D);
