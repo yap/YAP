@@ -9,7 +9,6 @@
 #include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
-#include "PhaseSpaceFactor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -31,11 +30,6 @@ DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
 
     if (!FreeAmplitude_->decayChannel())
         throw exceptions::Exception("FreeAmplitude's DecayChannel is nullptr", "DecayTree::DecayTree");
-    // search for phase-space factor
-    auto phsp = FreeAmplitude_->decayChannel()->phaseSpaceFactors().find(FreeAmplitude_->spinAmplitude());
-    // if a phsp factor is found, and it isn't nullptr, add it
-    if (phsp != FreeAmplitude_->decayChannel()->phaseSpaceFactors().end() and phsp->second)
-        addAmplitudeComponent(*phsp->second);
 }
 
 //-------------------------

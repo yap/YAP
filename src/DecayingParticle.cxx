@@ -8,7 +8,6 @@
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "PhaseSpaceFactor.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -19,10 +18,9 @@
 namespace yap {
 
 //-------------------------
-DecayingParticle::DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory) :
+ DecayingParticle::DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize) :
     Particle(name, q),
-    RadialSize_(std::make_shared<RealParameter>(radialSize)),
-    PhaseSpaceFactorFactory_(phsp_factory)
+    RadialSize_(std::make_shared<RealParameter>(radialSize))
 {
 }
 
@@ -51,14 +49,6 @@ bool DecayingParticle::consistent() const
     std::for_each(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
 
     return C;
-}
-
-//-------------------------
-std::shared_ptr<PhaseSpaceFactor> DecayingParticle::phaseSpaceFactor(const DecayChannel& dc, const SpinAmplitude& sa)
-{
-    if (!PhaseSpaceFactorFactory_)
-        throw exceptions::Exception("PhaseSpaceFactorFactory is nullptr", "DecayingParticle::phaseSpaceFactorFactory");
-    return PhaseSpaceFactorFactory_->phaseSpaceFactor(dc, sa, nullptr);
 }
 
 //-------------------------
@@ -93,15 +83,11 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     if (Channels_.back()->spinAmplitudes().empty())
         Channels_.back()->addAllPossibleSpinAmplitudes(quantumNumbers().twoJ());
 
-    // create necessary BlattWeisskopf objects and phase-space factors
+    // create necessary BlattWeisskopf objects
     for (const auto& sa : Channels_.back()->spinAmplitudes()) {
         // if BW is not already stored for L, add it
         if (BlattWeisskopfs_.find(sa->L()) == BlattWeisskopfs_.end())
             BlattWeisskopfs_.emplace(sa->L(), std::make_shared<BlattWeisskopf>(sa->L(), this));
-        // if phase-space-factor calculator not already stored for L, add it
-        if (model()->includePhaseSpaceFactors() and
-            Channels_.back()->phaseSpaceFactors().find(sa) == Channels_.back()->phaseSpaceFactors().end())
-            Channels_.back()->PhaseSpaceFactors_[sa] = phaseSpaceFactor(*Channels_.back(), *sa);
     }
 
     // add particle combinations

@@ -53,7 +53,7 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(true), find_mass_axes(*t_pars));
+    auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
     // auto m = dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars));
 
     double D_mass = 1.86961;

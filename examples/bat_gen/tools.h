@@ -7,8 +7,8 @@
 #include <memory>
 
 template <typename T>
-std::unique_ptr<yap::Model> yap_model(bool include_phsp_factors = false)
-{ return std::make_unique<yap::Model>(std::make_unique<T>(), include_phsp_factors); }
+std::unique_ptr<yap::Model> yap_model()
+{ return std::make_unique<yap::Model>(std::make_unique<T>()); }
 
 const double quad(std::vector<double> S)
 { return sqrt(std::accumulate(S.begin(), S.end(), 0., [](double a, double s) {return a + s * s;})); }
