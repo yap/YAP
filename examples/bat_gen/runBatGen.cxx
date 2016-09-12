@@ -54,7 +54,7 @@ int main()
         m->SetMinimumEfficiency(0.15);
         m->SetMaximumEfficiency(0.35);
 
-        m->SetNIterationsRun(static_cast<int>(10e6 / m->GetNChains()));
+        m->SetNIterationsRun(static_cast<int>(1e6 / m->GetNChains()));
 
         m->WriteMarkovChain("output/" + m->GetSafeName() + "_mcmc.root", "RECREATE");
 

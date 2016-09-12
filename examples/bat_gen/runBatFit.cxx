@@ -69,7 +69,7 @@ int main()
     std::mt19937 g(0);
     m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
     // m.setNIntegrationPoints(4e4, 4e4);
-    m.setNIntegrationPoints(10e6, 1e6);
+    m.setNIntegrationPoints(1e6, 1e5);
 
     // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
     // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
@@ -97,7 +97,7 @@ int main()
     // m.SetMinimumEfficiency(0.85);
     // m.SetMaximumEfficiency(0.99);
 
-    m.SetNIterationsRun(static_cast<int>(2e4 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
 
     m.WriteMarkovChain("output/" + m.GetSafeName() + "_mcmc.root", "RECREATE");
 
@@ -115,7 +115,7 @@ int main()
     m.PrintSummary();
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
     // m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
-    // m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, false);//true);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
     // timing:
     auto diff = end - start;

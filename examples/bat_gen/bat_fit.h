@@ -50,6 +50,9 @@ public:
     /// log likelihood
     double LogLikelihood(const std::vector<double>& p) override;
 
+    /// log prior
+    double LogAPrioriProbability(const std::vector<double>& p) override;
+
     /// calculate  observables
     void CalculateObservables(const std::vector<double>& p) override;
 
@@ -121,11 +124,20 @@ protected:
     /// offset of where first user-set parameter is
     int FirstParameter_;
 
+    /// offset of where first user-set observable is
+    int FirstObservable_;
+
     /// list of decay trees integrated over
     yap::DecayTreeVector DecayTrees_;
 
     /// Free amplitudes of model to set
     yap::FreeAmplitudeVector FreeAmplitudes_;
+
+    /// BCPrior on abs(FreeAmplitude)
+    std::vector<BCPrior*> AbsPriors_;
+
+    /// BCPrior on arg(FreeAmplitude)
+    std::vector<BCPrior*> ArgPriors_;
 
     /// Calculated fit fractions (for observables)
     std::vector<yap::RealIntegralElementVector> CalculatedFitFractions_;

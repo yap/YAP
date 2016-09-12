@@ -22,6 +22,8 @@ fit_fitFraction::fit_fitFraction(std::string name, std::unique_ptr<yap::Model> M
     AddParameter("N_1", 1.e-3, 1.e3);
     AddParameter("N_2", 1.e-3, 2);
 
+    FirstParameter_ = GetParameters().Size();
+
     SetPriorConstantAll();
 
     FitFractions_.assign(DecayTrees_.size(), { -1, 0});

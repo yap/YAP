@@ -112,10 +112,10 @@ inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned
     for (const auto& p : particles(*m.model(), is_resonance)) {
         auto fa = free_amplitude(*m.model(), to(p));
         if (is_rho(*p))
-            m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
-        else
-            m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()),
-                       deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);
+            m.fix(fa, real(fa->value()), imag(fa->value()));
+        /* else */
+        /*     m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()), */
+        /*                deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.); */
     }
 
     /* auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0"))); */
