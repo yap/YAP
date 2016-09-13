@@ -119,6 +119,8 @@ int main()
 
     m.PrintSummary();
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
+
+    m.SetNIterationsRun(static_cast<int>(10e3 / m.GetNChains()));
     // m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
     m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
