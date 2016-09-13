@@ -1,12 +1,15 @@
 #include "ImportanceSampler.h"
 
+#include "CalculationStatus.h"
 #include "DataPartition.h"
+#include "DataSet.h"
 #include "DecayTree.h"
 #include "DecayTreeVectorIntegral.h"
 #include "Exceptions.h"
 #include "IntegralElement.h"
 #include "Model.h"
 #include "ModelIntegral.h"
+#include "VariableStatus.h"
 
 #include "logging.h"
 
@@ -16,43 +19,37 @@
 namespace yap {
 
 //-------------------------
-unsigned ImportanceSampler::partially_calculate_subIntegral(DecayTreeVectorIntegral& I, DataPartition& D)
+void ImportanceSampler::calculate(std::vector<std::complex<double> >& A, const DecayTreeVectorIntegral& I, const DataPoint& d)
 {
-    // create holder for amplitudes
-    std::vector<std::complex<double> > A(I.decayTrees().size());
+    if (I.decayTrees().size() != A.size())
+        throw exceptions::Exception("size mismatch", "calculate");
+    // calculate the amplitudes of all decay trees
+    std::transform(I.decayTrees().begin(), I.decayTrees().end(), A.begin(),
+                   [&d](const std::shared_ptr<DecayTree>& dt) {return dt->dataDependentAmplitude(d);});
+}
 
-    // counter for number of data points
-    unsigned n = 0;
+//-------------------------
+void ImportanceSampler::update(const std::vector<std::complex<double> >& A, DecayTreeVectorIntegral& I, unsigned n)
+{
+    // increase number of points
+    ++n;
 
-    // loop over data points
-    for (const auto& d : D) {
+    for (size_t i = 0; i < A.size(); ++i) {
 
-        // calculate the amplitudes of all decay trees
-        std::transform(I.decayTrees().begin(), I.decayTrees().end(), A.begin(),
-        [&d](const std::shared_ptr<DecayTree>& dt) {return dt->dataDependentAmplitude(d);});
-
-        // increase number of points
-        ++n;
-
-        for (size_t i = 0; i < A.size(); ++i) {
-
+        // calculate difference from mean
+        double delta_diag = norm(A[i]) - I.diagonals()[i].value();
+        // update mean
+        diagonals(I)[i].value() += delta_diag / n;
+        
+        for (size_t j = i + 1; j < A.size(); ++j) {
             // calculate difference from mean
-            double delta_diag = norm(A[i]) - I.diagonals()[i].value();
+            auto delta_offdiag = conj(A[i]) * A[j] - I.offDiagonals()[i][j - i - 1].value();
             // update mean
-            diagonals(I)[i].value() += delta_diag / n;
-
-            for (size_t j = i + 1; j < A.size(); ++j) {
-                // calculate difference from mean
-                auto delta_offdiag = conj(A[i]) * A[j] - I.offDiagonals()[i][j - i - 1].value();
-                // update mean
-                offDiagonals(I)[i][j - i - 1].value() += delta_offdiag / static_cast<double>(n);
-            }
+            offDiagonals(I)[i][j - i - 1].value() += delta_offdiag / static_cast<double>(n);
         }
     }
-
-    // return number of data points evaluated
-    return n;
 }
+
 
 //-------------------------
 unsigned ImportanceSampler::partially_calculate(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D)
@@ -67,9 +64,15 @@ unsigned ImportanceSampler::partially_calculate(std::vector<DecayTreeVectorInteg
     J[0]->model()->calculate(D);
 
     unsigned n = 0;
-    for (auto& j : J)
-        n = ImportanceSampler::partially_calculate_subIntegral(*j, D);
-
+    for (auto& j : J) {
+        n = 0;
+        std::vector<std::complex<double> > A(j->decayTrees().size());
+        // loop over data points
+        for (const auto& d : D) {
+            calculate(A, *j, d);
+            update(A, *j, n++);
+        }
+    }
     return n;
 }
 
@@ -84,6 +87,50 @@ std::vector<DecayTreeVectorIntegral*> ImportanceSampler::select_changed(ModelInt
             C.push_back(&b_I.second);
 
     return C;
+}
+
+//-------------------------
+void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n)
+{
+    // get DecayTreeVectorIntegral's for DecayTree's that need to be calculated
+    auto J = select_changed(I);
+
+    // if nothing requires recalculation, return
+    if (J.empty())
+        return;
+
+    // reset those to be recalculated
+    for (auto& j : J)
+        reset(*j);
+
+    if (!J[0]->model())
+        throw exceptions::Exception("Model is nullptr", "ImportanceSampler::partialCalculate");
+                
+    // create vectors for amplitude calculation
+    std::vector<std::vector<std::complex<double> > > A;
+    std::transform(J.begin(), J.end(), std::back_inserter(A),
+                   [](const DecayTreeVectorIntegral* j)
+                   {return std::vector<std::complex<double> >(j->decayTrees().size());});
+
+    // create DataSet and DataPoint
+    auto data = const_cast<Model*>(J[0]->model())->createDataSet();
+
+    // calculate
+    for (unsigned k = 0; k < N;) {
+        data.clear();
+        data.reserve(std::min(n, N - k));
+        data.setAll(VariableStatus::changed);
+        data.setAll(CalculationStatus::uncalculated);
+        std::generate_n(std::back_inserter(data), std::min(n, N - k), g);
+        J[0]->model()->calculate(data);
+        for (const auto& d : data) {
+            for (size_t i = 0; i < J.size(); ++i) {
+                calculate(A[i], *J[i], d);
+                update(A[i], *J[i], k);
+            }
+            ++k;
+        }
+    }
 }
 
 //-------------------------

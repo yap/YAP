@@ -17,22 +17,24 @@
 #include <VariableStatus.h>
 
 #include <BAT/BCPrior.h>
+#include <BAT/BCConstantPrior.h>
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, yap::DataPartitionVector& D)
-{ yap::ImportanceSampler::calculate(M, D); }
+void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n)
+{ yap::ImportanceSampler::calculate(M, G, N, n); }
 
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
       FitPartitions_(1, &FitData_),
-      IntegralData_(model()->createDataSet()),
-      IntegralPartitions_(1, &IntegralData_),
+      NIntegrationPoints_(0),
+      NIntegrationPointsBatchSize_(0),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model()),
-      FirstParameter_(-1)
+      FirstParameter_(-1),
+      FirstObservable_(-1)
 {
     // create mass axes
     axes() = model()->massAxes(pcs);
@@ -42,29 +44,42 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
         // ignore fixed free amplitudes
         if (fa->variableStatus() == yap::VariableStatus::fixed)
             continue;
-        // add amplitude parameter
-        AddParameter("amp(" + to_string(*fa) + ")", 1.e-3, 2 * norm(fa->value()));
-        /// add phase parameter
-        AddParameter("phase(" + to_string(*fa) + ")", -180, 180);
-        /// add free amplitude to list
+
+        // add real parameter
+        AddParameter("real(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                     -2 * abs(fa->value()), 2 * abs(fa->value()));
+        AbsPriors_.push_back(new BCConstantPrior(0, sqrt(2) * 2 * abs(fa->value())));
+        // add imag parameter
+        AddParameter("imag(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                     -2 * abs(fa->value()), 2 * abs(fa->value()));
+        ArgPriors_.push_back(new BCConstantPrior(-yap::pi(), +yap::pi()));
+
+        // add amplitude observable
+        AddObservable("amp(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                     0, sqrt(2) * 2 * abs(fa->value()));
+        // add phase observable
+        AddObservable("phase(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+                      -180, 180);
+
+        // add free amplitude to list
         FreeAmplitudes_.push_back(fa);
         LOG(INFO) << "add amplitude " << fa;
     }
+    
+    // // add observables for all fit fractions
+    // int N = std::accumulate(Integral_.integrals().begin(), Integral_.integrals().end(), 0,
+    //                         [](int n, const yap::IntegralMap::value_type& v)
+    //                         {return n + v.second.decayTrees().size();});
+    // if (N > 1) {
+    for (const auto& b2_dtvi : Integral_.integrals())
+        for (const auto& dt : b2_dtvi.second.decayTrees()) {
+            DecayTrees_.push_back(dt);
+            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
+        }
+    // }
 
-    SetPriorConstantAll();
-
-    // add observables for all fit fractions
-    int N = std::accumulate(Integral_.integrals().begin(), Integral_.integrals().end(), 0,
-                            [](int n, const yap::IntegralMap::value_type& v)
-                            {return n + v.second.decayTrees().size();});
-    if (N > 1) {
-        for (const auto& b2_dtvi : Integral_.integrals())
-            for (const auto& dt : b2_dtvi.second.decayTrees()) {
-                DecayTrees_.push_back(dt);
-                AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()) + ")", 0, 1.1);
-            }
-        CalculatedFitFractions_.assign(1, yap::RealIntegralElementVector(DecayTrees_.size()));
-    }
+    FirstParameter_ = GetParameters().Size();
+    FirstObservable_ = GetObservables().Size();
 }
 
 //-------------------------
@@ -169,22 +184,22 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
 void bat_fit::setParameters(const std::vector<double>& p)
 {
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i)
-        *FreeAmplitudes_[i] = std::polar(p[i * 2], yap::rad(p[i * 2 + 1]));
+        *FreeAmplitudes_[i] = std::complex<double>(p[i * 2], p[i * 2 + 1]);
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    Integrator_(Integral_, IntegralPartitions_);
+    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_);
 
     // calculate fit fractions
-    if (!CalculatedFitFractions_.empty()) {
-        unsigned c = GetCurrentChain();
-        size_t i = 0;
-        for (const auto& b2_dtvi : Integral_.integrals()) {
-            auto ff = fit_fractions(b2_dtvi.second);
-            for (const auto& f : ff)
-                CalculatedFitFractions_[c][i++] = f;
-        }
+    // if (!CalculatedFitFractions_.empty()) {
+    unsigned c = GetCurrentChain();
+    size_t i = 0;
+    for (const auto& b2_dtvi : Integral_.integrals()) {
+        auto ff = fit_fractions(b2_dtvi.second);
+        for (const auto& f : ff)
+            CalculatedFitFractions_[c][i++] = f;
     }
+    // }
 }
 
 // ---------------------------------------------------------
@@ -198,13 +213,31 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
 }
 
 //-------------------------
+double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
+{
+    double logP = 0;
+    for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
+        auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
+        logP += AbsPriors_[i]->GetLogPrior(abs(A))
+            + ArgPriors_[i]->GetLogPrior(arg(A));
+            // - log(abs(A));      // jacobian
+    }
+    for (size_t i = FreeAmplitudes_.size() * 2; i < GetParameters().Size(); ++i)
+        logP += GetParameter(i).GetLogPrior(p[i]);
+    return logP;
+}
+
+//-------------------------
 void bat_fit::CalculateObservables(const std::vector<double>& p)
 {
-    /*if (!CalculatedFitFractions_.empty()) {
-        unsigned c = GetCurrentChain();
-        for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
-            GetObservables()[i] = CalculatedFitFractions_[c][i].value();
-    }*/
+    for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
+        auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
+        GetObservables()[i * 2 + 0] = abs(A);
+        GetObservables()[i * 2 + 1] = yap::deg(arg(A));
+    }
+    unsigned c = GetCurrentChain();
+    for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
+        GetObservables()[FreeAmplitudes_.size() * 2 + i] = CalculatedFitFractions_[c][i].value();
 }
 
 //-------------------------
@@ -213,8 +246,6 @@ void bat_fit::addParameter(std::string name, std::shared_ptr<yap::ComplexParamet
     if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
         throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
     Parameters_.push_back(P);
-    if (FirstParameter_ < 0)
-        FirstParameter_ = GetParameters().Size();
     AddParameter(name + "_re", real(low), real(high), latex.empty() ? latex : "Re(" + latex + ")", units);
     AddParameter(name + "_im", imag(low), imag(high), latex.empty() ? latex : "Im(" + latex + ")", units);
 }
@@ -225,8 +256,6 @@ void bat_fit::addParameter(std::string name, std::shared_ptr<yap::RealParameter>
     if (std::find(Parameters_.begin(), Parameters_.end(), P) != Parameters_.end())
         throw yap::exceptions::Exception("trying to add parameter twice", "bat_fit::addParameter");
     Parameters_.push_back(P);
-    if (FirstParameter_ < 0)
-        FirstParameter_ = GetParameters().Size();
     AddParameter(name, low, high, latex, units);
 }
 
@@ -244,37 +273,44 @@ size_t bat_fit::findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const
 }
 
 //-------------------------
-void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> A, BCPrior* amp_prior, BCPrior* phase_prior)
+void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> fa, BCPrior* amp_prior, BCPrior* phase_prior)
 {
-    auto i = findFreeAmplitude(A);
-
-    // add amp
-    if (amp_prior) {
-        double low = amp_prior->GetMean() - 3 * amp_prior->GetStandardDeviation();
-        GetParameters().At(i).SetLimits(std::max(low, 0.), amp_prior->GetMean() + 3 * amp_prior->GetStandardDeviation());
-        GetParameters().At(i).SetPrior(amp_prior);
-    } else
+    if (!amp_prior)
         throw yap::exceptions::Exception("amp_prior is null", "bat_fit::setPrior");
-
-    if (phase_prior) {
-        GetParameters().At(i + 1).SetLimits(phase_prior->GetMean() - 3. * phase_prior->GetStandardDeviation(),
-                                         phase_prior->GetMean() + 3. * phase_prior->GetStandardDeviation());
-        GetParameters().At(i + 1).SetPrior(phase_prior);
-    } else {
+    if (!phase_prior)
         throw yap::exceptions::Exception("phase_prior is null", "bat_fit::setPrior");
-    }
+
+    auto A = std::polar(amp_prior->GetMean(), phase_prior->GetMean());
+    double re_min = real(A);
+    double re_max = real(A);
+    double im_min = imag(A);
+    double im_max = imag(A);
+    for (double a = -3; a <= 3; a += 1)
+        for (double p = -3; p <= 1; p += 3) {
+            A = std::polar(amp_prior->GetMean() + a * amp_prior->GetStandardDeviation(),
+                           phase_prior->GetMean() + p * phase_prior->GetStandardDeviation());
+            re_min = std::min(re_min, real(A));
+            re_max = std::max(re_max, real(A));
+            im_min = std::min(im_min, imag(A));
+            im_max = std::max(im_max, imag(A));
+        }
+
+    auto i = findFreeAmplitude(fa);
+
+    AbsPriors_[i / 2] = amp_prior;
+    ArgPriors_[i / 2] = phase_prior;
+
+    GetParameters()[i].SetLimits(re_min, re_max);
+    GetParameters()[i + 1].SetLimits(im_min, im_max);
+
+    GetObservables()[i].SetLimits(std::max(0., amp_prior->GetMean() - 3 * amp_prior->GetStandardDeviation()), amp_prior->GetMean() + 3 * amp_prior->GetStandardDeviation());
+    GetObservables()[i + 1].SetLimits(phase_prior->GetMean() - 3 * phase_prior->GetStandardDeviation(), phase_prior->GetMean() + 3 * phase_prior->GetStandardDeviation());
 }
 
 //-------------------------
 void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> A,  double amp_low, double amp_high, double phase_low, double phase_high)
 {
-    auto i = findFreeAmplitude(A);
-
-    GetParameters()[i].SetLimits(amp_low, amp_high);
-    GetParameters()[i].SetPriorConstant();
-
-    GetParameters()[i + 1].SetLimits(phase_low, phase_high);
-    GetParameters()[i + 1].SetPriorConstant();
+    setPrior(A, new BCConstantPrior(amp_low, amp_high), new BCConstantPrior(phase_low, phase_high));
 }
 
 //-------------------------
@@ -291,7 +327,7 @@ void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phas
 void bat_fit::MCMCUserInitialize()
 {
     bat_yap_base::MCMCUserInitialize();
-    if (!CalculatedFitFractions_.empty())
-        CalculatedFitFractions_.assign(GetNChains(), CalculatedFitFractions_[0]);
+    // if (!CalculatedFitFractions_.empty())
+    CalculatedFitFractions_.assign(GetNChains(), yap::RealIntegralElementVector(DecayTrees_.size()));
 }
 

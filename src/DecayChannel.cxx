@@ -7,7 +7,6 @@
 #include "Model.h"
 #include "ParticleCombination.h"
 #include "ParticleCombinationCache.h"
-#include "PhaseSpaceFactor.h"
 #include "Spin.h"
 #include "SpinAmplitude.h"
 #include "SpinAmplitudeCache.h"
@@ -170,9 +169,6 @@ void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> p
     for (auto& sa : SpinAmplitudes_)
         sa->addParticleCombination(pc);
 
-    // add to phase-space-factor calculators
-    for (auto l_phsp : PhaseSpaceFactors_)
-        if (l_phsp.second) l_phsp.second->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -183,9 +179,6 @@ void DecayChannel::registerWithModel()
 
     for (auto& sa : SpinAmplitudes_)
         sa->registerWithModel();
-
-    for (auto& l_phsp : PhaseSpaceFactors_)
-        if (l_phsp.second) l_phsp.second->registerWithModel();
 }
 
 //-------------------------

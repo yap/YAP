@@ -37,7 +37,6 @@ set(YAP_SOURCES
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	ParticleFactory.cxx
-	PhaseSpaceFactor.cxx
 	PoleMass.cxx
 	QuantumNumbers.cxx
 	RecalculableDataAccessor.cxx
@@ -47,7 +46,6 @@ set(YAP_SOURCES
 	SpinAmplitudeCache.cxx
 	StaticDataAccessor.cxx
 	StatusManager.cxx
-  TwoBodyPhaseSpaceFactor.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
 )

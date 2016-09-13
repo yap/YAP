@@ -26,7 +26,6 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/MassShape.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/PhaseSpaceFactor.h"
 #include "fwd/QuantumNumbers.h"
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
@@ -50,7 +49,7 @@ protected:
 
     /// Constructor
     /// see #create
-    Resonance(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory);
+    Resonance(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape);
 
 public:
 
@@ -59,8 +58,8 @@ public:
     /// \param q QuantumNumbers of resonance
     /// \param radialSize radial size of resonance
     /// \param massShape shared_ptr to MassShape of resonance
-    static std::shared_ptr<Resonance> create(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory = DefaultPHSPFactory)
-    { return std::shared_ptr<Resonance>(new Resonance(name, q, radialSize, massShape, phsp_factory)); }
+    static std::shared_ptr<Resonance> create(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape)
+    { return std::shared_ptr<Resonance>(new Resonance(name, q, radialSize, massShape)); }
 
     /// Check if a DecayChannel is valid for Resonance; will throw if invalid.
     /// checks with MassShape_
@@ -89,9 +88,6 @@ public:
 
     /// @}
 
-    /// grant friend status to MassShape to call DecayingParticle::phaseSpaceFactor
-    friend MassShape;
-
 protected:
 
     /// overrides DecayingParticle's function to register MassShape_ with Model
@@ -104,14 +100,6 @@ protected:
     /// modify a DecayTree
     /// \param dt DecayTree to modify
     virtual void modifyDecayTree(DecayTree& dt) override;
-
-    /// (create and) return a RecalculableAmplitudeComponent that
-    /// calculates a phase-space factor applicaple for the final state
-    /// of DecayChannel and the orbital angular momentum of
-    /// SpinAmplitude
-    /// \param dc DecayChannel
-    /// \param sa SpinAmplitude
-    virtual std::shared_ptr<PhaseSpaceFactor> phaseSpaceFactor(const DecayChannel& dc, const SpinAmplitude& sa) override final;
 
 private:
 

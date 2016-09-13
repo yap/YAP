@@ -44,18 +44,18 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 }
 
 //-------------------------
-std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory) const
+std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize) const
 {
     const auto& p = (*this)[PDG];
-    return DecayingParticle::create(p.Name, p, radialSize, phsp_factory);
+    return DecayingParticle::create(p.Name, p, radialSize);
 }
 
 //-------------------------
-    std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory) const
+    std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const
 {
     const auto& p = (*this)[PDG];
     massShape->setParameters(p);
-    return Resonance::create(p.Name, p, radialSize, std::move(massShape), phsp_factory);
+    return Resonance::create(p.Name, p, radialSize, std::move(massShape));
 }
 
 //-------------------------

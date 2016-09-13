@@ -10,6 +10,7 @@
 #include "models/d3pi.h"
 #include "models/d4pi.h"
 #include "models/dkkpi.h"
+#include "tools.h"
 
 #include <HelicityFormalism.h>
 #include <MassRange.h>
@@ -30,10 +31,6 @@
 #include <algorithm>
 #include <chrono>
 #include <random>
-
-template <typename T>
-std::unique_ptr<yap::Model> fit_model(bool include_phsp_factors = true)
-{ return std::make_unique<yap::Model>(std::make_unique<T>(), include_phsp_factors); }
 
 int main()
 {
@@ -59,15 +56,15 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    // auto m = d3pi_fit(model_name + "_fit", fit_model<yap::ZemachFormalism>(false), find_mass_axes(*t_pars));
-    // auto m = dkkpi_fit(model_name + "_fit", fit_model<yap::HelicityFormalism>(false), find_mass_axes(*t_pars));
+    // auto m = dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars));
+    // auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
     auto m = d4pi_fit(model_name + "_fit", find_mass_axes(*t_pars));
 
     //double D_mass = 1.86961;
     double D_mass = 1.8648400;
 
     // load fit data and partition it
-    load_data(m.fitData(), *m.model(), m.axes(), D_mass, *t_mcmc, 20000, 45);
+    load_data(m.fitData(), *m.model(), m.axes(), D_mass, *t_mcmc, 10000, 45);
     // m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);
 
     // get FSP mass ranges
@@ -75,12 +72,9 @@ int main()
 
     // generate integration data
     std::mt19937 g(0);
-    std::generate_n(std::back_inserter(m.integralData()), 40000,
-                    std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max()));
-    LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
-
-    // partition integration data
-    // m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 2);
+    m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
+    // m.setNIntegrationPoints(4e4, 4e4);
+    m.setNIntegrationPoints(1e6, 1e5);
 
     // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
     // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
@@ -108,7 +102,7 @@ int main()
     // m.SetMinimumEfficiency(0.85);
     // m.SetMaximumEfficiency(0.99);
 
-    m.SetNIterationsRun(static_cast<int>(2e4 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(1e5 / m.GetNChains()));
 
     m.WriteMarkovChain("output/" + m.GetSafeName() + "_mcmc.root", "RECREATE");
 
@@ -126,7 +120,7 @@ int main()
     m.PrintSummary();
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
     // m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
-    // m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, false);//true);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
     // timing:
     auto diff = end - start;

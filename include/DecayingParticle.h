@@ -29,7 +29,6 @@
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/PhaseSpaceFactor.h"
 #include "fwd/QuantumNumbers.h"
 #include "fwd/SpinAmplitude.h"
 
@@ -54,7 +53,7 @@ protected:
 
     /// Constructor
     /// see #create
-    DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory);
+    DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize);
 
 public:
 
@@ -62,8 +61,8 @@ public:
     /// \param name Name of decaying particle
     /// \param q QuantumNumbers of decaying particle
     /// \param radialSize radial size of decaying particle
-    static std::shared_ptr<DecayingParticle> create(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<PhaseSpaceFactorFactory> phsp_factory = DefaultPHSPFactory)
-    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize, phsp_factory)); }
+    static std::shared_ptr<DecayingParticle> create(std::string name, const QuantumNumbers& q, double radialSize)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize)); }
 
     /// \return DecayTrees
     /// map key is spin projection
@@ -146,13 +145,6 @@ protected:
     /// \param dt DecayTree to modify
     virtual void modifyDecayTree(DecayTree& dt);
 
-    /// \return PhaseSpaceFactor via PhaseSpaceFactorFactory
-    virtual std::shared_ptr<PhaseSpaceFactor> phaseSpaceFactor(const DecayChannel& dc, const SpinAmplitude& sa);
-
-    /// \return PhaseSpaceFactorFactory_
-    std::shared_ptr<PhaseSpaceFactorFactory> phaseSpaceFactorFactory()
-    { return PhaseSpaceFactorFactory_; }
-
 private:
 
     /// vector of decay channel objects
@@ -166,9 +158,6 @@ private:
 
     /// Map of spin projection to DecayTreeVector
     DecayTreeVectorMap DecayTrees_;
-
-    /// PhaseSpaceFactorFactory
-    std::shared_ptr<PhaseSpaceFactorFactory> PhaseSpaceFactorFactory_;
 
 };
     

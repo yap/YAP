@@ -26,7 +26,6 @@
 #include "fwd/Model.h"
 #include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/PhaseSpaceFactor.h"
 #include "fwd/SpinAmplitude.h"
 
 #include <memory>
@@ -65,10 +64,6 @@ public:
     const SpinAmplitudeVector& spinAmplitudes() const
     { return SpinAmplitudes_; }
 
-    /// \return PhaseSpaceFactors_
-    const PhaseSpaceFactorMap& phaseSpaceFactors() const
-    { return PhaseSpaceFactors_; }
-
     /// \return vector of ParticleCombinations
     const ParticleCombinationSet& particleCombinations() const
     { return ParticleCombinations_; }
@@ -87,7 +82,7 @@ public:
 
     /// grant friend status to DecayingParticle to call
     /// addParticleCombination, pruneParticleCombinations,
-    /// registerWithModel, and to access PhaseSpaceFactors_
+    /// and registerWithModel
     friend class DecayingParticle;
 
 protected:
@@ -108,9 +103,6 @@ private:
 
     /// Vector of SpinAmplitudes
     SpinAmplitudeVector SpinAmplitudes_;
-
-    /// map of SpinAmplitude to PhaseSpaceFactor
-    PhaseSpaceFactorMap PhaseSpaceFactors_;
 
     /// vector of shared_ptr<ParticleCombination>
     ParticleCombinationSet ParticleCombinations_;

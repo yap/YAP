@@ -4,6 +4,7 @@
 #include "bat_yap_base.h"
 
 #include <fwd/DataPartition.h>
+#include <fwd/FourVector.h>
 #include <fwd/FreeAmplitude.h>
 #include <fwd/IntegralElement.h>
 #include <fwd/Model.h>
@@ -13,7 +14,9 @@
 #include <ModelIntegral.h>
 
 #include <memory>
+#include <functional>
 #include <string>
+#include <random>
 #include <vector>
 
 class TTree;
@@ -47,6 +50,9 @@ public:
     /// log likelihood
     double LogLikelihood(const std::vector<double>& p) override;
 
+    /// log prior
+    double LogAPrioriProbability(const std::vector<double>& p) override;
+
     /// calculate  observables
     void CalculateObservables(const std::vector<double>& p) override;
 
@@ -58,17 +64,23 @@ public:
     yap::DataPartitionVector& fitPartitions()
     { return FitPartitions_; }
 
-    /// \return NormalizationData_
-    yap::DataSet& integralData()
-    { return IntegralData_; }
+    /// set parameters of integration
+    /// \param N number of points to use for integration
+    /// \param n batch size for integration
+    void setNIntegrationPoints(unsigned N, unsigned n)
+    { NIntegrationPoints_ = N; NIntegrationPointsBatchSize_ = n; }
 
-    /// \return NormalizationData_
-    yap::DataPartitionVector& integralPartitions()
-    { return IntegralPartitions_; }
+    /// \typedef Generator
+    /// function for generating new points for integration
+    using Generator = std::function<std::vector<yap::FourVector<double> >()>;
+
+    /// \return IntegrationPointGenerator_
+    Generator& integrationPointGenerator()
+    { return IntegrationPointGenerator_; }
 
     /// \typedef integrator_type
     /// convienence typedef
-    using integrator_type = std::function<void(yap::ModelIntegral&, yap::DataPartitionVector&)>;
+    using integrator_type = std::function<void(yap::ModelIntegral&, Generator, unsigned, unsigned)>;
 
     /// \return the integrator
     integrator_type& integrator()
@@ -95,11 +107,14 @@ protected:
     /// Partitioning of FitData_
     yap::DataPartitionVector FitPartitions_;
 
-    /// DataSet to calculate model integral with
-    yap::DataSet IntegralData_;
+    /// Number of points to integrate with
+    unsigned NIntegrationPoints_;
 
-    /// Partitioning of IntegralData_
-    yap::DataPartitionVector IntegralPartitions_;
+    /// Batch size for generating integration points
+    unsigned NIntegrationPointsBatchSize_;
+
+    /// generator for integration
+    Generator IntegrationPointGenerator_;
 
     /// function to integrate using
     integrator_type Integrator_;
@@ -113,11 +128,20 @@ protected:
     /// offset of where first user-set parameter is
     int FirstParameter_;
 
+    /// offset of where first user-set observable is
+    int FirstObservable_;
+
     /// list of decay trees integrated over
     yap::DecayTreeVector DecayTrees_;
 
     /// Free amplitudes of model to set
     yap::FreeAmplitudeVector FreeAmplitudes_;
+
+    /// BCPrior on abs(FreeAmplitude)
+    std::vector<BCPrior*> AbsPriors_;
+
+    /// BCPrior on arg(FreeAmplitude)
+    std::vector<BCPrior*> ArgPriors_;
 
     /// Calculated fit fractions (for observables)
     std::vector<yap::RealIntegralElementVector> CalculatedFitFractions_;
@@ -131,6 +155,7 @@ protected:
 /// \param t_mcmc TTree to load from
 /// \param N max number of data points to (attempt to) load
 /// \param lag Lag to apply to iterations when reading from TTree
+/// \param eps Amount to smear momenta by
 size_t load_data(yap::DataSet& data, const yap::Model& M,
                  const yap::MassAxes& A, double initial_mass, TTree& t_mcmc,
                  int N = -1, unsigned lag = 1);
