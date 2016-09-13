@@ -308,10 +308,13 @@ void bat_fit::setAbsArgRanges(std::shared_ptr<yap::FreeAmplitude> fa, double abs
 void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase)
 {
     auto i = findFreeAmplitude(A);
-    GetParameters()[i].SetLimits(0, 2 * amp);
-    GetParameters()[i].Fix(amp);
-    GetParameters()[i + 1].SetLimits(phase - 0.1, phase + 0.1);
-    GetParameters()[i + 1].Fix(phase);
+    auto a = std::polar(amp, yap::rad(phase));
+    GetParameter(i).SetLimits(real(a) - 1, real(a) + 1);
+    GetParameter(i).Fix(real(a));
+    GetParameter(i + 1).SetLimits(imag(a) - 1, imag(a) + 1);
+    GetParameter(i + 1).Fix(imag(a));
+    GetObservable(i).SetLimits(std::max<double>(0, amp - 1), amp + 1);
+    GetObservable(i + 1).SetLimits(phase - 15, phase + 15);
 }
 
 //-------------------------
