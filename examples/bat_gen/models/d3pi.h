@@ -8,6 +8,7 @@
 #define __BAT__D3PI__H
 
 #include "../bat_fit.h"
+#include "../ConstantPrior.h"
 #include "../fit_fitFraction.h"
 #include "../tools.h"
 
@@ -113,9 +114,11 @@ inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned
         auto fa = free_amplitude(*m.model(), to(p));
         if (is_rho(*p))
             m.fix(fa, real(fa->value()), imag(fa->value()));
-        /* else */
-        /*     m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()), */
-        /*                deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.); */
+        else {
+            m.setPriors(fa, new ConstantPrior(0, 5), new ConstantPrior(-180, 180));
+            m.setRealImagRanges(fa, -5, 5, -5, 5);
+            m.setAbsArgRanges(fa, 0, 5, -180, 180);
+        }
     }
 
     /* auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0"))); */

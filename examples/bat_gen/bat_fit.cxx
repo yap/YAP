@@ -58,7 +58,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
         AddParameter("imag(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));
 
         AbsPriors_.push_back(new ConstantPrior(0, 2 * abs(fa->value())));
-        ArgPriors_.push_back(new ConstantPrior(-yap::pi(), +yap::pi()));
+        ArgPriors_.push_back(new ConstantPrior(-180, 180));
 
         // add amplitude observable
         AddObservable("amp(" + fa_name + ")", 0, 2 * abs(fa->value()));
@@ -222,7 +222,7 @@ double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
         auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
         logP += AbsPriors_[i]->GetLogPrior(abs(A))
-            + ArgPriors_[i]->GetLogPrior(arg(A));
+            + ArgPriors_[i]->GetLogPrior(yap::deg(arg(A)));
             // - log(abs(A));      // jacobian
     }
     for (size_t i = FreeAmplitudes_.size() * 2; i < GetParameters().Size(); ++i)
@@ -275,44 +275,33 @@ size_t bat_fit::findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const
 }
 
 //-------------------------
-void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> fa, BCPrior* amp_prior, BCPrior* phase_prior)
+void bat_fit::setPriors(std::shared_ptr<yap::FreeAmplitude> fa, BCPrior* amp_prior, BCPrior* arg_prior)
 {
     if (!amp_prior)
         throw yap::exceptions::Exception("amp_prior is null", "bat_fit::setPrior");
-    if (!phase_prior)
+    if (!arg_prior)
         throw yap::exceptions::Exception("phase_prior is null", "bat_fit::setPrior");
-
-    auto A = std::polar(amp_prior->GetMean(), phase_prior->GetMean());
-    double re_min = real(A);
-    double re_max = real(A);
-    double im_min = imag(A);
-    double im_max = imag(A);
-    for (double a = -3; a <= 3; a += 1)
-        for (double p = -3; p <= 1; p += 3) {
-            A = std::polar(amp_prior->GetMean() + a * amp_prior->GetStandardDeviation(),
-                           phase_prior->GetMean() + p * phase_prior->GetStandardDeviation());
-            re_min = std::min(re_min, real(A));
-            re_max = std::max(re_max, real(A));
-            im_min = std::min(im_min, imag(A));
-            im_max = std::max(im_max, imag(A));
-        }
-
+    
     auto i = findFreeAmplitude(fa);
 
     AbsPriors_[i / 2] = amp_prior;
-    ArgPriors_[i / 2] = phase_prior;
-
-    GetParameters()[i].SetLimits(re_min, re_max);
-    GetParameters()[i + 1].SetLimits(im_min, im_max);
-
-    GetObservables()[i].SetLimits(std::max(0., amp_prior->GetMean() - 3 * amp_prior->GetStandardDeviation()), amp_prior->GetMean() + 3 * amp_prior->GetStandardDeviation());
-    GetObservables()[i + 1].SetLimits(phase_prior->GetMean() - 3 * phase_prior->GetStandardDeviation(), phase_prior->GetMean() + 3 * phase_prior->GetStandardDeviation());
+    ArgPriors_[i / 2] = arg_prior;
 }
 
 //-------------------------
-void bat_fit::setPrior(std::shared_ptr<yap::FreeAmplitude> A,  double amp_low, double amp_high, double phase_low, double phase_high)
+void bat_fit::setRealImagRanges(std::shared_ptr<yap::FreeAmplitude> fa, double real_low, double real_high, double imag_low, double imag_high)
 {
-    setPrior(A, new BCConstantPrior(amp_low, amp_high), new BCConstantPrior(phase_low, phase_high));
+    auto i = findFreeAmplitude(fa);
+    GetParameter(i).SetLimits(real_low, real_high);
+    GetParameter(i + 1).SetLimits(imag_low, imag_high);
+}
+    
+//-------------------------
+void bat_fit::setAbsArgRanges(std::shared_ptr<yap::FreeAmplitude> fa, double abs_low, double abs_high, double arg_low, double arg_high)
+{
+    auto i = findFreeAmplitude(fa);
+    GetObservable(i).SetLimits(abs_low, abs_high);
+    GetObservable(i + 1).SetLimits(arg_low, arg_high);
 }
 
 //-------------------------

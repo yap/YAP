@@ -38,11 +38,14 @@ public:
     /// ada a real parameter from the model to bat
     void addParameter(std::string name, std::shared_ptr<yap::RealParameter> P, double low, double high, std::string latex = "", std::string units = "");
 
-    /// set the range and prior for a FreeAmplitude
-    void setPrior(std::shared_ptr<yap::FreeAmplitude> A, BCPrior* amp_prior, BCPrior* phase_prior);
-
-    /// set the range and a constant prior for a FreeAmplitude
-    void setPrior(std::shared_ptr<yap::FreeAmplitude> A, double amp_low, double amp_high, double phase_low, double phase_high);
+    /// set the priors for a FreeAmplitude's amplitude and phase
+    void setPriors(std::shared_ptr<yap::FreeAmplitude> fa, BCPrior* amp_prior, BCPrior* arg_prior);
+    
+    /// set the range for a FreeAmplitude's real and imaginary parts
+    void setRealImagRanges(std::shared_ptr<yap::FreeAmplitude> fa, double real_low, double real_high, double imag_low, double imag_high);
+    
+    /// set the range for a FreeAmplitude's abs and arg obvservables
+    void setAbsArgRanges(std::shared_ptr<yap::FreeAmplitude> fa, double abs_low, double abs_high, double arg_low, double arg_high);
 
     /// fix a FreeAmplitude
     void fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phase);
