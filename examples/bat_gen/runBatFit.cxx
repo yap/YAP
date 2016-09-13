@@ -65,7 +65,7 @@ int main()
 
     // load fit data and partition it
     load_data(m.fitData(), *m.model(), m.axes(), D_mass, *t_mcmc, 10000, 45);
-    // m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 2);
+    m.fitPartitions() = yap::DataPartitionBlock::create(m.fitData(), 4);
 
     // get FSP mass ranges
     auto m2r = yap::squared(mass_range(D_mass, m.axes(), m.model()->finalStateParticles()));
