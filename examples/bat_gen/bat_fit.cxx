@@ -1,5 +1,7 @@
 #include "bat_fit.h"
 
+#include "ConstantPrior.h"
+
 #include <DataSet.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
@@ -14,10 +16,10 @@
 #include <ModelIntegral.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
+#include <SpinAmplitude.h>
 #include <VariableStatus.h>
 
 #include <BAT/BCPrior.h>
-#include <BAT/BCConstantPrior.h>
 
 #include <TTree.h>
 
@@ -45,21 +47,23 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
         if (fa->variableStatus() == yap::VariableStatus::fixed)
             continue;
 
+        auto fa_name = to_string(*fa->decayChannel())
+            + " L = " + std::to_string(fa->spinAmplitude()->L())
+            + " S = " + yap::spin_to_string(fa->spinAmplitude()->twoS())
+            + " M = " + yap::spin_to_string(fa->twoM());
+
         // add real parameter
-        AddParameter("real(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
-                     -2 * abs(fa->value()), 2 * abs(fa->value()));
-        AbsPriors_.push_back(new BCConstantPrior(0, sqrt(2) * 2 * abs(fa->value())));
+        AddParameter("real(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));
         // add imag parameter
-        AddParameter("imag(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
-                     -2 * abs(fa->value()), 2 * abs(fa->value()));
-        ArgPriors_.push_back(new BCConstantPrior(-yap::pi(), +yap::pi()));
+        AddParameter("imag(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));
+
+        AbsPriors_.push_back(new ConstantPrior(0, 2 * abs(fa->value())));
+        ArgPriors_.push_back(new ConstantPrior(-yap::pi(), +yap::pi()));
 
         // add amplitude observable
-        AddObservable("amp(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
-                     0, sqrt(2) * 2 * abs(fa->value()));
+        AddObservable("amp(" + fa_name + ")", 0, 2 * abs(fa->value()));
         // add phase observable
-        AddObservable("phase(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
-                      -180, 180);
+        AddObservable("arg(" + fa_name + ")", -180, 180);
 
         // add free amplitude to list
         FreeAmplitudes_.push_back(fa);
@@ -222,7 +226,8 @@ double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
             // - log(abs(A));      // jacobian
     }
     for (size_t i = FreeAmplitudes_.size() * 2; i < GetParameters().Size(); ++i)
-        logP += GetParameter(i).GetLogPrior(p[i]);
+        if (GetParameter(i).GetPrior())
+            logP += GetParameter(i).GetLogPrior(p[i]);
     return logP;
 }
 
