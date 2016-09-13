@@ -10,5 +10,8 @@ add_custom_target(examples
     ${CMAKE_CURRENT_BINARY_DIR}/bat_gen/runBatFitFitFractionsD4pi
 	${CMAKE_CURRENT_BINARY_DIR}/programs/D3piTest 
 	${CMAKE_CURRENT_BINARY_DIR}/programs/D4piTest 
-	${CMAKE_CURRENT_BINARY_DIR}/programs/DKKpiTest 
+	${CMAKE_CURRENT_BINARY_DIR}/programs/DKKpiTest
+	${CMAKE_CURRENT_BINARY_DIR}/programs/HelicityZemachRelativeScaling
+	${CMAKE_CURRENT_BINARY_DIR}/programs/HelicityZemachRelativeScaling2
+	${CMAKE_CURRENT_BINARY_DIR}/programs/HelicityZemachRelativeScaling3  
 	)

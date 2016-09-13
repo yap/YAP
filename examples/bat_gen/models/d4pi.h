@@ -99,6 +99,7 @@ inline std::unique_ptr<Model> d4pi()
         /// \todo has 3 amplitudes for 3 spin projections
         // P wave
         *f = 0.;
+        f->variableStatus() = VariableStatus::fixed;
     }
     for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(2))) {
         /// \todo has 3 amplitudes for 3 spin projections
@@ -167,13 +168,13 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
 {
     bat_fit m(name, d4pi(), pcs);
 
-    // find particles
-    auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
-    auto rho   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
-    auto sigma = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(500)")));
-    auto a_1   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("a_1+")));
-    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
-    auto f_2   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
+    for (auto fa : m.freeAmplitudes()) {
+        if (fa->variableStatus() == VariableStatus::fixed)
+            m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
+        else
+            m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()),
+                    deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);
+    }
 
     return m;
 }

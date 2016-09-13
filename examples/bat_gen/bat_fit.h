@@ -83,6 +83,10 @@ public:
     /// find the position in the parameter list of the first element of a free amplitude
     size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
 
+    /// \return free amplitudes
+    const yap::FreeAmplitudeVector freeAmplitudes() const
+    { return FreeAmplitudes_; }
+
 protected:
 
     /// DataSet to fit the model to

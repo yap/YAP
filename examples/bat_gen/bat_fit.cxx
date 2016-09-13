@@ -200,11 +200,11 @@ double bat_fit::LogLikelihood(const std::vector<double>& p)
 //-------------------------
 void bat_fit::CalculateObservables(const std::vector<double>& p)
 {
-    if (!CalculatedFitFractions_.empty()) {
+    /*if (!CalculatedFitFractions_.empty()) {
         unsigned c = GetCurrentChain();
         for (size_t i = 0; i < CalculatedFitFractions_[c].size(); ++i)
             GetObservables()[i] = CalculatedFitFractions_[c][i].value();
-    }
+    }*/
 }
 
 //-------------------------
