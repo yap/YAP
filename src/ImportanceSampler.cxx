@@ -52,13 +52,13 @@ void ImportanceSampler::update(const std::vector<std::complex<double> >& A, Deca
 
 
 //-------------------------
-unsigned ImportanceSampler::partially_calculate(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D)
+unsigned ImportanceSampler::calculate_partition(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D)
 {
     if (J.empty())
-        throw exceptions::Exception("vector is empty", "ImportanceSampler::partialCalculate");
+        throw exceptions::Exception("vector is empty", "ImportanceSampler::calculate_partition");
 
     if (!J[0]->model())
-        throw exceptions::Exception("Model is nullptr", "ImportanceSampler::partialCalculate");
+        throw exceptions::Exception("Model is nullptr", "ImportanceSampler::calculate_partition");
 
     // calculate on data partition
     J[0]->model()->calculate(D);
@@ -90,7 +90,7 @@ std::vector<DecayTreeVectorIntegral*> ImportanceSampler::select_changed(ModelInt
 }
 
 //-------------------------
-void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n)
+void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n, unsigned t)
 {
     // get DecayTreeVectorIntegral's for DecayTree's that need to be calculated
     auto J = select_changed(I);
@@ -103,8 +103,51 @@ void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, uns
     for (auto& j : J)
         reset(*j);
 
+    if (t <= 1) {
+
+        calculate_subset(J, g, N, n);
+
+    } else {
+
+        // create copies for running with in each partition
+        std::vector<std::vector<DecayTreeVectorIntegral*> > m(t);
+        for (auto& m_j : m) {
+            m_j.reserve(J.size());
+            for (const auto& j : J)
+                m_j.push_back(new DecayTreeVectorIntegral(*j));
+        }
+        
+        // run over each subset storing number of events used in each calculation
+        std::vector<std::future<unsigned> > n_sub;
+        n_sub.reserve(m.size());
+        // create thread for each partial calculation
+        unsigned NN = N;
+        for (size_t i = 0; i < m.size(); ++i) {
+            int nn = NN / (m.size() - i);
+            n_sub.push_back(std::async(std::launch::async, &ImportanceSampler::calculate_subset,
+                                       std::ref(m[i]), g, nn, n / t));
+            NN -= nn;
+        }
+
+        // calculate data fractions:
+        // also waits for threads to finish calculating
+        std::vector<double> f;
+        f.reserve(n_sub.size());
+        std::transform(n_sub.begin(), n_sub.end(), std::back_inserter(f), std::mem_fn(&std::future<unsigned>::get));
+        double N = std::accumulate(f.begin(), f.end(), 0.);
+        std::transform(f.begin(), f.end(), f.begin(), std::bind(std::divides<double>(), std::placeholders::_1, N));
+        
+        for (size_t i = 0; i < m.size(); ++i)
+            for (size_t j = 0; j < J.size(); ++j)
+                *J[j] += (*m[i][j] *= f[i]);
+    }
+}
+
+//-------------------------
+unsigned ImportanceSampler::calculate_subset(std::vector<DecayTreeVectorIntegral*>& J, Generator g, unsigned N, unsigned n)
+{
     if (!J[0]->model())
-        throw exceptions::Exception("Model is nullptr", "ImportanceSampler::partialCalculate");
+        throw exceptions::Exception("Model is nullptr", "ImportanceSampler::partially_calculate");
                 
     // create vectors for amplitude calculation
     std::vector<std::vector<std::complex<double> > > A;
@@ -131,6 +174,7 @@ void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, uns
             ++k;
         }
     }
+    return N;
 }
 
 //-------------------------
@@ -148,7 +192,7 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartition& D)
         reset(*j);
 
     // calculate it
-    partially_calculate(J, D);
+    calculate_partition(J, D);
 
 }
 
@@ -185,7 +229,7 @@ void ImportanceSampler::calculate(ModelIntegral& I, DataPartitionVector& DPV)
     n.reserve(m.size());
     // create thread for each partial calculation
     for (size_t i = 0; i < m.size(); ++i)
-        n.push_back(std::async(std::launch::async, &ImportanceSampler::partially_calculate,
+        n.push_back(std::async(std::launch::async, &ImportanceSampler::calculate_partition,
                                std::ref(m[i]), std::ref(*DPV[i])));
 
     // calculate data fractions:

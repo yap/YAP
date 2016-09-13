@@ -61,7 +61,8 @@ public:
     /// \param g Generator to generate new data points (as vectors of FourVector)
     /// \param N number of points to generate
     /// \param n batch size of points to generate
-    static void calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n);
+    /// \param t number of threads to use while integrating
+    static void calculate(ModelIntegral& I, Generator g, unsigned N, unsigned n, unsigned t = 1);
 
     /// calculate amplitudes
     static void calculate(std::vector<std::complex<double> >& A, const DecayTreeVectorIntegral& I, const DataPoint& d);
@@ -72,8 +73,10 @@ public:
     /// \return integral_sub_map for all changed trees
     static std::vector<DecayTreeVectorIntegral*> select_changed(ModelIntegral& I);
 
-    /// perform partial calculation for one data partition
-    static unsigned partially_calculate(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D);
+    /// perform calculation for one data partition
+    static unsigned calculate_partition(std::vector<DecayTreeVectorIntegral*>& J, DataPartition& D);
+
+    static unsigned calculate_subset(std::vector<DecayTreeVectorIntegral*>& J, Generator g, unsigned N, unsigned n);
 
 };
 
