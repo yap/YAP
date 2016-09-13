@@ -46,24 +46,23 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
             continue;
 
         // add real parameter
-        AddParameter("real(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+        AddParameter("real(" + to_string(*fa) + ")",
                      -2 * abs(fa->value()), 2 * abs(fa->value()));
         AbsPriors_.push_back(new BCConstantPrior(0, sqrt(2) * 2 * abs(fa->value())));
         // add imag parameter
-        AddParameter("imag(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+        AddParameter("imag(" + to_string(*fa) + ")",
                      -2 * abs(fa->value()), 2 * abs(fa->value()));
         ArgPriors_.push_back(new BCConstantPrior(-yap::pi(), +yap::pi()));
 
         // add amplitude observable
-        AddObservable("amp(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+        AddObservable("amp(" + to_string(*fa) + ")",
                      0, sqrt(2) * 2 * abs(fa->value()));
         // add phase observable
-        AddObservable("phase(" + to_string(*fa->decayChannel()) + " M = " + yap::spin_to_string(fa->twoM()) + ")",
+        AddObservable("phase(" + to_string(*fa) + ")",
                       -180, 180);
 
         // add free amplitude to list
         FreeAmplitudes_.push_back(fa);
-        LOG(INFO) << "add amplitude " << fa;
     }
     
     // // add observables for all fit fractions
@@ -71,10 +70,11 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
     //                         [](int n, const yap::IntegralMap::value_type& v)
     //                         {return n + v.second.decayTrees().size();});
     // if (N > 1) {
+    unsigned i(0);
     for (const auto& b2_dtvi : Integral_.integrals())
         for (const auto& dt : b2_dtvi.second.decayTrees()) {
             DecayTrees_.push_back(dt);
-            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
+            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()) + ")" + std::to_string(i++), 0, 1.1);
         }
     // }
 

@@ -9,6 +9,7 @@
 
 #include "../bat_fit.h"
 #include "../fit_fitFraction.h"
+#include "../tools.h"
 
 #include <AmplitudeBasis.h>
 #include <BreitWigner.h>
@@ -42,13 +43,6 @@
 #include <memory>
 
 using namespace yap;
-
-const double quad(std::vector<double> S)
-{ return sqrt(std::accumulate(S.begin(), S.end(), 0., [](double a, double s) {return a + s * s;})); }
-
-template <typename ... Types>
-constexpr double quad(double s0, Types ... additional)
-{ return quad({s0, additional...}); }
 
 inline std::unique_ptr<Model> d4pi()
 {
@@ -171,9 +165,9 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
     for (auto fa : m.freeAmplitudes()) {
         if (fa->variableStatus() == VariableStatus::fixed)
             m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
-        else
+        /*else
             m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()),
-                    deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);
+                    deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);  */
     }
 
     return m;

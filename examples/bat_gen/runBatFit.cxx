@@ -58,7 +58,7 @@ int main()
     // create model
     // auto m = dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars));
     // auto m = d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars));
-    auto m = d4pi_fit(model_name + "_fit", find_mass_axes(*t_pars));
+    auto m = d4pi_fit(model_name + "_fit");
 
     //double D_mass = 1.86961;
     double D_mass = 1.8648400;

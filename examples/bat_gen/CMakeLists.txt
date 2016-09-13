@@ -20,7 +20,7 @@ add_custom_target(link-macros
 		macros
 	)
 
-set(PROGRAMS runBatGen runBatFit runBatFitFitFractions runBatFitFitFractionsD4pi)
+set(PROGRAMS runBatGen runBatFit runBatFitFitFractions)
 foreach(program ${PROGRAMS})
 	add_executable(${program} EXCLUDE_FROM_ALL ${program}.cxx ${SOURCES})
 	target_link_libraries(${program} ${ROOT_LIBS} ${BAT_LIBS} YAP)
