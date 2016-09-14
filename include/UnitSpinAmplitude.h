@@ -30,18 +30,17 @@
 namespace yap {
 
 /// \class UnitSpinAmplitude
-/// \brief Implements a spin amplitude that always returns Complex_1
+/// \brief Implements a spin amplitude that always returns 1
 /// \author Daniel Greenwald
 /// \ingroup SpinAmplitude
-/// \todo Remove actual caching
 class UnitSpinAmplitude : public SpinAmplitude
 {
 public:
 
-    /// \return Complex_1 regardless of input
+    /// \return 1 regardless of input
     const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
                                     const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override
-    { return Complex_1; }
+    { return 1.; }
 
     /// \return unit amplitude
     /// \param d dummy DataPoint
@@ -50,7 +49,7 @@ public:
     /// \param two_m SpinProjectionVector of daughters
     virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const override
-    { return Complex_1; }
+    { return 1.; }
 
     /// \return "unit-valued"
     virtual std::string formalism() const override

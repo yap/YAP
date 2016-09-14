@@ -86,12 +86,11 @@ TEST_CASE( "UnitSpinAmplitude" )
 
                                         if (std::dynamic_pointer_cast<yap::UnitSpinAmplitude>(sa))
                                             // if it is a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is 1
-                                            REQUIRE(amp == Catch::Detail::CApprox(yap::Complex_1));
+                                            REQUIRE(amp == Catch::Detail::CApprox(1.));
 
                                         else {
                                             // if it is NOT a UnitSpinAmplitude, check if the corresponding HelicitySpinAmplitude is != 1
-                                            //REQUIRE(amp != yap::Complex_1);
-                                            if (amp == yap::Complex_1 and sa->size() > 0) {
+                                            if (amp == 1 and sa->size() > 0) {
                                                 DEBUG("is 1 but not Unit and has size > 0");
                                                 ++false_unit;
                                             }

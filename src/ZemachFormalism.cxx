@@ -114,7 +114,7 @@ void ZemachSpinAmplitude::addParticleCombination(std::shared_ptr<ParticleCombina
 const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
                                                           int two_M, const SpinProjectionVector& two_m) const
 {
-    return (twoS() == 0 or pc->indices().size() < 3) ? Complex_1 : SpinAmplitude::amplitude(d, pc, two_M, two_m);
+    return (twoS() == 0 or pc->indices().size() < 3) ? 1. : SpinAmplitude::amplitude(d, pc, two_M, two_m);
 }
 
 //-------------------------
@@ -122,14 +122,14 @@ const std::complex<double> ZemachSpinAmplitude::calc(int two_M, const SpinProjec
         const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
 {
     if (pc->indices().size() < 3)
-        return Complex_1;
+        return 1.;
 
     if (pc->indices().size() > 3)
         throw exceptions::Exception("Zemach not valid for more than 3 particles",
                                     "ZemachSpinAmplitude::calc");
 
     if (twoS() == 0)
-        return Complex_1;
+        return 1.;
 
     // find resonance and spectator ParticleCombinations
     auto pcR = pc->daughters()[0];
@@ -150,10 +150,10 @@ const std::complex<double> ZemachSpinAmplitude::calc(int two_M, const SpinProjec
     auto q = vect(B * q4);
 
     if (twoS() == 2)
-        return -2. * (p * q) * Complex_1;
+        return -2. * (p * q);
 
     // else twoS() == 4
-    return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.) * Complex_1;
+    return 4 * (pow(p * q, 2) - norm(p) * norm(q) / 3.);
 }
 
 }

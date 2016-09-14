@@ -41,7 +41,7 @@ const Model* DecayTree::model() const
 //-------------------------
 const std::complex<double> amplitude(const DecayTreeVector& dtv, const DataPoint& d)
 {
-    auto A = Complex_0;
+    std::complex<double> A = 0;
     for (const auto& dt : dtv)
         A += amplitude(*dt, d);
     return A;
@@ -72,7 +72,7 @@ FreeAmplitudeSet free_amplitudes(const DecayTreeVector& DTV)
 //-------------------------
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d) const
 {
-    auto A = Complex_0;
+    std::complex<double> A = 0;
     for (const auto& pc : FreeAmplitude_->decayChannel()->particleCombinations()) {
         A += dataDependentAmplitude(d, pc);
     }
