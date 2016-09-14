@@ -14,16 +14,7 @@ compiler:
 install:
     # Check if cmake is installed and, if not, installs it
     - $(which cmake > /dev/null) || (sudo apt-get update && sudo apt-get install cmake) && echo "cmake installed"
-      # Install ROOT from the CERN website
-    - bash travisCI/install-root.sh
-    - . ./root/bin/thisroot.sh
-    - bash travisCI/install-bat.sh
-      # Set the BAT environment
-    - export PATH="/home/travis/build/pdigiglio/YAP/bat/bin:$PATH"
-    - export LD_LIBRARY_PATH="/home/travis/build/pdigiglio/YAP/bat/lib:$LD_LIBRARY_PATH"
-    - export CPATH="/home/travis/build/pdigiglio/YAP/bat/include:$CPATH"
-    - export PKG_CONFIG_PATH="/home/travis/build/pdigiglio/YAP/bat/lib/pkgconfig:$PKG_CONFIG_PATH"
-      # Set $YAPDIR
+    # TODO find a way to get the particle table w/o this environment variable
     - export YAPDIR="$PWD"
 
 # Build

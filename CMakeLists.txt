@@ -51,6 +51,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" 
 add_subdirectory(src)
 add_subdirectory(test)
 
-# Examples are not part of the `all` target and need to
-# be explicitly built when using `make`ing
+# Examples are not part of the `all` target.
+# This will provide an `example` target.
 add_subdirectory(examples)
