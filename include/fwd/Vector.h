@@ -29,17 +29,8 @@ namespace yap {
 template <typename T, size_t N>
 class VectorIterator;
 
-template <typename T, size_t N, typename E>
-class VectorExpression;
-
 template <typename T, size_t N>
 class Vector;
-
-template <typename T, size_t N, typename E1, typename E2>
-class VectorAddition;
-
-template <typename T, size_t N, typename E1, typename E2>
-class VectorSubtraction;
 
 }
 #endif
