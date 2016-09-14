@@ -23,8 +23,8 @@
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n)
-{ yap::ImportanceSampler::calculate(M, G, N, n); }
+void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n, unsigned t)
+{ yap::ImportanceSampler::calculate(M, G, N, n, t); }
 
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
@@ -33,6 +33,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
       FitPartitions_(1, &FitData_),
       NIntegrationPoints_(0),
       NIntegrationPointsBatchSize_(0),
+      NIntegrationThreads_(1),
       Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model()),
       FirstParameter_(-1),
@@ -192,7 +193,7 @@ void bat_fit::setParameters(const std::vector<double>& p)
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_);
+    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
 
     // calculate fit fractions
     // if (!CalculatedFitFractions_.empty()) {
@@ -223,8 +224,8 @@ double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
         auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
         logP += AbsPriors_[i]->GetLogPrior(abs(A))
-            + ArgPriors_[i]->GetLogPrior(yap::deg(arg(A)));
-            // - log(abs(A));      // jacobian
+            + ArgPriors_[i]->GetLogPrior(yap::deg(arg(A)))
+            - log(abs(A));      // jacobian
     }
     for (size_t i = FreeAmplitudes_.size() * 2; i < GetParameters().Size(); ++i)
         if (GetParameter(i).GetPrior())

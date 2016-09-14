@@ -70,8 +70,9 @@ public:
     /// set parameters of integration
     /// \param N number of points to use for integration
     /// \param n batch size for integration
-    void setNIntegrationPoints(unsigned N, unsigned n)
-    { NIntegrationPoints_ = N; NIntegrationPointsBatchSize_ = n; }
+    /// \param t number of threads
+    void setNIntegrationPoints(unsigned N, unsigned n, unsigned t = 1)
+    { NIntegrationPoints_ = N; NIntegrationPointsBatchSize_ = n; NIntegrationThreads_ = t; }
 
     /// \typedef Generator
     /// function for generating new points for integration
@@ -83,7 +84,7 @@ public:
 
     /// \typedef integrator_type
     /// convienence typedef
-    using integrator_type = std::function<void(yap::ModelIntegral&, Generator, unsigned, unsigned)>;
+    using integrator_type = std::function<void(yap::ModelIntegral&, Generator, unsigned, unsigned, unsigned)>;
 
     /// \return the integrator
     integrator_type& integrator()
@@ -115,6 +116,9 @@ protected:
 
     /// Batch size for generating integration points
     unsigned NIntegrationPointsBatchSize_;
+
+    /// Number of threads for integration
+    unsigned NIntegrationThreads_;
 
     /// generator for integration
     Generator IntegrationPointGenerator_;
