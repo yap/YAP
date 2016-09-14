@@ -1,17 +1,25 @@
-# empty variable to keep track of the `make example` dependencies
+# Empty variable to keep track of the `make example` dependencies:
+# it will be updated in each of the add_subdirectory.
 set(examples_depends)
 
 add_subdirectory(programs)
 
-# This is the only one requiring ROOT and BAT
 
+# Use the ROOT-provided FindROOT.cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} $ENV{ROOTSYS}/etc/cmake)
+
 find_package(ROOT)
 if(ROOT_FOUND)
 
+    # Set the path where FindBAT.cmake is found
+    set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakeModules)
+
     find_package(BAT)
     if(BAT_FOUND)
+
+        # If ROOT and BAT have been found, add this directory
         add_subdirectory(bat_gen)
+
     else(BAT_FOUND)
         message(WARNING "BAT not found: bat_gen examples won't be compilable.")
     endif(BAT_FOUND)

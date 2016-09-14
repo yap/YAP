@@ -9,6 +9,11 @@ language: cpp
 compiler:
     - gcc
 
+# Sent e-mails if the build fail
+notification:
+    email:
+        on_success: change
+        on_failure: always
 
 # Install build packages
 install:

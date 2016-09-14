@@ -6,7 +6,6 @@ set(SOURCES
     bat_yap_base.cxx
     fit_fitFraction.cxx)
 
-message(STATUS ${CMAKE_CURRENT_BINARY_DIR} )
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/output)
 add_custom_target(link-macros
     COMMAND ${CMAKE_COMMAND} -E create_symlink ../../../examples/bat_gen/macros macros)
