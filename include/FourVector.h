@@ -45,7 +45,7 @@ public:
     constexpr FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
 
     /// Vector<T, 4> constructor
-    constexpr FourVector(const Vector<T, 4>& V) : Vector<T, 4>(V) {}
+    constexpr FourVector(const Vector<T, 4>& V) noexcept : Vector<T, 4>(V) {}
 
     /// energy + ThreeVector constructor
     /// \param E 0th component
@@ -59,9 +59,15 @@ public:
     using Vector<T, 4>::operator=;
 
     /// \return inner (dot) product for 4-vectors
-    constexpr T operator*(const Vector<T, 4>& B) const override
+    const T operator*(const Vector<T, 4>& B) const override
     { return this->front() * B.front() - std::inner_product(this->begin() + 1, this->end(), B.begin() + 1, (T)0); }
+
 };
+
+/// \return gamma factor := E / m
+template <typename T>
+constexpr T gamma(const FourVector<T>& V) noexcept
+{ return V[0] / abs(V); }
 
 /// \return Spatial #ThreeVector inside #FourVector
 template <typename T>
@@ -73,11 +79,10 @@ template <typename T>
 constexpr ThreeVector<T> boost(const FourVector<T>& V)
 { return (V[0] != 0) ? (T(1) / V[0]) * vect(V) : ThreeVector<T>({0, 0, 0}); }
 
-/// unary minus for 4-vector,
-/// does not change sign of zero'th component
+/// negation of four vector (only negates spacial components)
 template <typename T>
-constexpr FourVector<T> operator-(const FourVector<T>& V)
-{ return FourVector<T>(V[0], -vect(V)); }
+const FourVector<T> operator-(FourVector<T> V)
+{ std::transform(V.begin() + 1, V.end(), V.begin() + 1, std::negate<T>()); return V; }
 
 /// unary minus for a vector of 4-vectors,
 /// does not change sign of zero'th components
@@ -86,8 +91,7 @@ const std::vector<FourVector<T> > operator-(const std::vector<FourVector<T> >& V
 {
     std::vector<FourVector<T> > result;
     result.reserve(V.size());
-    for (auto& v : V)
-        result.push_back(-v);
+    std::transform(V.begin(), V.end(), std::back_inserter(result), std::negate<FourVector<T> >());
     return result;
 }
 

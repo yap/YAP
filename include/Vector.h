@@ -133,59 +133,31 @@ template <typename T, size_t N>
 bool operator<=(VectorIterator<T, N> a, VectorIterator<T, N> b)
 { return !(b > a); }
 
-/// \class VectorExpression
-/// \brief Class for holding vector expressions
-/// \author Daniel Greenwald
-/// \ingroup VectorAlgebra
-template <typename T, size_t N, typename E>
-class VectorExpression
-{
-public:
-
-    /// access operator
-    constexpr T operator[](size_t i) const
-    { return static_cast<const E&>(*this)[i]; }
-
-    /// \return size
-    constexpr size_t size() const
-    { return N; }
-
-    /// cast to E
-    operator E& ()
-    { return static_cast<E&>(*this); }
-
-    /// cast to E
-    constexpr operator const E& () const
-    { return static_cast<const E&>(*this); }
-
-};
-
 /// \class Vector
 /// \brief N-dimensional column vector
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup VectorAlgebra
 template <typename T, size_t N>
-class Vector : public VectorExpression<T, N, Vector<T, N> >
+class Vector
 {
 public:
     /// Constructor
     constexpr Vector(const std::array<T, N>& v) noexcept : Elements_(v) {}
 
-    /// expression constructor
-    template <typename E>
-    Vector(const VectorExpression<T, N, E>& V)
-    { for (size_t i = 0; i < V.size(); ++i) Elements_[i] = V[i]; }
-
     /// Default constructor
     Vector(T element = 0)
     { Elements_.fill(element); }
+
+    /// \return size
+    constexpr size_t size() const
+    { return N; }
 
     /// element access operator
     T& operator[](size_t i)
     { return Elements_[i]; }
 
     /// element access operator
-    const T operator[](size_t i) const
+    constexpr T operator[](size_t i) const
     { return Elements_[i]; }
 
     /// access to front
@@ -214,11 +186,11 @@ public:
 
     /// inner (dot) product of #Vector's
     virtual auto operator*(const Vector<T, N>& B) const
-    -> decltype(T(0) * T(0))
+    -> const decltype(T(0) * T(0))
     { return std::inner_product(Elements_.begin(), Elements_.end(), B.Elements_.begin(), T(0) * T(0)); }
 
     /// equality operator
-    friend bool operator==(const Vector<T, N>& lhs, const Vector<T, N>& rhs)
+    friend constexpr bool operator==(const Vector<T, N>& lhs, const Vector<T, N>& rhs)
     { return lhs.Elements_ == rhs.Elements_; }
 
     /// Calculate the angle between two vectors
@@ -237,88 +209,24 @@ public:
     friend constexpr T norm(const Vector<T, N>& A)
     { return A * A; }
 
-
 private:
 
     /// internal storage
     std::array<T, N> Elements_;
 };
 
-/// \class VectorAddition
-/// \brief Expression for addition of two VectorExpressions
-/// \author Daniel Greenwald
-/// \ingroup VectorAlgebra
-template <typename T, size_t N, typename E1, typename E2>
-class VectorAddition : public VectorExpression<T, N, VectorAddition<T, N, E1, E2> >
-{
-public:
-    /// Constructor
-    constexpr VectorAddition(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
-        : VectorExpression<T, N, VectorAddition<T, N, E1, E2> >(), A_(a), B_(b)
-    {}
-
-    /// access operator
-    constexpr T operator[](size_t i) const
-    { return A_[i] + B_[i]; }
-
-private:
-
-    /// lhs expression
-    const E1& A_;
-
-    /// rhs expression
-    const E2& B_;
-
-};
-
-/// addition of two vectors
-template <typename T, size_t N, typename E1, typename E2>
-constexpr VectorAddition<T, N, E1, E2> operator+(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
-{ return VectorAddition<T, N, E1, E2>(a, b); }
-
-/// \class VectorSubtraction
-/// \brief Expression for subtraction of two VectorExpressions
-/// \author Daniel Greenwald
-/// \ingroup VectorAlgebra
-template <typename T, size_t N, typename E1, typename E2>
-class VectorSubtraction : public VectorExpression<T, N, VectorSubtraction<T, N, E1, E2> >
-{
-public:
-    /// Constructor
-    constexpr VectorSubtraction(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
-        : VectorExpression<T, N, VectorSubtraction<T, N, E1, E2> >(), A_(a), B_(b)
-    {}
-
-    /// access operator
-    constexpr T operator[](size_t i) const
-    { return A_[i] - B_[i]; }
-
-private:
-
-    /// lhs expression
-    const E1& A_;
-
-    /// rhs expression
-    const E2& B_;
-
-};
-
-/// subtraction of two vectors
-template <typename T, size_t N, typename E1, typename E2>
-constexpr VectorSubtraction<T, N, E1, E2> operator-(const VectorExpression<T, N, E1>& a, const VectorExpression<T, N, E2>& b)
-{ return VectorSubtraction<T, N, E1, E2>(a, b); }
-
 /// \return string
 template <typename T, size_t N>
 std::string to_string(const Vector<T, N>& V)
 {
-    if (N == 0)
-        return "(empty)";
-    std::string s = "(";
-    std::for_each(V.begin(), V.end(), [&](const T & t) {s += std::to_string(t) + ", ";});
-    s.erase(s.size() - 2, 2);
-    s += ")";
-    return s;
+    return "(" + (
+        (N == 0) ?
+        "empty"
+        : 
+        std::accumulate(V.begin(), V.end(), std::string(""),
+                        [](std::string& s, typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type t)
+                        { using std::to_string; return s += ", " + to_string(t);}).erase(0, 2)
+        ) + ")";
 }
 
 /// streamer
@@ -326,45 +234,65 @@ template <typename T, size_t N>
 std::ostream& operator<<(std::ostream& os, const Vector<T, N>& V)
 { os << to_string(V); return os; }
 
-/// addition assignment
-template <typename T, size_t N>
-Vector<T, N>& operator+=(Vector<T, N>& A, const Vector<T, N>& B)
-{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a + b;}); return A; }
+/// perform unary op on vector
+template <typename T, size_t N, class UnaryOp>
+Vector<T, N>& unary_op(Vector<T, N>& V, UnaryOp op1)
+{ std::transform(V.begin(), V.end(), V.begin(), op1); return V; }
 
-/// unary minus
-template <typename T, size_t N>
-constexpr Vector<T, N> operator-(const Vector<T, N>& V)
-{ return T(-1) * V; }
+/// perform binary op on two vectors, storing result in first vector
+template <typename T, size_t N, class BinaryOp>
+Vector<T, N>& binary_op(Vector<T, N>& lhs, const Vector<T, N>& rhs, BinaryOp op2)
+{ std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), op2); return lhs; }
 
-/// subtraction assignment
+/// negation
 template <typename T, size_t N>
-Vector<T, N>& operator-=(Vector<T, N>& A, const Vector<T, N>& B)
-{ std::transform(A.begin(), A.end(), B.begin(), A.begin(), [](const T & a, const T & b) {return a - b;}); return A; }
+const Vector<T, N> operator-(Vector<T, N> V)
+{ return unary_op(V, std::negate<T>()); }
 
-/// (assignment) multiplication by a single element
+/// Vector addition assignment
 template <typename T, size_t N>
-Vector<T, N>& operator*=(Vector<T, N>& A, const T& B)
-{ std::transform(A.begin(), A.end(), A.begin(), [&](const T & v) {return B * v;}); return A; }
+Vector<T, N>& operator+=(Vector<T, N>& lhs, const Vector<T, N>& rhs)
+{ return binary_op(lhs, rhs, std::plus<T>()); }
 
-/// multiplication: #Vector<T> * T
+/// Vector addition
 template <typename T, size_t N>
-const Vector<T, N> operator*(const Vector<T, N>& A, const T& c)
-{ auto v = A; return v *= c; return v; }
+const Vector<T, N> operator+(Vector<T, N> A, const Vector<T, N>& B)
+{ return A += B; }
 
-/// multiplication: T * #Vector<T>
+/// Vector subtraction assignment
 template <typename T, size_t N>
-constexpr Vector<T, N> operator*(const T& c, const Vector<T, N>& A)
-{ return A * c; }
+Vector<T, N>& operator-=(Vector<T, N>& lhs, const Vector<T, N>& rhs)
+{ return binary_op(lhs, rhs, std::minus<T>()); }
 
-/// (assignment) division by a single element
+/// Vector subtraction
 template <typename T, size_t N>
-Vector<T, N>& operator/=(Vector<T, N>& A, const T& B)
-{ std::transform(A.begin(), A.end(), A.begin(), [&](const T & v) {return v / B;}); return A; }
+const Vector<T, N> operator-(Vector<T, N> A, const Vector<T, N>& B)
+{ return A -= B; }
 
-/// division: #Vector<T> / T
+/// Vector scalar multiplication assignment
 template <typename T, size_t N>
-const Vector<T, N> operator/(const Vector<T, N>& A, const T& c)
-{ auto v = A; v /= c; return v; }
+Vector<T, N>& operator*=(Vector<T, N>& V, typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type c)
+{return unary_op(V, std::bind(std::multiplies<T>(), c, std::placeholders::_1)); }
+
+/// Vector scalar multiplication
+template <typename T, size_t N>
+const Vector<T, N> operator*(Vector<T, N> V, typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type c)
+{ return V *= c; }
+
+/// Vector scalar multiplication
+template <typename T, size_t N>
+const Vector<T, N> operator*(typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type c, Vector<T, N> V)
+{ return V *= c; }
+
+/// Vector scalar division assignment
+template <typename T, size_t N>
+Vector<T, N>& operator/=(Vector<T, N>& V, typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type c)
+{return unary_op(V, std::bind(std::divides<T>(), std::placeholders::_1, c)); }
+
+/// Vector scalar division
+template <typename T, size_t N>
+const Vector<T, N> operator/(Vector<T, N> V, typename std::conditional<std::is_fundamental<T>::value, T, const T&>::type c)
+{ return V /= c; }
 
 /// \return magnitude of #Vector (using associated inner product)
 template <typename T, size_t N>
@@ -375,7 +303,7 @@ constexpr T abs(const Vector<T, N>& A)
 /// \param V Vector to use for direction of unit vector
 template <typename T, size_t N>
 const Vector<T, N> unit(const Vector<T, N>& V)
-{ T a = abs(V); return (a == 0) ? V : (T(1) / a) * V; }
+{ T a = abs(V); return (a == 0) ? V : V / a; }
 
 /// Matrix * Vector
 template <typename T, size_t R, size_t C>

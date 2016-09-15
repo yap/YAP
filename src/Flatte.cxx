@@ -96,7 +96,7 @@ void Flatte::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombinat
         const double m2 = model()->fourMomenta()->m2(d, pc);
 
         // calculate width term := sum of coupling * complex-breakup-momentum
-        auto w = Complex_0;
+        std::complex<double> w = 0;
         for (const auto& fc : FlatteChannels_)
             w += fc.Coupling->value() * std::sqrt(std::complex<double>(squared_breakup_momentum(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 

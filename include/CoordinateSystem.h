@@ -39,11 +39,9 @@ namespace yap {
 template <typename T, size_t N>
 std::string to_string(const CoordinateSystem<T, N>& C)
 {
-    std::string s = "(";
-    std::for_each(C.begin(), C.end(), [&](const Vector<T, N>& v) {s += to_string(v) + ", ";});
-    s.erase(s.size() - 2, 2);
-    s += ")";
-    return s;
+    return "(" + std::accumulate(C.begin(), C.end(), std::string(""),
+                                 [](std::string& s, const typename CoordinateSystem<T, N>::value_type& v)
+                                 { return s += ", " + to_string(v); }).erase(0, 2) + ")";
 }
 
 /// \return CoordinateSystem with vectors of unit norm

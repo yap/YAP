@@ -99,7 +99,7 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
             *free_amplitude(*M, to(sigma))        = std::polar(0.67, yap::rad(140.));
             *free_amplitude(*M, to(f_0_980))      = std::polar(1.71, yap::rad(35.2));
             *free_amplitude(*M, to(f_0_1370))     = std::polar(5.72, yap::rad(340.3));
-            *free_amplitude(*M, to(f_0_1500))     = yap::Complex_0;
+            *free_amplitude(*M, to(f_0_1500))     = 0.;
             *free_amplitude(*M, to(f_2_1270))     = std::polar(1.57, yap::rad(282.));
             *free_amplitude(*M, to(Kstar_892))    = std::polar(1., 0.);
             *free_amplitude(*M, to(Kstar_2_1430)) = std::polar(0.43, yap::rad(141.));
@@ -111,7 +111,7 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
 
             *free_amplitude(*M, to(sigma))         = std::polar(0.91, yap::rad(119.));
             *free_amplitude(*M, to(f_0_980))       = std::polar(2.13, yap::rad(65.));
-            *free_amplitude(*M, to(f_0_1370))      = yap::Complex_0;
+            *free_amplitude(*M, to(f_0_1370))      = 0.;
             *free_amplitude(*M, to(f_0_1500))      = std::polar(11.7, yap::rad(16.));
             *free_amplitude(*M, to(f_2_1270))      = std::polar(4.16, yap::rad(2.2));
             *free_amplitude(*M, to(Kstar_892))     = std::polar(1., 0.);

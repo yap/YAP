@@ -31,12 +31,6 @@ namespace yap {
 
 /// \name Complex constants
 /// @{
-/// complex zero
-constexpr auto Complex_0 = std::complex<double>(0, 0);
-
-/// complex one
-constexpr auto Complex_1 = std::complex<double>(1, 0);
-
 /// complex i
 constexpr auto Complex_i = std::complex<double>(0, 1);
 /// @}
