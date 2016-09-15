@@ -23,18 +23,16 @@
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n, unsigned t)
-{ yap::ImportanceSampler::calculate(M, G, N, n, t); }
-
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
       FitPartitions_(1, &FitData_),
+      IntegralData_(model()->createDataSet()),
+      IntegralPartitions_(1, &IntegralData_),
       NIntegrationPoints_(0),
       NIntegrationPointsBatchSize_(0),
       NIntegrationThreads_(1),
-      Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model()),
       FirstParameter_(-1),
       FirstObservable_(-1)
@@ -192,7 +190,10 @@ void bat_fit::setParameters(const std::vector<double>& p)
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
+    if (IntegrationPointGenerator_)
+        yap::ImportanceSampler::calculate(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
+    else
+        yap::ImportanceSampler::calculate(Integral_, IntegralPartitions_);
 
     // calculate fit fractions
     // if (!CalculatedFitFractions_.empty()) {

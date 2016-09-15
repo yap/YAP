@@ -67,9 +67,21 @@ int main()
 
     // generate integration data
     std::mt19937 g(0);
-    m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
-    // m.setNIntegrationPoints(4e4, 4e4);
-    m.setNIntegrationPoints(1e6, 1e5, 6);
+    if (false) {
+        m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
+        // m.setNIntegrationPoints(4e4, 4e4);
+        m.setNIntegrationPoints(20e3, 20e3, 6);
+        LOG(INFO) << "Generating integration points on the fly";
+    } else {
+        // get FSP mass ranges
+        auto m2r = yap::squared(mass_range(D_mass, m.axes(), m.model()->finalStateParticles()));
+        
+        // generate integration data
+        std::generate_n(std::back_inserter(m.integralData()), 20000,
+                        std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max()));
+        m.integralPartitions() = yap::DataPartitionBlock::create(m.integralData(), 6);
+        LOG(INFO) << "Created " << m.integralData().size() << " data points (" << (m.integralData().bytes() * 1.e-6) << " MB)";
+    }
 
     // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
     // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
