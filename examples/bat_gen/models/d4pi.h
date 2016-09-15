@@ -165,9 +165,11 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
     for (auto fa : m.freeAmplitudes()) {
         if (fa->variableStatus() == VariableStatus::fixed)
             m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
-        /*else
-            m.setPrior(fa, 0.5 * abs(fa->value()), 1.5 * abs(fa->value()),
-                    deg(arg(fa->value())) - 15., deg(arg(fa->value())) + 15.);  */
+        /*else {
+            m.setPriors(fa, new ConstantPrior(0, 1.5), new ConstantPrior(-180, 180));
+            m.setRealImagRanges(fa, -1.5, 1.5, -1.5, 1.5);
+            m.setAbsArgRanges(fa, 0, 1.5, -180, 180);
+        }*/
     }
 
     return m;
@@ -214,9 +216,9 @@ inline fit_fitFraction d4pi_fit_fitFraction()
     // set free amplitude parameters of fit
     m.fix(free_amplitude(*D, yap::from(D), yap::to(a_1)), 1., 0.);
     m.fix(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(1)), 0., 0.);
-    m.setPrior(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(2)), new BCGaussianPrior(0.241, quad(0.033, 0.024)), new BCGaussianPrior( 82., quad(5.,   4.)));
+    m.setPriors(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(2)), new BCGaussianPrior(0.241, quad(0.033, 0.024)), new BCGaussianPrior( 82., quad(5.,   4.)));
 
-    m.setPrior(free_amplitude(*D, yap::from(D), yap::to(f_0), yap::l_equals(0)), new BCGaussianPrior(0.493, quad(0.026, 0.021)), new BCGaussianPrior(193., quad(4.,   4.)));
+    m.setPriors(free_amplitude(*D, yap::from(D), yap::to(f_0), yap::l_equals(0)), new BCGaussianPrior(0.493, quad(0.026, 0.021)), new BCGaussianPrior(193., quad(4.,   4.)));
 
     // polar -> cartesian; transversity -> canonical
     amplitude_basis::canonical<double> can(amplitude_basis::transversity<double>(
@@ -228,15 +230,15 @@ inline fit_fitFraction d4pi_fit_fitFraction()
         // cartesian -> polar
         complex_basis::polar<double> polar(can[l]);
 
-        m.setPrior(free_amplitude(*D, yap::from(D), yap::to(rho), yap::l_equals(l)),
+        m.setPriors(free_amplitude(*D, yap::from(D), yap::to(rho), yap::l_equals(l)),
                 new BCGaussianPrior(polar.value()[0], polar.covariance()[0][0]),
                 new BCGaussianPrior(polar.value()[1], polar.covariance()[1][1]));
     }
 
 
-    m.setPrior(free_amplitude(*D, yap::from(D), yap::to(f_0)),   new BCGaussianPrior(0.233, quad(0.019, 0.015)), new BCGaussianPrior(261., quad(7., 3.)));
-    m.setPrior(free_amplitude(*D, yap::from(D), yap::to(f_2)),   new BCGaussianPrior(0.338, quad(0.021, 0.016)), new BCGaussianPrior(317., quad(4., 4.)));
-    m.setPrior(free_amplitude(*D, yap::from(D), yap::to(sigma)), new BCGaussianPrior(0.432, quad(0.027, 0.022)), new BCGaussianPrior(254., quad(4., 5.)));
+    m.setPriors(free_amplitude(*D, yap::from(D), yap::to(f_0)),   new BCGaussianPrior(0.233, quad(0.019, 0.015)), new BCGaussianPrior(261., quad(7., 3.)));
+    m.setPriors(free_amplitude(*D, yap::from(D), yap::to(f_2)),   new BCGaussianPrior(0.338, quad(0.021, 0.016)), new BCGaussianPrior(317., quad(4., 4.)));
+    m.setPriors(free_amplitude(*D, yap::from(D), yap::to(sigma)), new BCGaussianPrior(0.432, quad(0.027, 0.022)), new BCGaussianPrior(254., quad(4., 5.)));
 
     return m;
 }

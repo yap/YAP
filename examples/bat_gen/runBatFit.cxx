@@ -74,7 +74,7 @@ int main()
     std::mt19937 g(0);
     m.integrationPointGenerator() = std::bind(yap::phsp<std::mt19937>, std::cref(*m.model()), D_mass, m.axes(), m2r, g, std::numeric_limits<unsigned>::max());
     // m.setNIntegrationPoints(4e4, 4e4);
-    m.setNIntegrationPoints(1e6, 1e5, 2);
+    m.setNIntegrationPoints(1e6, 1e5, 4);
 
     // TH2D* h2_fit_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.fitData());
     // TH2D* h2_int_data = hist2(*m.model()->fourMomenta(), m.axes(), m2r, m.integralData());
@@ -120,9 +120,9 @@ int main()
     m.PrintSummary();
     m.PrintAllMarginalized("output/" + m.GetSafeName() + "_plots.pdf", 2, 2);
 
-    //m.SetNIterationsRun(static_cast<int>(10e3 / m.GetNChains()));
+    m.SetNIterationsRun(static_cast<int>(10e3 / m.GetNChains()));
     // m.SetKnowledgeUpdateDrawingStyle(BCAux::kKnowledgeUpdateDetailedPosterior);
-    //m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
+    m.PrintKnowledgeUpdatePlots("output/" + m.GetSafeName() + "_update.pdf", 2, 2, true);
 
     // timing:
     auto diff = end - start;
