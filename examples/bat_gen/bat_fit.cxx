@@ -221,6 +221,8 @@ double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
 {
     double logP = 0;
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
+        if (GetParameter(i * 2).Fixed() or GetParameter(i * 2 + 1).Fixed())
+            continue;
         auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
         logP += AbsPriors_[i]->GetLogPrior(abs(A))
             + ArgPriors_[i]->GetLogPrior(yap::deg(arg(A)))
@@ -310,12 +312,8 @@ void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phas
 {
     auto i = findFreeAmplitude(A);
     auto a = std::polar(amp, yap::rad(phase));
-    GetParameter(i).SetLimits(real(a) - 1, real(a) + 1);
     GetParameter(i).Fix(real(a));
-    GetParameter(i + 1).SetLimits(imag(a) - 1, imag(a) + 1);
     GetParameter(i + 1).Fix(imag(a));
-    GetObservable(i).SetLimits(std::max<double>(0, amp - 1), amp + 1);
-    GetObservable(i + 1).SetLimits(phase - 15, phase + 15);
 }
 
 //-------------------------
