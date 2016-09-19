@@ -66,7 +66,7 @@ void Flatte::checkDecayChannel(const DecayChannel& c) const
 }
 
 //-------------------------
-void Flatte::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
+void Flatte::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
     /////////////////////////
     // precalculate

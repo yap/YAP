@@ -83,7 +83,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     std::uniform_real_distribution<double> uniform_m99_p99(-0.99, 0.99);
 
     for (unsigned int iEvt = 0; iEvt < 1000; ++iEvt) {
-        std::map<std::shared_ptr<yap::ParticleCombination>, std::vector<double>> resultingThetas;
+        yap::ParticleCombinationMap<std::vector<double> > resultingThetas;
 
         // generate random phase space point (with 100 attempts before failing)
         auto momenta = yap::phsp(M, D_mass, A, m2r, g, 100);

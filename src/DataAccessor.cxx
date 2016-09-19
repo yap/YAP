@@ -43,28 +43,25 @@ bool DataAccessor::consistent() const
 }
 
 //-------------------------
-void DataAccessor::addParticleCombination(std::shared_ptr<ParticleCombination> c)
+void DataAccessor::addParticleCombination(const ParticleCombination& c)
 {
-    if (!c)
-        throw exceptions::Exception("ParticleCombination empty", "DataAccessor::addParticleCombination");
-
-    // check if c is already key in SymmetrizationIndices_
-    if (SymmetrizationIndices_.find(c) != SymmetrizationIndices_.end())
+    // if already indexed, do nothing
+    if (SymmetrizationIndices_.find(c.shared_from_this()) != SymmetrizationIndices_.end())
         return;
 
     // search for match using Equal
     auto it = std::find_if(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(),
                            [&](const ParticleCombinationMap<unsigned>::value_type & kv)
-    {return Equal_(c, kv.first);});
+                           {return Equal_(c.shared_from_this(), kv.first);});
 
     // if found, use found index
     if (it != SymmetrizationIndices_.end()) {
-        SymmetrizationIndices_.emplace(c, it->second);
+        SymmetrizationIndices_.emplace(c.shared_from_this(), it->second);
         return;
     }
 
     // else assign to one higher than current highest index
-    SymmetrizationIndices_.emplace(c, static_cast<unsigned>(NIndices_));
+    SymmetrizationIndices_.emplace(c.shared_from_this(), static_cast<unsigned>(NIndices_));
     // and increase current highest index
     ++NIndices_;
 }
@@ -131,20 +128,20 @@ void DataAccessor::registerWithModel()
         throw exceptions::Exception("Model is locked and cannot be modified", "DataAccessor::registerWithModel");
 
     for (auto pc_i : symmetrizationIndices())
-        const_cast<Model*>(model())->fourMomenta()->addParticleCombination(pc_i.first);
+        const_cast<Model*>(model())->fourMomenta()->addParticleCombination(*pc_i.first);
 
     // if HelicityAngles is required
     if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles*>(this)->requiresHelicityAngles()) {
         const_cast<Model*>(model())->requireHelicityAngles();
         for (auto pc_i : symmetrizationIndices())
-            const_cast<Model*>(model())->helicityAngles()->addParticleCombination(pc_i.first);
+            const_cast<Model*>(model())->helicityAngles()->addParticleCombination(*pc_i.first);
     }
 
     // if MeasuredBreakupMomenta is required
     if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta*>(this)->requiresMeasuredBreakupMomenta()) {
         const_cast<Model*>(model())->requireMeasuredBreakupMomenta();
         for (auto pc_i : symmetrizationIndices())
-            const_cast<Model*>(model())->measuredBreakupMomenta()->addParticleCombination(pc_i.first);
+            const_cast<Model*>(model())->measuredBreakupMomenta()->addParticleCombination(*pc_i.first);
     }
 
     // if stores nothing, do nothing

@@ -42,8 +42,8 @@ yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<do
 }
 
 void calculate_helicity_angles(const yap::Model& M,
-                               std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> >& phi_theta,
-                               const std::shared_ptr<yap::ParticleCombination>& pc,
+                               yap::ParticleCombinationMap<std::array<double, 2> >& phi_theta,
+                               const std::shared_ptr<const yap::ParticleCombination>& pc,
                                std::vector<yap::FourVector<double> > momenta)
 {
     // loop over daughters
@@ -133,7 +133,7 @@ TEST_CASE( "HelicityAngles" )
         data.push_back(momenta);
         const auto dp = data.back();
 
-        std::map<const std::shared_ptr<yap::ParticleCombination>, std::array<double, 2> > phi_theta;
+        yap::ParticleCombinationMap<std::array<double, 2> > phi_theta;
 
         for (auto& pc : D->particleCombinations()) {
             REQUIRE( M.fourMomenta()->m(dp, pc) == Approx(D_mass) );

@@ -75,7 +75,7 @@ protected:
     { Model_ = m; }
 
     /// add ParticleCombination to ParticleCombinations
-    virtual void addParticleCombination(const std::shared_ptr<ParticleCombination>& pc) override;
+    virtual void addParticleCombination(const ParticleCombination& pc) override;
 
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() override
@@ -92,7 +92,7 @@ private:
 };
 
 /// \return whether pc and FSPs are for the same final state
-bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
+bool valid_final_state(const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
 
 }
 

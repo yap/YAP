@@ -24,7 +24,7 @@ const FinalStateParticleVector::value_type& fsp_with_index(const FinalStateParti
 }
 
 //-------------------------
-const MassRange mass_range(double isp_mass, const std::shared_ptr<ParticleCombination>& pc, const FinalStateParticleVector& FSPs)
+const MassRange mass_range(double isp_mass, const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs)
 {
     if (isp_mass < 0)
         throw exceptions::Exception("isp_mass is negative", "mass_range");

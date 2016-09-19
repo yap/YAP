@@ -105,7 +105,7 @@ public:
     /// \param d DataPoint to retrieve data from for calculation
     /// \param pc ParticleCombination to calculate for
     virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
-                                            const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+                                            const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const = 0;
 
     /// Loops over particle combinations (pc) and all (M, vec{m}) combinations
     /// and call calc(M, \vec{m}, d, pc) when necessary
@@ -118,7 +118,7 @@ public:
     /// \param pc ParticleCombination to retrieve value for
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
-    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const
     { return Amplitudes_.at(two_M).at(two_m)->value(d, symmetrizationIndex(pc)); }
 

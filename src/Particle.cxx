@@ -20,9 +20,9 @@ bool Particle::consistent() const
 }
 
 //-------------------------
-void Particle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
+void Particle::addParticleCombination(const ParticleCombination& pc)
 {
-    ParticleCombinations_.insert(pc);
+    ParticleCombinations_.insert(pc.shared_from_this());
 }
 
 //-------------------------
@@ -45,7 +45,7 @@ const SpinVector spins(const ParticleVector& v)
 const bool decays_to_full_final_state(const Particle& p)
 {
     return std::any_of(p.particleCombinations().begin(), p.particleCombinations().end(),
-                       [&p](const std::shared_ptr<ParticleCombination>& pc)
+                       [&p](const ParticleCombinationSet::value_type& pc)
                        {return pc->indices().size() == p.model()->finalStateParticles().size();});
 }
 

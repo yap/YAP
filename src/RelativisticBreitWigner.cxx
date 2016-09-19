@@ -44,7 +44,7 @@ void RelativisticBreitWigner::checkDecayChannel(const DecayChannel& c) const
 }
 
 //-------------------------
-void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
+void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
     /////////////////////////
     // common factors:
