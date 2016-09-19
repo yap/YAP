@@ -72,10 +72,10 @@ public:
     virtual void calculate(DataPoint& d, StatusManager& sm) const override;
 
     /// get azimuthal angle
-    double phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    double phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// get polar angle
-    double theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    double theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// grant friend status to Model to call addParticleCombination
     friend class Model;
@@ -89,12 +89,12 @@ protected:
     void virtual addToStaticDataAccessors() override;
 
     /// recursive helicity-angle calculator that travels down decay trees for all channels
-    void calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+    void calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                          const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
                          StatusManager& sm) const;
 
     /// override to throw on adding non-two-body PC
-    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(const ParticleCombination& pc) override;
 
 private:
 

@@ -70,8 +70,8 @@ public:
 
     /// \return product of all particle-combination-dependent amplitudes in this tree
     /// \param d DataPoint
-    /// \param pc shared_ptr<ParticleCombination>
-    const std::complex<double> dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    /// \param pc shared_ptr<const ParticleCombination>
+    const std::complex<double> dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// \return VariableStatus of dataDependentAmplitude
     const VariableStatus dataDependentAmplitudeStatus() const;
@@ -153,7 +153,7 @@ inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint
 /// \param dt DecayTree to operate on
 /// \param d DataPoint to evaluate on
 /// \param pc ParticleCombination
-inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc)
+inline const std::complex<double> amplitude(const DecayTree& dt, const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc)
 { return dt.dataIndependentAmplitude() * dt.dataDependentAmplitude(d, pc); }
 
 /// \return sum of amplitudes of decay trees in a vector

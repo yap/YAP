@@ -152,18 +152,18 @@ bool Model::consistent() const
 }
 
 //-------------------------
-void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void Model::addParticleCombination(const ParticleCombination& pc)
 {
     if (locked())
         throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addParticleCombination");
 
     // if does not trace up to an ISP, halt
-    if (!is_from_initial_state_particle_combination(*pc, *this))
+    if (!is_from_initial_state_particle_combination(pc, *this))
         return;
 
     FourMomenta_->addParticleCombination(pc);
 
-    if (pc->daughters().size() == 2) {
+    if (pc.daughters().size() == 2) {
         if (HelicityAngles_)
             HelicityAngles_->addParticleCombination(pc);
         if (MeasuredBreakupMomenta_)
@@ -171,8 +171,8 @@ void Model::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
     }
 
     // call recursively on daughters
-    for (auto& d : pc->daughters())
-        addParticleCombination(d);
+    for (auto& d : pc.daughters())
+        addParticleCombination(*d);
 }
 
 //-------------------------
@@ -197,7 +197,7 @@ void Model::setFinalState(const FinalStateParticleVector& FSP)
 
     // set indices by order in vector
     for (auto& fsp : FSP) {
-        fsp->addParticleCombination(ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
+        fsp->addParticleCombination(*ParticleCombinationCache_.fsp(FinalStateParticles_.size()));
         fsp->setModel(this);
         FinalStateParticles_.push_back(fsp);
     }
@@ -243,7 +243,7 @@ const InitialStateParticleMap::value_type& Model::addInitialStateParticle(std::s
 
     if (res.second) { // new element was inserted
         for (auto& pc : p->particleCombinations())
-            addParticleCombination(pc);
+            addParticleCombination(*pc);
 
     } else { // no new element was inserted
         // check if insertion failed

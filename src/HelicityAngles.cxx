@@ -32,13 +32,13 @@ void HelicityAngles::addToStaticDataAccessors()
 }
 
 //-------------------------
-double HelicityAngles::phi(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+double HelicityAngles::phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return Phi_->value(d, symmetrizationIndex(pc));
 }
 
 //-------------------------
-double HelicityAngles::theta(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+double HelicityAngles::theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return Theta_->value(d, symmetrizationIndex(pc));
 }
@@ -57,7 +57,7 @@ void HelicityAngles::calculate(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
                                      StatusManager& sm) const
 {
@@ -104,12 +104,12 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<Particl
 }
 
 //-------------------------
-void HelicityAngles::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void HelicityAngles::addParticleCombination(const ParticleCombination& pc)
 {
-    if (pc->daughters().size() != 2)
+    if (pc.daughters().size() != 2)
         throw exceptions::NotTwoBodyParticleCombination("cannot calculate helicity angles for "
-                + std::to_string(pc->daughters().size()) + "-body decay",
-                "MeasuredBreakupMomenta::addParticleCombination");
+                                                        + std::to_string(pc.daughters().size()) + "-body decay",
+                                                        "MeasuredBreakupMomenta::addParticleCombination");
 
     return StaticDataAccessor::addParticleCombination(pc);
 }

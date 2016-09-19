@@ -54,12 +54,12 @@ public:
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    double q(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     { return sqrt(q2(d, pc)); }
 
     /// grant friend status to Model to call addParticleCombination
@@ -74,7 +74,7 @@ protected:
     void virtual addToStaticDataAccessors() override;
 
     /// override to throw on adding final-state PC or more-than-two-body PC
-    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(const ParticleCombination& pc) override;
 
     /// squared breakup momentum [GeV^2]
     std::shared_ptr<RealCachedValue> Q2_;

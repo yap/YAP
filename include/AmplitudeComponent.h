@@ -42,13 +42,13 @@ class AmplitudeComponent
 {
 public:
     /// \return whether AmplitudeComponent can calculate for particular ParticleCombination
-    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const = 0;
+    virtual const bool validFor(const ParticleCombination& pc) const = 0;
 
     /// \return value for DataPoint and ParticleCombination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
     /// must be overloaded in derived class
-    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const = 0;
+    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const = 0;
 
     /// \return a VariableStatus for this AmplitudeComponent
     virtual const VariableStatus status() const = 0;
@@ -67,9 +67,8 @@ public:
         : AmplitudeComponent(), StaticDataAccessor(m, equal) {}
 
     /// \return whether AmplitudeComponent can calculate for particular ParticleCombination
-    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const override
-    { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
-
+    virtual const bool validFor(const ParticleCombination& pc) const override;
+        
     /// \return VariableStatus::fixed
     virtual const VariableStatus status() const override
     { return VariableStatus::fixed; }
@@ -88,8 +87,7 @@ public:
         : RecalculableDataAccessor(equal) {}
 
     /// \return whether AmplitudeComponent can calculate for particular ParticleCombination
-    virtual const bool validFor(const std::shared_ptr<ParticleCombination>& pc) const override
-    { return symmetrizationIndices().find(pc) != symmetrizationIndices().end(); }
+    virtual const bool validFor(const ParticleCombination& pc) const override;
 
     /// calls variable_status on parameters of object
     virtual const VariableStatus status() const override;

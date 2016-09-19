@@ -60,7 +60,7 @@ public:
     /// \return Blatt-Weisskopf barrier factor for data point and particle combination
     /// \param d DataPoint
     /// \param pc shared_ptr to ParticleCombination
-    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
     /// Calculate barrier factors for and store into each data point in a data partition
     /// \param D DataPartition to calculate over
@@ -85,7 +85,7 @@ public:
 protected:
 
     /// override to throw on adding non-two-body PC
-    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(const ParticleCombination& pc) override;
 
 private:
 

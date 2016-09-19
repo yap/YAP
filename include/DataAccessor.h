@@ -52,7 +52,7 @@ public:
     { return Index_; }
 
     /// \return index inside row of DataPoint for the requested ParticleCombination
-    unsigned symmetrizationIndex(const std::shared_ptr<ParticleCombination>& c) const
+    unsigned symmetrizationIndex(const std::shared_ptr<const ParticleCombination>& c) const
     { return SymmetrizationIndices_.at(c); }
 
     /// \return SymmetrizationIndices_
@@ -99,7 +99,7 @@ protected:
     void addCachedValue(std::shared_ptr<CachedValue> c);
 
     /// add ParticleCombination to SymmetrizationIndices_
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
+    virtual void addParticleCombination(const ParticleCombination& pc);
 
     /// prune SymmetrizationIndices_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneSymmetrizationIndices();

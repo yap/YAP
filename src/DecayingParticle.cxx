@@ -92,7 +92,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
     // add particle combinations
     for (auto pc : Channels_.back()->particleCombinations())
-        addParticleCombination(pc);
+        addParticleCombination(*pc);
 
     /// create decay trees for channel:
 
@@ -218,20 +218,20 @@ void DecayingParticle::registerWithModel()
 }
 
 //-------------------------
-void DecayingParticle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
+void DecayingParticle::addParticleCombination(const ParticleCombination& pc)
 {
     Particle::addParticleCombination(pc);
 
     // add also to all BlattWeiskopf barrier factors
     for (auto& kv : BlattWeisskopfs_)
-        if (pc->daughters().size() == 2)
+        if (pc.daughters().size() == 2)
             kv.second->addParticleCombination(pc);
 
     // add to DecayChannels,
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
     for (auto& dc : Channels_) {
-        if (std::any_of(dc->particleCombinations().begin(), dc->particleCombinations().end(), std::bind(&equal_down, pc, std::placeholders::_1)))
+        if (std::any_of(dc->particleCombinations().begin(), dc->particleCombinations().end(), std::bind(&equal_down, pc.shared_from_this(), std::placeholders::_1)))
             dc->addParticleCombination(pc);
     }
 }

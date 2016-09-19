@@ -36,16 +36,16 @@ class ParticleCombination;
 using ParticleCombinationEqualTo = std::function<bool(const std::shared_ptr<const ParticleCombination>&, const std::shared_ptr<const ParticleCombination>&)>;
 
 /// \typedef ParticleCombinationVector
-using ParticleCombinationVector = std::vector<std::shared_ptr<ParticleCombination> >;
+using ParticleCombinationVector = std::vector<std::shared_ptr<const ParticleCombination> >;
 
 /// \typedef ParticleCombinationSet
-using ParticleCombinationSet = std::set<std::shared_ptr<ParticleCombination> >;
+using ParticleCombinationSet = std::set<std::shared_ptr<const ParticleCombination> >;
 
 /// \typedef ParticleCombinationMap
 /// \tparam T Object to store in map, with shared_ptr to ParticleCombination as key
 template<typename T>
-using ParticleCombinationMap = std::map<std::shared_ptr<ParticleCombination>, T,
-      std::owner_less<std::shared_ptr<ParticleCombination> > >;
+using ParticleCombinationMap = std::map<std::shared_ptr<const ParticleCombination>, T,
+      std::owner_less<std::shared_ptr<const ParticleCombination> > >;
 
 }
 

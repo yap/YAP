@@ -30,7 +30,7 @@ void MeasuredBreakupMomenta::addToStaticDataAccessors()
 }
 
 //-------------------------
-double MeasuredBreakupMomenta::q2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+double MeasuredBreakupMomenta::q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return Q2_->value(d, symmetrizationIndex(pc));
 }
@@ -61,12 +61,12 @@ void MeasuredBreakupMomenta::calculate(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-void MeasuredBreakupMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void MeasuredBreakupMomenta::addParticleCombination(const ParticleCombination& pc)
 {
-    if (pc->daughters().size() != 2)
+    if (pc.daughters().size() != 2)
         throw exceptions::NotTwoBodyParticleCombination("cannot calculate breakup momentum for "
-                + std::to_string(pc->daughters().size()) + "-body decay",
-                "MeasuredBreakupMomenta::addParticleCombination");
+                                                        + std::to_string(pc.daughters().size()) + "-body decay",
+                                                        "MeasuredBreakupMomenta::addParticleCombination");
     StaticDataAccessor::addParticleCombination(pc);
 }
 

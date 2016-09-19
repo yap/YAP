@@ -33,7 +33,7 @@ namespace yap {
 /// \brief Caches list of ParticleCombination's
 /// \author Johannes Rauch, Daniel Greenwald
 
-class ParticleCombinationCache : public WeakPtrCache<ParticleCombination>
+class ParticleCombinationCache : public WeakPtrCache<const ParticleCombination>
 {
 public:
 

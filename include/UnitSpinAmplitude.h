@@ -39,7 +39,7 @@ public:
 
     /// \return 1 regardless of input
     const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
-                                    const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override
+                                    const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override
     { return 1.; }
 
     /// \return unit amplitude
@@ -47,7 +47,7 @@ public:
     /// \param pc dummy ParticleCombination
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
-    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const override
     { return 1.; }
 

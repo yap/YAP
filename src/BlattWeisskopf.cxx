@@ -74,7 +74,7 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
 }
 
 //-------------------------
-const std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+const std::complex<double> BlattWeisskopf::value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return (L_ == 0) ? 1 : BarrierFactor_->value(d, symmetrizationIndex(pc));
 }
@@ -123,12 +123,12 @@ const Model* BlattWeisskopf::model() const
 }
 
 //-------------------------
-void BlattWeisskopf::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void BlattWeisskopf::addParticleCombination(const ParticleCombination& pc)
 {
-    if (pc->daughters().size() != 2)
+    if (pc.daughters().size() != 2)
         throw exceptions::NotTwoBodyParticleCombination("cannot calculate Blatt-Weisskopf barrier factor for "
-                + std::to_string(pc->daughters().size()) + "-body decay",
-                "BlattWeisskopf::addParticleCombination");
+                                                        + std::to_string(pc.daughters().size()) + "-body decay",
+                                                        "BlattWeisskopf::addParticleCombination");
 
     return RecalculableDataAccessor::addParticleCombination(pc);
 }

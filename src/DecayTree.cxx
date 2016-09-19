@@ -80,7 +80,7 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d)
 }
 
 //-------------------------
-const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     // spin amplitude
     auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
@@ -145,7 +145,7 @@ void DecayTree::addAmplitudeComponent(const AmplitudeComponent& ac)
         throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::addAmplitudeComponent");
 
     for (const auto& pc : FreeAmplitude_->particleCombinations())
-        if (!ac.validFor(pc))
+        if (!ac.validFor(*pc))
             throw exceptions::Exception("AmplitudeComponent not valid for all ParticleCombinations required by FreeAmplitude",
                                         "DecayTree::addAmplitudeComponent");
 

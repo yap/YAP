@@ -241,10 +241,7 @@ protected:
     /// add ParticleCombination to to FourMomenta_, HelicityAngles_, and
     /// MeasuredBreakupMomenta_ (along with it's daughters through
     /// recursive calling) if it is NOT for a FSP.
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> pc);
-
-    /* /// remove a DataAccessor from this Model */
-    /* virtual void removeDataAccessor(DataAccessorSet::value_type da); */
+    virtual void addParticleCombination(const ParticleCombination& pc);
 
 private:
 
