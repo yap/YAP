@@ -87,7 +87,7 @@ inline std::unique_ptr<Model> d4pi()
         /// \todo has 3 amplitudes for 3 spin projections
         // S wave
         *f = 1;
-        f->variableStatus() = VariableStatus::fixed;
+        //f->variableStatus() = VariableStatus::fixed;
     }
     for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(1))) {
         /// \todo has 3 amplitudes for 3 spin projections
@@ -162,9 +162,28 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
 {
     bat_fit m(name, d4pi(), pcs);
 
+    // find particles
+    auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
+    auto rho   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
+    auto sigma = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(500)")));
+    auto a_1   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("a_1+")));
+    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
+    auto f_2   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
+
+
+    auto fixed_amps = free_amplitudes(*a_1, to(rho), l_equals(0));
+    for (auto fa : fixed_amps) {
+        LOG(INFO) << "must fix fa " << fa << " " << to_string(*fa);
+        //m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
+    }
+
+    LOG(INFO) << "setting priors";
     for (auto fa : m.freeAmplitudes()) {
-        if (fa->variableStatus() == VariableStatus::fixed)
+        LOG(INFO) << "checking fa " <<  fa << " " << to_string(*fa);
+        if (std::find(fixed_amps.begin(), fixed_amps.end(), fa) != fixed_amps.end()) {
             m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
+            LOG(INFO) << "fixed amplitude " << to_string(*fa);
+        }
         /*else {
             m.setPriors(fa, new ConstantPrior(0, 1.5), new ConstantPrior(-180, 180));
             m.setRealImagRanges(fa, -1.5, 1.5, -1.5, 1.5);
