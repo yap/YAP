@@ -103,7 +103,7 @@ protected:
 
     /// access cached dynamic amplitude (const)
     const std::shared_ptr<ComplexCachedValue> T() const
-    { return const_cast<MassShape*>(this)->T(); }
+    { return T_; }
 
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
