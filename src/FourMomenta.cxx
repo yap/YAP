@@ -43,21 +43,21 @@ void FourMomenta::setFinalStateMomenta(DataPoint& d, const std::vector<FourVecto
 }
 
 //-------------------------
-void FourMomenta::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void FourMomenta::addParticleCombination(const ParticleCombination& pc)
 {
     StaticDataAccessor::addParticleCombination(pc);
-    auto index = symmetrizationIndex(pc);
+    auto index = symmetrizationIndex(pc.shared_from_this());
 
     // check for ISP
-    if (TotalIndex_ < 0 and pc->indices().size() == model()->finalStateParticles().size())
+    if (TotalIndex_ < 0 and pc.indices().size() == model()->finalStateParticles().size())
         TotalIndex_ = index;
 
     /// check for FSP
-    if (is_final_state_particle_combination(*pc)) {
-        if (pc->indices()[0] + 1 > FSPIndices_.size())
-            FSPIndices_.resize(pc->indices()[0] + 1, -1);
-        if (FSPIndices_[pc->indices()[0]] < 0)
-            FSPIndices_[pc->indices()[0]] = index;
+    if (is_final_state_particle_combination(pc)) {
+        if (pc.indices()[0] + 1 > FSPIndices_.size())
+            FSPIndices_.resize(pc.indices()[0] + 1, -1);
+        if (FSPIndices_[pc.indices()[0]] < 0)
+            FSPIndices_[pc.indices()[0]] = index;
     }
 }
 
@@ -102,13 +102,13 @@ const std::vector<FourVector<double> > FourMomenta::finalStateMomenta(const Data
 }
 
 //-------------------------
-FourVector<double> FourMomenta::p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+FourVector<double> FourMomenta::p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return P_->value(d, symmetrizationIndex(pc));
 }
 
 //-------------------------
-double FourMomenta::m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+double FourMomenta::m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     return is_final_state_particle_combination(*pc) ?
         model()->finalStateParticles()[pc->indices()[0]]->mass()
@@ -140,7 +140,7 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
 }
 
 //-------------------------
-std::ostream& print_mp_string(std::ostream& os, unsigned n, unsigned m_p, std::shared_ptr<ParticleCombination> pc, double m, FourVector<double> p, double M = -1)
+std::ostream& print_mp_string(std::ostream& os, unsigned n, unsigned m_p, std::shared_ptr<const ParticleCombination> pc, double m, FourVector<double> p, double M = -1)
 {
     os << std::setw(n) << indices_string(*pc) << " : "
        << "m = " << std::setprecision(m_p) << m << " GeV/c^2";

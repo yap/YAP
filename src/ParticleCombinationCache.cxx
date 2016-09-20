@@ -19,7 +19,7 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_copy(
 
     // copy daughters (recursively) and add them
     for (auto& d : other.Daughters_)
-        pc->addDaughter(create_copy(*d));
+        std::const_pointer_cast<non_const_type>(pc)->addDaughter(*std::const_pointer_cast<non_const_type>(create_copy(*d)));
 
     return pc;
 }
@@ -30,7 +30,7 @@ ParticleCombinationCache::shared_ptr_type ParticleCombinationCache::create_compo
     auto pc = shared_ptr_type(new ParticleCombination());
 
     for (auto& d : D)
-        pc->addDaughter(create_copy(*d));
+        std::const_pointer_cast<non_const_type>(pc)->addDaughter(*std::const_pointer_cast<non_const_type>(create_copy(*d)));
 
     return pc;
 }
@@ -79,14 +79,14 @@ bool ParticleCombinationCache::consistent() const
 }
 
 //-------------------------
-std::ostream& print_daughters(std::ostream& os, const ParticleCombinationCache& C, std::shared_ptr<ParticleCombination> pc, unsigned ndig, std::string prefix, std::set<unsigned>& used)
+std::ostream& print_daughters(std::ostream& os, const ParticleCombinationCache& C, const ParticleCombination& pc, unsigned ndig, std::string prefix, std::set<unsigned>& used)
 {
-    for (auto& d : pc->daughters()) {
+    for (auto& d : pc.daughters()) {
         unsigned i = 0;
         for (auto& w : C) {
             if (!w.expired() and w.lock() == d) {
                 os << std::setfill('0') << std::setw(ndig) << i << " : " << prefix << *w.lock();
-                if (d->parent() != pc)
+                if (d->parent() != pc.shared_from_this())
                     os << " (parent unset)";
                 os << std::endl;
                 used.insert(i);
@@ -94,7 +94,7 @@ std::ostream& print_daughters(std::ostream& os, const ParticleCombinationCache& 
             }
             ++i;
         }
-        print_daughters(os, C, d, ndig, prefix + "    ", used);
+        print_daughters(os, C, *d, ndig, prefix + "    ", used);
     }
     return os;
 }
@@ -125,7 +125,7 @@ std::ostream& ParticleCombinationCache::print(std::ostream& os) const
             used.insert(i);
 
             // print daughters
-            print_daughters(os, *this, w.lock(), ndig, "    ", used);
+            print_daughters(os, *this, *w.lock(), ndig, "    ", used);
         }
 
         ++i;

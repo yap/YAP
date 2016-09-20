@@ -23,18 +23,16 @@
 
 #include <TTree.h>
 
-void unambiguous_importance_sampler_calculate(yap::ModelIntegral& M, bat_fit::Generator G, unsigned N, unsigned n, unsigned t)
-{ yap::ImportanceSampler::calculate(M, G, N, n, t); }
-
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
       FitData_(model()->createDataSet()),
       FitPartitions_(1, &FitData_),
+      IntegralData_(model()->createDataSet()),
+      IntegralPartitions_(1, &IntegralData_),
       NIntegrationPoints_(0),
       NIntegrationPointsBatchSize_(0),
       NIntegrationThreads_(1),
-      Integrator_(integrator_type(unambiguous_importance_sampler_calculate)),
       Integral_(*model()),
       FirstParameter_(-1),
       FirstObservable_(-1)
@@ -193,7 +191,10 @@ void bat_fit::setParameters(const std::vector<double>& p)
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    Integrator_(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
+    if (IntegrationPointGenerator_)
+        yap::ImportanceSampler::calculate(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
+    else
+        yap::ImportanceSampler::calculate(Integral_, IntegralPartitions_);
 
     // calculate fit fractions
     // if (!CalculatedFitFractions_.empty()) {
@@ -222,6 +223,8 @@ double bat_fit::LogAPrioriProbability(const std::vector<double>& p)
 {
     double logP = 0;
     for (size_t i = 0; i < FreeAmplitudes_.size(); ++i) {
+        if (GetParameter(i * 2).Fixed() or GetParameter(i * 2 + 1).Fixed())
+            continue;
         auto A = std::complex<double>(p[i * 2 + 0], p[i * 2 + 1]);
         logP += AbsPriors_[i]->GetLogPrior(abs(A))
             + ArgPriors_[i]->GetLogPrior(yap::deg(arg(A)))
@@ -313,12 +316,8 @@ void bat_fit::fix(std::shared_ptr<yap::FreeAmplitude> A, double amp, double phas
 {
     auto i = findFreeAmplitude(A);
     auto a = std::polar(amp, yap::rad(phase));
-    GetParameter(i).SetLimits(real(a) - 1, real(a) + 1);
     GetParameter(i).Fix(real(a));
-    GetParameter(i + 1).SetLimits(imag(a) - 1, imag(a) + 1);
     GetParameter(i + 1).Fix(imag(a));
-    GetObservable(i).SetLimits(std::max<double>(0, amp - 1), amp + 1);
-    GetObservable(i + 1).SetLimits(phase - 15, phase + 15);
 }
 
 //-------------------------

@@ -34,7 +34,7 @@ void BreitWigner::setParameters(const ParticleTableEntry& entry)
 }
 
 //-------------------------
-void BreitWigner::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
+void BreitWigner::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
     // common factor := M^2 - i * M * Gamma
     auto M2_iMG = pow(mass()->value(), 2) - Complex_i * mass()->value() * Width_->value();

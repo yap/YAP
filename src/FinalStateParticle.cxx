@@ -18,19 +18,19 @@ FinalStateParticle::FinalStateParticle(std::string name, const QuantumNumbers& q
 }
 
 //-------------------------
-void FinalStateParticle::addParticleCombination(const std::shared_ptr<ParticleCombination>& pc)
+void FinalStateParticle::addParticleCombination(const ParticleCombination& pc)
 {
     // pc must be final state particle
-    if (!is_final_state_particle_combination(*pc))
+    if (!is_final_state_particle_combination(pc))
         throw exceptions::Exception("pc is not final state particle", "FinalStateParticle::addParticleCombination");
 
     // if pc not already in particleCombinations vector, add it
-    if (particleCombinations().find(pc) == particleCombinations().end())
+    if (particleCombinations().find(pc.shared_from_this()) == particleCombinations().end())
         Particle::addParticleCombination(pc);
 }
 
 //-------------------------
-bool valid_final_state(const std::shared_ptr<ParticleCombination>& pc, const FinalStateParticleVector& FSPs)
+bool valid_final_state(const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs)
 {
     if (pc->indices().size() != FSPs.size())
         return false;

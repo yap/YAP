@@ -12,24 +12,24 @@
 namespace yap {
 
 //-------------------------
-void ParticleCombination::addDaughter(std::shared_ptr<ParticleCombination> daughter)
+void ParticleCombination::addDaughter(ParticleCombination& daughter)
 {
-    if (daughter->indices().empty())
+    if (daughter.indices().empty())
         throw exceptions::Exception("daughter contains no indices", "ParticleCombination::addDaughter");
 
     /// Check that new daughter does not share content with other daughters?
-    if (overlap(daughter->indices(), Indices_))
+    if (overlap(daughter.indices(), Indices_))
         throw exceptions::Exception("daughter overlaps with other daughters", "ParticleCombination::addDaughter");
 
     /// Check that new daughter doesn't already have parent set
-    if (daughter->parent())
+    if (daughter.parent())
         throw exceptions::Exception("daughter's parent is already set", "ParticleCombination::addDaughter");
 
     // set daughter's parent to shared_from_this
-    daughter->Parent_ = shared_from_this();
+    daughter.Parent_ = shared_from_this();
 
     // add daughter to vector
-    Daughters_.push_back(daughter);
+    Daughters_.push_back(daughter.shared_from_this());
 
     // copy daughter's indices into Indices_
     Indices_.insert(Indices_.end(), Daughters_.back()->indices().begin(), Daughters_.back()->indices().end());

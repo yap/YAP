@@ -53,7 +53,7 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(Model& m, unsigned two_J, const Spi
 
 //-------------------------
 const std::complex<double> HelicitySpinAmplitude::calc(int two_M, const SpinProjectionVector& two_m,
-        const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+        const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     // helicity angles
     double phi   = model()->helicityAngles()->phi(d, pc);

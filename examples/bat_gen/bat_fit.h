@@ -67,6 +67,14 @@ public:
     yap::DataPartitionVector& fitPartitions()
     { return FitPartitions_; }
 
+    /// \return IntegralData_
+    yap::DataSet& integralData()
+    { return IntegralData_; }
+
+    /// \return IntegralPartitions_
+    yap::DataPartitionVector& integralPartitions()
+    { return IntegralPartitions_; }
+
     /// set parameters of integration
     /// \param N number of points to use for integration
     /// \param n batch size for integration
@@ -81,14 +89,6 @@ public:
     /// \return IntegrationPointGenerator_
     Generator& integrationPointGenerator()
     { return IntegrationPointGenerator_; }
-
-    /// \typedef integrator_type
-    /// convienence typedef
-    using integrator_type = std::function<void(yap::ModelIntegral&, Generator, unsigned, unsigned, unsigned)>;
-
-    /// \return the integrator
-    integrator_type& integrator()
-    { return Integrator_; }
 
     /// init size of CalculatedFitFractions_
     void MCMCUserInitialize() override;
@@ -111,6 +111,12 @@ protected:
     /// Partitioning of FitData_
     yap::DataPartitionVector FitPartitions_;
 
+    /// DataSet to fit the model to
+    yap::DataSet IntegralData_;
+
+    /// Partitioning of FitData_
+    yap::DataPartitionVector IntegralPartitions_;
+
     /// Number of points to integrate with
     unsigned NIntegrationPoints_;
 
@@ -122,9 +128,6 @@ protected:
 
     /// generator for integration
     Generator IntegrationPointGenerator_;
-
-    /// function to integrate using
-    integrator_type Integrator_;
 
     /// stores integral result
     yap::ModelIntegral Integral_;
@@ -169,5 +172,4 @@ size_t load_data(yap::DataSet& data, const yap::Model& M,
 
 /// find mass axes from TTree of parameters
 std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars);
-
 #endif

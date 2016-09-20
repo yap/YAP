@@ -91,7 +91,7 @@ protected:
     virtual void registerWithModel();
 
     /// Add particle combination
-    virtual void addParticleCombination(std::shared_ptr<ParticleCombination> c);
+    virtual void addParticleCombination(const ParticleCombination& c);
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
     virtual void pruneParticleCombinations();

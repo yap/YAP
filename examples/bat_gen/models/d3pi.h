@@ -35,6 +35,7 @@
 #include <SpinAmplitudeCache.h>
 
 #include <BAT/BCGaussianPrior.h>
+#include <BAT/BCSplitGaussianPrior.h>
 
 #include <complex>
 #include <memory>
@@ -86,6 +87,11 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     f_0_1500->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1500, piPlus);
 
+    /* // f_0_fake */
+    /* auto f_0_fake = Resonance::create("f_0_fake", F["f_0"], radialSize, make_unique<RelativisticBreitWigner>(1.10, 0.1)); */
+    /* f_0_fake->addChannel(piPlus, piMinus); */
+    /* D->addChannel(f_0_fake, piPlus); */
+
     // sigma a.k.a. f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
     sigma->addChannel(piPlus, piMinus);
@@ -101,6 +107,8 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     *free_amplitude(*M, to(f_0_1500)) = polar(1.1, rad(-44.));
     *free_amplitude(*M, to(sigma))    = polar(3.7, rad(-3.));
 
+    /* *free_amplitude(*M, to(f_0_fake)) = polar(1., 60.); */
+
     return M;
 }
 
@@ -112,14 +120,30 @@ inline bat_fit d3pi_fit(string name, unique_ptr<Model> M, vector<vector<unsigned
 
     for (const auto& p : particles(*m.model(), is_resonance)) {
         auto fa = free_amplitude(*m.model(), to(p));
+        m.setPriors(fa, new ConstantPrior(0, 5), new ConstantPrior(-180, 180));
+        m.setRealImagRanges(fa, -5, 5, -5, 5);
+        m.setAbsArgRanges(fa, 0, 5, -180, 180);
         if (is_rho(*p))
             m.fix(fa, real(fa->value()), imag(fa->value()));
-        else {
-            m.setPriors(fa, new ConstantPrior(0, 5), new ConstantPrior(-180, 180));
-            m.setRealImagRanges(fa, -5, 5, -5, 5);
-            m.setAbsArgRanges(fa, 0, 5, -180, 180);
-        }
     }
+
+    auto f_0_1370 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(1370)")));
+    m.addParameter("mass(f_0(1370))", static_pointer_cast<BreitWigner>(f_0_1370->massShape())->mass(), 1.2, 1.5);
+    m.GetParameters().Back().SetPriorConstant();
+    m.addParameter("width(f_0(1370))", static_pointer_cast<BreitWigner>(f_0_1370->massShape())->width(), .2, .5);
+    m.GetParameters().Back().SetPriorConstant();
+
+    auto f_0_1500 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(1500)")));
+    m.addParameter("mass(f_0(1500))", static_pointer_cast<BreitWigner>(f_0_1500->massShape())->mass(), 1.475, 1.535);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(1.505, 6e-3));
+    m.addParameter("width(f_0(1500))", static_pointer_cast<BreitWigner>(f_0_1500->massShape())->width(), .075, .143);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(0.109, 7e-3));
+
+    auto f_2 = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
+    m.addParameter("mass(f_2)", static_pointer_cast<BreitWigner>(f_2->massShape())->mass(), 1.270, 1.280);
+    m.GetParameters().Back().SetPrior(new BCGaussianPrior(1.2751, 1.2e-3));
+    m.addParameter("width(f_2)", static_pointer_cast<BreitWigner>(f_2->massShape())->width(), .170, .200);
+    m.GetParameters().Back().SetPrior(new BCSplitGaussianPrior(0.185, 2.4e-3, 2.9e-3));
 
     /* auto rho = dynamic_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0"))); */
     /* m.addParameter("rho_mass", static_pointer_cast<BreitWigner>(rho->massShape())->mass(), 0.5, 1.2); */

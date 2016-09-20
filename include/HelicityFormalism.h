@@ -59,7 +59,7 @@ public:
     /// \param pc ParticleCombination to retrieve value for
     /// \param two_M 2 * spin projection of parent
     /// \param two_m SpinProjectionVector of daughters
-    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+    virtual const std::complex<double> amplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                                          int two_M, const SpinProjectionVector& two_m) const override
     { return (initialTwoJ() == 0) ? Coefficients_.at(two_m) : SpinAmplitude::amplitude(d, pc, two_M, two_m); }
 
@@ -75,7 +75,7 @@ public:
     /// \param d DataPoint to retrieve data from for calculation
     /// \param pc ParticleCombination to calculate for
     virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
-                                            const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const override;
+                                            const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override

@@ -36,7 +36,7 @@ void PoleMass::setParameters(const ParticleTableEntry& entry)
 }
 
 //-------------------------
-void PoleMass::calculateT(DataPartition& D, const std::shared_ptr<ParticleCombination>& pc, unsigned si) const
+void PoleMass::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
     auto M2 = pow(Mass_->value(), 2);
 

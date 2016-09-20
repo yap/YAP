@@ -125,7 +125,7 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
             // ParticleCombinationCache::composite copies all elts of
             // pcv setting the parents of all copies to the newly
             // created ParticleCombination
-            addParticleCombination(const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite(pcv));
+            addParticleCombination(*const_cast<Model*>(static_cast<const DecayChannel*>(this)->model())->particleCombinationCache().composite(pcv));
 
         // increment the "odometer":
         // increment first iterator
@@ -149,21 +149,21 @@ DecayChannel::DecayChannel(const ParticleVector& daughters) :
 }
 
 //-------------------------
-void DecayChannel::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void DecayChannel::addParticleCombination(const ParticleCombination& pc)
 {
     // check number of daughters in pc
-    if (pc->daughters().size() != Daughters_.size())
+    if (pc.daughters().size() != Daughters_.size())
         throw exceptions::Exception("ParticleCombination has wrong number of daughters ("
-                                    + std::to_string(pc->daughters().size()) + " != "
+                                    + std::to_string(pc.daughters().size()) + " != "
                                     + std::to_string(Daughters_.size()) + ")",
                                     "DecayChannel::addParticleCombination");
 
-    ParticleCombinations_.insert(pc);
+    ParticleCombinations_.insert(pc.shared_from_this());
 
     // add pc's daughters to daughter particles;
     // pc's daughters have their parents set correctly.
-    for (size_t i = 0; i < pc->daughters().size(); ++i)
-        Daughters_[i]->addParticleCombination(pc->daughters()[i]);
+    for (size_t i = 0; i < pc.daughters().size(); ++i)
+        Daughters_[i]->addParticleCombination(*pc.daughters()[i]);
 
     // add to SpinAmplitude's
     for (auto& sa : SpinAmplitudes_)
@@ -237,7 +237,7 @@ void DecayChannel::addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa)
 
     // add this' ParticleCombination's to it
     for (auto& pc : particleCombinations())
-        SpinAmplitudes_.back()->addParticleCombination(pc);
+        SpinAmplitudes_.back()->addParticleCombination(*pc);
 }
 
 //-------------------------

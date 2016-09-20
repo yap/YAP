@@ -76,7 +76,7 @@ public:
     { return Daughters_; }
 
     /// get parent (const)
-    std::shared_ptr<ParticleCombination> parent() const
+    std::shared_ptr<const ParticleCombination> parent() const
     { return Parent_.lock(); }
 
     /// @}
@@ -91,12 +91,12 @@ protected:
 
     /// Add daughter ParticleCombination
     /// \param daughter Shared pointer to ParticleCombination object representing a daughter
-    void addDaughter(std::shared_ptr<ParticleCombination> daughter);
+    void addDaughter(ParticleCombination& daughter);
 
 private:
 
     /// Parent of the particle combination.
-    std::weak_ptr<ParticleCombination> Parent_;
+    std::weak_ptr<const ParticleCombination> Parent_;
 
     /// vector of daughters
     ParticleCombinationVector Daughters_;

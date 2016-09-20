@@ -35,7 +35,7 @@ namespace yap {
 /// \param isp_mass initial-state mass
 /// \param pc shared_ptr to ParticleCombination to get mass range for
 /// \param FSP FinalStateParticles of the ISP to calculate with
-const MassRange mass_range(double isp_mass, const std::shared_ptr<ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
+const MassRange mass_range(double isp_mass, const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
 
 /// \return mass range for MassAxes inside decay of ISP to FSPs
 /// \param isp_mass initial-state mass

@@ -41,8 +41,11 @@ public:
     /// \name helper types
     /// @{
 
-    /// object_type
+    /// object type
     using type = T;
+
+    /// non-const object type
+    using non_const_type = typename std::remove_const<type>::type;
 
     /// shared_ptr_type
     /// \brief std::shared_ptr to T

@@ -64,18 +64,18 @@ public:
     /// Access 4-momenta (const)
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return 4-momentum of
-    FourVector<double> p(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    FourVector<double> p(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// Access invariant mass squared
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return squared mass of
-    double m2(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+    double m2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
     { return pow(m(d, pc), 2); }
 
     /// Access invariant mass
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
-    double m(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const;
+    double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
 
     /// \return total four-momentum (const)
     /// \param d DataPoint to get data from
@@ -84,22 +84,6 @@ public:
     /// \return vector of final-state four-momenta (const)
     /// \param d DataPoint to get data from
     const std::vector<FourVector<double> > finalStateMomenta(const DataPoint& d) const;
-
-    /// \return masses
-    std::shared_ptr<RealCachedValue> mass()
-    { return M_; }
-
-    /// \return masses (const)
-    std::shared_ptr<RealCachedValue> mass() const
-    { return M_; }
-
-    /// \return momentum
-    std::shared_ptr<FourVectorCachedValue> momentum()
-    { return P_; }
-
-    /// \return momentum (const)
-    std::shared_ptr<FourVectorCachedValue> momentum() const
-    { return P_; }
 
     /// @}
 
@@ -121,7 +105,7 @@ protected:
     void setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<double> >& P, StatusManager& sm) const;
 
     /// looks for ISP when adding ParticleCombination's
-    void addParticleCombination(std::shared_ptr<ParticleCombination> pc) override;
+    void addParticleCombination(const ParticleCombination& pc) override;
 
     /// override to do nothing, since FourMomenta doesn't rely on parents being set.
     void pruneSymmetrizationIndices() override

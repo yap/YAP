@@ -105,13 +105,13 @@ ZemachSpinAmplitude::ZemachSpinAmplitude(Model& m, unsigned two_J, const SpinVec
 }
 
 //-------------------------
-void ZemachSpinAmplitude::addParticleCombination(std::shared_ptr<ParticleCombination> pc)
+void ZemachSpinAmplitude::addParticleCombination(const ParticleCombination& pc)
 {
-    if (pc->indices().size() > 2) SpinAmplitude::addParticleCombination(pc);
+    if (pc.indices().size() > 2) SpinAmplitude::addParticleCombination(pc);
 }
 
 //-------------------------
-const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc,
+const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
                                                           int two_M, const SpinProjectionVector& two_m) const
 {
     return (twoS() == 0 or pc->indices().size() < 3) ? 1. : SpinAmplitude::amplitude(d, pc, two_M, two_m);
@@ -119,7 +119,7 @@ const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, co
 
 //-------------------------
 const std::complex<double> ZemachSpinAmplitude::calc(int two_M, const SpinProjectionVector& two_m,
-        const DataPoint& d, const std::shared_ptr<ParticleCombination>& pc) const
+        const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     if (pc->indices().size() < 3)
         return 1.;
