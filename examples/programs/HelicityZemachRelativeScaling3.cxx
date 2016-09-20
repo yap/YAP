@@ -50,7 +50,7 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     auto AB1 = yap::Resonance::create("AB1", yap::QuantumNumbers(2*L, 0), 3., std::make_shared<yap::BreitWigner>(1.000, 0.025));
     AB1->addChannel(A, B);
     D->addChannel(AB1, C);
-    *free_amplitude(*D, yap::to(AB1)) = yap::Complex_1;
+    *free_amplitude(*D, yap::to(AB1)) = 1;
 
     M.addInitialStateParticle(D);
 
