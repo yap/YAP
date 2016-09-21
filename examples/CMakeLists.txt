@@ -6,6 +6,7 @@ add_custom_target(examples
 	DEPENDS
   	${CMAKE_CURRENT_BINARY_DIR}/bat_gen/runBatGen
   	${CMAKE_CURRENT_BINARY_DIR}/bat_gen/runBatFit
+  	${CMAKE_CURRENT_BINARY_DIR}/bat_gen/runBatFitFractions
   	${CMAKE_CURRENT_BINARY_DIR}/bat_gen/runBatFitFitFractions
 	${CMAKE_CURRENT_BINARY_DIR}/programs/D3piTest 
 	${CMAKE_CURRENT_BINARY_DIR}/programs/D4piTest 
