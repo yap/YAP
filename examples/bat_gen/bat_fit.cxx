@@ -78,6 +78,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
         for (const auto& dt : b2_dtvi.second.decayTrees()) {
             DecayTrees_.push_back(dt);
             AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()) + ")" + std::to_string(i++), 0, 1.1);
+            GetObservables().Back().SetNbins(1000);
         }
     // }
 
@@ -154,6 +155,7 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
 
     unsigned long long n_entries = t_mcmc.GetEntries();
 
+
     if (N < 0)
         // attempt to load all data
         N = n_entries;
@@ -195,7 +197,7 @@ size_t load_data(yap::DataSet& data, const yap::Model& M, const yap::MassAxes& A
             LOG(INFO) << "Total data size now " << data.size() << " points (" << (data.bytes() * 1.e-6) << " MB)";
     }
 
-    if (size_t(data.size() - old_size) < N)
+    if (int(data.size() - old_size) < N)
         LOG(WARNING) << "could not load as many data points as requested. Reduce the lag (or set it to -1 to automatically determine the lag).";
 
     return data.size() - old_size;
