@@ -84,19 +84,16 @@ inline std::unique_ptr<Model> d4pi()
 
     // a_1 -> rho pi
     for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(0))) {
-        /// \todo has 3 amplitudes for 3 spin projections
         // S wave
         *f = 1;
-        //f->variableStatus() = VariableStatus::fixed;
+        // will be fixed in d4pi_fit
     }
     for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(1))) {
-        /// \todo has 3 amplitudes for 3 spin projections
         // P wave
         *f = 0.;
         f->variableStatus() = VariableStatus::fixed;
     }
     for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(2))) {
-        /// \todo has 3 amplitudes for 3 spin projections
         // D wave
         *f = std::polar(0.241, rad(82.));
     }
@@ -104,10 +101,8 @@ inline std::unique_ptr<Model> d4pi()
     // a_1 -> sigma pi 
     for (auto& f : free_amplitudes(*a_1, to(sigma)))
         *f = std::polar(0.439, rad(193.));
-    
+
     // f_0(980) (as Flatte)
-    auto piZero = F.fsp(111);
-    auto Kshort = F.fsp(310);
     auto f_0_980_flatte = std::make_shared<Flatte>();
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
@@ -162,6 +157,13 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
 {
     bat_fit m(name, d4pi(), pcs);
 
+
+    /*auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
+    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
+    auto fa = free_amplitude(*D, to(f_0));
+    m.fix(fa, abs(fa->value()), deg(arg(fa->value())));*/
+
+
     // find particles
     auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
     auto rho   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
@@ -174,7 +176,6 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
     auto fixed_amps = free_amplitudes(*a_1, to(rho), l_equals(0));
     for (auto fa : fixed_amps) {
         LOG(INFO) << "must fix fa " << fa << " " << to_string(*fa);
-        //m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
     }
 
     LOG(INFO) << "setting priors";
@@ -234,7 +235,7 @@ inline fit_fitFraction d4pi_fit_fitFraction()
 
     // set free amplitude parameters of fit
     m.fix(free_amplitude(*D, yap::from(D), yap::to(a_1)), 1., 0.);
-    m.fix(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(1)), 0., 0.);
+    //m.fix(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(1)), 0., 0.);
     m.setPriors(free_amplitude(*D, yap::from(a_1), yap::to(rho), yap::l_equals(2)), new BCGaussianPrior(0.241, quad(0.033, 0.024)), new BCGaussianPrior( 82., quad(5.,   4.)));
 
     m.setPriors(free_amplitude(*D, yap::from(D), yap::to(f_0), yap::l_equals(0)), new BCGaussianPrior(0.493, quad(0.026, 0.021)), new BCGaussianPrior(193., quad(4.,   4.)));
