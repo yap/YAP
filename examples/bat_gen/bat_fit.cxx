@@ -73,7 +73,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
     //                         [](int n, const yap::IntegralMap::value_type& v)
     //                         {return n + v.second.decayTrees().size();});
     // if (N > 1) {
-    unsigned i(0);
+    unsigned i(0); // running index to avoid name collisions
     for (const auto& b2_dtvi : Integral_.integrals())
         for (const auto& dt : b2_dtvi.second.decayTrees()) {
             DecayTrees_.push_back(dt);
