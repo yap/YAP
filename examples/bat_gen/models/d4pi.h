@@ -97,6 +97,10 @@ inline std::unique_ptr<Model> d4pi()
         // D wave
         *f = std::polar(0.241, rad(82.));
     }
+    /**free_amplitude(*a_1, to(rho), l_equals(0)) = 1;
+    *free_amplitude(*a_1, to(rho), l_equals(1)) = 0.;
+    free_amplitude(*a_1, to(rho), l_equals(1))->variableStatus() = VariableStatus::fixed;
+    *free_amplitude(*a_1, to(rho), l_equals(2)) = std::polar(0.241, rad(82.));*/
 
     // a_1 -> sigma pi 
     for (auto& f : free_amplitudes(*a_1, to(sigma)))
@@ -114,7 +118,7 @@ inline std::unique_ptr<Model> d4pi()
     f_2->addChannel(piPlus, piMinus); 
     
     // pi+ pi- flat
-    auto pipiFlat = F.decayingParticle(F.pdgCode("pi0"), radialSize); // just need any spin0 particle
+    auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), radialSize);
     pipiFlat->addChannel(piPlus, piMinus);   
     
     //
@@ -174,12 +178,12 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
 
 
     auto fixed_amps = free_amplitudes(*a_1, to(rho), l_equals(0));
-    for (auto fa : fixed_amps) {
+    for (const auto& fa : fixed_amps) {
         LOG(INFO) << "must fix fa " << fa << " " << to_string(*fa);
     }
 
     LOG(INFO) << "setting priors";
-    for (auto fa : m.freeAmplitudes()) {
+    for (const auto& fa : m.freeAmplitudes()) {
         LOG(INFO) << "checking fa " <<  fa << " " << to_string(*fa);
         if (std::find(fixed_amps.begin(), fixed_amps.end(), fa) != fixed_amps.end()) {
             m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
