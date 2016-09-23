@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/pdigiglio/YAP.svg?branch=travisCI-cfg)](https://travis-ci.org/pdigiglio/YAP)
+[![Build Status](https://travis-ci.org/yap/YAP.svg?branch=master)](https://travis-ci.org/yap/YAP)
 
 # YAP
 Yet Another Partial Wave Analysis Toolkit
