@@ -103,8 +103,7 @@ inline std::unique_ptr<Model> d4pi()
     *free_amplitude(*a_1, to(rho), l_equals(2)) = std::polar(0.241, rad(82.));*/
 
     // a_1 -> sigma pi 
-    for (auto& f : free_amplitudes(*a_1, to(sigma)))
-        *f = std::polar(0.439, rad(193.));
+    *free_amplitude(*a_1, to(sigma)) = std::polar(0.439, rad(193.));
 
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<Flatte>();
@@ -148,7 +147,7 @@ inline std::unique_ptr<Model> d4pi()
     for (unsigned l = 0; l < 3; ++l) {
         auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
         LOG(INFO) << to_string(*freeAmp);
-        *freeAmp = std::complex<double>(c[l]);
+        *freeAmp = static_cast<std::complex<double> >(c[l]);
     }
     
     LOG(INFO) << "D Decay trees:";
