@@ -103,7 +103,7 @@ public:
     size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
 
     /// \return free amplitudes
-    const yap::FreeAmplitudeVector freeAmplitudes() const
+    const yap::FreeAmplitudeVector& freeAmplitudes() const
     { return FreeAmplitudes_; }
 
 protected:

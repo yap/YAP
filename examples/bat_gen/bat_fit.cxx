@@ -23,6 +23,8 @@
 
 #include <TTree.h>
 
+#include <algorithm>
+
 // -----------------------
 bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vector<std::vector<unsigned> >& pcs)
     : bat_yap_base(name, std::move(M)),
@@ -73,11 +75,16 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
     //                         [](int n, const yap::IntegralMap::value_type& v)
     //                         {return n + v.second.decayTrees().size();});
     // if (N > 1) {
-    unsigned i(0); // running index to avoid name collisions
     for (const auto& b2_dtvi : Integral_.integrals())
         for (const auto& dt : b2_dtvi.second.decayTrees()) {
             DecayTrees_.push_back(dt);
-            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()) + ")" + std::to_string(i++), 0, 1.1);
+
+            std::string str = "fit_frac(" + to_string(*dt) + ")";
+            std::replace(str.begin(), str.end(), '-', 'm'); // - will be omitted by BATs "safe name", and when decay channels only differ in some spin projections (-1 vs 1), the safe name would be identical
+            std::replace(str.begin(), str.end(), '\n', ';'); // make into one line
+            std::replace(str.begin(), str.end(), '\t', ' ');
+
+            AddObservable(str, 0, 1.1);
             GetObservables().Back().SetNbins(1000);
         }
     // }
@@ -293,10 +300,8 @@ size_t bat_fit::findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const
 {
     auto it = std::find(FreeAmplitudes_.begin(), FreeAmplitudes_.end(), A);
 
-    if (it == FreeAmplitudes_.end()) {
-        LOG(INFO) << "did not find amplitude " << A;
+    if (it == FreeAmplitudes_.end())
         throw yap::exceptions::Exception("FreeAmplitude not found", "setPrior");
-    }
 
     return (it - FreeAmplitudes_.begin()) * 2;
 }
