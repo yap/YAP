@@ -36,11 +36,24 @@ int main()
 {
     yap::plainLogs(el::Level::Info);
 
-    // open file
-    std::string model_name = "D3PI";
-    // std::string model_name = "DKKPI";
-    // std::string model_name = "D4PI";
+    unsigned i_model = 0;
 
+    std::string model_name;
+    switch (i_model) {
+        case 0:
+            model_name = "D3PI";
+            break;
+        case 1:
+            model_name = "DKKPI";
+            break;
+        case 2:
+            model_name = "D4PI";
+            break;
+        default:
+            LOG(ERROR) << "No model loaded";
+    }
+
+    // open file
     auto file = TFile::Open(("output/" + model_name + "_mcmc.root").data(), "READ");
     if (file->IsZombie())
         throw yap::exceptions::Exception("could not open file", "main");
@@ -58,21 +71,22 @@ int main()
     // create model
     bat_fit* m;
     double D_mass(0);
-
-    if (model_name == "D3PI") {
-        m = new bat_fit(d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars)));
-        D_mass = 1.86961; // D+
+    switch (i_model) {
+        case 0:
+            m = new bat_fit(d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>(), find_mass_axes(*t_pars)));
+            D_mass = 1.86961; // D+
+            break;
+        case 1:
+            m = new bat_fit(dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars)));
+            D_mass = 1.86961; // D+
+            break;
+        case 2:
+            m = new bat_fit(d4pi_fit(model_name + "_fit"));
+            D_mass = 1.8648400; // D0
+            break;
+        default:
+            LOG(ERROR) << "No model loaded";
     }
-    else if (model_name == "DKKPI") {
-        m = new bat_fit(dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>(), find_mass_axes(*t_pars)));
-        D_mass = 1.86961; // D+
-    }
-    else if (model_name == "D4PI") {
-        m = new bat_fit(d4pi_fit(model_name + "_fit"));
-        D_mass = 1.8648400; // D0
-    }
-    else
-        LOG(ERROR) << "No model loaded";
 
     // load fit data and partition it
     LOG(INFO) << "Load data";
@@ -160,6 +174,8 @@ int main()
     // // close log file
     BCLog::OutSummary("Exiting");
     BCLog::CloseLog();
+
+    delete m;
 
     return 0;
 }

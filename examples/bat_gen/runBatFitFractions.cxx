@@ -37,28 +37,32 @@ int main()
 {
     yap::plainLogs(el::Level::Info);
 
-    std::string model_name = "D3PI";
-    // std::string model_name = "DKKPI";
-    // std::string model_name = "D4PI";
+    unsigned i_model = 0;
 
     // create model
+    std::string model_name;
     bat_fit* m;
     double D_mass(0);
 
-    if (model_name == "D3PI") {
-        m = new bat_fit(d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>()));
-        D_mass = 1.86961; // D+
+    switch (i_model) {
+        case 0:
+            model_name = "D3PI";
+            m = new bat_fit(d3pi_fit(model_name + "_fit", yap_model<yap::ZemachFormalism>()));
+            D_mass = 1.86961; // D+
+            break;
+        case 1:
+            model_name = "DKKPI";
+            m = new bat_fit(dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>()));
+            D_mass = 1.86961; // D+
+            break;
+        case 2:
+            model_name = "D4PI";
+            m = new bat_fit(d4pi_fit("D4pi_fit"));
+            D_mass = 1.8648400; // D0
+            break;
+        default:
+            LOG(ERROR) << "No model loaded";
     }
-    else if (model_name == "DKKPI") {
-        m = new bat_fit(dkkpi_fit(model_name + "_fit", yap_model<yap::HelicityFormalism>()));
-       D_mass = 1.86961; // D+
-    }
-    else if (model_name == "D4PI") {
-        m = new bat_fit(d4pi_fit("D4pi_fit"));
-        D_mass = 1.8648400; // D0
-    }
-    else
-        LOG(ERROR) << "No model loaded";
 
     // get FSP mass ranges
     auto m2r = yap::squared(mass_range(D_mass, m->axes(), m->model()->finalStateParticles()));
@@ -89,6 +93,7 @@ int main()
         }
     }
 
+    delete m;
 
     return 0;
 }
