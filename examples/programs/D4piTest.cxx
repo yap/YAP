@@ -66,19 +66,19 @@ int main( int argc, char** argv)
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addChannel(piPlus, piMinus);
 
-    // omega
-    auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
-    omega->addChannel(piPlus, piMinus);
+    // // omega
+    // auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
+    // omega->addChannel(piPlus, piMinus);
 
     // a_1
     auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    a_1->addChannel(sigma, piPlus);
+    // a_1->addChannel(sigma, piPlus);
     a_1->addChannel(rho,   piPlus);
 
     // D's channels
     D->addChannel(rho, rho);
-    D->addChannel(omega, omega);
-    D->addChannel(rho, omega);
+    // D->addChannel(omega, omega);
+    // D->addChannel(rho, omega);
     D->addChannel(a_1, piMinus);
     D->addChannel(sigma, piPlus, piMinus);
     D->addChannel(piPlus, piMinus, piPlus, piMinus);
@@ -218,7 +218,11 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << to_string(D->decayTrees());
+    LOG(INFO) << std::endl << to_string(D->decayTrees());
 
+    LOG(INFO) << std::endl << "Free amplitudes: ";
+    for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
+        LOG(INFO) << yap::to_string(*fa);
+    
     std::cout << "alright! \n";
 }
