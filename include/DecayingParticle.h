@@ -21,16 +21,13 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
-#include "fwd/AmplitudeComponent.h"
 #include "fwd/BlattWeisskopf.h"
-#include "fwd/DataAccessor.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
-#include "fwd/SpinAmplitude.h"
 
 #include "Particle.h"
 
