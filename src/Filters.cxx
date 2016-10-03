@@ -21,6 +21,12 @@ const bool filter_free_amplitude::operator()(const DecayTree& dt) const
 }
 
 //-------------------------
+const bool filter_parameter::operator()(const FreeAmplitude& fa) const
+{
+    return operator()(static_cast<const ParameterBase&>(fa));
+}
+
+//-------------------------
 const bool filter_decay_channel::operator()(const FreeAmplitude& fa) const
 {
     return by_ptr(*this, fa.decayChannel());
@@ -154,6 +160,18 @@ const bool has_mass::operator()(const MassShape& m) const
     if (dynamic_cast<const MassShapeWithNominalMass*>(&m))
         return operator()(*static_cast<const MassShapeWithNominalMass*>(&m));
     return false;
+}
+
+//-------------------------
+const bool is_fixed::operator()(const ParameterBase& p) const
+{
+    return p.variableStatus() == VariableStatus::fixed;
+}
+
+//-------------------------
+const bool is_not_fixed::operator()(const ParameterBase& p) const
+{
+    return p.variableStatus() != VariableStatus::fixed;
 }
 
 }

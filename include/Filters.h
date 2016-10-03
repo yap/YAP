@@ -30,6 +30,7 @@
 #include "fwd/FreeAmplitude.h"
 #include "fwd/MassShape.h"
 #include "fwd/MassShapeWithNominalMass.h"
+#include "fwd/Parameter.h"
 #include "fwd/Particle.h"
 #include "fwd/Resonance.h"
 #include "fwd/SpinAmplitude.h"
@@ -103,6 +104,18 @@ struct filter_free_amplitude : public filter_decay_tree {
 
     /// FreeAmplitude functor
     virtual const bool operator()(const FreeAmplitude& fa) const = 0;
+};
+
+/// \class filter_parameter
+/// \brief helper base class for functor classes that can filter Parameter's
+struct filter_parameter : public filter_free_amplitude {
+    using filter_free_amplitude::operator();
+    
+    /// FreeAmplitude functor
+    virtual const bool operator()(const FreeAmplitude& fa) const override;
+
+    /// Parameter functor
+    virtual const bool operator()(const ParameterBase& p) const = 0;
 };
 
 /// \class filter_decay_channel
@@ -193,9 +206,12 @@ class has_decay_channel : public filter_decay_channel, public filter_decaying_pa
 {
 public:
     /// constructor;
-    /// takes a pointer so that checking against nullptr is possible
-    has_decay_channel(const DecayChannel* dc)
+    explicit has_decay_channel(const DecayChannel* dc)
         : filter_decay_channel(), filter_decaying_particle(), DecayChannel_(dc) {}
+
+    /// constructor;
+    explicit has_decay_channel(const DecayChannel& dc)
+        : filter_decay_channel(), filter_decaying_particle(), DecayChannel_(&dc) {}
 
     using filter_decay_channel::operator();
     using filter_decaying_particle::operator();
@@ -229,9 +245,12 @@ class has_spin_amplitude : public filter_spin_amplitude
 {
 public:
     /// Constructor;
-    /// takes a pointer so that checking against nullptr is possible
-    has_spin_amplitude(const SpinAmplitude* sa)
+    explicit has_spin_amplitude(const SpinAmplitude* sa)
         : filter_spin_amplitude(), SpinAmplitude_(sa) {}
+
+        /// Constructor;
+    explicit has_spin_amplitude(const SpinAmplitude& sa)
+        : filter_spin_amplitude(), SpinAmplitude_(&sa) {}
 
     using filter_spin_amplitude::operator();
 
@@ -263,7 +282,7 @@ public:
 
     /// constructor
     /// \param daughters Daughter particles to check for
-    to(const ParticleVector& daughters)
+    explicit to(const ParticleVector& daughters)
         : filter_decay_channel(), filter_decaying_particle(), Daughters_(daughters)
     {
         if (std::any_of(Daughters_.begin(), Daughters_.end(), std::logical_not<ParticleVector::value_type>()))
@@ -272,7 +291,7 @@ public:
 
     /// constructor (variadic)
     template <typename ... Others>
-    to(std::shared_ptr<Particle> A, Others ... others)
+    explicit to(std::shared_ptr<Particle> A, Others ... others)
         : filter_decay_channel(), filter_decaying_particle()
     {
         Daughters_ = {A, others...};
@@ -303,11 +322,11 @@ class exactly_to : public to
 public:
     /// constructor
     /// \param daughters Daughter particles to check for
-    exactly_to(const ParticleVector& daughters) : to(daughters) {}
+    explicit exactly_to(const ParticleVector& daughters) : to(daughters) {}
 
     /// constructor (variadic)
     template <typename ... Others>
-    exactly_to(const ParticleVector::value_type& A, Others ... others)
+    explicit exactly_to(const ParticleVector::value_type& A, Others ... others)
         : to(A, others...) {}
 
     using to::operator();
@@ -323,7 +342,7 @@ class l_equals : public filter_spin_amplitude
 public:
 
     /// constructor
-    l_equals(unsigned l) : filter_spin_amplitude(), L_(l) {}
+    explicit l_equals(unsigned l) : filter_spin_amplitude(), L_(l) {}
 
     using filter_spin_amplitude::operator();
 
@@ -344,7 +363,7 @@ class m_equals : filter_free_amplitude
 public:
 
     /// constructor
-    m_equals(int two_m) : filter_free_amplitude(), TwoM_(two_m) {}
+    explicit m_equals(int two_m) : filter_free_amplitude(), TwoM_(two_m) {}
 
     using filter_free_amplitude::operator();
 
@@ -364,7 +383,7 @@ class is_named
 {
 public:
     /// constructor
-    is_named(std::string name) : Name_(name) {}
+    explicit is_named(std::string name) : Name_(name) {}
 
     /// functor
     template <typename T>
@@ -382,8 +401,12 @@ class has_decay_tree : public filter_decaying_particle, public filter_decay_tree
 {
 public:
     /// constructor
-    has_decay_tree(const DecayTree* dt)
+    explicit has_decay_tree(const DecayTree* dt)
         : filter_decaying_particle(), filter_decay_tree(), DecayTree_(dt) {}
+
+    /// constructor
+    explicit has_decay_tree(const DecayTree& dt)
+        : filter_decaying_particle(), filter_decay_tree(), DecayTree_(&dt) {}
 
     using filter_decaying_particle::operator();
     using filter_decay_tree::operator();
@@ -414,8 +437,12 @@ class has_free_amplitude : public filter_decaying_particle, public filter_free_a
 {
 public:
     /// constructor
-    has_free_amplitude(const FreeAmplitude* fa)
+    explicit has_free_amplitude(const FreeAmplitude* fa)
         : filter_decaying_particle(), filter_free_amplitude(), FreeAmplitude_(fa) {}
+
+    /// constructor
+    explicit has_free_amplitude(const FreeAmplitude& fa)
+        : filter_decaying_particle(), filter_free_amplitude(), FreeAmplitude_(&fa) {}
 
     using filter_decaying_particle::operator();
     using filter_free_amplitude::operator();
@@ -449,11 +476,11 @@ class from : public filter_decay_channel, public filter_particle
 {
 public:
     /// Constructor
-    from(const DecayingParticle& dp)
+    explicit from(const DecayingParticle& dp)
         : filter_decay_channel(), filter_particle(), DecayingParticle_(&dp) {}
 
     /// Constructor
-    from(const std::shared_ptr<DecayingParticle>& dp)
+    explicit from(const std::shared_ptr<DecayingParticle>& dp)
         : filter_decay_channel(), filter_particle(), DecayingParticle_(dp.get()) {}
 
     using filter_decay_channel::operator();
@@ -479,17 +506,12 @@ private:
     const DecayingParticle* DecayingParticle_;
 };
 
-
 /// \class has_mass
 /// \brief Functors return true if particle is a final state particle
 /// or if a mass shape can be found that inherits from
 /// MassShapeWithNominalMass
-class has_mass : public filter_mass_shape
+struct has_mass : public filter_mass_shape
 {
-public:
-    /// constructor
-    has_mass() : filter_mass_shape() {}
-
     using filter_mass_shape::operator();
 
     /// Particle functor
@@ -506,6 +528,26 @@ public:
     const bool operator()(const MassShapeWithNominalMass& m) const
     { return true; }
 
+};
+
+/// \class is_fixed
+/// \brief Functor object for filtering by fixed Parameter
+struct is_fixed : public filter_parameter
+{
+    using filter_parameter::operator();
+
+    /// Parameter functor
+    virtual const bool operator()(const ParameterBase& p) const override;
+};
+
+/// \class is_not_fixed
+/// \brief Functor object for filtering by non-fixed Parameter
+struct is_not_fixed : filter_parameter
+{
+    using filter_parameter::operator();
+
+    /// Parameter functor
+    virtual const bool operator()(const ParameterBase& p) const override;
 };
 
 /// @}
