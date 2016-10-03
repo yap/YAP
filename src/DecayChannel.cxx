@@ -3,6 +3,7 @@
 #include "container_utils.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
+#include "Filters.h"
 #include "logging.h"
 #include "Model.h"
 #include "ParticleCombination.h"
@@ -292,7 +293,8 @@ const int charge(const DecayChannel& dc)
 
 std::string to_string(const DecayChannel& dc)
 {
-    return dc.daughters().empty() ? "[nothing]" : to_string(dc.daughters());
+    return dc.daughters().empty() ? "[nothing]"
+        : to_string(*particle(*dc.model(), has_decay_channel(&dc))) + " --> " + to_string(dc.daughters());
 }
 
 }

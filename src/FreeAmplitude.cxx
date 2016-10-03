@@ -3,6 +3,9 @@
 #include "DecayChannel.h"
 #include "container_utils.h"
 #include "Exceptions.h"
+#include "Filters.h"
+#include "Model.h"
+#include "Particle.h"
 #include "ParticleCombination.h"
 #include "Spin.h"
 #include "SpinAmplitude.h"
@@ -48,10 +51,18 @@ const ParticleCombinationSet& FreeAmplitude::particleCombinations() const
 //-------------------------
 std::string to_string(const FreeAmplitude& fa)
 {
-    return to_string(*fa.decayChannel())
-           + ", M = " + spin_to_string(fa.twoM())
-           + ", " + to_string(*fa.spinAmplitude())
-           + (fa.variableStatus() == VariableStatus::fixed ? " [fixed]" : "");
+    auto s = particle(*fa.model(), has_free_amplitude(fa))->name() + " [m = " + spin_to_string(fa.twoM()) + "] --> ";
+    if (fa.decayChannel()->daughters().empty())
+        s += "[nothing]";
+    else {
+        for (size_t i = 0; i < fa.decayChannel()->daughters().size(); ++i)
+            s += fa.decayChannel()->daughters()[i]->name() + " ";
+        s.erase(s.size() - 1, 1);
+    }
+    return s
+        + ", L = " + std::to_string(fa.spinAmplitude()->L())
+        + ", S = " + spin_to_string(fa.spinAmplitude()->twoS())
+        + (fa.variableStatus() == VariableStatus::fixed ? " [fixed]" : "");
 }
 
 }

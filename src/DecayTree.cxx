@@ -175,7 +175,9 @@ std::string to_string(const DecayTree& dt, std::string offset)
     std::string s = to_string(*dt.freeAmplitude());
     offset += "     ";
     for (const auto& d_dt : dt.daughterDecayTrees())
-        s += "\n" + offset + "d[" + std::to_string(d_dt.first) + "] --> " + to_string(*d_dt.second, offset);
+        s += "\n" + offset
+            /* + "d[" + std::to_string(d_dt.first) + "] := " */
+            + to_string(*d_dt.second, offset);
     return s;
 }
 
