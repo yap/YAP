@@ -46,6 +46,7 @@ const bool by_ptr(const F& f, const T* ptr);
 
 struct filter_decay_tree;
 struct filter_free_amplitude;
+struct filter_parameter;
 struct filter_decay_channel;
 struct filter_spin_amplitude;
 struct filter_particle;
@@ -55,12 +56,15 @@ class has_decay_channel;
 class has_spin_amplitude;
 class has_decay_tree;
 class has_free_amplitude;
+struct has_mass;
 
 class to;
 class from;
 class l_equals;
 class m_equals;
 class is_named;
+struct is_fixed;
+struct is_not_fixed;
 
 }
 

@@ -50,8 +50,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
 
         auto fa_name = to_string(*fa->decayChannel())
             + " L = " + std::to_string(fa->spinAmplitude()->L())
-            + " S = " + yap::spin_to_string(fa->spinAmplitude()->twoS())
-            + " M = " + yap::spin_to_string(fa->twoM());
+            + " S = " + yap::spin_to_string(fa->spinAmplitude()->twoS());
 
         // add real parameter
         AddParameter("real(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));

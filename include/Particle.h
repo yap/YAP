@@ -127,8 +127,11 @@ inline std::string to_string(const ParticleVector& p)
 {
     return std::accumulate(p.begin(), p.end(), std::string(""),
                            [](std::string& s, const ParticleVector::value_type& p)
-                           {return s += " " + p->name();}).erase(0, 1);
+                           {return s += ", " + p->name();}).erase(0, 2);
 }
+
+/// convert to string
+std::string to_string(const ParticleVector& p, const SpinProjectionVector& two_m);
 
 /// streamer
 inline std::ostream& operator<<(std::ostream& os, const Particle& p)

@@ -49,4 +49,15 @@ const bool decays_to_full_final_state(const Particle& p)
                        {return pc->indices().size() == p.model()->finalStateParticles().size();});
 }
 
+//-------------------------
+std::string to_string(const ParticleVector& p, const SpinProjectionVector& two_m)
+{
+    if (p.size() != two_m.size())
+        throw exceptions::Exception("vector size mismatch", "two_string(ParticleVector, SpinProjectionVector)");
+    std::string s;
+    for (size_t i = 0; i < p.size(); ++i)
+        s += ", " + p[i]->name() + " [m = " + spin_to_string(two_m[i]) + "]";
+    return s.erase(0, 2);
+}
+
 }
