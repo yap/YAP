@@ -48,8 +48,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
 
         auto fa_name = to_string(*fa->decayChannel())
             + " L = " + std::to_string(fa->spinAmplitude()->L())
-            + " S = " + yap::spin_to_string(fa->spinAmplitude()->twoS())
-            + " M = " + yap::spin_to_string(fa->twoM());
+            + " S = " + yap::spin_to_string(fa->spinAmplitude()->twoS());
 
         // add real parameter
         AddParameter("real(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));
@@ -76,7 +75,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
     for (const auto& b2_dtvi : Integral_.integrals())
         for (const auto& dt : b2_dtvi.second.decayTrees()) {
             DecayTrees_.push_back(dt);
-            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + " M = " + yap::spin_to_string(dt->freeAmplitude()->twoM()) + ")", 0, 1.1);
+            AddObservable("fit_frac(" + to_string(*dt->freeAmplitude()->decayChannel()) + ")", 0, 1.1);
         }
     // }
 

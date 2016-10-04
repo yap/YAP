@@ -18,15 +18,16 @@
 namespace yap {
 
 //-------------------------
-DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp) :
-    FreeAmplitude_(free_amp)
+DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp, int two_M, const SpinProjectionVector& two_m) :
+    FreeAmplitude_(free_amp),
+    InitialTwoM_(two_M),
+    FinalTwoM_(two_m)
 {
     if (!FreeAmplitude_)
         throw exceptions::Exception("FreeAmplitude is nullptr", "DecayTree::DecayTree");
 
     if (!FreeAmplitude_->spinAmplitude())
         throw exceptions::Exception("FreeAmplitude's SpinAmplitude is nullptr", "DecayTree::DecayTree");
-    DaughtersTwoM_.assign(FreeAmplitude_->spinAmplitude()->finalTwoJ().size(), 0);
 
     if (!FreeAmplitude_->decayChannel())
         throw exceptions::Exception("FreeAmplitude's DecayChannel is nullptr", "DecayTree::DecayTree");
@@ -83,7 +84,7 @@ const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d)
 const std::complex<double> DecayTree::dataDependentAmplitude(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
     // spin amplitude
-    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, FreeAmplitude_->twoM(), DaughtersTwoM_);
+    auto A = FreeAmplitude_->spinAmplitude()->amplitude(d, pc, InitialTwoM_, FinalTwoM_);
 
     // amplitude components
     for (const auto& ac : AmplitudeComponents_)
@@ -125,7 +126,7 @@ const std::complex<double> DecayTree::dataIndependentAmplitude() const
 //-------------------------
 void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
 {
-    if (i >= DaughtersTwoM_.size())
+    if (i >= FinalTwoM_.size())
         throw exceptions::Exception("index exceeds number of daughters", "DecayTree::setDaughterDecayTree");
 
     if (!dt->freeAmplitude())
@@ -135,7 +136,6 @@ void DecayTree::setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt)
         throw exceptions::Exception("DecayTree for this daughter already set", "DecayTree::setDaughterDecayTree");
 
     DaughterDecayTrees_[i] = dt;
-    setDaughterSpinProjection(i, dt->freeAmplitude()->twoM());
 }
 
 //-------------------------
@@ -153,31 +153,23 @@ void DecayTree::addAmplitudeComponent(const AmplitudeComponent& ac)
 }
 
 //-------------------------
-std::shared_ptr<DecayingParticle> DecayTree::decayingParticle() const
+std::shared_ptr<DecayingParticle> decayingParticle(const DecayTree& dt)
 {
-    if (!model())
-        throw exceptions::Exception("model is nullptr", "DecayTree::decayingParticle");
+    if (!dt.model())
+        throw exceptions::Exception("model is nullptr", "decayingParticle(DecayTree)");
 
-    auto S = particles(*model(), has_decay_tree(this));
-
-    if (S.empty())
-        throw exceptions::Exception("no decaying particle found", "DecayTree::decayingParticle");
-
-    if (S.size() > 1)
-        throw exceptions::Exception("more than one decaying particle found", "DecayTree::decayingParticle");
-
-    return std::dynamic_pointer_cast<DecayingParticle>(lone_elt(S));
+    return std::static_pointer_cast<DecayingParticle>(particle(*dt.model(), has_decay_tree(dt)));
 }
 
 //-------------------------
 std::string to_string(const DecayTree& dt, std::string offset)
 {
-    std::string s = to_string(*dt.freeAmplitude());
+    auto s = to_string(*dt.freeAmplitude()->decayChannel(), dt.initialTwoM(), dt.finalTwoM())
+        + ", L = " + std::to_string(dt.freeAmplitude()->spinAmplitude()->L())
+        + ", S = " + spin_to_string(dt.freeAmplitude()->spinAmplitude()->twoS());
     offset += "     ";
     for (const auto& d_dt : dt.daughterDecayTrees())
-        s += "\n" + offset
-            /* + "d[" + std::to_string(d_dt.first) + "] := " */
-            + to_string(*d_dt.second, offset);
+        s += "\n" + offset + to_string(*d_dt.second, offset);
     return s;
 }
 

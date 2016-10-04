@@ -55,10 +55,29 @@ public:
     using DaughterDecayTreeMap = std::map<unsigned, std::shared_ptr<DecayTree> >;
 
     /// Constructor
-    /// \param two_M (twice) the spin projection of the parent particle
-    /// \param two_m array of (twice) the spin projections of the daughters
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
-    explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp);
+    /// \param two_M (twice) the spin projection of the parent particle
+    /// \param two_m (twice) the spin projections of the daughter particles
+    explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp, int two_M, const SpinProjectionVector& two_m);
+
+    /// \return FreeAmplitude_
+    const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
+    { return FreeAmplitude_; }
+
+    /// \return InitialTwoM_
+    const int initialTwoM() const
+    { return InitialTwoM_; }
+
+    /// \return FinalTwoM_
+    const SpinProjectionVector& finalTwoM() const
+    { return FinalTwoM_; }
+
+    /// \return DaughterDecayTrees_
+    const DaughterDecayTreeMap daughterDecayTrees() const
+    { return DaughterDecayTrees_; }
+
+    /// \return Model this DecayTree belongs to (via FreeAmplitude)
+    const Model* model() const;
 
     /// \return product of all free amplitudes in this decay tree
     const std::complex<double> dataIndependentAmplitude() const;
@@ -76,20 +95,6 @@ public:
     /// \return VariableStatus of dataDependentAmplitude
     const VariableStatus dataDependentAmplitudeStatus() const;
 
-    /// \return FreeAmplitude_
-    const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
-    { return FreeAmplitude_; }
-
-    /// \return DaughterDecayTrees_
-    const DaughterDecayTreeMap daughterDecayTrees() const
-    { return DaughterDecayTrees_; }
-
-    /// \return DecayingParticle
-    std::shared_ptr<DecayingParticle> decayingParticle() const;
-
-    /// \return Model this DecayTree belongs to (via FreeAmplitude)
-    const Model* model() const;
-
     /// grant friend status to DecayChannel to call addDataAccessor
     friend class DecayChannel;
 
@@ -106,11 +111,6 @@ protected:
     /// \param dt shared_ptr to DecayTree to set
     void setDaughterDecayTree(unsigned i, std::shared_ptr<DecayTree> dt);
 
-    /// set daughter spin projection
-    /// \param two_m (twice) the spin projection
-    void setDaughterSpinProjection(unsigned i, int two_m)
-    { DaughtersTwoM_.at(i) = two_m; }
-
     /// Add an AmplitudeComponent
     void addAmplitudeComponent(const AmplitudeComponent& rda);
 
@@ -119,8 +119,11 @@ private:
     /// ComplexParameter of the free amplitude for the decay
     std::shared_ptr<FreeAmplitude> FreeAmplitude_;
 
+    /// parent spin projection
+    int InitialTwoM_;
+
     /// daughter spin projections
-    SpinProjectionVector DaughtersTwoM_;
+    SpinProjectionVector FinalTwoM_;
 
     /// vector of AmplitudeComponent's
     std::vector<const AmplitudeComponent*> AmplitudeComponents_;
@@ -139,6 +142,10 @@ std::string to_string(const DecayTreeVector& dtv);
 /// equality operator
 inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
 { return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
+
+/// \return DecayingParticle
+std::shared_ptr<DecayingParticle> decayingParticle(const DecayTree& dt);
+
 
 /// \return Depth of DecayTree
 unsigned depth(const DecayTree& DT);

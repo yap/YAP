@@ -26,6 +26,7 @@
 #include "fwd/Model.h"
 #include "fwd/Particle.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/Spin.h"
 #include "fwd/SpinAmplitude.h"
 
 #include <memory>
@@ -114,6 +115,9 @@ const int charge(const DecayChannel& dc);
 
 /// convert to string
 std::string to_string(const DecayChannel& dc);
+
+/// convert to string
+std::string to_string(const DecayChannel& dc, int two_M, const SpinProjectionVector& two_m);
 
 /// << operator
 inline std::ostream& operator<< (std::ostream& os, const DecayChannel& dc)

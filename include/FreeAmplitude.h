@@ -52,10 +52,9 @@ public:
     /// Constructor
     /// \param dc shared_ptr to DecayChannel
     /// \param sa shared_ptr to SpinAmplitude
-    /// \param two_m (twice) the parent spin projection
     /// \param a value to initialize to
     FreeAmplitude(std::shared_ptr<DecayChannel> dc, std::shared_ptr<SpinAmplitude> sa,
-                  int two_m, std::complex<double> a = 1);
+                  std::complex<double> a = 1);
 
     /// \return DecayChannel_
     const std::shared_ptr<DecayChannel>& decayChannel() const
@@ -64,10 +63,6 @@ public:
     /// \return SpinAmplitude_
     const std::shared_ptr<SpinAmplitude>& spinAmplitude() const
     { return SpinAmplitude_; }
-
-    /// \return (twice) the spin projection of the decaying particle
-    const int twoM() const
-    { return TwoM_; }
 
     /// \return set of ParticleCombinations (via DecayChannel)
     const ParticleCombinationSet& particleCombinations() const;

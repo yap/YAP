@@ -358,23 +358,22 @@ private:
 
 /// \class m_equals
 /// \brief Functor object for filtering by spin projection
-class m_equals : filter_free_amplitude
+class m_equals : filter_decay_tree
 {
 public:
 
     /// constructor
-    explicit m_equals(int two_m) : filter_free_amplitude(), TwoM_(two_m) {}
+    explicit m_equals(int two_m) : filter_decay_tree(), TwoM_(two_m) {}
 
-    using filter_free_amplitude::operator();
+    using filter_decay_tree::operator();
 
     /// FreeAmplitude functor
-    virtual const bool operator()(const FreeAmplitude& fa) const override;
+    virtual const bool operator()(const DecayTree& dt) const override;
 
 private:
 
     /// spin projection to check equality to
     int TwoM_;
-
 };
 
 /// \class is_named
