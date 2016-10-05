@@ -1,0 +1,28 @@
+# Use Ubuntu 14.04
+sudo: required
+dist: trusty
+
+# Set the language
+language: cpp
+
+# Set the compiler
+compiler:
+    - gcc
+
+# Sent e-mails if the build fail
+notification:
+    email:
+        on_success: change
+        on_failure: always
+
+# Install build packages
+install:
+    # Check if cmake is installed and, if not, installs it
+    - $(which cmake > /dev/null) || (sudo apt-get update && sudo apt-get install cmake) && echo "cmake installed"
+    # TODO find a way to get the particle table w/o this environment variable
+    - export YAPDIR="$PWD"
+
+# Build
+script:
+    - mkdir build && cd build
+    - cmake .. && make -j test && ./test/test
