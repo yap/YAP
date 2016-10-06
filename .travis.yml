@@ -17,7 +17,6 @@ notification:
 
 # Install build packages
 install:
-    - cd ${TRAVIS_BUILD_DIR}
     # Check if cmake is installed and, if not, installs it
     - $(which cmake > /dev/null) || (sudo apt-get update && sudo apt-get install cmake) && echo "cmake installed"
     # TODO find a way to get the particle table w/o this environment variable
@@ -43,6 +42,6 @@ script:
 after_success:
     - cd ${TRAVIS_BUILD_DIR}
     - lcov --directory . --capture --output-file coverage.info # capture coverage info
-    - lcov --remove coverage.info 'tests/*' '/usr/*' --output-file coverage.info # filter out system and test code
+    - lcov --remove coverage.info '/usr/*' 'build/test/catch-prefix/*' 'tools/*' --output-file coverage.info # filter out system and catch code
     - lcov --list coverage.info # debug before upload
     - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info # uploads to coveralls
