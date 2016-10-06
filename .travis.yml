@@ -37,7 +37,11 @@ before_script:
 script:
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
-    - cmake -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage" .. && make -j test && ./test/test
+    - cmake -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage" ..
+    - make -j test D3piTest D4piTest
+    - ./test/test
+    - ./examples/programs/D3piTest
+    - ./examples/programs/D4piTest
 
 after_success:
     - cd ${TRAVIS_BUILD_DIR}
