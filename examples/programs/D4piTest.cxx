@@ -1,10 +1,10 @@
+#include <Attributes.h>
 #include <BreitWigner.h>
 #include <DataPartition.h>
 #include <DataPoint.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
 #include <DecayTree.h>
-#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FourVector.h>
@@ -157,6 +157,8 @@ int main( int argc, char** argv)
     std::uniform_real_distribution<double> uniform;
     std::uniform_real_distribution<double> uniform2(0.95, 1.052631579);
 
+    yap::mass_parameter get_mass;
+    
     // do several loops over all dataPartitions
     for (unsigned i = 0; i < 100; ++i) {
 
@@ -170,10 +172,10 @@ int main( int argc, char** argv)
 
         // change masses
         if (uniform(g) > 0.5)
-            for (auto& d : particles(M, yap::is_resonance, yap::has_mass()))
-                if (uniform(g) > 0.5 and yap::mass_parameter(*d).variableStatus() != yap::VariableStatus::fixed) {
+            for (auto& d : particles(M, yap::is_resonance, yap::has_a_mass()))
+                if (uniform(g) > 0.5 and get_mass(*d).variableStatus() != yap::VariableStatus::fixed) {
                     DEBUG("change mass for " << to_string(*d));
-                    yap::mass_parameter(*d) = uniform2(g) * mass_parameter(*d).value();
+                    const_cast<yap::RealParameter&>(get_mass(*d)) = uniform2(g) * get_mass(*d).value();
                 }
 
         DEBUG("===================================================================================================================== ");
@@ -224,7 +226,11 @@ int main( int argc, char** argv)
         LOG(INFO) << yap::to_string(*fa);
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
+    // for (const auto& fa : yap::sort(free_amplitudes(M, yap::is_not_fixed()), yap::parent_name()))
+    // for (const auto& fa : yap::sort(free_amplitudes(M, yap::is_not_fixed()), yap::parent_spin_projection(), yap::parent_name()))
         LOG(INFO) << yap::to_string(*fa);
-    
+ 
     std::cout << "alright! \n";
+
+    return 0;
 }

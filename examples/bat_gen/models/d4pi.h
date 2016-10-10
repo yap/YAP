@@ -11,12 +11,12 @@
 #include "../fit_fitFraction.h"
 #include "../tools.h"
 
+#include <Attributes.h>
 #include <AmplitudeBasis.h>
 #include <BreitWigner.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <DecayTree.h>
-#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <FreeAmplitude.h>
@@ -256,7 +256,7 @@ inline fit_fitFraction d4pi_fit_fitFraction()
     /// \todo does not yet work with more than one decayTree
     //m.setFitFraction(decay_trees(*D, yap::from(D), yap::to(a_1), yap::l_equals(0)), 43.3e-2,   quad(2.5e-2, 1.9e-2));
     //m.setFitFraction(decay_trees(*D, yap::from(D), yap::to(a_1), yap::l_equals(1)), 2.5e-2,    quad(0.5e-2, 0.4e-2));
-    m.setFitFraction(decay_tree (*D, yap::from(D), yap::to(f_0), yap::l_equals(0)), 8.3e-2,    quad(0.7e-2, 0.6e-2));
+    m.setFitFraction(decay_tree(*D, yap::from(D), yap::to(f_0), yap::l_equals(0)), 8.3e-2,    quad(0.7e-2, 0.6e-2));
 
     amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
             complex_basis::cartesian<double>(std::complex<double>( 1.1e-2),  quad(0.3e-2, 0.3e-2)),

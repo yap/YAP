@@ -17,14 +17,19 @@
  */
 
 /// \file
-/// Contains forward declarations only
+/// contains forward declarations only
 
-#ifndef yap_MassShapeWithNominalMassFwd_h
-#define yap_MassShapeWithNominalMassFwd_h
+#ifndef yap__AttributeUtilitiesFwd_h
+#define yap__AttributeUtilitiesFwd_h
 
 namespace yap {
 
-class MassShapeWithNominalMass;
+template <typename> struct with_return_type;
+template <typename, typename, typename...> struct attribute_of;
+template <typename> class check_attribute;
+template <typename, typename, typename...> class has_pointed_to_object;
+
+struct identity;
 
 }
 

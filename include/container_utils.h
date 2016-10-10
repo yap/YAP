@@ -166,10 +166,20 @@ template <typename T>
 bool contains(const std::vector<T>& A, const std::vector<T>& B)
 { return contains(A.begin(), A.end(), B.begin(), B.end(), [](const T & a, const T & b) {return a == b;}); }
 
-// \return vector of combinations of elements in vector
+/// \return vector of combinations of elements in vector
 template <typename T>
 std::vector<std::vector<T> > combinations(const std::vector<T>& V, size_t n)
 { return combinations(V.begin(), V.end(), n); }
+
+/// \return vector of raw pointers inside members of vector of shared_ptr's
+template <typename T>
+std::vector<const T*> raw_pointers(const std::vector<std::shared_ptr<T> >& V)
+{
+    std::vector<const T*> RP;
+    RP.reserve(V.size());
+    std::transform(V.begin(), V.end(), std::back_inserter(RP), [](const std::shared_ptr<T>& t){return t.get();});
+    return RP;
+}
 
 #endif
 

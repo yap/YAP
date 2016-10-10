@@ -1,10 +1,10 @@
 #include "DecayTree.h"
 
 #include "AmplitudeComponent.h"
+#include "Attributes.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
-#include "Filters.h"
 #include "FreeAmplitude.h"
 #include "Model.h"
 #include "Particle.h"

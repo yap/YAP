@@ -68,12 +68,8 @@ public:
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
-    /// Get name (const)
-    const std::string& name() const
-    { return Name_; }
-
     /// Get name
-    std::string& name()
+    const std::string& name() const
     { return Name_; }
 
     /// get raw pointer to Model (const)

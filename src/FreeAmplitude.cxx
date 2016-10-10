@@ -1,9 +1,9 @@
 #include "FreeAmplitude.h"
 
 #include "DecayChannel.h"
+#include "DecayingParticle.h"
 #include "container_utils.h"
 #include "Exceptions.h"
-#include "Filters.h"
 #include "Model.h"
 #include "Particle.h"
 #include "ParticleCombination.h"
