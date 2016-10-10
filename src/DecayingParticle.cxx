@@ -99,14 +99,11 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
     /// loop over spin amplitudes of channel
     for (auto& sa : Channels_.back()->spinAmplitudes()) {
 
+        // create new FreeAmplitude
+        auto fa = std::make_shared<FreeAmplitude>(Channels_.back(), sa);
+
         // loop over possible parent spin projections
         for (const auto& two_M : sa->twoM()) {
-
-            // create DecayTree with new FreeAmplitude
-            auto DT_M = DecayTree(std::make_shared<FreeAmplitude>(Channels_.back(), sa, two_M));
-
-            // add BlattWeisskopf object to it
-            modifyDecayTree(DT_M);
 
             // loop over possible daughter spin projections
             for (const auto& two_m : sa->twoM(two_M)) {
@@ -116,11 +113,12 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
                     // initialize vector of possible decay trees from
                     // initial DecayTree created above
-                    DecayTreeVector DTV(1, std::make_shared<DecayTree>(DT_M));
+                    DecayTreeVector DTV(1, std::make_shared<DecayTree>(fa, two_M, two_m));
+                    modifyDecayTree(*DTV[0]);
 
                     // loop over daughters in channel
                     for (size_t d = 0; d < Channels_.back()->daughters().size(); ++d) {
-
+                        
                         // try to cast daughter to decaying particle
                         auto dp = std::dynamic_pointer_cast<DecayingParticle>(Channels_.back()->daughters()[d]);
 
@@ -129,7 +127,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
                             // check if daughter has any decay trees with spin projection
                             if (dp->DecayTrees_.find(two_m[d]) != dp->DecayTrees_.end()) {
-
+                                
                                 // create temp tree vector to store new copies into
                                 DecayTreeVector DTV_temp;
 
@@ -146,7 +144,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
                                         }
                                     }
                                 }
-
+                                
                                 // replace DTV with DTV_temp
                                 DTV = DTV_temp;
                             }
@@ -160,13 +158,7 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 
                             // check that particle has daughter particle combination
                             if (Channels_.back()->daughters()[d]->particleCombinations().find(pc->daughters()[d])
-                                != Channels_.back()->daughters()[d]->particleCombinations().end()) {
-                                // set all elts of DTV to have proper daughter spin projection
-                                for (auto& DT : DTV)
-                                    DT->setDaughterSpinProjection(d, two_m[d]);
-                            }
-                            // else clear DTV
-                            else
+                                == Channels_.back()->daughters()[d]->particleCombinations().end())
                                 DTV.clear();
                         }
 

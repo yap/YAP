@@ -108,9 +108,9 @@ const bool l_equals::operator()(const SpinAmplitude& sa) const
 }
 
 //-------------------------
-const bool m_equals::operator()(const FreeAmplitude& fa) const
+const bool m_equals::operator()(const DecayTree& dt) const
 {
-    return fa.twoM() == TwoM_;
+    return dt.initialTwoM() == TwoM_;
 }
 
 //-------------------------

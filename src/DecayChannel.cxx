@@ -291,10 +291,19 @@ const int charge(const DecayChannel& dc)
                            { return q += p->quantumNumbers().Q(); });
 }
 
+//-------------------------
 std::string to_string(const DecayChannel& dc)
 {
     return dc.daughters().empty() ? "[nothing]"
-        : to_string(*particle(*dc.model(), has_decay_channel(&dc))) + " --> " + to_string(dc.daughters());
+        : particle(*dc.model(), has_decay_channel(&dc))->name() + " --> " + to_string(dc.daughters());
+}
+
+//-------------------------
+std::string to_string(const DecayChannel& dc, int two_M, const SpinProjectionVector& two_m)
+{
+    return dc.daughters().empty() ? "[nothing]"
+        : particle(*dc.model(), has_decay_channel(&dc))->name() + " [m = " + spin_to_string(two_M)
+        + "] --> " + to_string(dc.daughters(), two_m);
 }
 
 }
