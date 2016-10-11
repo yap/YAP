@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(YAP)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakeModules)
-
 # Add a custom 'doc' target to generate API documentation with Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
@@ -30,7 +28,7 @@ if (COMPILER_SUPPORTS_DIAGNOSTIC_COLORS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-missing-braces -Werror=overloaded-virtual -pthread" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wno-long-long -Wno-missing-braces -Werror=overloaded-virtual -pthread")
 
 set(EXT_PROJECTS_DIR  ${YAP_SOURCE_DIR}/external)
 
@@ -42,15 +40,15 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 # build with cmake -DCMAKE_BUILD_TYPE=Debug
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g2" )
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g2")
 
 # build with cmake -DCMAKE_BUILD_TYPE=Release
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS" )
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -D ELPP_DISABLE_DEBUG_LOGS")
 
 # Add subdirectories
 add_subdirectory(src)
 add_subdirectory(test)
 
-# Examples are not part of the `all` target and need to
-# be explicitly built when using `make`ing
+# Examples are not part of the `all` target.
+# This will provide an `example` target.
 add_subdirectory(examples)

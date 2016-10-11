@@ -1,0 +1,51 @@
+# Use Ubuntu 14.04
+sudo: required
+dist: trusty
+
+# Set the language
+language: cpp
+
+# Set the compiler
+compiler:
+    - gcc
+
+# Sent e-mails if the build fail
+notification:
+    email:
+        on_success: change
+        on_failure: always
+
+# Install build packages
+install:
+    # Check if cmake is installed and, if not, installs it
+    - $(which cmake > /dev/null) || (sudo apt-get update && sudo apt-get install cmake) && echo "cmake installed"
+    # TODO find a way to get the particle table w/o this environment variable
+    - export YAPDIR="$PWD"
+    - cd ${TRAVIS_BUILD_DIR}
+    # install latest LCOV (1.9 was failing for me) [1]
+    - wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.11.orig.tar.gz
+    - tar xf lcov_1.11.orig.tar.gz
+    - sudo make -C lcov-1.11/ install
+    # install lcov to coveralls conversion + upload tool
+    - gem install coveralls-lcov
+
+before_script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - lcov --directory . --zerocounters
+
+# Build
+script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - mkdir build && cd build
+    - cmake -DCMAKE_CXX_FLAGS="${CMAKE_CXX_FLAGS} --coverage" ..
+    - make -j test D3piTest D4piTest
+    - ./test/test
+    - ./examples/programs/D3piTest
+    - ./examples/programs/D4piTest
+
+after_success:
+    - cd ${TRAVIS_BUILD_DIR}
+    - lcov --directory . --capture --output-file coverage.info # capture coverage info
+    - lcov --remove coverage.info '/usr/*' 'build/test/catch-prefix/*' 'tools/*' --output-file coverage.info # filter out system and catch code
+    - lcov --list coverage.info # debug before upload
+    - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info # uploads to coveralls
