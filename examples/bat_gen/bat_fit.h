@@ -75,6 +75,9 @@ public:
     yap::DataPartitionVector& integralPartitions()
     { return IntegralPartitions_; }
 
+    yap::ModelIntegral& modelIntegral()
+    { return Integral_; }
+
     /// set parameters of integration
     /// \param N number of points to use for integration
     /// \param n batch size for integration
@@ -98,6 +101,10 @@ public:
 
     /// find the position in the parameter list of the first element of a free amplitude
     size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
+
+    /// \return free amplitudes
+    const yap::FreeAmplitudeVector& freeAmplitudes() const
+    { return FreeAmplitudes_; }
 
 protected:
 
@@ -161,10 +168,11 @@ protected:
 /// \param t_mcmc TTree to load from
 /// \param N max number of data points to (attempt to) load
 /// \param lag Lag to apply to iterations when reading from TTree
+///        per default, data points will be selected uniformly from t_mcmc
 /// \param eps Amount to smear momenta by
 size_t load_data(yap::DataSet& data, const yap::Model& M,
                  const yap::MassAxes& A, double initial_mass, TTree& t_mcmc,
-                 int N = -1, unsigned lag = 1);
+                 int N = -1, int lag = -1);
 
 /// find mass axes from TTree of parameters
 std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars);
