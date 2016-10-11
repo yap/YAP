@@ -109,7 +109,7 @@ inline std::unique_ptr<Model> d4pi()
 
     // pi+ pi- flat
     auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), radialSize);
-    pipiFlat->addChannel(piPlus, piMinus);   
+    pipiFlat->addChannel(piPlus, piMinus);
     
     //
     // D0 channels
@@ -202,12 +202,12 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
     }
 
     LOG(INFO) << "setting priors";
-    unsigned i = 0;
+    //unsigned i = 0;
     for (const auto& fa : m.freeAmplitudes()) {
         double re = real(fa->value());
         double im = imag(fa->value());
-        double ab = abs(fa->value());
-        double ar = deg(arg(fa->value()));
+        //double ab = abs(fa->value());
+        //double ar = deg(arg(fa->value()));
         double rangeLo = 0.5;
         double rangeHi = 1.5;
         //m.setPriors(fa, new ConstantPrior(rangeLo*ab, rangeHi*ab),
