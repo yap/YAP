@@ -44,6 +44,14 @@
 
 using namespace yap;
 
+bool a_rho_pi_S  = true;
+bool a_rho_pi_D  = true;
+bool a_rho_sigma = true;
+bool rho_rho     = true;
+bool f_0_pipi    = true;
+bool f_2_pipi    = true;
+bool sigma_pipi  = true;
+
 inline std::unique_ptr<Model> d4pi()
 {
     auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
@@ -72,38 +80,21 @@ inline std::unique_ptr<Model> d4pi()
     // omega
     //auto omega = F.resonance(F.pdgCode("omega"), radialSize, std::make_shared<BreitWigner>());
     //omega->addChannel({piPlus, piMinus});
-    
+
     // sigma / f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<BreitWigner>());
     sigma->addChannel(piPlus, piMinus);
 
     // a_1
     auto a_1 = F.resonance(F.pdgCode("a_1+"), radialSize, std::make_shared<BreitWigner>());
-    a_1->addChannel(rho,   piPlus);
-    a_1->addChannel(sigma, piPlus);
-
-    // a_1 -> rho pi
-    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(0))) {
-        // S wave
-        *f = 1;
-        // will be fixed in d4pi_fit
-    }
-    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(1))) {
-        // P wave
-        *f = 0.;
-        f->variableStatus() = VariableStatus::fixed;
-    }
-    for (auto& f : free_amplitudes(*a_1, to(rho), l_equals(2))) {
-        // D wave
-        *f = std::polar(0.241, rad(82.));
-    }
-    /**free_amplitude(*a_1, to(rho), l_equals(0)) = 1;
-    *free_amplitude(*a_1, to(rho), l_equals(1)) = 0.;
-    free_amplitude(*a_1, to(rho), l_equals(1))->variableStatus() = VariableStatus::fixed;
-    *free_amplitude(*a_1, to(rho), l_equals(2)) = std::polar(0.241, rad(82.));*/
+    if (a_rho_pi_S or a_rho_pi_D)
+        a_1->addChannel(rho,   piPlus);
+    if (a_rho_sigma)
+        a_1->addChannel(sigma, piPlus);
 
     // a_1 -> sigma pi 
-    *free_amplitude(*a_1, to(sigma)) = std::polar(0.439, rad(193.));
+    if (a_rho_sigma)
+        *free_amplitude(*a_1, to(sigma)) = std::polar(0.439, rad(193.));
 
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<Flatte>();
@@ -111,11 +102,11 @@ inline std::unique_ptr<Model> d4pi()
     f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
-       
+
     // f_2(1270)
     auto f_2 = F.resonance(F.pdgCode("f_2"), radialSize, std::make_shared<BreitWigner>());
     f_2->addChannel(piPlus, piMinus); 
-    
+
     // pi+ pi- flat
     auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), radialSize);
     pipiFlat->addChannel(piPlus, piMinus);   
@@ -123,35 +114,74 @@ inline std::unique_ptr<Model> d4pi()
     //
     // D0 channels
     //
+    if (rho_rho) {
+        D->addChannel(rho, rho);
 
-    D->addChannel(rho, rho);
-    D->addChannel(a_1, piMinus);
-    D->addChannel(f_0_980, piPlus, piMinus);
-    D->addChannel(f_2, pipiFlat);
-    D->addChannel(sigma, piPlus, piMinus);
+        amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
+                                                 std::polar(0.624, rad(357.)),    // A_longitudinal
+                                                 std::polar(0.157, rad(120.)),    // A_parallel
+                                                 std::polar(0.384, rad(163.)) )); // A_perpendicular
+
+        for (unsigned l = 0; l < 3; ++l) {
+            auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
+            LOG(INFO) << to_string(*freeAmp);
+            *freeAmp = static_cast<std::complex<double> >(c[l]);
+        }
+    }
+    if (a_rho_pi_S or a_rho_pi_D) {
+        D->addChannel(a_1, piMinus);
+        free_amplitude(*D, to(a_1))->variableStatus() = VariableStatus::fixed;
+
+        auto a_rho_S = free_amplitude(*a_1, to(rho), l_equals(0));
+        auto a_rho_P = free_amplitude(*a_1, to(rho), l_equals(1));
+        auto a_rho_D = free_amplitude(*a_1, to(rho), l_equals(2));
+
+        // S wave
+        if (a_rho_pi_S) {
+            *a_rho_S = 1;// will be fixed in d4pi_fit
+            LOG(INFO) << "set a_rho_pi_S to 1";
+        }
+        else{
+            *a_rho_S = 0.;
+            a_rho_S->variableStatus() = VariableStatus::fixed;
+            LOG(INFO) << "fixed a_rho_S to 0";
+        }
+
+        // P wave
+        *a_rho_P = 0.;
+        a_rho_P->variableStatus() = VariableStatus::fixed;
+        LOG(INFO) << "fixed a_rho_P to 0";
+
+        // D wave
+        if (a_rho_pi_D)
+            *a_rho_D = std::polar(0.241, rad(82.));
+        else {
+            *a_rho_D = 0.;
+            a_rho_D->variableStatus() = VariableStatus::fixed;
+            LOG(INFO) << "fixed a_rho_D to 0";
+        }
+    }
+    if (f_0_pipi) {
+        D->addChannel(f_0_980, piPlus, piMinus);
+        *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(0.233, rad(261.));
+    }
+    if (f_2_pipi) {
+        D->addChannel(f_2, pipiFlat);
+        *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(0.338, rad(317.));
+    }
+    if (sigma_pipi) {
+        D->addChannel(sigma, piPlus, piMinus);
+        *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(0.432, rad(254.));
+    }
     
     M->addInitialStateParticle(D);
 
-    // R pi pi
-    *free_amplitude(*M, to(f_0_980, piPlus, piMinus)) = std::polar(0.233, rad(261.));
-    *free_amplitude(*M, to(f_2,     pipiFlat       )) = std::polar(0.338, rad(317.));
-    *free_amplitude(*M, to(sigma,   piPlus, piMinus)) = std::polar(0.432, rad(254.));
-    
-    // rho rho
-    // transform into angular momentum basis
-    amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
-                                             std::polar(0.624, rad(357.)),    // A_longitudinal
-                                             std::polar(0.157, rad(120.)),    // A_parallel
-                                             std::polar(0.384, rad(163.)) )); // A_perpendicular
-    
-    for (unsigned l = 0; l < 3; ++l) {
-        auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
-        LOG(INFO) << to_string(*freeAmp);
-        *freeAmp = static_cast<std::complex<double> >(c[l]);
-    }
-    
     LOG(INFO) << "D Decay trees:";
     LOG(INFO) << to_string(D->decayTrees());
+
+    LOG(INFO) << std::endl << "Free amplitudes: ";
+    for (const auto& fa : free_amplitudes(*M, yap::is_not_fixed()))
+        LOG(INFO) << yap::to_string(*fa);
 
     return M;
 }
@@ -160,39 +190,38 @@ inline bat_fit d4pi_fit(std::string name, std::vector<std::vector<unsigned> > pc
 {
     bat_fit m(name, d4pi(), pcs);
 
-
-    /*auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
-    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
-    auto fa = free_amplitude(*D, to(f_0));
-    m.fix(fa, abs(fa->value()), deg(arg(fa->value())));*/
-
-
     // find particles
     auto D     = std::static_pointer_cast<DecayingParticle>(particle(*m.model(), is_named("D0")));
     auto rho   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("rho0")));
-    auto sigma = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0(500)")));
     auto a_1   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("a_1+")));
-    auto f_0   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_0")));
-    auto f_2   = std::static_pointer_cast<Resonance>(particle(*m.model(), is_named("f_2")));
 
-
-    auto fixed_amps = free_amplitudes(*a_1, to(rho), l_equals(0));
-    for (const auto& fa : fixed_amps) {
-        LOG(INFO) << "must fix fa " << fa << " " << to_string(*fa);
+    auto fixed_amp = free_amplitude(*a_1, to(rho), l_equals(0));
+    if (fixed_amp) {
+        m.fix(fixed_amp, abs(fixed_amp->value()), deg(arg(fixed_amp->value())));
+        LOG(INFO) << "fixed amplitude " << to_string(*fixed_amp);
     }
 
     LOG(INFO) << "setting priors";
+    unsigned i = 0;
     for (const auto& fa : m.freeAmplitudes()) {
-        LOG(INFO) << "checking fa " <<  fa << " " << to_string(*fa);
-        if (std::find(fixed_amps.begin(), fixed_amps.end(), fa) != fixed_amps.end()) {
+        double re = real(fa->value());
+        double im = imag(fa->value());
+        double ab = abs(fa->value());
+        double ar = deg(arg(fa->value()));
+        double rangeLo = 0.5;
+        double rangeHi = 1.5;
+        //m.setPriors(fa, new ConstantPrior(rangeLo*ab, rangeHi*ab),
+        //        new ConstantPrior(ar - (1.-rangeLo) * 360, ar + (rangeHi-1.) * 360));
+        m.setRealImagRanges(fa, std::min(rangeLo*re, rangeHi*re), std::max(rangeLo*re, rangeHi*re),
+                std::min(rangeLo*im, rangeHi*im), std::max(rangeLo*im, rangeHi*im));
+        //m.setAbsArgRanges(fa, rangeLo*ab, rangeHi*ab,
+         //       ar - (1.-rangeLo) * 360, ar + (rangeHi-1.) * 360);
+/*
+        if (++i%3 != 0) {
             m.fix(fa, abs(fa->value()), deg(arg(fa->value())));
             LOG(INFO) << "fixed amplitude " << to_string(*fa);
         }
-        /*else {
-            m.setPriors(fa, new ConstantPrior(0, 1.5), new ConstantPrior(-180, 180));
-            m.setRealImagRanges(fa, -1.5, 1.5, -1.5, 1.5);
-            m.setAbsArgRanges(fa, 0, 1.5, -180, 180);
-        }*/
+*/
     }
 
     return m;
