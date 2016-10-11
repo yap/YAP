@@ -7,6 +7,7 @@
 
 #include "fit_fitFraction.h"
 #include "models/d3pi.h"
+#include "models/d4pi.h"
 #include "tools.h"
 
 #include <DecayTree.h>
@@ -35,9 +36,11 @@ int main()
 
     // create bat_fit object
     auto m = d3pi_fit_fitFractions("D3PI_frac_fit", yap_model<yap::ZemachFormalism>());
-    FLOG(INFO) << "Created model";
-
     double D_mass = 1.86961;
+    //auto m = d4pi_fit_fitFraction();
+    //double D_mass = 1.8648400;
+
+    FLOG(INFO) << "Created model";
 
     m.GetParameter("N_1").Fix(1);
 

@@ -60,16 +60,22 @@ protected:
         Covariance_(jacobian * other.Covariance_ * transpose(jacobian))
     {}
 
+    /// \return amplitude with covariance in cartesian representation
+    const complex_basis::cartesian<T> amplitude(size_t i) const
+    { return complex_basis::cartesian<T>(Amplitudes_[i], Covariance_[i][i]); }
+
 public:
-    /// \return coordinates
-    const Vector<std::complex<T>, 3>& coordinates() const
+    /// \return amplitudes
+    const Vector<std::complex<T>, 3>& amplitudes() const
     { return Amplitudes_; }
 
     /// \return covariance matrix
     const covariance_matrix<T>& covariance() const
     { return Covariance_; }
 
+
 private:
+
     /// vector of amplitudes
     Vector<std::complex<T>, 3> Amplitudes_;
     /// covariance matrix
@@ -128,20 +134,20 @@ public:
     {}
 
     /// \return S amplitude (l=0)
-    const std::complex<T> s() const
-    { return basis<T>::coordinates()[0]; }
+    const complex_basis::cartesian<T> s() const
+    { return basis<T>::amplitude(0); }
 
     /// \return P amplitude (l=1)
-    const std::complex<T> p() const
-    { return basis<T>::coordinates()[1]; }
+    const complex_basis::cartesian<T> p() const
+    { return basis<T>::amplitude(1); }
 
     /// \return D amplitude (l=2)
-    const std::complex<T> d() const
-    { return basis<T>::coordinates()[2]; }
+    const complex_basis::cartesian<T> d() const
+    { return basis<T>::amplitude(2); }
 
     /// access canonical amplitude via angular momentum
     /// \param l angular momentum to retrieve amplitude for
-    const std::complex<T> operator[] (size_t l) const
+    const complex_basis::cartesian<T> operator[] (size_t l) const
     {
         switch (l) {
             case 0:
@@ -215,16 +221,16 @@ public:
     {}
 
     /// \return longitudinal amplitude
-    const std::complex<T> longitudinal() const
-    { return basis<T>::coordinates()[0]; }
+    const complex_basis::cartesian<T> longitudinal() const
+    { return basis<T>::amplitude(0); }
 
     /// \return parallel amplitude
-    const std::complex<T> parallel() const
-    { return basis<T>::coordinates()[1]; }
+    const complex_basis::cartesian<T> parallel() const
+    { return basis<T>::amplitude(1); }
 
     /// \return perpendicular amplitude
-    const std::complex<T> perpendicular() const
-    { return basis<T>::coordinates()[2]; }
+    const complex_basis::cartesian<T> perpendicular() const
+    { return basis<T>::amplitude(2); }
 
 private:
 
@@ -287,16 +293,16 @@ public:
     {}
 
     /// \return zero amplitude A_0
-    const std::complex<T> zero() const
-    { return basis<T>::coordinates()[0]; }
+    const complex_basis::cartesian<T> zero() const
+    { return basis<T>::amplitude(0); }
 
     /// \return plus amplitude A_+
-    const std::complex<T> plus() const
-    { return basis<T>::coordinates()[1]; }
+    const complex_basis::cartesian<T> plus() const
+    { return basis<T>::amplitude(1); }
 
     /// \return minus amplitude A_-
-    const std::complex<T> minus() const
-    { return basis<T>::coordinates()[2]; }
+    const complex_basis::cartesian<T> minus() const
+    { return basis<T>::amplitude(2); }
 
 private:
 
