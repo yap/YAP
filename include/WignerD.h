@@ -41,7 +41,7 @@
 #ifndef yap_WignerD_h
 #define yap_WignerD_h
 
-#include "Constants.h"
+#include "MathUtilities.h"
 
 #include <complex>
 
@@ -56,7 +56,7 @@ const double dFunction(unsigned twoJ, int twoM, int twoN, double beta);
 
 /// Wigner D-function \f$ D^{J}_{M N}(\alpha, \beta, \gamma) \f$
 inline const std::complex<double> DFunction(unsigned twoJ, int twoM, int twoN, double alpha, double beta, double gamma)
-{ return std::exp(-Complex_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
+{ return std::exp(-1_i * (alpha * twoM + gamma * twoN) / 2.) * dFunction(twoJ, twoM, twoN, beta); }
 
 namespace dMatrix {
 

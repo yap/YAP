@@ -1,18 +1,19 @@
 #ifndef __test_helper_functions__H
 #define __test_helper_functions__H
 
-#include "BreitWigner.h"
-#include "DataSet.h"
-#include "FinalStateParticle.h"
-#include "HelicityFormalism.h"
-#include "make_unique.h"
-#include "MassAxes.h"
-#include "Model.h"
-#include "Parameter.h"
-#include "ParticleFactory.h"
-#include "PDL.h"
-#include "PHSP.h"
-#include "Resonance.h"
+#include <BreitWigner.h>
+#include <DataSet.h>
+#include <FinalStateParticle.h>
+#include <FourVector.h>
+#include <HelicityFormalism.h>
+#include <make_unique.h>
+#include <MassAxes.h>
+#include <Model.h>
+#include <Parameter.h>
+#include <ParticleFactory.h>
+#include <PDL.h>
+#include <PHSP.h>
+#include <Resonance.h>
 
 /// generate a model with 4 final state particles
 //-------------------------

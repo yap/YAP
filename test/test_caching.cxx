@@ -144,7 +144,7 @@ TEST_CASE( "swapFinalStates" )
 
                 std::cout << amps_Z[i] << " " << norm(amps_Z[i]) << "     " << amps_H[i] << " " << norm(amps_H[i])
                           << "      ratio Z/H = " <<  norm(amps_Z[i]) / norm(amps_H[i])
-                          << "      rel. phase = " << phaseDiff / yap::rad_per_deg<double>() << "°"
+                          << "      rel. phase = " << yap::deg(phaseDiff) << "°"
                           << std::endl;
             }
 
@@ -166,8 +166,7 @@ TEST_CASE( "swapFinalStates" )
                     REQUIRE ( amps_H[i - 1] == Catch::Detail::CApprox( amps_H[i] ) );
 
                 // todo check if Zemach and Helicity have the same phase
-                double phaseDiff = arg(amps_Z[0]) - arg(amps_H[0]);
-                phaseDiff /= yap::rad_per_deg<double>();
+                double phaseDiff = yap::deg(arg(amps_Z[0]) - arg(amps_H[0]));
                 /*// 180 degree are ok????????????
                 if (phaseDiff >= 180)
                     phaseDiff -= 180;

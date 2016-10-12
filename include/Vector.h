@@ -143,10 +143,10 @@ class Vector
 {
 public:
     /// Constructor
-    constexpr Vector(const std::array<T, N>& v) noexcept : Elements_(v) {}
+    constexpr explicit Vector(const std::array<T, N>& v) noexcept : Elements_(v) {}
 
     /// Default constructor
-    Vector(T element = 0)
+    explicit Vector(T element = 0)
     { Elements_.fill(element); }
 
     /// \return size

@@ -26,7 +26,6 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/StatusManager.h"
 
-#include "Constants.h"
 #include "CoordinateSystem.h"
 #include "Rotation.h"
 #include "StaticDataAccessor.h"
@@ -56,8 +55,7 @@ namespace yap {
 ///   - \f$ \hat{z} \equiv \hat{z}_0 \f$
 ///   - \f$ \hat{y} \equiv \hat{y}_0 \f$
 ///   - \f$ \hat{x} \equiv \hat{x}_0 \f$
-/// with the 0th coordinate system given by the user for the inital state,
-/// and defaulting to standard Cartesian system as defined in #Constants.h
+/// with the 0th coordinate system given by the user for the inital state
 class HelicityAngles : public StaticDataAccessor
 {
 public:

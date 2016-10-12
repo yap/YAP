@@ -13,7 +13,6 @@
 
 #include <AmplitudeBasis.h>
 #include <BreitWigner.h>
-#include <Constants.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <DecayTree.h>
@@ -24,6 +23,7 @@
 #include <HelicityFormalism.h>
 #include <logging.h>
 #include <make_unique.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>

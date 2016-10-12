@@ -13,7 +13,6 @@
 #include "../tools.h"
 
 #include <BreitWigner.h>
-#include <Constants.h>
 #include <container_utils.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
@@ -22,6 +21,7 @@
 #include <Flatte.h>
 #include <FreeAmplitude.h>
 #include <make_unique.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <Particle.h>

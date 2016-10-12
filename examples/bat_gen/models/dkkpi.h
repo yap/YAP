@@ -7,18 +7,18 @@
 #ifndef __BAT__DKKPI__H
 #define __BAT__DKKPI__H
 
-#include "BreitWigner.h"
-#include "Constants.h"
-#include "DecayingParticle.h"
-#include "FinalStateParticle.h"
-#include "make_unique.h"
+#include <BreitWigner.h>
+#include <DecayingParticle.h>
+#include <FinalStateParticle.h>
+#include <make_unique.h>
+#include <MathUtilities.h>
 #include <Model.h>
-#include "ParticleCombination.h"
-#include "ParticleFactory.h"
-#include "PDL.h"
-#include "QuantumNumbers.h"
-#include "RelativisticBreitWigner.h"
-#include "Resonance.h"
+#include <ParticleCombination.h>
+#include <ParticleFactory.h>
+#include <PDL.h>
+#include <QuantumNumbers.h>
+#include <RelativisticBreitWigner.h>
+#include <Resonance.h>
 #include <SpinAmplitudeCache.h>
 
 #include <complex>

@@ -1,7 +1,6 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
-#include <Constants.h>
 #include <Exceptions.h>
 #include <logging.h>
 #include <MathUtilities.h>

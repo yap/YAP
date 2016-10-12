@@ -27,7 +27,6 @@
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 
-#include "Constants.h"
 #include "Particle.h"
 
 #include <complex>

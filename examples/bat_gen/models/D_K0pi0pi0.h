@@ -9,11 +9,11 @@
 
 
 #include <BreitWigner.h>
-#include <Constants.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>

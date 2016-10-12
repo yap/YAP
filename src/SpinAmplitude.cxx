@@ -2,7 +2,6 @@
 
 #include "CachedValue.h"
 #include "CalculationStatus.h"
-#include "Constants.h"
 #include "Exceptions.h"
 #include "Spin.h"
 #include "StatusManager.h"

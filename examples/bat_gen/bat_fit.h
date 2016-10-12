@@ -4,13 +4,13 @@
 #include "bat_yap_base.h"
 
 #include <fwd/DataPartition.h>
-#include <fwd/FourVector.h>
 #include <fwd/FreeAmplitude.h>
 #include <fwd/IntegralElement.h>
 #include <fwd/Model.h>
 #include <fwd/Parameter.h>
 
 #include <DataSet.h>
+#include <FourVector.h>
 #include <ModelIntegral.h>
 
 #include <memory>

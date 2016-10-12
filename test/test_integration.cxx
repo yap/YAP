@@ -3,24 +3,24 @@
 
 #include "helperFunctions.h"
 
-#include "BreitWigner.h"
-#include "CompensatedSum.h"
-#include "DataPartition.h"
-#include "DataPoint.h"
-#include "DataSet.h"
-#include "FinalStateParticle.h"
-#include "HelicityFormalism.h"
-#include "ImportanceSampler.h"
-#include "logging.h"
-#include "make_unique.h"
-#include "MassAxes.h"
-#include "Model.h"
-#include "ModelIntegral.h"
-#include "Parameter.h"
-#include "ParticleFactory.h"
-#include "PDL.h"
-#include "PHSP.h"
-#include "Resonance.h"
+#include <BreitWigner.h>
+#include <CompensatedSum.h>
+#include <DataPartition.h>
+#include <DataPoint.h>
+#include <DataSet.h>
+#include <FinalStateParticle.h>
+#include <HelicityFormalism.h>
+#include <ImportanceSampler.h>
+#include <logging.h>
+#include <make_unique.h>
+#include <MassAxes.h>
+#include <Model.h>
+#include <ModelIntegral.h>
+#include <Parameter.h>
+#include <ParticleFactory.h>
+#include <PDL.h>
+#include <PHSP.h>
+#include <Resonance.h>
 
 #include <future>
 #include <memory>

@@ -12,6 +12,7 @@
 #include <DecayTree.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
+#include <FourVector.h>
 #include <FreeAmplitude.h>
 #include <MassRange.h>
 #include <Model.h>

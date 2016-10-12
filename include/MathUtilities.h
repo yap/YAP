@@ -19,6 +19,7 @@
 #ifndef yap_MathUtilities_h
 #define yap_MathUtilities_h
 
+#include <complex>
 #include <type_traits>
 
 namespace yap {
@@ -43,6 +44,29 @@ constexpr signum(const T& val)
 /// optimized function for (-1)^n
 constexpr int pow_negative_one(int exponent)
 { return is_odd(exponent) ? -1 : +1; }
+
+/// create imaginary number
+constexpr std::complex<double> operator""_i(unsigned long long d)
+{ return std::complex<double>{0.0, static_cast<double>(d)}; }
+
+/// create imaginary number
+constexpr std::complex<double> operator""_i(long double d)
+{ return std::complex<double>{0.0, static_cast<double>(d)}; }
+
+/// \return pi
+template <typename T = double>
+constexpr T pi()
+{ return acos((T) - 1); }
+
+/// convert degrees to radians
+template <typename T>
+constexpr T rad(const T& d)
+{ return d * pi<T>() / T(180); }
+
+/// convert radians to degrees
+template <typename T>
+constexpr T deg(const T& r)
+{ return r * T(180) / pi<T>(); }
 
 }
 

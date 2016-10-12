@@ -1,21 +1,25 @@
 #include <catch.hpp>
 
-#include <Constants.h>
 #include <FourVector.h>
 #include <ThreeVector.h>
 #include <logging.h>
+#include <MathUtilities.h>
 
 #include <cmath>
 
 TEST_CASE( "Vector" )
 {
 
+    yap::CoordinateSystem<double, 3> three_axes({yap::ThreeVector<double>({1., 0., 0.}),
+                                                 yap::ThreeVector<double>({0., 1., 0.}),
+                                                 yap::ThreeVector<double>({0., 0., 1.})});
+    
     // disable debug logs in test
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
     SECTION( "Initialization" ) {
-        yap::Vector<double, 3> v = {};
+        yap::Vector<double, 3> v;
         yap::Vector<double, 3> v0({0, 0, 0});
         REQUIRE( v == v0);
     }
@@ -86,30 +90,30 @@ TEST_CASE( "Vector" )
             REQUIRE(angle(a, c) == 0.5 * yap::pi<double>());
             REQUIRE(std::isnan(angle(a, z)));
 
-            REQUIRE( yap::theta(c, yap::ThreeAxes) == Approx(0.) );
-            REQUIRE( yap::theta(a, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
-            REQUIRE( yap::theta(b, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::theta(c, three_axes) == Approx(0.) );
+            REQUIRE( yap::theta(a, three_axes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::theta(b, three_axes) == Approx(yap::pi<double>() / 2.) );
 
-            REQUIRE( yap::phi(a, yap::ThreeAxes) == Approx(0.) );
-            REQUIRE( yap::phi(b, yap::ThreeAxes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::phi(a, three_axes) == Approx(0.) );
+            REQUIRE( yap::phi(b, three_axes) == Approx(yap::pi<double>() / 2.) );
         }
 
         SECTION( "cross product" ) {
-            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Y) == yap::ThreeAxis_Z);
-            REQUIRE( cross(yap::ThreeAxis_Y, yap::ThreeAxis_X) == -yap::ThreeAxis_Z);
+            REQUIRE( cross(three_axes[0], three_axes[1]) == three_axes[2]);
+            REQUIRE( cross(three_axes[1], three_axes[0]) == -three_axes[2]);
 
-            REQUIRE( cross(yap::ThreeAxis_Y, yap::ThreeAxis_Z) == yap::ThreeAxis_X);
-            REQUIRE( cross(yap::ThreeAxis_Z, yap::ThreeAxis_Y) == -yap::ThreeAxis_X);
+            REQUIRE( cross(three_axes[1], three_axes[2]) == three_axes[0]);
+            REQUIRE( cross(three_axes[2], three_axes[1]) == -three_axes[0]);
 
-            REQUIRE( cross(yap::ThreeAxis_Z, yap::ThreeAxis_X) == yap::ThreeAxis_Y);
-            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Z) == -yap::ThreeAxis_Y);
+            REQUIRE( cross(three_axes[2], three_axes[0]) == three_axes[1]);
+            REQUIRE( cross(three_axes[0], three_axes[2]) == -three_axes[1]);
         }
 
         SECTION( "constants" ) {
 
             // axes:
-            REQUIRE( cross(yap::ThreeAxis_X, yap::ThreeAxis_Y) == yap::ThreeAxis_Z );
-            REQUIRE( isRightHanded(yap::ThreeAxes) );
+            REQUIRE( cross(three_axes[0], three_axes[1]) == three_axes[2] );
+            REQUIRE( isRightHanded(three_axes) );
         }
 
     }

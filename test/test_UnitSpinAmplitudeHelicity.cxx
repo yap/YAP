@@ -3,12 +3,12 @@
 
 #include "helperFunctions.h"
 
-#include "Constants.h"
-#include "DataPoint.h"
-#include "logging.h"
-#include "Particle.h"
-#include "Spin.h"
-#include "UnitSpinAmplitude.h"
+#include <DataPoint.h>
+#include <logging.h>
+#include <MathUtilities.h>
+#include <Particle.h>
+#include <Spin.h>
+#include <UnitSpinAmplitude.h>
 
 #include <assert.h>
 #include <memory>

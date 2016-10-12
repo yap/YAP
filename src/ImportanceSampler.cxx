@@ -6,6 +6,7 @@
 #include "DecayTree.h"
 #include "DecayTreeVectorIntegral.h"
 #include "Exceptions.h"
+#include "FourVector.h"
 #include "IntegralElement.h"
 #include "Model.h"
 #include "ModelIntegral.h"

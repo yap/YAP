@@ -1,7 +1,6 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
-#include <Constants.h>
 #include <FinalStateParticle.h>
 #include <DecayingParticle.h>
 #include <FourMomenta.h>
@@ -11,6 +10,7 @@
 #include <make_unique.h>
 #include <MassAxes.h>
 #include <MassRange.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
@@ -213,12 +213,12 @@ TEST_CASE( "FourMomentaCalculation" )
                 //-------------------------
                 // check isp mass
                 // isp
-                auto p_isp = std::accumulate(P.begin(), P.end(), yap::FourVector_0);
+                auto p_isp = std::accumulate(P.begin(), P.end(), yap::FourVector<double>());
                 REQUIRE( abs(p_isp) == Approx(m_isp) );
 
                 // check Dalitz axes
                 for (size_t i = 0; i < A.size(); ++i) {
-                    auto p = std::accumulate(A[i]->indices().begin(), A[i]->indices().end(), yap::FourVector_0, [&](const yap::FourVector<double>& p, unsigned j) {return p + P[j];});
+                    auto p = std::accumulate(A[i]->indices().begin(), A[i]->indices().end(), yap::FourVector<double>(), [&](const yap::FourVector<double>& p, unsigned j) {return p + P[j];});
                     REQUIRE( norm(p) == Approx(m2[i]) );
                 }
 
@@ -296,12 +296,12 @@ TEST_CASE( "FourMomentaCalculation" )
                 //-------------------------
                 // check isp mass
                 // isp
-                auto p_isp = std::accumulate(P.begin(), P.end(), yap::FourVector_0);
+                auto p_isp = std::accumulate(P.begin(), P.end(), yap::FourVector<double>());
                 REQUIRE( abs(p_isp) == Approx(D_mass) );
 
                 // check Dalitz axes
                 for (size_t i = 0; i < A.size(); ++i) {
-                    auto p = std::accumulate(A[i]->indices().begin(), A[i]->indices().end(), yap::FourVector_0, [&](const yap::FourVector<double>& p, unsigned j) {return p + P[j];});
+                    auto p = std::accumulate(A[i]->indices().begin(), A[i]->indices().end(), yap::FourVector<double>(), [&](const yap::FourVector<double>& p, unsigned j) {return p + P[j];});
                     REQUIRE( norm(p) == Approx(m2[i]) );
                 }
             }

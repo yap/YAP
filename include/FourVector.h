@@ -42,18 +42,18 @@ class FourVector : public Vector<T, 4>
 {
 public:
     /// intializer_list constructor
-    constexpr FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
+    constexpr explicit FourVector(const std::array<T, 4>& l) noexcept : Vector<T, 4>(l) {}
 
     /// Vector<T, 4> constructor
-    constexpr FourVector(const Vector<T, 4>& V) noexcept : Vector<T, 4>(V) {}
+    constexpr explicit FourVector(const Vector<T, 4>& V) noexcept : Vector<T, 4>(V) {}
 
     /// energy + ThreeVector constructor
     /// \param E 0th component
     /// \param P #ThreeVector component
-    constexpr FourVector(const T& E, const ThreeVector<T>& P) noexcept : Vector<T, 4>( {E, P[0], P[1], P[2]}) {}
+    constexpr explicit FourVector(const T& E, const ThreeVector<T>& P) noexcept : Vector<T, 4>( {E, P[0], P[1], P[2]}) {}
 
     /// Default constructor
-    FourVector() = default;
+    constexpr FourVector() = default;
 
     /// Use assignment operators
     using Vector<T, 4>::operator=;

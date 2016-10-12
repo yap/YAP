@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "CompensatedSum.h"
+#include <CompensatedSum.h>
 
 /**
  *  Test kahan summation algorithm

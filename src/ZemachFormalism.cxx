@@ -1,7 +1,6 @@
 #include "ZemachFormalism.h"
 
 #include "CachedValue.h"
-#include "Constants.h"
 #include "Exceptions.h"
 #include "FourMomenta.h"
 #include "logging.h"

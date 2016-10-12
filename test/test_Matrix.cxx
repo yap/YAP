@@ -1,6 +1,5 @@
 #include <catch.hpp>
 
-#include <Constants.h>
 #include <logging.h>
 #include <LorentzTransformation.h>
 #include <Matrix.h>
@@ -112,7 +111,7 @@ TEST_CASE( "Matrix" )
         const auto V_boosted = lorentzTransformation(-V) * V;
 
         // check if they have been boosted into their rest frame
-        REQUIRE( abs(vect(std::accumulate(V_boosted.begin(), V_boosted.end(), yap::FourVector_0))) == Approx(0.));
+        REQUIRE( abs(vect(std::accumulate(V_boosted.begin(), V_boosted.end(), yap::FourVector<double>()))) == Approx(0.));
 
         // check if the invariant masses are the same
         for (unsigned i = 0; i < V.size(); ++i) {
@@ -124,8 +123,9 @@ TEST_CASE( "Matrix" )
 
         for (double alpha = 0; alpha < 3.14; alpha += 0.2) {
 
-            unsigned i = 0;
-            for (auto axis : yap::ThreeAxes) {
+            for (unsigned i = 0; i < 3; ++i) {
+                yap::ThreeVector<double> axis;
+                axis[i] = 1;
 
                 const yap::ThreeVector<double> a({0., -1.1, 2.5});
                 const yap::ThreeVector<double> b({ -0.2, 1.15, 1.5});
@@ -176,9 +176,6 @@ TEST_CASE( "Matrix" )
                 REQUIRE ( b == zeroTrans * b );
                 REQUIRE ( c == zeroTrans * c );
 
-                ++i;
-
-                //std::cout << "ok";
             }
         }
 
@@ -188,8 +185,10 @@ TEST_CASE( "Matrix" )
 
         for (double alpha = 0; alpha < 3.14; alpha += 0.2) {
 
-            unsigned i = 0;
-            for (auto axis : yap::ThreeAxes) {
+            for (unsigned i = 0; i <3; ++i) {
+
+                yap::ThreeVector<double> axis;
+                axis[i] = 1;
 
                 const yap::FourVector<double> a({6.2, 0., -1.1, 2.5});
                 const yap::FourVector<double> b({8.6, -0.2, 1.15, 1.5});
@@ -240,9 +239,6 @@ TEST_CASE( "Matrix" )
                 REQUIRE ( b == zeroTrans * b );
                 REQUIRE ( c == zeroTrans * c );
 
-                ++i;
-
-                //std::cout << "ok";
             }
         }
 

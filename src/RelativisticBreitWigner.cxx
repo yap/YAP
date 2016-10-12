@@ -2,11 +2,11 @@
 
 #include "BlattWeisskopf.h"
 #include "CachedValue.h"
-#include "Constants.h"
 #include "DataPartition.h"
 #include "DecayChannel.h"
 #include "FourMomenta.h"
 #include "logging.h"
+#include "MathUtilities.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
@@ -56,7 +56,7 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
     double m2_R = pow(mass()->value(), 2);
 
     // i * mass^2 * nominal width
-    auto im2w_R = Complex_i * m2_R * width()->value();
+    auto im2w_R = 1_i * m2_R * width()->value();
 
     // // nominal mass * nominal width
     // double mG = mass()->value() * width()->value();

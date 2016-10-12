@@ -3,8 +3,8 @@
 
 #include <AmplitudeBasis.h>
 #include <ComplexBasis.h>
-#include <Constants.h>
 #include <logging.h>
+#include <MathUtilities.h>
 #include <Matrix.h>
 
 template <size_t N>

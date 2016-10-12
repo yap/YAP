@@ -3,7 +3,6 @@
 #include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
 #include "CompensatedSum.h"
-#include "Constants.h"
 #include "DataAccessor.h"
 #include "DataPartition.h"
 #include "DataPoint.h"
@@ -35,7 +34,9 @@ namespace yap {
 //-------------------------
     Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     Locked_(false),
-    CoordinateSystem_(ThreeAxes),
+    CoordinateSystem_({ThreeVector<double>({1., 0., 0.}),
+                       ThreeVector<double>({0., 1., 0.}),
+                       ThreeVector<double>({0., 0., 1.})}),
     FourMomenta_(std::make_shared<FourMomenta>(*this))
 {
     if (!SAC)

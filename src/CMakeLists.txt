@@ -46,6 +46,7 @@ set(YAP_SOURCES
 	SpinAmplitudeCache.cxx
 	StaticDataAccessor.cxx
 	StatusManager.cxx
+  UnitSpinAmplitude.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
 )

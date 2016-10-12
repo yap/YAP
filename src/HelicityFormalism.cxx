@@ -2,6 +2,7 @@
 
 #include "CachedValue.h"
 #include "ClebschGordan.h"
+#include "Exceptions.h"
 #include "HelicityAngles.h"
 #include "logging.h"
 #include "Model.h"

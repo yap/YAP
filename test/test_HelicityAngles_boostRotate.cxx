@@ -3,7 +3,6 @@
 
 #include <logging.h>
 #include <BreitWigner.h>
-#include <Constants.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
@@ -13,6 +12,7 @@
 #include <LorentzTransformation.h>
 #include <make_unique.h>
 #include <MassAxes.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
@@ -99,17 +99,25 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
                 // testing. Theta of downstream helicity angles must stay the same
                 switch (iTrans) {
+                    // rotate around axis: case 1, x; case 2, y; case 3, z
                     case 1:
-                    case 2:
-                    case 3:
-                        // rotate around axis: case 1, x; case 2, y; case 3, z
-                        p = yap::rotation(yap::ThreeAxes[iTrans - 1], angle) * p;
+                        p = yap::rotation(yap::ThreeVector<double>({1., 0., 0.}), angle) * p;
                         break;
+                    case 2:
+                        p = yap::rotation(yap::ThreeVector<double>({0., 1., 0.}), angle) * p;
+                        break;
+                    case 3:
+                        p = yap::rotation(yap::ThreeVector<double>({0., 0., 1.}), angle) * p;
+                        break;
+                    // boost in direction of axis: case 4, x; case 5, y; case 6, z
                     case 4:
+                        p = yap::lorentzTransformation(yap::ThreeVector<double>({boost, 0, 0})) * p;
+                        break;
                     case 5:
+                        p = yap::lorentzTransformation(yap::ThreeVector<double>({0, boost, 0})) * p;
+                        break;
                     case 6:
-                        // boost in direction of axis: case 4, x; case 5, y; case 6, z
-                        p = yap::lorentzTransformation(yap::ThreeAxes[iTrans - 3] * boost) * p;
+                        p = yap::lorentzTransformation(yap::ThreeVector<double>({0, 0, boost})) * p;
                         break;
                     default:
                         break;

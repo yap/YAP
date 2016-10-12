@@ -3,7 +3,6 @@
 
 #include <logging.h>
 #include <BreitWigner.h>
-#include <Constants.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
@@ -13,6 +12,7 @@
 #include <LorentzTransformation.h>
 #include <make_unique.h>
 #include <MassAxes.h>
+#include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
@@ -30,12 +30,16 @@
  * against rootPWA style (with active rotations of four momenta)
  */
 
+yap::CoordinateSystem<double, 3> three_axes({yap::ThreeVector<double>({1., 0., 0.}),
+                                             yap::ThreeVector<double>({0., 1., 0.}),
+                                             yap::ThreeVector<double>({0., 0., 1.})});
+
 yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<double>& daughter)
 {
     // rotate to put x-y component of daughter in y direction
     // rotate to put daughter in z direction
-    auto R = rotation(yap::ThreeAxis_Y, -yap::theta(vect(daughter), yap::ThreeAxes))
-             * rotation(yap::ThreeAxis_Z, -yap::phi(vect(daughter), yap::ThreeAxes));
+    auto R = rotation(three_axes[1], -yap::theta(vect(daughter), three_axes))
+             * rotation(three_axes[2], -yap::phi(vect(daughter), three_axes));
 
     // return boost * rotations
     return lorentzTransformation(-(R * daughter)) * lorentzTransformation(R);
@@ -49,14 +53,14 @@ void calculate_helicity_angles(const yap::Model& M,
     // loop over daughters
     for (const auto& d : pc->daughters()) {
 
-        auto p = yap::FourVector_0;
+        yap::FourVector<double> p;
         // construct 4-vector of daughter
         for (const auto& i : d->indices())
             p += momenta[i];
 
         // if not yet calculated
         if (phi_theta.find(pc) == phi_theta.end())
-            phi_theta[pc] = angles(vect(p), yap::ThreeAxes);
+            phi_theta[pc] = angles(vect(p), three_axes);
 
         if (d->daughters().empty())
             continue;

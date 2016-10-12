@@ -1,7 +1,6 @@
 #include "Flatte.h"
 
 #include "CalculationStatus.h"
-#include "Constants.h"
 #include "DataPoint.h"
 #include "DataPartition.h"
 #include "DecayChannel.h"
@@ -9,6 +8,7 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "logging.h"
+#include "MathUtilities.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
@@ -101,7 +101,7 @@ void Flatte::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCo
             w += fc.Coupling->value() * std::sqrt(std::complex<double>(squared_breakup_momentum(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 
         // T = 1 / (M^2 - m^2 - width-term)
-        T()->setValue(1. / (M2 - m2 - Complex_i * 2. * w / sqrt(m2)), d, si, D);
+        T()->setValue(1. / (M2 - m2 - 1_i * 2. * w / sqrt(m2)), d, si, D);
     }
 }
 

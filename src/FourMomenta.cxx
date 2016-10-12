@@ -131,7 +131,7 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
         if (sm.status(*M_, kv.second) == CalculationStatus::calculated)
             continue;
 
-        const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector_0,
+        const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector<double>(),
         [&](const FourVector<double>& V, unsigned i) {return V + fsp[i];});
 
         P_->setValue(P, d, kv.second, sm);
@@ -210,7 +210,7 @@ std::ostream& FourMomenta::printMasses(const DataPoint& d, std::ostream& os) con
 bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta)
 {
     for (size_t i = 0; i < axes.size(); ++i) {
-        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector_0, [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
+        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector<double>(), [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
         if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
             return false;
     }
@@ -294,7 +294,7 @@ std::vector<FourVector<double> > calculate_four_momenta(double initial_mass, con
     //////////////////////////////////////////////////
     // calculate all four momenta in m_01 rest frame:
 
-    std::vector<FourVector<double> > P(n_fsp, FourVector_0);
+    std::vector<FourVector<double> > P(n_fsp, FourVector<double>());
 
     for (unsigned i = 0; i < n_fsp; ++i) {
 
