@@ -80,8 +80,6 @@ private:
     /// SpinAmplitude for which this is a free amplitude
     std::shared_ptr<SpinAmplitude> SpinAmplitude_;
 
-    /// (twice) spin projection of decaying particle
-    int TwoM_;
 };
 
 /// convert to string
