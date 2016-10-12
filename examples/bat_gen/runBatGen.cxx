@@ -40,7 +40,7 @@ int main()
         // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(yap_model<HelicityFormalism>()), 1.86961)
         // new bat_gen("DKKPI", dkkpi(yap_model<ZemachFormalism>()), 1.86961),
         // new bat_gen("DKKPI", dkkpi(yap_model<HelicityFormalism>()), 1.86961)
-        // new bat_gen("D4PI", d4pi(yap_model<HelicityFormalism>()), 1.86961)
+        // new bat_gen("D4PI", d4pi(), 1.8648400)
     };
 
     for (bat_gen* m : test_models) {
