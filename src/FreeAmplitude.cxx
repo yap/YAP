@@ -47,7 +47,7 @@ std::string to_string(const FreeAmplitude& fa)
     return to_string(*fa.decayChannel())
         + ", L = " + std::to_string(fa.spinAmplitude()->L())
         + ", S = " + spin_to_string(fa.spinAmplitude()->twoS())
-        + (fa.variableStatus() == VariableStatus::fixed ? " [fixed]" : "");
+        + (fa.variableStatus() == VariableStatus::fixed ? " [" + to_string(fa.variableStatus())+ "]" : "");
 }
 
 }

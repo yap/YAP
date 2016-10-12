@@ -220,6 +220,9 @@ int main( int argc, char** argv)
 
     LOG(INFO) << std::endl << to_string(D->decayTrees());
 
+    LOG(INFO) << std::endl << "Fixed amplitudes: ";
+    for (const auto& fa : free_amplitudes(M, yap::is_fixed()))
+        LOG(INFO) << yap::to_string(*fa);
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
         LOG(INFO) << yap::to_string(*fa);

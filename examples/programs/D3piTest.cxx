@@ -187,6 +187,9 @@ int main( int argc, char** argv)
         { return s += "\t" + to_string(c);}).erase(0, 1);
     }
 
+    LOG(INFO) << std::endl << "Fixed amplitudes: ";
+    for (const auto& fa : free_amplitudes(M, yap::is_fixed()))
+        LOG(INFO) << yap::to_string(*fa);
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
         LOG(INFO) << yap::to_string(*fa);
