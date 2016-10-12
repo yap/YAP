@@ -31,7 +31,7 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: certain@gmail.com
     build_command_prepend: "cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .."
-    build_command:   "make -j test D3piTest D4piTest"
+    build_command:   "make -j D3piTest D4piTest"
     branch_pattern: coverity_scan
     
 # Install build packages
@@ -41,4 +41,4 @@ install:
     # TODO find a way to get the particle table w/o this environment variable
     - export YAPDIR="$PWD"
 
-script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j test D3piTest D4piTest; fi
+script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j D3piTest D4piTest; fi
