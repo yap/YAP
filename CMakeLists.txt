@@ -52,3 +52,13 @@ add_subdirectory(test)
 # Examples are not part of the `all` target.
 # This will provide an `example` target.
 add_subdirectory(examples)
+
+# Install rule for the header directory
+# CMAKE_INSTALL_PREFIX defaults to:
+#  * /usr/local       on UNIX-like systems
+#  * C:\Program Files on Windows
+install(DIRECTORY   ${YAP_SOURCE_DIR}/include/
+        DESTINATION include/YAP
+        FILES_MATCHING PATTERN "*.h"
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
