@@ -15,12 +15,6 @@ notification:
         on_success: change
         on_failure: always
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "RRIIkoR9yYSo0mEH3mZy/mYRLl/xTps4mGRXjxBwG1jpBqnkgoipL3aVyQYGHMkVQ5mvASEYz08GgC7ce89DjGEaJekCM4NpLznqQDm6jaokkcvOM7/iCNQfqLKtSXcalH/FvmYxcTFp3OPn0dU1A45C33h9Gc42eY22DP3fpEkKiEuceXk/rym+EsmxXU/3fU8QaN3BfA/oztV3ZMLLjW0UK8mPCq3R/j7e0yvEznpBGlFWdoz59UM1jq74OPNROyOwvq04z/2BTM9ap5pwUpUkqFdDReN6gDJiqdEbTmu15ZTEeMCcCK4JJ0A409bKrYeCjV/8C9gwWrWMGcjzKLoRZLnmCzDKP6QyL+tBZwkgNXBHrtE6LUS96exgJ8jjGuCnIJBhwNHJvldQfPH7/eamv5IU8iSNJNHIBtXBvooLtwRSVCALl1g1J/3Kl/X6be+Os1V/taJOGkjgKbeR7aQqwXJ2wxuLVL6YZNUXWnWgfvdkHvW7XB6Y9rGjF4EW+3emqUCh2xY/GYYQXypHvWuimbuHt0UC6vNIFtP0nYHD7++WlozNh7Qycop6p2NtAg73UdiNOOwTLwP4ZrBN1EDYo6l3/ROreN3fmpLAaUcY2Gwh3vVKC3nf2AVlhGs+8W9wmjp14eMMhLyy/t7Q1CahwGlAzqYqpvITMFlSMi4="
-
 before_install:
       - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
@@ -31,7 +25,7 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: certain@gmail.com
     build_command_prepend: "cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .."
-    build_command:   "make -j D3piTest D4piTest"
+    build_command:   "make -j4"
     branch_pattern: coverity_scan
     
 # Install build packages
@@ -41,4 +35,5 @@ install:
     # TODO find a way to get the particle table w/o this environment variable
     - export YAPDIR="$PWD"
 
-script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then make -j D3piTest D4piTest; fi
+script:
+ - make -j4
