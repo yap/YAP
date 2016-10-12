@@ -46,11 +46,11 @@ constexpr int pow_negative_one(int exponent)
 { return is_odd(exponent) ? -1 : +1; }
 
 /// create imaginary number
-constexpr std::complex<double> operator""_i(unsigned long long d)
+constexpr std::complex<double> operator"" _i(unsigned long long d)
 { return std::complex<double>{0.0, static_cast<double>(d)}; }
 
 /// create imaginary number
-constexpr std::complex<double> operator""_i(long double d)
+constexpr std::complex<double> operator"" _i(long double d)
 { return std::complex<double>{0.0, static_cast<double>(d)}; }
 
 /// \return pi
