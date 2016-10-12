@@ -30,8 +30,8 @@ addons:
       name: "yap/YAP"
       description: "Build submitted via Travis CI"
     notification_email: certain@gmail.com
-    build_command_prepend: "make clean"
-    build_command:   "make -j 4"
+    build_command_prepend: "cd ${TRAVIS_BUILD_DIR} && mkdir build && cd build && cmake .."
+    build_command:   "make -j test D3piTest D4piTest"
     branch_pattern: coverity_scan
     
 # Install build packages
@@ -40,10 +40,3 @@ install:
     - $(which cmake > /dev/null) || (sudo apt-get update && sudo apt-get install cmake) && echo "cmake installed"
     # TODO find a way to get the particle table w/o this environment variable
     - export YAPDIR="$PWD"
-
-# Build
-script:
-    - cd ${TRAVIS_BUILD_DIR}
-    - mkdir build && cd build
-    - cmake ..
-    - make -j test D3piTest D4piTest
