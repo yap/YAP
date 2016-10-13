@@ -12,6 +12,7 @@
 #include "models/dkkpi.h"
 #include "tools.h"
 
+#include <Exceptions.h>
 #include <HelicityFormalism.h>
 #include <MassRange.h>
 #include <PHSP.h>
@@ -50,7 +51,7 @@ int main()
             model_name = "D4PI";
             break;
         default:
-            LOG(ERROR) << "No model loaded";
+            throw yap::exceptions::Exception("No valid model requested.", "runBatFit::main");
     }
 
     // open file
