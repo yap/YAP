@@ -123,8 +123,7 @@ inline std::unique_ptr<Model> d4pi()
                                                  std::polar(0.384, rad(163.)) )); // A_perpendicular
 
         for (unsigned l = 0; l < 3; ++l) {
-            auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
-            LOG(INFO) << to_string(*freeAmp);
+            auto freeAmp = free_amplitude(*D, to(rho, rho), l_equals(l));
             *freeAmp = static_cast<std::complex<double> >(c[l]);
         }
     }
