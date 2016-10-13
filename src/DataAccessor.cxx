@@ -138,7 +138,7 @@ void DataAccessor::registerWithModel()
     }
 
     // if MeasuredBreakupMomenta is required
-    if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta*>(this)->requiresMeasuredBreakupMomenta()) {
+    if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta&>(*this).requiresMeasuredBreakupMomenta()) {
         const_cast<Model*>(model())->requireMeasuredBreakupMomenta();
         for (auto pc_i : symmetrizationIndices())
             const_cast<Model*>(model())->measuredBreakupMomenta()->addParticleCombination(*pc_i.first);
