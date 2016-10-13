@@ -121,12 +121,9 @@ inline std::unique_ptr<Model> d4pi()
                                                  std::polar(0.624, rad(357.)),    // A_longitudinal
                                                  std::polar(0.157, rad(120.)),    // A_parallel
                                                  std::polar(0.384, rad(163.)) )); // A_perpendicular
-
-        for (unsigned l = 0; l < 3; ++l) {
-            auto freeAmp = free_amplitude(*M, to(rho, rho), l_equals(l));
-            LOG(INFO) << to_string(*freeAmp);
-            *freeAmp = static_cast<std::complex<double> >(c[l]);
-        }
+        
+        for (auto& fa : free_amplitudes(*D, to(rho, rho)))
+            *fa = static_cast<std::complex<double> >(c[fa->spinAmplitude()->L()]);
     }
     if (a_rho_pi_S or a_rho_pi_D) {
         D->addChannel(a_1, piMinus);
