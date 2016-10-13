@@ -58,12 +58,20 @@ add_subdirectory(examples)
 #  * /usr/local       on UNIX-like systems
 #  * C:\Program Files on Windows
 install(DIRECTORY   ${YAP_SOURCE_DIR}/include/
+        COMPONENT   core
         DESTINATION include/YAP
         FILES_MATCHING PATTERN "*.h"
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
 
+add_custom_target(install-core
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_COMPONENT="core" -P cmake_install.cmake)
+
 # Install rule for the data directory
 install(DIRECTORY   ${YAP_SOURCE_DIR}/data/
+        COMPONENT   data
         DESTINATION data
         FILES_MATCHING PATTERN "*.pdl"
         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ)
+
+add_custom_target(install-data
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_COMPONENT="data" -P cmake_install.cmake)

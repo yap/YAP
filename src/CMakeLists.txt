@@ -54,6 +54,7 @@ add_library(YAP SHARED ${YAP_SOURCES})
 
 # Install rule for libYAP.so
 install(TARGETS YAP LIBRARY
+        COMPONENT   core
         DESTINATION lib/
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                     GROUP_READ             GROUP_EXECUTE
