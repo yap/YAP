@@ -41,21 +41,24 @@ public:
     /// Constructor
     /// \param what_arg String descripting exception
     /// \param func_nam Name of function originating exception
-    Exception(const std::string& what_arg, const std::string& func_name) : std::exception(),
-        What_(what_arg),
-        Func_(func_name)
-    {}
+    Exception(const std::string& what_arg, const std::string& func_name) : std::exception(), What_(what_arg)
+    { addFunc(func_name); }
 
+    /// add to func name
     void addFunc(const std::string& s) noexcept
-    { Func_ += (Func_.empty() ? "" : " < ") + s; }
+    {
+        if (s.empty()) return;
+        if (!What_.empty()) What_ += " ";
+        What_ += "from "  + s;
+    }
 
+    /// \return what string (data)
     const char* what() const noexcept override
-    { return (What_ + (What_.empty() or Func_.empty() ? "" : " ") + (Func_.empty() ? "" : std::string("from ") + Func_)).data(); }
+    { return What_.data(); }
 
 protected:
     Exception() : std::exception() {}
     std::string What_;
-    std::string Func_;
 };
 
 /// \class AngularMomentumNotConserved

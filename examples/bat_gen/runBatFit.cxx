@@ -70,7 +70,7 @@ int main()
         throw yap::exceptions::Exception("could not retrieve mcmc tree", "main");
 
     // create model
-    bat_fit* m;
+    bat_fit* m = nullptr;
     double D_mass(0);
     switch (i_model) {
         case 0:
@@ -86,8 +86,10 @@ int main()
             D_mass = 1.8648400; // D0
             break;
         default:
-            LOG(ERROR) << "No model loaded";
+            m = nullptr;
     }
+    if (!m)
+        throw exceptions::Exception("No model loaded", "runBatFit::main");
 
     // load fit data and partition it
     LOG(INFO) << "Load data";

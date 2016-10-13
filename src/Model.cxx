@@ -484,7 +484,7 @@ void Model::printDataAccessors(bool printParticleCombinations) const
         if (dynamic_cast<const BlattWeisskopf*>(d))
             std::cout << dynamic_cast<const BlattWeisskopf*>(d)->decayingParticle()->name() << "\t";
         if (dynamic_cast<const SpinAmplitude*>(d))
-            std::cout << "J = " << spin_to_string(dynamic_cast<const SpinAmplitude*>(d)->initialTwoJ());
+            std::cout << "J = " << spin_to_string(dynamic_cast<const SpinAmplitude&>(*d).initialTwoJ());
 
         if (printParticleCombinations) {
             std::cout << " \t";

@@ -131,7 +131,7 @@ void DataAccessor::registerWithModel()
         const_cast<Model*>(model())->fourMomenta()->addParticleCombination(*pc_i.first);
 
     // if HelicityAngles is required
-    if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles*>(this)->requiresHelicityAngles()) {
+    if (dynamic_cast<RequiresHelicityAngles*>(this) and dynamic_cast<RequiresHelicityAngles&>(*this).requiresHelicityAngles()) {
         const_cast<Model*>(model())->requireHelicityAngles();
         for (auto pc_i : symmetrizationIndices())
             const_cast<Model*>(model())->helicityAngles()->addParticleCombination(*pc_i.first);

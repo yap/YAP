@@ -142,13 +142,16 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
 //-------------------------
 std::ostream& print_mp_string(std::ostream& os, unsigned n, unsigned m_p, std::shared_ptr<const ParticleCombination> pc, double m, FourVector<double> p, double M = -1)
 {
+    auto prec = os.precision();
+    os.precision(m_p);
     os << std::setw(n) << indices_string(*pc) << " : "
-       << "m = " << std::setprecision(m_p) << m << " GeV/c^2";
+       << "m = " << m << " GeV/c^2";
     if (M >= 0)
-        os << " (nominally " << std::setprecision(m_p) << M << " GeV/c^2)";
+        os << " (nominally " << M << " GeV/c^2)";
     else
         os << "            " << std::setw(m_p) << " "                << "         ";
     os << "\tp = " << p << " GeV";
+    os.precision(prec);
     return os;
 }
 
