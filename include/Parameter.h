@@ -58,7 +58,7 @@ public:
     virtual const size_t size() const = 0;
 
     /// Set value from vector
-    virtual void setValue(const std::vector<double>& V) = 0;
+    virtual const VariableStatus setValue(const std::vector<double>& V) = 0;
 
 private:
 
@@ -117,14 +117,14 @@ public:
     using ParameterBase::setValue;
 
     /// set value
-    virtual void setValue(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type val)
+    virtual const VariableStatus setValue(typename std::conditional<std::is_fundamental<T>::value, const T, const T&>::type val)
     {
         if (variableStatus() == VariableStatus::fixed)
             throw exceptions::ParameterIsFixed("", "Parameter::setValue");
         if (ParameterValue_ == val)
-            return;
+            return variableStatus();
         ParameterValue_ = val;
-        variableStatus() = VariableStatus::changed;
+        return variableStatus() = VariableStatus::changed;
     }
 
     /// set value by operator
@@ -159,8 +159,8 @@ public:
     using Parameter::setValue;
 
     /// Set value from vector
-    void setValue(const std::vector<double>& V)
-    { setValue(V[0]); }
+    const VariableStatus setValue(const std::vector<double>& V)
+    { return setValue(V[0]); }
 
     using Parameter::operator=;
 };
@@ -180,8 +180,8 @@ public:
     using Parameter::setValue;
 
     /// Set value from vector
-    void setValue(const std::vector<double>& V)
-    { setValue(std::complex<double>(V[0], V[1])); }
+    const VariableStatus setValue(const std::vector<double>& V)
+    { return setValue(std::complex<double>(V[0], V[1])); }
 
     using Parameter::operator=;
 };
@@ -195,8 +195,9 @@ class ComplexComponentParameter : public RealParameter
 public:
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par);
-
+    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par) : RealParameter(), Parent_(par)
+    { if (!Parent_) throw exceptions::Exception("Parent unset", "ComplexComponentParameter::ComplexComponentParameter"); }
+        
     /// \return value of parameter by accessing parent
     const double value() const override
     { return component(Parent_->value()); }
@@ -204,8 +205,9 @@ public:
     using RealParameter::setValue;
 
     /// set value by accessing parent
-    void setValue(double val) override;
-
+    const VariableStatus setValue(double val) override
+    { return Parent_->setValue(setComponent(Parent_->value(), val)); }
+        
     /// \return shared_ptr to parent
     std::shared_ptr<ComplexParameter> parent()
     { return Parent_; }

@@ -32,7 +32,6 @@ set(YAP_SOURCES
 	Model.cxx
 	ModelIntegral.cxx
 	PDL.cxx
-	Parameter.cxx
 	Particle.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
