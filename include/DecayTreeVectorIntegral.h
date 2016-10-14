@@ -116,6 +116,11 @@ private:
 /// \param dtvi DecayTreeVectorIntegral to retrieve values from
 const RealIntegralElement integral(const DecayTreeVectorIntegral& dtvi);
 
+/// \return integral calculated from given components of DecayTreeVectorIntegral
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+/// \param dtv DecayTrees to integrate over
+const RealIntegralElement integral(const DecayTreeVectorIntegral& dtvi, const DecayTreeVector& dtv);
+
 /// \return matrix of integral components without multiplication by free amplitudes
 /// \param dtvi DecayTreeVectorIntegral to retrieve values from
 const ComplexIntegralElementMatrix cached_integrals(const DecayTreeVectorIntegral& dtvi);
@@ -132,6 +137,10 @@ const RealIntegralElementVector diagonal_integrals(const DecayTreeVectorIntegral
 /// \param dtvi DecayTreeVectorIntegral to retrieve values from
 const RealIntegralElementVector fit_fractions(const DecayTreeVectorIntegral& dtvi);
 
+/// \return vector of fit fractions of groups of DecayTree's in DecayTreeVectorIntegral
+/// \param dtvi DecayTreeVectorIntegral to retrieve values from
+/// \param dtvv a fit fraction will be calculated for each DecayTreeVector
+const RealIntegralElementVector fit_fractions(const DecayTreeVectorIntegral& dtvi, const std::vector<DecayTreeVector>& dtvv);
 
 }
 
