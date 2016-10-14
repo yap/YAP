@@ -60,10 +60,6 @@ BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     if (!model())
         throw exceptions::Exception("Model unset", "BlattWeisskopf::BlattWeisskopf");
 
-    if (L_ > 2)
-        throw exceptions::Exception("BlattWeisskopf does not yet support L = " + std::to_string(L_),
-                                    "BlattWeisskopf::BlattWeisskopf");
-
     if (L_ > 0) {
         addParameter(DecayingParticle_->radialSize());
         BarrierFactor_ = RealCachedValue::create(*this);
