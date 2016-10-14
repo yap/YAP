@@ -17,7 +17,6 @@
 #include "MassAxes.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Parameter.h"
-#include "PhaseSpaceUtilities.h"
 #include "RecalculableDataAccessor.h"
 #include "RequiresHelicityAngles.h"
 #include "RequiresMeasuredBreakupMomenta.h"
