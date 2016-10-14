@@ -75,17 +75,8 @@ public:
     weak_ptr_type find(const ParticleCombinationVector& D) const
     { return find(create_composite(D)); }
 
-    /// retrieves first entry matching vector of particle indices by unordered content
-    /// Does not add to the cache if a match is not found.
-    /// \param I vector of unsigned's to look for
-    /// \return weak_ptr to ParticleCombination; is empty if not found.
-    weak_ptr_type findByUnorderedContent(const std::vector<unsigned>& I) const;
-
     /// Check consistency of cache.
     bool consistent() const;
-
-    /// stream the cache elements as a table
-    virtual std::ostream& print(std::ostream& os) const override;
 
 private:
 

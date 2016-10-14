@@ -69,10 +69,6 @@ public:
     /// update the calculationStatus for a DataPartition
     virtual void updateCalculationStatus(StatusManager& D) const override;
 
-    /// check consistency of object
-    virtual bool consistent() const
-    { return DataAccessor::consistent(); }
-
     /// \return raw pointer to Model through owning DecayingParticle
     const Model* model() const override;
 

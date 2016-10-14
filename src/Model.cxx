@@ -497,21 +497,4 @@ void Model::printDataAccessors(bool printParticleCombinations) const
     std::cout << std::endl;
 }
 
-//-------------------------
-void Model::printFlags(const StatusManager& sm) const
-{
-    for (const auto& d : DataAccessors_) {
-        std::cout << std::endl;
-
-        for (auto& c : d->CachedValues()) {
-            std::cout << "  CachedValue " << c << ": ";
-            for (unsigned i = 0; i < d->nSymmetrizationIndices(); ++i)
-                std::cout << to_string(sm.status(*c, i)) << "; ";
-            std::cout << "\n";
-        }
-    }
-
-    std::cout << std::endl;
-}
-
 }

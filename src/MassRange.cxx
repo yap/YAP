@@ -14,16 +14,6 @@
 namespace yap {
 
 //-------------------------
-const FinalStateParticleVector::value_type& fsp_with_index(const FinalStateParticleVector& FSPs, unsigned i)
-{
-    for (const auto& fsp : FSPs)
-        for (const auto& pc : fsp->particleCombinations())
-            if (pc->indices()[0] == i)
-                return fsp;
-    throw exceptions::Exception("fsp with index " + std::to_string(i) + " not found", "fsp_with_index");
-}
-
-//-------------------------
 const MassRange mass_range(double isp_mass, const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs)
 {
     if (isp_mass < 0)

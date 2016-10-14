@@ -90,9 +90,6 @@ private:
 
 };
 
-/// \return whether pc and FSPs are for the same final state
-bool valid_final_state(const std::shared_ptr<const ParticleCombination>& pc, const FinalStateParticleVector& FSPs);
-
 }
 
 #endif

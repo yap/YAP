@@ -76,7 +76,6 @@ int main( int argc, char** argv)
     std::cout << "consistent! \n";
 
     // print stuff
-    //yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
     /*for (auto& pc : D->particleCombinations())

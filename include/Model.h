@@ -221,9 +221,6 @@ public:
     /// Print the list of DataAccessor's
     void printDataAccessors(bool printParticleCombinations = true) const;
 
-    /// Print all VariableStatus'es and CalculationStatus'es
-    void printFlags(const StatusManager& sm) const;
-
     /// grant friend status to DataAccessor to register itself with this
     friend class DataAccessor;
 

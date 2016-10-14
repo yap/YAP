@@ -63,9 +63,6 @@ public:
     const unsigned nSymmetrizationIndices() const
     { return NIndices_; }
 
-    /// print ParticleCombination map
-    void printParticleCombinations() const;
-
     /// \return CachedValueSet
     const CachedValueSet& CachedValues() const
     { return CachedValues_; }

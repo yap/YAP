@@ -106,10 +106,6 @@ public:
                     s = stat;
     }
 
-    /// copy all calculation statuses from another manager
-    /// \param sm StatusManager to copy from
-    void copyCalculationStatuses(const StatusManager& sm);
-
 private:
 
     /// vector of Status;

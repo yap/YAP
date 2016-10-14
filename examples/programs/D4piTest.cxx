@@ -102,7 +102,6 @@ int main( int argc, char** argv)
     M.lock();
 
     // print stuff
-    //yap::ParticleCombination::printParticleCombinationSet();
 
     for (auto& isp : M.initialStateParticles()) {
         std::cout << "\n" << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations \n";

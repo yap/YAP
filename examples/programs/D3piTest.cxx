@@ -124,8 +124,7 @@ int main( int argc, char** argv)
     M.lock();
 
     // print stuff
-    //yap::ParticleCombination::printParticleCombinationSet();
-
+ 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
     std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
@@ -152,7 +151,7 @@ int main( int argc, char** argv)
     std::generate_n(std::back_inserter(data), 10000,
                     std::bind(yap::phsp<std::mt19937>, std::cref(M), D_mass, A, m2r, g, std::numeric_limits<unsigned>::max()));
 
-    LOG(INFO) << data.size() << " data points of " << data[0].bytes() << " bytes each = " << (data.size() * data[0].bytes()) * 1.e-6 << " MB";
+    LOG(INFO) << data.size() << " data points of " << data[0].bytes() << " bytes each = " << data.bytes() * 1.e-6 << " MB";
 
     M.calculate(data);
 

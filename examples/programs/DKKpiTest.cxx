@@ -59,7 +59,6 @@ int main( int argc, char** argv)
         LOG(INFO) << "inconsistent!";
 
     // print stuff
-    //yap::ParticleCombination::printParticleCombinationSet();
 
     std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
 
