@@ -78,7 +78,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = Resonance::create("f_0(1370)", F["f_0"], radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
+    auto f_0_1370 = Resonance::create("f_0(1370)", F["f_0"].quantumNumbers(), radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 

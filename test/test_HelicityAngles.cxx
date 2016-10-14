@@ -90,7 +90,7 @@ TEST_CASE( "HelicityAngles" )
 
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
-    double D_mass = factory["D+"].Mass;
+    double D_mass = factory["D+"].mass();
 
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);

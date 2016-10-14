@@ -54,7 +54,7 @@ int main( int argc, char** argv)
     // initial state particle
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
-    auto D_mass = factory["D+"].Mass;
+    auto D_mass = factory["D+"].mass();
 
     LOG(INFO) << "D created";
 
@@ -88,7 +88,7 @@ int main( int argc, char** argv)
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create("f_0_1370", factory.quantumNumbers("f_0"), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
+    auto f_0_1370 = yap::Resonance::create("f_0_1370", factory["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 

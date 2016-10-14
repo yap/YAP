@@ -47,10 +47,10 @@ TEST_CASE( "swapDalitzAxes" )
         for (double m2_bc = m2_bc_range[0]; m2_bc <= m2_bc_range[1]; m2_bc += (m2_bc_range[1] - m2_bc_range[0]) / N) {
 
             // calc 3rd inv mass square
-            double m2_ac = pow(F[PDGs[0]].Mass, 2)
-                + pow(F[PDGs[1]].Mass, 2)
-                + pow(F[PDGs[2]].Mass, 2)
-                + pow(F[PDGs[3]].Mass, 2)
+            double m2_ac = pow(F[PDGs[0]].mass(), 2)
+                + pow(F[PDGs[1]].mass(), 2)
+                + pow(F[PDGs[2]].mass(), 2)
+                + pow(F[PDGs[3]].mass(), 2)
                 - (m2_ab + m2_bc);
 
             if (m2_ac < 0.) {
@@ -132,7 +132,7 @@ TEST_CASE( "swapDalitzAxes" )
                     }
 
                     // calculate four-momenta
-                    auto P = calculate_four_momenta(F[PDGs[0]].Mass, *M, A, squared_masses);
+                    auto P = calculate_four_momenta(F[PDGs[0]].mass(), *M, A, squared_masses);
 
                     // if failed, outside phase space
                     if (P.empty()) {

@@ -21,17 +21,16 @@
 #ifndef yap_QuantumNumbers_h
 #define yap_QuantumNumbers_h
 
+#include "Exceptions.h"
 #include "Spin.h"
 
-#include <ostream>
 #include <string>
 
 namespace yap {
 
 /// \class QuantumNumbers
 /// \brief Quantum numbers of a Particle
-/// \author Johannes Rauch
-
+/// \author Johannes Rauch, Daniel Greenwald
 class QuantumNumbers
 {
 public:
@@ -39,31 +38,20 @@ public:
     /// \name Constructors
     /// @{
 
-    /// Constructor
-    constexpr QuantumNumbers(unsigned twoJ, int P, int C, unsigned twoI, int G, int Q)
-        : TwoJ_(twoJ), P_(P), C_(C), TwoI_(twoI), G_(G), Q_(Q) {}
+    /// JQPICG constructor
+    /// \todo restore constexpr if using c++14
+    QuantumNumbers(unsigned twoJ, int Q, int P, unsigned twoI, int C, int G)
+        : TwoJ_(twoJ), P_(signum(P)), C_(signum(C)), TwoI_(twoI), G_(signum(G)), Q_(Q)
+    {
+        if (Q_ != 0 and C_ != 0)
+            throw exceptions::Exception("charged particle has nonzero charge parity", "QuantumNumbers::QuantumNumbers");
+    }
 
-    /// IJPQ constructor
-    constexpr QuantumNumbers(unsigned twoI, unsigned twoJ, int P, int Q)
-        : QuantumNumbers(twoJ, P, 0, twoI, 0, Q) {}
-
-    /// JPQ constructor
-    constexpr QuantumNumbers(unsigned twoJ, int P, int Q)
-        : QuantumNumbers(twoJ, P, 0, 0, 0, Q) {}
-
-    /// JQ constructor
-    constexpr QuantumNumbers(unsigned twoJ, int Q)
-        : QuantumNumbers(twoJ, 0, 0, 0, 0, Q) {}
-
-    /// Default constructor
-    /// is inconsistent
-    QuantumNumbers()
-        : QuantumNumbers(0, 0, 0, 0) {}
+    /// JQPI constructor
+    constexpr QuantumNumbers(unsigned twoJ, int Q, int P = 0, unsigned twoI = 0)
+        : TwoJ_(twoJ), P_(signum(P)), C_(0), TwoI_(twoI), G_(0), Q_(Q) {}
 
     /// @}
-
-    /// check consistency
-    virtual bool consistent() const;
 
     /// \name Getters
     /// @{
@@ -71,10 +59,6 @@ public:
     /// \return spin * 2
     constexpr unsigned twoJ() const
     { return TwoJ_; }
-
-    /// \return spin
-    constexpr double J() const
-    { return TwoJ_ * 0.5; }
 
     /// \return parity
     constexpr int P() const
@@ -88,10 +72,6 @@ public:
     constexpr unsigned twoI() const
     { return TwoI_; }
 
-    /// \return Isospin
-    constexpr double I() const
-    { return TwoI_ * 0.5; }
-
     /// \return G-parity
     constexpr int G() const
     { return G_; }
@@ -99,19 +79,6 @@ public:
     /// \return Electric intge
     constexpr int Q() const
     { return Q_; }
-
-    /// @}
-
-    /// \name Setters
-    /// @{
-
-    /// Set Spin
-    void setJ(double J)
-    { TwoJ_ = 2 * J; }
-
-    /// Set 2 * Spin
-    void setTwoJ(unsigned J)
-    { TwoJ_ = J; }
 
     /// @}
 
@@ -138,23 +105,17 @@ private:
 };
 
 /// equality operator
-bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs);
+inline const bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+{ return lhs.twoJ() == rhs.twoJ() and lhs.P() == rhs.P() and lhs.C() == rhs.C()
+  and lhs.twoI() == rhs.twoI() and lhs.G() == rhs.G() and lhs.Q() == rhs.Q(); }
 
 /// inequality operator
-inline bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+inline const bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 { return !(lhs == rhs); }
 
 /// convert to string
 inline std::string to_string(const QuantumNumbers& Q)
 { return spin_to_string(Q.twoJ()) + (Q.P() > 0 ? "+" : "-") + (Q.C() == 0 ? "" : (Q.C() > 0 ? "+" : "-")); }
-
-/// convert to string
-inline std::string debug_string(const QuantumNumbers& Q)
-{ return (std::to_string(Q.twoJ()) + " " + std::to_string(Q.P()) + " " + std::to_string(Q.C()) + " " + std::to_string(Q.twoI()) + " " + std::to_string(Q.G()) + " " + std::to_string(Q.Q())); }
-
-/// Overload << operator
-inline std::ostream& operator<< (std::ostream& os, const QuantumNumbers& Q)
-{ os << "JP" << ((Q.C() == 0) ? "" : "C") << " = " << to_string(Q); return os; }
 
 }
 

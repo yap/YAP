@@ -25,7 +25,7 @@
 
 namespace yap {
 
-struct ParticleTableEntry;
+class ParticleTableEntry;
 class ParticleFactory;
 
 /// \typedef ParticleTableMap

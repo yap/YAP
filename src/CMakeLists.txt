@@ -37,7 +37,6 @@ set(YAP_SOURCES
 	ParticleCombinationCache.cxx
 	ParticleFactory.cxx
 	PoleMass.cxx
-	QuantumNumbers.cxx
 	RecalculableDataAccessor.cxx
 	RelativisticBreitWigner.cxx
 	Resonance.cxx

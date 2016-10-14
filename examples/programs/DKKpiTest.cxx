@@ -31,7 +31,7 @@ int main( int argc, char** argv)
 
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
-    auto D_mass = factory["D+"].Mass;
+    auto D_mass = factory["D+"].mass();
 
     // create final state particles
     auto kPlus  = factory.fsp(+321);
@@ -44,7 +44,7 @@ int main( int argc, char** argv)
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
     // create a phi
-    auto phi = factory.resonance(factory["phi"].PDG, radialSize, std::make_shared<yap::BreitWigner>());
+    auto phi = factory.resonance(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());
     phi->addChannel(kPlus, kMinus);
 
     // Add channels to D

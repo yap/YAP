@@ -61,7 +61,7 @@ inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
     
-    auto isp_mass = factory[M.initialStateParticles().begin()->first->name()].Mass;
+    auto isp_mass = factory[M.initialStateParticles().begin()->first->name()].mass();
 
     auto A = M.massAxes();
     auto m2r = yap::squared(yap::mass_range(isp_mass, A, M.finalStateParticles()));

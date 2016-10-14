@@ -39,29 +39,52 @@ namespace yap {
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup ParticleFactory
-struct ParticleTableEntry : public QuantumNumbers {
+class ParticleTableEntry
+{
+public:
     /// constructor
     /// \param pdg PDG code
     /// \param name Particle name
     /// \param q QuantumNumbers of particle
     /// \param mass Mass of particle
     /// \param parameters Further parameters of particle (implementation dependent)
-    ParticleTableEntry(int pdg = 0, std::string name = "", QuantumNumbers q = QuantumNumbers(), double mass = -1, std::vector<double> parameters = {});
+    ParticleTableEntry(int pdg , std::string name , QuantumNumbers q, double mass, std::vector<double> parameters = {});
 
-    /// \return consistency of entry
-    bool consistent() const override;
+    /// \return PDG_
+    const int pdg() const
+    { return PDG_; }
 
+    /// \return Name_
+    std::string name() const
+    { return Name_; }
+
+    /// \return QuantumNumbers_
+    const QuantumNumbers& quantumNumbers() const
+    { return QuantumNumbers_; }
+
+    /// \return Mass_
+    const double mass() const
+    { return Mass_; }
+
+    /// \return MassShapeParameters_
+    const std::vector<double>& massShapeParameters() const
+    { return MassShapeParameters_; }
+    
+private:
     /// PDG code of particle
-    int PDG;
+    int PDG_;
 
     /// Name of particle
-    std::string Name;
+    std::string Name_;
 
+    /// Quantum numbers of particle
+    QuantumNumbers QuantumNumbers_;
+    
     /// Mass of particle
-    double Mass;
+    double Mass_;
 
     /// further parameters of particle (implementation dependent)
-    std::vector<double> MassShapeParameters;
+    std::vector<double> MassShapeParameters_;
 };
 
 /// \class ParticleFactory
@@ -114,16 +137,6 @@ public:
     /// \param name Name of particle in table
     const ParticleTableEntry& operator[](std::string name) const
     { return (*this)[pdgCode(name)]; }
-
-    /// get #QuantumNumbers from #ParticleTable_ with safety checks
-    /// \param PDG pdg code labeling particle table entry
-    const QuantumNumbers& quantumNumbers(int PDG) const
-    { return static_cast<const QuantumNumbers&>((*this)[PDG]); }
-
-    /// get #QuantumNumbers from #ParticleTable_ with safety checks
-    /// \param name Name of particle in table
-    const QuantumNumbers& quantumNumbers(std::string name) const
-    { return static_cast<const QuantumNumbers&>((*this)[name]); }
 
     /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_
     /// \param entry a A ParticleTableEntry to add to #ParticleTable_

@@ -24,7 +24,7 @@ MassShapeWithNominalMass::MassShapeWithNominalMass(double m) :
 void MassShapeWithNominalMass::setParameters(const ParticleTableEntry& entry)
 {
     if (Mass_->value() < 0)
-        *Mass_ = entry.Mass;
+        *Mass_ = entry.mass();
 }
 
 //-------------------------

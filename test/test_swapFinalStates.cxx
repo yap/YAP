@@ -108,7 +108,7 @@ TEST_CASE( "swapFinalStates" )
 
     auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
-    auto D_mass = F["D+"].Mass;
+    auto D_mass = F["D+"].mass();
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach

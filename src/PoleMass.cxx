@@ -27,10 +27,10 @@ void PoleMass::setParameters(const ParticleTableEntry& entry)
     auto m = Mass_->value();
 
     if (real(m) < 0)
-        m.real(entry.Mass);
+        m.real(entry.mass());
     
-    if (imag(m) < 0 and !entry.MassShapeParameters.empty())
-        m.imag(entry.MassShapeParameters[0] / 2.);
+    if (imag(m) < 0 and !entry.massShapeParameters().empty())
+        m.imag(entry.massShapeParameters()[0] / 2.);
 
     *Mass_ = m;
 }

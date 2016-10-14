@@ -49,7 +49,7 @@ int main( int argc, char** argv)
     // initial state particle
     auto D = factory.decayingParticle(421, radialSize);
 
-    auto D_mass = factory[421].Mass;
+    auto D_mass = factory[421].mass();
 
     // final state particles
     auto piPlus = factory.fsp(211);

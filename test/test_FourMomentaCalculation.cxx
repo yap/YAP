@@ -141,7 +141,7 @@ TEST_CASE( "FourMomentaCalculation" )
     auto KPlus = factory.fsp(321);
     auto KMinus = factory.fsp(-321);
     
-    double D_mass = factory["D+"].Mass;
+    double D_mass = factory["D+"].mass();
 
     SECTION("3 final state particles") {
 
