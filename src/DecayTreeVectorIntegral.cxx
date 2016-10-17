@@ -180,12 +180,9 @@ const RealIntegralElement integral(const DecayTreeVectorIntegral& dtvi, const De
     }
 
     RealIntegralElement I(0.);
-    for (auto i : indices)
-        for (auto j : indices) {
-            if (j < i)
-                continue;
-            I += dtvi.integral(i, j);
-        }
+    for (size_t i = 0; i < indices.size(); ++i)
+       for (size_t j = i; j < indices.size(); ++j)
+           I += dtvi.integral(indices[i], indices[j]);
 
     return I;
 }
