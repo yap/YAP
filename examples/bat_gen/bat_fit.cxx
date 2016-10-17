@@ -115,12 +115,16 @@ std::vector<std::vector<unsigned> > find_mass_axes(TTree& t_pars)
             throw yap::exceptions::Exception("parameter name \"" + parname + "\" is not right length "
                                              + "(" + std::to_string(parname.size()) + " != 5)",
                                              "find_mass_axes");
+        std::string indices_string = parname.substr(parname.rfind("_") + 1);
+        if (indices_string.size() != 2)
+            throw yap::exceptions::Exception("parameter name \"" + parname + "\" does not contain two one-digit indices", "find_mass_axes");
+        if (!std::all_of(indices_string.begin(), indices_string.end(), isdigit))
+            throw yap::exceptions::Exception("parameter name \"" + parname + "\" does not contain two one-digit indices", "find_mass_axes");
+        
         // read indices:
         std::vector<unsigned> indices;
         indices.reserve(2);
-        std::transform(parname.begin() + parname.rfind("_") + 1, parname.end(), std::back_inserter(indices), [](char c) {return std::atoi(&c);});
-        // for (size_t i = parname.rfind("_") + 1; i < parname.size(); ++i)
-        //     indices.push_back(std::stoi(parname.substr(i, 1)));
+        std::transform(indices_string.begin(), indices_string.end(), std::back_inserter(indices), [](char c){return c - '0';});
         pcs.push_back(indices);
     }
 
