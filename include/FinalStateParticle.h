@@ -45,7 +45,7 @@ protected:
 
     /// Constructor
     /// see #create
-    FinalStateParticle(std::string name, const QuantumNumbers& q, double m);
+    FinalStateParticle(const std::string& name, const QuantumNumbers& q, double m);
 
 public:
 
@@ -53,7 +53,7 @@ public:
     /// \param name Name of particle
     /// \param q Quantum numbers of particle
     /// \param m Mass of particle
-    static std::shared_ptr<FinalStateParticle> create(std::string name, const QuantumNumbers& q, double m)
+    static std::shared_ptr<FinalStateParticle> create(const std::string& name, const QuantumNumbers& q, double m)
     { return std::shared_ptr<FinalStateParticle>(new FinalStateParticle(name, q, m)); }
 
     /// Get mass [GeV]

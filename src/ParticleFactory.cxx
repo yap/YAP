@@ -15,7 +15,7 @@
 namespace yap {
 
 //-------------------------
-ParticleTableEntry::ParticleTableEntry(int pdg, std::string name, QuantumNumbers q, double mass, std::vector<double> parameters) :
+ParticleTableEntry::ParticleTableEntry(int pdg, const std::string& name, QuantumNumbers q, double mass, std::vector<double> parameters) :
     PDG_(pdg),
     Name_(name),
     QuantumNumbers_(q),
@@ -94,7 +94,7 @@ ParticleTableMap::iterator ParticleFactory::insert(ParticleTableMap::iterator hi
 }
 
 //-------------------------
-int ParticleFactory::pdgCode(std::string name) const
+int ParticleFactory::pdgCode(const std::string& name) const
 {
     auto it = std::find_if(ParticleTable_.begin(), ParticleTable_.end(),
     [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.name() == name;});

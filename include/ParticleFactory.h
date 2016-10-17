@@ -48,7 +48,7 @@ public:
     /// \param q QuantumNumbers of particle
     /// \param mass Mass of particle
     /// \param parameters Further parameters of particle (implementation dependent)
-    ParticleTableEntry(int pdg , std::string name , QuantumNumbers q, double mass, std::vector<double> parameters = {});
+    ParticleTableEntry(int pdg , const std::string& name , QuantumNumbers q, double mass, std::vector<double> parameters = {});
 
     /// \return PDG_
     const int pdg() const
@@ -135,7 +135,7 @@ public:
 
     /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
-    const ParticleTableEntry& operator[](std::string name) const
+    const ParticleTableEntry& operator[](const std::string& name) const
     { return (*this)[pdgCode(name)]; }
 
     /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_
@@ -152,7 +152,7 @@ public:
     // find PDG number by particle name
     // \return PDG code number
     // \param name Particle name as listed in particle table
-    int pdgCode(std::string name) const;
+    int pdgCode(const std::string& name) const;
 
     /// @}
 

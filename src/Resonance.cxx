@@ -9,7 +9,7 @@
 namespace yap {
 
 //-------------------------
-Resonance::Resonance(std::string name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape) :
+Resonance::Resonance(const std::string& name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape) :
     DecayingParticle(name, q, radialSize),
     MassShape_(massShape)
 {

@@ -50,7 +50,7 @@ protected:
 
     /// Constructor
     /// see #create
-    DecayingParticle(std::string name, const QuantumNumbers& q, double radialSize);
+    DecayingParticle(const std::string& name, const QuantumNumbers& q, double radialSize);
 
 public:
 
@@ -58,7 +58,7 @@ public:
     /// \param name Name of decaying particle
     /// \param q QuantumNumbers of decaying particle
     /// \param radialSize radial size of decaying particle
-    static std::shared_ptr<DecayingParticle> create(std::string name, const QuantumNumbers& q, double radialSize)
+    static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radialSize)
     { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize)); }
 
     /// \return DecayTrees

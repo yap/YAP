@@ -382,7 +382,7 @@ class is_named
 {
 public:
     /// constructor
-    explicit is_named(std::string name) : Name_(name) {}
+    explicit is_named(const std::string& name) : Name_(name) {}
 
     /// functor
     template <typename T>

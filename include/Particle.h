@@ -52,7 +52,7 @@ protected:
     /// Constructor
     /// \param name Name of particle
     /// \param q Quantum numbers of particle
-    Particle(std::string name, const QuantumNumbers& q)
+    Particle(const std::string& name, const QuantumNumbers& q)
         : std::enable_shared_from_this<Particle>(),
         QuantumNumbers_(q), Name_(name) {}
 
