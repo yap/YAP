@@ -13,7 +13,8 @@ add_custom_target(link-macros
 set(PROGRAMS
     runBatGen
     runBatFit
-    runBatFitFitFractions)
+    runBatFitFitFractions
+    runFitFractions)
 
 # Add the program to the `make example` dependencies
 set(examples_depends ${examples_depends} ${PROGRAMS} PARENT_SCOPE)

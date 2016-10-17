@@ -99,6 +99,9 @@ public:
     /// set parameters into model
     void setParameters(const std::vector<double>& p);
 
+    /// perform the integration
+    void integrate();
+
     /// find the position in the parameter list of the first element of a free amplitude
     size_t findFreeAmplitude(std::shared_ptr<yap::FreeAmplitude> A) const;
 
