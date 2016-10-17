@@ -52,6 +52,15 @@ bool f_0_pipi    = true;
 bool f_2_pipi    = true;
 bool sigma_pipi  = true;
 
+// scaling to reproduce (approximately) the fit fractions of the FOCUS model
+double scale_rho_rho     = 0.7158375483;
+double scale_a_rho_pi_D  = 4.2395231085;
+double scale_a_rho_sigma = 1.0739853519;
+double scale_f_0_pipi    = 0.3762733548;
+double scale_f_2_pipi    = 12.687283302;
+double scale_sigma_pipi  = 0.204794164 ;
+
+
 inline std::unique_ptr<Model> d4pi()
 {
     auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
@@ -94,7 +103,7 @@ inline std::unique_ptr<Model> d4pi()
 
     // a_1 -> sigma pi 
     if (a_rho_sigma)
-        *free_amplitude(*a_1, to(sigma)) = std::polar(0.439, rad(193.));
+        *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
 
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<Flatte>();
@@ -118,9 +127,9 @@ inline std::unique_ptr<Model> d4pi()
         D->addChannel(rho, rho);
 
         amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
-                                                 std::polar(0.624, rad(357.)),    // A_longitudinal
-                                                 std::polar(0.157, rad(120.)),    // A_parallel
-                                                 std::polar(0.384, rad(163.)) )); // A_perpendicular
+                                                 std::polar(scale_rho_rho * 0.624, rad(357.)),    // A_longitudinal
+                                                 std::polar(scale_rho_rho * 0.157, rad(120.)),    // A_parallel
+                                                 std::polar(scale_rho_rho * 0.384, rad(163.)) )); // A_perpendicular
         
         for (auto& fa : free_amplitudes(*D, to(rho, rho)))
             *fa = static_cast<std::complex<double> >(c[fa->spinAmplitude()->L()]);
@@ -151,7 +160,7 @@ inline std::unique_ptr<Model> d4pi()
 
         // D wave
         if (a_rho_pi_D)
-            *a_rho_D = std::polar(0.241, rad(82.));
+            *a_rho_D = std::polar(scale_a_rho_pi_D * 0.241, rad(82.));
         else {
             *a_rho_D = 0.;
             a_rho_D->variableStatus() = VariableStatus::fixed;
@@ -160,15 +169,15 @@ inline std::unique_ptr<Model> d4pi()
     }
     if (f_0_pipi) {
         D->addChannel(f_0_980, piPlus, piMinus);
-        *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(0.233, rad(261.));
+        *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(scale_f_0_pipi * 0.233, rad(261.));
     }
     if (f_2_pipi) {
         D->addChannel(f_2, pipiFlat);
-        *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(0.338, rad(317.));
+        *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(scale_f_2_pipi * 0.338, rad(317.));
     }
     if (sigma_pipi) {
         D->addChannel(sigma, piPlus, piMinus);
-        *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(0.432, rad(254.));
+        *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
     }
     
     M->addInitialStateParticle(D);
@@ -178,7 +187,7 @@ inline std::unique_ptr<Model> d4pi()
 
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(*M, yap::is_not_fixed()))
-        LOG(INFO) << yap::to_string(*fa);
+        LOG(INFO) << yap::to_string(*fa) << "  \t (mag, phase) = (" << abs(fa->value()) << ", " << deg(arg(fa->value())) << "°)";
 
     return M;
 }
