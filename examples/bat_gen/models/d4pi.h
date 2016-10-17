@@ -186,12 +186,8 @@ inline std::unique_ptr<Model> d4pi()
     LOG(INFO) << to_string(D->decayTrees());
 
     LOG(INFO) << std::endl << "Free amplitudes: ";
-    for (const auto& fa : free_amplitudes(*M, yap::is_not_fixed())) {
-        double phase = deg(arg(fa->value()));
-        if (phase > 180.)
-            phase -= 360.;
-        LOG(INFO) << yap::to_string(*fa) << "  \t (mag, phase) = (" << abs(fa->value()) << ", " << phase << "°)";
-    }
+    for (const auto& fa : free_amplitudes(*M, yap::is_not_fixed()))
+        LOG(INFO) << yap::to_string(*fa) << "  \t (mag, phase) = (" << abs(fa->value()) << ", " << deg(arg(fa->value())) << "°)";
 
     return M;
 }
