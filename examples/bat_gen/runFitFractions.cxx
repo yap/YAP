@@ -63,8 +63,7 @@ int main()
             std::bind(yap::phsp<std::mt19937>, std::cref(*m->model()), D_mass, m->axes(), m2r, g, std::numeric_limits<unsigned>::max()));
     m->integralPartitions() = yap::DataPartitionBlock::create(m->integralData(), 6);
     LOG(INFO) << "Created " << m->integralData().size() << " data points (" << (m->integralData().bytes() * 1.e-6) << " MB)";
-
-    yap::ImportanceSampler::calculate(m->modelIntegral(), m->integralPartitions());
+    m->integrate();
 
     double sum(0);
     for (const auto& b2_dtvi : m->modelIntegral().integrals()) {

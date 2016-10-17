@@ -217,10 +217,7 @@ void bat_fit::setParameters(const std::vector<double>& p)
 
     yap::set_values(Parameters_.begin(), Parameters_.end(), p.begin() + FirstParameter_, p.end());
 
-    if (IntegrationPointGenerator_)
-        yap::ImportanceSampler::calculate(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
-    else
-        yap::ImportanceSampler::calculate(Integral_, IntegralPartitions_);
+    integrate();
 
     // calculate fit fractions
     // if (!CalculatedFitFractions_.empty()) {
@@ -232,6 +229,15 @@ void bat_fit::setParameters(const std::vector<double>& p)
             CalculatedFitFractions_[c][i++] = f;
     }
     // }
+}
+
+//-------------------------
+void bat_fit::integrate()
+{
+    if (IntegrationPointGenerator_)
+        yap::ImportanceSampler::calculate(Integral_, IntegrationPointGenerator_, NIntegrationPoints_, NIntegrationPointsBatchSize_, NIntegrationThreads_);
+    else
+        yap::ImportanceSampler::calculate(Integral_, IntegralPartitions_);
 }
 
 // ---------------------------------------------------------
