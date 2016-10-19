@@ -74,20 +74,21 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
 
         // retrieve masses
         double m_ab = model()->fourMomenta()->m(d, pc);
+        double m2_ab = m_ab * m_ab;
         double m_a  = model()->fourMomenta()->m(d, pc->daughters()[0]);
         double m_b  = model()->fourMomenta()->m(d, pc->daughters()[1]);
 
         // calculate nominal breakup momentum
-        double q2_nomi = squared_breakup_momentum(m2_R, m_a, m_b);
+        double q2_nomi = measured_breakup_momenta::q2(m2_R, m_a, m_b);
 
         // retrieve measured breakup momentum
-        double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc);
+        double q2_meas = measured_breakup_momenta::q2(m2_ab, m_a, m_b);
 
         double Q = sqrt(q2_meas / q2_nomi);
 
         auto imw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2) / squared_barrier_factor(BlattWeisskopf_->L(), q2_nomi * r2);
 
-        T()->setValue(1. / (m2_R - pow(m_ab, 2) - imw), d, si, D);
+        T()->setValue(1. / (m2_R - m2_ab - imw), d, si, D);
 
     }
 }

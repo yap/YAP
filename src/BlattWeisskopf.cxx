@@ -50,7 +50,6 @@ const double squared_barrier_factor(unsigned l, double z)
 //-------------------------
 BlattWeisskopf::BlattWeisskopf(unsigned L, DecayingParticle* dp) :
     RecalculableAmplitudeComponent(equal_down_by_orderless_content),
-    RequiresMeasuredBreakupMomenta(L > 0),
     DecayingParticle_(dp),
     L_(L)
 {
@@ -95,7 +94,7 @@ void BlattWeisskopf::calculate(DataPartition& D) const
             // calculate on all data points in D
             for (auto& d : D) {
                 // measured breakup momentum
-                double q2_meas = model()->measuredBreakupMomenta()->q2(d, pc_symIndex.first);
+                double q2_meas = measured_breakup_momenta::q2(d, pc_symIndex.first, *model());
                 BarrierFactor_->setValue(sqrt(squared_barrier_factor(L(), q2_meas * r2)), d, pc_symIndex.second, D);
             }
 

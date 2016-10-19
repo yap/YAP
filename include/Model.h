@@ -33,7 +33,6 @@
 #include "fwd/FreeAmplitude.h"
 #include "fwd/HelicityAngles.h"
 #include "fwd/MassAxes.h"
-#include "fwd/MeasuredBreakupMomenta.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
 #include "fwd/RecalculableDataAccessor.h"
@@ -108,14 +107,6 @@ public:
     /// \return FourMomenta accessor (const)
     const std::shared_ptr<FourMomenta> fourMomenta() const
     { return FourMomenta_; }
-
-    /// \return MeasuredBreakupMomenta accessor
-    std::shared_ptr<MeasuredBreakupMomenta> measuredBreakupMomenta()
-    { return MeasuredBreakupMomenta_; }
-
-    /// \return MeasuredBreakupMomenta accessor (const)
-    const std::shared_ptr<MeasuredBreakupMomenta> measuredBreakupMomenta() const
-    { return MeasuredBreakupMomenta_; }
 
     /// \return HelicityAngles accessor
     /// is nullptr if not using helicity formalism
@@ -208,9 +199,6 @@ public:
     /// tell model to calculate and store helicity angles
     void requireHelicityAngles();
 
-    /// tell model to calculate and store measured breakup momenta
-    void requireMeasuredBreakupMomenta();
-
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
@@ -235,9 +223,8 @@ public:
 
 protected:
 
-    /// add ParticleCombination to to FourMomenta_, HelicityAngles_, and
-    /// MeasuredBreakupMomenta_ (along with it's daughters through
-    /// recursive calling) if it is NOT for a FSP.
+    /// add ParticleCombination to to FourMomenta_ and HelicityAngles_
+    /// (along with it's daughters through recursive calling) if it is NOT for a FSP.
     virtual void addParticleCombination(const ParticleCombination& pc);
 
 private:
@@ -274,9 +261,6 @@ private:
 
     /// four momenta manager
     std::shared_ptr<FourMomenta> FourMomenta_;
-
-    /// Breakup momenta manager
-    std::shared_ptr<MeasuredBreakupMomenta> MeasuredBreakupMomenta_;
 
     /// helicity angles manager
     std::shared_ptr<HelicityAngles> HelicityAngles_;

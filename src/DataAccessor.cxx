@@ -4,10 +4,8 @@
 #include "FourMomenta.h"
 #include "HelicityAngles.h"
 #include "logging.h"
-#include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "RequiresHelicityAngles.h"
-#include "RequiresMeasuredBreakupMomenta.h"
 
 namespace yap {
 
@@ -128,13 +126,6 @@ void DataAccessor::registerWithModel()
         const_cast<Model*>(model())->requireHelicityAngles();
         for (auto pc_i : symmetrizationIndices())
             const_cast<Model*>(model())->helicityAngles()->addParticleCombination(*pc_i.first);
-    }
-
-    // if MeasuredBreakupMomenta is required
-    if (dynamic_cast<RequiresMeasuredBreakupMomenta*>(this) and dynamic_cast<RequiresMeasuredBreakupMomenta&>(*this).requiresMeasuredBreakupMomenta()) {
-        const_cast<Model*>(model())->requireMeasuredBreakupMomenta();
-        for (auto pc_i : symmetrizationIndices())
-            const_cast<Model*>(model())->measuredBreakupMomenta()->addParticleCombination(*pc_i.first);
     }
 
     // if stores nothing, do nothing
