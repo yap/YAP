@@ -21,12 +21,9 @@
 #ifndef yap_MeasuredBreakupMomenta_h
 #define yap_MeasuredBreakupMomenta_h
 
-#include "fwd/CachedValue.h"
+#include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/StatusManager.h"
-
-#include "StaticDataAccessor.h"
 
 #include <cmath>
 #include <memory>
@@ -34,66 +31,29 @@
 
 namespace yap {
 
-/// \class MeasuredBreakupMomenta
-/// \brief Calculates, stores and gives access to breakup momenta (using measured masses)
+/// \namespace measured_breakup_momenta
+/// \brief Calculates breakup momenta (using measured masses)
 /// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup SpinAmplitude
-class MeasuredBreakupMomenta : public StaticDataAccessor
+namespace measured_breakup_momenta
 {
-public:
-
-    /// Constructor
-    /// \param m owning Model
-    MeasuredBreakupMomenta(Model& m);
-
-    /// Calculate breakup momenta for all possible symmetrization indices
-    /// \param d DataPoint to caluclate into
-    /// \param sm StatusManager to update
-    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
-
     /// Access squared breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
+    /// \param m Model to use FourMomenta manager from
+    double q2(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, const Model& m);
 
     /// Access breakup momentum
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return breakup momentum of
-    double q(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-    { return sqrt(q2(d, pc)); }
+    inline double q(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc, const Model& m)
+    { return sqrt(q2(d, pc, m)); }
 
-    /// grant friend status to Model to call addParticleCombination
-    friend class Model;
-
-    /// grant friend status to DataAccessor to call addParticleCombination
-    friend class DataAccessor;
-
-protected:
-
-    /// add to model's StaticDataAccessors_
-    void virtual addToStaticDataAccessors() override;
-
-    /// override to throw on adding final-state PC or more-than-two-body PC
-    void addParticleCombination(const ParticleCombination& pc) override;
-
-    /// squared breakup momentum [GeV^2]
-    std::shared_ptr<RealCachedValue> Q2_;
-
-};
-
-/// Calculate breakup momentum from parent and daughter masses
-/// \param m2_R squared mass of parent
-/// \param m_a mass of first daughter
-/// \param m_b mass of second daughter
-inline constexpr double squared_breakup_momentum(double m2_R, double m_a, double m_b)
-{
-    return (m_a == m_b)
-        ?
-        m2_R / 4. - m_a * m_a
-        :
-        (m2_R - pow(m_a + m_b, 2)) * (m2_R - pow(m_a - m_b, 2)) / m2_R / 4.;
+    /// Calculate breakup momentum from parent and daughter masses
+    /// \param m2_R squared mass of parent
+    /// \param m_a mass of first daughter
+    /// \param m_b mass of second daughter
+    double q2(double m2_R, double m_a, double m_b);
 }
-
 
 }
 

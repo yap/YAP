@@ -27,7 +27,6 @@
 #include "fwd/ParticleCombination.h"
 
 #include "BreitWigner.h"
-#include "RequiresMeasuredBreakupMomenta.h"
 
 #include <memory>
 
@@ -45,10 +44,7 @@ namespace yap {
 ///                \left(\frac{p^*(s)}{p^*(M_{R}^2)}\right)^{2J_{R}+1}
 ///                \frac{M_{R}}{\sqrt{s}} F^{2}_{R}\f$\n
 /// with \f$ F^{2}_{R} \f$ is the Blatt-Weisskopf barrier factor
-class RelativisticBreitWigner :
-    public BreitWigner,
-    public RequiresMeasuredBreakupMomenta
-
+class RelativisticBreitWigner : public BreitWigner
 {
 public:
 
@@ -56,7 +52,7 @@ public:
     /// \param m Mass of resonance [GeV]
     /// \param w Width of resonance [GeV]
     RelativisticBreitWigner(double m = -1, double w = -1) :
-    BreitWigner(m, w), RequiresMeasuredBreakupMomenta(true) {}
+    BreitWigner(m, w) {}
 
     /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
     /// Cheks that decay is to two spin-zero particles

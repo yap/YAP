@@ -15,11 +15,9 @@
 #include "HelicityAngles.h"
 #include "logging.h"
 #include "MassAxes.h"
-#include "MeasuredBreakupMomenta.h"
 #include "Parameter.h"
 #include "RecalculableDataAccessor.h"
 #include "RequiresHelicityAngles.h"
-#include "RequiresMeasuredBreakupMomenta.h"
 #include "SpinAmplitudeCache.h"
 #include "VariableStatus.h"
 
@@ -166,8 +164,6 @@ void Model::addParticleCombination(const ParticleCombination& pc)
     if (pc.daughters().size() == 2) {
         if (HelicityAngles_)
             HelicityAngles_->addParticleCombination(pc);
-        if (MeasuredBreakupMomenta_)
-            MeasuredBreakupMomenta_->addParticleCombination(pc);
     }
 
     // call recursively on daughters
@@ -301,13 +297,6 @@ void Model::requireHelicityAngles()
 {
     if (!HelicityAngles_)
         HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
-}
-
-//-------------------------
-void Model::requireMeasuredBreakupMomenta()
-{
-    if (!MeasuredBreakupMomenta_)
-        MeasuredBreakupMomenta_ = std::make_shared<MeasuredBreakupMomenta>(*this);
 }
 
 //-------------------------

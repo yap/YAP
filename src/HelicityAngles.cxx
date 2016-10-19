@@ -109,7 +109,7 @@ void HelicityAngles::addParticleCombination(const ParticleCombination& pc)
     if (pc.daughters().size() != 2)
         throw exceptions::NotTwoBodyParticleCombination("cannot calculate helicity angles for "
                                                         + std::to_string(pc.daughters().size()) + "-body decay",
-                                                        "MeasuredBreakupMomenta::addParticleCombination");
+                                                        "HelicityAngles::addParticleCombination");
 
     return StaticDataAccessor::addParticleCombination(pc);
 }
