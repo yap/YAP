@@ -44,17 +44,6 @@ public:
     size_t nDataAccessors() const
     { return Data_.size(); }
 
-    /// \return number of sym indices rows for data accessor
-    /// \param i index of DataAccessor
-    size_t nSymIndices(unsigned i) const
-    { return Data_[i].size(); }
-
-    /// \return number of elements for data accessor
-    /// \param i index of DataAccessor
-    /// \param j index of symmetrization
-    size_t nElements(unsigned i, unsigned j = 0) const
-    { return Data_[i][j].size(); }
-
     /// \return size of data point
     unsigned bytes() const;
 
@@ -74,7 +63,7 @@ private:
     /// first index is for the DataAccessor
     /// second index is for the symmeterization state (as known by the DataAccessor)
     /// third index is internal to the DataAccessor
-    std::vector<std::vector<std::vector<double> > > Data_;
+    std::vector<std::vector<double> > Data_;
 
 };
 

@@ -95,7 +95,7 @@ public:
     /// \param sym_index index of symmetrization to grab from
     /// \return Value of CachedValue inside the data point
     inline const double value(unsigned index, const DataPoint& d, unsigned sym_index) const
-    { return d.Data_[Owner_->index()][sym_index][Position_ + index]; }
+    { return d.Data_[Owner_->index()][sym_index * Owner_->size() + Position_ + index]; }
 
     /// \return Size of cached value (number of real elements)
     virtual const unsigned size() const
@@ -113,7 +113,7 @@ public:
     /// \param d #DataPoint to update
     /// \param sym_index index of symmetrization to apply to
     void setValue(unsigned index, double val, DataPoint& d, unsigned sym_index) const
-    { d.Data_[Owner_->index()][sym_index][Position_ + index] = val; }
+    { d.Data_[Owner_->index()][sym_index * Owner_->size() + Position_ + index] = val; }
 
     /// @}
 
