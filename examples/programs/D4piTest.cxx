@@ -139,7 +139,7 @@ int main( int argc, char** argv)
     std::generate_n(std::back_inserter(data), 1,
                     std::bind(yap::phsp<std::mt19937>, std::cref(M), D_mass, A, m2r, g, std::numeric_limits<unsigned>::max()));
 
-    LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors";
+    LOG(INFO) << "Size of DataPoint: " + std::to_string(data[0].bytes()) + " byte (for " + std::to_string(data[0].nDataAccessors()) + " data accessors)";
     LOG(INFO) << "Printing data:";
     for (unsigned d = 0; d < data.size(); ++d) {
         LOG(INFO) << "  DataPoint " << d;
