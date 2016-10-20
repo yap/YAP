@@ -9,7 +9,7 @@ DataPoint::DataPoint(const DataAccessorSet& dataAccessorSet)
     : Data_(dataAccessorSet.size())
 {
     for (auto da : dataAccessorSet)
-        Data_[da->index()].resize(da->nSymmetrizationIndices() * da->size(), 0.);
+        Data_[da->index()].assign(da->nSymmetrizationIndices() * da->size(), 0.);
 }
 
 //-------------------------
