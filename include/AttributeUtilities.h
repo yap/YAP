@@ -152,6 +152,38 @@ private:
     std::vector<const T*> Objects_;
 };
 
+/// functor class to compare arguments by an attribute
+template <typename A, typename C = std::less<typename A::return_type> >
+class compare_by : with_return_type<const bool>
+{
+public:
+    compare_by() = default;
+
+    /// constructor
+    /// \param a Attribute functor to use
+    /// \param comp Comparitor to use
+    compare_by(const A& a, const C& comp) : Attr_(a), Comp_(comp) {}
+
+    /// constructor
+    /// \param a Attribute functor to use
+    compare_by(const A& a) : Attr_(a) {}
+
+    /// constructor
+    /// \param comp Comparitor to use
+    compare_by(const C& comp) : Comp_(comp) {}
+
+    /// functor
+    template <typename T, typename U>
+    const bool operator()(const T& t, const U& u) const
+    { return Comp_(Attr_(t), Attr_(u)); }
+
+private:
+    /// attribute object
+    A Attr_;
+
+    /// value to check against
+    C Comp_;
+};
 
 }
 

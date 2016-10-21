@@ -23,6 +23,7 @@
 #include <PDL.h>
 #include <PHSP.h>
 #include <Resonance.h>
+#include <Sort.h>
 #include <SpinAmplitudeCache.h>
 #include <WignerD.h>
 
@@ -221,13 +222,9 @@ int main( int argc, char** argv)
 
     LOG(INFO) << std::endl << to_string(D->decayTrees());
 
-    LOG(INFO) << std::endl << "Fixed amplitudes: ";
-    for (const auto& fa : free_amplitudes(M, yap::is_fixed()))
-        LOG(INFO) << yap::to_string(*fa);
     LOG(INFO) << std::endl << "Free amplitudes: ";
-    for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
-    // for (const auto& fa : yap::sort(free_amplitudes(M, yap::is_not_fixed()), yap::parent_name()))
-    // for (const auto& fa : yap::sort(free_amplitudes(M, yap::is_not_fixed()), yap::parent_spin_projection(), yap::parent_name()))
+    for (const auto& fa : sort(free_amplitudes(M), yap::compare_by<yap::is_fixed>(),
+                               yap::by_parent_name<>(), yap::by_l<>()))
         LOG(INFO) << yap::to_string(*fa);
  
     std::cout << "alright! \n";

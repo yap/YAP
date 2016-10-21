@@ -27,6 +27,7 @@
 #include <PHSP.h>
 #include <RelativisticBreitWigner.h>
 #include <Resonance.h>
+#include <Sort.h>
 #include <ZemachFormalism.h>
 
 #include <memory>
@@ -201,6 +202,11 @@ int main( int argc, char** argv)
             LOG(INFO) << yap::to_string(*fa);
     }
 
+    LOG(INFO) << std::endl << "Free amplitudes (sorted by fixed/notfixed, parent_name, l):";
+    for (const auto& fa : sort(free_amplitudes(M), yap::compare_by<yap::is_fixed>(),
+                               yap::by_parent_name<>(), yap::by_l<>()))
+        LOG(INFO) << yap::to_string(*fa);
+    
     LOG(INFO) << "alright!";
 
     return 0;

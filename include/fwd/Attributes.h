@@ -23,6 +23,8 @@
 
 #include "fwd/AttributeUtilities.h"
 
+#include <functional>
+
 namespace yap {
 
 struct orbital_angular_momentum;
@@ -32,11 +34,23 @@ struct spin_projection;
 /// \typedef Functor class to check orbital angular momentum
 using l_equals = check_attribute<orbital_angular_momentum>;
 
+/// \typedef Functor class to compare orbital angular momentum
+template <typename C = std::less<unsigned> >
+using by_l = compare_by<orbital_angular_momentum, C>;
+
 /// \typedef Functor class to check spin angular momentum
 using s_equals = check_attribute<spin_angular_momentum>;
-    
+
+/// \typedef Functor class to compare spin angular momentum
+template <typename C = std::less<unsigned> >
+using by_s = compare_by<spin_angular_momentum, C>;
+
 /// \typedef Functor class to check spin projection
 using m_equals = check_attribute<spin_projection>;
+
+/// \typedef Functor class to compare spin projection
+template <typename C = std::less<unsigned> >
+using by_m = compare_by<spin_projection, C>;
 
 struct to;
 struct exactly_to;
@@ -58,6 +72,10 @@ using is_named = check_attribute<name_of<identity> >;
 
 /// \typedef functor to return name of parent_particle
 using parent_name = name_of<parent_particle>;
+
+/// \typedef functor to compare by parent name
+template <typename C = std::less<std::string> >
+using by_parent_name = compare_by<parent_name, C>;
 
 }
 
