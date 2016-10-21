@@ -9,6 +9,7 @@
 #include <FourMomenta.h>
 #include <FourVector.h>
 #include <FreeAmplitude.h>
+#include <Group.h>
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
@@ -226,7 +227,18 @@ int main( int argc, char** argv)
     for (const auto& fa : sort(free_amplitudes(M), yap::compare_by<yap::is_fixed>(),
                                yap::by_parent_name<>(), yap::by_l<>()))
         LOG(INFO) << yap::to_string(*fa);
- 
+
+    LOG(INFO) << "";
+    LOG(INFO) << "Grouped by l,s";
+    for (const auto& fav : group(free_amplitudes(M), yap::by_l<>(), yap::by_s<>())) {
+        LOG(INFO) << "" ;
+        LOG(INFO) << "L = " << yap::orbital_angular_momentum()(fav[0])
+                  << " S = " << yap::spin_angular_momentum()(fav[0])
+                  << " :: " << std::to_string(fav.size()) << " amplitudes:";
+        for (const auto& fa : sort(fav, yap::compare_by<yap::is_fixed>(), yap::by_parent_name<>()))
+            LOG(INFO) << yap::to_string(*fa);
+    }
+    
     std::cout << "alright! \n";
 
     return 0;

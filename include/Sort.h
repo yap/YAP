@@ -74,7 +74,7 @@ void lexicographically_sort(ItType first, ItType last, Compare1 c1, Compare2 c2,
 /// \param c1 first less-than functor object for comparison
 /// \param C further less-than functor object for comparison
 template <typename container, typename Compare1, typename ... Compares>
-std::vector<typename container::value_type> sort(container K, Compare1 c1, Compares ... C)
+std::vector<typename container::value_type> sort(const container& K, Compare1 c1, Compares ... C)
 {
     // create vector that can be sorted
     std::vector<typename container::value_type> V(K.begin(), K.end());
