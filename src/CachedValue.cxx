@@ -45,7 +45,7 @@ CachedValue::CachedValue(unsigned size, DataAccessor& da) :
 void CachedValue::addToDataAccessor()
 {
     // add self to owner
-    Owner_->addCachedValue(shared_from_this());
+    Owner_->addCachedValue(*this);
 }
 
 //-------------------------

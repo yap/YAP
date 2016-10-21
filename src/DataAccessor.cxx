@@ -137,23 +137,20 @@ void DataAccessor::registerWithModel()
 }
 
 //-------------------------
-void DataAccessor::addCachedValue(std::shared_ptr<CachedValue> c)
+void DataAccessor::addCachedValue(CachedValue& c)
 {
-    if (not c)
-        throw exceptions::Exception("CachedValue is NULL", "DataAccessor::addCachedValue");
-
     // add CachedValue
-    if (CachedValues_.insert(c).second) {
+    if (CachedValues_.insert(c.shared_from_this()).second) {
         // if insertion was successful
 
         // set its index
-        c->setIndex(CachedValues_.size() - 1);
+        c.setIndex(CachedValues_.size() - 1);
 
         // set its position
-        c->setPosition(size());
-
+        c.setPosition(size());
+    
         // increase data size to accommodate CachedValue
-        increaseSize(c->size());
+        increaseSize(c.size());
     }
 }
 

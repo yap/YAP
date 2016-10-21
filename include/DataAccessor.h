@@ -93,7 +93,7 @@ protected:
     void virtual registerWithModel();
 
     /// add CachedValue
-    void addCachedValue(std::shared_ptr<CachedValue> c);
+    void addCachedValue(CachedValue& c);
 
     /// add ParticleCombination to SymmetrizationIndices_
     virtual void addParticleCombination(const ParticleCombination& pc);
