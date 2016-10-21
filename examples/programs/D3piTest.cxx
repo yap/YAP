@@ -1,10 +1,10 @@
+#include <Attributes.h>
 #include <BreitWigner.h>
 #include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
 #include <DecayTree.h>
 #include <DecayTreeVectorIntegral.h>
-#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <FourMomenta.h>
@@ -27,6 +27,7 @@
 #include <PHSP.h>
 #include <RelativisticBreitWigner.h>
 #include <Resonance.h>
+#include <Sort.h>
 #include <ZemachFormalism.h>
 
 #include <memory>
@@ -190,9 +191,23 @@ int main( int argc, char** argv)
     LOG(INFO) << std::endl << "Fixed amplitudes: ";
     for (const auto& fa : free_amplitudes(M, yap::is_fixed()))
         LOG(INFO) << yap::to_string(*fa);
+
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(M, yap::is_not_fixed()))
         LOG(INFO) << yap::to_string(*fa);
 
+    for (unsigned l = 0; l <= 2; ++l) {
+        LOG(INFO) << std::endl << "Amplitudes with l = " << l << ": ";
+        for (const auto& fa : free_amplitudes(M, yap::l_equals(l)))
+            LOG(INFO) << yap::to_string(*fa);
+    }
+
+    LOG(INFO) << std::endl << "Free amplitudes (sorted by fixed/notfixed, parent_name, l):";
+    for (const auto& fa : sort(free_amplitudes(M), yap::compare_by<yap::is_fixed>(),
+                               yap::by_parent_name<>(), yap::by_l<>()))
+        LOG(INFO) << yap::to_string(*fa);
+    
     LOG(INFO) << "alright!";
+
+    return 0;
 }

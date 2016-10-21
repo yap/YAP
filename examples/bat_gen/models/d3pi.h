@@ -12,11 +12,10 @@
 #include "../fit_fitFraction.h"
 #include "../tools.h"
 
+#include <Attributes.h>
 #include <BreitWigner.h>
-#include <container_utils.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
-#include <Filters.h>
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <FreeAmplitude.h>

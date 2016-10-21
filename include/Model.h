@@ -26,7 +26,6 @@
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
-#include "fwd/Filters.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
 #include "fwd/FourVector.h"
@@ -40,6 +39,7 @@
 #include "fwd/StatusManager.h"
 
 #include "CoordinateSystem.h"
+#include "Filter.h"
 #include "ParticleCombinationCache.h"
 #include "SpinAmplitudeCache.h"
 

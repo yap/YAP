@@ -143,10 +143,6 @@ std::string to_string(const DecayTreeVector& dtv);
 inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
 { return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
 
-/// \return DecayingParticle
-std::shared_ptr<DecayingParticle> decayingParticle(const DecayTree& dt);
-
-
 /// \return Depth of DecayTree
 unsigned depth(const DecayTree& DT);
 
