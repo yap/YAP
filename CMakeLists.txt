@@ -11,6 +11,14 @@ if(DOXYGEN_FOUND)
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif(DOXYGEN_FOUND)
 
+# DataPoint type flag
+if (DATA_POINT_TYPE STREQUAL "float")
+	message("Using float as type for DataPoint")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DATA_POINT_FLOAT")
+else()
+	message("Using double as type for DataPoint (to use floats in order to reduce memory usage by DataPoints, cmake with -DDATA_POINT_TYPE=float)")
+endif()
+
 # Default C++ flags
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)

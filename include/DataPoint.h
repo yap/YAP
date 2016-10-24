@@ -28,6 +28,13 @@
 
 namespace yap {
 
+/// precompiler flag for data storage type
+#ifdef DATA_POINT_FLOAT
+    using data_point_type = float;
+# else
+    using data_point_type = double;
+#endif
+
 /// \class DataPoint
 /// \brief Class for holding data and cached values per data point for fast calculation
 /// \author Johannes Rauch, Daniel Greenwald
@@ -61,9 +68,9 @@ private:
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
-    /// second index is for the symmeterization state (as known by the DataAccessor)
-    /// third index is internal to the DataAccessor
-    std::vector<std::vector<double> > Data_;
+    /// second index is for the symmeterization state (as known by the DataAccessor) internal to the DataAccessor
+    /// i = symIndex * size + position
+    std::vector<std::vector<data_point_type> > Data_;
 
 };
 
