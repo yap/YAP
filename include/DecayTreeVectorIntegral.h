@@ -43,10 +43,13 @@ namespace yap {
 /// and a product of data-dependent amplitudes ("A", below)
 ///
 /// This class holds two types of components:\n
-///   o Diagonal components: one for each DecayTree,
-///     stored as |A|^2 for the tree and returned as |a|^2 * stored value
+///   o Diagonal components: one for each DecayTree, stored as |A|^2
+///     for the tree and returned as |a|^2 * stored value when
+///     integral(i) is called
 ///   o Off-diagonal components: one for each pair of DecayTrees (i, j),
-///     stored as conj(A_i) * A_j and returned as 2 * real(conj(a_i) * a_i * stored value)
+///     stored as conj(A_i) * A_j and returned as
+///     2 * real(conj(a_i) * a_i * stored value when integral(i, j)
+///     is called.
 class DecayTreeVectorIntegral
 {
 public:
@@ -78,7 +81,7 @@ public:
 
     /// casts diagonal components into off-diagonal type, conjugates
     /// upper-triangle off-diagonals to return lower-triangle members.
-    /// \return (copy of) component
+    /// \return (copy of) component---integral of conj(A_i) * A_j
     const ComplexIntegralElement component(unsigned i, unsigned j) const;
 
     // addition operator
