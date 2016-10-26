@@ -116,10 +116,6 @@ int main( int argc, char** argv)
     for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
         std::cout << *pc_i.first << ": " << pc_i.second << "\n";
 
-    std::cout << "\nHelicity angles symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
-    for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
-        std::cout << *pc_i.first << ": " << pc_i.second << "\n";
-
     D->printDecayChain();
     std::cout << "\n";
 

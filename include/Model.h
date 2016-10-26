@@ -30,7 +30,6 @@
 #include "fwd/FourMomenta.h"
 #include "fwd/FourVector.h"
 #include "fwd/FreeAmplitude.h"
-#include "fwd/HelicityAngles.h"
 #include "fwd/MassAxes.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
@@ -40,6 +39,7 @@
 
 #include "CoordinateSystem.h"
 #include "Filter.h"
+#include "HelicityAngles.h"
 #include "ParticleCombinationCache.h"
 #include "SpinAmplitudeCache.h"
 
@@ -109,13 +109,7 @@ public:
     { return FourMomenta_; }
 
     /// \return HelicityAngles accessor
-    /// is nullptr if not using helicity formalism
-    std::shared_ptr<HelicityAngles> helicityAngles()
-    { return HelicityAngles_; }
-
-    /// \return HelicityAngles accessor (const)
-    /// is nullptr if not using helicity formalism
-    const std::shared_ptr<HelicityAngles> helicityAngles() const
+    const HelicityAngles& helicityAngles() const
     { return HelicityAngles_; }
 
     /// \return ParticleCombinationCache
@@ -196,9 +190,6 @@ public:
 
     /// @}
 
-    /// tell model to calculate and store helicity angles
-    void requireHelicityAngles();
-
     /// create an empty data set
     /// \param n Number of empty data points to place inside data set
     DataSet createDataSet(size_t n = 0);
@@ -223,7 +214,7 @@ public:
 
 protected:
 
-    /// add ParticleCombination to to FourMomenta_ and HelicityAngles_
+    /// add ParticleCombination to to FourMomenta_
     /// (along with it's daughters through recursive calling) if it is NOT for a FSP.
     virtual void addParticleCombination(const ParticleCombination& pc);
 
@@ -263,7 +254,7 @@ private:
     std::shared_ptr<FourMomenta> FourMomenta_;
 
     /// helicity angles manager
-    std::shared_ptr<HelicityAngles> HelicityAngles_;
+    HelicityAngles HelicityAngles_;
 
 };
 

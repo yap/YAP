@@ -13,8 +13,7 @@ namespace yap {
 
 //-------------------------
 HelicitySpinAmplitude::HelicitySpinAmplitude(Model& m, unsigned two_J, const SpinVector& two_j, unsigned l, unsigned two_s) :
-    SpinAmplitude(m, two_J, two_j, l, two_s, equal_by_shared_pointer),
-    RequiresHelicityAngles(two_J != 0)
+    SpinAmplitude(m, two_J, two_j, l, two_s, equal_by_shared_pointer)
 {
     if (finalTwoJ().size() != 2)
         throw exceptions::Exception("Wrong number of daughter spins specified (" + std::to_string(finalTwoJ().size()) + " != 2)",
@@ -54,13 +53,13 @@ HelicitySpinAmplitude::HelicitySpinAmplitude(Model& m, unsigned two_J, const Spi
 
 //-------------------------
 const std::complex<double> HelicitySpinAmplitude::calc(int two_M, const SpinProjectionVector& two_m,
-        const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+        const DataPoint& d, const StatusManager& sm,
+        const std::shared_ptr<const ParticleCombination>& pc) const
 {
     // helicity angles
-    double phi   = model()->helicityAngles()->phi(d, pc);
-    double theta = model()->helicityAngles()->theta(d, pc);
+    const auto& angles = model()->helicityAngles().helicityAngles(d, sm, pc);
 
-    return std::conj(DFunction(initialTwoJ(), two_M, two_m[0] - two_m[1], phi, theta, 0))
+    return std::conj(DFunction(initialTwoJ(), two_M, two_m[0] - two_m[1], angles[0], angles[1], 0))
            * Coefficients_.at(two_m);
 
     /// \todo Take a look at momentum-dependent Clebsch-Gordan

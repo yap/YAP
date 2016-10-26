@@ -64,8 +64,6 @@ int main( int argc, char** argv)
 
     std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
 
-    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
-
     D->printDecayChain();
     std::cout << "\n";
 

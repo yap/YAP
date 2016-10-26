@@ -147,8 +147,8 @@ TEST_CASE( "HelicityAngles" )
 
         // compare results
         for (auto& kv : phi_theta) {
-            REQUIRE( cos(M.helicityAngles()->phi(dp, kv.first))   == Approx(cos(kv.second[0])) );
-            REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
+            REQUIRE( cos(M.helicityAngles().helicityAngles(dp, data, kv.first)[0])   == Approx(cos(kv.second[0])) );
+            REQUIRE( M.helicityAngles().helicityAngles(dp, data, kv.first)[1] == Approx(kv.second[1]) );
         }
     }
 }

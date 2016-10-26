@@ -43,7 +43,7 @@ void SpinAmplitude::calculate(DataPoint& d, StatusManager& sm) const
 
                 // if yet uncalculated
                 if (sm.status(*aSM_kv.second, pc_i.second) == CalculationStatus::uncalculated)
-                    aSM_kv.second->setValue(calc(two_M, aSM_kv.first, d, pc_i.first), d, pc_i.second, sm);
+                    aSM_kv.second->setValue(calc(two_M, aSM_kv.first, d, sm, pc_i.first), d, pc_i.second, sm);
         }
     }
 }

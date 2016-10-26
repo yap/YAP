@@ -128,11 +128,9 @@ TEST_CASE( "HelicityAngles_boostRotate" )
             const auto dp = data.back();
 
             // compare results
-            for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
-                if (pc_i.first->indices().size() < M.finalStateParticles().size())
-                    resultingThetas[pc_i.first].push_back(M.helicityAngles()->theta(dp, pc_i.first));
+            for (auto& pc_rho : rho->particleCombinations())
+                resultingThetas[pc_rho].push_back(M.helicityAngles().helicityAngles(dp, data, pc_rho)[1]);
         }
-
 
         // check if thetas are equal
         // Phi can change, since it only affects the phase of the amplitude, and it will change in the same way for all amplitudes

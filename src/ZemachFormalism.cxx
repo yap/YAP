@@ -118,7 +118,8 @@ const std::complex<double> ZemachSpinAmplitude::amplitude(const DataPoint& d, co
 
 //-------------------------
 const std::complex<double> ZemachSpinAmplitude::calc(int two_M, const SpinProjectionVector& two_m,
-        const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+        const DataPoint& d, const StatusManager& sm,
+        const std::shared_ptr<const ParticleCombination>& pc) const
 {
     if (pc->indices().size() < 3)
         return 1.;

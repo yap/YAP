@@ -36,7 +36,8 @@ class UnitSpinAmplitude : public SpinAmplitude
 public:
 
     /// \return 1 regardless of input
-    const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m, const DataPoint& d,
+    const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
+                                    const DataPoint& d, const StatusManager& sm,
                                     const std::shared_ptr<const ParticleCombination>& pc) const override
     { return 1.; }
 

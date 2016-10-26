@@ -12,12 +12,10 @@
 #include "DecayTree.h"
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
-#include "HelicityAngles.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "Parameter.h"
 #include "RecalculableDataAccessor.h"
-#include "RequiresHelicityAngles.h"
 #include "SpinAmplitudeCache.h"
 #include "VariableStatus.h"
 
@@ -34,7 +32,8 @@ namespace yap {
     CoordinateSystem_({ThreeVector<double>({1., 0., 0.}),
                        ThreeVector<double>({0., 1., 0.}),
                        ThreeVector<double>({0., 0., 1.})}),
-    FourMomenta_(std::make_shared<FourMomenta>(*this))
+    FourMomenta_(std::make_shared<FourMomenta>(*this)),
+    HelicityAngles_(*this)
 {
     if (!SAC)
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
@@ -161,11 +160,6 @@ void Model::addParticleCombination(const ParticleCombination& pc)
 
     FourMomenta_->addParticleCombination(pc);
 
-    if (pc.daughters().size() == 2) {
-        if (HelicityAngles_)
-            HelicityAngles_->addParticleCombination(pc);
-    }
-
     // call recursively on daughters
     for (auto& d : pc.daughters())
         addParticleCombination(*d);
@@ -290,13 +284,6 @@ void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
         throw exceptions::Exception("Coordinate system not right-handed", "Model::setCoordinateSystem");
 
     CoordinateSystem_ = unit(cs);
-}
-
-//-------------------------
-void Model::requireHelicityAngles()
-{
-    if (!HelicityAngles_)
-        HelicityAngles_ = std::make_shared<HelicityAngles>(*this);
 }
 
 //-------------------------

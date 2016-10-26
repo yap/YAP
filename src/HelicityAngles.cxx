@@ -9,64 +9,47 @@
 #include "ParticleCombination.h"
 #include "StatusManager.h"
 
+#include "logging.h"
+
+#include <assert.h>
+
 namespace yap {
 
+
 //-------------------------
-HelicityAngles::HelicityAngles(Model& m) :
-    StaticDataAccessor(m, equal_up_and_down),
-    Phi_(RealCachedValue::create(*this)),
-    Theta_(RealCachedValue::create(*this))
+const std::array<double, 2>& HelicityAngles::helicityAngles(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const
 {
-    registerWithModel();
+    // check if DataPoint is currently in cache
+    if (cachedForDataPoint_[&sm] == &d) {
+        // find entry
+        for (const auto& kv : cachedAngles_[&sm])
+            if (equal_up_and_down(kv.first, pc))
+                return kv.second;
+    }
+    else {
+        // reset and clear
+        cachedForDataPoint_[&sm] = nullptr;
+        cachedAngles_[&sm].clear();
+    }
+
+    // if not found, calculate
+    calculateAngles(d, sm, origin(*pc).shared_from_this(), Model_->coordinateSystem(), unitMatrix<double, 4>());
+    cachedForDataPoint_[&sm] = &d;
+
+    return helicityAngles(d, sm, pc);
 }
 
 //-------------------------
-void HelicityAngles::addToStaticDataAccessors()
-{
-    // look for Model's FourMomenta_
-    auto it_fm = std::find(staticDataAccessors().begin(), staticDataAccessors().end(), model()->fourMomenta().get());
-    if (it_fm == staticDataAccessors().end())
-        throw exceptions::Exception("HelicityAngles cannot be registered with the model before FourMomenta", "HelicityAngles::registerWithModel");
-    // add this to just after FourMomenta_
-    const_cast<StaticDataAccessorVector&>(staticDataAccessors()).insert(it_fm + 1, this);
-}
-
-//-------------------------
-double HelicityAngles::phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-{
-    return Phi_->value(d, symmetrizationIndex(pc));
-}
-
-//-------------------------
-double HelicityAngles::theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-{
-    return Theta_->value(d, symmetrizationIndex(pc));
-}
-
-//-------------------------
-void HelicityAngles::calculate(DataPoint& d, StatusManager& sm) const
-{
-    // set angles uncalculated
-    sm.set(*this, CalculationStatus::uncalculated);
-
-    // call on ISP PC's
-    // \todo allow for designating the boost that takes from the data frame to the lab frame (possibly event dependent)
-    for (auto& kv : symmetrizationIndices())
-        if (not kv.first->parent())
-            calculateAngles(d, kv.first, model()->coordinateSystem(), unitMatrix<double, 4>(), sm);
-}
-
-//-------------------------
-void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
-                                     const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
-                                     StatusManager& sm) const
+void HelicityAngles::calculateAngles(const DataPoint& d, const StatusManager& sm,
+                                     const std::shared_ptr<const ParticleCombination>& pc,
+                                     const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts) const
 {
     // terminate recursion
     if (is_final_state_particle_combination(*pc))
         return;
 
     // get pc's 4-mom in data frame
-    const auto P = model()->fourMomenta()->p(d, pc);
+    const auto P = Model_->fourMomenta()->p(d, pc);
 
     // calculate reference frame for P from parent's RF
     const auto cP = helicityFrame(boosts * P, C);
@@ -74,44 +57,22 @@ void HelicityAngles::calculateAngles(DataPoint& d, const std::shared_ptr<const P
     // calculate boost from data frame into pc rest frame
     const auto boost = lorentzTransformation(-(boosts * P));
 
-    const auto boost_boosts = boost * boosts;
+    // boost daughter momentum from data frame into pc rest frame
+    const auto p = boost * boosts * Model_->fourMomenta()->p(d, pc->daughters()[0]);
 
-    const unsigned symIndex = symmetrizationIndex(pc);
+    auto phi_theta = angles<double>(vect<double>(p), cP);
 
-    for (auto& daughter : pc->daughters()) {
+    // set ambiguous phi to theta
+    // todo: in this cases, theta should be 0 or pi. In most cases it is, but sometimes not.
+    // Not checking if theta == 0 or pi results in tests passing which would otherwise not
+    if (std::isnan(phi_theta[0]))
+        phi_theta[0] = phi_theta[1];
 
-        // if unset, calculate and set angles of parent to first daughter's
-        if (sm.status(*Phi_, symIndex) == CalculationStatus::uncalculated or sm.status(*Theta_, symIndex) == CalculationStatus::uncalculated) {
+    cachedAngles_.at(&sm)[pc] = phi_theta;
 
-            // boost daughter momentum from data frame into pc rest frame
-            const auto p = boost_boosts * model()->fourMomenta()->p(d, daughter);
-
-            auto phi_theta = angles<double>(vect<double>(p), cP);
-
-            // set ambiguous phi to theta
-            // todo: in this cases, theta should be 0 or pi. In most cases it is, but sometimes not.
-            // Not checking if theta == 0 or pi results in tests passing which would otherwise not
-            if (std::isnan(phi_theta[0]))
-                phi_theta[0] = phi_theta[1];
-
-            Phi_->setValue(phi_theta[0], d, symIndex, sm);
-            Theta_->setValue(phi_theta[1], d, symIndex, sm);
-        }
-
+    for (auto& daughter : pc->daughters())
         // recurse down the decay tree
-        calculateAngles(d, daughter, cP, boost, sm);
-    }
-}
-
-//-------------------------
-void HelicityAngles::addParticleCombination(const ParticleCombination& pc)
-{
-    if (pc.daughters().size() != 2)
-        throw exceptions::NotTwoBodyParticleCombination("cannot calculate helicity angles for "
-                                                        + std::to_string(pc.daughters().size()) + "-body decay",
-                                                        "HelicityAngles::addParticleCombination");
-
-    return StaticDataAccessor::addParticleCombination(pc);
+        calculateAngles(d, sm, daughter, cP, boost);
 }
 
 }

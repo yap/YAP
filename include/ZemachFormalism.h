@@ -71,9 +71,11 @@ public:
     /// \param two_M 2 * spin projection of parent
     /// \param two_m2 SpinProjectionVector of daughters
     /// \param d DataPoint to retrieve data from for calculation
+    /// \param sm StatusManager of DataPoint
     /// \param pc ParticleCombination to calculate for
     virtual const std::complex<double> calc(int two_M, const SpinProjectionVector& two_m,
-                                            const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
+                                            const DataPoint& d, const StatusManager& sm,
+                                            const std::shared_ptr<const ParticleCombination>& pc) const override;
 
     /// check equality
     virtual bool equals(const SpinAmplitude& other) const override
