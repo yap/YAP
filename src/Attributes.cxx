@@ -266,9 +266,7 @@ const bool has_a_mass::operator()(const MassShape& m) const
 //-------------------------
 const bool has_a_mass::operator()(const Particle& p) const
 {
-    return dynamic_cast<const FinalStateParticle*>(&p) != nullptr
-        or (dynamic_cast<const Resonance*>(&p)
-            and operator()(dynamic_cast<const Resonance&>(p).massShape()));
+    return is_final_state_particle(p) or (is_resonance(p) and operator()(dynamic_cast<const Resonance&>(p).massShape()));
 }
 
 //-------------------------

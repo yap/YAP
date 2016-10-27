@@ -21,6 +21,8 @@
 #ifndef yap_Resonance_h
 #define yap_Resonance_h
 
+#include "fwd/Resonance.h"
+
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DecayChannel.h"
@@ -30,6 +32,7 @@
 #include "fwd/SpinAmplitude.h"
 #include "fwd/StatusManager.h"
 
+#include "AttributeUtilities.h"
 #include "DecayingParticle.h"
 
 #include <complex>
@@ -108,6 +111,9 @@ private:
     std::shared_ptr<MassShape> MassShape_;
 
 };
+
+/// checks if something inherits from Resonance
+extern const is_of_type<Resonance> is_resonance;
 
 }
 

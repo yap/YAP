@@ -21,8 +21,6 @@
 #ifndef yap_FinalStateParticleFwd_h
 #define yap_FinalStateParticleFwd_h
 
-#include "fwd/Particle.h"
-
 #include <memory>
 #include <vector>
 
@@ -32,9 +30,6 @@ class FinalStateParticle;
 
 /// \typedef FinalStateParticleVector
 using FinalStateParticleVector = std::vector<std::shared_ptr<FinalStateParticle> >;
-
-/// \return whether Particle is FinalStateParticle
-bool is_final_state_particle(const Particle& p);
 
 }
 

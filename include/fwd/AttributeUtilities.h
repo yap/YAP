@@ -28,6 +28,7 @@ template <typename> struct with_return_type;
 template <typename, typename, typename...> struct attribute_of;
 template <typename> class check_attribute;
 template <typename, typename, typename...> class has_pointed_to_object;
+template <typename> struct is_of_type;
 template <typename, typename> class compare_by;
 
 struct identity;

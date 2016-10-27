@@ -67,13 +67,13 @@ template <typename> class name_of;
 
 struct has_a_mass;
 
-/// \typedef functor to check particle name
+/// functor to check particle name
 using is_named = check_attribute<name_of<identity> >;
 
-/// \typedef functor to return name of parent_particle
+/// functor to return name of parent_particle
 using parent_name = name_of<parent_particle>;
 
-/// \typedef functor to compare by parent name
+/// functor to compare by parent name
 template <typename C = std::less<std::string> >
 using by_parent_name = compare_by<parent_name, C>;
 

@@ -18,6 +18,9 @@
 namespace yap {
 
 //-------------------------
+const is_of_type<DecayingParticle> is_decaying_particle{};
+
+//-------------------------
  DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers& q, double radialSize) :
     Particle(name, q),
     RadialSize_(std::make_shared<RealParameter>(radialSize))
@@ -323,12 +326,6 @@ std::string to_string(const DecayTreeVectorMap& m_dtv_map)
     return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
                            [](std::string & s, const DecayTreeVectorMap::value_type & m_dtv)
     { return s += to_string(m_dtv.second); });
-}
-
-//-------------------------
-bool is_decaying_particle(const Particle& p)
-{
-    return dynamic_cast<const DecayingParticle*>(&p) != nullptr;
 }
 
 //-------------------------

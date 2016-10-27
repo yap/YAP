@@ -4,6 +4,7 @@
 #include "Attributes.h"
 #include "DecayingParticle.h"
 #include "Exceptions.h"
+#include "FinalStateParticle.h"
 #include "logging.h"
 #include "Model.h"
 #include "ParticleCombination.h"

@@ -8,6 +8,9 @@
 namespace yap {
 
 //-------------------------
+const is_of_type<FinalStateParticle> is_final_state_particle{};
+
+//-------------------------
 FinalStateParticle::FinalStateParticle(const std::string& name, const QuantumNumbers& q, double m) :
     Particle(name, q),
     Model_(nullptr),
@@ -28,13 +31,6 @@ void FinalStateParticle::addParticleCombination(const ParticleCombination& pc)
     if (particleCombinations().find(pc.shared_from_this()) == particleCombinations().end())
         Particle::addParticleCombination(pc);
 }
-
-//-------------------------
-bool is_final_state_particle(const Particle& p)
-{
-    return dynamic_cast<const FinalStateParticle*>(&p) != nullptr;
-}
-
 
 }
 

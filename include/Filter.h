@@ -53,7 +53,7 @@ template <typename container, typename First, typename Second, typename ... Unar
 container filter(container C, First p1, Second p2, UnaryPredicates ... P)
 {
     for (auto it = C.begin(); it != C.end(); ) {
-        if (p1(**it))
+        if (p1(*it))
             ++it;
         else
             it = C.erase(it);
@@ -67,7 +67,7 @@ template <typename container, typename First>
 container filter(container C, First p)
 {
     for (auto it = C.begin(); it != C.end(); ) {
-        if (p(**it))
+        if (p(*it))
             ++it;
         else
             it = C.erase(it);

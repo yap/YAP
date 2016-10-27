@@ -27,6 +27,7 @@
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 
+#include "AttributeUtilities.h"
 #include "Particle.h"
 
 #include <complex>
@@ -89,6 +90,9 @@ private:
     double Mass_;
 
 };
+
+/// checks if something inherits from FinalStateParticle
+extern const is_of_type<FinalStateParticle> is_final_state_particle;
 
 }
 

@@ -21,6 +21,8 @@
 #ifndef yap_DecayingParticle_h
 #define yap_DecayingParticle_h
 
+#include "fwd/DecayingParticle.h"
+
 #include "fwd/BlattWeisskopf.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
@@ -29,6 +31,7 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
 
+#include "AttributeUtilities.h"
 #include "Particle.h"
 
 #include <memory>
@@ -157,7 +160,10 @@ private:
     DecayTreeVectorMap DecayTrees_;
 
 };
-    
+
+/// checks if something inherits from DecayingParticle
+extern const is_of_type<DecayingParticle> is_decaying_particle;
+ 
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);
 

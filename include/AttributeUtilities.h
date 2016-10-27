@@ -45,7 +45,7 @@ struct with_return_type
 /// \tparam U argument type
 /// \defgroup Attributes attribute classes
 template <typename T, typename U>
-struct attribute_of<T, U> : with_return_type<T>
+struct attribute_of<T, U> : public with_return_type<T>
 {
     /// U& functor
     virtual T operator()(const U&) const = 0;
@@ -86,7 +86,7 @@ struct identity
 
 /// functor class to check an attribute of an argument
 template <typename A>
-class check_attribute : with_return_type<const bool>
+class check_attribute : public with_return_type<const bool>
 {
 public:
     /// constructor
@@ -152,9 +152,30 @@ private:
     std::vector<const T*> Objects_;
 };
 
+/// functor class for testing dynamic cast to a type
+/// \tparam T type to check
+template <typename T>
+struct is_of_type : public with_return_type<const bool>
+{
+    /// U& functor
+    template <typename U>
+    const bool operator()(const U& u) const
+    { return dynamic_cast<const T*>(&u) != nullptr; }
+
+    /// U* functor
+    template <typename U>
+    const bool operator()(const U* u) const
+    { return dynamic_cast<const T*>(u) != nullptr; }
+
+    /// shared_ptr<U>& functor
+    template <typename U>
+    const bool operator()(const std::shared_ptr<U>& u) const
+    { return std::dynamic_pointer_cast<T>(u) != nullptr; }
+};
+
 /// functor class to compare arguments by an attribute
 template <typename A, typename C = std::less<typename A::return_type> >
-class compare_by : with_return_type<const bool>
+class compare_by : public with_return_type<const bool>
 {
 public:
     compare_by() = default;

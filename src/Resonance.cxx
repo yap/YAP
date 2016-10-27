@@ -9,6 +9,9 @@
 namespace yap {
 
 //-------------------------
+const is_of_type<Resonance> is_resonance{};
+
+//-------------------------
 Resonance::Resonance(const std::string& name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape) :
     DecayingParticle(name, q, radialSize),
     MassShape_(massShape)
@@ -70,12 +73,6 @@ void Resonance::modifyDecayTree(DecayTree& dt)
 {
     DecayingParticle::modifyDecayTree(dt);
     dt.addAmplitudeComponent(*MassShape_);
-}
-
-//-------------------------
-const bool is_resonance(const Particle& p)
-{
-    return dynamic_cast<const Resonance*>(&p) != nullptr;
 }
 
 }
