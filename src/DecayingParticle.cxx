@@ -255,44 +255,63 @@ void DecayingParticle::fixSolitaryFreeAmplitudes()
 }
 
 //-------------------------
-void DecayingParticle::printDecayChainLevel(int level) const
+// helper function
+void get_paddings(const DecayingParticle& dp, size_t& name_padding, size_t& sa_padding)
 {
-    // get maximum length of particle names
-    static size_t padding = 0;
-    static size_t paddingSpinAmp = 0;
-    if (padding == 0 || level == -1) {
-        padding = std::max(padding, name().length());
-        for (auto& c : Channels_) {
-            for (std::shared_ptr<Particle> d : c->daughters()) {
-                padding = std::max(padding, d->name().length());
-                if (std::dynamic_pointer_cast<DecayingParticle>(d))
-                    std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(-1);
-                paddingSpinAmp = std::max(paddingSpinAmp, to_string(c->spinAmplitudes()).length());
-            }
+    name_padding = std::max(name_padding, dp.name().length());
+
+    for (const auto& c : dp.channels()) {
+        if (!c) continue;
+
+        sa_padding = std::max(sa_padding, to_string(c->spinAmplitudes()).length());
+
+        for (const auto& d : c->daughters()) {
+            if (!d) continue;
+
+            name_padding = std::max(name_padding, d->name().length());
+
+            if (is_decaying_particle(*d))
+                get_paddings(static_cast<const DecayingParticle&>(*d), name_padding, sa_padding);
         }
-        if (level == -1)
-            return;
     }
+}
 
-    for (size_t i = 0; i < Channels_.size(); ++i) {
-        if (i > 0)
-            std::cout << "\n" << std::setw(level * (padding * 3 + 8 + paddingSpinAmp)) << "";
+//-------------------------
+// helper function
+std::string pad_right(const std::string& s, size_t len, char c = ' ')
+{
+    return s + std::string(s.length() < len ? len - s.length() : 0, c);
+}
 
-        std::cout << std::left << std::setw(padding) << this->name() << " ->";
-        for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
-            std::cout << " " << std::setw(padding) << d->name();
-        std::cout << std::left << std::setw(paddingSpinAmp)
-                  << to_string(Channels_[i]->spinAmplitudes());
-
-        for (std::shared_ptr<Particle> d : Channels_[i]->daughters())
-            if (std::dynamic_pointer_cast<DecayingParticle>(d)) {
-                std::cout << ",  ";
-                std::static_pointer_cast<DecayingParticle>(d)->printDecayChainLevel(level + 1);
-            }
-    }
+//-------------------------
+std::string to_decay_string(const DecayingParticle& dp, unsigned level)
+{
+    static size_t name_padding = 0;
+    static size_t sa_padding = 0;
 
     if (level == 0)
-        std::cout << "\n";
+        get_paddings(dp, name_padding, sa_padding);
+
+    std::string s;
+    unsigned i = 0;
+    for (const auto& c : dp.channels()) {
+        if (!c) continue;
+
+        if (i++ > 0)
+            s += pad_right("\n", level * (3 * name_padding + 8 + sa_padding));
+
+        s += pad_right(dp.name(), name_padding) + " -> ";
+        for (const auto d : c->daughters())
+            if (d)
+                s += pad_right(d->name(), name_padding + 1);
+
+        s += pad_right(to_string(c->spinAmplitudes()), sa_padding);
+
+        for (const auto& d : filter(c->daughters(), [](const std::shared_ptr<Particle>& p){return p and is_decaying_particle(*p);}))
+            s += ", " + to_decay_string(static_cast<const DecayingParticle&>(*d), level + 1);
+    }
+
+    return s;
 }
 
 //-------------------------

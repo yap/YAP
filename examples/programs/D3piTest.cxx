@@ -126,16 +126,18 @@ int main( int argc, char** argv)
 
     // print stuff
  
-    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
+    FLOG(INFO) << "";
+    FLOG(INFO) << D->particleCombinations().size() << " D symmetrizations";
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
+    FLOG(INFO) << "";
+    FLOG(INFO) << "Four momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
 
-    // std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
+    // FLOG(INFO) << "\nHelicity angle symmetrizations with " << M.helicityAngles()->maxSymmetrizationIndex() + 1 << " indices \n";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    MULTILINE(FLOG(INFO),to_decay_string(*D));
+    FLOG(INFO) << "";
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
+    FLOG(INFO) << *M.spinAmplitudeCache();
     M.printDataAccessors(false);
 
     // get default Dalitz axes

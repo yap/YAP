@@ -112,10 +112,6 @@ public:
 
     /// @}
 
-    /// Print complete decay chain
-    void printDecayChain() const
-    { printDecayChainLevel(0); }
-
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
@@ -139,8 +135,6 @@ protected:
     /// if only one decay channel is available, fix its free amplitude to the current value
     void fixSolitaryFreeAmplitudes();
 
-    void printDecayChainLevel(int level) const;
-
     /// modify a DecayTree
     /// \param dt DecayTree to modify
     virtual void modifyDecayTree(DecayTree& dt);
@@ -163,6 +157,9 @@ private:
 
 /// checks if something inherits from DecayingParticle
 extern const is_of_type<DecayingParticle> is_decaying_particle;
+ 
+/// convert to (multiline) string
+std::string to_decay_string(const DecayingParticle& dp, unsigned level = 0);
  
 /// convert to (multiline) string
 std::string to_string(const DecayTreeVectorMap& m_dtv_map);

@@ -28,8 +28,6 @@
 #include <SpinAmplitudeCache.h>
 #include <WignerD.h>
 
-#include <assert.h>
-#include <iostream>
 #include <memory>
 #include <random>
 #include <string>
@@ -106,24 +104,25 @@ int main( int argc, char** argv)
     // print stuff
 
     for (auto& isp : M.initialStateParticles()) {
-        std::cout << "\n" << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations \n";
+        FLOG(INFO) << "";
+        FLOG(INFO) << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations";
         for (auto& pc : isp.first->particleCombinations())
-            std::cout << *pc << "\n";
-        std::cout << "\n";
+            FLOG(INFO) << *pc;
+        FLOG(INFO) << "";
     }
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
+    FLOG(INFO) << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
     for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
-        std::cout << *pc_i.first << ": " << pc_i.second << "\n";
+        FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
 
-    std::cout << "\nHelicity angles symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
+    FLOG(INFO) << "\nHelicity angles symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices";
     for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
-        std::cout << *pc_i.first << ": " << pc_i.second << "\n";
+        FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
 
-    D->printDecayChain();
-    std::cout << "\n";
-
-    std::cout << *M.spinAmplitudeCache() << std::endl;
+    MULTILINE(FLOG(INFO),to_decay_string(*D));
+    FLOG(INFO) << "";
+    
+    FLOG(INFO) << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
     LOG(INFO) << "create dataPoints";
@@ -239,7 +238,7 @@ int main( int argc, char** argv)
             LOG(INFO) << yap::to_string(*fa);
     }
     
-    std::cout << "alright! \n";
+    FLOG(INFO) << "alright! \n";
 
     return 0;
 }

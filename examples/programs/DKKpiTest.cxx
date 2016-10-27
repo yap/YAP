@@ -60,16 +60,19 @@ int main( int argc, char** argv)
 
     // print stuff
 
-    std::cout << "\n" << D->particleCombinations().size() << " D symmetrizations \n";
+    FLOG(INFO) << "";
+    FLOG(INFO) << D->particleCombinations().size() << " D symmetrizations";
 
-    std::cout << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices \n";
+    FLOG(INFO) << "";
+    FLOG(INFO) << "Four momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
 
-    std::cout << "\nHelicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices \n";
+    FLOG(INFO) << "";
+    FLOG(INFO) << "Helicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices";
 
-    D->printDecayChain();
-    std::cout << "\n";
+    MULTILINE(FLOG(INFO),to_decay_string(*D));
+    FLOG(INFO) << "";
 
-    std::cout << *M.spinAmplitudeCache() << std::endl;
+    FLOG(INFO) << *M.spinAmplitudeCache() << std::endl;
     M.printDataAccessors(false);
 
     // choose default Dalitz coordinates
@@ -95,5 +98,5 @@ int main( int argc, char** argv)
     DEBUG("AFTER");
     M.fourMomenta()->printMasses(data[0]);
 
-    std::cout << "alright! \n";
+    FLOG(INFO) << "alright! \n";
 }
