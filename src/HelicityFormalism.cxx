@@ -57,9 +57,9 @@ const std::complex<double> HelicitySpinAmplitude::calc(int two_M, const SpinProj
         const std::shared_ptr<const ParticleCombination>& pc) const
 {
     // helicity angles
-    const auto& angles = model()->helicityAngles().helicityAngles(d, sm, pc);
+    const auto& angles = model()->helicityAngles()(d, sm, pc);
 
-    return std::conj(DFunction(initialTwoJ(), two_M, two_m[0] - two_m[1], angles[0], angles[1], 0))
+    return std::conj(DFunction(initialTwoJ(), two_M, two_m[0] - two_m[1], angles.phi, angles.theta, 0))
            * Coefficients_.at(two_m);
 
     /// \todo Take a look at momentum-dependent Clebsch-Gordan

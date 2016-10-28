@@ -129,7 +129,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
 
             // compare results
             for (auto& pc_rho : rho->particleCombinations())
-                resultingThetas[pc_rho].push_back(M.helicityAngles().helicityAngles(dp, data, pc_rho)[1]);
+                resultingThetas[pc_rho].push_back(M.helicityAngles()(dp, data, pc_rho).theta);
         }
 
         // check if thetas are equal

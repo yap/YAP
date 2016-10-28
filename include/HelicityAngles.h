@@ -65,7 +65,7 @@ public:
     HelicityAngles(Model& m) : Model_(&m) {}
 
     /// get helicity angles
-    const std::array<double, 2>& helicityAngles(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const;
+    const spherical_angles<double>& operator()(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const;
 
 private:
 
@@ -76,8 +76,9 @@ private:
 
     Model* Model_;
 
-    mutable std::map<const StatusManager*, std::map<const std::shared_ptr<const ParticleCombination>, std::array<double,2>>> cachedAngles_;
-    mutable std::map<const StatusManager*, const DataPoint*> cachedForDataPoint_;
+    using angles_cache = std::map<const std::shared_ptr<const ParticleCombination>, spherical_angles<double>>;
+    mutable std::map<const StatusManager*, angles_cache> CachedAngles_;
+    mutable std::map<const StatusManager*, const DataPoint*> CachedForDataPoint_;
 
 };
 
