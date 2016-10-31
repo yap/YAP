@@ -138,7 +138,6 @@ int main( int argc, char** argv)
     FLOG(INFO) << "";
 
     FLOG(INFO) << *M.spinAmplitudeCache();
-    M.printDataAccessors(false);
 
     // get default Dalitz axes
     auto A = M.massAxes();

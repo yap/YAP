@@ -119,7 +119,6 @@ int main( int argc, char** argv)
     FLOG(INFO) << "";
     
     FLOG(INFO) << *M.spinAmplitudeCache() << std::endl;
-    M.printDataAccessors(false);
 
     LOG(INFO) << "create dataPoints";
 

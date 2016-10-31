@@ -153,6 +153,5 @@ void remove_expired(DataAccessorSet& S)
         else ++it;
 }
 
-
 }
 
