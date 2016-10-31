@@ -81,7 +81,7 @@ int main( int argc, char** argv)
     auto data = M.createDataSet(1);
 
     DEBUG("BEFORE");
-    M.fourMomenta()->printMasses(data[0]);
+    MULTILINE(FLOG(INFO),M.fourMomenta()->massesString(data[0]));
 
     LOG(INFO) << "setting squared mass ...";
     auto P = calculate_four_momenta(D_mass, M, massAxes, m2);
@@ -93,7 +93,7 @@ int main( int argc, char** argv)
     }
 
     DEBUG("AFTER");
-    M.fourMomenta()->printMasses(data[0]);
+    MULTILINE(FLOG(INFO),M.fourMomenta()->massesString(data[0]));
 
     FLOG(INFO) << "alright! \n";
 }

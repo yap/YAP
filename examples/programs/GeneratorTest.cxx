@@ -138,9 +138,7 @@ int main( int argc, char** argv)
     D->updateGlobalCalculationStatuses();
 
 
-    D->fourMomenta().printMasses(d);
-
-
+    MULTILINE(FLOG(INFO),D->fourMomenta()->massesString(d));
 
     // Dalitz coordinates: m^2_{12}, m^2_{13}, m^2_{14}, m^2_{23}, m^2_{24}
 
@@ -161,12 +159,12 @@ int main( int argc, char** argv)
         }
 
         std::cout << "meh nr " << i << "\n";
-        D->fourMomenta().printMasses(d);
-
+        MULTILINE(FLOG(INFO),D->fourMomenta()->massesString(d));
+        
         D->calculate(d);
 
         std::cout << "meh nr " << i << " after calculate\n";
-        D->fourMomenta().printMasses(d);
+        MULTILINE(FLOG(INFO),D->fourMomenta()->massesString(d));
 
         double logA = D->logOfSquaredAmplitude(d, 0u);
 

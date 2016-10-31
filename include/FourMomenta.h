@@ -33,8 +33,8 @@
 #include "StaticDataAccessor.h"
 
 #include <cmath>
-#include <iostream>
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace yap {
@@ -87,8 +87,10 @@ public:
 
     /// @}
 
-    /// print all masses
-    std::ostream& printMasses(const DataPoint& d, std::ostream& os = std::cout) const;
+    /// \return multiline string listing all masses
+    /// \param d DataPoint to retrieve data from
+    /// \param m_p precision to use when printing
+    std::string massesString(const DataPoint& d, unsigned m_p = 6) const;
 
     /// grant friend status to Model to call addParticleCombination and setFinalStateMomenta
     friend class Model;
