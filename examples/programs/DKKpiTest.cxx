@@ -69,7 +69,7 @@ int main( int argc, char** argv)
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
 
-    FLOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    MULTILINE(FLOG(INFO),to_string(*M.spinAmplitudeCache()));
 
     // choose default Dalitz coordinates
     const yap::MassAxes massAxes = M.massAxes();

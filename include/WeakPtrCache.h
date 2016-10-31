@@ -167,15 +167,6 @@ public:
 
     /// @}
 
-    /// stream the cache elements as a table
-    virtual std::ostream& print(std::ostream& os) const
-    {
-        for (auto& w : *this)
-            if (!w.expired())
-                os << *w.lock() << std::endl;
-        return os;
-    }
-
 protected:
 
     /// add element to cache
@@ -191,12 +182,15 @@ private:
 
 /// streamer
 template <class T>
-inline std::ostream& operator<<(std::ostream& os, const WeakPtrCache<T>& C)
+inline std::string to_string(const WeakPtrCache<T>& C)
 {
-    os << "contains " << C.size() << " elements, of which "
-       << C.count_expired() << " have expired" << std::endl;
-
-    return C.print(os);
+    std::string s = "contains " + std::to_string(C.size()) + " elements, of which "
+        + std::to_string(C.count_expired()) + " have expired";
+    using std::to_string;
+    for (const auto& w : C)
+        if (!w.expired())
+            s += "\n" + to_string(*w.lock());
+    return s;
 }
 
 }

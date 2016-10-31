@@ -137,7 +137,7 @@ int main( int argc, char** argv)
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
 
-    FLOG(INFO) << *M.spinAmplitudeCache();
+    MULTILINE(FLOG(INFO),to_string(*M.spinAmplitudeCache()));
 
     // get default Dalitz axes
     auto A = M.massAxes();
@@ -162,7 +162,7 @@ int main( int argc, char** argv)
 
     for (const auto& b2_dtvi : MI.integrals()) {
 
-        LOG(INFO) << "\n" << to_string(b2_dtvi.second.decayTrees());
+        MULTILINE(LOG(INFO), to_string(b2_dtvi.second.decayTrees()));
 
         auto A_DT = amplitude(b2_dtvi.second.decayTrees(), data[0]);
         LOG(INFO) << "A_DT = " << A_DT;

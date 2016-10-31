@@ -118,7 +118,7 @@ int main( int argc, char** argv)
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
     
-    FLOG(INFO) << *M.spinAmplitudeCache() << std::endl;
+    MULTILINE(FLOG(INFO),to_string(*M.spinAmplitudeCache()));
 
     LOG(INFO) << "create dataPoints";
 
@@ -215,7 +215,7 @@ int main( int argc, char** argv)
     */
 
 
-    LOG(INFO) << std::endl << to_string(D->decayTrees());
+    MULTILINE(LOG(INFO), to_string(D->decayTrees()));
 
     LOG(INFO) << std::endl << "Free amplitudes: ";
     for (const auto& fa : sort(free_amplitudes(M), yap::compare_by<yap::is_fixed>(),
