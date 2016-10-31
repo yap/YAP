@@ -5,14 +5,6 @@
 namespace yap {
 
 //-------------------------
-StaticDataAccessorVector& StaticDataAccessor::staticDataAccessors()
-{
-    if (!model())
-        throw exceptions::Exception("model is nullptr", "StaticDataAccessor::staticDataAccessors");
-    return const_cast<Model*>(model())->StaticDataAccessors_;
-}
-
-//-------------------------
 void StaticDataAccessor::registerWithModel()
 {
     DataAccessor::registerWithModel();

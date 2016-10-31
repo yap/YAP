@@ -59,9 +59,6 @@ protected:
     /// add to model's StaticDataAccessors_
     void virtual addToStaticDataAccessors();
 
-    /// access to the model's StaticDataAccessors_
-    StaticDataAccessorVector& staticDataAccessors();
-
 private:
 
     Model* Model_;
