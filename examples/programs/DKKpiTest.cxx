@@ -66,9 +66,6 @@ int main( int argc, char** argv)
     FLOG(INFO) << "";
     FLOG(INFO) << "Four momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
 
-    FLOG(INFO) << "";
-    FLOG(INFO) << "Helicity angle symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices";
-
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
 

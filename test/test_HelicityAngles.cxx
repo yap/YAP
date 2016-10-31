@@ -46,7 +46,7 @@ yap::FourMatrix<double> transformation_to_helicityFrame(const yap::FourVector<do
 }
 
 void calculate_helicity_angles(const yap::Model& M,
-                               yap::ParticleCombinationMap<std::array<double, 2> >& phi_theta,
+                               yap::ParticleCombinationMap<yap::spherical_angles<double> >& hel_angles,
                                const std::shared_ptr<const yap::ParticleCombination>& pc,
                                std::vector<yap::FourVector<double> > momenta)
 {
@@ -59,8 +59,8 @@ void calculate_helicity_angles(const yap::Model& M,
             p += momenta[i];
 
         // if not yet calculated
-        if (phi_theta.find(pc) == phi_theta.end())
-            phi_theta[pc] = angles(vect(p), three_axes);
+        if (hel_angles.find(pc) == hel_angles.end())
+            hel_angles[pc] = angles(vect(p), three_axes);
 
         if (d->daughters().empty())
             continue;
@@ -71,7 +71,7 @@ void calculate_helicity_angles(const yap::Model& M,
         for (unsigned i : d->indices())
             momenta[i] = L * momenta[i];
 
-        calculate_helicity_angles(M, phi_theta, d, momenta);
+        calculate_helicity_angles(M, hel_angles, d, momenta);
     }
 }
 
@@ -137,18 +137,18 @@ TEST_CASE( "HelicityAngles" )
         data.push_back(momenta);
         const auto dp = data.back();
 
-        yap::ParticleCombinationMap<std::array<double, 2> > phi_theta;
+        yap::ParticleCombinationMap<yap::spherical_angles<double> > hel_angles;
 
         for (auto& pc : D->particleCombinations()) {
             REQUIRE( M.fourMomenta()->m(dp, pc) == Approx(D_mass) );
 
-            calculate_helicity_angles(M, phi_theta, pc, momenta); // YAP
+            calculate_helicity_angles(M, hel_angles, pc, momenta); // YAP
         }
 
         // compare results
-        for (auto& kv : phi_theta) {
-            REQUIRE( cos(M.helicityAngles()->phi(dp, kv.first))   == Approx(cos(kv.second[0])) );
-            REQUIRE( M.helicityAngles()->theta(dp, kv.first) == Approx(kv.second[1]) );
+        for (auto& kv : hel_angles) {
+            REQUIRE( cos(M.helicityAngles()(dp, data, kv.first).phi)   == Approx(cos(kv.second.phi)) );
+            REQUIRE( M.helicityAngles()(dp, data, kv.first).theta == Approx(kv.second.theta) );
         }
     }
 }
