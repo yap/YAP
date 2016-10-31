@@ -70,7 +70,7 @@ const CoordinateSystem<T, N> operator*(const SquareMatrix<T, N>& M, const Coordi
 /// \return Whether 3D CoordinateSystem is right handed
 /// \param C 3D CoordinateSystem to check
 template <typename T>
-constexpr bool isRightHanded(const CoordinateSystem<T, 3>& C)
+constexpr bool is_right_handed(const CoordinateSystem<T, 3>& C)
 {
     // +[2] is proportional to [0] cross [1]
     return (norm(unit(C[2]) - unit(cross(C[0], C[1]))) < VECTOREPSILON);
@@ -79,7 +79,7 @@ constexpr bool isRightHanded(const CoordinateSystem<T, 3>& C)
 /// \return Whether 3D CoordinateSystem is left handed
 /// \param C 3D CoordinateSystem to check
 template <typename T>
-constexpr bool isLeftHanded(const CoordinateSystem<T, 3>& C)
+constexpr bool is_left_handed(const CoordinateSystem<T, 3>& C)
 {
     // -[2] is proportional to [0] cross [1]
     return (norm(unit(C[2]) + unit(cross(C[0], C[1]))) < VECTOREPSILON);

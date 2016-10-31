@@ -113,7 +113,7 @@ TEST_CASE( "Vector" )
 
             // axes:
             REQUIRE( cross(three_axes[0], three_axes[1]) == three_axes[2] );
-            REQUIRE( isRightHanded(three_axes) );
+            REQUIRE( is_right_handed(three_axes) );
         }
 
     }

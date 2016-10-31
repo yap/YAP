@@ -27,11 +27,8 @@ INITIALIZE_EASYLOGGINGPP
 namespace yap {
 
 //-------------------------
-    Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
+Model::Model(std::unique_ptr<SpinAmplitudeCache> SAC) :
     Locked_(false),
-    CoordinateSystem_({ThreeVector<double>({1., 0., 0.}),
-                       ThreeVector<double>({0., 1., 0.}),
-                       ThreeVector<double>({0., 0., 1.})}),
     FourMomenta_(std::make_shared<FourMomenta>(*this)),
     HelicityAngles_(*this)
 {
@@ -39,6 +36,11 @@ namespace yap {
         throw exceptions::Exception("SpinAmplitudeCache unset", "Model::Model");
     if (!SAC->empty())
         throw exceptions::Exception("SpinAmplitudeCache not empty", "Model::Model");
+
+    setCoordinateSystem({ThreeVector<double>({1., 0., 0.}),
+                         ThreeVector<double>({0., 1., 0.}),
+                         ThreeVector<double>({0., 0., 1.})});
+
     SAC->setModel(*this);
     SpinAmplitudeCache_ = std::move(SAC);
 }
@@ -280,7 +282,7 @@ std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model
 //-------------------------
 void Model::setCoordinateSystem(const CoordinateSystem<double, 3>& cs)
 {
-    if (!isRightHanded(cs))
+    if (!is_right_handed(cs))
         throw exceptions::Exception("Coordinate system not right-handed", "Model::setCoordinateSystem");
 
     CoordinateSystem_ = unit(cs);
