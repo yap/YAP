@@ -115,10 +115,6 @@ int main( int argc, char** argv)
     for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
         FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
 
-    FLOG(INFO) << "\nHelicity angles symmetrizations with " << M.helicityAngles()->nSymmetrizationIndices() << " indices";
-    for (auto& pc_i : M.helicityAngles()->symmetrizationIndices())
-        FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
-
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
     

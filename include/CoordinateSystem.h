@@ -99,13 +99,23 @@ template <typename T>
 constexpr T theta(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
 { return angle(V, C[2]); }
 
+/// \struct spherical_angles
+/// \brief azimuthal (phi) and polar (theta) angles in a spherical coordinate system
+template <typename T>
+struct spherical_angles {
+    T phi;
+    T theta;
+    spherical_angles<T>(T p = 0, T t = 0) :
+            phi(p), theta(t) {}
+};
+
 /// This is the fastest to use if calculating both angles
-/// \return azimuthal (0; phi) and polar (1; theta) angles of V in coordinate system C
+/// \return azimuthal (phi) and polar (theta) angles in coordinate system C
 /// \param V ThreeVector to calculate azimuthal angle of
 /// \param C Coordinate frame to measure in
 template <typename T>
-constexpr std::array<T, 2> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
-{ return std::array<T, 2> { phi(V, C), theta(V, C) }; }
+constexpr spherical_angles<T> angles(const ThreeVector<T>& V, const CoordinateSystem<T, 3>& C)
+{ return spherical_angles<T> { phi(V, C), theta(V, C) }; }
 
 /// @}
 

@@ -56,51 +56,29 @@ namespace yap {
 ///   - \f$ \hat{y} \equiv \hat{y}_0 \f$
 ///   - \f$ \hat{x} \equiv \hat{x}_0 \f$
 /// with the 0th coordinate system given by the user for the inital state
-class HelicityAngles : public StaticDataAccessor
+class HelicityAngles
 {
 public:
 
     /// Constructor
     /// \param m owning Model
-    HelicityAngles(Model& m);
+    HelicityAngles(Model& m) : Model_(&m) {}
 
-    /// Calculate helicity angles for all possible symmetrization indices
-    /// \param d DataPoint to calculate into
-    /// \param sm StatusManager to update
-    virtual void calculate(DataPoint& d, StatusManager& sm) const override;
-
-    /// get azimuthal angle
-    double phi(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
-
-    /// get polar angle
-    double theta(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
-
-    /// grant friend status to Model to call addParticleCombination
-    friend class Model;
-
-    /// grant friend status to DataAccessor to call addParticleCombination
-    friend class DataAccessor;
-
-protected:
-
-    /// add to model's StaticDataAccessors_
-    void virtual addToStaticDataAccessors() override;
-
-    /// recursive helicity-angle calculator that travels down decay trees for all channels
-    void calculateAngles(DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc,
-                         const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts,
-                         StatusManager& sm) const;
-
-    /// override to throw on adding non-two-body PC
-    void addParticleCombination(const ParticleCombination& pc) override;
+    /// get helicity angles
+    const spherical_angles<double>& operator()(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const;
 
 private:
 
-    /// Azimuthal angle
-    std::shared_ptr<RealCachedValue> Phi_;
+    /// recursive helicity-angle calculator that travels down decay trees for all channels
+    void calculateAngles(const DataPoint& d, const StatusManager& sm,
+                         const std::shared_ptr<const ParticleCombination>& pc,
+                         const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts) const;
 
-    /// Polar angle
-    std::shared_ptr<RealCachedValue> Theta_;
+    Model* Model_;
+
+    using angles_cache = std::map<const std::shared_ptr<const ParticleCombination>, spherical_angles<double>>;
+    mutable std::map<const StatusManager*, angles_cache> CachedAngles_;
+    mutable std::map<const StatusManager*, const DataPoint*> CachedForDataPoint_;
 
 };
 
