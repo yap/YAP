@@ -30,7 +30,7 @@ int main()
 
     // create model
     std::string model_name;
-    bat_fit* m;
+    bat_fit* m = nullptr;
     double D_mass(0);
 
     switch (i_model) {
@@ -50,7 +50,7 @@ int main()
             D_mass = 1.8648400; // D0
             break;
         default:
-            LOG(ERROR) << "No model loaded";
+            throw exceptions::Exception("no model loaded", "runFitFractions::main()");
     }
 
     // get FSP mass ranges
