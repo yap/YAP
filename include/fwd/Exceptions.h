@@ -28,13 +28,15 @@ namespace exceptions {
 
 class Exception;
 
-class AngularMomentumNotConserved;
-class InconsistentSpinProjection;
-class OutsidePhaseSpace;
-class NotTwoBodyParticleCombination;
-class ParameterIsFixed;
-class ResonanceUnset;
-class NonfiniteResult;
+struct AngularMomentumNotConserved;
+struct InconsistentSpinProjection;
+struct OutsidePhaseSpace;
+struct NotTwoBodyParticleCombination;
+struct ParameterIsFixed;
+struct ResonanceUnset;
+struct NonfiniteResult;
+struct InconsistentDataPoint;
+struct EmptyFourMomentaVector;
 
 }
 

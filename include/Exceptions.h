@@ -36,7 +36,7 @@ namespace exceptions {
 /// will not be caught by specific type. Use the other exception classes
 /// inheriting from this, when an exception must be caught by specific
 /// type.
-struct Exception : public std::exception {
+class Exception : public std::exception {
 public:
     /// Constructor
     /// \param what_arg String descripting exception
@@ -63,78 +63,62 @@ protected:
 
 /// \class AngularMomentumNotConserved
 /// \ingroup Exceptions
-class AngularMomentumNotConserved : public Exception
-{
-public:
-    AngularMomentumNotConserved(const std::string& func_name)
-        : Exception("Angular momentum not conserved", func_name) {}
+struct AngularMomentumNotConserved : public Exception {
+AngularMomentumNotConserved(const std::string& func_name)
+    : Exception("Angular momentum not conserved", func_name) {}
 };
 
 /// \class InconsistentSpinProjection
 /// \ingroup Exceptions
-class InconsistentSpinProjection : public Exception
-{
-public:
-    InconsistentSpinProjection(const std::string& what_arg, const std::string& func_name)
-        : Exception(what_arg, func_name) {}
+struct InconsistentSpinProjection : public Exception {
+InconsistentSpinProjection(const std::string& what_arg, const std::string& func_name)
+    : Exception(what_arg, func_name) {}
 };
 
 /// \class OutsidePhaseSpace
 /// \ingroup Exceptions
-class OutsidePhaseSpace : public Exception
-{
-public:
-    OutsidePhaseSpace(const std::string& what_arg = "", const std::string& func_name = "FourMomenta::setSquaredMasses")
-        : Exception(what_arg, func_name) {}
+struct OutsidePhaseSpace : public Exception {
+OutsidePhaseSpace(const std::string& what_arg = "", const std::string& func_name = "FourMomenta::setSquaredMasses")
+    : Exception(what_arg, func_name) {}
 };
 
 /// \class NotTwoBodyParticleCombination
 /// \ingroup Exceptions
-class NotTwoBodyParticleCombination : public Exception
-{
-public:
-    NotTwoBodyParticleCombination(const std::string& what_arg = "", const std::string& func_name = "")
-        : Exception(what_arg, func_name) {}
+struct NotTwoBodyParticleCombination : public Exception {
+NotTwoBodyParticleCombination(const std::string& what_arg = "", const std::string& func_name = "")
+    : Exception(what_arg, func_name) {}
 };
 
 /// \class ParameterIsFixed
 /// \ingroup Exceptions
-class ParameterIsFixed : public Exception
-{
-public:
-    ParameterIsFixed(const std::string& what_arg = "", const std::string& func_name = "")
-        : Exception(what_arg, func_name) {}
+struct ParameterIsFixed : public Exception {
+ParameterIsFixed(const std::string& what_arg = "", const std::string& func_name = "")
+    : Exception(what_arg, func_name) {}
 };
 
 /// \class ResonanceUnset
 /// \ingroup Exceptions
-class ResonanceUnset : public Exception
-{
-public:
-    ResonanceUnset(const std::string& func_name = "")
-        : Exception("Resonance unset", func_name) {}
+struct ResonanceUnset : public Exception {
+ResonanceUnset(const std::string& func_name = "")
+    : Exception("Resonance unset", func_name) {}
 };
 
 /// \class NonfiniteResult
 /// \ingroup Exceptions
-class NonfiniteResult : public Exception {};
+struct NonfiniteResult : public Exception {};
 
 /// \class InconsistentDataPoint
 /// \ingroup Exceptions
-class InconsistentDataPoint : public Exception
-{
-public:
-    InconsistentDataPoint(const std::string& func_name = "")
-        : Exception("Inconsistent DataPoint", func_name) {}
+struct InconsistentDataPoint : public Exception {
+InconsistentDataPoint(const std::string& func_name = "")
+    : Exception("Inconsistent DataPoint", func_name) {}
 };
 
 /// \class EmptyFourMomentaVector
 /// \ingroup Exceptions
-class EmptyFourMomentaVector : public Exception
-{
-public:
-    EmptyFourMomentaVector(const std::string& func_name = "")
-        : Exception("Empty FourMomenta vector", func_name) {}
+struct EmptyFourMomentaVector : public Exception {
+EmptyFourMomentaVector(const std::string& func_name = "")
+    : Exception("Empty FourMomenta vector", func_name) {}
 };
 
 }
