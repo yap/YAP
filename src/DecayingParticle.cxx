@@ -57,9 +57,9 @@ bool DecayingParticle::consistent() const
 //-------------------------
 void DecayingParticle::checkDecayChannel(const DecayChannel& dc) const
 {
-    if (charge(dc) != quantumNumbers().Q())
+    if (charge(dc.daughters()) != quantumNumbers().Q())
         throw exceptions::Exception("Charge of channel not equal to decaying particle ("
-                                    + std::to_string(charge(dc)) + " != " + std::to_string(quantumNumbers().Q()) + ")",
+                                    + std::to_string(charge(dc.daughters())) + " != " + std::to_string(quantumNumbers().Q()) + ")",
                                     "DecayChannel::checkDecayChannel");
 }
 

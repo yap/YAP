@@ -108,6 +108,14 @@ private:
 
 };
 
+/// \return charge of ParticleVector
+inline const int charge(const ParticleVector& P)
+{ return std::accumulate(P.begin(), P.end(), 0, [](int q, const ParticleVector::value_type& p){return q + p->quantumNumbers().Q();}); }
+
+/// \return parity of ParticleVector
+inline const int parity(const ParticleVector& P)
+{ return std::accumulate(P.begin(), P.end(), 1, [](int q, const ParticleVector::value_type& p){return q * p->quantumNumbers().P();}); }
+
 /// \return SpinVector from ParticleVector
 const SpinVector spins(const ParticleVector& v);
 
