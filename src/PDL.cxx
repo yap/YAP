@@ -41,7 +41,7 @@ const ParticleTableEntry PDLIterator::operator*() const
     iss >> lundkc;
 
     return ParticleTableEntry(stdhepid, particleName,
-                              QuantumNumbers(twoTimesSpin, std::round(1. * threeTimesCharge / 3)),
+                              QuantumNumbers(std::round(1. * threeTimesCharge / 3), twoTimesSpin),
                               mass, {particleWidth});
 }
 

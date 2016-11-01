@@ -101,7 +101,7 @@ TEST_CASE("integration")
 
     const unsigned nPoints = 1000;
 
-    auto M = create_model();
+    auto M = d4pi();
     auto data = generate_data(*M, nPoints);
     auto partitions = yap::DataPartitionBlock::create(data, 4);
 

@@ -69,7 +69,23 @@ public:
     /// \return MassShapeParameters_
     const std::vector<double>& massShapeParameters() const
     { return MassShapeParameters_; }
-    
+
+    /// set name
+    void setName(const std::string& name)
+    { Name_ = name; }
+
+    /// set QuantumNumbers_
+    void setQuantumNumbers(const QuantumNumbers& qn)
+    { QuantumNumbers_ = qn; }
+
+    /// set Mass_
+    void mass(double m)
+    { Mass_ = m; }
+
+    /// set MassShapeParameters_
+    void setMassShapeParameter(const std::vector<double>& pars)
+    { MassShapeParameters_ = pars; }
+
 private:
     /// PDG code of particle
     int PDG_;
@@ -134,8 +150,18 @@ public:
     const ParticleTableEntry& operator[](int PDG) const;
 
     /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// \param PDG pdg code labeling particle table entry
+    ParticleTableEntry& operator[](int PDG)
+    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleFactory*>(this)->operator[](PDG)); }
+
+    /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
     const ParticleTableEntry& operator[](const std::string& name) const
+    { return (*this)[pdgCode(name)]; }
+
+    /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// \param name Name of particle in table
+    ParticleTableEntry& operator[](const std::string& name)
     { return (*this)[pdgCode(name)]; }
 
     /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_

@@ -42,36 +42,43 @@ int main( int argc, char** argv)
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleFactory F = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    
+    // add some missing parities
+    F[421].setQuantumNumbers(yap::QuantumNumbers(0, 0, -1)); // D0
+    F[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1)); // pi+
+    F[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1)); // rho0
+    F[20213].setQuantumNumbers(yap::QuantumNumbers(1, 2, +1)); // a_1+
+    F[9000221].setQuantumNumbers(yap::QuantumNumbers(0, 0, +1)); // sigma
 
     double radialSize = 1.;
 
     // initial state particle
-    auto D = factory.decayingParticle(421, radialSize);
+    auto D = F.decayingParticle(421, radialSize);
 
-    auto D_mass = factory[421].mass();
+    auto D_mass = F[421].mass();
 
     // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
+    auto piPlus = F.fsp(211);
+    auto piMinus = F.fsp(-211);
 
     // Set final-state particles
     M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = F.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addChannel(piPlus, piMinus);
 
     // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = F.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addChannel(piPlus, piMinus);
 
     // // omega
-    // auto omega = factory.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
+    // auto omega = F.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
     // omega->addChannel(piPlus, piMinus);
 
     // a_1
-    auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = F.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
     // a_1->addChannel(sigma, piPlus);
     a_1->addChannel(rho,   piPlus);
 
@@ -84,8 +91,8 @@ int main( int argc, char** argv)
     D->addChannel(piPlus, piMinus, piPlus, piMinus);
 
     // R pi pi channels
-    //yap::Resonance* f_0_980 = factory.resonanceBreitWigner(9000221, radialSize);
-    //factory.createChannel(f_0_980, piPlus, piMinus, 0);
+    //yap::Resonance* f_0_980 = F.resonanceBreitWigner(9000221, radialSize);
+    //F.createChannel(f_0_980, piPlus, piMinus, 0);
 
     // InitialStateParticles
     M.addInitialStateParticle(D);

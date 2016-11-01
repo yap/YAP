@@ -49,12 +49,12 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     D->addChannel(KK0, piPlus);
     *free_amplitude(*D, to(KK0)) = polar(0.15, rad(39.));
     
-    /* auto KK1 = Resonance::create("KK1", QuantumNumbers(2, 0), radialSize, make_shared<BreitWigner>(1.35, 0.125)); */
+    /* auto KK1 = Resonance::create("KK1", QuantumNumbers(0, 2), radialSize, make_shared<BreitWigner>(1.35, 0.125)); */
     /* KK1->addChannel(kPlus, kMinus); */
     /* D->addChannel(KK1, piPlus); */
     /* *free_amplitude(*D, to(KK1)) = 1.; */
     
-    /* auto KK2 = Resonance::create("KK2", QuantumNumbers(4, 0), radialSize, make_shared<BreitWigner>(1.6, 0.100)); */
+    /* auto KK2 = Resonance::create("KK2", QuantumNumbers(0, 4), radialSize, make_shared<BreitWigner>(1.6, 0.100)); */
     /* KK2->addChannel(kPlus, kMinus); */
     /* D->addChannel(KK2, piPlus); */
     /* *free_amplitude(*D, to(KK2)) = polar(10., rad(-12.)); */
@@ -64,12 +64,12 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     /* D->addChannel(piK0, kPlus); */
     /* *free_amplitude(*D, to(piK0)) = polar(0.23, rad(112.)); */
 
-    /* auto piK1 = Resonance::create("piK1", QuantumNumbers(2, 0), radialSize, make_shared<BreitWigner>(1.0, 0.125)); */
+    /* auto piK1 = Resonance::create("piK1", QuantumNumbers(0, 2), radialSize, make_shared<BreitWigner>(1.0, 0.125)); */
     /* piK1->addChannel(piPlus, kMinus); */
     /* D->addChannel(piK1, kPlus); */
     /* *free_amplitude(*D, to(piK1)) = polar(1.2, rad(-76.)); */
 
-    /* auto piK2 = Resonance::create("piK2", QuantumNumbers(4, 0), radialSize, make_shared<BreitWigner>(1.25, 0.065)); */
+    /* auto piK2 = Resonance::create("piK2", QuantumNumbers(0, 4), radialSize, make_shared<BreitWigner>(1.25, 0.065)); */
     /* piK2->addChannel(piPlus, kMinus); */
     /* D->addChannel(piK2, kPlus); */
     /* *free_amplitude(*D, to(piK2)) = polar(7.8, rad(56.)); */

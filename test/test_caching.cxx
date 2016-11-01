@@ -49,11 +49,11 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     piK0->addChannel({piPlus, kMinus});
     D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5);
 
-    auto piK1 = yap::Resonance::create(yap::QuantumNumbers(2, 0), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
+    auto piK1 = yap::Resonance::create(yap::QuantumNumbers(0, 2), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK1->addChannel({piPlus, kMinus});
     D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1.);
 
-    auto piK2 = yap::Resonance::create(yap::QuantumNumbers(4, 0), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
+    auto piK2 = yap::Resonance::create(yap::QuantumNumbers(0, 4), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
     piK2->addChannel({piPlus, kMinus});
     D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30.);
 

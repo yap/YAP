@@ -41,7 +41,7 @@ TEST_CASE( "UnitSpinAmplitude" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto M = create_model();
+    auto M = d4pi();
     auto data = generate_data(M, 1);
     auto isp = M->initialStateParticles().begin()->first;
 

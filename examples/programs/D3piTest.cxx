@@ -48,20 +48,29 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "Model created";
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleFactory F = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     LOG(INFO) << "factory created";
 
+    // add some missing parities
+    F["D+"].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
+    F[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
+    F[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1));
+    F[225].setQuantumNumbers(yap::QuantumNumbers(0, 4, +1));
+    F["f_0"].setQuantumNumbers(yap::QuantumNumbers(0, 0, +1));
+    F["f_0(500)"].setQuantumNumbers(F["f_0"].quantumNumbers());
+    F["f_0(1500)"].setQuantumNumbers(F["f_0"].quantumNumbers());
+        
     // initial state particle
-    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
 
-    auto D_mass = factory["D+"].mass();
+    auto D_mass = F["D+"].mass();
 
     LOG(INFO) << "D created";
 
     // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
+    auto piPlus = F.fsp(211);
+    auto piMinus = F.fsp(-211);
 
     LOG(INFO) << "fsp's created";
 
@@ -71,35 +80,35 @@ int main( int argc, char** argv)
     LOG(INFO) << "final state set";
 
     // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
+    auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
     rho->addChannel(piPlus, piMinus);
     D->addChannel(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = factory.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
+    auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
     f_2->addChannel(piPlus, piMinus);
     D->addChannel(f_2, piPlus);
 
     // f_0(980)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
     f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
-    f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *factory.fsp(321), *factory.fsp(-321))); // K+K-
-    auto f_0_980 = yap::Resonance::create("f_0_980", yap::QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
+    f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
+    auto f_0_980 = yap::Resonance::create("f_0_980", F["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
     f_0_980->addChannel(piPlus, piMinus);
     D->addChannel(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create("f_0_1370", factory["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
+    auto f_0_1370 = yap::Resonance::create("f_0_1370", F["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
     f_0_1370->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = factory.resonance(factory.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
+    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
     f_0_1500->addChannel(piPlus, piMinus);
     D->addChannel(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
-    auto sigma = factory.resonance(factory.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
+    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addChannel(piPlus, piMinus);
     D->addChannel(sigma, piPlus);
 

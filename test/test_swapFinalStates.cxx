@@ -1,6 +1,8 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
+#include "helperFunctions.h"
+
 #include <Attributes.h>
 #include <BreitWigner.h>
 #include <container_utils.h>
@@ -29,51 +31,6 @@
 /**
  * Test that the amplitude remains the same after swapping the order of the final state particles
  */
-
-yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const std::vector<int>& FSP)
-{
-    // create and set final-state particles
-    M.setFinalState({F.fsp(FSP[0]), F.fsp(FSP[1]), F.fsp(FSP[2])});
-
-    // find FSP's
-    unsigned i_piPlus = FSP.size();
-    unsigned i_kPlus = FSP.size();
-    unsigned i_kMinus = FSP.size();
-    for (size_t i = 0; i < FSP.size(); ++i)
-        if (FSP[i] == F.pdgCode("pi+"))
-            i_piPlus = i;
-        else if (FSP[i] == F.pdgCode("K+"))
-            i_kPlus  = i;
-        else if (FSP[i] == F.pdgCode("K-"))
-            i_kMinus = i;
-    auto piPlus = M.finalStateParticles()[i_piPlus];
-    auto kPlus = M.finalStateParticles()[i_kPlus];
-    auto kMinus = M.finalStateParticles()[i_kMinus];
-
-    // create ISP
-    auto D = F.decayingParticle(F.pdgCode("D+"), 3.);
-
-    // create resonances
-    auto piK0 = yap::Resonance::create("piK0", yap::QuantumNumbers(0, 0), 3., std::make_shared<yap::BreitWigner>(0.750, 0.025));
-    piK0->addChannel(piPlus, kMinus);
-    D->addChannel(piK0, kPlus);
-    *free_amplitude(*D, yap::to(piK0)) = 0.5;
-
-    auto piK1 = yap::Resonance::create("piK1", yap::QuantumNumbers(2, 0), 3., std::make_shared<yap::BreitWigner>(1.000, 0.025));
-    piK1->addChannel(piPlus, kMinus);
-    D->addChannel(piK1, kPlus);
-    *free_amplitude(*D, yap::to(piK1)) = 1.;
-
-    auto piK2 = yap::Resonance::create("piK2", yap::QuantumNumbers(4, 0), 3., std::make_shared<yap::BreitWigner>(1.250, 0.025));
-    piK2->addChannel(piPlus, kMinus);
-    D->addChannel(piK2, kPlus);
-    *free_amplitude(*D, yap::to(piK2)) = 1.;
-
-    M.addInitialStateParticle(D);
-
-    return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
-}
-
 std::complex<double> calculate_model(double isp_mass, yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
     auto ISPs = full_final_state_isp(M);
@@ -111,11 +68,11 @@ TEST_CASE( "swapFinalStates" )
     auto D_mass = F["D+"].mass();
 
     // create models
-    std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach
+    std::vector<std::shared_ptr<yap::Model> > Z;     // Zemach
     std::vector<yap::MassAxes> mZ; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dZ;
 
-    std::vector<std::unique_ptr<yap::Model> > H;     // Helicity
+    std::vector<std::shared_ptr<yap::Model> > H;     // Helicity
     std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dH;
 
@@ -123,14 +80,18 @@ TEST_CASE( "swapFinalStates" )
     std::sort(FSP.begin(), FSP.end());
     do {
 
+        unsigned i_piPlus = std::distance(FSP.begin(), std::find(FSP.begin(), FSP.end(), 211));
+        unsigned i_kPlus  = std::distance(FSP.begin(), std::find(FSP.begin(), FSP.end(), 321));
+        unsigned i_kMinus = std::distance(FSP.begin(), std::find(FSP.begin(), FSP.end(), -321));
+        
         // Zemach
-        Z.emplace_back(new yap::Model(std::make_unique<yap::ZemachFormalism>()));
-        mZ.push_back(populate_model(*Z.back(), F, FSP));
+        Z.push_back(dkkp<yap::ZemachFormalism>(411, FSP));
+        mZ.push_back(Z.back()->massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}}));
         dZ.push_back(Z.back()->createDataSet(1));
 
         // Helicity
-        H.emplace_back(new yap::Model(std::make_unique<yap::HelicityFormalism>()));
-        mH.push_back(populate_model(*H.back(), F, FSP));
+        H.push_back(dkkp<yap::HelicityFormalism>(411, FSP));
+        mH.push_back(H.back()->massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}}));
         dH.push_back(H.back()->createDataSet(1));
 
     } while (std::next_permutation(FSP.begin(), FSP.end()));

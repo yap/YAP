@@ -1,10 +1,12 @@
 #ifndef __test_helper_functions__H
 #define __test_helper_functions__H
 
+#include <Attributes.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
+#include <FreeAmplitude.h>
 #include <HelicityFormalism.h>
 #include <make_unique.h>
 #include <MassAxes.h>
@@ -17,7 +19,7 @@
 
 /// generate a model with 4 final state particles
 //-------------------------
-inline std::shared_ptr<yap::Model> create_model()
+inline std::shared_ptr<yap::Model> d4pi()
 {
     auto M = std::make_shared<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
@@ -57,6 +59,49 @@ inline std::shared_ptr<yap::Model> create_model()
 }
 
 //-------------------------
+template <typename Formalism>
+inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
+{
+    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+
+    yap::FinalStateParticleVector FSP;
+    std::transform(fsps.begin(), fsps.end(), std::back_inserter(FSP), [&F](int pdg){return F.fsp(pdg);});
+
+    double radial_size = 3;
+
+    auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
+    M->setFinalState(FSP);
+    
+    auto D = F.decayingParticle(pdg_D, radial_size);
+
+    auto piPlus = lone_elt(filter(FSP, yap::is_named("pi+")));
+    auto kPlus  = lone_elt(filter(FSP, yap::is_named("K+")));
+    auto kMinus = lone_elt(filter(FSP, yap::is_named("K-")));
+    
+    for (unsigned j = 0; j < 3; ++j) {
+        auto res = yap::Resonance::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
+                                          std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
+        res->addChannel(piPlus, kMinus);
+        D->addChannel(res, kPlus);
+        switch (j) {
+        case 0:
+            *free_amplitude(*D, yap::to(res)) = 0.5;
+            break;
+        case 1:
+            *free_amplitude(*D, yap::to(res)) = 1;
+            break;
+        case 2:
+            *free_amplitude(*D, yap::to(res)) = 30;
+            break;
+        }
+    }
+
+    M->addInitialStateParticle(D);
+
+    return M;
+}
+
+//-------------------------
 inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
@@ -75,6 +120,8 @@ inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 
     return data;
 }
+
+
 
 #endif
 

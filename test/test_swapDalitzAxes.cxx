@@ -1,6 +1,8 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
+#include "helperFunctions.h"
+
 #include <Attributes.h>
 #include <BreitWigner.h>
 #include <container_utils.h>
@@ -67,35 +69,9 @@ TEST_CASE( "swapDalitzAxes" )
                 // loop over axis swaps
                 for (unsigned i = 0; i < 6; ++i) {
 
-                    // final state particles
-                    auto kPlus  = F.fsp(PDGs[1]);
-                    auto kMinus = F.fsp(PDGs[2]);
-                    auto piPlus = F.fsp(PDGs[3]);
-
-                    auto M = i_formalism == 0 ? std::make_unique<yap::Model>(std::make_unique<yap::ZemachFormalism>()) :
-                             std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
-
-                    M->setFinalState({piPlus, kMinus, kPlus});
-
-                    // initial state particle
-                    auto D = F.decayingParticle(PDGs[0], 3.);
-
-                    auto piK0 = yap::Resonance::create("piK0", yap::QuantumNumbers(0, 0), 3., std::make_shared<yap::BreitWigner>(0.750, 0.025));
-                    piK0->addChannel(piPlus, kMinus);
-                    D->addChannel(piK0, kPlus);
-                    *free_amplitude(*D, yap::to(piK0)) = 0.5;
-
-                    auto piK1 = yap::Resonance::create("piK1", yap::QuantumNumbers(2, 0), 3., std::make_shared<yap::BreitWigner>(1.000, 0.025));
-                    piK1->addChannel(piPlus, kMinus);
-                    D->addChannel(piK1, kPlus);
-                    *free_amplitude(*D, yap::to(piK1)) = 1.;
-
-                    auto piK2 = yap::Resonance::create("piK2", yap::QuantumNumbers(4, 0), 3., std::make_shared<yap::BreitWigner>(1.250, 0.025));
-                    piK2->addChannel(piPlus, kMinus);
-                    D->addChannel(piK2, kPlus);
-                    *free_amplitude(*D, yap::to(piK2)) = 30.;
-
-                    M->addInitialStateParticle(D);
+                    auto M = (i_formalism == 0)
+                        ? dkkp<yap::ZemachFormalism>(PDGs[0], std::vector<int>(PDGs.begin() + 1, PDGs.end()))
+                        : dkkp<yap::HelicityFormalism>(PDGs[0], std::vector<int>(PDGs.begin() + 1, PDGs.end()));
 
                     // Dalitz coordinates
                     yap::MassAxes A;
@@ -146,7 +122,7 @@ TEST_CASE( "swapDalitzAxes" )
                     data.push_back(P);
 
                     M->calculate(data);
-                    resultingAmplitudes[i] = amplitude(D->decayTrees().at(0), data[0]);
+                    resultingAmplitudes[i] = amplitude(M->initialStateParticles().begin()->first->decayTrees().at(0), data[0]);
                     //std::cout<<resultingAmplitudes[i]<<"   ";
                 }
 

@@ -38,19 +38,19 @@ public:
     /// \name Constructors
     /// @{
 
-    /// JQPICG constructor
+    /// QJPICG constructor
     /// \todo restore constexpr if using c++14
-    QuantumNumbers(unsigned twoJ, int Q, int P, unsigned twoI, int C, int G)
-        : TwoJ_(twoJ), P_(signum(P)), C_(signum(C)), TwoI_(twoI), G_(signum(G)), Q_(Q)
+    QuantumNumbers(int Q, unsigned twoJ, int P, unsigned twoI, int C, int G)
+        : Q_(Q), TwoJ_(twoJ), P_(signum(P)), C_(signum(C)), TwoI_(twoI), G_(signum(G))
     {
         if (Q_ != 0 and C_ != 0)
             throw exceptions::Exception("charged particle has nonzero charge parity", "QuantumNumbers::QuantumNumbers");
     }
 
-    /// JQPI constructor
-    constexpr QuantumNumbers(unsigned twoJ, int Q, int P = 0, unsigned twoI = 0)
-        : TwoJ_(twoJ), P_(signum(P)), C_(0), TwoI_(twoI), G_(0), Q_(Q) {}
-
+    /// QJPI constructor
+    constexpr QuantumNumbers(int Q, unsigned twoJ, int P = 0, unsigned twoI = 0)
+        : Q_(Q), TwoJ_(twoJ), P_(signum(P)), C_(0), TwoI_(twoI), G_(0) {}
+    
     /// @}
 
     /// \name Getters
@@ -84,6 +84,9 @@ public:
 
 private:
 
+    /// Electric charge
+    int Q_;
+
     /// Spin * 2
     unsigned TwoJ_;
 
@@ -98,9 +101,6 @@ private:
 
     /// G-parity
     int G_;
-
-    /// Electric charge
-    int Q_;
 
 };
 
