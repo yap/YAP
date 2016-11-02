@@ -12,11 +12,11 @@ if(DOXYGEN_FOUND)
 endif(DOXYGEN_FOUND)
 
 # DataPoint type flag
-if (DATA_POINT_TYPE STREQUAL "float")
+if (YAP_DATA_POINT_TYPE STREQUAL "float")
 	message("Using float as type for DataPoint")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D DATA_POINT_FLOAT")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D YAP_DATA_POINT_FLOAT")
 else()
-	message("Using double as type for DataPoint (to use floats in order to reduce memory usage by DataPoints, cmake with -DDATA_POINT_TYPE=float)")
+	message("Using double as type for DataPoint (to use floats in order to reduce memory usage by DataPoints, cmake with -DYAP_DATA_POINT_TYPE=float)")
 endif()
 
 # Default C++ flags
