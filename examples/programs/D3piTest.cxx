@@ -81,36 +81,36 @@ int main( int argc, char** argv)
 
     // rho
     auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
-    rho->addChannel(piPlus, piMinus);
-    D->addChannel(rho, piPlus);
+    rho->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
     auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
-    f_2->addChannel(piPlus, piMinus);
-    D->addChannel(f_2, piPlus);
+    f_2->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_2, piPlus);
 
     // f_0(980)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
     f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
     f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = yap::Resonance::create("f_0_980", F["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
-    f_0_980->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_980, piPlus);
+    f_0_980->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_980, piPlus);
 
     // f_0(1370)
     auto f_0_1370 = yap::Resonance::create("f_0_1370", F["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
-    f_0_1370->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1370, piPlus);
+    f_0_1370->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
     auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
-    f_0_1500->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1500, piPlus);
+    f_0_1500->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
-    sigma->addChannel(piPlus, piMinus);
-    D->addChannel(sigma, piPlus);
+    sigma->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(sigma, piPlus);
 
     FLOG(INFO) << "number of free amplitudes = " << free_amplitudes(M).size();
 
@@ -121,7 +121,7 @@ int main( int argc, char** argv)
     *free_amplitude(*D, yap::to(f_0_1370)) = std::polar(1.3, yap::rad(-21.));
     *free_amplitude(*D, yap::to(f_0_1500)) = std::polar(1.1, yap::rad(-44.));
     *free_amplitude(*D, yap::to(sigma))    = std::polar(3.7, yap::rad(-3.));
-    // D->addChannel(piPlus, piMinus, piPlus);
+    // D->addWeakDecay(piPlus, piMinus, piPlus);
 
     M.addInitialStateParticle(D);
 

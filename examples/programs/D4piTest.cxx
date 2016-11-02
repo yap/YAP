@@ -67,28 +67,28 @@ int main( int argc, char** argv)
 
     // sigma / f_0(500)
     auto sigma = F.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel(piPlus, piMinus);
+    sigma->addStrongDecay(piPlus, piMinus);
 
     // rho
     auto rho = F.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel(piPlus, piMinus);
+    rho->addStrongDecay(piPlus, piMinus);
 
     // // omega
     // auto omega = F.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
-    // omega->addChannel(piPlus, piMinus);
+    // omega->addStrongDecay(piPlus, piMinus);
 
     // a_1
     auto a_1 = F.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    // a_1->addChannel(sigma, piPlus);
-    a_1->addChannel(rho,   piPlus);
+    // a_1->addStrongDecay(sigma, piPlus);
+    a_1->addStrongDecay(rho,   piPlus);
 
     // D's channels
-    D->addChannel(rho, rho);
-    // D->addChannel(omega, omega);
-    // D->addChannel(rho, omega);
-    D->addChannel(a_1, piMinus);
-    D->addChannel(sigma, piPlus, piMinus);
-    D->addChannel(piPlus, piMinus, piPlus, piMinus);
+    D->addWeakDecay(rho, rho);
+    // D->addWeakDecay(omega, omega);
+    // D->addWeakDecay(rho, omega);
+    D->addWeakDecay(a_1, piMinus);
+    D->addWeakDecay(sigma, piPlus, piMinus);
+    D->addWeakDecay(piPlus, piMinus, piPlus, piMinus);
 
     // R pi pi channels
     //yap::Resonance* f_0_980 = F.resonanceBreitWigner(9000221, radialSize);

@@ -72,28 +72,45 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// Check if a DecayChannel is valid for DecayingParticle;
-    /// will throw if invalid
-    virtual void checkDecayChannel(const DecayChannel& c) const;
-
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c);
+    virtual std::shared_ptr<DecayChannel> addDecayChannel(std::shared_ptr<DecayChannel> c, bool conserve_parity = false);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity is _not_ converved
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
+    /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addChannel(const ParticleVector& daughters);
+    std::shared_ptr<DecayChannel> addWeakDecay(const ParticleVector& daughters);
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity _is_ converved
+    /// \param daughters ParticleVector of daughters to create DecayChannel object from
+    /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
+    /// \return shared_ptr to DecayChannel that has been added
+    std::shared_ptr<DecayChannel> addStrongDecay(const ParticleVector& daughters);
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity is _not_ converved
     /// \param A shared_ptr to a daughter
     /// \param B shared_ptr to a daughter
     /// \param other_daughters... other daughters
     /// \return shared_ptr to DecayChannel that has been added
     template <typename ... Types>
-    std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
-    { ParticleVector V{A, B, other_daughters...}; return addChannel(V); }
+    std::shared_ptr<DecayChannel> addWeakDecay(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return addWeakDecay(V); }
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity _is_ conserved
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
+    /// \return shared_ptr to DecayChannel that has been added
+    template <typename ... Types>
+    std::shared_ptr<DecayChannel> addStrongDecay(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return addStrongDecay(V); }
 
     /// \name Getters
     /// @{

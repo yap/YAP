@@ -152,11 +152,11 @@ TEST_CASE( "FourMomentaCalculation" )
         // create book-keeping resonance
         /// \todo Allow direct phase-space three-body decay
         auto X = factory.decayingParticle(factory.pdgCode("f_0"), 3);
-        X->addChannel(piPlus, KMinus);
+        X->addStrongDecay(piPlus, KMinus);
 
         // create initial state particle
         auto D = factory.decayingParticle(factory.pdgCode("D+"), 3);
-        D->addChannel(X, piPlus);
+        D->addWeakDecay(X, piPlus);
 
         M.addInitialStateParticle(D);
 
@@ -243,14 +243,14 @@ TEST_CASE( "FourMomentaCalculation" )
         // create book-keeping resonance
         /// \todo Allow direct phase-space three-body decay
         auto X = factory.decayingParticle(factory.pdgCode("f_0"), 3);
-        X->addChannel(piPlus, piMinus);
+        X->addStrongDecay(piPlus, piMinus);
 
         auto X2 = factory.decayingParticle(factory.pdgCode("f_0"), 3);
-        X2->addChannel(KPlus, KMinus);
+        X2->addStrongDecay(KPlus, KMinus);
 
         // create initial state particle
         auto D = factory.decayingParticle(factory.pdgCode("D0"), 3);
-        D->addChannel(X, X2);
+        D->addWeakDecay(X, X2);
 
         // choose default Dalitz coordinates
         auto A = M.massAxes();

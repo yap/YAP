@@ -1,6 +1,9 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
+#include "helperFunctions.h"
+
+#include <Attributes.h>
 #include <logging.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
@@ -39,41 +42,19 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    // use common radial size for all resonances
-    double radialSize = 3.; // [GeV^-1]
-
-    yap::Model M(std::make_unique<yap::HelicityFormalism>());
-
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     double D_mass = factory["D+"].mass();
 
-    // initial state particle
-    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
-
-    // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
-
-    // set final state
-    M.setFinalState({piPlus, piMinus, piPlus});
-
-    // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel({piPlus, piMinus});
-
-    // Add channels to D
-    D->addChannel({rho, piPlus});
-
-    M.addInitialStateParticle(D);
+    auto M = d3pi<yap::HelicityFormalism>();
 
     // choose default Dalitz coordinates
-    auto A = M.massAxes();
+    auto A = M->massAxes();
     // get mass^2 ranges
-    auto m2r = yap::squared(yap::mass_range(D_mass, A, M.finalStateParticles()));
+    auto m2r = yap::squared(yap::mass_range(D_mass, A, M->finalStateParticles()));
 
     // create DataSet
-    auto data = M.createDataSet();
+    auto data = M->createDataSet();
 
     // create random number engine for generation of points
     std::mt19937 g(0);
@@ -86,7 +67,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
         yap::ParticleCombinationMap<std::vector<double> > resultingThetas;
 
         // generate random phase space point (with 100 attempts before failing)
-        auto momenta = yap::phsp(M, D_mass, A, m2r, g, 100);
+        auto momenta = yap::phsp(*M, D_mass, A, m2r, g, 100);
         if (momenta.empty())
             continue;
 
@@ -127,9 +108,11 @@ TEST_CASE( "HelicityAngles_boostRotate" )
             data.push_back(momenta);
             const auto dp = data.back();
 
+            auto rho = particle(*M, yap::is_named("rho0"));
+            
             // compare results
             for (auto& pc_rho : rho->particleCombinations())
-                resultingThetas[pc_rho].push_back(M.helicityAngles()(dp, data, pc_rho).theta);
+                resultingThetas[pc_rho].push_back(M->helicityAngles()(dp, data, pc_rho).theta);
         }
 
         // check if thetas are equal

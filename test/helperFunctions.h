@@ -38,20 +38,20 @@ inline std::shared_ptr<yap::Model> d4pi()
 
     // rho
     auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
-    rho->addChannel(piPlus, piMinus);
+    rho->addStrongDecay(piPlus, piMinus);
 
     // sigma / f_0(500)
     auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
-    sigma->addChannel(piPlus, piMinus);
+    sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
     auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
-    a_1->addChannel(sigma, piPlus);
-    a_1->addChannel(rho,   piPlus);
+    a_1->addStrongDecay(sigma, piPlus);
+    a_1->addStrongDecay(rho,   piPlus);
 
     // D's channels
-    D->addChannel(rho, rho);
-    D->addChannel(a_1, piMinus);
+    D->addWeakDecay(rho, rho);
+    D->addWeakDecay(a_1, piMinus);
 
     M->addInitialStateParticle(D);
 
@@ -81,8 +81,8 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
     for (unsigned j = 0; j < 3; ++j) {
         auto res = yap::Resonance::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
                                           std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
-        res->addChannel(piPlus, kMinus);
-        D->addChannel(res, kPlus);
+        res->addStrongDecay(piPlus, kMinus);
+        D->addWeakDecay(res, kPlus);
         switch (j) {
         case 0:
             *free_amplitude(*D, yap::to(res)) = 0.5;
@@ -95,6 +95,39 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
             break;
         }
     }
+
+    M->addInitialStateParticle(D);
+
+    return M;
+}
+
+//-------------------------
+template <typename Formalism>
+std::shared_ptr<yap::Model> d3pi()
+{
+    // use common radial size for all resonances
+    double radialSize = 3.; // [GeV^-1]
+
+    auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
+
+    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+
+    // initial state particle
+    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+
+    // final state particles
+    auto piPlus = factory.fsp(211);
+    auto piMinus = factory.fsp(-211);
+
+    // set final state
+    M->setFinalState(piPlus, piMinus, piPlus);
+
+    // rho
+    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    rho->addStrongDecay(piPlus, piMinus);
+
+    // Add channels to D
+    D->addWeakDecay(rho, piPlus);
 
     M->addInitialStateParticle(D);
 

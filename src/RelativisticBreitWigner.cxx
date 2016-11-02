@@ -19,7 +19,7 @@ void RelativisticBreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
 {
     auto it = resonance()->blattWeisskopfs().find(resonance()->quantumNumbers().twoJ() / 2);
     if (it == resonance()->blattWeisskopfs().end())
-        throw exceptions::Exception("Could not store and use Blatt-Weisskopf barrier factor in Resonace_",
+        throw exceptions::Exception("Could not find Blatt-Weisskopf barrier factor in Resonance_",
                                     "RelativisticBreitWigner::addDecayChannel");
     BlattWeisskopf_ = it->second;
     // add parameters of BlattWeisskopf to this object

@@ -55,36 +55,30 @@ bool DecayingParticle::consistent() const
 }
 
 //-------------------------
-void DecayingParticle::checkDecayChannel(const DecayChannel& dc) const
-{
-    if (charge(dc.daughters()) != quantumNumbers().Q())
-        throw exceptions::Exception("Charge of channel not equal to decaying particle ("
-                                    + std::to_string(charge(dc.daughters())) + " != " + std::to_string(quantumNumbers().Q()) + ")",
-                                    "DecayChannel::checkDecayChannel");
-}
-
-//-------------------------
-std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<DecayChannel> c)
+std::shared_ptr<DecayChannel> DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c, bool conserve_parity)
 {
     if (!c)
-        throw exceptions::Exception("DecayChannel empty", "DecayingParticle::addChannel");
+        throw exceptions::Exception("DecayChannel empty", "DecayingParticle::addDecayChannel");
 
     if (c->particleCombinations().empty())
         throw exceptions::Exception(std::string("DecayChannel has no ParticleCombinations - ") + to_string(*c),
-                                    "DecayingParticle::addChannel");
+                                    "DecayingParticle::addDecayChannel");
 
     // check ISP
     if (!Channels_.empty() and c->model() != model())
-        throw exceptions::Exception("Model mismatch", "DecayingParticle::addChannel");
+        throw exceptions::Exception("Model mismatch", "DecayingParticle::addDecayChannel");
 
-    // check if valid for DecayingParticle
-    checkDecayChannel(*c);
+    // check charge
+    if (charge(c->daughters()) != quantumNumbers().Q())
+        throw exceptions::Exception("Charge of channel not equal to decaying particle ("
+                                    + std::to_string(charge(c->daughters())) + " != " + std::to_string(quantumNumbers().Q()) + ")",
+                                    "DecayChannel::addDecayChannel");
 
     Channels_.push_back(c);
 
     // if spin amplitudes haven't been added by hand, add all possible
     if (Channels_.back()->spinAmplitudes().empty())
-        Channels_.back()->addAllPossibleSpinAmplitudes(quantumNumbers().twoJ());
+        Channels_.back()->addAllPossibleSpinAmplitudes(quantumNumbers().twoJ(), (conserve_parity ? quantumNumbers().P() : 0));
 
     // create necessary BlattWeisskopf objects
     for (const auto& sa : Channels_.back()->spinAmplitudes()) {
@@ -191,9 +185,15 @@ std::shared_ptr<DecayChannel> DecayingParticle::addChannel(std::shared_ptr<Decay
 }
 
 //-------------------------
-std::shared_ptr<DecayChannel> DecayingParticle::addChannel(const ParticleVector& daughters)
+std::shared_ptr<DecayChannel> DecayingParticle::addWeakDecay(const ParticleVector& daughters)
 {
-    return addChannel(std::make_shared<DecayChannel>(daughters));
+    return addDecayChannel(std::make_shared<DecayChannel>(daughters), false);
+}
+
+//-------------------------
+std::shared_ptr<DecayChannel> DecayingParticle::addStrongDecay(const ParticleVector& daughters)
+{
+    return addDecayChannel(std::make_shared<DecayChannel>(daughters), true);
 }
 
 //-------------------------

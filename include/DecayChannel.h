@@ -41,15 +41,9 @@ class DecayChannel
 {
 public:
 
-    /// \name Constructors
-    /// @{
-
-    /// N-particle Constructor (at the moment only valid for 2 particles).
-    /// DecayChannel inherits ISP from daughters.
+    /// Constructor
     /// \param daughters Vector of shared_ptr's to daughter Particle's
     DecayChannel(const ParticleVector& daughters);
-
-    /// @}
 
     /// check consistency of object
     virtual bool consistent() const;
@@ -78,8 +72,10 @@ public:
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
 
     /// automatically create all possible spin amplitudes given initial spin J
-    /// \param two_J, (twice) decaying particle's spin
-    void addAllPossibleSpinAmplitudes(unsigned two_J);
+    /// parity conservation is ignored if parity is set 0
+    /// \param two_J (twice) decaying particle's spin
+    /// \param eta decaying particle's parity (set to zero to ignore)
+    void addAllPossibleSpinAmplitudes(unsigned two_J, int p = 0);
 
     /// grant friend status to DecayingParticle to call
     /// addParticleCombination, pruneParticleCombinations,

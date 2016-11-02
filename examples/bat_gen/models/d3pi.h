@@ -60,41 +60,41 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 
     // rho
     auto rho = F.resonance(113, radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
-    rho->addChannel(piPlus, piMinus);
-    D->addChannel(rho, piPlus);
+    rho->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
     auto f_2 = F.resonance(225, radialSize, make_shared<RelativisticBreitWigner>());
-    f_2->addChannel(piPlus, piMinus);
-    D->addChannel(f_2, piPlus);
+    f_2->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_2, piPlus);
 
     // f_0(980)
     auto f_0_980_flatte = make_shared<Flatte>(0.965);
     f_0_980_flatte->add(FlatteChannel(0.406, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = Resonance::create("f_0(980)", QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
-    f_0_980->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_980, piPlus);
+    f_0_980->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_980, piPlus);
 
     // f_0(1370)
     auto f_0_1370 = Resonance::create("f_0(1370)", F["f_0"].quantumNumbers(), radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
-    f_0_1370->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1370, piPlus);
+    f_0_1370->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
     auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, make_unique<RelativisticBreitWigner>());
-    f_0_1500->addChannel(piPlus, piMinus);
-    D->addChannel(f_0_1500, piPlus);
+    f_0_1500->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(f_0_1500, piPlus);
 
     /* // f_0_fake */
     /* auto f_0_fake = Resonance::create("f_0_fake", F["f_0"], radialSize, make_unique<RelativisticBreitWigner>(1.10, 0.1)); */
-    /* f_0_fake->addChannel(piPlus, piMinus); */
-    /* D->addChannel(f_0_fake, piPlus); */
+    /* f_0_fake->addStrongDecay(piPlus, piMinus); */
+    /* D->addWeakDecay(f_0_fake, piPlus); */
 
     // sigma a.k.a. f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
-    sigma->addChannel(piPlus, piMinus);
-    D->addChannel(sigma, piPlus);
+    sigma->addStrongDecay(piPlus, piMinus);
+    D->addWeakDecay(sigma, piPlus);
 
     M->addInitialStateParticle(D);
 

@@ -45,10 +45,10 @@ int main( int argc, char** argv)
 
     // create a phi
     auto phi = factory.resonance(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());
-    phi->addChannel(kPlus, kMinus);
+    phi->addStrongDecay(kPlus, kMinus);
 
     // Add channels to D
-    D->addChannel(phi, piPlus);
+    D->addWeakDecay(phi, piPlus);
 
     M.addInitialStateParticle(D);
 

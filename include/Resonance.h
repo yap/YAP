@@ -64,16 +64,11 @@ public:
     static std::shared_ptr<Resonance> create(const std::string& name, const QuantumNumbers& q, double radialSize, std::shared_ptr<MassShape> massShape)
     { return std::shared_ptr<Resonance>(new Resonance(name, q, radialSize, massShape)); }
 
-    /// Check if a DecayChannel is valid for Resonance; will throw if invalid.
-    /// checks with MassShape_
-    virtual void checkDecayChannel(const DecayChannel& c) const override;
-
-    using DecayingParticle::addChannel;
-
     /// Add a DecayChannel to this Resonance
     /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addChannel(std::shared_ptr<DecayChannel> c) override;
+    virtual std::shared_ptr<DecayChannel> addDecayChannel(std::shared_ptr<DecayChannel> c, bool conserve_parity = false) override;
 
     /// Check consistency of object
     virtual bool consistent() const override;

@@ -84,22 +84,22 @@ inline std::unique_ptr<Model> d4pi()
     
     // rho
     auto rho = F.resonance(F.pdgCode("rho0"), radialSize, std::make_shared<RelativisticBreitWigner>());
-    rho->addChannel(piPlus, piMinus);
+    rho->addStrongDecay(piPlus, piMinus);
 
     // omega
     //auto omega = F.resonance(F.pdgCode("omega"), radialSize, std::make_shared<BreitWigner>());
-    //omega->addChannel({piPlus, piMinus});
+    //omega->addStrongDecay({piPlus, piMinus});
 
     // sigma / f_0(500)
     auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_shared<BreitWigner>());
-    sigma->addChannel(piPlus, piMinus);
+    sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
     auto a_1 = F.resonance(F.pdgCode("a_1+"), radialSize, std::make_shared<BreitWigner>());
     if (a_rho_pi_S or a_rho_pi_D)
-        a_1->addChannel(rho,   piPlus);
+        a_1->addStrongDecay(rho,   piPlus);
     if (a_rho_sigma)
-        a_1->addChannel(sigma, piPlus);
+        a_1->addStrongDecay(sigma, piPlus);
 
     // a_1 -> sigma pi 
     if (a_rho_sigma)
@@ -110,21 +110,21 @@ inline std::unique_ptr<Model> d4pi()
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = F.resonance(F.pdgCode("f_0"), radialSize, f_0_980_flatte);
-    f_0_980->addChannel(piPlus, piMinus);
+    f_0_980->addStrongDecay(piPlus, piMinus);
 
     // f_2(1270)
     auto f_2 = F.resonance(F.pdgCode("f_2"), radialSize, std::make_shared<BreitWigner>());
-    f_2->addChannel(piPlus, piMinus); 
+    f_2->addStrongDecay(piPlus, piMinus); 
 
     // pi+ pi- flat
     auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), radialSize);
-    pipiFlat->addChannel(piPlus, piMinus);
+    pipiFlat->addStrongDecay(piPlus, piMinus);
     
     //
     // D0 channels
     //
     if (rho_rho) {
-        D->addChannel(rho, rho);
+        D->addWeakDecay(rho, rho);
 
         amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
                                                  std::polar(scale_rho_rho * 0.624, rad(357.)),    // A_longitudinal
@@ -135,7 +135,7 @@ inline std::unique_ptr<Model> d4pi()
             *fa = static_cast<std::complex<double> >(c[fa->spinAmplitude()->L()]);
     }
     if (a_rho_pi_S or a_rho_pi_D) {
-        D->addChannel(a_1, piMinus);
+        D->addWeakDecay(a_1, piMinus);
         free_amplitude(*D, to(a_1))->variableStatus() = VariableStatus::fixed;
 
         auto a_rho_S = free_amplitude(*a_1, to(rho), l_equals(0));
@@ -168,15 +168,15 @@ inline std::unique_ptr<Model> d4pi()
         }
     }
     if (f_0_pipi) {
-        D->addChannel(f_0_980, piPlus, piMinus);
+        D->addWeakDecay(f_0_980, piPlus, piMinus);
         *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(scale_f_0_pipi * 0.233, rad(261.));
     }
     if (f_2_pipi) {
-        D->addChannel(f_2, pipiFlat);
+        D->addWeakDecay(f_2, pipiFlat);
         *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(scale_f_2_pipi * 0.338, rad(317.));
     }
     if (sigma_pipi) {
-        D->addChannel(sigma, piPlus, piMinus);
+        D->addWeakDecay(sigma, piPlus, piMinus);
         *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
     }
     

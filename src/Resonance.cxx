@@ -23,18 +23,12 @@ Resonance::Resonance(const std::string& name, const QuantumNumbers& q, double ra
 }
 
 //-------------------------
-std::shared_ptr<DecayChannel> Resonance::addChannel(std::shared_ptr<DecayChannel> c)
+std::shared_ptr<DecayChannel> Resonance::addDecayChannel(std::shared_ptr<DecayChannel> c, bool conserve_parity)
 {
-    auto dc = DecayingParticle::addChannel(c);
-    MassShape_->addDecayChannel(dc);
+    MassShape_->checkDecayChannel(*c);
+    auto dc = DecayingParticle::addDecayChannel(c, conserve_parity);
+    MassShape_->addDecayChannel(c);
     return dc;
-}
-
-//-------------------------
-void Resonance::checkDecayChannel(const DecayChannel& c) const
-{
-    DecayingParticle::checkDecayChannel(c);
-    MassShape_->checkDecayChannel(c);
 }
 
 //-------------------------

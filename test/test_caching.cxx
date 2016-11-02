@@ -46,16 +46,16 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
 
     // create resonances
     auto piK0 = yap::Resonance::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK0->addChannel({piPlus, kMinus});
-    D->addChannel({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5);
+    piK0->addStrongDecay({piPlus, kMinus});
+    D->addWeakDecay({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5);
 
     auto piK1 = yap::Resonance::create(yap::QuantumNumbers(0, 2), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK1->addChannel({piPlus, kMinus});
-    D->addChannel({piK1, kPlus})->freeAmplitudes()[0]->setValue(1.);
+    piK1->addStrongDecay({piPlus, kMinus});
+    D->addWeakDecay({piK1, kPlus})->freeAmplitudes()[0]->setValue(1.);
 
     auto piK2 = yap::Resonance::create(yap::QuantumNumbers(0, 4), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
-    piK2->addChannel({piPlus, kMinus});
-    D->addChannel({piK2, kPlus})->freeAmplitudes()[0]->setValue(30.);
+    piK2->addStrongDecay({piPlus, kMinus});
+    D->addWeakDecay({piK2, kPlus})->freeAmplitudes()[0]->setValue(30.);
 
     return M.massAxes({{i_piPlus, i_kMinus}, {i_kMinus, i_kPlus}});
 }
