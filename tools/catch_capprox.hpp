@@ -20,7 +20,7 @@ namespace Detail {
     class CApprox {
     public:
         explicit CApprox ( std::complex<double> value )
-        :   m_epsilon( std::numeric_limits<float>::epsilon()*100 ),
+        :   m_epsilon( std::numeric_limits<float>::epsilon()*250 ),
             m_scale( 1.0 ),
             m_value( value )
         {}
