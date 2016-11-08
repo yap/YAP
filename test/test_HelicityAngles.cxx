@@ -90,9 +90,9 @@ TEST_CASE( "HelicityAngles" )
 
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
-    double D_mass = factory["D+"].mass();
+    double D_mass = factory["D0"].mass();
 
-    auto M = d3pi<yap::HelicityFormalism>();
+    auto M = d4pi();
 
     // choose default Dalitz axes
     auto A = M->massAxes();
