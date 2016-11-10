@@ -57,13 +57,20 @@ public:
     /// grant friend status to CachedValue to access Data_
     friend class CachedValue;
 
+/// precompiler flag for data storage type
+#ifdef YAP_DATA_POINT_FLOAT
+    using type = float;
+# else
+    using type = double;
+#endif
+
 private:
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
-    /// second index is for the symmeterization state (as known by the DataAccessor)
-    /// third index is internal to the DataAccessor
-    std::vector<std::vector<double> > Data_;
+    /// second index is for the symmeterization state (as known by the DataAccessor) internal to the DataAccessor
+    /// i = symIndex * size + position
+    std::vector<std::vector<type> > Data_;
 
 };
 
