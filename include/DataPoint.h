@@ -57,14 +57,14 @@ public:
     /// grant friend status to CachedValue to access Data_
     friend class CachedValue;
 
-private:
-
 /// precompiler flag for data storage type
 #ifdef YAP_DATA_POINT_FLOAT
     using type = float;
 # else
     using type = double;
 #endif
+
+private:
 
     /// Data storage for all DataAccessors
     /// first index is for the DataAccessor
