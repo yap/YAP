@@ -60,7 +60,7 @@ public:
 
 protected:
 
-    /// Retrieve BlattWeisskopf object from Resonance now that it is added to the Model
+    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
     virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
 
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition

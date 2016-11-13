@@ -6,6 +6,7 @@
 #include "DecayTree.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
+#include "MassShape.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "SpinAmplitude.h"
@@ -21,10 +22,15 @@ namespace yap {
 const is_of_type<DecayingParticle> is_decaying_particle{};
 
 //-------------------------
- DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers& q, double radialSize) :
+DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers& q,
+                                   double radial_size, std::shared_ptr<MassShape> mass_shape) :
     Particle(name, q),
-    RadialSize_(std::make_shared<RealParameter>(radialSize))
+    MassShape_(mass_shape),
+    RadialSize_(std::make_shared<RealParameter>(radial_size))
 {
+    if (MassShape_)
+        MassShape_->setOwner(this);
+        
 }
 
 //-------------------------
@@ -50,6 +56,15 @@ bool DecayingParticle::consistent() const
 
     // check consistency of all channels
     std::for_each(Channels_.begin(), Channels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
+
+    if (MassShape_) {
+        C &= MassShape_->consistent();
+
+        if (MassShape_->owner() != this) {
+            FLOG(ERROR) << "MassShape's owner is not this";
+            C &= false;
+        }
+    }
 
     return C;
 }
@@ -78,6 +93,10 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
     if (c->spinAmplitudes().empty())
         throw exceptions::Exception("DecayChannel has no SpinAmplitudes", "DecayingState::addDecayChannel");
 
+    // check with mass shape
+    if (MassShape_)
+        MassShape_->checkDecayChannel(*c);
+    
     Channels_.push_back(c);
 
     // create necessary BlattWeisskopf objects
@@ -180,6 +199,9 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
             } // ends loop over spin projections of daughters
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
+
+    if (MassShape_)
+        MassShape_->addDecayChannel(c);
 }
 
 //-------------------------
@@ -217,11 +239,14 @@ const Model* DecayingParticle::model() const
 //-------------------------
 void DecayingParticle::registerWithModel()
 {
-    for (auto& kv : BlattWeisskopfs_)
-        kv.second->registerWithModel();
+    for (auto& l_bw : BlattWeisskopfs_)
+        l_bw.second->registerWithModel();
 
     for (auto& c : Channels_)
         c->registerWithModel();
+
+    if (MassShape_)
+        MassShape_->registerWithModel();
 }
 
 //-------------------------
@@ -230,17 +255,19 @@ void DecayingParticle::addParticleCombination(const ParticleCombination& pc)
     Particle::addParticleCombination(pc);
 
     // add also to all BlattWeiskopf barrier factors
-    for (auto& kv : BlattWeisskopfs_)
+    for (auto& l_bw : BlattWeisskopfs_)
         if (pc.daughters().size() == 2)
-            kv.second->addParticleCombination(pc);
+            l_bw.second->addParticleCombination(pc);
 
     // add to DecayChannels,
     // if DecayChannel contains particle combination with same content (without checking parent)
     // this is for the setting of ParticleCombination's with parents
-    for (auto& dc : Channels_) {
+    for (auto& dc : Channels_)
         if (std::any_of(dc->particleCombinations().begin(), dc->particleCombinations().end(), std::bind(&equal_down, pc.shared_from_this(), std::placeholders::_1)))
             dc->addParticleCombination(pc);
-    }
+
+    if (MassShape_)
+        MassShape_->addParticleCombination(pc);
 }
 
 //-------------------------
@@ -349,6 +376,9 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt)
         // Add BlattWeisskopf object
         dt.addAmplitudeComponent(*bw->second);
     }
+
+    if (MassShape_)
+        dt.addAmplitudeComponent(*MassShape_);
 }
 
 //-------------------------

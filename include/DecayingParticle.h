@@ -27,6 +27,7 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
+#include "fwd/MassShape.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
@@ -53,16 +54,25 @@ protected:
 
     /// Constructor
     /// see #create
-    DecayingParticle(const std::string& name, const QuantumNumbers& q, double radialSize);
+    DecayingParticle(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape);
 
 public:
 
     /// create
     /// \param name Name of decaying particle
     /// \param q QuantumNumbers of decaying particle
-    /// \param radialSize radial size of decaying particle
-    static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radialSize)
-    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize)); }
+    /// \param radial_size radial size of decaying particle
+    /// \param mass_shape shared_ptr to dynamic amplitude component
+    static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radial_size, mass_shape)); }
+
+    /// access MassShape
+    std::shared_ptr<MassShape> massShape()
+    { return MassShape_; }
+
+    /// access MassShape (const)
+    std::shared_ptr<const MassShape> massShape() const
+    { return MassShape_; }
 
     /// \return DecayTrees
     /// map key is spin projection
@@ -169,6 +179,9 @@ protected:
 
 private:
 
+    /// MassShape object
+    std::shared_ptr<MassShape> MassShape_;
+    
     /// vector of decay channel objects
     DecayChannelVector Channels_;
 

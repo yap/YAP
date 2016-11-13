@@ -4,6 +4,7 @@
 #include <Attributes.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
+#include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <FreeAmplitude.h>
@@ -15,7 +16,6 @@
 #include <ParticleFactory.h>
 #include <PDL.h>
 #include <PHSP.h>
-#include <Resonance.h>
 
 /// generate a model with 4 final state particles
 //-------------------------
@@ -37,15 +37,15 @@ inline std::shared_ptr<yap::Model> d4pi()
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = factory.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addStrongDecay(piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = factory.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = factory.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = factory.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = factory.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>());
     a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
@@ -79,7 +79,7 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
     auto kMinus = lone_elt(filter(FSP, yap::is_named("K-")));
     
     for (unsigned j = 0; j < 3; ++j) {
-        auto res = yap::Resonance::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
+        auto res = yap::DecayingParticle::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
                                           std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
         res->addStrongDecay(piPlus, kMinus);
         D->addWeakDecay(res, kPlus);
@@ -123,7 +123,7 @@ std::shared_ptr<yap::Model> d3pi()
     M->setFinalState(piPlus, piMinus, piPlus);
 
     // rho
-    auto rho = factory.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = factory.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addStrongDecay(piPlus, piMinus);
 
     // Add channels to D

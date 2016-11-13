@@ -23,7 +23,6 @@
 #include <Parameter.h>
 #include <ParticleFactory.h>
 #include <PDL.h>
-#include <Resonance.h>
 #include <ZemachFormalism.h>
 
 #include <cmath>

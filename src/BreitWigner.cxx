@@ -4,12 +4,9 @@
 #include "DataPartition.h"
 #include "FourMomenta.h"
 #include "logging.h"
-#include "MathUtilities.h"
 #include "Model.h"
 #include "Parameter.h"
 #include "ParticleFactory.h"
-#include "Resonance.h"
-#include "StatusManager.h"
 
 namespace yap {
 

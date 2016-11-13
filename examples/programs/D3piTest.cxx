@@ -3,6 +3,7 @@
 #include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
+#include <DecayingParticle.h>
 #include <DecayTree.h>
 #include <DecayTreeVectorIntegral.h>
 #include <FinalStateParticle.h>
@@ -26,7 +27,6 @@
 #include <PoleMass.h>
 #include <PHSP.h>
 #include <RelativisticBreitWigner.h>
-#include <Resonance.h>
 #include <Sort.h>
 #include <ZemachFormalism.h>
 
@@ -80,12 +80,12 @@ int main( int argc, char** argv)
     LOG(INFO) << "final state set";
 
     // rho
-    auto rho = F.resonance(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
+    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
     rho->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = F.resonance(225, radialSize, std::make_shared<yap::BreitWigner>());
+    auto f_2 = F.decayingParticle(225, radialSize, std::make_shared<yap::BreitWigner>());
     f_2->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_2, piPlus);
 
@@ -93,22 +93,22 @@ int main( int argc, char** argv)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
     f_0_980_flatte->add(yap::FlatteChannel(0.406, *piPlus, *piMinus));
     f_0_980_flatte->add(yap::FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
-    auto f_0_980 = yap::Resonance::create("f_0_980", F["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
+    auto f_0_980 = yap::DecayingParticle::create("f_0_980", F["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = yap::Resonance::create("f_0_1370", F["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
+    auto f_0_1370 = yap::DecayingParticle::create("f_0_1370", F["f_0"].quantumNumbers(), radialSize, std::make_unique<yap::BreitWigner>(1.350, 0.265));
     f_0_1370->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.resonance(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
+    auto f_0_1500 = F.decayingParticle(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
-    auto sigma = F.resonance(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
+    auto sigma = F.decayingParticle(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(sigma, piPlus);
 

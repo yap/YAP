@@ -4,6 +4,7 @@
 #include <DataPoint.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
+#include <DecayingParticle.h>
 #include <DecayTree.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
@@ -23,7 +24,6 @@
 #include <ParticleFactory.h>
 #include <PDL.h>
 #include <PHSP.h>
-#include <Resonance.h>
 #include <Sort.h>
 #include <SpinAmplitudeCache.h>
 #include <WignerD.h>
@@ -66,19 +66,19 @@ int main( int argc, char** argv)
     M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = F.resonance(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = F.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>());
     sigma->addStrongDecay(piPlus, piMinus);
 
     // rho
-    auto rho = F.resonance(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
     rho->addStrongDecay(piPlus, piMinus);
 
     // // omega
-    // auto omega = F.resonance(223, radialSize, std::make_shared<yap::BreitWigner>());
+    // auto omega = F.decayingParticle(223, radialSize, std::make_shared<yap::BreitWigner>());
     // omega->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = F.resonance(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = F.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>());
     // a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
@@ -91,7 +91,7 @@ int main( int argc, char** argv)
     D->addWeakDecay(piPlus, piMinus, piPlus, piMinus);
 
     // R pi pi channels
-    //yap::Resonance* f_0_980 = F.resonanceBreitWigner(9000221, radialSize);
+    //yap::DecayingParticle* f_0_980 = F.decayingParticleBreitWigner(9000221, radialSize);
     //F.createChannel(f_0_980, piPlus, piMinus, 0);
 
     // InitialStateParticles
@@ -175,7 +175,7 @@ int main( int argc, char** argv)
 
         // change masses
         if (uniform(g) > 0.5)
-            for (auto& d : particles(M, yap::is_resonance, yap::has_a_mass()))
+            for (auto& d : particles(M, yap::has_a_mass_shape(), yap::has_a_mass()))
                 if (uniform(g) > 0.5 and get_mass(*d).variableStatus() != yap::VariableStatus::fixed) {
                     DEBUG("change mass for " << to_string(*d));
                     const_cast<yap::RealParameter&>(get_mass(*d)) = uniform2(g) * get_mass(*d).value();

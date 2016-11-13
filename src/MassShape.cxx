@@ -3,11 +3,11 @@
 #include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
+#include "DecayingParticle.h"
 #include "Exceptions.h"
 #include "logging.h"
 #include "Parameter.h"
 #include "ParticleCombination.h"
-#include "Resonance.h"
 #include "VariableStatus.h"
 
 namespace yap {
@@ -15,7 +15,7 @@ namespace yap {
 //-------------------------
 MassShape::MassShape() :
     RecalculableAmplitudeComponent(equal_by_orderless_content),
-    Resonance_(nullptr),
+    Owner_(nullptr),
     T_(ComplexCachedValue::create(*this))
 {}
 
@@ -53,9 +53,9 @@ bool MassShape::consistent() const
 {
     bool C = DataAccessor::consistent();
 
-    // check if owning resonance is set
-    if (!Resonance_) {
-        FLOG(ERROR) << "Owning resonance isn't set";
+    // check if owner is set
+    if (!Owner_) {
+        FLOG(ERROR) << "Owner isn't set";
         C &= false;
     }
 
@@ -63,18 +63,18 @@ bool MassShape::consistent() const
 }
 
 //-------------------------
-void MassShape::setResonance(Resonance* r)
+void MassShape::setOwner(DecayingParticle* dp)
 {
-    if (Resonance_)
-        throw exceptions::Exception("MassShape already has owning Resonance", "MassShape::setResonance");
+    if (Owner_)
+        throw exceptions::Exception("MassShape already has owner", "MassShape::setOwner");
 
-    Resonance_ = r;
+    Owner_ = dp;
 }
 
 //-------------------------
 const Model* MassShape::model() const
 {
-    return Resonance_->model();
+    return Owner_->model();
 }
 
 }
