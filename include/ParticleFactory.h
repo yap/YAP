@@ -102,6 +102,12 @@ private:
     std::vector<double> MassShapeParameters_;
 };
 
+/// \return n'th element in ParticleTableEntry's MassShapeParameters_, throwing error if necessary
+/// \param pde ParticleTableEntry to access
+/// \param n element to retrieve
+/// \param where function name to point to when throwing
+double get_nth_element(const ParticleTableEntry& pde, size_t n, const std::string& where);
+
 /// \class ParticleFactory
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald

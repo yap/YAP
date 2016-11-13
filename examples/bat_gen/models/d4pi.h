@@ -82,19 +82,19 @@ inline std::unique_ptr<Model> d4pi()
     //
     
     // rho
-    auto rho = F.decayingParticle(F["rho0"].pdg(), radialSize, std::make_shared<RelativisticBreitWigner>());
+    auto rho = F.decayingParticle(F["rho0"].pdg(), radialSize, std::make_shared<RelativisticBreitWigner>(F["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // omega
-    //auto omega = F.decayingParticle(F["omega"].pdg(), radialSize, std::make_shared<BreitWigner>());
+    //auto omega = F.decayingParticle(F["omega"].pdg(), radialSize, std::make_shared<BreitWigner>(F["omega"]));
     //omega->addStrongDecay({piPlus, piMinus});
 
     // sigma / f_0(500)
-    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, std::make_shared<BreitWigner>());
+    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, std::make_shared<BreitWigner>(F["f_0(500)"]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = F.decayingParticle(F["a_1+"].pdg(), radialSize, std::make_shared<BreitWigner>());
+    auto a_1 = F.decayingParticle(F["a_1+"].pdg(), radialSize, std::make_shared<BreitWigner>(F["a_1+"]));
     if (a_rho_pi_S or a_rho_pi_D)
         a_1->addStrongDecay(rho,   piPlus);
     if (a_rho_sigma)
@@ -105,14 +105,14 @@ inline std::unique_ptr<Model> d4pi()
         *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
 
     // f_0(980) (as Flatte)
-    auto f_0_980_flatte = std::make_shared<Flatte>();
+    auto f_0_980_flatte = std::make_shared<Flatte>(F["f_0"]);
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
     auto f_0_980 = F.decayingParticle(F["f_0"].pdg(), radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
 
     // f_2(1270)
-    auto f_2 = F.decayingParticle(F["f_2"].pdg(), radialSize, std::make_shared<BreitWigner>());
+    auto f_2 = F.decayingParticle(F["f_2"].pdg(), radialSize, std::make_shared<BreitWigner>(F["f_2"]));
     f_2->addStrongDecay(piPlus, piMinus); 
 
     // pi+ pi- flat

@@ -11,6 +11,7 @@
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
+#include "ParticleFactory.h"
 
 namespace yap {
 

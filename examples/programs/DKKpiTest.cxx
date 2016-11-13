@@ -44,7 +44,7 @@ int main( int argc, char** argv)
     auto D = factory.decayingParticle(factory["D+"].pdg(), radialSize);
 
     // create a phi
-    auto phi = factory.decayingParticle(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());
+    auto phi = factory.decayingParticle(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>(factory["phi"]));
     phi->addStrongDecay(kPlus, kMinus);
 
     // Add channels to D

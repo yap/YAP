@@ -28,6 +28,14 @@ ParticleTableEntry::ParticleTableEntry(int pdg, const std::string& name, Quantum
 }
 
 //-------------------------
+double get_nth_element(const ParticleTableEntry& pde, size_t n, const std::string& where)
+{
+    if (n >= pde.massShapeParameters().size())
+        throw exceptions::Exception("MassShapeParameters_ has no " + std::to_string(n) + "'th element", where);
+    return pde.massShapeParameters()[n];
+}
+
+//-------------------------
 std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 {
     const auto& p = (*this)[PDG];
@@ -38,8 +46,6 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radial_size, std::shared_ptr<MassShape> mass_shape) const
 {
     const auto& p = (*this)[PDG];
-    if (mass_shape)
-        mass_shape->setParameters(p);
     return DecayingParticle::create(p.name(), p.quantumNumbers(), radial_size, mass_shape);
 }
 

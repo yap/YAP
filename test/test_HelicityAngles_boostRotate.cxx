@@ -119,7 +119,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
         for (auto& kv : resultingThetas) {
             double theta_0 = kv.second[0];
             for (auto theta : kv.second)
-                REQUIRE(theta == Approx(theta_0));
+                REQUIRE(theta == Approx(theta_0).epsilon(0.001));
         }
     }
 }

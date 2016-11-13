@@ -80,12 +80,12 @@ int main( int argc, char** argv)
     LOG(INFO) << "final state set";
 
     // rho
-    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>());
+    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::RelativisticBreitWigner>(F[113]));
     rho->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = F.decayingParticle(225, radialSize, std::make_shared<yap::BreitWigner>());
+    auto f_2 = F.decayingParticle(225, radialSize, std::make_shared<yap::BreitWigner>(F[225]));
     f_2->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_2, piPlus);
 
@@ -103,7 +103,7 @@ int main( int argc, char** argv)
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, std::make_unique<yap::BreitWigner>());
+    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, std::make_unique<yap::BreitWigner>(F["f_0(1500)"]));
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 

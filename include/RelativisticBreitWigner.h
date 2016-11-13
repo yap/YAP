@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/ParticleFactory.h"
 
 #include "BreitWigner.h"
 
@@ -51,8 +52,11 @@ public:
     /// Constructor
     /// \param m Mass of resonance [GeV]
     /// \param w Width of resonance [GeV]
-    RelativisticBreitWigner(double m = -1, double w = -1) :
-    BreitWigner(m, w) {}
+    RelativisticBreitWigner(double m, double w) : BreitWigner(m, w) {}
+
+    /// Constructor
+    /// \param pde ParticleTableEntry to take mass and width from
+    RelativisticBreitWigner(const ParticleTableEntry& pde) : BreitWigner(pde) {}
 
     /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
     /// Cheks that decay is to two spin-zero particles

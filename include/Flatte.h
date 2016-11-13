@@ -28,6 +28,7 @@
 #include "fwd/FinalStateParticle.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/ParticleFactory.h"
 #include "fwd/StatusManager.h"
 
 #include "MassShapeWithNominalMass.h"
@@ -51,7 +52,11 @@ public:
 
     /// Constructor
     /// \param m mass [GeV]
-    Flatte(double m = -1) : MassShapeWithNominalMass(m) {}
+    Flatte(double m) : MassShapeWithNominalMass(m) {}
+
+    /// Constructor
+    /// \param pde ParticleTableEntry to take mass from
+    Flatte(const ParticleTableEntry& pde) : MassShapeWithNominalMass(pde) {}
 
     /// Add FlatteChannel
     void add(FlatteChannel fc);
@@ -98,7 +103,7 @@ struct FlatteChannel {
     
     /// constructor
     FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B) :
-    FlatteChannel(std::make_shared<RealParameter>(coupling), A, B) {}
+        FlatteChannel(std::make_shared<RealParameter>(coupling), A, B) {}
 };
 
 }

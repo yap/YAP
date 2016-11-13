@@ -28,7 +28,6 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/ParticleFactory.h"
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
@@ -59,12 +58,6 @@ public:
     /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
     virtual void calculate(DataPartition& D) const override final;
-
-    /// Set parameters from ParticleTableEntry
-    /// Can be overloaded in inheriting classes
-    /// \param entry ParticleTableEntry containing information to create mass shape object
-    virtual void setParameters(const ParticleTableEntry& entry)
-    { }
 
     /// Check consistency of object
     virtual bool consistent() const;

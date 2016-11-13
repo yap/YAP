@@ -19,18 +19,9 @@ PoleMass::PoleMass(std::complex<double> mass) :
 }
 
 //-------------------------
-void PoleMass::setParameters(const ParticleTableEntry& entry)
+PoleMass::PoleMass(const ParticleTableEntry& pde) :
+    PoleMass(std::complex<double>(pde.mass(), get_nth_element(pde, 0, "PoleMass::PoleMass") / 2))
 {
-    // copy current value
-    auto m = Mass_->value();
-
-    if (real(m) < 0)
-        m.real(entry.mass());
-    
-    if (imag(m) < 0 and !entry.massShapeParameters().empty())
-        m.imag(entry.massShapeParameters()[0] / 2.);
-
-    *Mass_ = m;
 }
 
 //-------------------------

@@ -63,7 +63,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = F.decayingParticle(225, radialSize, make_shared<RelativisticBreitWigner>());
+    auto f_2 = F.decayingParticle(225, radialSize, make_shared<RelativisticBreitWigner>(F[225]));
     f_2->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_2, piPlus);
 
@@ -81,7 +81,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, make_unique<RelativisticBreitWigner>());
+    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, make_unique<RelativisticBreitWigner>(F["f_0(1500)"]));
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 

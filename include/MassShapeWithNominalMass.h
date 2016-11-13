@@ -42,11 +42,11 @@ public:
 
     /// Constructor
     /// \param m Mass [GeV]
-    MassShapeWithNominalMass(double m = -1);
+    MassShapeWithNominalMass(double m);
 
-    /// Set parameters from ParticleTableEntry
-    /// \param entry ParticleTableEntry containing information to create mass shape object
-    virtual void setParameters(const ParticleTableEntry& entry) override;
+    /// Constructor
+    /// \param pde ParticleTableEntry to get mass from
+    MassShapeWithNominalMass(const ParticleTableEntry& pde);
 
     /// Get mass
     std::shared_ptr<RealParameter> mass()

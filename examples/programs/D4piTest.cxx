@@ -66,19 +66,19 @@ int main( int argc, char** argv)
     M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = F.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = F.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>(F[9000221]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // rho
-    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>(F[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // // omega
-    // auto omega = F.decayingParticle(223, radialSize, std::make_shared<yap::BreitWigner>());
+    // auto omega = F.decayingParticle(223, radialSize, std::make_shared<yap::BreitWigner>(F[223]));
     // omega->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = F.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = F.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>(F[20213]));
     // a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
