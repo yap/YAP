@@ -7,8 +7,6 @@
 #include "Model.h"
 #include "Parameter.h"
 #include "ParticleFactory.h"
-#include "Resonance.h"
-#include "StatusManager.h"
 
 namespace yap {
 

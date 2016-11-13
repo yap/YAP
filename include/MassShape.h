@@ -24,11 +24,11 @@
 #include "fwd/CachedValue.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DecayChannel.h"
+#include "fwd/DecayingParticle.h"
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/ParticleFactory.h"
-#include "fwd/Resonance.h"
 #include "fwd/StatusManager.h"
 
 #include "AmplitudeComponent.h"
@@ -69,9 +69,9 @@ public:
     /// Check consistency of object
     virtual bool consistent() const;
 
-    /// get raw pointer to owning resonance
-    Resonance* resonance() const
-    { return Resonance_; }
+    /// get raw pointer to owner
+    DecayingParticle* owner() const
+    { return Owner_; }
 
     /// update the calculationStatus for a DataPartition
     virtual void updateCalculationStatus(StatusManager& D) const override final;
@@ -83,14 +83,14 @@ public:
     virtual void checkDecayChannel(const DecayChannel& c) const
     {}
 
-    /// Grant Resonance friendship, so it can set itself as owner
-    /// and call addDecayChannel
-    friend class Resonance;
+    /// Grant DecayingParticle friendship, so it can set itself as
+    /// owner and call addDecayChannel
+    friend class DecayingParticle;
 
 protected:
 
-    /// Set raw pointer to owning Resonance.
-    virtual void setResonance(Resonance* r);
+    /// Set raw pointer to owner
+    virtual void setOwner(DecayingParticle* dp);
 
     /// Give MassShape chance to perform operations based on the
     /// addition of a DecayChannel to its Resonance
@@ -113,8 +113,8 @@ protected:
 
 private:
 
-    /// raw pointer to resonance that owns this mass shape
-    Resonance* Resonance_;
+    /// raw pointer to owner
+    DecayingParticle* Owner_;
 
     /// cached dynamic amplitude
     std::shared_ptr<ComplexCachedValue> T_;

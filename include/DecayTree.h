@@ -95,14 +95,11 @@ public:
     /// \return VariableStatus of dataDependentAmplitude
     const VariableStatus dataDependentAmplitudeStatus() const;
 
-    /// grant friend status to DecayChannel to call addDataAccessor
+    /// grant friend status to DecayChannel to call addAmplitudeComponent
     friend class DecayChannel;
 
-    /// grant friend status to DecayingParticle to call addDataAccessor
+    /// grant friend status to DecayingParticle to call addAmplitudeComponent
     friend class DecayingParticle;
-
-    /// grant friend status to Resonance to call addDataAccessor
-    friend class Resonance;
 
 protected:
 

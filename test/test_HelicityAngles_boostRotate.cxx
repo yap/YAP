@@ -22,7 +22,6 @@
 #include <ParticleFactory.h>
 #include <PDL.h>
 #include <PHSP.h>
-#include <Resonance.h>
 #include <Rotation.h>
 
 #include <assert.h>

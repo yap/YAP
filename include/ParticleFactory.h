@@ -25,7 +25,6 @@
 #include "fwd/FinalStateParticle.h"
 #include "fwd/MassShape.h"
 #include "fwd/ParticleFactory.h"
-#include "fwd/Resonance.h"
 
 #include "QuantumNumbers.h"
 
@@ -127,16 +126,10 @@ public:
 
     /// Create an decayingParticle from a PDG code
     /// \param PDG PDG code of particle to create
-    /// \param radialSize radial size of particle to create [GeV^-1]
+    /// \param radial_size radial size of particle to create [GeV^-1]
+    /// \param massShape Pointer to MassShape object describing dynamic amplitude
     /// \return shared pointer to new DecayingParticle object
-    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radialSize) const;
-
-    /// Create a Resonance from a PDG code and a MassShape
-    /// \param PDG PDG code of particle to create
-    /// \param radialSize Radial size of particle to create [GeV^-1]
-    /// \param massShape Pointer to MassShape object describing resonance
-    /// \return shared pointer to new Resonance object
-    std::shared_ptr<Resonance> resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const;
+    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr) const;
 
     /// Adds content of rhs to this
     /// \param rhs ParticleFactory to add into this

@@ -5,7 +5,6 @@
 #include "FinalStateParticle.h"
 #include "logging.h"
 #include "MassShape.h"
-#include "Resonance.h"
 
 #include <algorithm>
 #include <fstream>
@@ -36,18 +35,12 @@ std::shared_ptr<FinalStateParticle> ParticleFactory::fsp(int PDG) const
 }
 
 //-------------------------
-std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radialSize) const
+std::shared_ptr<DecayingParticle> ParticleFactory::decayingParticle(int PDG, double radial_size, std::shared_ptr<MassShape> mass_shape) const
 {
     const auto& p = (*this)[PDG];
-    return DecayingParticle::create(p.name(), p.quantumNumbers(), radialSize);
-}
-
-//-------------------------
-    std::shared_ptr<Resonance> ParticleFactory::resonance(int PDG, double radialSize, std::shared_ptr<MassShape> massShape) const
-{
-    const auto& p = (*this)[PDG];
-    massShape->setParameters(p);
-    return Resonance::create(p.name(), p.quantumNumbers(), radialSize, std::move(massShape));
+    if (mass_shape)
+        mass_shape->setParameters(p);
+    return DecayingParticle::create(p.name(), p.quantumNumbers(), radial_size, mass_shape);
 }
 
 //-------------------------

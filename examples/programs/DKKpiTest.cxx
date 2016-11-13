@@ -1,6 +1,7 @@
 #include <logging.h>
 #include <BreitWigner.h>
 #include <DataSet.h>
+#include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <FourVector.h>
@@ -13,7 +14,6 @@
 #include <ParticleCombination.h>
 #include <ParticleFactory.h>
 #include <PDL.h>
-#include <Resonance.h>
 #include <SpinAmplitudeCache.h>
 
 #include <memory>
@@ -44,7 +44,7 @@ int main( int argc, char** argv)
     auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
 
     // create a phi
-    auto phi = factory.resonance(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());
+    auto phi = factory.decayingParticle(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());
     phi->addStrongDecay(kPlus, kMinus);
 
     // Add channels to D

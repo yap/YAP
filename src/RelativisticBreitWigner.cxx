@@ -4,28 +4,28 @@
 #include "CachedValue.h"
 #include "DataPartition.h"
 #include "DecayChannel.h"
+#include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "logging.h"
 #include "MathUtilities.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "Resonance.h"
 
 namespace yap {
 
 //-------------------------
 void RelativisticBreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
 {
-    auto it = resonance()->blattWeisskopfs().find(resonance()->quantumNumbers().twoJ() / 2);
-    if (it == resonance()->blattWeisskopfs().end())
-        throw exceptions::Exception("Could not find Blatt-Weisskopf barrier factor in Resonance_",
+    auto it = owner()->blattWeisskopfs().find(owner()->quantumNumbers().twoJ() / 2);
+    if (it == owner()->blattWeisskopfs().end())
+        throw exceptions::Exception("Could not find Blatt-Weisskopf barrier factor in Owner_",
                                     "RelativisticBreitWigner::addDecayChannel");
     BlattWeisskopf_ = it->second;
     // add parameters of BlattWeisskopf to this object
     for (const auto& p : BlattWeisskopf_->parameters())
         addParameter(p);
-    addParameter(resonance()->radialSize());
+    addParameter(owner()->radialSize());
     addParameter(mass());
 }
 
@@ -50,7 +50,7 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
     // common factors:
 
     // radial size squared
-    double r2 = pow(resonance()->radialSize()->value(), 2);
+    double r2 = pow(owner()->radialSize()->value(), 2);
 
     // squared resonance mass
     double m2_R = pow(mass()->value(), 2);

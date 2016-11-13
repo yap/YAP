@@ -8,12 +8,9 @@
 #include "FinalStateParticle.h"
 #include "FourMomenta.h"
 #include "logging.h"
-#include "MathUtilities.h"
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "Resonance.h"
-#include "StatusManager.h"
 
 namespace yap {
 
@@ -47,7 +44,7 @@ void Flatte::checkDecayChannel(const DecayChannel& c) const
 {
     // check Flatte has channels
     if (FlatteChannels_.empty())
-        throw exceptions::Exception("Add FlatteChannels to Flatte before adding DecayChannels to resonance", "Flatte::checkDecayChannel");
+        throw exceptions::Exception("Add FlatteChannels to Flatte before adding DecayChannel to DecayingParticle", "Flatte::checkDecayChannel");
 
     // check channel has right number of daughters
     if (c.daughters().size() != FlatteChannels_[0].Particles.size())

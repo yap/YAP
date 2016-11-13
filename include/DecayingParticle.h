@@ -27,6 +27,7 @@
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayTree.h"
 #include "fwd/FreeAmplitude.h"
+#include "fwd/MassShape.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/QuantumNumbers.h"
@@ -53,16 +54,25 @@ protected:
 
     /// Constructor
     /// see #create
-    DecayingParticle(const std::string& name, const QuantumNumbers& q, double radialSize);
+    DecayingParticle(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape);
 
 public:
 
     /// create
     /// \param name Name of decaying particle
     /// \param q QuantumNumbers of decaying particle
-    /// \param radialSize radial size of decaying particle
-    static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radialSize)
-    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radialSize)); }
+    /// \param radial_size radial size of decaying particle
+    /// \param mass_shape shared_ptr to dynamic amplitude component
+    static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radial_size, mass_shape)); }
+
+    /// access MassShape
+    std::shared_ptr<MassShape> massShape()
+    { return MassShape_; }
+
+    /// access MassShape (const)
+    std::shared_ptr<const MassShape> massShape() const
+    { return MassShape_; }
 
     /// \return DecayTrees
     /// map key is spin projection
@@ -72,26 +82,37 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// Add a DecayChannel and set its parent to this DecayingParticle.
-    /// \param c unique_ptr to DecayChannel, should be constructed in function call, or use std::move(c)
+    /// Add a DecayChannel and set its parent to this DecayingState.
+    /// \param c shared_ptr to DecayChannel
+    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c);
+
+    /// automatically create all possible spin amplitudes
+    /// \param dc DecayChannel to add to
+    /// \param conserve_parity whether to conserve parity
+    virtual void addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conserve_parity) const;
+    
+    /// Create a DecayChannel and add it to this DecayingParticle
+    /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    virtual std::shared_ptr<DecayChannel> addDecayChannel(std::shared_ptr<DecayChannel> c, bool conserve_parity = false);
-
+    std::shared_ptr<DecayChannel> addDecay(const ParticleVector& daughters, bool conserve_parity);
+    
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity is _not_ converved
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addWeakDecay(const ParticleVector& daughters);
+    std::shared_ptr<DecayChannel> addWeakDecay(const ParticleVector& daughters)
+    { return addDecay(daughters, false); }
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity _is_ converved
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addStrongDecay(const ParticleVector& daughters);
-
+    std::shared_ptr<DecayChannel> addStrongDecay(const ParticleVector& daughters)
+    { return addDecay(daughters, true); }
+    
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity is _not_ converved
     /// \param A shared_ptr to a daughter
@@ -158,6 +179,9 @@ protected:
 
 private:
 
+    /// MassShape object
+    std::shared_ptr<MassShape> MassShape_;
+    
     /// vector of decay channel objects
     DecayChannelVector Channels_;
 
