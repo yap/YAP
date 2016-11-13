@@ -62,7 +62,7 @@ int main( int argc, char** argv)
     F["f_0(1500)"].setQuantumNumbers(F["f_0"].quantumNumbers());
         
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
+    auto D = F.decayingParticle(F["D+"].pdg(), radialSize);
 
     auto D_mass = F["D+"].mass();
 
@@ -103,12 +103,12 @@ int main( int argc, char** argv)
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.decayingParticle(F.pdgCode("f_0(1500)"), radialSize, std::make_unique<yap::BreitWigner>());
+    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, std::make_unique<yap::BreitWigner>());
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 
     // sigma a.k.a. f_0(500)
-    auto sigma = F.decayingParticle(F.pdgCode("f_0(500)"), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
+    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(sigma, piPlus);
 

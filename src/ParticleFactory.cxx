@@ -60,6 +60,16 @@ const ParticleTableEntry& ParticleFactory::operator[](int PDG) const
 }
 
 //-------------------------
+const ParticleTableEntry& ParticleFactory::operator[](const std::string& name) const
+{
+    auto it = std::find_if(ParticleTable_.begin(), ParticleTable_.end(),
+    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.name() == name;});
+    if (it == ParticleTable_.end())
+        throw exceptions::Exception("particle with name \"" + name + "\" not found", "ParticleFactory::operator[]");
+    return it->second;
+}
+
+//-------------------------
 std::pair<ParticleTableMap::iterator, bool> ParticleFactory::insert(const ParticleTableEntry& entry)
 {
     auto it_b = ParticleTable_.insert(ParticleTableMap::value_type(entry.pdg(), entry));
@@ -84,16 +94,6 @@ ParticleTableMap::iterator ParticleFactory::insert(ParticleTableMap::iterator hi
     auto it = ParticleTable_.find(entry.pdg());
     it->second = entry;
     return it;
-}
-
-//-------------------------
-int ParticleFactory::pdgCode(const std::string& name) const
-{
-    auto it = std::find_if(ParticleTable_.begin(), ParticleTable_.end(),
-    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.name() == name;});
-    if (it == ParticleTable_.end())
-        throw exceptions::Exception("particle with name \"" + name + "\" not found", "ParticleFactory::pdgCode");
-    return it->first;
 }
 
 }

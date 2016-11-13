@@ -113,7 +113,7 @@ std::shared_ptr<yap::Model> d3pi()
     yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     // initial state particle
-    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+    auto D = factory.decayingParticle(factory["D+"].pdg(), radialSize);
 
     // final state particles
     auto piPlus = factory.fsp(211);

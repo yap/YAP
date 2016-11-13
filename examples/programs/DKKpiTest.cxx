@@ -41,7 +41,7 @@ int main( int argc, char** argv)
     M.setFinalState(kPlus, kMinus, piPlus);
 
     // create initial state particle and set final state
-    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+    auto D = factory.decayingParticle(factory["D+"].pdg(), radialSize);
 
     // create a phi
     auto phi = factory.decayingParticle(factory["phi"].pdg(), radialSize, std::make_shared<yap::BreitWigner>());

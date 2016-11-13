@@ -149,13 +149,12 @@ public:
 
     /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
-    const ParticleTableEntry& operator[](const std::string& name) const
-    { return (*this)[pdgCode(name)]; }
+    const ParticleTableEntry& operator[](const std::string& name) const;
 
     /// get ParticleTableEntry from #ParticleTable_ with safety checks
     /// \param name Name of particle in table
     ParticleTableEntry& operator[](const std::string& name)
-    { return (*this)[pdgCode(name)]; }
+    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleFactory*>(this)->operator[](name)); }
 
     /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_
     /// \param entry a A ParticleTableEntry to add to #ParticleTable_
@@ -167,11 +166,6 @@ public:
     /// #ParticleFactory's own inserter
     friend std::insert_iterator<ParticleFactory> inserter(ParticleFactory& F)
     { return std::insert_iterator<ParticleFactory>(F, F.ParticleTable_.end()); }
-
-    // find PDG number by particle name
-    // \return PDG code number
-    // \param name Particle name as listed in particle table
-    int pdgCode(const std::string& name) const;
 
     /// @}
 

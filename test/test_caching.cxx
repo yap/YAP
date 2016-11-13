@@ -30,18 +30,18 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     unsigned i_kPlus = FSP.size();
     unsigned i_kMinus = FSP.size();
     for (size_t i = 0; i < FSP.size(); ++i)
-        if (FSP[i] == F.pdgCode("pi+"))
+        if (FSP[i] == F["pi+"].pdg())
             i_piPlus = i;
-        else if (FSP[i] == F.pdgCode("K+"))
+        else if (FSP[i] == F["K+"].pdg())
             i_kPlus  = i;
-        else if (FSP[i] == F.pdgCode("K-"))
+        else if (FSP[i] == F["K-"].pdg())
             i_kMinus = i;
     auto piPlus = M.finalStateParticles()[i_piPlus];
     auto kPlus = M.finalStateParticles()[i_kPlus];
     auto kMinus = M.finalStateParticles()[i_kMinus];
 
     // create ISP
-    auto D = F.decayingParticle(F.pdgCode("D+"), 3.);
+    auto D = F.decayingParticle(F["D+"].pdg(), 3.);
 
     // create resonances
     auto piK0 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
@@ -95,7 +95,7 @@ TEST_CASE( "swapFinalStates" )
     std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dH;
 
-    std::vector<int> FSP = {F.pdgCode("K-"), F.pdgCode("pi+"), F.pdgCode("K+")};
+    std::vector<int> FSP = {F["K-"].pdg(), F["pi+"].pdg(), F["K+"].pdg()};
     std::sort(FSP.begin(), FSP.end());
     do {
 

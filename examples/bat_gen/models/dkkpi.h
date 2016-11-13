@@ -41,7 +41,7 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
+    auto D = F.decayingParticle(F["D+"].pdg(), radialSize);
 
     auto KK0 = DecayingParticle::create("KK0", QuantumNumbers(0, 0), radialSize, make_shared<BreitWigner>(1.1, 0.075));
     KK0->addStrongDecay(kPlus, kMinus);

@@ -55,7 +55,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
+    auto D = F.decayingParticle(F["D+"].pdg(), radialSize);
 
     // rho
     auto rho = F.decayingParticle(113, radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
@@ -81,7 +81,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.decayingParticle(F.pdgCode("f_0(1500)"), radialSize, make_unique<RelativisticBreitWigner>());
+    auto f_0_1500 = F.decayingParticle(F["f_0(1500)"].pdg(), radialSize, make_unique<RelativisticBreitWigner>());
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 
@@ -91,7 +91,7 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     /* D->addWeakDecay(f_0_fake, piPlus); */
 
     // sigma a.k.a. f_0(500)
-    auto sigma = F.decayingParticle(F.pdgCode("f_0(500)"), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
+    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
     sigma->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(sigma, piPlus);
 

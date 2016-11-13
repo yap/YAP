@@ -33,8 +33,8 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
     auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
-    auto piZero = F.fsp(F.pdgCode("pi0"));
-    auto Kshort = F.fsp(F.pdgCode("K_S0"));
+    auto piZero = F.fsp(F["pi0"].pdg());
+    auto Kshort = F.fsp(F["K_S0"].pdg());
 
     M->setFinalState(Kshort, piZero, piZero);
 
@@ -42,10 +42,10 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
     double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D0"), radialSize);
+    auto D = F.decayingParticle(F["D0"].pdg(), radialSize);
 
     // f_0(500), aka "sigma" (as PoleMass)
-    auto sigma = F.decayingParticle(F.pdgCode("f_0(500)"), radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, 0.220)));
+    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, 0.220)));
     /* auto sigma = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.470, "f_0(500)", radialSize, std::make_shared<yap::RelativisticBreitWigner>(0.220 * 2)); */
     sigma->addStrongDecay(piZero, piZero);
     D->addWeakDecay(sigma, Kshort);
