@@ -24,6 +24,12 @@ FlatteChannel::FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalState
 }
 
 //-------------------------
+FlatteChannel::FlatteChannel(double coupling, const ParticleTableEntry& a, const ParticleTableEntry& b) :
+    FlatteChannel(coupling, *FinalStateParticle::create(a), *FinalStateParticle::create(b))
+{
+}
+
+//-------------------------
 void Flatte::add(FlatteChannel fc)
 {
     if (!fc.Coupling)

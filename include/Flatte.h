@@ -104,6 +104,9 @@ struct FlatteChannel {
     /// constructor
     FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B) :
         FlatteChannel(std::make_shared<RealParameter>(coupling), A, B) {}
+
+    /// constructor
+    FlatteChannel(double coupling, const ParticleTableEntry& a, const ParticleTableEntry& b);
 };
 
 }

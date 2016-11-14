@@ -56,6 +56,10 @@ protected:
     /// see #create
     DecayingParticle(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape);
 
+    /// Constructor
+    /// see #create
+    DecayingParticle(const ParticleTableEntry& pde, double radial_size, std::shared_ptr<MassShape> mass_shape);
+
 public:
 
     /// create
@@ -65,6 +69,12 @@ public:
     /// \param mass_shape shared_ptr to dynamic amplitude component
     static std::shared_ptr<DecayingParticle> create(const std::string& name, const QuantumNumbers& q, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr)
     { return std::shared_ptr<DecayingParticle>(new DecayingParticle(name, q, radial_size, mass_shape)); }
+
+    /// create
+    /// \param pde ParticleTableEntry to take name and quantum numbers from
+    /// \param radial_size radial size of decaying particle
+    /// \param mass_shape shared_ptr to dynamic amplitude component
+    static std::shared_ptr<DecayingParticle> create(const ParticleTableEntry& pde, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr);
 
     /// access MassShape
     std::shared_ptr<MassShape> massShape()

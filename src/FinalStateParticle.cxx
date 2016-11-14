@@ -4,11 +4,18 @@
 #include "logging.h"
 #include "Parameter.h"
 #include "ParticleCombination.h"
+#include "ParticleFactory.h"
 
 namespace yap {
 
 //-------------------------
 const is_of_type<FinalStateParticle> is_final_state_particle{};
+
+//-------------------------
+FinalStateParticle::FinalStateParticle(const ParticleTableEntry& pde) :
+    FinalStateParticle(pde.name(), pde.quantumNumbers(), pde.mass())
+{
+}
 
 //-------------------------
 FinalStateParticle::FinalStateParticle(const std::string& name, const QuantumNumbers& q, double m) :
