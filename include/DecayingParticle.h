@@ -152,7 +152,7 @@ public:
     { return Channels_;}
 
     /// \return Radial size [GeV^-1]
-    std::shared_ptr<RealParameter> radialSize()
+    std::shared_ptr<PositiveRealParameter> radialSize()
     { return RadialSize_; }
 
     /// \return Blatt-Weisskopf factors
@@ -200,7 +200,7 @@ private:
     BlattWeisskopfMap BlattWeisskopfs_;
 
     /// Radial size parameter [GeV^-1]
-    std::shared_ptr<RealParameter> RadialSize_;
+    std::shared_ptr<PositiveRealParameter> RadialSize_;
 
     /// Map of spin projection to DecayTreeVector
     DecayTreeVectorMap DecayTrees_;

@@ -212,7 +212,7 @@ AdmixtureMap admixture_map(const DecayTreeVectorMap& dtvm)
     // create new (spin projection -> real parameter) entry for each in dtvm
     std::transform(dtvm.begin(), dtvm.end(), std::inserter(M, M.end()),
                    [](const DecayTreeVectorMap::value_type& v)
-                   {return AdmixtureMap::value_type(v.first, std::make_shared<RealParameter>(1.));});
+                   {return AdmixtureMap::value_type(v.first, std::make_shared<NonnegativeRealParameter>(1.));});
     return M;
 }
 

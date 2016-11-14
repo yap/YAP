@@ -49,17 +49,17 @@ public:
     MassShapeWithNominalMass(const ParticleTableEntry& pde);
 
     /// Get mass
-    std::shared_ptr<RealParameter> mass()
+    std::shared_ptr<NonnegativeRealParameter> mass()
     { return Mass_; }
 
     /// Get mass (const)
-    const std::shared_ptr<RealParameter> mass() const
+    const std::shared_ptr<NonnegativeRealParameter> mass() const
     { return Mass_; }
 
 private:
     
     /// Mass [GeV]
-    std::shared_ptr<RealParameter> Mass_;
+    std::shared_ptr<NonnegativeRealParameter> Mass_;
 
 };
 

@@ -27,7 +27,7 @@ DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers
                                    double radial_size, std::shared_ptr<MassShape> mass_shape) :
     Particle(name, q),
     MassShape_(mass_shape),
-    RadialSize_(std::make_shared<RealParameter>(radial_size))
+    RadialSize_(std::make_shared<PositiveRealParameter>(radial_size))
 {
     if (MassShape_)
         MassShape_->setOwner(this);

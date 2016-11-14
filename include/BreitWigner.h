@@ -56,14 +56,12 @@ public:
     BreitWigner(const ParticleTableEntry& pde);
 
     /// Get width
-    std::shared_ptr<RealParameter> width()
+    std::shared_ptr<PositiveRealParameter> width()
     { return Width_; }
 
     /// Get width (const)
-    const std::shared_ptr<RealParameter> width() const
+    const std::shared_ptr<PositiveRealParameter> width() const
     { return const_cast<BreitWigner*>(this)->width(); }
-
-    virtual bool consistent() const override;
 
 protected:
 
@@ -76,7 +74,7 @@ protected:
 private:
 
     /// Width [GeV]
-    std::shared_ptr<RealParameter> Width_;
+    std::shared_ptr<PositiveRealParameter> Width_;
 
 };
 

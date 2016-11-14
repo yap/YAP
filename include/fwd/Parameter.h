@@ -31,6 +31,8 @@ class ParameterBase;
 template <typename T> class Parameter;
 class ComplexParameter;
 class RealParameter;
+class NonnegativeRealParameter;
+class PositiveRealParameter;
 class ComplexComponentParameter;
 class RealComponentParameter;
 class ImaginaryComponentParameter;
