@@ -22,6 +22,7 @@
 #define yap_ModelIntegralFwd_h
 
 #include "fwd/DecayTreeVectorIntegral.h"
+#include "fwd/Model.h"
 #include "fwd/Parameter.h"
 
 #include <map>
@@ -33,7 +34,7 @@ class ModelIntegral;
 
 /// \typedef IntegralMap
 /// maps admixture parameter to integral
-using IntegralMap = std::map<std::shared_ptr<RealParameter>, DecayTreeVectorIntegral>;
+using IntegralMap = std::map<AdmixtureMap::mapped_type, DecayTreeVectorIntegral>;
 
 }
 

@@ -33,7 +33,7 @@ class Model;
 
 /// \typedef 
 /// maps spin projection (int) to admixture factor
-using AdmixtureMap = std::map<int, std::shared_ptr<RealParameter> >;
+using AdmixtureMap = std::map<int, std::shared_ptr<NonnegativeRealParameter> >;
 
 /// \typedef InitialStateParticleMap
 /// maps ISP to AdmixtureMap = one free real parameter per spin projection of ISP

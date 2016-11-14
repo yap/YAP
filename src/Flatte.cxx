@@ -16,10 +16,16 @@
 namespace yap {
 
 //-------------------------
-FlatteChannel::FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B) :
+FlatteChannel::FlatteChannel(std::shared_ptr<NonnegativeRealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B) :
     Coupling(coupling),
     Particles({std::static_pointer_cast<FinalStateParticle>(A.shared_from_this()),
                 std::static_pointer_cast<FinalStateParticle>(B.shared_from_this())})
+{
+}
+
+//-------------------------
+FlatteChannel::FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B) :
+    FlatteChannel(std::make_shared<NonnegativeRealParameter>(coupling), A, B)
 {
 }
 
@@ -107,20 +113,6 @@ void Flatte::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCo
         // T = 1 / (M^2 - m^2 - width-term)
         T()->setValue(1. / (M2 - m2 - 1_i * 2. * w / sqrt(m2)), d, si, D);
     }
-}
-
-//-------------------------
-bool Flatte::consistent() const
-{
-    bool C = MassShapeWithNominalMass::consistent();
-
-    for (const auto& fc : FlatteChannels_)
-        if (fc.Coupling->value() <= 0) {
-            FLOG(ERROR) << "coupling constant <= 0";
-            C &= false;
-        }
-    
-    return C;
 }
 
 }

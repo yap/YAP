@@ -13,7 +13,7 @@ namespace yap {
 //-------------------------
 BreitWigner::BreitWigner(double m, double w) :
     MassShapeWithNominalMass(m),
-    Width_(std::make_shared<RealParameter>(w))
+    Width_(std::make_shared<PositiveRealParameter>(w))
 {
     addParameter(Width_);
 }
@@ -33,19 +33,6 @@ void BreitWigner::calculateT(DataPartition& D, const std::shared_ptr<const Parti
     // T := 1 / (M^2 - m^2 - i * M * Gamma)
     for (auto& d : D)
         T()->setValue(1. / (M2_iMG - model()->fourMomenta()->m2(d, pc)), d, si, D);
-}
-
-//-------------------------
-bool BreitWigner::consistent() const
-{
-    bool C = MassShapeWithNominalMass::consistent();
-
-    if (Width_->value() <= 0) {
-        FLOG(ERROR) << "width <= 0";
-        C &= false;
-    }
-
-    return C;
 }
 
 }

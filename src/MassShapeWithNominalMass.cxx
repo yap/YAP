@@ -8,7 +8,7 @@ namespace yap {
 //-------------------------
 MassShapeWithNominalMass::MassShapeWithNominalMass(double m) :
     MassShape(),
-    Mass_(std::make_shared<RealParameter>(m))
+    Mass_(std::make_shared<NonnegativeRealParameter>(m))
 {
     addParameter(Mass_);
 }

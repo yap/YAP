@@ -69,9 +69,6 @@ public:
     /// Cheks that decay is to a channel of the Flatte
     virtual void checkDecayChannel(const DecayChannel& c) const override;
 
-    /// Check consistency of object
-    virtual bool consistent() const override;
-
 protected:
 
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
@@ -93,17 +90,16 @@ private:
 /// \author Daniel Greenwald
 struct FlatteChannel {
     /// coupling constant [GeV^2]
-    std::shared_ptr<RealParameter> Coupling;
+    std::shared_ptr<NonnegativeRealParameter> Coupling;
     
     /// Particles of the channel
     std::array<std::shared_ptr<FinalStateParticle>, 2> Particles;
     
     /// constructor
-    FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B);
+    FlatteChannel(std::shared_ptr<NonnegativeRealParameter> coupling, FinalStateParticle& A, FinalStateParticle& B);
     
     /// constructor
-    FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B) :
-        FlatteChannel(std::make_shared<RealParameter>(coupling), A, B) {}
+    FlatteChannel(double coupling, FinalStateParticle& A, FinalStateParticle& B);
 
     /// constructor
     FlatteChannel(double coupling, const ParticleTableEntry& a, const ParticleTableEntry& b);
