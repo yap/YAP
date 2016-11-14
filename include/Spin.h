@@ -106,6 +106,10 @@ inline const std::vector<SpinProjectionVector> projections(const SpinVector& two
     return SPV;
 }
 
+/// \return whether all spins are zero
+inline const bool all_zero(const SpinVector& two_J)
+{ return std::all_of(two_J.begin(), two_J.end(), [](SpinVector::value_type two_j){return two_j == 0;}); }
+
 }
 
 #endif
