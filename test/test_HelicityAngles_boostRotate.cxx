@@ -19,7 +19,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <PHSP.h>
 #include <Rotation.h>
@@ -41,9 +41,9 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleTable T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
-    double D_mass = factory["D+"].mass();
+    double D_mass = T["D+"].mass();
 
     auto M = d3pi<yap::HelicityFormalism>();
 
@@ -119,7 +119,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
         for (auto& kv : resultingThetas) {
             double theta_0 = kv.second[0];
             for (auto theta : kv.second)
-                REQUIRE(theta == Approx(theta_0));
+                REQUIRE(theta == Approx(theta_0).epsilon(0.001));
         }
     }
 }

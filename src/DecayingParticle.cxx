@@ -9,6 +9,7 @@
 #include "MassShape.h"
 #include "Model.h"
 #include "Parameter.h"
+#include "ParticleTable.h"
 #include "SpinAmplitude.h"
 #include "VariableStatus.h"
 
@@ -31,6 +32,13 @@ DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers
     if (MassShape_)
         MassShape_->setOwner(this);
         
+}
+
+//-------------------------
+DecayingParticle::DecayingParticle(const ParticleTableEntry& pde, double radial_size,
+                                   std::shared_ptr<MassShape> mass_shape) :
+    DecayingParticle(pde.name(), pde.quantumNumbers(), radial_size, mass_shape)
+{
 }
 
 //-------------------------

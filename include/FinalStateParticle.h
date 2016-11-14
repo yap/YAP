@@ -26,6 +26,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/ParticleTable.h"
 
 #include "AttributeUtilities.h"
 #include "Particle.h"
@@ -39,7 +40,6 @@ namespace yap {
 /// \brief Class representing a final-state particle
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
-
 class FinalStateParticle : public Particle
 {
 protected:
@@ -47,6 +47,10 @@ protected:
     /// Constructor
     /// see #create
     FinalStateParticle(const std::string& name, const QuantumNumbers& q, double m);
+
+    /// Constructor
+    /// see #create
+    FinalStateParticle(const ParticleTableEntry& pde);
 
 public:
 
@@ -56,6 +60,11 @@ public:
     /// \param m Mass of particle
     static std::shared_ptr<FinalStateParticle> create(const std::string& name, const QuantumNumbers& q, double m)
     { return std::shared_ptr<FinalStateParticle>(new FinalStateParticle(name, q, m)); }
+
+    /// create
+    /// \param pde ParticleTableEntry to take info from
+    static std::shared_ptr<FinalStateParticle> create(const ParticleTableEntry& pde)
+    { return std::shared_ptr<FinalStateParticle>(new FinalStateParticle(pde)); }
 
     /// Get mass [GeV]
     double mass() const

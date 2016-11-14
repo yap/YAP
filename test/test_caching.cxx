@@ -11,7 +11,7 @@
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <ZemachFormalism.h>
 
 #include <cmath>
@@ -20,28 +20,30 @@
  * Test that the amplitude remains the same after swapping the order of the final state particles
  */
 
-yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const std::vector<int>& FSP)
+yap::MassAxes populate_model(yap::Model& M, const yap::ParticleTable& T, const std::vector<int>& FSP)
 {
     // create and set final-state particles
-    M.setFinalState({F.fsp(FSP[0]), F.fsp(FSP[1]), F.fsp(FSP[2])});
+    M.setFinalState(yap::FinalStateParticle(T[FSP[0]]),
+                    yap::FinalStateParticle(T[FSP[1]]),
+                    yap::FinalStateParticle(T[FSP[2]]));
 
     // find FSP's
     unsigned i_piPlus = FSP.size();
     unsigned i_kPlus = FSP.size();
     unsigned i_kMinus = FSP.size();
     for (size_t i = 0; i < FSP.size(); ++i)
-        if (FSP[i] == F.pdgCode("pi+"))
+        if (FSP[i] == F["pi+"].pdg())
             i_piPlus = i;
-        else if (FSP[i] == F.pdgCode("K+"))
+        else if (FSP[i] == F["K+"].pdg())
             i_kPlus  = i;
-        else if (FSP[i] == F.pdgCode("K-"))
+        else if (FSP[i] == F["K-"].pdg())
             i_kMinus = i;
     auto piPlus = M.finalStateParticles()[i_piPlus];
     auto kPlus = M.finalStateParticles()[i_kPlus];
     auto kMinus = M.finalStateParticles()[i_kMinus];
 
     // create ISP
-    auto D = F.decayingParticle(F.pdgCode("D+"), 3.);
+    auto D = yap::DecayingParticle::create(T["D+"], 3.);
 
     // create resonances
     auto piK0 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
@@ -84,7 +86,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::ParticleTable((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach
@@ -95,7 +97,7 @@ TEST_CASE( "swapFinalStates" )
     std::vector<yap::MassAxes> mH; // always (pi+, K-), (K-, K+)
     std::vector<yap::DataSet> dH;
 
-    std::vector<int> FSP = {F.pdgCode("K-"), F.pdgCode("pi+"), F.pdgCode("K+")};
+    std::vector<int> FSP = {F["K-"].pdg(), F["pi+"].pdg(), F["K+"].pdg()};
     std::sort(FSP.begin(), FSP.end());
     do {
 

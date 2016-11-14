@@ -24,6 +24,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/ParticleTable.h"
 
 #include "MassShape.h"
 
@@ -46,13 +47,12 @@ public:
 
     /// Constructor
     /// \param mass Mass of resonance [GeV]
-    PoleMass(std::complex<double> mass = std::complex<double>(-1, -1));
+    PoleMass(std::complex<double> mass);
 
-    /// Set parameters from ParticleTableEntry;
-    /// If width is available, sets M = mass + i/2 * width
-    /// \param entry ParticleTableEntry containing information to create mass shape object
-    virtual void setParameters(const ParticleTableEntry& entry) override;
-
+    /// Constructor
+    /// \param pde ParticleTableEntry to take mass and width from
+    PoleMass(const ParticleTableEntry& pde);
+    
     /// Get mass
     std::shared_ptr<ComplexParameter> mass() const
     { return Mass_; }

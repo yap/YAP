@@ -11,6 +11,7 @@
 #include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
+#include "ParticleTable.h"
 
 namespace yap {
 
@@ -19,6 +20,12 @@ FlatteChannel::FlatteChannel(std::shared_ptr<RealParameter> coupling, FinalState
     Coupling(coupling),
     Particles({std::static_pointer_cast<FinalStateParticle>(A.shared_from_this()),
                 std::static_pointer_cast<FinalStateParticle>(B.shared_from_this())})
+{
+}
+
+//-------------------------
+FlatteChannel::FlatteChannel(double coupling, const ParticleTableEntry& a, const ParticleTableEntry& b) :
+    FlatteChannel(coupling, *FinalStateParticle::create(a), *FinalStateParticle::create(b))
 {
 }
 

@@ -14,7 +14,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <ZemachFormalism.h>
 
@@ -132,16 +132,16 @@ TEST_CASE( "FourMomentaCalculation" )
     // disable logs in text
     yap::disableLogs(el::Level::Global);
 
-    // load particle factory
-    yap::ParticleFactory factory = yap::read_pdl_file("../data/evt.pdl");
+    // load particle table
+    yap::ParticleTable T = yap::read_pdl_file("../data/evt.pdl");
     
     // create final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
-    auto KPlus = factory.fsp(321);
-    auto KMinus = factory.fsp(-321);
+    auto piPlus  = yap::FinalStateParticle::create(T[211]);
+    auto piMinus = yap::FinalStateParticle::create(T[-211]);
+    auto KPlus   = yap::FinalStateParticle::create(T[321]);
+    auto KMinus  = yap::FinalStateParticle::create(T[-321]);
     
-    double D_mass = factory["D+"].mass();
+    double D_mass = T["D+"].mass();
 
     SECTION("3 final state particles") {
 
@@ -151,11 +151,11 @@ TEST_CASE( "FourMomentaCalculation" )
 
         // create book-keeping resonance
         /// \todo Allow direct phase-space three-body decay
-        auto X = factory.decayingParticle(factory.pdgCode("f_0"), 3);
+        auto X = yap::DecayingParticle::create(T["f_0"], 3);
         X->addStrongDecay(piPlus, KMinus);
 
         // create initial state particle
-        auto D = factory.decayingParticle(factory.pdgCode("D+"), 3);
+        auto D = yap::DecayingParticle::create(T["D+"], 3);
         D->addWeakDecay(X, piPlus);
 
         M.addInitialStateParticle(D);
@@ -242,14 +242,14 @@ TEST_CASE( "FourMomentaCalculation" )
 
         // create book-keeping resonance
         /// \todo Allow direct phase-space three-body decay
-        auto X = factory.decayingParticle(factory.pdgCode("f_0"), 3);
+        auto X = yap::DecayingParticle::create(T["f_0"], 3);
         X->addStrongDecay(piPlus, piMinus);
 
-        auto X2 = factory.decayingParticle(factory.pdgCode("f_0"), 3);
+        auto X2 = yap::DecayingParticle::create(T["f_0"], 3);
         X2->addStrongDecay(KPlus, KMinus);
 
         // create initial state particle
-        auto D = factory.decayingParticle(factory.pdgCode("D0"), 3);
+        auto D = yap::DecayingParticle::create(T["D0"], 3);
         D->addWeakDecay(X, X2);
 
         // choose default Dalitz coordinates

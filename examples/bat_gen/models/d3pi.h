@@ -25,7 +25,7 @@
 #include <Parameter.h>
 #include <Particle.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <PoleMass.h>
 #include <QuantumNumbers.h>
@@ -43,11 +43,11 @@ using namespace yap;
 
 inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 {
-    auto F = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
+    auto piPlus  = FinalStateParticle::create(T[211]);
+    auto piMinus = FinalStateParticle::create(T[-211]);
 
     M->setFinalState(piPlus, piMinus, piPlus);
 
@@ -55,43 +55,38 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
+    auto D = DecayingParticle::create(T["D+"], radialSize);
 
     // rho
-    auto rho = F.decayingParticle(113, radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
+    auto rho = DecayingParticle::create(T[113], radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
     rho->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = F.decayingParticle(225, radialSize, make_shared<RelativisticBreitWigner>());
+    auto f_2 = DecayingParticle::create(T[225], radialSize, make_shared<RelativisticBreitWigner>(T[225]));
     f_2->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_2, piPlus);
 
     // f_0(980)
     auto f_0_980_flatte = make_shared<Flatte>(0.965);
     f_0_980_flatte->add(FlatteChannel(0.406, *piPlus, *piMinus));
-    f_0_980_flatte->add(FlatteChannel(0.406 * 2, *F.fsp(321), *F.fsp(-321))); // K+K-
-    auto f_0_980 = DecayingParticle::create("f_0(980)", QuantumNumbers(0, 0), radialSize, f_0_980_flatte);
+    f_0_980_flatte->add(FlatteChannel(0.406 * 2, T[321], T[-321])); // K+K-
+    auto f_0_980 = DecayingParticle::create("f_0(980)", T["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = DecayingParticle::create("f_0(1370)", F["f_0"].quantumNumbers(), radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
+    auto f_0_1370 = DecayingParticle::create("f_0(1370)", T["f_0"].quantumNumbers(), radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
     f_0_1370->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = F.decayingParticle(F.pdgCode("f_0(1500)"), radialSize, make_unique<RelativisticBreitWigner>());
+    auto f_0_1500 = DecayingParticle::create(T["f_0(1500)"], radialSize, make_unique<RelativisticBreitWigner>(T["f_0(1500)"]));
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 
-    /* // f_0_fake */
-    /* auto f_0_fake = DecayingParticle::create("f_0_fake", F["f_0"], radialSize, make_unique<RelativisticBreitWigner>(1.10, 0.1)); */
-    /* f_0_fake->addStrongDecay(piPlus, piMinus); */
-    /* D->addWeakDecay(f_0_fake, piPlus); */
-
     // sigma a.k.a. f_0(500)
-    auto sigma = F.decayingParticle(F.pdgCode("f_0(500)"), radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
+    auto sigma = DecayingParticle::create(T["f_0(500)"], radialSize, make_unique<PoleMass>(complex<double>(0.470, -0.220)));
     sigma->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(sigma, piPlus);
 

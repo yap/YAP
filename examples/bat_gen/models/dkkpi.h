@@ -14,7 +14,7 @@
 #include <MathUtilities.h>
 #include <Model.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
 #include <RelativisticBreitWigner.h>
@@ -28,12 +28,12 @@ using namespace yap;
 
 inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
 {
-    auto F = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
-    auto kPlus  = F.fsp(+321);
-    auto kMinus = F.fsp(-321);
-    auto piPlus = F.fsp(+211);
+    auto kPlus  = FinalStateParticle::create(T[+321]);
+    auto kMinus = FinalStateParticle::create(T[-321]);
+    auto piPlus = FinalStateParticle::create(T[+211]);
 
     M->setFinalState(kPlus, kMinus, piPlus);
 
@@ -41,7 +41,7 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     double radialSize = 3.; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F.pdgCode("D+"), radialSize);
+    auto D = DecayingParticle::create(T["D+"], radialSize);
 
     auto KK0 = DecayingParticle::create("KK0", QuantumNumbers(0, 0), radialSize, make_shared<BreitWigner>(1.1, 0.075));
     KK0->addStrongDecay(kPlus, kMinus);

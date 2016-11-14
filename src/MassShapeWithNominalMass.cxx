@@ -1,7 +1,7 @@
 #include "MassShapeWithNominalMass.h"
 
 #include "Parameter.h"
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 namespace yap {
 
@@ -14,10 +14,9 @@ MassShapeWithNominalMass::MassShapeWithNominalMass(double m) :
 }
 
 //-------------------------
-void MassShapeWithNominalMass::setParameters(const ParticleTableEntry& entry)
+MassShapeWithNominalMass::MassShapeWithNominalMass(const ParticleTableEntry& pde) :
+    MassShapeWithNominalMass(pde.mass())
 {
-    if (Mass_->value() < 0)
-        *Mass_ = entry.mass();
 }
 
 }

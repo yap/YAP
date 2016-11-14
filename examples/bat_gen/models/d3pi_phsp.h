@@ -10,22 +10,22 @@
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Model.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 
 #include <memory>
 
 inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::Model> M)
 {
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
+    auto piPlus  = FinalStateParticle::create(T[211]);
+    auto piMinus = FinalStateParticle::create(T[-211]);
 
     M->setFinalState(piPlus, piMinus, piPlus);
 
-    auto D = F.decayingParticle(F.pdgCode("D+"), 3 /*Gev^-1*/);
+    auto D = DecayingParticle::create(T["D+"], 3 /*Gev^-1*/);
     D->addWeakDecay(piPlus, piMinus, piPlus);
 
     M->addInitialStateParticle(D);

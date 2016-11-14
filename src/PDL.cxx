@@ -1,6 +1,6 @@
 #include "PDL.h"
 
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 #include <cmath>
 #include <fstream>
@@ -78,10 +78,10 @@ PDLIterator PDLIterator::operator++(int)
 }
 
 //-------------------------
-ParticleFactory read_pdl_file(const std::string& filename)
+ParticleTable read_pdl_file(const std::string& filename)
 {
     std::ifstream inFile(filename, std::ios::in);
-    ParticleFactory particleFactory;
+    ParticleTable particleFactory;
     std::copy(PDLIterator(inFile), PDLIterator::end(),
               inserter(particleFactory));
     return particleFactory;

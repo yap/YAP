@@ -25,6 +25,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
+#include "fwd/ParticleTable.h"
 #include "fwd/StatusManager.h"
 
 #include "MassShapeWithNominalMass.h"
@@ -48,11 +49,11 @@ public:
     /// Constructor
     /// \param mass Mass of resonance [GeV]
     /// \param width Width of resonance [GeV]
-    BreitWigner(double mass = -1, double w = -1);
+    BreitWigner(double mass, double w);
 
-    /// Set parameters from ParticleTableEntry
-    /// \param entry ParticleTableEntry containing information to create mass shape object
-    virtual void setParameters(const ParticleTableEntry& entry) override;
+    /// Constructor
+    /// \param pde ParticleTableEntry to get mass and width from
+    BreitWigner(const ParticleTableEntry& pde);
 
     /// Get width
     std::shared_ptr<RealParameter> width()

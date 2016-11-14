@@ -21,7 +21,7 @@
 #ifndef  yap_PDL_h
 #define  yap_PDL_h
 
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 #include <iterator>
 #include <sstream>
@@ -37,7 +37,7 @@ namespace yap {
 /// \attention The line is read when the iterator is incremented.
 /// \attention Isospin and parity are missing from `.pdl` format!
 /// \author Paolo Di Giglio
-/// \ingroup ParticleFactory
+/// \ingroup ParticleTable
 class PDLIterator : public std::iterator<std::input_iterator_tag, std::string>
 {
 
@@ -100,10 +100,10 @@ private:
 inline const bool operator!=(const PDLIterator& lhs, const PDLIterator& rhs)
 { return !(lhs == rhs); }
 
-/// Helper function to create a #ParticleFactory from an input `.pdl` file
-/// \return #ParticleFactory
-/// \ingroup ParticleFactory
-ParticleFactory read_pdl_file(const std::string& filename);
+/// Helper function to create a #ParticleTable from an input `.pdl` file
+/// \return #ParticleTable
+/// \ingroup ParticleTable
+ParticleTable read_pdl_file(const std::string& filename);
 
 }
 

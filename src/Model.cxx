@@ -62,7 +62,7 @@ const double intensity(const InitialStateParticleMap::value_type& isp_mix, const
 {
     return std::accumulate(isp_mix.second.begin(), isp_mix.second.end(), 0.,
                            [&](double& I, const AdmixtureMap::value_type& m_b)
-                           // += admixture factory * intensity of decay tree for spin projection
+                           // += admixture factor * intensity of decay tree for spin projection
                            { return I += m_b.second->value() * intensity(isp_mix.first->decayTrees().at(m_b.first), d);});
 }
 

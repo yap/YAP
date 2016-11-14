@@ -13,7 +13,7 @@
 #include <MassAxes.h>
 #include <Model.h>
 #include <Parameter.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <PHSP.h>
 
@@ -23,29 +23,29 @@ inline std::shared_ptr<yap::Model> d4pi()
 {
     auto M = std::make_shared<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
     double radialSize = 1.;
 
     // initial state particle
-    auto D = factory.decayingParticle(421, radialSize);
+    auto D = yap::DecayingParticle::create(T[421], radialSize);
 
     // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
+    auto piPlus  = yap::FinalStateParticle::create(T[211]);
+    auto piMinus = yap::FinalStateParticle::create(T[-211]);
 
     // Set final-state particles
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // rho
-    auto rho = factory.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::BreitWigner>(T[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = factory.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>());
+    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::BreitWigner>(T[9000221]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = factory.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>());
+    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::BreitWigner>(T[20213]));
     a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
@@ -62,17 +62,17 @@ inline std::shared_ptr<yap::Model> d4pi()
 template <typename Formalism>
 inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
 {
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     yap::FinalStateParticleVector FSP;
-    std::transform(fsps.begin(), fsps.end(), std::back_inserter(FSP), [&F](int pdg){return F.fsp(pdg);});
+    std::transform(fsps.begin(), fsps.end(), std::back_inserter(FSP), [&T](int pdg){return yap::FinalStateParticle::create(T[pdg]);});
 
     double radial_size = 3;
 
     auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
     M->setFinalState(FSP);
     
-    auto D = F.decayingParticle(pdg_D, radial_size);
+    auto D = yap::DecayingParticle::create(T[pdg_D], radial_size);
 
     auto piPlus = lone_elt(filter(FSP, yap::is_named("pi+")));
     auto kPlus  = lone_elt(filter(FSP, yap::is_named("K+")));
@@ -80,7 +80,7 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
     
     for (unsigned j = 0; j < 3; ++j) {
         auto res = yap::DecayingParticle::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
-                                          std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
+                                                 std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
         res->addStrongDecay(piPlus, kMinus);
         D->addWeakDecay(res, kPlus);
         switch (j) {
@@ -110,20 +110,20 @@ std::shared_ptr<yap::Model> d3pi()
 
     auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
     // initial state particle
-    auto D = factory.decayingParticle(factory.pdgCode("D+"), radialSize);
+    auto D = yap::DecayingParticle::create(T["D+"], radialSize);
 
     // final state particles
-    auto piPlus = factory.fsp(211);
-    auto piMinus = factory.fsp(-211);
+    auto piPlus  = yap::FinalStateParticle::create(T[211]);
+    auto piMinus = yap::FinalStateParticle::create(T[-211]);
 
     // set final state
     M->setFinalState(piPlus, piMinus, piPlus);
 
     // rho
-    auto rho = factory.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>());
+    auto rho = yap::DecayingParticle::create(T["rho0"], radialSize, std::make_shared<yap::BreitWigner>(T["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // Add channels to D
@@ -137,9 +137,9 @@ std::shared_ptr<yap::Model> d3pi()
 //-------------------------
 inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
     
-    auto isp_mass = factory[M.initialStateParticles().begin()->first->name()].mass();
+    auto isp_mass = T[M.initialStateParticles().begin()->first->name()].mass();
 
     auto A = M.massAxes();
     auto m2r = yap::squared(yap::mass_range(isp_mass, A, M.finalStateParticles()));

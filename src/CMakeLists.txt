@@ -35,7 +35,7 @@ set(YAP_SOURCES
 	Particle.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
-	ParticleFactory.cxx
+	ParticleTable.cxx
 	PoleMass.cxx
 	RecalculableDataAccessor.cxx
 	RelativisticBreitWigner.cxx

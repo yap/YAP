@@ -28,8 +28,8 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
+#include "fwd/ParticleTable.h"
 #include "fwd/Spin.h"
-#include "fwd/StatusManager.h"
 
 #include "ParticleCombination.h"
 #include "QuantumNumbers.h"
@@ -44,8 +44,7 @@ namespace yap {
 /// \brief Abstract Particle base class.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \defgroup Particle Particle-related classes
-class Particle :
-    public std::enable_shared_from_this<Particle>
+class Particle : public std::enable_shared_from_this<Particle>
 {
 protected:
 
@@ -54,8 +53,12 @@ protected:
     /// \param q Quantum numbers of particle
     Particle(const std::string& name, const QuantumNumbers& q)
         : std::enable_shared_from_this<Particle>(),
-        QuantumNumbers_(q), Name_(name) {}
+          QuantumNumbers_(q), Name_(name) {}
 
+    /// Constructor
+    /// \param pde ParticleTableEntry to take name and quantum numbers from
+    Particle(const ParticleTableEntry& pde);
+    
 public:
 
     /// Check consitency of object

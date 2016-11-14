@@ -6,7 +6,7 @@
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 namespace yap {
 
@@ -19,15 +19,9 @@ BreitWigner::BreitWigner(double m, double w) :
 }
 
 //-------------------------
-void BreitWigner::setParameters(const ParticleTableEntry& entry)
+BreitWigner::BreitWigner(const ParticleTableEntry& pde) :
+    BreitWigner(pde.mass(), get_nth_element(pde, 0, "BreitWigner::BreitWigner"))
 {
-    MassShapeWithNominalMass::setParameters(entry);
-
-    if (entry.massShapeParameters().empty())
-        throw exceptions::Exception("entry.massShapeParameter() is empty", "BreitWigner::setParameters");
-
-    if (Width_->value() < 0)
-        *Width_ = entry.massShapeParameters()[0];
 }
 
 //-------------------------

@@ -17,7 +17,6 @@
 #include <Model.h>
 #include <ModelIntegral.h>
 #include <Parameter.h>
-#include <ParticleFactory.h>
 #include <PDL.h>
 #include <PHSP.h>
 
