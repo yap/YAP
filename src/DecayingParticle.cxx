@@ -375,14 +375,6 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt)
 }
 
 //-------------------------
-std::string to_string(const DecayTreeVectorMap& m_dtv_map)
-{
-    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
-                           [](std::string & s, const DecayTreeVectorMap::value_type & m_dtv)
-    { return s += to_string(m_dtv.second); });
-}
-
-//-------------------------
 ParticleSet particles(DecayingParticle& dp)
 {
     ParticleSet S = {dp.shared_from_this()};

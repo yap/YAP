@@ -212,9 +212,6 @@ extern const is_of_type<DecayingParticle> is_decaying_particle;
 /// convert to (multiline) string
 std::string to_decay_string(const DecayingParticle& dp, unsigned level = 0);
  
-/// convert to (multiline) string
-std::string to_string(const DecayTreeVectorMap& m_dtv_map);
-
 /// \return Set of all decay trees in provided DecayingParticle
 /// \todo Have it recursively travel down DecayChannels?
 DecayTreeSet decay_trees(const DecayingParticle& dp);

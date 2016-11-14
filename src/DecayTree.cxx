@@ -182,6 +182,14 @@ std::string to_string(const DecayTreeVector& dtv)
 }
 
 //-------------------------
+std::string to_string(const DecayTreeVectorMap& m_dtv_map)
+{
+    return std::accumulate(m_dtv_map.begin(), m_dtv_map.end(), std::string(),
+                           [](std::string & s, const DecayTreeVectorMap::value_type & m_dtv)
+                           { return s += to_string(m_dtv.second); });
+}
+
+//-------------------------
 std::shared_ptr<FreeAmplitude> free_amplitude(const DecayTree& dt)
 {
     return dt.freeAmplitude();

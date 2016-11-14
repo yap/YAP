@@ -136,6 +136,9 @@ std::string to_string(const DecayTree& dt, std::string offset = "");
 /// convert to (mutliline string)
 std::string to_string(const DecayTreeVector& dtv);
 
+/// convert to (multiline) string
+std::string to_string(const DecayTreeVectorMap& m_dtv_map);
+
 /// equality operator
 inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
 { return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
