@@ -258,8 +258,9 @@ private:
 /// \return string of AdmixtureMap
 std::string to_string(const AdmixtureMap& mix);
 
-/// \return whether a particle decays to its model's full final state
-const bool decays_to_full_final_state(const Particle& p);
+/// Fix all FreeAmplitude's in a model that parameterize the only
+/// possible decay of their parent state.
+void fix_solitary_free_amplitudes(Model& m);
 
 /// \return vector of shared_ptr to DecayingParticles inside Model
 /// that decay to its full final state, sorted such that the first

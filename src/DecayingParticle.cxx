@@ -14,7 +14,6 @@
 #include "VariableStatus.h"
 
 #include <functional>
-#include <iomanip>
 #include <memory>
 
 namespace yap {
@@ -285,20 +284,6 @@ void DecayingParticle::pruneParticleCombinations()
 
     for (auto& c : Channels_)
         c->pruneParticleCombinations();
-}
-
-//-------------------------
-void DecayingParticle::fixSolitaryFreeAmplitudes()
-{
-    // loop over entries in map of (spin projection) -> (decay tree vector)
-    for (auto& m_dtv : DecayTrees_)
-        // if only available decay tree
-        if (m_dtv.second.size() == 1)
-            m_dtv.second[0]->freeAmplitude()->variableStatus() = VariableStatus::fixed;
-    for (auto& c : Channels_)
-        for (auto& d : c->daughters())
-            if (std::dynamic_pointer_cast<DecayingParticle>(d))
-                std::static_pointer_cast<DecayingParticle>(d)->fixSolitaryFreeAmplitudes();
 }
 
 //-------------------------

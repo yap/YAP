@@ -15,6 +15,7 @@
 #include "StatusManager.h"
 
 #include <iomanip>
+#include <sstream>
 
 namespace yap {
 

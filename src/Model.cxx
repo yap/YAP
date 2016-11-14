@@ -1,5 +1,6 @@
 #include "Model.h"
 
+#include "Attributes.h"
 #include "BlattWeisskopf.h"
 #include "CalculationStatus.h"
 #include "CompensatedSum.h"
@@ -11,7 +12,9 @@
 #include "DecayingParticle.h"
 #include "DecayTree.h"
 #include "FinalStateParticle.h"
+#include "FreeAmplitude.h"
 #include "FourMomenta.h"
+#include "Group.h"
 #include "logging.h"
 #include "MassAxes.h"
 #include "Parameter.h"
@@ -264,6 +267,20 @@ size_t all_fixed(const AdmixtureMap& mix)
 }
 
 //-------------------------
+void fix_solitary_free_amplitudes(Model& m)
+{
+    // loop over sets of FreeAmplitudes grouped by parent state
+    for (auto& fas : group(free_amplitudes(m), by_parent<>()))
+        // if there is only one free amplitude for the decay of a state
+        if (fas.size() == 1) {
+            if (!*fas.begin())
+                throw exceptions::Exception("FreeAmplitude is nullptr", "fix_solitary_free_amplitudes");
+            // fix it
+            (*fas.begin())->variableStatus() = VariableStatus::fixed;
+        }
+}
+
+//-------------------------
 std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M)
 {
     std::vector<std::shared_ptr<DecayingParticle> > isps;
@@ -296,11 +313,10 @@ void Model::lock()
         return;
 
     // prune initial state particles
-    // and fix their amplitudes if necessary
-    for (auto& isp_mix : InitialStateParticles_) {
+    for (auto& isp_mix : InitialStateParticles_)
         isp_mix.first->pruneParticleCombinations();
-        isp_mix.first->fixSolitaryFreeAmplitudes();
-    }
+
+    fix_solitary_free_amplitudes(*this);
 
     // if only one ISP with only one spin projection, fix it's admixture
     if (InitialStateParticles_.size() == 1 and InitialStateParticles_.begin()->second.size() == 1)

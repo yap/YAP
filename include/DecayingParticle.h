@@ -164,10 +164,12 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    /// grant friend status to Model to call fixSolitaryFreeAmplitudes()
+    /// grant friend status to Model to call registerWithModel() and
+    /// pruneParticleCombinations()
     friend Model;
-
-    /// grant friend status to DecayChannel to call registerWithModel()
+    
+    /// grant friend status to DecayChannel to call
+    /// registerWithModel()
     friend DecayChannel;
 
 protected:
@@ -180,9 +182,6 @@ protected:
 
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() override;
-
-    /// if only one decay channel is available, fix its free amplitude to the current value
-    void fixSolitaryFreeAmplitudes();
 
     /// modify a DecayTree
     /// \param dt DecayTree to modify
