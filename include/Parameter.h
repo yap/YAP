@@ -91,8 +91,7 @@ public:
     Parameter() = default;
 
     /// Value-assigning constructor
-    explicit Parameter(T t) : ParameterBase(), ParameterValue_(t)
-    {}
+    explicit Parameter(T t) : ParameterBase(), ParameterValue_(t) {}
 
     /// virtual destructor defaulted
     ~Parameter() = default;
@@ -151,18 +150,69 @@ class RealParameter : public Parameter<double>
 public:
 
     /// constructor
-    RealParameter(double t = 0) : Parameter(t) {}
+    explicit RealParameter(double t = 0) : Parameter(t) {}
 
     /// \return size = 1
-    const size_t size() const {return 1;}
+    const size_t size() const override
+    { return 1; }
 
     using Parameter::setValue;
 
     /// Set value from vector
-    const VariableStatus setValue(const std::vector<double>& V)
+    const VariableStatus setValue(const std::vector<double>& V) override
     { return setValue(V[0]); }
 
     using Parameter::operator=;
+};
+
+/// \class NonnegativeRealParameter
+/// \ingroup Parameters
+class NonnegativeRealParameter : public RealParameter
+{
+public:
+    /// Constructor
+    explicit NonnegativeRealParameter(double t = 0) : RealParameter(t)
+    {
+        if (value() < 0)
+            throw exceptions::Exception("value is negative", "NonnegativeRealParameter::NonnegativeRealParameter");
+    }
+
+    using RealParameter::setValue;
+
+    /// Checks if value is non-negative
+    const VariableStatus setValue(double t) override
+    {
+        if (t < 0)
+            throw exceptions::Exception("value is negative", "NonnegativeRealParameter::setValue");
+        return RealParameter::setValue(t);
+    }
+
+    using RealParameter::operator=;
+};
+
+/// \class PositiveRealParameter
+/// \ingroup Parameters
+class PositiveRealParameter : public NonnegativeRealParameter
+{
+public:
+    /// Constructor
+    explicit PositiveRealParameter(double t = 0) : NonnegativeRealParameter(t)
+    {
+        if (t <= 0)
+            throw exceptions::Exception("value is not positive", "PositiveRealParameter::PositiveRealParameter");
+    }
+    
+    using NonnegativeRealParameter::setValue;
+
+    /// Checks if value is positive
+    const VariableStatus setValue(double t) override
+    {
+        if (t <= 0)
+            throw exceptions::Exception("value is not positive", "NonnegativeRealParameter::setValue");
+        return RealParameter::setValue(t);
+    }
+
+    using NonnegativeRealParameter::operator=;
 };
 
 /// \class ComplexParameter
@@ -172,15 +222,16 @@ class ComplexParameter : public Parameter<std::complex<double> >
 public:
 
     /// constructor
-    ComplexParameter(const std::complex<double>& t = 0) : Parameter(t) {}
+    explicit ComplexParameter(const std::complex<double>& t = 0) : Parameter(t) {}
 
     /// \return size = 2
-    const size_t size() const {return 2;}
+    const size_t size() const override
+    { return 2; }
 
     using Parameter::setValue;
 
     /// Set value from vector
-    const VariableStatus setValue(const std::vector<double>& V)
+    const VariableStatus setValue(const std::vector<double>& V) override
     { return setValue(std::complex<double>(V[0], V[1])); }
 
     using Parameter::operator=;
@@ -195,7 +246,7 @@ class ComplexComponentParameter : public RealParameter
 public:
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    ComplexComponentParameter(std::shared_ptr<ComplexParameter> par) : RealParameter(), Parent_(par)
+    explicit ComplexComponentParameter(std::shared_ptr<ComplexParameter> par) : RealParameter(), Parent_(par)
     { if (!Parent_) throw exceptions::Exception("Parent unset", "ComplexComponentParameter::ComplexComponentParameter"); }
         
     /// \return value of parameter by accessing parent
@@ -238,7 +289,7 @@ public:
 
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    RealComponentParameter(std::shared_ptr<ComplexParameter> par)
+    explicit RealComponentParameter(std::shared_ptr<ComplexParameter> par)
         : ComplexComponentParameter(par) {}
 
     using ComplexComponentParameter::operator=;
@@ -264,7 +315,7 @@ public:
 
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    ImaginaryComponentParameter(std::shared_ptr<ComplexParameter> par)
+    explicit ImaginaryComponentParameter(std::shared_ptr<ComplexParameter> par)
         : ComplexComponentParameter(par) {}
 
     using ComplexComponentParameter::operator=;
