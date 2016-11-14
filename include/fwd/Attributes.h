@@ -24,6 +24,7 @@
 #include "fwd/AttributeUtilities.h"
 
 #include <functional>
+#include <string>
 
 namespace yap {
 

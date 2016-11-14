@@ -241,6 +241,11 @@ struct parent_particle : public attribute_of<std::shared_ptr<const DecayingParti
     virtual std::shared_ptr<const DecayingParticle> operator()(const MassShape& m) const override;
 };
 
+/// functor to compare by parent
+/// \tparam C comparison binary predicate
+template <typename C = std::owner_less<typename parent_particle::return_type> >
+using by_parent = compare_by<parent_particle, C>;
+
 /// functor to get name of return value of attribute
 template <typename A>
 class name_of : public with_return_type<std::string>
