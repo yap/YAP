@@ -27,7 +27,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
 #include <RelativisticBreitWigner.h>
@@ -62,11 +62,11 @@ double scale_sigma_pipi  = 0.204794164 ;
 
 inline std::unique_ptr<Model> d4pi()
 {
-    auto F = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
+    auto piPlus  = FinalStateParticle::create(T[211]);
+    auto piMinus = FinalStateParticle::create(T[-211]);
 
     auto M = std::make_unique<yap::Model>(std::make_unique<yap::HelicityFormalism>());
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
@@ -75,26 +75,26 @@ inline std::unique_ptr<Model> d4pi()
     double radialSize = 1.2; // [GeV^-1]
 
     // initial state particle
-    auto D = F.decayingParticle(F["D0"].pdg(), radialSize);
+    auto D = DecayingParticle::create(T["D0"], radialSize);
     
     //
     // resonant particles
     //
     
     // rho
-    auto rho = F.decayingParticle(F["rho0"].pdg(), radialSize, std::make_shared<RelativisticBreitWigner>(F["rho0"]));
+    auto rho = DecayingParticle::create(T["rho0"], radialSize, std::make_shared<RelativisticBreitWigner>(T["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // omega
-    //auto omega = F.decayingParticle(F["omega"].pdg(), radialSize, std::make_shared<BreitWigner>(F["omega"]));
+    //auto omega = DecayingParticle::create(T["omega"], radialSize, std::make_shared<BreitWigner>(T["omega"]));
     //omega->addStrongDecay({piPlus, piMinus});
-
+    
     // sigma / f_0(500)
-    auto sigma = F.decayingParticle(F["f_0(500)"].pdg(), radialSize, std::make_shared<BreitWigner>(F["f_0(500)"]));
+    auto sigma = DecayingParticle::create(T["f_0(500)"], radialSize, std::make_shared<BreitWigner>(T["f_0(500)"]));
     sigma->addStrongDecay(piPlus, piMinus);
-
+    
     // a_1
-    auto a_1 = F.decayingParticle(F["a_1+"].pdg(), radialSize, std::make_shared<BreitWigner>(F["a_1+"]));
+    auto a_1 = DecayingParticle::create(T["a_1+"], radialSize, std::make_shared<BreitWigner>(T["a_1+"]));
     if (a_rho_pi_S or a_rho_pi_D)
         a_1->addStrongDecay(rho,   piPlus);
     if (a_rho_sigma)
@@ -103,16 +103,16 @@ inline std::unique_ptr<Model> d4pi()
     // a_1 -> sigma pi 
     if (a_rho_sigma)
         *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
-
+    
     // f_0(980) (as Flatte)
-    auto f_0_980_flatte = std::make_shared<Flatte>(F["f_0"]);
+    auto f_0_980_flatte = std::make_shared<Flatte>(T["f_0"]);
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
-    f_0_980_flatte->add(FlatteChannel(0.50, *F.fsp(321), *F.fsp(-321))); // K+K-
-    auto f_0_980 = F.decayingParticle(F["f_0"].pdg(), radialSize, f_0_980_flatte);
+    f_0_980_flatte->add(FlatteChannel(0.50, T[321], T[-321])); // K+K-
+    auto f_0_980 = DecayingParticle::create(T["f_0"], radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
-
+                                            
     // f_2(1270)
-    auto f_2 = F.decayingParticle(F["f_2"].pdg(), radialSize, std::make_shared<BreitWigner>(F["f_2"]));
+    auto f_2 = DecayingParticle::create(T["f_2"], radialSize, std::make_shared<BreitWigner>(T["f_2"]));
     f_2->addStrongDecay(piPlus, piMinus); 
 
     // pi+ pi- flat

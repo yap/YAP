@@ -26,7 +26,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Model.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/ParticleFactory.h"
+#include "fwd/ParticleTable.h"
 
 #include "AttributeUtilities.h"
 #include "Particle.h"

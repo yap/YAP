@@ -6,7 +6,7 @@
 #include "logging.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 namespace yap {
 
@@ -39,12 +39,12 @@ bool PoleMass::consistent() const
 {
     bool C = MassShape::consistent();
 
-    if (real(Mass_->value()) <= 0) {
-        FLOG(ERROR) << "real(mass) <= 0";
+    if (real(Mass_->value()) < 0) {
+        FLOG(ERROR) << "real(mass) < 0";
         C &= false;
     }
-    if (imag(Mass_->value()) <= 0) {
-        FLOG(ERROR) << "imag(mass) <= 0";
+    if (imag(Mass_->value()) >= 0) {
+        FLOG(ERROR) << "imag(mass) >= 0";
         C &= false;
     }
 

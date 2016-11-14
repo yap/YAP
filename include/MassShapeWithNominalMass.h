@@ -24,7 +24,7 @@
 #include "fwd/MassShapeWithNominalMass.h"
 
 #include "fwd/Parameter.h"
-#include "fwd/ParticleFactory.h"
+#include "fwd/ParticleTable.h"
 
 #include "MassShape.h"
 

@@ -11,7 +11,7 @@
 #include <logging.h>
 #include <MassAxes.h>
 #include <Model.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <ZemachFormalism.h>
 
 #include <cmath>
@@ -20,10 +20,12 @@
  * Test that the amplitude remains the same after swapping the order of the final state particles
  */
 
-yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const std::vector<int>& FSP)
+yap::MassAxes populate_model(yap::Model& M, const yap::ParticleTable& T, const std::vector<int>& FSP)
 {
     // create and set final-state particles
-    M.setFinalState({F.fsp(FSP[0]), F.fsp(FSP[1]), F.fsp(FSP[2])});
+    M.setFinalState(yap::FinalStateParticle(T[FSP[0]]),
+                    yap::FinalStateParticle(T[FSP[1]]),
+                    yap::FinalStateParticle(T[FSP[2]]));
 
     // find FSP's
     unsigned i_piPlus = FSP.size();
@@ -41,7 +43,7 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleFactory& F, const
     auto kMinus = M.finalStateParticles()[i_kMinus];
 
     // create ISP
-    auto D = F.decayingParticle(F["D+"].pdg(), 3.);
+    auto D = yap::DecayingParticle::create(T["D+"], 3.);
 
     // create resonances
     auto piK0 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
@@ -84,7 +86,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto F = yap::ParticleFactory((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::ParticleTable((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach

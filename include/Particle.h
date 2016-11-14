@@ -28,7 +28,7 @@
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/Particle.h"
-#include "fwd/ParticleFactory.h"
+#include "fwd/ParticleTable.h"
 #include "fwd/Spin.h"
 
 #include "ParticleCombination.h"

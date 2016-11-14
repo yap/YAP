@@ -18,13 +18,14 @@
 
 /// \file
 
-#ifndef yap_ParticleFactory_h
-#define yap_ParticleFactory_h
+#ifndef yap_ParticleTable_h
+#define yap_ParticleTable_h
+
+#include "fwd/ParticleTable.h"
 
 #include "fwd/DecayingParticle.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/MassShape.h"
-#include "fwd/ParticleFactory.h"
 
 #include "QuantumNumbers.h"
 
@@ -37,7 +38,7 @@ namespace yap {
 /// \struct ParticleTableEntry
 /// \brief Data container for storing particle information in database
 /// \author Johannes Rauch, Daniel Greenwald
-/// \ingroup ParticleFactory
+/// \ingroup ParticleTable
 class ParticleTableEntry
 {
 public:
@@ -108,77 +109,65 @@ private:
 /// \param where function name to point to when throwing
 double get_nth_element(const ParticleTableEntry& pde, size_t n, const std::string& where);
 
-/// \class ParticleFactory
+/// \class ParticleTable
 /// \brief Factory class for easy creation of Particle objects from PDG codes.
 /// \author Johannes Rauch, Daniel Greenwald
 /// \ingroup Particle
-/// \defgroup ParticleFactory
-class ParticleFactory
+/// \defgroup ParticleTable
+class ParticleTable
 {
 public:
 
-    /// \typedef ParticleFactory::value_type
+    /// \typedef ParticleTable::value_type
     /// Define this to allow `std::inserter` to use `insert`
     using value_type = ParticleTableEntry;
 
-    /// \typedef ParticleFactory::iterator
+    /// \typedef ParticleTable::iterator
     /// Define this to allow `std::inserter` to use `insert`
     using iterator = ParticleTableMap::iterator;
 
-    /// Create a FinalStateParticle from a PDG code
-    /// \param PDG PDG code of particle to create
-    /// \return shared pointer to new final state particle
-    std::shared_ptr<FinalStateParticle> fsp(int PDG) const;
-
-    /// Create an decayingParticle from a PDG code
-    /// \param PDG PDG code of particle to create
-    /// \param radial_size radial size of particle to create [GeV^-1]
-    /// \param massShape Pointer to MassShape object describing dynamic amplitude
-    /// \return shared pointer to new DecayingParticle object
-    std::shared_ptr<DecayingParticle> decayingParticle(int PDG, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr) const;
-
     /// Adds content of rhs to this
-    /// \param rhs ParticleFactory to add into this
-    ParticleFactory& operator+=(const ParticleFactory& rhs);
+    /// \param rhs ParticleTable to add into this
+    ParticleTable& operator+=(const ParticleTable& rhs);
 
     /// \name Particle table access
     /// @{
 
-    /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTableMap_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     const ParticleTableEntry& operator[](int PDG) const;
 
-    /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTableMap_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     ParticleTableEntry& operator[](int PDG)
-    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleFactory*>(this)->operator[](PDG)); }
+    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleTable*>(this)->operator[](PDG)); }
 
-    /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTableMap_ with safety checks
     /// \param name Name of particle in table
     const ParticleTableEntry& operator[](const std::string& name) const;
 
-    /// get ParticleTableEntry from #ParticleTable_ with safety checks
+    /// get ParticleTableEntry from #ParticleTableMap_ with safety checks
     /// \param name Name of particle in table
     ParticleTableEntry& operator[](const std::string& name)
-    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleFactory*>(this)->operator[](name)); }
+    { return const_cast<ParticleTableEntry&>(static_cast<const ParticleTable*>(this)->operator[](name)); }
 
-    /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTable_
-    /// \param entry a A ParticleTableEntry to add to #ParticleTable_
+    /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTableMap_
+    /// \param entry a A ParticleTableEntry to add to #ParticleTableMap_
     std::pair<ParticleTableMap::iterator, bool> insert(const ParticleTableEntry& entry);
 
     /// convenience function to allow `inserter()` to be used in the `std::copy` algorithm
     ParticleTableMap::iterator insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry);
 
-    /// #ParticleFactory's own inserter
-    friend std::insert_iterator<ParticleFactory> inserter(ParticleFactory& F)
-    { return std::insert_iterator<ParticleFactory>(F, F.ParticleTable_.end()); }
+    /// #ParticleTable's own inserter
+    friend std::insert_iterator<ParticleTable> inserter(ParticleTable& F)
+    { return std::insert_iterator<ParticleTable>(F, F.ParticleTableMap_.end()); }
 
     /// @}
 
 private:
 
     /// maps PDGCodes to ParticleTableEntry's
-    ParticleTableMap ParticleTable_;
+    ParticleTableMap ParticleTableMap_;
 };
 
 }

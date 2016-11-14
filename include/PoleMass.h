@@ -24,7 +24,7 @@
 #include "fwd/DataPoint.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/ParticleFactory.h"
+#include "fwd/ParticleTable.h"
 
 #include "MassShape.h"
 

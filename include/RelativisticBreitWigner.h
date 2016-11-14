@@ -25,7 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/ParticleCombination.h"
-#include "fwd/ParticleFactory.h"
+#include "fwd/ParticleTable.h"
 
 #include "BreitWigner.h"
 

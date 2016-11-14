@@ -1,7 +1,7 @@
 #include "MassShapeWithNominalMass.h"
 
 #include "Parameter.h"
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 namespace yap {
 

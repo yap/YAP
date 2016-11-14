@@ -74,7 +74,8 @@ public:
     /// \param pde ParticleTableEntry to take name and quantum numbers from
     /// \param radial_size radial size of decaying particle
     /// \param mass_shape shared_ptr to dynamic amplitude component
-    static std::shared_ptr<DecayingParticle> create(const ParticleTableEntry& pde, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr);
+    static std::shared_ptr<DecayingParticle> create(const ParticleTableEntry& pde, double radial_size, std::shared_ptr<MassShape> mass_shape = nullptr)
+    { return std::shared_ptr<DecayingParticle>(new DecayingParticle(pde, radial_size, mass_shape)); }
 
     /// access MassShape
     std::shared_ptr<MassShape> massShape()

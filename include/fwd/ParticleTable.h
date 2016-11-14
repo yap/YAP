@@ -18,19 +18,19 @@
 
 /// \file
 
-#ifndef yap_ParticleFactoryFwd_h
-#define yap_ParticleFactoryFwd_h
+#ifndef yap_ParticleTableFwd_h
+#define yap_ParticleTableFwd_h
 
 #include <map>
 
 namespace yap {
 
 class ParticleTableEntry;
-class ParticleFactory;
+class ParticleTable;
 
 /// \typedef ParticleTableMap
 /// Maps PDG code to ParticleTableEntry
-/// \ingroup ParticleFactory
+/// \ingroup ParticleTable
 using ParticleTableMap = std::map<int, ParticleTableEntry>;
 
 }

@@ -4,7 +4,7 @@
 #include "logging.h"
 #include "Parameter.h"
 #include "ParticleCombination.h"
-#include "ParticleFactory.h"
+#include "ParticleTable.h"
 
 namespace yap {
 

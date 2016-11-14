@@ -18,7 +18,7 @@
 #include <Model.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <PHSP.h>
 
@@ -87,9 +87,9 @@ TEST_CASE( "HelicityAngles" )
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
-    yap::ParticleFactory factory = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleTable T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
 
-    double D_mass = factory["D0"].mass();
+    double D_mass = T["D0"].mass();
 
     auto M = d4pi();
 

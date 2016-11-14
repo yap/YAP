@@ -21,7 +21,7 @@
 #include <Parameter.h>
 #include <Particle.h>
 #include <ParticleCombination.h>
-#include <ParticleFactory.h>
+#include <ParticleTable.h>
 #include <PDL.h>
 #include <PHSP.h>
 #include <Sort.h>
@@ -42,43 +42,43 @@ int main( int argc, char** argv)
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    yap::ParticleFactory F = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
     
     // add some missing parities
-    F[421].setQuantumNumbers(yap::QuantumNumbers(0, 0, -1)); // D0
-    F[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1)); // pi+
-    F[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1)); // rho0
-    F[20213].setQuantumNumbers(yap::QuantumNumbers(1, 2, +1)); // a_1+
-    F[9000221].setQuantumNumbers(yap::QuantumNumbers(0, 0, +1)); // sigma
+    T[421].setQuantumNumbers(yap::QuantumNumbers(0, 0, -1)); // D0
+    T[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1)); // pi+
+    T[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1)); // rho0
+    T[20213].setQuantumNumbers(yap::QuantumNumbers(1, 2, +1)); // a_1+
+    T[9000221].setQuantumNumbers(yap::QuantumNumbers(0, 0, +1)); // sigma
 
     double radialSize = 1.;
 
     // initial state particle
-    auto D = F.decayingParticle(421, radialSize);
+    auto D = yap::DecayingParticle::create(T[421], radialSize);
 
-    auto D_mass = F[421].mass();
+    auto D_mass = T[421].mass();
 
     // final state particles
-    auto piPlus = F.fsp(211);
-    auto piMinus = F.fsp(-211);
+    auto piPlus  = yap::FinalStateParticle::create(T[211]);
+    auto piMinus = yap::FinalStateParticle::create(T[-211]);
 
     // Set final-state particles
     M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = F.decayingParticle(9000221, radialSize, std::make_shared<yap::BreitWigner>(F[9000221]));
+    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::BreitWigner>(T[9000221]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // rho
-    auto rho = F.decayingParticle(113, radialSize, std::make_shared<yap::BreitWigner>(F[113]));
+    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::BreitWigner>(T[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // // omega
-    // auto omega = F.decayingParticle(223, radialSize, std::make_shared<yap::BreitWigner>(F[223]));
+    // auto omega = yap::DecayingParticle::create(T[223], radialSize, std::make_shared<yap::BreitWigner>(T[223]));
     // omega->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = F.decayingParticle(20213, radialSize, std::make_shared<yap::BreitWigner>(F[20213]));
+    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::BreitWigner>(T[20213]));
     // a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
