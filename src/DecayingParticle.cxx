@@ -4,6 +4,7 @@
 #include "container_utils.h"
 #include "DecayChannel.h"
 #include "DecayTree.h"
+#include "FinalStateParticle.h"
 #include "FreeAmplitude.h"
 #include "logging.h"
 #include "MassShape.h"
@@ -30,7 +31,6 @@ DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers
 {
     if (MassShape_)
         MassShape_->setOwner(this);
-        
 }
 
 //-------------------------
@@ -44,11 +44,6 @@ DecayingParticle::DecayingParticle(const ParticleTableEntry& pde, double radial_
 bool DecayingParticle::consistent() const
 {
     bool C = Particle::consistent();
-
-    if (RadialSize_->value() <= 0.) {
-        FLOG(ERROR) << "Radial size not positive.";
-        C &= false;
-    }
 
     if (Channels_.empty()) {
         FLOG(ERROR) << "no channels specified.";
@@ -75,6 +70,16 @@ bool DecayingParticle::consistent() const
 
     return C;
 }
+
+//-------------------------
+// helper function
+bool pcs_has_pc(const ParticleCombinationSet& pcs, const ParticleCombination& pc, size_t d)
+{ return pcs.find(pc.daughters()[d]) != pcs.end(); }
+
+//-------------------------
+// helper function, checks that decay channel of free amplitude of decay tree has particle combination
+bool dt_valid_for_pc(const DecayTreeVector::value_type& dt, const ParticleCombination& pc, size_t d)
+{ return pcs_has_pc(dt->freeAmplitude()->decayChannel()->particleCombinations(), pc, d); }
 
 //-------------------------
 void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
@@ -117,6 +122,7 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
     for (auto pc : Channels_.back()->particleCombinations())
         addParticleCombination(*pc);
 
+    /////////////////////////
     /// create decay trees for channel:
 
     /// loop over spin amplitudes of channel
@@ -134,71 +140,73 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
                 // loop over particle combinations of this decaying particle
                 for (const auto& pc : particleCombinations()) {
 
-                    // initialize vector of possible decay trees from
-                    // initial DecayTree created above
+                    // initialize vector of possible decay trees from initial DecayTree created above
                     DecayTreeVector DTV(1, std::make_shared<DecayTree>(fa, two_M, two_m));
                     modifyDecayTree(*DTV[0]);
 
                     // loop over daughters in channel
-                    for (size_t d = 0; d < Channels_.back()->daughters().size(); ++d) {
-                        
-                        // try to cast daughter to decaying particle
-                        auto dp = std::dynamic_pointer_cast<DecayingParticle>(Channels_.back()->daughters()[d]);
+                    for (size_t d = 0; d < Channels_.back()->daughters().size() and !DTV.empty(); ++d) {
 
-                        // if decaying particle
-                        if (dp) {
+                        if (is_decaying_particle(Channels_.back()->daughters()[d])) {
 
-                            // check if daughter has any decay trees with spin projection
-                            if (dp->DecayTrees_.find(two_m[d]) != dp->DecayTrees_.end()) {
-                                
-                                // create temp tree vector to store new copies into
-                                DecayTreeVector DTV_temp;
+                            // get daughter's DecayTreeVectorMap
+                            const auto& m_dtv_map = static_cast<const DecayingParticle&>(*Channels_.back()->daughters()[d]).decayTrees();
 
-                                // loop over decay trees of daughter with appropriate spin projection
-                                for (const auto& dt : dp->DecayTrees_[two_m[d]]) {
-                                    // check that decay channel of free amplitude of decay tree has particle combination
-                                    if (dt->freeAmplitude()->decayChannel()->particleCombinations().find(pc->daughters()[d])
-                                        != dt->freeAmplitude()->decayChannel()->particleCombinations().end()) {
-                                        for (const auto& DT : DTV) {
-                                            // add copy of DT to DTV_temp
-                                            DTV_temp.push_back(std::make_shared<DecayTree>(*DT));
-                                            // add decay tree to it
-                                            DTV_temp.back()->setDaughterDecayTree(d, dt);
-                                        }
-                                    }
-                                }
-                                
-                                // replace DTV with DTV_temp
-                                DTV = DTV_temp;
+                            // get DecayTreeVector for desired spin projection of daughter
+                            auto it  = m_dtv_map.find(two_m[d]);
+                            if (it == m_dtv_map.end()) {
+                                DTV.clear();
+                                break;
                             }
-                            // else clear DTV
-                            else
+                            const auto& dtv = it->second;
+                            
+                            // create temp tree vector to store new copies into
+                            DecayTreeVector DTV_temp;
+
+                            // loop over daughter DecayTree's valid for the the particle combination
+                            for (const auto& dt : dtv) {
+                                if (pcs_has_pc(dt->freeAmplitude()->decayChannel()->particleCombinations(), *pc, d)) {
+
+                                    // loop over parent DecayTree's
+                                    for (const auto& DT : DTV) {
+                                        // add copy of DT to DTV_temp
+                                        DTV_temp.push_back(std::make_shared<DecayTree>(*DT));
+                                        // add daughter DecayTree to it
+                                        DTV_temp.back()->setDaughterDecayTree(d, dt);
+                                    }
+
+                                }
+                            }
+
+                            // repalce parent's DecayTreeVector with the new one with daughter d set into them
+                            DTV = DTV_temp;
+                        }
+                        
+                        // else if FinalStateParticle
+                        else if (is_final_state_particle(Channels_.back()->daughters()[d])) {
+
+                            // if channels daughter cannot accommodate daughter
+                            if (!pcs_has_pc(Channels_.back()->daughters()[d]->particleCombinations(), *pc, d))
                                 DTV.clear();
 
-                        }
-                        // else not decaying particle
-                        else {
-
-                            // check that particle has daughter particle combination
-                            if (Channels_.back()->daughters()[d]->particleCombinations().find(pc->daughters()[d])
-                                == Channels_.back()->daughters()[d]->particleCombinations().end())
-                                DTV.clear();
+                        
                         }
 
-                        // if DTV now empty, break
-                        if (DTV.empty())
-                            break;
-
+                        // else was not DecayingParticle or FinalStateParticle
+                        else
+                            DTV.clear();
+                        
                     } // ends loop over daughters
 
                     // if decay trees were created, add them into DecayTrees_
                     // if they aren't already present in it
                     if (!DTV.empty()) {
+                        // this creates the empty DecayTreeVector if not yet created (hence the above conditional)
                         auto& dtv_M = DecayTrees_[two_M];
                         for (const auto& DT : DTV) {
                             // check that DT isn't already equal to one in dtv_M
                             if (std::none_of(dtv_M.begin(), dtv_M.end(), [&DT](const std::shared_ptr<DecayTree>& dt) {return *dt == *DT;}))
-                            dtv_M.push_back(DT);
+                                dtv_M.push_back(DT);
                         }
                     }
 
@@ -206,7 +214,7 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
             } // ends loop over spin projections of daughters
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
-
+    
     if (MassShape_)
         MassShape_->addDecayChannel(c);
 }
@@ -311,9 +319,7 @@ void get_paddings(const DecayingParticle& dp, size_t& name_padding, size_t& sa_p
 //-------------------------
 // helper function
 std::string pad_right(const std::string& s, size_t len, char c = ' ')
-{
-    return s + std::string(s.length() < len ? len - s.length() : 0, c);
-}
+{ return s + std::string(s.length() < len ? len - s.length() : 0, c); }
 
 //-------------------------
 std::string to_decay_string(const DecayingParticle& dp, unsigned level)
@@ -357,17 +363,17 @@ void DecayingParticle::modifyDecayTree(DecayTree& dt)
 
     // find BlattWeisskopf object
     if (dt.freeAmplitude()->spinAmplitude()->L() > 0) {
-        auto bw = BlattWeisskopfs_.find(dt.freeAmplitude()->spinAmplitude()->L());
-        if (bw == BlattWeisskopfs_.end())
+        auto l_bw = BlattWeisskopfs_.find(dt.freeAmplitude()->spinAmplitude()->L());
+        if (l_bw == BlattWeisskopfs_.end())
             throw exceptions::Exception("No Blatt-Weisskopf factor found for L = "
                                         + std::to_string(dt.freeAmplitude()->spinAmplitude()->L()),
                                         "DecayingParticle::modifyDecayTree");
 
-        if (!bw->second)
+        if (!l_bw->second)
             throw exceptions::Exception("BlattWeisskopf is nullptr", "DecayingParticle::modifyDecayTree");
 
         // Add BlattWeisskopf object
-        dt.addAmplitudeComponent(*bw->second);
+        dt.addAmplitudeComponent(*l_bw->second);
     }
 
     if (MassShape_)
