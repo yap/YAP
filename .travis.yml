@@ -24,8 +24,8 @@ install:
     # Get ROOT
     - cd ${TRAVIS_BUILD_DIR}
     - wget https://root.cern.ch/download/root_v6.06.08.Linux-ubuntu14-x86_64-gcc4.8.tar.gz
-    - mkdir root6 && tar xf root_v6.06.08.Linux-ubuntu14-x86_64-gcc4.8.tar.gz -C root6 --strip-components 1
-    - export ROOTSYS="${TRAVIS_BUILD_DIR}/root6"
+    - mkdir root && tar xf root_v6.06.08.Linux-ubuntu14-x86_64-gcc4.8.tar.gz -C root --strip-components 1
+    - export ROOTSYS="${TRAVIS_BUILD_DIR}/root"
     - cd ${ROOTSYS} && source $ROOTSYS/bin/thisroot.sh
     # Get BAT
     - cd ${TRAVIS_BUILD_DIR}
@@ -63,6 +63,6 @@ script:
 after_success:
     - cd ${TRAVIS_BUILD_DIR}
     - lcov --directory . --capture --output-file coverage.info # capture coverage info
-    - lcov --remove coverage.info '/usr/*' 'build/test/catch-prefix/*' 'tools/*' 'include/easylogging++.h' 'bat/*' 'examples/bat_gen/*' --output-file coverage.info # filter out system and catch code
+    - lcov --remove coverage.info '/usr/*' 'build/test/catch-prefix/*' 'tools/*' 'include/easylogging++.h' 'root/*' 'bat/*' 'examples/bat_gen/*' --output-file coverage.info # filter out system and catch code
     - lcov --list coverage.info # debug before upload
     - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info # uploads to coveralls
