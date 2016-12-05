@@ -2,6 +2,7 @@
 
 #include "BlattWeisskopf.h"
 #include "CachedValue.h"
+#include "CalculationStatus.h"
 #include "DataPartition.h"
 #include "DecayChannel.h"
 #include "DecayingParticle.h"
@@ -44,8 +45,12 @@ void RelativisticBreitWigner::checkDecayChannel(const DecayChannel& c) const
 }
 
 //-------------------------
-void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
+void RelativisticBreitWigner::calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
+    // if no calculation necessary, exit
+    if (D.status(*T(), si) != CalculationStatus::uncalculated)
+        return;
+
     /////////////////////////
     // common factors:
 
@@ -91,6 +96,8 @@ void RelativisticBreitWigner::calculateT(DataPartition& D, const std::shared_ptr
         T()->setValue(1. / (m2_R - m2_ab - imw), d, si, D);
 
     }
+
+    D.status(*T(), si) = CalculationStatus::calculated;
 }
 
 }

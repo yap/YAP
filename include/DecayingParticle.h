@@ -172,6 +172,9 @@ public:
     /// registerWithModel()
     friend DecayChannel;
 
+    /// grant friend status to MassShape to manipulate DecayTrees_
+    friend MassShape;
+    
 protected:
 
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_

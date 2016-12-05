@@ -13,6 +13,7 @@ namespace yap {
 //-------------------------
 PoleMass::PoleMass(std::complex<double> mass) :
     MassShape(),
+    T_(ComplexCachedValue::create(*this)),
     Mass_(std::make_shared<ComplexParameter>(mass))
 {
     addParameter(Mass_);
@@ -25,13 +26,32 @@ PoleMass::PoleMass(const ParticleTableEntry& pde) :
 }
 
 //-------------------------
-void PoleMass::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
+void PoleMass::updateCalculationStatus(StatusManager& D) const
 {
+    if (status() == VariableStatus::changed)
+        D.set(*T_, CalculationStatus::uncalculated);
+}
+
+//-------------------------
+const std::complex<double> PoleMass::value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
+{
+    return T_->value(d, symmetrizationIndex(pc));
+}
+
+//-------------------------
+void PoleMass::calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
+{
+    // if no calculation necessary, exit
+    if (D.status(*T_, si) != CalculationStatus::uncalculated)
+        return;
+
     auto M2 = pow(Mass_->value(), 2);
 
     // T := 1 / (M^2 - m^2)
     for (auto& d : D)
-        T()->setValue(1. / (M2 - model()->fourMomenta()->m2(d, pc)), d, si, D);
+        T_->setValue(1. / (M2 - model()->fourMomenta()->m2(d, pc)), d, si, D);
+
+    D.status(*T_, si) = CalculationStatus::calculated;
 }
 
 //-------------------------

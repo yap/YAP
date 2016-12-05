@@ -62,16 +62,18 @@ public:
     /// Cheks that decay is to two spin-zero particles
     virtual void checkDecayChannel(const DecayChannel& c) const override;
 
-protected:
-
-    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
-
+    using BreitWigner::calculate;
+    
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
-    virtual void calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
+    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
+
+protected:
+
+    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
+    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
 
 private:
 

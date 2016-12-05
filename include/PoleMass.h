@@ -60,13 +60,32 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-protected:
+    /// update the calculationStatus for a DataPartition
+    virtual void updateCalculationStatus(StatusManager& D) const override;
+    
+    /// \return value for DataPoint and ParticleCombination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
-    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
+    using MassShape::calculate;
+    
+    /// Calculate dynamic amplitude T for particular particle combination and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
-    virtual void calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
+    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const;
+
+protected:
+
+    /// access cached dynamic amplitude
+    const std::shared_ptr<ComplexCachedValue> T() const
+    { return T_; }
+
+private:
+
+    /// cached dynamic amplitude
+    std::shared_ptr<ComplexCachedValue> T_;
 
     /// Complex mass [GeV]
     std::shared_ptr<ComplexParameter> Mass_;

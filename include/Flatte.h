@@ -52,11 +52,11 @@ public:
 
     /// Constructor
     /// \param m mass [GeV]
-    Flatte(double m) : MassShapeWithNominalMass(m) {}
+    Flatte(double m);
 
     /// Constructor
     /// \param pde ParticleTableEntry to take mass from
-    Flatte(const ParticleTableEntry& pde) : MassShapeWithNominalMass(pde) {}
+    Flatte(const ParticleTableEntry& pde);
 
     /// Add FlatteChannel
     void add(FlatteChannel fc);
@@ -69,15 +69,33 @@ public:
     /// Cheks that decay is to a channel of the Flatte
     virtual void checkDecayChannel(const DecayChannel& c) const override;
 
-protected:
+    /// update the calculationStatus for a DataPartition
+    virtual void updateCalculationStatus(StatusManager& D) const override;
+    
+    /// \return value for DataPoint and ParticleCombination
+    /// \param d DataPoint
+    /// \param pc shared_ptr to ParticleCombination
+    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
 
+    using MassShapeWithNominalMass::calculate;
+    
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
-    virtual void calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
+    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
+
+
+protected:
+
+    /// access cached dynamic amplitude
+    const std::shared_ptr<ComplexCachedValue> T() const
+    { return T_; }
 
 private:
+
+    /// cached dynamic amplitude
+    std::shared_ptr<ComplexCachedValue> T_;
 
     /// Flatte channels for width calculation
     std::vector<FlatteChannel> FlatteChannels_;

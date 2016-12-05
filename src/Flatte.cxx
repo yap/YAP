@@ -36,6 +36,20 @@ FlatteChannel::FlatteChannel(double coupling, const ParticleTableEntry& a, const
 }
 
 //-------------------------
+Flatte::Flatte(double m) :
+    MassShapeWithNominalMass(m),
+    T_(ComplexCachedValue::create(*this))
+{
+}
+
+//-------------------------
+Flatte::Flatte(const ParticleTableEntry& pde) :
+    MassShapeWithNominalMass(pde),
+    T_(ComplexCachedValue::create(*this))
+{
+}
+
+//-------------------------
 void Flatte::add(FlatteChannel fc)
 {
     if (!fc.Coupling)
@@ -74,10 +88,27 @@ void Flatte::checkDecayChannel(const DecayChannel& c) const
             return;
     throw exceptions::Exception("Flatte doesn't contain channel for " + to_string(c), "Flatte::checkDecayChannel");
 }
+    
+//-------------------------
+void Flatte::updateCalculationStatus(StatusManager& D) const
+{
+    if (status() == VariableStatus::changed)
+        D.set(*T_, CalculationStatus::uncalculated);
+}
 
 //-------------------------
-void Flatte::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
+const std::complex<double> Flatte::value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
 {
+    return T_->value(d, symmetrizationIndex(pc));
+}
+    
+//-------------------------
+void Flatte::calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
+{
+    // if no calculation necessary, exit
+    if (D.status(*T_, si) != CalculationStatus::uncalculated)
+        return;
+
     /////////////////////////
     // precalculate
 
@@ -111,8 +142,10 @@ void Flatte::calculateT(DataPartition& D, const std::shared_ptr<const ParticleCo
             w += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 
         // T = 1 / (M^2 - m^2 - width-term)
-        T()->setValue(1. / (M2 - m2 - 1_i * 2. * w / sqrt(m2)), d, si, D);
+        T_->setValue(1. / (M2 - m2 - 1_i * 2. * w / sqrt(m2)), d, si, D);
     }
+
+    D.status(*T_, si) = CalculationStatus::calculated;
 }
 
 }

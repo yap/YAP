@@ -25,6 +25,7 @@
 #include "fwd/DataPartition.h"
 #include "fwd/DecayChannel.h"
 #include "fwd/DecayingParticle.h"
+#include "fwd/DecayTree.h"
 #include "fwd/Model.h"
 #include "fwd/Parameter.h"
 #include "fwd/ParticleCombination.h"
@@ -49,25 +50,23 @@ public:
     /// Constructor
     MassShape();
 
-    /// \return dynamic amplitude for data point and particle combination
-    /// \param d DataPoint
-    /// \param pc shared_ptr to ParticleCombination
-    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override final;
-
     /// Calculate complex amplitudes for and store in each DataPoint in DataPartition;
     /// calls calculateT, which must be overrided in derived classes
     /// \param D DataPartition to calculate on
     virtual void calculate(DataPartition& D) const override final;
 
+    /// Calculate dynamic amplitude T for particular particle combination and store in each DataPoint in DataPartition
+    /// \param D DataPartition to calculate on
+    /// \param pc ParticleCombination to calculate for
+    /// \param si SymmetrizationIndec to calculate for
+    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const = 0;
+    
     /// Check consistency of object
     virtual bool consistent() const;
 
     /// get raw pointer to owner
     DecayingParticle* owner() const
     { return Owner_; }
-
-    /// update the calculationStatus for a DataPartition
-    virtual void updateCalculationStatus(StatusManager& D) const override final;
 
     /// get raw pointer to Model through resonance
     const Model* model() const override;
@@ -86,31 +85,17 @@ protected:
     virtual void setOwner(DecayingParticle* dp);
 
     /// Give MassShape chance to perform operations based on the
-    /// addition of a DecayChannel to its Resonance
+    /// addition of a DecayChannel to its owner
     virtual void addDecayChannel(std::shared_ptr<DecayChannel> c)
     {}
 
-    /// access cached dynamic amplitude
-    std::shared_ptr<ComplexCachedValue> T()
-    { return T_; }
-
-    /// access cached dynamic amplitude (const)
-    const std::shared_ptr<ComplexCachedValue> T() const
-    { return T_; }
-
-    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
-    /// \param D DataPartition to calculate on
-    /// \param pc ParticleCombination to calculate for
-    /// \param si SymmetrizationIndec to calculate for
-    virtual void calculateT(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const = 0;
-
+    /// Access owner's DecayTree's
+    DecayTreeVectorMap& ownersDecayTrees();
+    
 private:
 
     /// raw pointer to owner
     DecayingParticle* Owner_;
-
-    /// cached dynamic amplitude
-    std::shared_ptr<ComplexCachedValue> T_;
 
 };
 
