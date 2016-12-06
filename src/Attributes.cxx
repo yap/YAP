@@ -215,7 +215,7 @@ const bool has_decay_channel::operator()(const DecayTree& dt) const
             return true;
     return false;
 }
-    
+
 //-------------------------
 std::shared_ptr<const DecayingParticle> parent_particle::operator()(const DecayTree& dt) const
 {
