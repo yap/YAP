@@ -264,18 +264,28 @@ ParticleSet particles(const DecayChannel& dc)
 }
 
 //-------------------------
+// helper function
+std::string parent_string(const DecayChannel& dc)
+{
+    auto P = particles(*dc.model(), has_decay_channel(&dc));
+    if (P.empty())
+        return "";
+    return (*P.begin())->name() + " ";
+}
+    
+//-------------------------
 std::string to_string(const DecayChannel& dc)
 {
-    return dc.daughters().empty() ? "[nothing]"
-        : particle(*dc.model(), has_decay_channel(&dc))->name() + " --> " + to_string(dc.daughters());
+    
+    return dc.daughters().empty() ? "[nothing]" : parent_string(dc) + "--> " + to_string(dc.daughters());
 }
 
 //-------------------------
 std::string to_string(const DecayChannel& dc, int two_M, const SpinProjectionVector& two_m)
 {
-    return dc.daughters().empty() ? "[nothing]"
-        : particle(*dc.model(), has_decay_channel(&dc))->name() + " [m = " + spin_to_string(two_M)
-        + "] --> " + to_string(dc.daughters(), two_m);
+    return dc.daughters().empty()
+        ? "[nothing]"
+        : parent_string(dc) + "[m = " + spin_to_string(two_M) + "] --> " + to_string(dc.daughters(), two_m);
 }
 
 }
