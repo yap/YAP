@@ -97,9 +97,9 @@ bool disjoint(const ParticleCombinationVector& pcv)
 //-------------------------
 const bool is_initial_state_particle_combination(const ParticleCombination& pc, const Model& m)
 {
-    for (auto& isp_am : m.initialStateParticles())
-        if (isp_am.first->particleCombinations().find(std::const_pointer_cast<ParticleCombination>(pc.shared_from_this()))
-                != isp_am.first->particleCombinations().end())
+    for (auto& isp : m.initialStates())
+        if (isp->particleCombinations().find(std::const_pointer_cast<ParticleCombination>(pc.shared_from_this()))
+            != isp->particleCombinations().end())
             return true;
     return false;
 }

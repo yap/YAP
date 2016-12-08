@@ -17,14 +17,19 @@
  */
 
 /// \file
-/// contains forward declarations only
 
 #ifndef yap_DecayingParticleFwd_h
 #define yap_DecayingParticleFwd_h
 
+#include <memory>
+#include <vector>
+
 namespace yap {
 
 class DecayingParticle;
+
+/// \typedef DecayingParticleVector
+using DecayingParticleVector = std::vector<std::shared_ptr<DecayingParticle> >;
 
 }
 

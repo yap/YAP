@@ -159,10 +159,9 @@ const bool has_free_amplitude::operator()(const Particle& p) const
 {
     if (!is_decaying_particle(p))
         return false;
-    for (const auto& m_dtv : dynamic_cast<const DecayingParticle&>(p).decayTrees())
-        for (const auto& dt : m_dtv.second)
-            if(std::find(objects().begin(), objects().end(), dt->freeAmplitude().get()) != objects().end())
-                return true;
+    for (const auto& dt : dynamic_cast<const DecayingParticle&>(p).decayTrees())
+        if(std::find(objects().begin(), objects().end(), dt->freeAmplitude().get()) != objects().end())
+            return true;
     return false;
 }
 
@@ -171,10 +170,9 @@ const bool has_decay_tree::operator()(const Particle& p) const
 {
     if (!is_decaying_particle(p))
         return false;
-    for (const auto& m_dtv : dynamic_cast<const DecayingParticle&>(p).decayTrees())
-        for (const auto& dt : m_dtv.second)
-            if (std::find(objects().begin(), objects().end(), dt.get()) != objects().end())
-                return true;
+    for (const auto& dt : dynamic_cast<const DecayingParticle&>(p).decayTrees())
+        if (std::find(objects().begin(), objects().end(), dt.get()) != objects().end())
+            return true;
     return false;
 }
 
@@ -215,7 +213,7 @@ const bool has_decay_channel::operator()(const DecayTree& dt) const
             return true;
     return false;
 }
-    
+
 //-------------------------
 std::shared_ptr<const DecayingParticle> parent_particle::operator()(const DecayTree& dt) const
 {
@@ -256,6 +254,14 @@ std::shared_ptr<const DecayingParticle> parent_particle::operator()(const MassSh
     return std::static_pointer_cast<DecayingParticle>(m.owner()->shared_from_this());
 }
 
+//-------------------------
+std::shared_ptr<const DecayingParticle> parent_particle::operator()(const ModelComponent& c) const
+{
+    if (c.decayTrees().empty())
+        return nullptr;
+    return operator()(c.decayTrees()[0]);
+}
+    
 //-------------------------
 const bool has_a_mass_shape::operator()(const Particle& p) const
 {

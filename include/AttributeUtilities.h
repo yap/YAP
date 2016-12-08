@@ -120,6 +120,9 @@ template <typename T, typename U, typename ... V>
 class has_pointed_to_object : public attribute_of<const bool, U, V...>
 {
 public:
+    /// \typedef object_type
+    using object_type = T;
+    
     /// Constructor
     explicit has_pointed_to_object(const std::vector<const T*>& tv)
         : attribute_of<const bool, U, V...>(), Objects_(tv) {}

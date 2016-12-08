@@ -83,9 +83,9 @@ std::vector<DecayTreeVectorIntegral*> ImportanceSampler::select_changed(ModelInt
     std::vector<DecayTreeVectorIntegral*> C;
     C.reserve(integrals(I).size());
 
-    for (auto& b_I : integrals(I))
-        if (std::any_of(b_I.second.decayTrees().begin(), b_I.second.decayTrees().end(), &has_changed))
-            C.push_back(&b_I.second);
+    for (auto& mci : integrals(I))
+        if (std::any_of(mci.Integral.decayTrees().begin(), mci.Integral.decayTrees().end(), &has_changed))
+            C.push_back(&mci.Integral);
 
     return C;
 }

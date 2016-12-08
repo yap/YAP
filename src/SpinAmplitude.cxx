@@ -101,8 +101,7 @@ void SpinAmplitude::addAmplitude(int two_M, const SpinProjectionVector& two_m, b
 //-------------------------
 bool SpinAmplitude::equalTo(const SpinAmplitude& B) const
 {
-    return // compare only spin of QuantumNumbers
-        InitialTwoJ_ == B.InitialTwoJ_
+    return InitialTwoJ_ == B.InitialTwoJ_
         and FinalTwoJ_ == B.FinalTwoJ_
         and L_ == B.L_
         and TwoS_ == B.TwoS_;

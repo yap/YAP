@@ -17,6 +17,9 @@
 #include <PDL.h>
 #include <PHSP.h>
 
+#include <Group.h>
+#include <Sort.h>
+
 /// generate a model with 4 final state particles
 //-------------------------
 inline std::shared_ptr<yap::Model> d4pi()
@@ -53,8 +56,6 @@ inline std::shared_ptr<yap::Model> d4pi()
     D->addWeakDecay(rho, rho);
     D->addWeakDecay(a_1, piMinus);
 
-    M->addInitialStateParticle(D);
-
     return M;
 }
 
@@ -77,26 +78,17 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
     auto piPlus = lone_elt(filter(FSP, yap::is_named("pi+")));
     auto kPlus  = lone_elt(filter(FSP, yap::is_named("K+")));
     auto kMinus = lone_elt(filter(FSP, yap::is_named("K-")));
-    
+        
     for (unsigned j = 0; j < 3; ++j) {
         auto res = yap::DecayingParticle::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
                                                  std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
         res->addStrongDecay(piPlus, kMinus);
         D->addWeakDecay(res, kPlus);
-        switch (j) {
-        case 0:
-            *free_amplitude(*D, yap::to(res)) = 0.5;
-            break;
-        case 1:
-            *free_amplitude(*D, yap::to(res)) = 1;
-            break;
-        case 2:
-            *free_amplitude(*D, yap::to(res)) = 30;
-            break;
-        }
     }
 
-    M->addInitialStateParticle(D);
+    *free_amplitude(*M, yap::from(*D), yap::l_equals(0)) = 0.5;
+    *free_amplitude(*M, yap::from(*D), yap::l_equals(1)) = 1.;
+    *free_amplitude(*M, yap::from(*D), yap::l_equals(2)) = 30.;
 
     return M;
 }
@@ -129,8 +121,6 @@ std::shared_ptr<yap::Model> d3pi()
     // Add channels to D
     D->addWeakDecay(rho, piPlus);
 
-    M->addInitialStateParticle(D);
-
     return M;
 }
 
@@ -139,7 +129,7 @@ inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
     auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
     
-    auto isp_mass = T[M.initialStateParticles().begin()->first->name()].mass();
+    auto isp_mass = T[M.initialStates()[0]->name()].mass();
 
     auto A = M.massAxes();
     auto m2r = yap::squared(yap::mass_range(isp_mass, A, M.finalStateParticles()));

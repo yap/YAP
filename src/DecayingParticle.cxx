@@ -1,5 +1,6 @@
 #include "DecayingParticle.h"
 
+#include "Attributes.h"
 #include "BlattWeisskopf.h"
 #include "container_utils.h"
 #include "DecayChannel.h"
@@ -82,6 +83,16 @@ bool dt_valid_for_pc(const DecayTreeVector::value_type& dt, const ParticleCombin
 { return pcs_has_pc(dt->freeAmplitude()->decayChannel()->particleCombinations(), pc, d); }
 
 //-------------------------
+// helper function
+const bool compare_trees(std::shared_ptr<DecayTree> A, std::shared_ptr<DecayTree> B)
+{
+    return A == B
+        or (A->freeAmplitude() == B->freeAmplitude()
+            and A->initialTwoM() == B->initialTwoM()
+            and A->daughterDecayTrees() == B->daughterDecayTrees());
+}
+
+//-------------------------
 void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
 {
     if (!c)
@@ -122,6 +133,18 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
     for (auto pc : Channels_.back()->particleCombinations())
         addParticleCombination(*pc);
 
+    // if not already an initial state, check if should be one
+    if (std::find(model()->initialStates().begin(), model()->initialStates().end(),
+                  std::static_pointer_cast<DecayingParticle>(shared_from_this())) == model()->initialStates().end()) {
+
+        if (std::any_of(particleCombinations().begin(), particleCombinations().end(),
+                        [&](const ParticleCombinationSet::value_type& pc)
+                        {return pc->indices().size() == model()->finalStateParticles().size();})) {
+            
+            const_cast<Model*>(model())->addInitialState(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
+        }
+    }
+    
     /////////////////////////
     /// create decay trees for channel:
 
@@ -149,16 +172,13 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
 
                         if (is_decaying_particle(Channels_.back()->daughters()[d])) {
 
-                            // get daughter's DecayTreeVectorMap
-                            const auto& m_dtv_map = static_cast<const DecayingParticle&>(*Channels_.back()->daughters()[d]).decayTrees();
-
-                            // get DecayTreeVector for desired spin projection of daughter
-                            auto it  = m_dtv_map.find(two_m[d]);
-                            if (it == m_dtv_map.end()) {
+                            // get vector of DecayTree's of daughter with desired spin projection
+                            const auto dtv = filter(static_cast<const DecayingParticle&>(*Channels_.back()->daughters()[d]).decayTrees(), m_equals(two_m[d]));
+                            
+                            if (dtv.empty()) {
                                 DTV.clear();
                                 break;
                             }
-                            const auto& dtv = it->second;
                             
                             // create temp tree vector to store new copies into
                             DecayTreeVector DTV_temp;
@@ -177,7 +197,7 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
 
                                 }
                             }
-
+                            
                             // repalce parent's DecayTreeVector with the new one with daughter d set into them
                             DTV = DTV_temp;
                         }
@@ -189,7 +209,6 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
                             if (!pcs_has_pc(Channels_.back()->daughters()[d]->particleCombinations(), *pc, d))
                                 DTV.clear();
 
-                        
                         }
 
                         // else was not DecayingParticle or FinalStateParticle
@@ -200,21 +219,17 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
 
                     // if decay trees were created, add them into DecayTrees_
                     // if they aren't already present in it
-                    if (!DTV.empty()) {
-                        // this creates the empty DecayTreeVector if not yet created (hence the above conditional)
-                        auto& dtv_M = DecayTrees_[two_M];
-                        for (const auto& DT : DTV) {
-                            // check that DT isn't already equal to one in dtv_M
-                            if (std::none_of(dtv_M.begin(), dtv_M.end(), [&DT](const std::shared_ptr<DecayTree>& dt) {return *dt == *DT;}))
-                                dtv_M.push_back(DT);
-                        }
+                    for (const auto& DT : DTV) {
+                        // check that DT isn't already equal to one in DecayTrees_
+                        if (std::none_of(DecayTrees_.begin(), DecayTrees_.end(), std::bind(compare_trees, std::placeholders::_1, DT)))
+                            DecayTrees_.push_back(DT);
                     }
 
                 } // ends loop over particle combinations of this decaying particle
             } // ends loop over spin projections of daughters
         } // ends loop over spin projection of parent
     } // ends loop over spin amplitude
-    
+
     if (MassShape_)
         MassShape_->addDecayChannel(c);
 }
@@ -286,12 +301,50 @@ void DecayingParticle::addParticleCombination(const ParticleCombination& pc)
 }
 
 //-------------------------
-void DecayingParticle::pruneParticleCombinations()
+// helper function
+const bool tree_is_used(const DecayTree& DT, const DecayTree& dt)
 {
-    Particle::pruneParticleCombinations();
+    // check for pointer equivalence
+    if (&DT == &dt)
+        return true;
+    // check daughters, recursively
+    for (const auto& d_DT : DT.daughterDecayTrees())
+        if (tree_is_used(*d_DT.second, dt))
+            return true;
+    return false;
+}
+    
+//-------------------------
+// helper function
+const bool tree_is_used(const Model& M, const DecayTree& dt)
+{
+    // loop over ModelComponents
+    for (const auto& C : M.components())
+        // loop over DecayTree's in C
+        for (const auto& DT : C.decayTrees())
+            if (tree_is_used(*DT, dt))
+                return true;
+    return false;
+}
+    
+//-------------------------
+void DecayingParticle::prune()
+{
+    Particle::prune();
 
+    // call prune for all channels
     for (auto& c : Channels_)
-        c->pruneParticleCombinations();
+        c->prune();
+
+    // prune DecayTrees_
+    if (!model())
+        throw exceptions::Exception("model is nullptr", "DecayingParticle::prune");
+
+    for (auto it = DecayTrees_.begin(); it != DecayTrees_.end(); )
+        if (tree_is_used(*model(), **it))
+            ++it;
+        else
+            it = DecayTrees_.erase(it);
 }
 
 //-------------------------
@@ -392,23 +445,9 @@ ParticleSet particles(DecayingParticle& dp)
 }
 
 //-------------------------
-DecayTreeSet decay_trees(const DecayingParticle& dp)
-{
-    DecayTreeSet S;
-    for (const auto& m_dtv : dp.decayTrees())
-        S.insert(m_dtv.second.begin(), m_dtv.second.end());
-    return S;
-}
-
-//-------------------------
 FreeAmplitudeSet free_amplitudes(const DecayingParticle& dp)
 {
-    FreeAmplitudeSet S;
-    for (const auto& m_dtv : dp.decayTrees()) {
-        auto s = free_amplitudes(m_dtv.second);
-        S.insert(s.begin(), s.end());
-    }
-    return S;
+    return free_amplitudes(dp.decayTrees());
 }
 
 }

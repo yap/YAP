@@ -42,18 +42,18 @@ const double sum_of_intensities(const Model& M, DataPartition& D, double ped)
     if (ped == 0)
         return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
                                [&](CompensatedSum<double>& l, const DataPoint & d)
-                               {return l += intensity(M.initialStateParticles(), d);});
+                               {return l += intensity(M.components(), d);});
     // else
     return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
                            [&](CompensatedSum<double>& l, const DataPoint & d)
-                           {return l += intensity(M.initialStateParticles(), d) - ped;});
+                           {return l += intensity(M.components(), d) - ped;});
 }
 
 //-------------------------
 const double sum_of_intensity(const Model& M, DataPartition& D, double ped)
 {
-    if (M.initialStateParticles().empty())
-        throw exceptions::Exception("Model has no initialStateParticles", "sum_of_intensity");
+    if (M.components().empty())
+        throw exceptions::Exception("Model has no components", "sum_of_intensity");
 
     return sum_of_intensities(M, D, ped);
 }
@@ -73,8 +73,8 @@ const double sum_of_intensity(const Model& M, DataPartitionVector& DP, double pe
     if (DP.size() == 1)
         return sum_of_intensity(M, *DP[0], ped);
 
-    if (M.initialStateParticles().empty())
-        throw exceptions::Exception("Model has no InitialStateParticles", "sum_of_intensity");
+    if (M.components().empty())
+        throw exceptions::Exception("Model has no components", "sum_of_intensity");
 
     std::vector<std::future<double> > partial_sums;
     partial_sums.reserve(DP.size());

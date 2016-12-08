@@ -26,25 +26,44 @@
 #include "fwd/DecayTree.h"
 #include "fwd/IntegralElement.h"
 #include "fwd/Model.h"
+#include "fwd/Parameter.h"
 
 #include "DecayTreeVectorIntegral.h"
 
+#include <memory>
+#include <vector>
+
 namespace yap {
 
+/// \struct ModelComponentIntegral
+/// \brief Stores integral of a ModelComponent
+/// \author Daniel Greenwald
+/// \ingroup Integration    
+struct ModelComponentIntegral
+{
+    /// Admixture parameter
+    std::shared_ptr<NonnegativeRealParameter> Admixture;
+
+    /// Integral
+    DecayTreeVectorIntegral Integral;
+
+    /// Constructor
+    ModelComponentIntegral(const ModelComponent& c);
+};
+    
 /// \class ModelIntegral
-/// \brief Stores integral of a full model
+/// \brief Stores integral of a Model
 /// \author Daniel Greenwald
 /// \ingroup Integration
 class ModelIntegral
 {
-
 public:
 
     /// constructor
     /// \param model Model to integrate
     ModelIntegral(const Model& model);
 
-    const IntegralMap& integrals() const
+    const std::vector<ModelComponentIntegral>& integrals() const
     { return Integrals_; }
 
     /// grant friend status to Integrator for nonconst access Integrals_
@@ -52,8 +71,8 @@ public:
 
 private:
 
-    /// Map of (admixture factor -> component integral)
-    IntegralMap Integrals_;
+    /// Integral components
+    std::vector<ModelComponentIntegral> Integrals_;
 
 };
 

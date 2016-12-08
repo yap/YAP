@@ -21,11 +21,14 @@
 #ifndef yap_Model_h
 #define yap_Model_h
 
+#include "fwd/Model.h"
+
 #include "fwd/DataAccessor.h"
 #include "fwd/DataPartition.h"
 #include "fwd/DataPoint.h"
 #include "fwd/DataSet.h"
 #include "fwd/DecayingParticle.h"
+#include "fwd/DecayTree.h"
 #include "fwd/FinalStateParticle.h"
 #include "fwd/FourMomenta.h"
 #include "fwd/FourVector.h"
@@ -48,6 +51,35 @@
 #include <vector>
 
 namespace yap {
+
+/// \class ModelComponent
+/// a term to be summed into the intensity incoherently,
+/// the term value is Admixture * coherent sum of DecayTrees
+class ModelComponent
+{
+public:
+    /// Constructor
+    ModelComponent(const DecayTreeVector& dtv, double adm = 1.);
+
+    /// \return DecayTrees (const)
+    const DecayTreeVector& decayTrees() const
+    { return DecayTrees_; }
+
+    /// \return Admixture_ (const)
+    const std::shared_ptr<NonnegativeRealParameter>& admixture() const
+    { return Admixture_; }
+
+    /// \return Admixture_
+    std::shared_ptr<NonnegativeRealParameter>& admixture()
+    { return Admixture_; }
+
+private:
+    /// DecayTrees to be coherently summed
+    DecayTreeVector DecayTrees_;
+
+    /// incoherent sum admixture (real) multiplying intensity of DecayTrees
+    std::shared_ptr<NonnegativeRealParameter> Admixture_;
+};
 
 /// \class Model
 /// \brief Class implementing a PWA model
@@ -132,10 +164,14 @@ public:
     const FinalStateParticleVector& finalStateParticles() const
     { return FinalStateParticles_; }
 
-    /// \return InitialStateParticles_
-    const InitialStateParticleMap& initialStateParticles() const
-    { return InitialStateParticles_; }
+    /// \return InitialStates_
+    const DecayingParticleVector& initialStates() const
+    { return InitialStates_; }
 
+    /// \return Components_
+    const std::vector<ModelComponent>& components() const
+    { return Components_; }
+    
     /// \return set of DataAccessors
     const DataAccessorSet& dataAccessors() const
     { return DataAccessors_; }
@@ -161,11 +197,8 @@ public:
     void setFinalState(Types ... FSPs)
     { FinalStateParticleVector V{FSPs...}; setFinalState(V); }
 
-    /// add an initial state particle
-    /// The first particle added that decays to the full final state will become THE initial state particle,
-    /// which can be retrieved by calling #initialStateParticle,
-    /// and its amplitude will be fixed
-    const InitialStateParticleMap::value_type& addInitialStateParticle(std::shared_ptr<DecayingParticle> bg);
+    /// add an initial state
+    void addInitialState(std::shared_ptr<DecayingParticle> p);
 
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
@@ -240,10 +273,12 @@ private:
     /// set of pointers to RecalculableDataAccessors
     RecalculableDataAccessorSet RecalculableDataAccessors_;
 
-    /// pointers to initial particles
-    /// they will be summed in incoherently
-    InitialStateParticleMap InitialStateParticles_;
-
+    /// Components of full intensity
+    std::vector<ModelComponent> Components_;
+    
+    /// Initial states
+    std::vector<std::shared_ptr<DecayingParticle> > InitialStates_;
+    
     /// vector of final state particles
     FinalStateParticleVector FinalStateParticles_;
 
@@ -255,9 +290,6 @@ private:
 
 };
 
-/// \return string of AdmixtureMap
-std::string to_string(const AdmixtureMap& mix);
-
 /// Fix all FreeAmplitude's in a model that parameterize the only
 /// possible decay of their parent state.
 void fix_solitary_free_amplitudes(Model& m);
@@ -268,10 +300,10 @@ void fix_solitary_free_amplitudes(Model& m);
 std::vector<std::shared_ptr<DecayingParticle> > full_final_state_isp(const Model& M);
 
 /// \return intensity for all spin projections of an ISP
-const double intensity(const InitialStateParticleMap::value_type& isp_mix, const DataPoint& d);
+const double intensity(const ModelComponent& c, const DataPoint& d);
 
 /// \return intensity for a data point evaluated over isp_map
-const double intensity(const InitialStateParticleMap& isp_map, const DataPoint& d);
+const double intensity(const std::vector<ModelComponent>& C, const DataPoint& d);
 
 /// \return The sum of the logs of squared amplitudes evaluated over the data partition
 /// \param M Model to evaluate

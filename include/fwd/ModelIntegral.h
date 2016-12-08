@@ -17,24 +17,15 @@
  */
 
 /// \file
+/// contains forward declarations only
 
 #ifndef yap_ModelIntegralFwd_h
 #define yap_ModelIntegralFwd_h
 
-#include "fwd/DecayTreeVectorIntegral.h"
-#include "fwd/Model.h"
-#include "fwd/Parameter.h"
-
-#include <map>
-#include <memory>
-
 namespace yap {
 
+class ModelComponentIntegral;
 class ModelIntegral;
-
-/// \typedef IntegralMap
-/// maps admixture parameter to integral
-using IntegralMap = std::map<AdmixtureMap::mapped_type, DecayTreeVectorIntegral>;
 
 }
 

@@ -31,11 +31,8 @@
  */
 std::complex<double> calculate_model(double isp_mass, yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
-    auto ISPs = full_final_state_isp(M);
-    if (ISPs.empty())
+    if (M.components().empty())
         throw;
-
-    auto isp = ISPs[0];
 
     // calculate four-momenta
     auto P = calculate_four_momenta(isp_mass, M, A, m2);
@@ -51,7 +48,7 @@ std::complex<double> calculate_model(double isp_mass, yap::Model& M, const yap::
 
     // return amplitude
     M.calculate(data);
-    return amplitude(isp->decayTrees().at(0), data[0]);
+    return amplitude(M.components()[0].decayTrees(), data[0]);
 }
 
 TEST_CASE( "swapFinalStates" )

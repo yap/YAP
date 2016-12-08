@@ -109,7 +109,6 @@ public:
 
 private:
 
-    /// override in inherting classes
     /// \return shared_ptr to SpinAmplitude object
     /// \param m Owning model
     /// \param two_J twice the spin of initial state

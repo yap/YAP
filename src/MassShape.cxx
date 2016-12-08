@@ -50,7 +50,7 @@ void MassShape::setOwner(DecayingParticle* dp)
 }
 
 //-------------------------
-DecayTreeVectorMap& MassShape::ownersDecayTrees()
+DecayTreeVector& MassShape::ownersDecayTrees()
 {
     if (!Owner_)
         throw exceptions::Exception("MassShape has no owner", "MassShape::ownersDecayTrees");

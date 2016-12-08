@@ -74,8 +74,8 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
     //                         [](int n, const yap::IntegralMap::value_type& v)
     //                         {return n + v.second.decayTrees().size();});
     // if (N > 1) {
-    for (const auto& b2_dtvi : Integral_.integrals())
-        for (const auto& dt : b2_dtvi.second.decayTrees()) {
+    for (const auto& mci : Integral_.integrals())
+        for (const auto& dt : mci.Integral.decayTrees()) {
             DecayTrees_.push_back(dt);
 
             std::string str = "fit_frac(" + to_string(*dt) + ")";
@@ -227,8 +227,8 @@ void bat_fit::setParameters(const std::vector<double>& p)
     // if (!CalculatedFitFractions_.empty()) {
     unsigned c = GetCurrentChain();
     size_t i = 0;
-    for (const auto& b2_dtvi : Integral_.integrals()) {
-        auto ff = fit_fractions(b2_dtvi.second);
+    for (const auto& mci : Integral_.integrals()) {
+        auto ff = fit_fractions(mci.Integral);
         for (const auto& f : ff)
             CalculatedFitFractions_[c][i++] = f;
     }

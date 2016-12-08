@@ -11,22 +11,26 @@
 namespace yap {
 
 //-------------------------
+ModelComponentIntegral::ModelComponentIntegral(const ModelComponent& c)
+    : Admixture(c.admixture()),
+      Integral(c.decayTrees())
+{
+}
+    
+//-------------------------
 ModelIntegral::ModelIntegral(const Model& model)
 {
-    // for each initial state particle
-    for (const auto& isp_mix : model.initialStateParticles())
-        // for each spin projection
-        for (const auto& m_b : isp_mix.second)
-            // create new DecayTreeVectorIntegral
-            Integrals_.emplace(m_b.second, DecayTreeVectorIntegral(isp_mix.first->decayTrees().at(m_b.first)));
+    Integrals_.reserve(model.components().size());
+    for (const auto& c : model.components())
+        Integrals_.emplace_back(c);
 }
 
 //-------------------------
 const RealIntegralElement integral(const ModelIntegral& MI)
 {
     return std::accumulate(MI.integrals().begin(), MI.integrals().end(), RealIntegralElement(),
-                           [](RealIntegralElement& i, const IntegralMap::value_type& b_I)
-                           { return i += b_I.first->value() * integral(b_I.second); });
+                           [](RealIntegralElement& I, const ModelComponentIntegral& mci)
+                           { return I += mci.Admixture->value() * integral(mci.Integral); });
 }
 
 }
