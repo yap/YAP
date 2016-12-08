@@ -56,8 +56,6 @@ inline std::shared_ptr<yap::Model> d4pi()
     D->addWeakDecay(rho, rho);
     D->addWeakDecay(a_1, piMinus);
 
-    M->addInitialState(D);
-
     return M;
 }
 
@@ -87,8 +85,6 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
         res->addStrongDecay(piPlus, kMinus);
         D->addWeakDecay(res, kPlus);
     }
-
-    M->addInitialState(D);
 
     *free_amplitude(*M, yap::from(*D), yap::l_equals(0)) = 0.5;
     *free_amplitude(*M, yap::from(*D), yap::l_equals(1)) = 1.;
@@ -124,8 +120,6 @@ std::shared_ptr<yap::Model> d3pi()
 
     // Add channels to D
     D->addWeakDecay(rho, piPlus);
-
-    M->addInitialState(D);
 
     return M;
 }

@@ -158,8 +158,6 @@ TEST_CASE( "FourMomentaCalculation" )
         auto D = yap::DecayingParticle::create(T["D+"], 3);
         D->addWeakDecay(X, piPlus);
 
-        M.addInitialState(D);
-
         // choose default Dalitz coordinates
         auto A = M.massAxes();
         auto m2r = yap::squared(yap::mass_range(D_mass, A, M.finalStateParticles()));

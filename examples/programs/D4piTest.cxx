@@ -94,8 +94,6 @@ int main( int argc, char** argv)
     //yap::DecayingParticle* f_0_980 = F.decayingParticleBreitWigner(9000221, radialSize);
     //F.createChannel(f_0_980, piPlus, piMinus, 0);
 
-    // InitialStateParticles
-    M.addInitialState(D);
     // add other background particles
     M.addInitialState(a_1);
     M.addInitialState(rho);

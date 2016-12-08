@@ -124,8 +124,6 @@ int main( int argc, char** argv)
     *free_amplitude(*D, yap::to(sigma))    = std::polar(3.7, yap::rad(-3.));
     // D->addWeakDecay(piPlus, piMinus, piPlus);
 
-    M.addInitialState(D);
-
     // check consistency
     if (M.consistent())
         LOG(INFO) << "consistent!";

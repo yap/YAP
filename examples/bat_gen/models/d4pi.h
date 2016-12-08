@@ -179,8 +179,6 @@ inline std::unique_ptr<Model> d4pi()
         *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
     }
     
-    M->addInitialState(D);
-
     LOG(INFO) << "D Decay trees:";
     LOG(INFO) << to_string(D->decayTrees());
 

@@ -133,6 +133,18 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
     for (auto pc : Channels_.back()->particleCombinations())
         addParticleCombination(*pc);
 
+    // if not already an initial state, check if should be one
+    if (std::find(model()->initialStates().begin(), model()->initialStates().end(),
+                  std::static_pointer_cast<DecayingParticle>(shared_from_this())) == model()->initialStates().end()) {
+
+        if (std::any_of(particleCombinations().begin(), particleCombinations().end(),
+                        [&](const ParticleCombinationSet::value_type& pc)
+                        {return pc->indices().size() == model()->finalStateParticles().size();})) {
+            
+            const_cast<Model*>(model())->addInitialState(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
+        }
+    }
+    
     /////////////////////////
     /// create decay trees for channel:
 

@@ -107,7 +107,7 @@ private:
     /// Name of particle
     std::string Name_;
 
-    /// vector of ParticleCombinations that can comprise this particle
+    /// set of ParticleCombinations that can comprise this particle
     ParticleCombinationSet ParticleCombinations_;
 
 };
