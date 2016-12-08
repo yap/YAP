@@ -158,7 +158,7 @@ TEST_CASE( "FourMomentaCalculation" )
         auto D = yap::DecayingParticle::create(T["D+"], 3);
         D->addWeakDecay(X, piPlus);
 
-        M.addInitialStateParticle(D);
+        M.addInitialState(D);
 
         // choose default Dalitz coordinates
         auto A = M.massAxes();

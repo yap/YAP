@@ -44,7 +44,8 @@ int main( int argc, char** argv)
 
     LOG(INFO) << "Start";
 
-    yap::Model M(std::make_unique<yap::ZemachFormalism>());
+    // yap::Model M(std::make_unique<yap::ZemachFormalism>());
+    yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
     LOG(INFO) << "Model created";
 
@@ -123,7 +124,7 @@ int main( int argc, char** argv)
     *free_amplitude(*D, yap::to(sigma))    = std::polar(3.7, yap::rad(-3.));
     // D->addWeakDecay(piPlus, piMinus, piPlus);
 
-    M.addInitialStateParticle(D);
+    M.addInitialState(D);
 
     // check consistency
     if (M.consistent())
@@ -169,33 +170,33 @@ int main( int argc, char** argv)
     yap::ModelIntegral MI(M);
     yap::ImportanceSampler::calculate(MI, data);
 
-    for (const auto& b2_dtvi : MI.integrals()) {
+    for (const auto& mci : MI.integrals()) {
 
-        MULTILINE(LOG(INFO), to_string(b2_dtvi.second.decayTrees()));
+        MULTILINE(LOG(INFO), to_string(mci.Integral.decayTrees()));
 
-        auto A_DT = amplitude(b2_dtvi.second.decayTrees(), data[0]);
+        auto A_DT = amplitude(mci.Integral.decayTrees(), data[0]);
         LOG(INFO) << "A_DT = " << A_DT;
         LOG(INFO) << "|A_DT|^2 = " << norm(A_DT);
 
-        LOG(INFO) << "integral = " << to_string(integral(b2_dtvi.second));
-        auto ff = fit_fractions(b2_dtvi.second);
+        LOG(INFO) << "integral = " << to_string(integral(mci.Integral));
+        auto ff = fit_fractions(mci.Integral);
         for (size_t i = 0; i < ff.size(); ++i)
-            LOG(INFO) << "fit fraction " << to_string(100. * ff[i]) << "% for " << to_string(*b2_dtvi.second.decayTrees()[i]->freeAmplitude());
+            LOG(INFO) << "fit fraction " << to_string(100. * ff[i]) << "% for " << to_string(*mci.Integral.decayTrees()[i]->freeAmplitude());
         LOG(INFO) << "sum of fit fractions = " << to_string(std::accumulate(ff.begin(), ff.end(), yap::RealIntegralElement()));
 
         LOG(INFO) << "cached integral components:";
-        auto I_cached = cached_integrals(b2_dtvi.second);
+        auto I_cached = cached_integrals(mci.Integral);
         for (const auto& row : I_cached)
             LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
                                          [](std::string & s, const yap::ComplexIntegralElement & c)
         { return s += "\t" + to_string(c);}).erase(0, 1);
 
         LOG(INFO) << "integral components:";
-        auto I = integrals(b2_dtvi.second);
+        auto I = integrals(mci.Integral);
         for (const auto& row : I)
             LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
                                          [](std::string & s, const yap::ComplexIntegralElement & c)
-        { return s += "\t" + to_string(c);}).erase(0, 1);
+                                         { return s += "\t" + to_string(c);}).erase(0, 1);
     }
 
     LOG(INFO) << std::endl << "Fixed amplitudes: ";

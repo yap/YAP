@@ -22,6 +22,7 @@
 #define yap__AttributesFwd_h
 
 #include "fwd/AttributeUtilities.h"
+#include "fwd/DecayingParticle.h"
 
 #include <functional>
 #include <string>
@@ -67,6 +68,10 @@ struct parent_particle;
 template <typename> class name_of;
 
 struct has_a_mass;
+
+/// functor to compare by parent
+template <typename C = std::owner_less<std::shared_ptr<const DecayingParticle> > >
+using by_parent = compare_by<parent_particle, C>;
 
 /// functor to check particle name
 using is_named = check_attribute<name_of<identity> >;

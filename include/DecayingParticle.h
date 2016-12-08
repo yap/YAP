@@ -87,7 +87,7 @@ public:
 
     /// \return DecayTrees
     /// map key is spin projection
-    const DecayTreeVectorMap& decayTrees() const
+    const DecayTreeVector& decayTrees() const
     { return DecayTrees_; }
 
     /// Check consistency of object
@@ -204,8 +204,8 @@ private:
     /// Radial size parameter [GeV^-1]
     std::shared_ptr<PositiveRealParameter> RadialSize_;
 
-    /// Map of spin projection to DecayTreeVector
-    DecayTreeVectorMap DecayTrees_;
+    /// All DecayTree's of this DecayingParticle
+    DecayTreeVector DecayTrees_;
 
 };
 
@@ -217,13 +217,14 @@ std::string to_decay_string(const DecayingParticle& dp, unsigned level = 0);
  
 /// \return Set of all decay trees in provided DecayingParticle
 /// \todo Have it recursively travel down DecayChannels?
-DecayTreeSet decay_trees(const DecayingParticle& dp);
+inline DecayTreeVector decay_trees(const DecayingParticle& dp)
+{ return dp.decayTrees(); }
 
-/// \return DecayTreeSet for decays passing provided predicates
+/// \return DecayTreeVector for decays passing provided predicates
 /// \param p last predicate to apply in filtering DecayTree's
 /// \param P... predicates to apply in filtering DecayTree's
 template <typename Last, typename ... Predicates>
-DecayTreeSet decay_trees(const DecayingParticle& dp, Last p, Predicates ... P)
+DecayTreeVector decay_trees(const DecayingParticle& dp, Last p, Predicates ... P)
 { return filter(decay_trees(dp), p, P...); }
 
 /// \return lone DecayTree passing provided predicates
@@ -231,7 +232,7 @@ DecayTreeSet decay_trees(const DecayingParticle& dp, Last p, Predicates ... P)
 /// \param P... predicates to apply in filtering DecayTree's
 /// throws if no unique DecayTree is found
 template <typename Last, typename ... Predicates>
-DecayTreeSet::value_type decay_tree(const DecayingParticle& dp, Last p, Predicates ... P)
+DecayTreeVector::value_type decay_tree(const DecayingParticle& dp, Last p, Predicates ... P)
 { return lone_elt(filter(decay_trees(dp), p, P...)); }
 
 /// \return all the free amplitudes under a decaying particle

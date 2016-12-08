@@ -90,7 +90,7 @@ protected:
     {}
 
     /// Access owner's DecayTree's
-    DecayTreeVectorMap& ownersDecayTrees();
+    DecayTreeVector& ownersDecayTrees();
     
 private:
 

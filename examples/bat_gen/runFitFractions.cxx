@@ -66,10 +66,10 @@ int main()
     m->integrate();
 
     double sum(0);
-    for (const auto& b2_dtvi : m->modelIntegral().integrals()) {
-        auto ff = fit_fractions(b2_dtvi.second);
+    for (const auto& mci : m->modelIntegral().integrals()) {
+        auto ff = fit_fractions(mci.Integral);
         for (size_t i = 0; i < ff.size(); ++i) {
-            LOG(INFO) << to_string(*b2_dtvi.second.decayTrees()[i]) << "\t" << ff[i].value()*100. << " %";
+            LOG(INFO) << to_string(*mci.Integral.decayTrees()[i]) << "\t" << ff[i].value()*100. << " %";
             sum += ff[i].value();
         }
     }

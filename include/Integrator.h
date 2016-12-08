@@ -25,6 +25,8 @@
 #include "fwd/DecayTreeVectorIntegral.h"
 #include "fwd/ModelIntegral.h"
 
+#include <vector>
+
 namespace yap {
 
 /// \class Integrator
@@ -37,7 +39,7 @@ protected:
 
     /// \return ModelIntegral's IntegralMap
     /// \param I ModelIntegral to access
-    static IntegralMap& integrals(ModelIntegral& I);
+    static std::vector<ModelComponentIntegral>& integrals(ModelIntegral& I);
 
     /// \return DecayTreeVectorIntegral's Diagonals_
     /// \param I DecayTreeVectorIntegral to access

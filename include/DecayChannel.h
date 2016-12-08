@@ -73,7 +73,7 @@ public:
 
     /// grant friend status to DecayingParticle to call
     /// addParticleCombination, pruneParticleCombinations,
-    /// and registerWithModel
+    /// registerWithModel
     friend class DecayingParticle;
 
 protected:

@@ -7,7 +7,7 @@
 namespace yap {
 
 //-------------------------
-IntegralMap& Integrator::integrals(ModelIntegral& I)
+std::vector<ModelComponentIntegral>& Integrator::integrals(ModelIntegral& I)
 { return I.Integrals_; }
 
 //-------------------------

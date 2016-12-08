@@ -28,7 +28,7 @@ inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::Model> M)
     auto D = DecayingParticle::create(T["D+"], 3 /*Gev^-1*/);
     D->addWeakDecay(piPlus, piMinus, piPlus);
 
-    M->addInitialStateParticle(D);
+    M->addInitialState(D);
 
     return M;
 }

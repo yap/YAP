@@ -220,7 +220,12 @@ struct has_decay_channel : public has_pointed_to_object<DecayChannel, Particle, 
 /// struct to access parent particle of an object
 /// \ingroup Attributes
 struct parent_particle : public attribute_of<std::shared_ptr<const DecayingParticle>,
-                                             DecayTree, FreeAmplitude, DecayChannel, BlattWeisskopf, MassShape>
+                                             DecayTree,
+                                             FreeAmplitude,
+                                             DecayChannel,
+                                             BlattWeisskopf,
+                                             MassShape,
+                                             ModelComponent>
 {
     /// \note functors inherited
     using attribute_of::operator();
@@ -239,6 +244,9 @@ struct parent_particle : public attribute_of<std::shared_ptr<const DecayingParti
 
     /// MassShape& functor
     virtual std::shared_ptr<const DecayingParticle> operator()(const MassShape& m) const override;
+
+    /// Model::Component& functor
+    virtual std::shared_ptr<const DecayingParticle> operator()(const ModelComponent& c) const override;
 };
 
 /// functor to compare by parent

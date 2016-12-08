@@ -95,10 +95,10 @@ int main( int argc, char** argv)
     //F.createChannel(f_0_980, piPlus, piMinus, 0);
 
     // InitialStateParticles
-    M.addInitialStateParticle(D);
+    M.addInitialState(D);
     // add other background particles
-    M.addInitialStateParticle(a_1);
-    M.addInitialStateParticle(rho);
+    M.addInitialState(a_1);
+    M.addInitialState(rho);
 
     // check consistency
     if (M.consistent())
@@ -110,10 +110,10 @@ int main( int argc, char** argv)
 
     // print stuff
 
-    for (auto& isp : M.initialStateParticles()) {
+    for (const auto& isp : M.initialStates()) {
         FLOG(INFO) << "";
-        FLOG(INFO) << isp.first->particleCombinations().size() << " " << *isp.first << " symmetrizations";
-        for (auto& pc : isp.first->particleCombinations())
+        FLOG(INFO) << isp->particleCombinations().size() << " " << *isp << " symmetrizations";
+        for (auto& pc : isp->particleCombinations())
             FLOG(INFO) << *pc;
         FLOG(INFO) << "";
     }
@@ -167,11 +167,10 @@ int main( int argc, char** argv)
 
         // change amplitudes
         if (uniform(g) > 0.5)
-            for (auto& isp_b : M.initialStateParticles())
-                for (auto& m_dtv : isp_b.first->decayTrees())
-                    for (auto& dt : m_dtv.second)
-                        if (dt->freeAmplitude()->variableStatus() != yap::VariableStatus::fixed and uniform(g) > 0.5)
-                            *dt->freeAmplitude() = uniform2(g) * dt->freeAmplitude()->value();
+            for (auto& isp : M.initialStates())
+                for (auto& dt : decay_trees(*isp, yap::is_not_fixed()))
+                    if (uniform(g) > 0.5)
+                        *dt->freeAmplitude() = uniform2(g) * dt->freeAmplitude()->value();
 
         // change masses
         if (uniform(g) > 0.5)

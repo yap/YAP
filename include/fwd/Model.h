@@ -17,27 +17,15 @@
  */
 
 /// \file
+/// contains forward declarations only
 
 #ifndef yap_ModelFwd_h
 #define yap_ModelFwd_h
 
-#include "fwd/DecayingParticle.h"
-#include "fwd/Parameter.h"
-
-#include <map>
-#include <memory>
-
 namespace yap {
 
 class Model;
-
-/// \typedef 
-/// maps spin projection (int) to admixture factor
-using AdmixtureMap = std::map<int, std::shared_ptr<NonnegativeRealParameter> >;
-
-/// \typedef InitialStateParticleMap
-/// maps ISP to AdmixtureMap = one free real parameter per spin projection of ISP
-using InitialStateParticleMap = std::map<std::shared_ptr<DecayingParticle>, AdmixtureMap>;
+class ModelComponent;
 
 }
 

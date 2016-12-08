@@ -58,7 +58,7 @@ public:
     /// \param free_amp shared_ptr to ComplexParameter for the free amplitude
     /// \param two_M (twice) the spin projection of the parent particle
     /// \param two_m (twice) the spin projections of the daughter particles
-    explicit DecayTree(std::shared_ptr<FreeAmplitude> free_amp, int two_M, const SpinProjectionVector& two_m);
+    DecayTree(std::shared_ptr<FreeAmplitude> free_amp, int two_M, const SpinProjectionVector& two_m);
 
     /// \return FreeAmplitude_
     const std::shared_ptr<FreeAmplitude>& freeAmplitude() const
@@ -76,6 +76,10 @@ public:
     const DaughterDecayTreeMap daughterDecayTrees() const
     { return DaughterDecayTrees_; }
 
+    /// \return AmplitudeComponents_
+    const std::vector<const AmplitudeComponent*> amplitudeComponents() const
+    { return AmplitudeComponents_; }
+    
     /// \return Model this DecayTree belongs to (via FreeAmplitude)
     const Model* model() const;
 
@@ -135,13 +139,6 @@ std::string to_string(const DecayTree& dt, std::string offset = "");
 
 /// convert to (mutliline string)
 std::string to_string(const DecayTreeVector& dtv);
-
-/// convert to (multiline) string
-std::string to_string(const DecayTreeVectorMap& m_dtv_map);
-
-/// equality operator
-inline bool operator==(const DecayTree& lhs, const DecayTree& rhs)
-{ return lhs.freeAmplitude() == rhs.freeAmplitude() and lhs.daughterDecayTrees() == rhs.daughterDecayTrees(); }
 
 /// \return Depth of DecayTree
 unsigned depth(const DecayTree& DT);
