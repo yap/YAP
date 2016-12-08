@@ -33,12 +33,6 @@ void Particle::addParticleCombination(const ParticleCombination& pc)
 }
 
 //-------------------------
-void Particle::pruneParticleCombinations()
-{
-    prune_particle_combinations(ParticleCombinations_);
-}
-
-//-------------------------
 const SpinVector spins(const ParticleVector& v)
 {
     SpinVector s;

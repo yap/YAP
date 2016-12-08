@@ -180,12 +180,12 @@ void DecayChannel::registerWithModel()
 }
 
 //-------------------------
-void DecayChannel::pruneParticleCombinations()
+void DecayChannel::prune()
 {
     prune_particle_combinations(ParticleCombinations_);
-
+    
     for (auto& p : Daughters_)
-        p->pruneParticleCombinations();
+        p->prune();
 }
 
 //-------------------------

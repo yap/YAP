@@ -226,25 +226,15 @@ void Model::addInitialState(std::shared_ptr<DecayingParticle> p)
     if (!p)
         throw exceptions::Exception("Initial-state particle empty", "Model::addInitialState");
 
-    if (std::find(InitialStates_.begin(), InitialStates_.end(), p) != InitialStates_.end())
-        throw exceptions::Exception("Initial-state already present in model", "Model::addInitialState");
-    
-    // add DataAccessors to model / set model pointers
-    p->registerWithModel();
-
     if (p->model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialState");
 
+    // if already present, do nothing
+    if (std::find(InitialStates_.begin(), InitialStates_.end(), p) != InitialStates_.end())
+        return;
+    
     // add to InitialStates_
     InitialStates_.push_back(p);
-
-    // add ParticleCombination's
-    for (auto& pc : InitialStates_.back()->particleCombinations())
-        addParticleCombination(*pc);
-
-    // loop over DecayTrees of particle grouped by spin projection
-    for (auto dtv : group(InitialStates_.back()->decayTrees(), by_m<>()))
-        Components_.emplace_back(dtv);
 }
 
 //-------------------------
@@ -304,9 +294,21 @@ void Model::lock()
     if (Locked_)
         return;
 
-    // prune initial state particles
+    // for each isp
+    for (auto& isp : InitialStates_) {
+        // register it
+        isp->registerWithModel();
+        // add it's particle combinations
+        for (auto& pc : isp->particleCombinations())
+            addParticleCombination(*pc);
+        // and create components
+        for (auto dtv : group(isp->decayTrees(), by_m<>()))
+            Components_.emplace_back(dtv);
+    }
+    
+    // call prune() for all initial states
     for (auto& isp : InitialStates_)
-        isp->pruneParticleCombinations();
+        isp->prune();
 
     fix_solitary_free_amplitudes(*this);
 

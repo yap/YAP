@@ -72,7 +72,7 @@ public:
     void addSpinAmplitude(std::shared_ptr<SpinAmplitude> sa);
 
     /// grant friend status to DecayingParticle to call
-    /// addParticleCombination, pruneParticleCombinations,
+    /// addParticleCombination, prune,
     /// registerWithModel
     friend class DecayingParticle;
 
@@ -85,7 +85,7 @@ protected:
     virtual void addParticleCombination(const ParticleCombination& c);
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
-    virtual void pruneParticleCombinations();
+    virtual void prune();
 
 private:
 

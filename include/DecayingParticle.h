@@ -164,8 +164,7 @@ public:
     /// \return raw pointer to Model through first DecayChannel
     const Model* model() const override;
 
-    /// grant friend status to Model to call registerWithModel() and
-    /// pruneParticleCombinations()
+    /// grant friend status to Model to call registerWithModel() and prune()
     friend Model;
     
     /// grant friend status to DecayChannel to call
@@ -180,8 +179,9 @@ protected:
     /// add ParticleCombination to SymmetrizationIndices_ and BlattWeisskopfs_
     virtual void addParticleCombination(const ParticleCombination& c) override;
 
-    /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
-    virtual void pruneParticleCombinations() override;
+    /// calls Particle::prune() and then prunes DecayTrees_ to only
+    /// contain trees used by the model; then calls prune on all DecayChannels
+    virtual void prune() override;
 
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() override;

@@ -289,12 +289,50 @@ void DecayingParticle::addParticleCombination(const ParticleCombination& pc)
 }
 
 //-------------------------
-void DecayingParticle::pruneParticleCombinations()
+// helper function
+const bool tree_is_used(const DecayTree& DT, const DecayTree& dt)
 {
-    Particle::pruneParticleCombinations();
+    // check for pointer equivalence
+    if (&DT == &dt)
+        return true;
+    // check daughters, recursively
+    for (const auto& d_DT : DT.daughterDecayTrees())
+        if (tree_is_used(*d_DT.second, dt))
+            return true;
+    return false;
+}
+    
+//-------------------------
+// helper function
+const bool tree_is_used(const Model& M, const DecayTree& dt)
+{
+    // loop over ModelComponents
+    for (const auto& C : M.components())
+        // loop over DecayTree's in C
+        for (const auto& DT : C.decayTrees())
+            if (tree_is_used(*DT, dt))
+                return true;
+    return false;
+}
+    
+//-------------------------
+void DecayingParticle::prune()
+{
+    Particle::prune();
 
+    // call prune for all channels
     for (auto& c : Channels_)
-        c->pruneParticleCombinations();
+        c->prune();
+
+    // prune DecayTrees_
+    if (!model())
+        throw exceptions::Exception("model is nullptr", "DecayingParticle::prune");
+
+    for (auto it = DecayTrees_.begin(); it != DecayTrees_.end(); )
+        if (tree_is_used(*model(), **it))
+            ++it;
+        else
+            it = DecayTrees_.erase(it);
 }
 
 //-------------------------

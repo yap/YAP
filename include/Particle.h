@@ -93,7 +93,8 @@ protected:
     virtual void addParticleCombination(const ParticleCombination& pc) = 0;
 
     /// prune ParticleCombinations_ to only contain ParticleCombination's tracing back up the ISP
-    virtual void pruneParticleCombinations();
+    virtual void prune()
+    { prune_particle_combinations(ParticleCombinations_); }
 
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() = 0;

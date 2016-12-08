@@ -132,7 +132,15 @@ int main( int argc, char** argv)
     else
         LOG(INFO) << "inconsistent!";
 
+    LOG(INFO) << "before locking:";
+    for (const auto& dt : rho->decayTrees())
+        LOG(INFO) << to_string(*dt);
+    
     M.lock();
+
+    LOG(INFO) << "after locking:";
+    for (const auto& dt : rho->decayTrees())
+        LOG(INFO) << to_string(*dt);
 
     // print stuff
  

@@ -110,17 +110,17 @@ int main( int argc, char** argv)
 
     // print stuff
 
-    for (const auto& isp : M.initialStates()) {
-        FLOG(INFO) << "";
-        FLOG(INFO) << isp->particleCombinations().size() << " " << *isp << " symmetrizations";
-        for (auto& pc : isp->particleCombinations())
-            FLOG(INFO) << *pc;
-        FLOG(INFO) << "";
-    }
-
-    FLOG(INFO) << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
-    for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
-        FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
+    // for (const auto& isp : M.initialStates()) {
+    //     FLOG(INFO) << "";
+    //     FLOG(INFO) << isp->particleCombinations().size() << " " << *isp << " symmetrizations";
+    //     for (auto& pc : isp->particleCombinations())
+    //         FLOG(INFO) << *pc;
+    //     FLOG(INFO) << "";
+    // }
+    
+    // FLOG(INFO) << "\nFour momenta symmetrizations with " << M.fourMomenta()->nSymmetrizationIndices() << " indices";
+    // for (auto& pc_i : M.fourMomenta()->symmetrizationIndices())
+    //     FLOG(INFO) << *pc_i.first << ": " << pc_i.second;
 
     MULTILINE(FLOG(INFO),to_decay_string(*D));
     FLOG(INFO) << "";
@@ -163,7 +163,7 @@ int main( int argc, char** argv)
     yap::mass_parameter get_mass;
     
     // do several loops over all dataPartitions
-    for (unsigned i = 0; i < 100; ++i) {
+    for (unsigned i = 0; i < 10; ++i) {
 
         // change amplitudes
         if (uniform(g) > 0.5)
