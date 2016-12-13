@@ -74,7 +74,7 @@ public:
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
-    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const;
+    virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
 
 protected:
 

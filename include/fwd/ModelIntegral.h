@@ -24,7 +24,7 @@
 
 namespace yap {
 
-class ModelComponentIntegral;
+struct ModelComponentIntegral;
 class ModelIntegral;
 
 }
