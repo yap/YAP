@@ -92,6 +92,10 @@ protected:
     /// Access owner's DecayTree's
     DecayTreeVector& ownersDecayTrees();
     
+    /// Access owner's DecayTree's (const)
+    const DecayTreeVector& ownersDecayTrees() const
+    { return const_cast<MassShape*>(this)->ownersDecayTrees(); }
+
 private:
 
     /// raw pointer to owner
