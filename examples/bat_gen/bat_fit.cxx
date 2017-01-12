@@ -11,6 +11,7 @@
 #include <FreeAmplitude.h>
 #include <ImportanceSampler.h>
 #include <logging.h>
+#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <ModelIntegral.h>
@@ -57,8 +58,8 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
         // add imag parameter
         AddParameter("imag(" + fa_name + ")", -2 * abs(fa->value()), 2 * abs(fa->value()));
 
-        AbsPriors_.push_back(new ConstantPrior(0, 2 * abs(fa->value())));
-        ArgPriors_.push_back(new ConstantPrior(-180, 180));
+        AbsPriors_.push_back(std::make_unique<ConstantPrior>(0, 2 * abs(fa->value())));
+        ArgPriors_.push_back(std::make_unique<ConstantPrior>(-180, 180));
 
         // add amplitude observable
         AddObservable("amp(" + fa_name + ")", 0, 2 * abs(fa->value()));
@@ -84,7 +85,7 @@ bat_fit::bat_fit(std::string name, std::unique_ptr<yap::Model> M, const std::vec
             std::replace(str.begin(), str.end(), '\t', ' ');
 
             AddObservable(str, 0, 1.1);
-            GetObservables().Back().SetNbins(1000);
+            //GetObservables().Back().SetNbins(1000);
         }
     // }
 
@@ -325,8 +326,8 @@ void bat_fit::setPriors(std::shared_ptr<yap::FreeAmplitude> fa, BCPrior* amp_pri
     
     auto i = findFreeAmplitude(fa);
 
-    AbsPriors_[i / 2] = amp_prior;
-    ArgPriors_[i / 2] = arg_prior;
+    AbsPriors_[i / 2].reset(amp_prior);
+    ArgPriors_[i / 2].reset(arg_prior);
 }
 
 //-------------------------

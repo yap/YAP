@@ -154,10 +154,10 @@ protected:
     yap::FreeAmplitudeVector FreeAmplitudes_;
 
     /// BCPrior on abs(FreeAmplitude)
-    std::vector<BCPrior*> AbsPriors_;
+    std::vector<std::unique_ptr<BCPrior> > AbsPriors_;
 
     /// BCPrior on arg(FreeAmplitude)
-    std::vector<BCPrior*> ArgPriors_;
+    std::vector<std::unique_ptr<BCPrior> > ArgPriors_;
 
     /// Calculated fit fractions (for observables)
     std::vector<yap::RealIntegralElementVector> CalculatedFitFractions_;
