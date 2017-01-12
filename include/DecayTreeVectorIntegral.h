@@ -30,7 +30,6 @@
 
 #include <array>
 #include <complex>
-#include <map>
 
 namespace yap {
 
@@ -100,7 +99,7 @@ protected:
 private:
 
     /// DecayTrees to integrate
-    DecayTreeVector DecayTrees_;
+    const DecayTreeVector DecayTrees_;
 
     /// diagonal element integrals:
     /// stores norm(dataDependentAmplitude(...)),
