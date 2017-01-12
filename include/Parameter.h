@@ -42,16 +42,16 @@ class ParameterBase
 protected:
 
     /// Constructor
-    ParameterBase() : VariableStatus_(VariableStatus::changed) {}
+    constexpr explicit ParameterBase() noexcept : VariableStatus_(VariableStatus::changed) {}
 
 public:
 
     /// \return VariableStatus
-    VariableStatus& variableStatus()
+    VariableStatus& variableStatus() noexcept
     { return VariableStatus_; }
 
     /// \return VariableStatus (const)
-    const VariableStatus variableStatus() const
+    constexpr const VariableStatus variableStatus() const noexcept
     { return VariableStatus_; }
 
     /// \return number of real elements in parameter
@@ -87,11 +87,14 @@ class Parameter : public ParameterBase
 {
 public:
 
+    /// The underlying type of the parameter.
+    using parameter_type = T;
+
     /// Default constructor
     Parameter() = default;
 
     /// Value-assigning constructor
-    explicit Parameter(T t) : ParameterBase(), ParameterValue_(t) {}
+    constexpr explicit Parameter(T t) : ParameterBase(), ParameterValue_(t) {}
 
     /// virtual destructor defaulted
     ~Parameter() = default;
@@ -142,6 +145,52 @@ private:
 template <typename T>
 inline std::string to_string(const Parameter<T>& P)
 { using std::to_string; return to_string(P.value()) + " (" + to_string(P.variableStatus()) + ")"; }
+
+/// @brief Multiplication-equal operator for parameters.
+/// @param par The parameter to update.
+/// @param a   The multiplication factor.
+/// @tparam P      The parameter type.
+/// @tparam enable Control template parameter to abort the compilation if _P_ doesn't inherit from Parameter<>. 
+template <typename P,
+          typename enable = typename std::enable_if<std::is_base_of<Parameter<typename P::parameter_type>, P>::value>::type>
+inline P& operator*=(P& par, typename P::parameter_type a)
+{
+    par.setValue(a * par.value());
+    return par;
+}
+
+/// @brief Division-equal operator for parameters.
+/// @param par The parameter to update.
+/// @param a   The division factor.
+/// @tparam P      The parameter type.
+/// @tparam enable Control template parameter to abort the compilation if _P_ doesn't inherit from Parameter<>. 
+template <typename P,
+          typename enable = typename std::enable_if<std::is_base_of<Parameter<typename P::parameter_type>, P>::value>::type>
+inline P& operator/=(P& par, typename P::parameter_type a)
+{ return (par *= (1. / a)); }
+
+/// @brief Addition-equal operator for parameters.
+/// @param par The parameter to update.
+/// @param a   The addition factor.
+/// @tparam P      The parameter type.
+/// @tparam enable Control template parameter to abort the compilation if _P_ doesn't inherit from Parameter<>. 
+template <typename P,
+          typename enable = typename std::enable_if<std::is_base_of<Parameter<typename P::parameter_type>, P>::value>::type>
+inline P& operator+=(P& par, typename P::parameter_type a)
+{
+    par.setValue(a + par.value());
+    return par;
+}
+
+/// @brief Subtraction-equal operator for parameters.
+/// @param par The parameter to update.
+/// @param a   The subtraction factor.
+/// @tparam P      The parameter type.
+/// @tparam enable Control template parameter to abort the compilation if _P_ doesn't inherit from Parameter<>. 
+template <typename P,
+          typename enable = typename std::enable_if<std::is_base_of<Parameter<typename P::parameter_type>, P>::value>::type>
+inline P& operator-=(P& par, typename P::parameter_type a)
+{ return (par += -a); }
 
 /// \class RealParameter
 /// \ingroup Parameters
