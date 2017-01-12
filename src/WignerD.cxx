@@ -6,6 +6,7 @@
 #include "Spin.h"
 
 #include <cmath>
+#include <mutex>
 #include <vector>
 
 namespace yap {
@@ -22,6 +23,8 @@ using dMatrix = std::vector<std::vector<KappaFactorVector> >;
 // Cache of d-matrix kappa term factors
 // index is for (2J - 1), since J = 0 requires no cache
 static std::vector<dMatrix> CachedMatrices_;
+
+static std::mutex CacheMutex_;
 
 }
 
@@ -86,6 +89,7 @@ void dMatrix::cache(unsigned twoJ)
         return;
 
     /// resize d-matrix vector to hold up to spin J
+    std::lock_guard<std::mutex> guard(CacheMutex_);
     if (twoJ > CachedMatrices_.size())
         CachedMatrices_.resize(twoJ);
 
