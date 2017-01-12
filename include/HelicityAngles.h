@@ -32,6 +32,7 @@
 #include "ThreeVector.h"
 
 #include <memory>
+#include <mutex>
 
 namespace yap {
 
@@ -69,6 +70,9 @@ public:
 
 private:
 
+    /// Add cache for StatusManager (thread safe)
+    void addToCache(const StatusManager& sm) const;
+
     /// recursive helicity-angle calculator that travels down decay trees for all channels
     void calculateAngles(const DataPoint& d, const StatusManager& sm,
                          const std::shared_ptr<const ParticleCombination>& pc,
@@ -79,6 +83,8 @@ private:
     using angles_cache = std::map<const std::shared_ptr<const ParticleCombination>, spherical_angles<double>>;
     mutable std::map<const StatusManager*, angles_cache> CachedAngles_;
     mutable std::map<const StatusManager*, const DataPoint*> CachedForDataPoint_;
+
+    mutable std::mutex CacheMutex_;
 
 };
 

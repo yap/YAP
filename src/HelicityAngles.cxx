@@ -13,29 +13,49 @@ namespace yap {
 //-------------------------
 const spherical_angles<double>& HelicityAngles::operator()(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const
 {
+    // check if StatusManager is in cache
+    auto it = CachedAngles_.find(&sm);
+    if (CachedAngles_.find(&sm) == CachedAngles_.end()) {
+        addToCache(sm);
+        it = CachedAngles_.find(&sm);
+    }
+
+    // get entries for status manager
+    angles_cache& cachedAngles = it->second;
+    auto& cachedForDataPoint = CachedForDataPoint_.at(&sm);
+
+
     // check if DataPoint is currently in cache
-    if (CachedForDataPoint_[&sm] == &d) {
+    if (cachedForDataPoint == &d) {
         // find and return entry
-        for (const auto& pc_angles : CachedAngles_[&sm])
+        for (const auto& pc_angles : cachedAngles)
             if (equal_up_and_down(pc_angles.first, pc))
                 return pc_angles.second;
     }
     else {
         // reset and clear
-        CachedForDataPoint_[&sm] = nullptr;
-        CachedAngles_[&sm].clear();
+        cachedForDataPoint = nullptr;
+        cachedAngles.clear();
     }
 
     // if not found, calculate
     calculateAngles(d, sm, origin(*pc).shared_from_this(), Model_->coordinateSystem(), unitMatrix<double, 4>());
-    CachedForDataPoint_[&sm] = &d;
+    cachedForDataPoint = &d;
 
     // find and return entry
-    for (const auto& pc_angles : CachedAngles_.at(&sm))
+    for (const auto& pc_angles : cachedAngles)
         if (equal_up_and_down(pc_angles.first, pc))
             return pc_angles.second;
 
     throw exceptions::Exception("Cannot find entry for DataPoint and ParticleCombination even though it should have been calculated. Something went wrong!", "HelicityAngles::operator()");
+}
+
+//-------------------------
+void HelicityAngles::addToCache(const StatusManager& sm) const
+{
+    std::lock_guard<std::mutex> guard(CacheMutex_);
+    CachedForDataPoint_[&sm] = nullptr;
+    CachedAngles_[&sm].clear();
 }
 
 //-------------------------
