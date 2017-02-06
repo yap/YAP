@@ -100,10 +100,6 @@ inline std::unique_ptr<Model> d4pi()
     if (a_rho_sigma)
         a_1->addStrongDecay(sigma, piPlus);
 
-    // a_1 -> sigma pi 
-    if (a_rho_sigma)
-        *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
-    
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<Flatte>(T["f_0"]);
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
@@ -122,9 +118,28 @@ inline std::unique_ptr<Model> d4pi()
     //
     // D0 channels
     //
-    if (rho_rho) {
+    if (rho_rho)
         D->addWeakDecay(rho, rho);
 
+    if (a_rho_pi_S or a_rho_pi_D)
+        D->addWeakDecay(a_1, piMinus);
+    
+    // a_1 -> sigma pi 
+    if (a_rho_sigma)
+        *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
+
+    if (f_0_pipi)
+        D->addWeakDecay(f_0_980, piPlus, piMinus);
+
+    if (f_2_pipi)
+        D->addWeakDecay(f_2, pipiFlat);
+
+    if (sigma_pipi)
+        D->addWeakDecay(sigma, piPlus, piMinus);
+
+    M->lock();
+    
+    if (rho_rho) {
         amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
                                                  std::polar(scale_rho_rho * 0.624, rad(357.)),    // A_longitudinal
                                                  std::polar(scale_rho_rho * 0.157, rad(120.)),    // A_parallel
@@ -133,8 +148,8 @@ inline std::unique_ptr<Model> d4pi()
         for (auto& fa : free_amplitudes(*D, to(rho, rho)))
             *fa = static_cast<std::complex<double> >(c[fa->spinAmplitude()->L()]);
     }
+
     if (a_rho_pi_S or a_rho_pi_D) {
-        D->addWeakDecay(a_1, piMinus);
         free_amplitude(*D, to(a_1))->variableStatus() = VariableStatus::fixed;
 
         auto a_rho_S = free_amplitude(*a_1, to(rho), l_equals(0));
@@ -166,18 +181,14 @@ inline std::unique_ptr<Model> d4pi()
             LOG(INFO) << "fixed a_rho_D to 0";
         }
     }
-    if (f_0_pipi) {
-        D->addWeakDecay(f_0_980, piPlus, piMinus);
+    if (f_0_pipi)
         *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(scale_f_0_pipi * 0.233, rad(261.));
-    }
-    if (f_2_pipi) {
-        D->addWeakDecay(f_2, pipiFlat);
+
+    if (f_2_pipi)
         *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(scale_f_2_pipi * 0.338, rad(317.));
-    }
-    if (sigma_pipi) {
-        D->addWeakDecay(sigma, piPlus, piMinus);
+
+    if (sigma_pipi)
         *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
-    }
     
     LOG(INFO) << "D Decay trees:";
     LOG(INFO) << to_string(D->decayTrees());
