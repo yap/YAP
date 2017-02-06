@@ -45,14 +45,14 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
     auto D = DecayingParticle::create(T["D0"], radialSize);
 
     // f_0(500), aka "sigma" (as PoleMass)
-    auto sigma = DecayingParticle::create(T["f_0(500)"], radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, 0.220)));
+    auto sigma = DecayingParticle::create(T["f_0(500)"], radialSize, std::make_shared<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
     sigma->addStrongDecay(piZero, piZero);
     D->addWeakDecay(sigma, Kshort);
     
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<yap::Flatte>(0.965);
-    f_0_980_flatte->add(FlatteChannel(0.406, *piZero, *piZero));
-    f_0_980_flatte->add(FlatteChannel(0.406 * 2, *Kshort, *Kshort));
+    f_0_980_flatte->add(FlatteChannel(0.406 * 0.406, *piZero, *piZero));
+    f_0_980_flatte->add(FlatteChannel(0.406 * 0.406 * 4, *Kshort, *Kshort));
     auto f_0_980 = yap::DecayingParticle::create("f_0_980", T["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piZero, piZero);
     D->addWeakDecay(f_0_980, Kshort);
@@ -88,7 +88,7 @@ inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
     D->addWeakDecay(Kstar_1680, piZero);
 
     // change switch argument to choose between different CLEO models
-    switch (1) {
+    switch (2) {
 
         case 1:
             

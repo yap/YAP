@@ -35,8 +35,8 @@ int main()
 
     vector<bat_gen*> test_models = {
         // new bat_gen("D3PI_PHSP", d3pi_phsp(yap_model<ZemachFormalism>()), 1.86961),
-        new bat_gen("D3PI", d3pi(yap_model<ZemachFormalism>()), 1.86961)
-        // new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(yap_model<ZemachFormalism>()), 1.86961),
+        // new bat_gen("D3PI", d3pi(yap_model<ZemachFormalism>()), 1.86961)
+        new bat_gen("DKSPIPI_Zemach", D_K0pi0pi0(yap_model<ZemachFormalism>()), 1.8648400),
         // new bat_gen("DKSPIPI_Helicity", D_K0pi0pi0(yap_model<HelicityFormalism>()), 1.86961)
         // new bat_gen("DKKPI", dkkpi(yap_model<ZemachFormalism>()), 1.86961),
         // new bat_gen("DKKPI", dkkpi(yap_model<HelicityFormalism>()), 1.86961)
@@ -51,8 +51,9 @@ int main()
         // set precision
         m->SetPrecision(BCEngineMCMC::kMedium);
         m->SetNChains(4);
-        m->SetMinimumEfficiency(0.15);
-        m->SetMaximumEfficiency(0.35);
+        m->SetMinimumEfficiency(0.95);
+        m->SetMaximumEfficiency(0.99);
+        m->SetInitialPositionAttemptLimit(1e5);
 
         m->SetNIterationsRun(static_cast<int>(1e6 / m->GetNChains()));
 

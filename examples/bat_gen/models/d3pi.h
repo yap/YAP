@@ -69,8 +69,8 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 
     // f_0(980)
     auto f_0_980_flatte = make_shared<Flatte>(0.965);
-    f_0_980_flatte->add(FlatteChannel(0.406, *piPlus, *piMinus));
-    f_0_980_flatte->add(FlatteChannel(0.406 * 2, T[321], T[-321])); // K+K-
+    f_0_980_flatte->add(FlatteChannel(0.406 * 0.406, *piPlus, *piMinus));
+    f_0_980_flatte->add(FlatteChannel(0.406 * 0.406 * 4, T[321], T[-321])); // K+K-
     auto f_0_980 = DecayingParticle::create("f_0(980)", T["f_0"].quantumNumbers(), radialSize, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_980, piPlus);
