@@ -308,6 +308,10 @@ const double intensity(const ModelComponent& c, const DataPoint& d);
 /// \return intensity for a data point evaluated over isp_map
 const double intensity(const std::vector<ModelComponent>& C, const DataPoint& d);
 
+/// \return intensity for a data point evaluated over isp_map of model
+inline const double intensity(const Model& M, const DataPoint& d)
+{ return intensity(M.components(), d); }
+
 /// \return The sum of the logs of squared amplitudes evaluated over the data partition
 /// \param M Model to evaluate
 /// \param D DataPartition to evalue over

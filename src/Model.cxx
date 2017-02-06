@@ -98,11 +98,11 @@ const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double
     if (ped == 0)
         return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
                                [&](CompensatedSum<double>& l, const DataPoint& d)
-                               {return l += log(intensity(M.components(), d));});
+                               {return l += log(intensity(M, d));});
     // else
     return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
                            [&](CompensatedSum<double>& l, const DataPoint& d)
-                           {return l += (log(intensity(M.components(), d)) - ped);});
+                           {return l += (log(intensity(M, d)) - ped);});
 }
 
 //-------------------------
