@@ -43,7 +43,7 @@ public:
 
     /// Constructor
     /// \param model raw pointer to Model this cache belongs to
-    SpinAmplitudeCache(Model* model = nullptr) :
+    explicit SpinAmplitudeCache(Model* model = nullptr) :
         WeakPtrCache(), Model_(model) {}
 
     /// Equality

@@ -149,7 +149,7 @@ public:
 
     /// \return channels
     const DecayChannelVector& channels() const
-    { return Channels_;}
+    { return DecayChannels_;}
 
     /// \return Radial size [GeV^-1]
     std::shared_ptr<PositiveRealParameter> radialSize()
@@ -183,6 +183,9 @@ protected:
     /// contain trees used by the model; then calls prune on all DecayChannels
     virtual void prune() override;
 
+    /// generate DecayTrees
+    virtual void generateDecayTrees();
+    
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() override;
 
@@ -196,7 +199,7 @@ private:
     std::shared_ptr<MassShape> MassShape_;
     
     /// vector of decay channel objects
-    DecayChannelVector Channels_;
+    DecayChannelVector DecayChannels_;
 
     /// map of Blatt-Weisskopf barrier factors, key = angular momentum
     BlattWeisskopfMap BlattWeisskopfs_;

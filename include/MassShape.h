@@ -86,9 +86,11 @@ protected:
 
     /// Give MassShape chance to perform operations based on the
     /// addition of a DecayChannel to its owner
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c)
-    {}
+    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) {}
 
+    /// Give MassShape chance to modify owner's DecayTrees
+    virtual void modifyDecayTrees() {}
+    
     /// Access owner's DecayTree's
     DecayTreeVector& ownersDecayTrees();
     
