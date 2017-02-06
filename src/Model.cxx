@@ -220,21 +220,28 @@ void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<doub
 //-------------------------
 void Model::addInitialState(std::shared_ptr<DecayingParticle> p)
 {
-    if (locked())
-        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addInitialState");
-
     if (!p)
         throw exceptions::Exception("Initial-state particle empty", "Model::addInitialState");
+    addInitialState(*p);
+}
 
-    if (p->model() != this)
+//-------------------------
+void Model::addInitialState(DecayingParticle& p)
+{
+    if (locked())
+        throw exceptions::Exception("Model is locked and cannot be modified.", "Model::addInitialState");
+    
+    if (p.model() != this)
         throw exceptions::Exception("Initial-state particle does not belong to this model", "Model::addInitialState");
 
+    auto ptr = std::static_pointer_cast<DecayingParticle>(p.shared_from_this());
+    
     // if already present, do nothing
-    if (std::find(InitialStates_.begin(), InitialStates_.end(), p) != InitialStates_.end())
+    if (std::find(InitialStates_.begin(), InitialStates_.end(), ptr) != InitialStates_.end())
         return;
     
     // add to InitialStates_
-    InitialStates_.push_back(p);
+    InitialStates_.push_back(ptr);
 }
 
 //-------------------------

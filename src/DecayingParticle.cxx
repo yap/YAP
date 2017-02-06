@@ -141,7 +141,7 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
                         [&](const ParticleCombinationSet::value_type& pc)
                         {return pc->indices().size() == model()->finalStateParticles().size();})) {
             
-            const_cast<Model*>(model())->addInitialState(std::static_pointer_cast<DecayingParticle>(shared_from_this()));
+            const_cast<Model*>(model())->addInitialState(*this);
         }
     }
 

@@ -200,6 +200,9 @@ public:
     /// add an initial state
     void addInitialState(std::shared_ptr<DecayingParticle> p);
 
+    /// add an initial state
+    void addInitialState(DecayingParticle& p);
+
     /// set four momenta of data point
     /// \param P vector of FourVectors of final-state momenta
     /// \param sm StatusManager to update
