@@ -28,6 +28,7 @@ set(YAP_TEST_SOURCES
   test_HelicityAngles_boostRotate.cxx
   test_integration.cxx
   test_Matrix.cxx
+  test_Model.cxx
   test_Parameter.cxx
   test_ParticleCombination.cxx
   test_swapDalitzAxes.cxx
