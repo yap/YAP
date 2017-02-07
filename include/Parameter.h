@@ -150,7 +150,7 @@ class RealParameter : public Parameter<double>
 public:
 
     /// constructor
-    explicit RealParameter(double t = 0) : Parameter(t) {}
+    explicit RealParameter(double t) : Parameter(t) {}
 
     /// \return size = 1
     const size_t size() const override
@@ -171,7 +171,7 @@ class NonnegativeRealParameter : public RealParameter
 {
 public:
     /// Constructor
-    explicit NonnegativeRealParameter(double t = 0) : RealParameter(t)
+    explicit NonnegativeRealParameter(double t) : RealParameter(t)
     {
         if (value() < 0)
             throw exceptions::Exception("value is negative", "NonnegativeRealParameter::NonnegativeRealParameter");
@@ -196,7 +196,7 @@ class PositiveRealParameter : public NonnegativeRealParameter
 {
 public:
     /// Constructor
-    explicit PositiveRealParameter(double t = 0) : NonnegativeRealParameter(t)
+    explicit PositiveRealParameter(double t) : NonnegativeRealParameter(t)
     {
         if (t <= 0)
             throw exceptions::Exception("value is not positive", "PositiveRealParameter::PositiveRealParameter");
@@ -222,7 +222,7 @@ class ComplexParameter : public Parameter<std::complex<double> >
 public:
 
     /// constructor
-    explicit ComplexParameter(const std::complex<double>& t = 0) : Parameter(t) {}
+    explicit ComplexParameter(const std::complex<double>& t) : Parameter(t) {}
 
     /// \return size = 2
     const size_t size() const override
@@ -246,7 +246,7 @@ class ComplexComponentParameter : public RealParameter
 public:
     /// Constructor
     /// \param par shared_ptr to ComplexParameter to access
-    explicit ComplexComponentParameter(std::shared_ptr<ComplexParameter> par) : RealParameter(), Parent_(par)
+    explicit ComplexComponentParameter(std::shared_ptr<ComplexParameter> par) : RealParameter(0), Parent_(par)
     { if (!Parent_) throw exceptions::Exception("Parent unset", "ComplexComponentParameter::ComplexComponentParameter"); }
         
     /// \return value of parameter by accessing parent
