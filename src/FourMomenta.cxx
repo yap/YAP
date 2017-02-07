@@ -151,7 +151,7 @@ std::string mp_string(unsigned n, unsigned m_p, std::shared_ptr<const ParticleCo
         os << " (nominally " << M << " GeV/c^2)";
     else
         os << "            " << std::setw(m_p) << " "                << "         ";
-    os << "\tp = " << p << " GeV";
+    os << "\tp = " << to_string(p) << " GeV";
     return os.str();
 }
 

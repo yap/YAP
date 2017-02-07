@@ -230,11 +230,6 @@ std::string to_string(const Vector<T, N>& V)
         ) + ")";
 }
 
-/// streamer
-template <typename T, size_t N>
-std::ostream& operator<<(std::ostream& os, const Vector<T, N>& V)
-{ os << to_string(V); return os; }
-
 /// perform unary op on vector
 template <typename T, size_t N, class UnaryOp>
 Vector<T, N>& unary_op(Vector<T, N>& V, UnaryOp op1)

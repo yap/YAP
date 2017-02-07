@@ -44,8 +44,9 @@ namespace Detail {
 
         virtual std::string toString() const
             {
+                using std::to_string;
                 std::ostringstream oss;
-                oss << "CApprox( " << m_value << " )";
+                oss << "CApprox( " << to_string(m_value) << " )";
                 return oss.str();
             }
 
