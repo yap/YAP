@@ -21,6 +21,7 @@ set(YAP_TEST_SOURCES
   test_CalculationStatus.cxx
   test_ClebschGordan.cxx
   test_CompensatedSum.cxx
+  test_FourMomenta.cxx
   test_FourMomentaCalculation.cxx
   test_helicityFrame.cxx
   test_HelicityAngles.cxx
