@@ -18,6 +18,7 @@ ExternalProject_Get_Property(catch source_dir)
 include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools)
 set(YAP_TEST_SOURCES
   test_BasisTransformations.cxx
+  test_CalculationStatus.cxx
   test_ClebschGordan.cxx
   test_CompensatedSum.cxx
   test_FourMomentaCalculation.cxx
