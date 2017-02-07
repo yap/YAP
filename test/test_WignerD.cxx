@@ -59,8 +59,8 @@ TEST_CASE( "WignerD" )
     SECTION( "J = 1/2") {
         SECTION( "d matrix") {
             // check invalid args
-            REQUIRE_THROWS_AS( yap::dFunction(1, 2, 0, beta), yap::exceptions::Exception );
-            REQUIRE_THROWS_AS( yap::dFunction(1, 0, 2, beta), yap::exceptions::Exception );
+            REQUIRE_THROWS_AS( yap::dFunction(1, 2, 1, beta), yap::exceptions::Exception );
+            REQUIRE_THROWS_AS( yap::dFunction(1, 1, 2, beta), yap::exceptions::Exception );
 
             // check val when M or N exceeds J
             REQUIRE( yap::dFunction(1, 3, 1, beta) == 0 );
