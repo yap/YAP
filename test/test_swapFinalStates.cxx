@@ -31,9 +31,6 @@
  */
 std::complex<double> calculate_model(double isp_mass, yap::Model& M, const yap::MassAxes& A, std::vector<double> m2, yap::DataSet& data)
 {
-    if (M.components().empty())
-        throw;
-
     // calculate four-momenta
     auto P = calculate_four_momenta(isp_mass, M, A, m2);
 
