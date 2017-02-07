@@ -99,10 +99,10 @@ int main( int argc, char** argv)
     M.addInitialState(rho);
 
     // check consistency
-    if (M.consistent())
-        LOG(INFO) << "consistent!";
-    else
+    if (!M.consistent()) {
         LOG(INFO) << "inconsistent!";
+        return 1;
+    }
 
     M.lock();
 

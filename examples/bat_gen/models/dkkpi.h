@@ -47,8 +47,6 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     KK0->addStrongDecay(kPlus, kMinus);
     D->addWeakDecay(KK0, piPlus);
 
-    M->lock();
-
     *free_amplitude(*D, to(KK0)) = polar(0.15, rad(39.));
     
     /* auto KK1 = DecayingParticle::create("KK1", QuantumNumbers(0, 2), radialSize, make_shared<BreitWigner>(1.35, 0.125)); */

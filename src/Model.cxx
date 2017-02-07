@@ -311,9 +311,6 @@ void Model::lock()
         for (auto& pc : isp->particleCombinations())
             addParticleCombination(*pc);
 
-        // generate its DecayTree's
-        isp->generateDecayTrees();
-
         // and create components
         for (auto dtv : group(isp->decayTrees(), by_m<>()))
             Components_.emplace_back(dtv);

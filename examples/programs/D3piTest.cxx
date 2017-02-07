@@ -85,8 +85,6 @@ int main( int argc, char** argv)
     D->addWeakDecay(sigma, piPlus);
     D->addWeakDecay(piPlus, piMinus, piPlus);
 
-    M.lock();
-
     *free_amplitude(*D, yap::to(rho))                     = std::polar(1., 0.);
     *free_amplitude(*D, yap::to(f_0_980))                 = std::polar(1.4, yap::rad(12.));
     *free_amplitude(*D, yap::to(f_2))                     = std::polar(2.1, yap::rad(-123.));
@@ -94,6 +92,8 @@ int main( int argc, char** argv)
     *free_amplitude(*D, yap::to(f_0_1500))                = std::polar(1.1, yap::rad(-44.));
     *free_amplitude(*D, yap::to(sigma))                   = std::polar(3.7, yap::rad(-3.));
     *free_amplitude(*D, yap::to(piPlus, piMinus, piPlus)) = std::polar(0.1, yap::rad(45.));
+
+    M.lock();
 
     // check consistency
     if (!M.consistent()) {

@@ -43,14 +43,6 @@
 
 using namespace yap;
 
-bool a_rho_pi_S  = true;
-bool a_rho_pi_D  = true;
-bool a_rho_sigma = true;
-bool rho_rho     = true;
-bool f_0_pipi    = true;
-bool f_2_pipi    = true;
-bool sigma_pipi  = true;
-
 // scaling to reproduce (approximately) the fit fractions of the FOCUS model
 double scale_rho_rho     = 0.7158375483;
 double scale_a_rho_pi_D  = 4.2395231085;
@@ -72,128 +64,100 @@ inline std::unique_ptr<Model> d4pi()
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // use common radial size for all resonances
-    double radialSize = 1.2; // [GeV^-1]
+    double r = 1.2; // [GeV^-1]
 
     // initial state particle
-    auto D = DecayingParticle::create(T["D0"], radialSize);
-    
-    //
-    // resonant particles
-    //
+    auto D = DecayingParticle::create(T["D0"], r);
     
     // rho
-    auto rho = DecayingParticle::create(T["rho0"], radialSize, std::make_shared<RelativisticBreitWigner>(T["rho0"]));
+    auto rho = DecayingParticle::create(T["rho0"], r, std::make_shared<RelativisticBreitWigner>(T["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // omega
-    //auto omega = DecayingParticle::create(T["omega"], radialSize, std::make_shared<BreitWigner>(T["omega"]));
-    //omega->addStrongDecay({piPlus, piMinus});
+    //auto omega = DecayingParticle::create(T["omega"], r, std::make_shared<BreitWigner>(T["omega"]));
+    //omega->addStrongDecay(piPlus, piMinus);
     
     // sigma / f_0(500)
-    auto sigma = DecayingParticle::create(T["f_0(500)"], radialSize, std::make_shared<BreitWigner>(T["f_0(500)"]));
+    auto sigma = DecayingParticle::create(T["f_0(500)"], r, std::make_shared<BreitWigner>(T["f_0(500)"]));
     sigma->addStrongDecay(piPlus, piMinus);
     
     // a_1
-    auto a_1 = DecayingParticle::create(T["a_1+"], radialSize, std::make_shared<BreitWigner>(T["a_1+"]));
-    if (a_rho_pi_S or a_rho_pi_D)
-        a_1->addStrongDecay(rho,   piPlus);
-    if (a_rho_sigma)
-        a_1->addStrongDecay(sigma, piPlus);
+    auto a_1 = DecayingParticle::create(T["a_1+"], r, std::make_shared<BreitWigner>(T["a_1+"]));
+    a_1->addStrongDecay(rho,   piPlus);
+    a_1->addStrongDecay(sigma, piPlus);
 
     // f_0(980) (as Flatte)
     auto f_0_980_flatte = std::make_shared<Flatte>(T["f_0"]);
     f_0_980_flatte->add(FlatteChannel(0.20, *piPlus, *piMinus));
     f_0_980_flatte->add(FlatteChannel(0.50, T[321], T[-321])); // K+K-
-    auto f_0_980 = DecayingParticle::create(T["f_0"], radialSize, f_0_980_flatte);
+    auto f_0_980 = DecayingParticle::create(T["f_0"], r, f_0_980_flatte);
     f_0_980->addStrongDecay(piPlus, piMinus);
                                             
     // f_2(1270)
-    auto f_2 = DecayingParticle::create(T["f_2"], radialSize, std::make_shared<BreitWigner>(T["f_2"]));
+    auto f_2 = DecayingParticle::create(T["f_2"], r, std::make_shared<BreitWigner>(T["f_2"]));
     f_2->addStrongDecay(piPlus, piMinus); 
 
     // pi+ pi- flat
-    auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), radialSize);
+    auto pipiFlat = DecayingParticle::create("pipiFlat", QuantumNumbers(0, 0), r);
     pipiFlat->addStrongDecay(piPlus, piMinus);
-    
-    //
-    // D0 channels
-    //
-    if (rho_rho)
-        D->addWeakDecay(rho, rho);
 
-    if (a_rho_pi_S or a_rho_pi_D)
-        D->addWeakDecay(a_1, piMinus);
+    /////////////////////////
+    // D0 decays
+    D->addWeakDecay(rho, rho);
+    D->addWeakDecay(a_1, piMinus);
+    D->addWeakDecay(f_0_980, piPlus, piMinus);
+    D->addWeakDecay(f_2, pipiFlat);
+    D->addWeakDecay(sigma, piPlus, piMinus);
+
+    /////////////////////////
+    // Set amplitudes
     
     // a_1 -> sigma pi 
-    if (a_rho_sigma)
+    if (!free_amplitudes(*a_1, to(sigma)).empty())
         *free_amplitude(*a_1, to(sigma)) = std::polar(scale_a_rho_sigma * 0.439, rad(193.));
 
-    if (f_0_pipi)
-        D->addWeakDecay(f_0_980, piPlus, piMinus);
+    // D0 -> rho rho
+    if (!free_amplitudes(*D, to(rho, rho)).empty()) {
 
-    if (f_2_pipi)
-        D->addWeakDecay(f_2, pipiFlat);
-
-    if (sigma_pipi)
-        D->addWeakDecay(sigma, piPlus, piMinus);
-
-    M->lock();
-    
-    if (rho_rho) {
         amplitude_basis::canonical<double> c(amplitude_basis::transversity<double>(
-                                                 std::polar(scale_rho_rho * 0.624, rad(357.)),    // A_longitudinal
-                                                 std::polar(scale_rho_rho * 0.157, rad(120.)),    // A_parallel
-                                                 std::polar(scale_rho_rho * 0.384, rad(163.)) )); // A_perpendicular
+                                                 std::polar(scale_rho_rho * 0.624, rad(357.)),    // longitudinal
+                                                 std::polar(scale_rho_rho * 0.157, rad(120.)),    // parallel
+                                                 std::polar(scale_rho_rho * 0.384, rad(163.)) )); // perpendicular
         
         for (auto& fa : free_amplitudes(*D, to(rho, rho)))
             *fa = static_cast<std::complex<double> >(c[fa->spinAmplitude()->L()]);
     }
 
-    if (a_rho_pi_S or a_rho_pi_D) {
+    // D0 -> a_1 pi
+    if (!free_amplitudes(*D, to(a_1)).empty()) {
+
         free_amplitude(*D, to(a_1))->variableStatus() = VariableStatus::fixed;
 
-        auto a_rho_S = free_amplitude(*a_1, to(rho), l_equals(0));
-        auto a_rho_P = free_amplitude(*a_1, to(rho), l_equals(1));
-        auto a_rho_D = free_amplitude(*a_1, to(rho), l_equals(2));
+        std::vector<std::complex<double> > a_1_amps = {1, 0, std::polar(scale_a_rho_pi_D * 0.241, rad(82.))};
 
-        // S wave
-        if (a_rho_pi_S) {
-            *a_rho_S = 1;// will be fixed in d4pi_fit
-            LOG(INFO) << "set a_rho_pi_S to 1";
-        }
-        else{
-            *a_rho_S = 0.;
-            a_rho_S->variableStatus() = VariableStatus::fixed;
-            LOG(INFO) << "fixed a_rho_S to 0";
-        }
+        for (auto& fa : free_amplitudes(*a_1, to(rho)))
+            *fa = a_1_amps[fa->spinAmplitude()->L()];
 
-        // P wave
-        *a_rho_P = 0.;
-        a_rho_P->variableStatus() = VariableStatus::fixed;
-        LOG(INFO) << "fixed a_rho_P to 0";
-
-        // D wave
-        if (a_rho_pi_D)
-            *a_rho_D = std::polar(scale_a_rho_pi_D * 0.241, rad(82.));
-        else {
-            *a_rho_D = 0.;
-            a_rho_D->variableStatus() = VariableStatus::fixed;
-            LOG(INFO) << "fixed a_rho_D to 0";
-        }
+        // fix L = 0, 1 amps if present
+        for (unsigned l : {0, 1})
+            if (!free_amplitudes(*D, to(a_1), l_equals(l)).empty())
+                free_amplitude(*D, to(a_1), l_equals(l))->variableStatus() = VariableStatus::fixed;
     }
-    if (f_0_pipi)
+    
+    if (!free_amplitudes(*D, to(f_0_980, piPlus, piMinus)).empty())
         *free_amplitude(*D, to(f_0_980, piPlus, piMinus)) = std::polar(scale_f_0_pipi * 0.233, rad(261.));
 
-    if (f_2_pipi)
-        *free_amplitude(*D, to(f_2,     pipiFlat       )) = std::polar(scale_f_2_pipi * 0.338, rad(317.));
+    if (!free_amplitudes(*D, to(f_2, pipiFlat)).empty())
+        *free_amplitude(*D, to(f_2, pipiFlat)) = std::polar(scale_f_2_pipi * 0.338, rad(317.));
 
-    if (sigma_pipi)
-        *free_amplitude(*D, to(sigma,   piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
+    if (!free_amplitudes(*D, to(sigma, piPlus, piMinus)).empty())
+        *free_amplitude(*D, to(sigma, piPlus, piMinus)) = std::polar(scale_sigma_pipi * 0.432, rad(254.));
     
     LOG(INFO) << "D Decay trees:";
     LOG(INFO) << to_string(D->decayTrees());
 
-    LOG(INFO) << std::endl << "Free amplitudes: ";
+    LOG(INFO);
+    LOG(INFO) << "Free amplitudes: ";
     for (const auto& fa : free_amplitudes(*M, yap::is_not_fixed()))
         LOG(INFO) << yap::to_string(*fa) << "  \t (mag, phase) = (" << abs(fa->value()) << ", " << deg(arg(fa->value())) << "°)";
 

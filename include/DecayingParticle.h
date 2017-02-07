@@ -183,9 +183,6 @@ protected:
     /// contain trees used by the model; then calls prune on all DecayChannels
     virtual void prune() override;
 
-    /// generate DecayTrees
-    virtual void generateDecayTrees();
-    
     /// register any necessary DataAccessor's with model
     virtual void registerWithModel() override;
 
