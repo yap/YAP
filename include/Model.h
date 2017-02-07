@@ -108,6 +108,9 @@ public:
     /// \todo Implement move assignment.
     Model& operator=(Model&&) = delete;
 
+    /// Virtual destructor = default
+    virtual ~Model() = default;
+    
     /// Calculate model for each data point in the data partition
     /// \param D DataPartition to calculate over
     /// \todo This need not be a member function!
