@@ -23,6 +23,7 @@ set(YAP_TEST_SOURCES
   test_CompensatedSum.cxx
   test_FourMomenta.cxx
   test_FourMomentaCalculation.cxx
+  test_FreeAmplitude.cxx
   test_helicityFrame.cxx
   test_HelicityAngles.cxx
   test_HelicityAngles_boostRotate.cxx
