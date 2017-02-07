@@ -31,6 +31,7 @@ TEST_CASE( "WignerD" )
         REQUIRE_NOTHROW( yap::dMatrix::cache(0) );
         REQUIRE_NOTHROW( yap::dMatrix::cache(2) );
         REQUIRE_NOTHROW( yap::dMatrix::cache(1) );
+        REQUIRE_NOTHROW( yap::dMatrix::cacheSize() );
     }
 
     SECTION( "J = 0") {
@@ -62,8 +63,8 @@ TEST_CASE( "WignerD" )
             REQUIRE_THROWS_AS( yap::dFunction(1, 0, 2, beta), yap::exceptions::Exception );
 
             // check val when M or N exceeds J
-            REQUIRE( yap::dFunction(1, 3, 0, beta) == 0 );
-            REQUIRE( yap::dFunction(1, 0, 3, beta) == 0 );
+            REQUIRE( yap::dFunction(1, 3, 1, beta) == 0 );
+            REQUIRE( yap::dFunction(1, 1, 3, beta) == 0 );
 
             // check vals
             REQUIRE( yap::dFunction(1, +1, +1, beta) == Approx(+cos(beta / 2)) );

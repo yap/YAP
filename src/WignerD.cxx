@@ -46,7 +46,7 @@ const double dFunction(unsigned twoJ, int twoM, int twoN, double beta)
         throw exceptions::Exception(std::string("M = ") + spin_to_string(twoM)
                                     + " is inconsistent for J = " + spin_to_string(twoJ),
                                     "WignerD::dFunction");
-    if (is_odd(twoJ + twoM))
+    if (is_odd(twoJ + twoN))
         throw exceptions::Exception(std::string("N = ") + spin_to_string(twoN)
                                     + " is inconsistent for J = " + spin_to_string(twoJ),
                                     "WignerD::dFunction");
