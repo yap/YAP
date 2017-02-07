@@ -48,6 +48,7 @@ TEST_CASE( "Parameter" )
     SECTION( "PositiveRealParameter" ) {
 
         yap::PositiveRealParameter P(1);
+        REQUIRE_NOTHROW( P = 2 );
 
         // check setting negative number
         REQUIRE_THROWS_AS( P = 0, yap::exceptions::Exception );
@@ -85,6 +86,21 @@ TEST_CASE( "Parameter" )
         *P = std::complex<double>(15, 16);
         REQUIRE( R.value() == 15 );
         REQUIRE( I.value() == 16 );
+    }
+
+    SECTION( "ParameterVector" ) {
+
+        auto R = std::make_shared<yap::RealParameter>(1);
+        auto C = std::make_shared<yap::ComplexParameter>(2);
+        
+        yap::ParameterVector V = {R, C};
+
+        std::vector<double> vals = {3, 4, 5};
+        set_values(V, vals);
+        REQUIRE( R->value() == 3 );
+        REQUIRE( real(C->value()) == 4 );
+        REQUIRE( imag(C->value()) == 5 );
+        
     }
     
 }

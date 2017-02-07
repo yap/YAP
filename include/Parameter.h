@@ -153,13 +153,13 @@ public:
     explicit RealParameter(double t) : Parameter(t) {}
 
     /// \return size = 1
-    const size_t size() const override
+    virtual const size_t size() const override
     { return 1; }
 
     using Parameter::setValue;
 
     /// Set value from vector
-    const VariableStatus setValue(const std::vector<double>& V) override
+    virtual const VariableStatus setValue(const std::vector<double>& V) override
     { return setValue(V[0]); }
 
     using Parameter::operator=;
@@ -180,7 +180,7 @@ public:
     using RealParameter::setValue;
 
     /// Checks if value is non-negative
-    const VariableStatus setValue(double t) override
+    virtual const VariableStatus setValue(double t) override
     {
         if (t < 0)
             throw exceptions::Exception("value is negative", "NonnegativeRealParameter::setValue");
@@ -205,7 +205,7 @@ public:
     using NonnegativeRealParameter::setValue;
 
     /// Checks if value is positive
-    const VariableStatus setValue(double t) override
+    virtual const VariableStatus setValue(double t) override
     {
         if (t <= 0)
             throw exceptions::Exception("value is not positive", "NonnegativeRealParameter::setValue");
@@ -225,13 +225,13 @@ public:
     explicit ComplexParameter(const std::complex<double>& t) : Parameter(t) {}
 
     /// \return size = 2
-    const size_t size() const override
+    virtual const size_t size() const override
     { return 2; }
 
     using Parameter::setValue;
 
     /// Set value from vector
-    const VariableStatus setValue(const std::vector<double>& V) override
+    virtual const VariableStatus setValue(const std::vector<double>& V) override
     { return setValue(std::complex<double>(V[0], V[1])); }
 
     using Parameter::operator=;
@@ -250,13 +250,13 @@ public:
     { if (!Parent_) throw exceptions::Exception("Parent unset", "ComplexComponentParameter::ComplexComponentParameter"); }
         
     /// \return value of parameter by accessing parent
-    const double value() const override
+    virtual const double value() const override
     { return component(Parent_->value()); }
 
     using RealParameter::setValue;
 
     /// set value by accessing parent
-    const VariableStatus setValue(double val) override
+    virtual const VariableStatus setValue(double val) override
     { return Parent_->setValue(setComponent(Parent_->value(), val)); }
         
     /// \return shared_ptr to parent
@@ -297,7 +297,7 @@ public:
 protected:
 
     /// \return component value from whole value
-    double component(const std::complex<double>& c) const override
+    virtual double component(const std::complex<double>& c) const override
     { return real(c); }
 
     /// \return complex value with component changed
@@ -323,7 +323,7 @@ public:
 protected:
 
     /// \return component value from whole value
-    double component(const std::complex<double>& c) const override
+    virtual double component(const std::complex<double>& c) const override
     { return imag(c); }
 
     /// \return complex value with component changed
@@ -336,21 +336,13 @@ protected:
 inline const size_t size(const ParameterVector& V)
 { return std::accumulate(V.begin(), V.end(), size_t(0), [](size_t& s, const ParameterVector::value_type & p) {return s += p->size();}); }
 
-/// set value into parameter from iterator, calling parameter's setValue(vector<double>) function
-/// \param P Parameter to set into
-/// \param first Iterator to take values from
-template <class InputIt>
-std::vector<double>::const_iterator set_value(ParameterBase& P, InputIt first)
-{ std::vector<double> V(first, first + P.size()); P.setValue(V); return first += (P.size() - 1); }
-
 /// set values in ParameterVector from iterators
 template <class InputIt>
 void set_values(ParameterVector::iterator first_par, ParameterVector::iterator last_par, InputIt first_val, InputIt last_val)
 {
-    while (first_par != last_par and first_val != last_val) {
-        first_val = set_value(**first_par, first_val);
-        ++first_par;
-        ++first_val;
+    while (first_par != last_par and first_val != last_val and (first_val + (*first_par)->size() - 1) != last_val) {
+        (*first_par)->setValue(std::vector<double>(first_val, first_val + (*first_par)->size()));
+        first_val += (*first_par++)->size();
     }
     if (first_par != last_par)
         throw exceptions::Exception("insufficient number of values provided", "set_values");
