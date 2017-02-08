@@ -62,7 +62,7 @@ public:
     virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const = 0;
     
     /// Check consistency of object
-    virtual bool consistent() const;
+    virtual bool consistent() const override;
 
     /// get raw pointer to owner
     DecayingParticle* owner() const

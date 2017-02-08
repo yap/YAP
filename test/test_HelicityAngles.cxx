@@ -98,8 +98,6 @@ TEST_CASE( "HelicityAngles" )
     // get mass^2 ranges
     auto m2r = yap::squared(yap::mass_range(D_mass, A, M->finalStateParticles()));
 
-    REQUIRE( M->consistent() );
-
     // create DataSet
     auto data = M->createDataSet();
 

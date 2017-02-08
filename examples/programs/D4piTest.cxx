@@ -98,13 +98,13 @@ int main( int argc, char** argv)
     M.addInitialState(a_1);
     M.addInitialState(rho);
 
+    M.lock();
+
     // check consistency
     if (!M.consistent()) {
         LOG(INFO) << "inconsistent!";
         return 1;
     }
-
-    M.lock();
 
     // print stuff
 

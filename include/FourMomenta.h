@@ -51,7 +51,7 @@ public:
     FourMomenta(Model& m);
 
     /// check consistency
-    bool consistent() const;
+    virtual bool consistent() const override;
 
     /// Fill 4-momenta
     /// \param d DataPoint to fill
@@ -76,10 +76,6 @@ public:
     /// \param d DataPoint to get data from
     /// \param pc ParticleCombination to return mass of
     double m(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const;
-
-    /// \return total four-momentum (const)
-    /// \param d DataPoint to get data from
-    const FourVector<double> totalMomentum(const DataPoint& d) const;
 
     /// \return vector of final-state four-momenta (const)
     /// \param d DataPoint to get data from
@@ -114,9 +110,6 @@ protected:
     {}
 
 private:
-
-    /// Symmetrization index of an initial state that is composed from ALL final state particles
-    int TotalIndex_;
 
     /// Symmetrization indices of final states
     std::vector<int> FSPIndices_;

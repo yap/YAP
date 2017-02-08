@@ -43,6 +43,9 @@ public:
     /// \param equal ParticleCombination equality struct for determining index assignments
     DataAccessor(const ParticleCombinationEqualTo& equal);
 
+    /// virtual destructor
+    virtual ~DataAccessor() = default;
+    
     /// \return Equality function
     const ParticleCombinationEqualTo& equal() const
     { return Equal_; }
@@ -76,7 +79,7 @@ public:
     { return size() > 0 and nSymmetrizationIndices() > 0; }
 
     /// Check consistency of object
-    bool consistent() const;
+    virtual bool consistent() const;
 
     /// get raw pointer to Model (const)
     virtual const Model* model() const = 0;

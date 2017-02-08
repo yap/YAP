@@ -22,7 +22,6 @@ namespace yap {
 //-------------------------
 FourMomenta::FourMomenta(Model& m) :
     StaticDataAccessor(m, equal_by_orderless_content),
-    TotalIndex_(-1),
     P_(FourVectorCachedValue::create(*this)),
     M_(RealCachedValue::create(*this))
 {
@@ -49,10 +48,6 @@ void FourMomenta::addParticleCombination(const ParticleCombination& pc)
     StaticDataAccessor::addParticleCombination(pc);
     auto index = symmetrizationIndex(pc.shared_from_this());
 
-    // check for ISP
-    if (TotalIndex_ < 0 and pc.indices().size() == model()->finalStateParticles().size())
-        TotalIndex_ = index;
-
     /// check for FSP
     if (is_final_state_particle_combination(pc)) {
         if (pc.indices()[0] + 1 > FSPIndices_.size())
@@ -67,25 +62,12 @@ bool FourMomenta::consistent() const
 {
     bool C = StaticDataAccessor::consistent();
 
-    if (TotalIndex_ < 0) {
-        FLOG(ERROR) << "ISP symmetrization index has not been recorded.";
-        C &= false;
-    }
-
     if (FSPIndices_.size() != model()->finalStateParticles().size() or std::any_of(FSPIndices_.begin(), FSPIndices_.end(), [](int i) {return i < 0;})) {
         FLOG(ERROR) << "FSP symmetrization indices not all recorded";
         C &= false;
     }
 
     return C;
-}
-
-//-------------------------
-const FourVector<double> FourMomenta::totalMomentum(const DataPoint& d) const
-{
-    if (TotalIndex_ < 0)
-        throw exceptions::Exception("Initial-state particle unknown", "FourMomenta::totalMomentum");
-    return P_->value(d, TotalIndex_);
 }
 
 //-------------------------
