@@ -38,8 +38,6 @@ inline std::string to_string(const CalculationStatus& c)
             return "calculated";
         case CalculationStatus::uncalculated:
             return "uncalculated";
-        default:
-            return std::to_string(static_cast<bool>(c));
     }
 }
 
