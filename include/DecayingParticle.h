@@ -86,7 +86,6 @@ public:
     { return MassShape_; }
 
     /// \return DecayTrees
-    /// map key is spin projection
     const DecayTreeVector& decayTrees() const
     { return DecayTrees_; }
 
