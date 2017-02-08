@@ -85,17 +85,17 @@ TEST_CASE( "Vector" )
             auto z = yap::ThreeVector<double>({0, 0, 0});
 
             REQUIRE(angle(a, a) == 0.);
-            REQUIRE(angle(a, -a) == yap::pi<double>());
-            REQUIRE(angle(a, b) == 0.5 * yap::pi<double>());
-            REQUIRE(angle(a, c) == 0.5 * yap::pi<double>());
+            REQUIRE(angle(a, -a) == yap::pi());
+            REQUIRE(angle(a, b) == 0.5 * yap::pi());
+            REQUIRE(angle(a, c) == 0.5 * yap::pi());
             REQUIRE(std::isnan(angle(a, z)));
 
             REQUIRE( yap::theta(c, three_axes) == Approx(0.) );
-            REQUIRE( yap::theta(a, three_axes) == Approx(yap::pi<double>() / 2.) );
-            REQUIRE( yap::theta(b, three_axes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::theta(a, three_axes) == Approx(yap::pi() / 2.) );
+            REQUIRE( yap::theta(b, three_axes) == Approx(yap::pi() / 2.) );
 
             REQUIRE( yap::phi(a, three_axes) == Approx(0.) );
-            REQUIRE( yap::phi(b, three_axes) == Approx(yap::pi<double>() / 2.) );
+            REQUIRE( yap::phi(b, three_axes) == Approx(yap::pi() / 2.) );
         }
 
         SECTION( "cross product" ) {

@@ -59,7 +59,7 @@ TEST_CASE( "HelicityAngles_boostRotate" )
     std::mt19937 g(0);
 
     // create random number generators
-    std::uniform_real_distribution<double> uniform_0_pi(0, yap::pi<double>());
+    std::uniform_real_distribution<double> uniform_0_pi(0, yap::pi());
     std::uniform_real_distribution<double> uniform_m99_p99(-0.99, 0.99);
 
     for (unsigned int iEvt = 0; iEvt < 1000; ++iEvt) {

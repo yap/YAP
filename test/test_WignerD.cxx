@@ -22,9 +22,9 @@ TEST_CASE( "WignerD" )
     //yap::plainLogs(el::Level::Debug);
 
     // choose arbitrary angles to test with
-    double alpha = 0.4 * yap::pi<double>();
-    double beta = 0.6 * yap::pi<double>();
-    double gamma = 0.5 * yap::pi<double>();
+    double alpha = 0.4 * yap::pi();
+    double beta = 0.6 * yap::pi();
+    double gamma = 0.5 * yap::pi();
 
     SECTION( "Caching" ) {
         // cache J = 0, 1/2, 1 (out of order)

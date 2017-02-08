@@ -20,6 +20,7 @@
 #define yap_MathUtilities_h
 
 #include <complex>
+#include <math.h>
 #include <type_traits>
 
 namespace yap {
@@ -54,19 +55,16 @@ constexpr std::complex<double> operator"" _i(long double d)
 { return std::complex<double>{0.0, static_cast<double>(d)}; }
 
 /// \return pi
-template <typename T = double>
-constexpr T pi()
-{ return acos((T) - 1); }
+constexpr double pi()
+{ return M_PI; }
 
 /// convert degrees to radians
-template <typename T>
-constexpr T rad(const T& d)
-{ return d * pi<T>() / T(180); }
+constexpr double rad(double d)
+{ return d * pi() / 180; }
 
 /// convert radians to degrees
-template <typename T>
-constexpr T deg(const T& r)
-{ return r * T(180) / pi<T>(); }
+constexpr double deg(double r)
+{ return r * 180 / pi(); }
 
 }
 
