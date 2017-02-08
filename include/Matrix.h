@@ -124,22 +124,22 @@ const SquareMatrix<T, N> diagonalMatrix(std::array<T, N> d)
 template <typename T, size_t N>
 const SquareMatrix<T, N> symmetricMatrix(std::initializer_list<T> elements)
 {
-    size_t diag(0), i(0), j(0);
+    if (elements.size() > N * (N + 1) / 2)
+        throw exceptions::Exception("too many elements given", "symmetricMatrix");
 
     SquareMatrix<T, N> D = zeroMatrix<T, N, N>();
+
+    size_t i = 0;
+    size_t j = 0;
     for (const T& el : elements) {
-        if (j>=N)
-            throw exceptions::Exception("too many elements given", "symmetricMatrix");
-
-        D[i][j] = el;
-        D[j++][i++] = el;
-
-        if (j>=N) {
-            i = 0;
-            j = ++diag;
+        D[j][j + i] = D[j + i][j] = el;
+        ++j;
+        if (j + i == N) {
+            ++i;
+            j = 0;
         }
     }
-
+        
     return D;
 }
 

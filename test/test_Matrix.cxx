@@ -1,5 +1,6 @@
 #include <catch.hpp>
 
+#include <Exceptions.h>
 #include <logging.h>
 #include <LorentzTransformation.h>
 #include <Matrix.h>
@@ -28,6 +29,8 @@ TEST_CASE( "Matrix" )
         const yap::ThreeMatrix<double> cov({1, 4, 6,  4, 2, 5,  6, 5, 3});
         const auto cov2 = yap::symmetricMatrix<double, 3>({1, 2, 3,  4, 5,  6});
         REQUIRE(cov == cov2);
+
+        REQUIRE_THROWS_AS( (yap::symmetricMatrix<double, 2>({0, 1, 2, 3, 4})), yap::exceptions::Exception );
     }
 
     SECTION( "Transpose" ) {
