@@ -100,6 +100,9 @@ TEST_CASE( "Parameter" )
         REQUIRE( R->value() == 3 );
         REQUIRE( real(C->value()) == 4 );
         REQUIRE( imag(C->value()) == 5 );
+
+        std::vector<double> vals2 = {3};
+        REQUIRE_THROWS_AS( set_values(V, vals2), yap::exceptions::Exception );
         
     }
     
