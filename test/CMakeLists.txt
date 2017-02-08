@@ -36,6 +36,7 @@ set(YAP_TEST_SOURCES
   test_Model.cxx
   test_Parameter.cxx
   test_ParticleCombination.cxx
+  test_ParticleTable.cxx
   test_Spin.cxx
   test_swapDalitzAxes.cxx
   test_swapFinalStates.cxx
