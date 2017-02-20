@@ -1,5 +1,6 @@
 set(INCLUDE_DIRECTORIES
-	${YAP_SOURCE_DIR}/include)
+	${YAP_SOURCE_DIR}/include
+	${YAP_SOURCE_DIR}/external)
 include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
@@ -9,6 +10,7 @@ set(YAP_SOURCES
 	BreitWigner.cxx
 	CachedValue.cxx
 	ClebschGordan.cxx
+	DalitzPhspIntegral.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
