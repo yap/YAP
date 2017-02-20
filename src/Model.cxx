@@ -352,7 +352,7 @@ void Model::lock()
 }
 
 //-------------------------
-const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs)
+const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs) const
 {
     // if no axes requested, build default:
     if (pcs.empty()) {
