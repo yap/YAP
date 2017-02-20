@@ -34,6 +34,15 @@ DecayTree::DecayTree(std::shared_ptr<FreeAmplitude> free_amp, int two_M, const S
 }
 
 //-------------------------
+const DecayTreeVector DecayTree::daughterDecayTreeVector() const
+{
+    DecayTreeVector dtv;
+    for (auto& kv : DaughterDecayTrees_)
+        dtv.push_back(kv.second);
+    return dtv;
+}
+
+//-------------------------
 const Model* DecayTree::model() const
 {
     return (FreeAmplitude_) ? FreeAmplitude_->model() : nullptr;

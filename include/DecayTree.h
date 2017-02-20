@@ -76,6 +76,9 @@ public:
     const DaughterDecayTreeMap daughterDecayTrees() const
     { return DaughterDecayTrees_; }
 
+    /// \return DaughterDecayTrees as vector
+    const DecayTreeVector daughterDecayTreeVector() const;
+
     /// \return AmplitudeComponents_
     const std::vector<const AmplitudeComponent*> amplitudeComponents() const
     { return AmplitudeComponents_; }
