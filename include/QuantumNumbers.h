@@ -82,6 +82,15 @@ public:
 
     /// @}
 
+    /// \name Setters
+    /// @{
+
+    /// set Isospin * 2
+    void setP(unsigned P)
+    { P_ = P; }
+
+    /// @}
+
 private:
 
     /// Electric charge
