@@ -76,9 +76,38 @@ public:
     constexpr int G() const
     { return G_; }
 
-    /// \return Electric intge
+    /// \return Electric charge
     constexpr int Q() const
     { return Q_; }
+
+    /// @}
+
+    /// \name Setters
+    /// @{
+    
+    /// set spin * 2
+    void setTwoJ(unsigned twoJ)
+    { TwoJ_ = twoJ; }
+
+    /// set Parity
+    void setP(int P)
+    { P_ = P; }
+
+    /// set C-Parity
+    void setC(int C)
+    { C_ = C; }
+
+    /// set Isospin * 2
+    void setTwoI(unsigned twoI)
+    { TwoI_ = twoI; }
+    
+    /// set G-Parity
+    void setG(int G)
+    { G_ = G; }
+    
+    /// set Electric charge
+    void setQ(int Q)
+    { Q_ = Q; }
 
     /// @}
 

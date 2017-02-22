@@ -4,7 +4,7 @@ include_directories(${INCLUDE_DIRECTORIES})
 
 set(YAP_SOURCES
 	AmplitudeComponent.cxx
-  Attributes.cxx
+	Attributes.cxx
 	BlattWeisskopf.cxx
 	BreitWigner.cxx
 	CachedValue.cxx
@@ -43,7 +43,7 @@ set(YAP_SOURCES
 	SpinAmplitudeCache.cxx
 	StaticDataAccessor.cxx
 	StatusManager.cxx
-  UnitSpinAmplitude.cxx
+	UnitSpinAmplitude.cxx
 	WignerD.cxx
 	ZemachFormalism.cxx
 )
