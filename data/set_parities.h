@@ -24,8 +24,6 @@
 #include "ParticleTable.h"
 #include "QuantumNumbers.h"
 
-namespace yap {
-
 /// \function set_parities
 /// set parities for selected mesons.
 /// THIS IS NOT COMPLETE
@@ -114,8 +112,6 @@ void set_parities(ParticleTable& pdl) {
 
     pdl["D0"].quantumNumbers().setP(-1);
     pdl["anti-D0"].quantumNumbers().setP(-1);
-
-}
 
 }
 

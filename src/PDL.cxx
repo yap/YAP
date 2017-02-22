@@ -1,7 +1,6 @@
 #include "PDL.h"
 
 #include "ParticleTable.h"
-#include "set_parities.h"
 
 #include <cmath>
 #include <fstream>
@@ -85,7 +84,6 @@ ParticleTable read_pdl_file(const std::string& filename)
     ParticleTable particleFactory;
     std::copy(PDLIterator(inFile), PDLIterator::end(),
               inserter(particleFactory));
-    set_parities(particleFactory);
     return particleFactory;
 }
 

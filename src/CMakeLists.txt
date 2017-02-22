@@ -1,5 +1,4 @@
 set(INCLUDE_DIRECTORIES
-	${YAP_SOURCE_DIR}/data
 	${YAP_SOURCE_DIR}/include)
 include_directories(${INCLUDE_DIRECTORIES})
 
