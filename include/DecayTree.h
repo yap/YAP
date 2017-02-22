@@ -76,9 +76,6 @@ public:
     const DaughterDecayTreeMap daughterDecayTrees() const
     { return DaughterDecayTrees_; }
 
-    /// \return DaughterDecayTrees as vector
-    const DecayTreeVector daughterDecayTreeVector() const;
-
     /// \return AmplitudeComponents_
     const std::vector<const AmplitudeComponent*> amplitudeComponents() const
     { return AmplitudeComponents_; }
@@ -182,6 +179,9 @@ const bool has_changed(const std::shared_ptr<DecayTree>& dt);
 /// \return vector of trees whose data-dependent amplitude variable statuses are VariableStatus::changed
 /// \param vector of trees to check in
 const DecayTreeVector select_changed(const DecayTreeVector& dtv);
+
+/// \return DaughterDecayTrees as vector
+const DecayTreeVector daughter_decay_trees(const DecayTree& dt);
 
 }
 
