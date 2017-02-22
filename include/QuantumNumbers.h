@@ -87,19 +87,19 @@ public:
     
     /// set spin * 2
     void setTwoJ(unsigned twoJ)
-    { TwoJ = twoJ; }
+    { TwoJ_ = twoJ; }
 
     /// set Parity
     void setP(int P)
     { P_ = P; }
 
     /// set C-Parity
-    void setP(int C)
+    void setC(int C)
     { C_ = C; }
 
     /// set Isospin * 2
     void setTwoI(unsigned twoI)
-    { twoI_ = twoI; }
+    { TwoI_ = twoI; }
     
     /// set G-Parity
     void setG(int G)
