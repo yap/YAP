@@ -62,6 +62,10 @@ public:
     const QuantumNumbers& quantumNumbers() const
     { return QuantumNumbers_; }
 
+    /// \return QuantumNumbers_ (non const)
+    QuantumNumbers& quantumNumbers()
+    { return QuantumNumbers_; }
+
     /// \return Mass_
     const double mass() const
     { return Mass_; }
