@@ -130,6 +130,9 @@ public:
     /// Define this to allow `std::inserter` to use `insert`
     using iterator = ParticleTableMap::iterator;
 
+    /// \typedef ParticleTable::const_iterator
+    using const_iterator = ParticleTableMap::const_iterator;
+
     /// Adds content of rhs to this
     /// \param rhs ParticleTable to add into this
     ParticleTable& operator+=(const ParticleTable& rhs);
@@ -157,15 +160,31 @@ public:
 
     /// inserts the pair `ParticleTableEntry::PDG` and `ParticleTableEntry` to #ParticleTableMap_
     /// \param entry a A ParticleTableEntry to add to #ParticleTableMap_
-    std::pair<ParticleTableMap::iterator, bool> insert(const ParticleTableEntry& entry);
+    std::pair<iterator, bool> insert(const ParticleTableEntry& entry);
 
     /// convenience function to allow `inserter()` to be used in the `std::copy` algorithm
-    ParticleTableMap::iterator insert(ParticleTableMap::iterator hint, const ParticleTableEntry& entry);
+    iterator insert(iterator hint, const ParticleTableEntry& entry);
 
     /// #ParticleTable's own inserter
     friend std::insert_iterator<ParticleTable> inserter(ParticleTable& F)
     { return std::insert_iterator<ParticleTable>(F, F.ParticleTableMap_.end()); }
 
+    /// \return ParticleTableMap_.begin()
+    iterator begin()
+    { return ParticleTableMap_.begin(); }
+
+    /// \return ParticleTableMap_.begin()
+    const_iterator begin() const
+    { return ParticleTableMap_.begin(); }
+
+    /// \return ParticleTableMap_.end()
+    iterator end()
+    { return ParticleTableMap_.end(); }
+
+    /// \return ParticleTableMap_.end()
+    const_iterator end() const
+    { return ParticleTableMap_.end(); }
+    
     /// @}
 
 private:

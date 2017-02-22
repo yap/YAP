@@ -15,7 +15,13 @@ ExternalProject_Add(
 set_target_properties(catch PROPERTIES EXCLUDE_FROM_ALL TRUE)
 ExternalProject_Get_Property(catch source_dir)
 
-include_directories(${YAP_SOURCE_DIR}/include ${source_dir}/include ${YAP_SOURCE_DIR}/tools)
+include_directories(
+  ${YAP_SOURCE_DIR}/include
+  ${source_dir}/include
+  ${YAP_SOURCE_DIR}/tools
+  ${YAP_SOURCE_DIR}/data
+  )
+
 set(YAP_TEST_SOURCES
   test_AmplitudeBasis.cxx
   test_Attributes.cxx
@@ -24,6 +30,7 @@ set(YAP_TEST_SOURCES
   test_ClebschGordan.cxx
   test_CompensatedSum.cxx
   test_DataSet.cxx
+  test_deduce_parities.cxx
   test_FourMomenta.cxx
   test_FourMomentaCalculation.cxx
   test_Filter.cxx
