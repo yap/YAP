@@ -8,10 +8,25 @@
 
 /// \return whether pdg code is for a meson
 inline bool is_meson(int pdg)
-{ return abs(pdg) >= 100 and yap::is_odd(abs(pdg) % 10); }
+{
+    // fundamental particles
+    if (abs(pdg) < 100)
+        return false;
+    // generic mesons
+    if (yap::is_odd(abs(pdg) % 10))
+        return true;
+    // K0L and K0S
+    if (abs(pdg) == 310 or abs(pdg) == 130)
+        return true;
+    return false;
+}
 
-/// Deduce quantum number from PDG number,
-/// charge & parities assigned with assumption of standard quark quantum numbers
+/// Deduce quantum number from PDG number;
+/// charge & parities assigned with assumption
+/// of standard quark quantum numbers.
+///
+/// Based on scheme given in PDG book,
+/// chapter "Monte Carlo Particle Numbering Scheme"
 inline int deduce_meson_parity(int pdg)
 {
     if (!is_meson(pdg))
@@ -49,7 +64,7 @@ inline int deduce_meson_parity(int pdg)
     unsigned twoJ = n[0] - 1;
 
     // orbital angular momenta
-    unsigned L = (twoJ == 0) ? 0 : twoJ - 1;
+    unsigned L = (twoJ == 0) ? 0 : twoJ / 2 - 1;
     if (n.size() > 4) {
         if (twoJ == 0)
             L = n[4];

@@ -17,6 +17,17 @@ TEST_CASE( "deduce_parities" )
 
     REQUIRE( T["eta"].quantumNumbers().P() == -1 );
 
+    REQUIRE( T["rho+"].quantumNumbers().P() == -1 );
+    REQUIRE( T["rho0"].quantumNumbers().P() == -1 );
+    REQUIRE( T["rho-"].quantumNumbers().P() == -1 );
+
+    REQUIRE( T["K_S0"].quantumNumbers().P() == -1 );
+    REQUIRE( T["K_L0"].quantumNumbers().P() == -1 );
+
+    REQUIRE( T["omega"].quantumNumbers().P() == -1 );
+
+    REQUIRE( T["phi"].quantumNumbers().P() == -1 );
+    
     REQUIRE( T["a_0+"].quantumNumbers().P() == +1 );
     REQUIRE( T["a_00"].quantumNumbers().P() == +1 );
     REQUIRE( T["a_0-"].quantumNumbers().P() == +1 );
