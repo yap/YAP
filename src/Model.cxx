@@ -215,6 +215,8 @@ void Model::setFinalStateMomenta(DataPoint& d, const std::vector<FourVector<doub
     // call calculate on all static data accessors in model
     for (const auto& sda : StaticDataAccessors_)
         sda->calculate(d, sm);
+ 
+    HelicityAngles_.clearCache(sm);
 }
 
 //-------------------------

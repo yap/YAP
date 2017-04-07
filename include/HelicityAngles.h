@@ -68,6 +68,9 @@ public:
     /// get helicity angles
     const spherical_angles<double>& operator()(const DataPoint& d, const StatusManager& sm, const std::shared_ptr<const ParticleCombination>& pc) const;
 
+    /// Clear the cache for StatusManager
+    void clearCache(const StatusManager& sm) const;
+
 private:
 
     /// Add cache for StatusManager (thread safe)
