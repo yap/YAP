@@ -48,6 +48,7 @@ set(YAP_TEST_SOURCES
   test_Spin.cxx
   test_swapDalitzAxes.cxx
   test_swapFinalStates.cxx
+  test_swapFourMomenta.cxx
   test_VariableStatus.cxx
   test_Vector.cxx
   test_WignerD.cxx

@@ -59,6 +59,16 @@ void HelicityAngles::addToCache(const StatusManager& sm) const
 }
 
 //-------------------------
+void HelicityAngles::clearCache(const StatusManager& sm) const 
+{
+    std::lock_guard<std::mutex> guard(CacheMutex_);
+    if (CachedAngles_.find(&sm) != CachedAngles_.end()) {
+        CachedAngles_.at(&sm).clear();
+        CachedForDataPoint_.at(&sm) = nullptr;
+    }
+}
+
+//-------------------------
 void HelicityAngles::calculateAngles(const DataPoint& d, const StatusManager& sm,
                                      const std::shared_ptr<const ParticleCombination>& pc,
                                      const CoordinateSystem<double, 3>& C, const FourMatrix<double>& boosts) const
