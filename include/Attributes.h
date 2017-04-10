@@ -224,7 +224,6 @@ struct parent_particle : public attribute_of<std::shared_ptr<const DecayingParti
                                              FreeAmplitude,
                                              DecayChannel,
                                              BlattWeisskopf,
-                                             MassShape,
                                              ModelComponent>
 {
     /// \note functors inherited
@@ -241,9 +240,6 @@ struct parent_particle : public attribute_of<std::shared_ptr<const DecayingParti
 
     /// BlattWeisskopf& functor
     virtual std::shared_ptr<const DecayingParticle> operator()(const BlattWeisskopf& bw) const override;
-
-    /// MassShape& functor
-    virtual std::shared_ptr<const DecayingParticle> operator()(const MassShape& m) const override;
 
     /// Model::Component& functor
     virtual std::shared_ptr<const DecayingParticle> operator()(const ModelComponent& c) const override;

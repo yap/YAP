@@ -247,14 +247,6 @@ std::shared_ptr<const DecayingParticle> parent_particle::operator()(const BlattW
 }
 
 //-------------------------
-std::shared_ptr<const DecayingParticle> parent_particle::operator()(const MassShape& m) const
-{
-    if (!m.owner())
-        return nullptr;
-    return std::static_pointer_cast<DecayingParticle>(m.owner()->shared_from_this());
-}
-
-//-------------------------
 std::shared_ptr<const DecayingParticle> parent_particle::operator()(const ModelComponent& c) const
 {
     if (c.decayTrees().empty())

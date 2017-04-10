@@ -16,17 +16,20 @@
 namespace yap {
 
 //-------------------------
-void RelativisticBreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
+void RelativisticBreitWigner::addDecayChannel(DecayingParticle& d, std::shared_ptr<DecayChannel> c)
 {
-    auto it = owner()->blattWeisskopfs().find(owner()->quantumNumbers().twoJ() / 2);
-    if (it == owner()->blattWeisskopfs().end())
+    auto it = d.blattWeisskopfs().find(d.quantumNumbers().twoJ() / 2);
+    if (it == d.blattWeisskopfs().end())
         throw exceptions::Exception("Could not find Blatt-Weisskopf barrier factor in Owner_",
                                     "RelativisticBreitWigner::addDecayChannel");
     BlattWeisskopf_ = it->second;
     // add parameters of BlattWeisskopf to this object
     for (const auto& p : BlattWeisskopf_->parameters())
         addParameter(p);
-    addParameter(owner()->radialSize());
+    if (!RadialSize_) {
+        RadialSize_ = d.radialSize();
+        addParameter(RadialSize_);
+    }
     addParameter(mass());
 }
 
@@ -55,7 +58,7 @@ void RelativisticBreitWigner::calculate(DataPartition& D, const std::shared_ptr<
     // common factors:
 
     // radial size squared
-    double r2 = pow(owner()->radialSize()->value(), 2);
+    double r2 = pow(RadialSize_->value(), 2);
 
     // squared resonance mass
     double m2_R = pow(mass()->value(), 2);
