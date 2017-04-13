@@ -54,8 +54,7 @@ const ParticleTableEntry& ParticleTable::operator[](int PDG) const
 //-------------------------
 const ParticleTableEntry& ParticleTable::operator[](const std::string& name) const
 {
-    auto it = std::find_if(ParticleTableMap_.begin(), ParticleTableMap_.end(),
-    [&](const std::map<int, ParticleTableEntry>::value_type & p) {return p.second.name() == name;});
+    auto it = std::find_if(ParticleTableMap_.begin(), ParticleTableMap_.end(), [&](const auto& p){return p.second.name() == name;});
     if (it == ParticleTableMap_.end())
         throw exceptions::Exception("particle with name \"" + name + "\" not found", "ParticleTable::operator[]");
     return it->second;

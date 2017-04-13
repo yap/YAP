@@ -71,9 +71,7 @@ private:
 template <typename IterType>
 constexpr VariableStatus variable_status(IterType first, IterType last)
 {
-    return std::any_of(first, last,
-                       [](const std::shared_ptr<ParameterBase>& p)
-                       {return p->variableStatus() == VariableStatus::changed;})
+    return std::any_of(first, last, [](const auto& p){return p->variableStatus() == VariableStatus::changed;})
         ? VariableStatus::changed : VariableStatus::unchanged;
 }
 
@@ -334,7 +332,7 @@ protected:
 
 /// \return number of real elements in ParameterVector
 inline const size_t size(const ParameterVector& V)
-{ return std::accumulate(V.begin(), V.end(), size_t(0), [](size_t& s, const ParameterVector::value_type & p) {return s += p->size();}); }
+{ return std::accumulate(V.begin(), V.end(), size_t(0), [](size_t& s, const auto& p){return s += p->size();}); }
 
 /// set values in ParameterVector from iterators
 template <class InputIt>

@@ -40,8 +40,7 @@ template <typename T, size_t N>
 std::string to_string(const CoordinateSystem<T, N>& C)
 {
     return "(" + std::accumulate(C.begin(), C.end(), std::string(""),
-                                 [](std::string& s, const typename CoordinateSystem<T, N>::value_type& v)
-                                 { return s += ", " + to_string(v); }).erase(0, 2) + ")";
+                                 [](auto& s, const auto& v){return s += ", " + to_string(v); }).erase(0, 2) + ")";
 }
 
 /// \return CoordinateSystem with vectors of unit norm
@@ -50,7 +49,7 @@ template <typename T, size_t N>
 const CoordinateSystem<T, N> unit(const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> uC;
-    std::transform(C.begin(), C.end(), uC.begin(), [](const Vector<T, N>& c) {return yap::unit<T, N>(c);});
+    std::transform(C.begin(), C.end(), uC.begin(), [](const auto& c){return yap::unit<T, N>(c);});
     return uC;
 }
 
@@ -60,7 +59,7 @@ template <typename T, size_t N>
 const CoordinateSystem<T, N> operator*(const SquareMatrix<T, N>& M, const CoordinateSystem<T, N>& C)
 {
     CoordinateSystem<T, N> MC;
-    std::transform(C.begin(), C.end(), MC.begin(), [&](const Vector<T, N>& c) {return M * c; });
+    std::transform(C.begin(), C.end(), MC.begin(), [&](const auto& c){return M * c;});
     return MC;
 }
 

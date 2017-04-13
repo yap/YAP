@@ -25,8 +25,7 @@ void ImportanceSampler::calculate(std::vector<std::complex<double> >& A, const D
     if (I.decayTrees().size() != A.size())
         throw exceptions::Exception("size mismatch", "calculate");
     // calculate the amplitudes of all decay trees
-    std::transform(I.decayTrees().begin(), I.decayTrees().end(), A.begin(),
-                   [&d](const std::shared_ptr<DecayTree>& dt) {return dt->dataDependentAmplitude(d);});
+    std::transform(I.decayTrees().begin(), I.decayTrees().end(), A.begin(), [&d](const auto& dt) {return dt->dataDependentAmplitude(d);});
 }
 
 //-------------------------
@@ -153,8 +152,7 @@ unsigned ImportanceSampler::calculate_subset(std::vector<DecayTreeVectorIntegral
     // create vectors for amplitude calculation
     std::vector<std::vector<std::complex<double> > > A;
     std::transform(J.begin(), J.end(), std::back_inserter(A),
-                   [](const DecayTreeVectorIntegral* j)
-                   {return std::vector<std::complex<double> >(j->decayTrees().size());});
+                   [](const auto j){return std::vector<std::complex<double> >(j->decayTrees().size());});
 
     // create DataSet and DataPoint
     auto data = const_cast<Model*>(J[0]->model())->createDataSet();

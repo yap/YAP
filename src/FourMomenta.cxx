@@ -115,7 +115,7 @@ void FourMomenta::calculate(DataPoint& d, StatusManager& sm) const
             continue;
 
         const auto P = std::accumulate(kv.first->indices().begin(), kv.first->indices().end(), FourVector<double>(),
-        [&](const FourVector<double>& V, unsigned i) {return V + fsp[i];});
+                                       [&](const auto& V, unsigned i) {return V + fsp[i];});
 
         P_->setValue(P, d, kv.second, sm);
         M_->setValue(abs(P), d, kv.second, sm);
@@ -186,7 +186,7 @@ std::string FourMomenta::massesString(const DataPoint& d, unsigned m_p) const
 bool check_invariant_masses(const MassAxes& axes, const std::vector<double>& squared_masses, const std::vector<FourVector<double> >& fourMomenta)
 {
     for (size_t i = 0; i < axes.size(); ++i) {
-        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector<double>(), [&](const FourVector<double>& p, unsigned j) {return p + fourMomenta[j];});
+        auto p = std::accumulate(axes[i]->indices().begin(), axes[i]->indices().end(), FourVector<double>(), [&](const auto& p, unsigned j){return p + fourMomenta[j];});
         if (fabs(norm(p) - squared_masses[i]) > 5. * std::numeric_limits<double>::epsilon() )
             return false;
     }

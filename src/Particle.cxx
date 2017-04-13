@@ -37,8 +37,7 @@ const SpinVector spins(const ParticleVector& v)
 {
     SpinVector s;
     s.reserve(v.size());
-    std::transform(v.begin(), v.end(), std::back_inserter(s),
-    [](const ParticleVector::value_type & p) {return p->quantumNumbers().twoJ();});
+    std::transform(v.begin(), v.end(), std::back_inserter(s), [](const auto& p){return p->quantumNumbers().twoJ();});
     return s;
 }
 
@@ -46,8 +45,7 @@ const SpinVector spins(const ParticleVector& v)
 const bool decays_to_full_final_state(const Particle& p)
 {
     return std::any_of(p.particleCombinations().begin(), p.particleCombinations().end(),
-                       [&p](const ParticleCombinationSet::value_type& pc)
-                       {return pc->indices().size() == p.model()->finalStateParticles().size();});
+                       [&p](const auto& pc){return pc->indices().size() == p.model()->finalStateParticles().size();});
 }
 
 //-------------------------

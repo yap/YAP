@@ -163,8 +163,8 @@ int main( int argc, char** argv)
         auto I = integrals(mci.Integral);
         for (const auto& row : I)
             LOG(INFO) << std::accumulate(row.begin(), row.end(), std::string(""),
-                                         [](std::string & s, const yap::ComplexIntegralElement & c)
-                                         { return s += "\t" + to_string(c);}).erase(0, 1);
+                                         [](std::string & s, const auto& c)
+                                         {return s += "\t" + to_string(c);}).erase(0, 1);
     }
 
     // LOG(INFO) << std::endl << "Fixed amplitudes: ";

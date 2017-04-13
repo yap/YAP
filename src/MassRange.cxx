@@ -41,7 +41,7 @@ const std::vector<MassRange> mass_range(double isp_mass, const MassAxes& A, cons
 {
     std::vector<MassRange> R;
     R.reserve(A.size());
-    std::transform(A.begin(), A.end(), std::back_inserter(R), [&](const MassAxes::value_type & a) {return mass_range(isp_mass, a, FSPs);});
+    std::transform(A.begin(), A.end(), std::back_inserter(R), [&](const auto& a){return mass_range(isp_mass, a, FSPs);});
     return R;
 }
 

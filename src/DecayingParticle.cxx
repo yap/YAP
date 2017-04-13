@@ -58,7 +58,7 @@ bool DecayingParticle::consistent() const
     }
 
     // check consistency of all channels
-    std::for_each(DecayChannels_.begin(), DecayChannels_.end(), [&](const std::shared_ptr<DecayChannel>& dc) {if (dc) C &= dc->consistent();});
+    std::for_each(DecayChannels_.begin(), DecayChannels_.end(), [&](const auto& dc){if (dc) C &= dc->consistent();});
 
     if (MassShape_) {
         C &= MassShape_->consistent();
@@ -398,7 +398,7 @@ std::string to_decay_string(const DecayingParticle& dp, unsigned level)
 
         s += pad_right(to_string(c->spinAmplitudes()), sa_padding);
 
-        for (const auto& d : filter(c->daughters(), [](const std::shared_ptr<Particle>& p){return p and is_decaying_particle(*p);}))
+        for (const auto& d : filter(c->daughters(), [](const auto& p){return p and is_decaying_particle(*p);}))
             s += ", " + to_decay_string(static_cast<const DecayingParticle&>(*d), level + 1);
     }
 
