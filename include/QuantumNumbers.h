@@ -40,7 +40,7 @@ public:
 
     /// QJPICG constructor
     /// \todo restore constexpr if using c++14
-    QuantumNumbers(int Q, unsigned twoJ, int P, unsigned twoI, int C, int G)
+    constexpr QuantumNumbers(int Q, unsigned twoJ, int P, unsigned twoI, int C, int G)
         : Q_(Q), TwoJ_(twoJ), P_(signum(P)), C_(signum(C)), TwoI_(twoI), G_(signum(G))
     {
         if (Q_ != 0 and C_ != 0)
@@ -49,7 +49,7 @@ public:
 
     /// QJPI constructor
     constexpr QuantumNumbers(int Q, unsigned twoJ, int P = 0, unsigned twoI = 0)
-        : Q_(Q), TwoJ_(twoJ), P_(signum(P)), C_(0), TwoI_(twoI), G_(0) {}
+        : Q_(Q), TwoJ_(twoJ), P_(signum(P)), TwoI_(twoI) {}
     
     /// @}
 
@@ -123,23 +123,23 @@ private:
     int P_;
 
     /// C-parity
-    int C_;
+    int C_{0};
 
     /// Isospin * 2
     unsigned TwoI_;
 
     /// G-parity
-    int G_;
+    int G_{0};
 
 };
 
 /// equality operator
-inline const bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+constexpr bool operator==(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 { return lhs.twoJ() == rhs.twoJ() and lhs.P() == rhs.P() and lhs.C() == rhs.C()
   and lhs.twoI() == rhs.twoI() and lhs.G() == rhs.G() and lhs.Q() == rhs.Q(); }
 
 /// inequality operator
-inline const bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
+constexpr bool operator!=(const QuantumNumbers& lhs, const QuantumNumbers& rhs)
 { return !(lhs == rhs); }
 
 /// convert to string
