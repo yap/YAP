@@ -14,7 +14,6 @@
 #include <HelicityFormalism.h>
 #include <ImportanceSampler.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <MassRange.h>
 #include <PHSP.h>
 #include <ZemachFormalism.h>

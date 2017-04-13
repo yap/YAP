@@ -10,7 +10,6 @@
 #include <BreitWigner.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
-#include <make_unique.h>
 #include <MathUtilities.h>
 #include <Model.h>
 #include <ParticleCombination.h>

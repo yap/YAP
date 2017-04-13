@@ -3,7 +3,6 @@
 #include <DataSet.h>
 #include <Exceptions.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <Model.h>
 #include <SpinAmplitudeCache.h>
 

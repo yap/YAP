@@ -19,7 +19,6 @@
 #include <FinalStateParticle.h>
 #include <Flatte.h>
 #include <FreeAmplitude.h>
-#include <make_unique.h>
 #include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>

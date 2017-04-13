@@ -22,7 +22,6 @@
 #include <FreeAmplitude.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <MathUtilities.h>
 #include <Model.h>
 #include <Parameter.h>

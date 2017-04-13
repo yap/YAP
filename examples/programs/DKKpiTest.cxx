@@ -7,7 +7,6 @@
 #include <FourVector.h>
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <Parameter.h>

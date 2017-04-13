@@ -14,7 +14,6 @@
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <MassShapeWithNominalMass.h>
 #include <Model.h>

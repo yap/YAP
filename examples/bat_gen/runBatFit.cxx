@@ -19,7 +19,6 @@
 #include <RelativisticBreitWigner.h>
 #include <ZemachFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 
 #include <BAT/BCAux.h>
 #include <BAT/BCLog.h>

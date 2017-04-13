@@ -13,7 +13,6 @@
 #include <HelicityFormalism.h>
 #include <logging.h>
 #include <LorentzTransformation.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <MathUtilities.h>
 #include <Model.h>
