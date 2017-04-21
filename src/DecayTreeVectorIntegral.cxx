@@ -16,6 +16,9 @@ DecayTreeVectorIntegral::DecayTreeVectorIntegral(const DecayTreeVector& dtv)
       Diagonals_(DecayTrees_.size()),
       OffDiagonals_(DecayTrees_.size() - 1)
 {
+    for (size_t i = 0; i < Diagonals_.size(); ++i)
+        Diagonals_[i].value() = 1.;
+
     for (size_t i = 0; i < OffDiagonals_.size(); ++i)
         OffDiagonals_[i] = ComplexIntegralElementMatrix::value_type(DecayTrees_.size() - i - 1);
 }
