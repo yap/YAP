@@ -8,6 +8,7 @@
 #include "Exceptions.h"
 #include "FourVector.h"
 #include "IntegralElement.h"
+#include "make_unique.h"
 #include "Model.h"
 #include "ModelIntegral.h"
 #include "VariableStatus.h"
@@ -111,13 +112,17 @@ void ImportanceSampler::calculate(ModelIntegral& I, Generator g, unsigned N, uns
     } else {
 
         // create copies for running with in each partition
+        std::vector<std::unique_ptr<DecayTreeVectorIntegral> > m_deleter; // RAII
+        m_deleter.reserve(t*J.size());
         std::vector<std::vector<DecayTreeVectorIntegral*> > m(t);
         for (auto& m_j : m) {
             m_j.reserve(J.size());
-            for (const auto& j : J)
-                m_j.push_back(new DecayTreeVectorIntegral(*j));
+            for (const auto& j : J) {
+                m_deleter.push_back(std::make_unique<DecayTreeVectorIntegral>(*j));
+                m_j.push_back(m_deleter.back().get());
+            }
         }
-        
+
         // run over each subset storing number of events used in each calculation
         std::vector<std::future<unsigned> > n_sub;
         n_sub.reserve(m.size());
