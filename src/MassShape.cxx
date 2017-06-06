@@ -15,7 +15,7 @@ namespace yap {
 //-------------------------
 MassShape::MassShape() :
     RecalculableAmplitudeComponent(equal_by_orderless_content),
-    Owner_(nullptr)
+    Model_(nullptr)
 {}
 
 //-------------------------
@@ -32,8 +32,8 @@ bool MassShape::consistent() const
     bool C = DataAccessor::consistent();
 
     // check if owner is set
-    if (!Owner_) {
-        FLOG(ERROR) << "Owner isn't set";
+    if (!Model_) {
+        FLOG(ERROR) << "Model isn't set";
         C &= false;
     }
 
@@ -41,26 +41,9 @@ bool MassShape::consistent() const
 }
 
 //-------------------------
-void MassShape::setOwner(DecayingParticle* dp)
+void MassShape::setModel(const Model& m)
 {
-    if (Owner_)
-        throw exceptions::Exception("MassShape already has owner", "MassShape::setOwner");
-
-    Owner_ = dp;
-}
-
-//-------------------------
-DecayTreeVector& MassShape::ownersDecayTrees()
-{
-    if (!Owner_)
-        throw exceptions::Exception("MassShape has no owner", "MassShape::ownersDecayTrees");
-    return Owner_->DecayTrees_;
-}
-    
-//-------------------------
-const Model* MassShape::model() const
-{
-    return Owner_->model();
+    Model_ = &m;
 }
 
 }

@@ -73,12 +73,15 @@ public:
 protected:
 
     /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
+    virtual void addDecayChannel(DecayingParticle& d, std::shared_ptr<DecayChannel> c) override;
 
 private:
 
     /// BlattWeisskopf object needed for width calculation
     std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
+
+    /// Radial size parameter [GeV^-1]
+    std::shared_ptr<PositiveRealParameter> RadialSize_;
 
 };
 

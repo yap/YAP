@@ -30,8 +30,6 @@ DecayingParticle::DecayingParticle(const std::string& name, const QuantumNumbers
     MassShape_(mass_shape),
     RadialSize_(std::make_shared<PositiveRealParameter>(radial_size))
 {
-    if (MassShape_)
-        MassShape_->setOwner(this);
 }
 
 //-------------------------
@@ -63,8 +61,8 @@ bool DecayingParticle::consistent() const
     if (MassShape_) {
         C &= MassShape_->consistent();
 
-        if (MassShape_->owner() != this) {
-            FLOG(ERROR) << "MassShape's owner is not this";
+        if (MassShape_->model() != model()) {
+            FLOG(ERROR) << "MassShape's model is not this' model";
             C &= false;
         }
     }
@@ -230,8 +228,10 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
         } // ends loop over spin projection of parent
     } // ends loop over DecayChannel's SpinAmplitude's
 
-    if (MassShape_)
-        MassShape_->addDecayChannel(c);
+    if (MassShape_) {
+        MassShape_->setModel(*model());
+        MassShape_->addDecayChannel(*this, c);
+    }
 }
 
 //-------------------------

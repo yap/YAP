@@ -64,12 +64,9 @@ public:
     /// Check consistency of object
     virtual bool consistent() const override;
 
-    /// get raw pointer to owner
-    DecayingParticle* owner() const
-    { return Owner_; }
-
-    /// get raw pointer to Model through resonance
-    const Model* model() const override;
+    /// get raw pointer to Model 
+    const Model* model() const override
+    { return Model_; }
 
     /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
     virtual void checkDecayChannel(const DecayChannel& c) const
@@ -81,24 +78,16 @@ public:
 
 protected:
 
-    /// Set raw pointer to owner
-    virtual void setOwner(DecayingParticle* dp);
+    void setModel(const Model& m);
 
     /// Give MassShape chance to perform operations based on the
-    /// addition of a DecayChannel to its owner
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) {}
-
-    /// Access owner's DecayTree's
-    DecayTreeVector& ownersDecayTrees();
-    
-    /// Access owner's DecayTree's (const)
-    const DecayTreeVector& ownersDecayTrees() const
-    { return const_cast<MassShape*>(this)->ownersDecayTrees(); }
+    /// addition of a DecayChannel to its owner d
+    virtual void addDecayChannel(DecayingParticle& d, std::shared_ptr<DecayChannel> c) {}
 
 private:
 
-    /// raw pointer to owner
-    DecayingParticle* Owner_;
+    /// raw pointer to model
+    const Model* Model_;
 
 };
 

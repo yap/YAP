@@ -17,6 +17,8 @@ TEST_CASE( "FourMomenta" )
 
     auto M = d3pi<yap::HelicityFormalism>();
 
+    REQUIRE(M->fourMomenta()->consistent());
+    
     auto D = M->createDataSet();
 
     REQUIRE_THROWS_AS( D.createDataPoint(std::vector<yap::FourVector<double> >()), yap::exceptions::EmptyFourMomentaVector );
