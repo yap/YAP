@@ -55,6 +55,10 @@ using ComplexParameterVector = std::vector<std::shared_ptr<ComplexParameter> >;
 /// \ingroup Parameters
 using RealParameterVector = std::vector<std::shared_ptr<RealParameter> >;
 
+/// \typedef NonnegativeRealParameterVector
+/// \ingroup Parameters
+using NonnegativeRealParameterVector = std::vector<std::shared_ptr<NonnegativeRealParameter> >;
+
 }
 
 #endif

@@ -148,11 +148,7 @@ public:
     { return HelicityAngles_; }
 
     /// \return ParticleCombinationCache
-    ParticleCombinationCache& particleCombinationCache()
-    { return ParticleCombinationCache_; }
-
-    /// \return ParticleCombinationCache (const)
-    const ParticleCombinationCache& particleCombinationCache() const
+    ParticleCombinationCache& particleCombinationCache() const
     { return ParticleCombinationCache_; }
 
     /// \return SpinAmplitudeCache
@@ -225,7 +221,7 @@ public:
     /// \return MassAxes for requested particle combinations
     /// \param pcs vector of vectors of particle indices
     /// \todo Find way to make const.
-    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {});
+    const MassAxes massAxes(std::vector<std::vector<unsigned> > pcs = {}) const;
 
     /// @}
 
@@ -264,7 +260,7 @@ private:
     CoordinateSystem<double, 3> CoordinateSystem_;
 
     /// ParticleCombination cache
-    ParticleCombinationCache ParticleCombinationCache_;
+    mutable ParticleCombinationCache ParticleCombinationCache_;
 
     /// SpinAmplitude cache
     std::unique_ptr<SpinAmplitudeCache> SpinAmplitudeCache_;
