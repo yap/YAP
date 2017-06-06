@@ -205,14 +205,5 @@ const DecayTreeVector select_changed(const DecayTreeVector& dtv)
     return C;
 }
 
-//-------------------------
-const DecayTreeVector daughter_decay_trees(const DecayTree& dt)
-{
-    DecayTreeVector dtv;
-    for (auto& kv : dt.daughterDecayTrees())
-        dtv.push_back(kv.second);
-    return dtv;
-}
-
 }
 
