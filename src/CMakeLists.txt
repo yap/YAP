@@ -9,6 +9,7 @@ set(YAP_SOURCES
 	BreitWigner.cxx
 	CachedValue.cxx
 	ClebschGordan.cxx
+  ConstantWidthBreitWigner.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
@@ -38,7 +39,6 @@ set(YAP_SOURCES
 	ParticleTable.cxx
 	PoleMass.cxx
 	RecalculableDataAccessor.cxx
-	RelativisticBreitWigner.cxx
 	SpinAmplitude.cxx
 	SpinAmplitudeCache.cxx
 	StaticDataAccessor.cxx

@@ -16,7 +16,6 @@
 #include <HelicityFormalism.h>
 #include <MassRange.h>
 #include <PHSP.h>
-#include <RelativisticBreitWigner.h>
 #include <ZemachFormalism.h>
 #include <logging.h>
 #include <make_unique.h>

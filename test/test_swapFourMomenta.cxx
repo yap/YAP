@@ -3,7 +3,6 @@
 
 #include "helperFunctions.h"
 
-#include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayTree.h>
 #include <FinalStateParticle.h>

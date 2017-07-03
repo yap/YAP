@@ -1,67 +1,103 @@
 #include "BreitWigner.h"
 
+#include "BlattWeisskopf.h"
 #include "CachedValue.h"
 #include "CalculationStatus.h"
 #include "DataPartition.h"
+#include "DecayChannel.h"
+#include "DecayingParticle.h"
 #include "FourMomenta.h"
 #include "logging.h"
+#include "MathUtilities.h"
+#include "MeasuredBreakupMomenta.h"
 #include "Model.h"
 #include "Parameter.h"
-#include "ParticleTable.h"
 
 namespace yap {
 
 //-------------------------
-BreitWigner::BreitWigner(double m, double w) :
-    MassShapeWithNominalMass(m),
-    T_(ComplexCachedValue::create(*this)),
-    Width_(std::make_shared<PositiveRealParameter>(w))
+void BreitWigner::addDecayChannel(std::shared_ptr<DecayChannel> c)
 {
-    addParameter(Width_);
+    auto it = owner()->blattWeisskopfs().find(owner()->quantumNumbers().twoJ() / 2);
+    if (it == owner()->blattWeisskopfs().end())
+        throw exceptions::Exception("Could not find Blatt-Weisskopf barrier factor in Owner_",
+                                    "BreitWigner::addDecayChannel");
+    BlattWeisskopf_ = it->second;
+    // add parameters of BlattWeisskopf to this object
+    for (const auto& p : BlattWeisskopf_->parameters())
+        addParameter(p);
+    addParameter(owner()->radialSize());
+    addParameter(mass());
 }
 
 //-------------------------
-BreitWigner::BreitWigner(const ParticleTableEntry& pde) :
-    BreitWigner(pde.mass(), get_nth_element(pde, 0, "BreitWigner::BreitWigner"))
+void BreitWigner::checkDecayChannel(const DecayChannel& c) const
 {
-}
+    // check channel is only to two daughters
+    if (c.daughters().size() != 2)
+        throw exceptions::Exception("Wrong number of daughters (" + std::to_string(c.daughters().size()) + " != 2",
+                                    "BreitWigner::checkDecayChannel");
 
-//-------------------------
-void BreitWigner::updateCalculationStatus(StatusManager& D) const
-{
-    if (status() == VariableStatus::changed)
-        D.set(*T_, CalculationStatus::uncalculated);
-}
-
-//-------------------------
-const std::complex<double> BreitWigner::value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const
-{
-    return T_->value(d, symmetrizationIndex(pc));
+    // check channel is to spin-0 particles
+    auto sv = spins(c.daughters());
+    if (std::any_of(sv.begin(), sv.end(), std::bind(std::not_equal_to<unsigned>(), std::placeholders::_1, 0)))
+        throw exceptions::Exception("Non-spin-0 daughter", "BreitWigner::checkDecayChannel");
 }
 
 //-------------------------
 void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const
 {
     // if no calculation necessary, exit
-    if (D.status(*T_, si) != CalculationStatus::uncalculated)
+    if (D.status(*T(), si) != CalculationStatus::uncalculated)
         return;
 
     /////////////////////////
     // common factors:
-    
-    // mass * width
-    auto mw = mass()->value() * Width_->value();
 
-    // mass^2 - i * mass * width
-    auto m2_imw = pow(mass()->value(), 2) - 1_i * mass()->value() * Width_->value();
+    // radial size squared
+    double r2 = pow(owner()->radialSize()->value(), 2);
+
+    // squared resonance mass
+    double m2_R = pow(mass()->value(), 2);
+
+    // i * mass^2 * nominal width
+    auto im2w_R = 1_i * m2_R * width()->value();
+
+    // nominal mass * nominal width
+    double mw = mass()->value() * width()->value();
+
+    // J + 1/2
+    unsigned twoLp1 = BlattWeisskopf_->L() + 1;
 
     /////////////////////////
-    
-    // T := mass * width / (mass^2 - s - i * mass * width)
-    for (auto& d : D)
-        T_->setValue(mw / (m2_imw - model()->fourMomenta()->m2(d, pc)), d, si, D);
 
-    D.status(*T_, si) = CalculationStatus::calculated;
+    // calculate BlattWeisskopf
+    BlattWeisskopf_->calculate(D);
+
+    // T := 1 / (M^2 - m^2 - i * M * Gamma)
+    for (auto& d : D) {
+
+        // retrieve masses
+        double m_ab = model()->fourMomenta()->m(d, pc);
+        double m2_ab = m_ab * m_ab;
+        double m_a  = model()->fourMomenta()->m(d, pc->daughters()[0]);
+        double m_b  = model()->fourMomenta()->m(d, pc->daughters()[1]);
+
+        // calculate nominal breakup momentum
+        double q2_nomi = measured_breakup_momenta::q2(m2_R, m_a, m_b);
+
+        // retrieve measured breakup momentum
+        double q2_meas = measured_breakup_momenta::q2(m2_ab, m_a, m_b);
+
+        double Q = sqrt(q2_meas / q2_nomi);
+
+        auto imw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2) / squared_barrier_factor(BlattWeisskopf_->L(), q2_nomi * r2);
+
+        T()->setValue(mw / (m2_R - m2_ab - imw), d, si, D);
+
+    }
+
+    D.status(*T(), si) = CalculationStatus::calculated;
 }
 
 }

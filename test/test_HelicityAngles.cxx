@@ -4,7 +4,6 @@
 #include "helperFunctions.h"
 
 #include <logging.h>
-#include <BreitWigner.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>

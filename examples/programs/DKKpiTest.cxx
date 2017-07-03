@@ -1,5 +1,4 @@
-#include <logging.h>
-#include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DataSet.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
@@ -7,14 +6,15 @@
 #include <FourVector.h>
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
+#include <PDL.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleTable.h>
-#include <PDL.h>
 #include <SpinAmplitudeCache.h>
+#include <logging.h>
+#include <make_unique.h>
 
 #include <memory>
 #include <vector>
@@ -44,7 +44,7 @@ int main( int argc, char** argv)
     auto D = yap::DecayingParticle::create(T["D+"], radialSize);
 
     // create a phi
-    auto phi = yap::DecayingParticle::create(T["phi"], radialSize, std::make_shared<yap::BreitWigner>(T["phi"]));
+    auto phi = yap::DecayingParticle::create(T["phi"], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T["phi"]));
     phi->addStrongDecay(kPlus, kMinus);
 
     // Add channels to D

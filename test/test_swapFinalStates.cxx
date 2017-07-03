@@ -4,7 +4,6 @@
 #include "helperFunctions.h"
 
 #include <Attributes.h>
-#include <BreitWigner.h>
 #include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>

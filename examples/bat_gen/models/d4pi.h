@@ -12,9 +12,10 @@
 #include "../tools.h"
 #include "find_pdl_file.h"
 
-#include <Attributes.h>
 #include <AmplitudeBasis.h>
+#include <Attributes.h>
 #include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DecayChannel.h>
 #include <DecayingParticle.h>
 #include <DecayTree.h>
@@ -31,7 +32,6 @@
 #include <ParticleTable.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
-#include <RelativisticBreitWigner.h>
 #include <SpinAmplitudeCache.h>
 
 #include <BAT/BCAux.h>
@@ -71,19 +71,19 @@ inline std::unique_ptr<Model> d4pi()
     auto D = DecayingParticle::create(T["D0"], r);
     
     // rho
-    auto rho = DecayingParticle::create(T["rho0"], r, std::make_shared<RelativisticBreitWigner>(T["rho0"]));
+    auto rho = DecayingParticle::create(T["rho0"], r, std::make_shared<BreitWigner>(T["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // omega
-    //auto omega = DecayingParticle::create(T["omega"], r, std::make_shared<BreitWigner>(T["omega"]));
+    //auto omega = DecayingParticle::create(T["omega"], r, std::make_shared<ConstantWidthBreitWigner>(T["omega"]));
     //omega->addStrongDecay(piPlus, piMinus);
     
     // sigma / f_0(500)
-    auto sigma = DecayingParticle::create(T["f_0(500)"], r, std::make_shared<BreitWigner>(T["f_0(500)"]));
+    auto sigma = DecayingParticle::create(T["f_0(500)"], r, std::make_shared<ConstantWidthBreitWigner>(T["f_0(500)"]));
     sigma->addStrongDecay(piPlus, piMinus);
     
     // a_1
-    auto a_1 = DecayingParticle::create(T["a_1+"], r, std::make_shared<BreitWigner>(T["a_1+"]));
+    auto a_1 = DecayingParticle::create(T["a_1+"], r, std::make_shared<ConstantWidthBreitWigner>(T["a_1+"]));
     a_1->addStrongDecay(rho,   piPlus);
     a_1->addStrongDecay(sigma, piPlus);
 
@@ -95,7 +95,7 @@ inline std::unique_ptr<Model> d4pi()
     f_0_980->addStrongDecay(piPlus, piMinus);
                                             
     // f_2(1270)
-    auto f_2 = DecayingParticle::create(T["f_2"], r, std::make_shared<BreitWigner>(T["f_2"]));
+    auto f_2 = DecayingParticle::create(T["f_2"], r, std::make_shared<ConstantWidthBreitWigner>(T["f_2"]));
     f_2->addStrongDecay(piPlus, piMinus); 
 
     // pi+ pi- flat

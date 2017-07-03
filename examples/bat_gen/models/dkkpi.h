@@ -9,7 +9,7 @@
 
 #include "find_pdl_file.h"
 
-#include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <make_unique.h>
@@ -19,7 +19,6 @@
 #include <ParticleTable.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
-#include <RelativisticBreitWigner.h>
 #include <SpinAmplitudeCache.h>
 
 #include <complex>
@@ -45,33 +44,33 @@ inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
     // initial state particle
     auto D = DecayingParticle::create(T["D+"], radialSize);
 
-    auto KK0 = DecayingParticle::create("KK0", QuantumNumbers(0, 0), radialSize, make_shared<BreitWigner>(1.1, 0.075));
+    auto KK0 = DecayingParticle::create("KK0", QuantumNumbers(0, 0), radialSize, make_shared<ConstantWidthBreitWigner>(1.1, 0.075));
     KK0->addStrongDecay(kPlus, kMinus);
     D->addWeakDecay(KK0, piPlus);
 
     *free_amplitude(*D, to(KK0)) = polar(0.15, rad(39.));
     
-    /* auto KK1 = DecayingParticle::create("KK1", QuantumNumbers(0, 2), radialSize, make_shared<BreitWigner>(1.35, 0.125)); */
+    /* auto KK1 = DecayingParticle::create("KK1", QuantumNumbers(0, 2), radialSize, make_shared<ConstantWidthBreitWigner>(1.35, 0.125)); */
     /* KK1->addStrongDecay(kPlus, kMinus); */
     /* D->addWeakDecay(KK1, piPlus); */
     /* *free_amplitude(*D, to(KK1)) = 1.; */
     
-    /* auto KK2 = DecayingParticle::create("KK2", QuantumNumbers(0, 4), radialSize, make_shared<BreitWigner>(1.6, 0.100)); */
+    /* auto KK2 = DecayingParticle::create("KK2", QuantumNumbers(0, 4), radialSize, make_shared<ConstantWidthBreitWigner>(1.6, 0.100)); */
     /* KK2->addStrongDecay(kPlus, kMinus); */
     /* D->addWeakDecay(KK2, piPlus); */
     /* *free_amplitude(*D, to(KK2)) = polar(10., rad(-12.)); */
     
-    /* auto piK0 = DecayingParticle::create("piK0", QuantumNumbers(0, 0), radialSize, make_shared<BreitWigner>(0.75, 0.085)); */
+    /* auto piK0 = DecayingParticle::create("piK0", QuantumNumbers(0, 0), radialSize, make_shared<ConstantWidthBreitWigner>(0.75, 0.085)); */
     /* piK0->addStrongDecay(piPlus, kMinus); */
     /* D->addWeakDecay(piK0, kPlus); */
     /* *free_amplitude(*D, to(piK0)) = polar(0.23, rad(112.)); */
 
-    /* auto piK1 = DecayingParticle::create("piK1", QuantumNumbers(0, 2), radialSize, make_shared<BreitWigner>(1.0, 0.125)); */
+    /* auto piK1 = DecayingParticle::create("piK1", QuantumNumbers(0, 2), radialSize, make_shared<ConstantWidthBreitWigner>(1.0, 0.125)); */
     /* piK1->addStrongDecay(piPlus, kMinus); */
     /* D->addWeakDecay(piK1, kPlus); */
     /* *free_amplitude(*D, to(piK1)) = polar(1.2, rad(-76.)); */
 
-    /* auto piK2 = DecayingParticle::create("piK2", QuantumNumbers(0, 4), radialSize, make_shared<BreitWigner>(1.25, 0.065)); */
+    /* auto piK2 = DecayingParticle::create("piK2", QuantumNumbers(0, 4), radialSize, make_shared<ConstantWidthBreitWigner>(1.25, 0.065)); */
     /* piK2->addStrongDecay(piPlus, kMinus); */
     /* D->addWeakDecay(piK2, kPlus); */
     /* *free_amplitude(*D, to(piK2)) = polar(7.8, rad(56.)); */
@@ -104,16 +103,16 @@ inline bat_fit dkkpi_fit(string name, unique_ptr<Model> M, vector<vector<unsigne
     /* m.GetParameter(m.findFreeAmplitude(free_amplitude(*m.model(), to(piK1))) + 1).Fix(-76.); */
     /* m.GetParameter(m.findFreeAmplitude(free_amplitude(*m.model(), to(piK2))) + 1).Fix(56.); */
 
-    m.addParameter("KK0_mass", static_pointer_cast<BreitWigner>(KK0->massShape())->mass(), 1.08, 1.11);
+    m.addParameter("KK0_mass", static_pointer_cast<ConstantWidthBreitWigner>(KK0->massShape())->mass(), 1.08, 1.11);
     m.GetParameters().Back().SetPriorConstant();
     
-    m.addParameter("KK0_width", static_pointer_cast<BreitWigner>(KK0->massShape())->width(), 65e-3, 85e-3);
+    m.addParameter("KK0_width", static_pointer_cast<ConstantWidthBreitWigner>(KK0->massShape())->width(), 65e-3, 85e-3);
     m.GetParameters().Back().SetPriorConstant();
 
     /* m.addParameter("KK1_mass", KK1->mass(), 1.35 - 10e-3, 1.35 + 10e-3); */
     /* m.GetParameters().Back().SetPriorConstant(); */
     
-    /* m.addParameter("KK1_width", static_pointer_cast<BreitWigner>(KK1->massShape())->width(), 50e-3 - 5e-3, 50e-3 + 5e-3); */
+    /* m.addParameter("KK1_width", static_pointer_cast<ConstantWidthBreitWigner>(KK1->massShape())->width(), 50e-3 - 5e-3, 50e-3 + 5e-3); */
     /* m.GetParameters().Back().SetPriorConstant(); */
 
     return m;

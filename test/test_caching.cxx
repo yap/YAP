@@ -3,7 +3,7 @@
 
 #include "helperFunctions.h"
 
-#include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
@@ -48,15 +48,15 @@ yap::MassAxes populate_model(yap::Model& M, const yap::ParticleTable& T, const s
     auto D = yap::DecayingParticle::create(T["D+"], 3.);
 
     // create resonances
-    auto piK0 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::BreitWigner>(0.025));
+    auto piK0 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 0), 0.75, "piK0", 3., std::make_shared<yap::ConstantWidthBreitWigner>(0.025));
     piK0->addStrongDecay({piPlus, kMinus});
     D->addWeakDecay({piK0, kPlus})->freeAmplitudes()[0]->setValue(0.5);
 
-    auto piK1 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 2), 1.00, "piK1", 3., std::make_shared<yap::BreitWigner>(0.025));
+    auto piK1 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 2), 1.00, "piK1", 3., std::make_shared<yap::ConstantWidthBreitWigner>(0.025));
     piK1->addStrongDecay({piPlus, kMinus});
     D->addWeakDecay({piK1, kPlus})->freeAmplitudes()[0]->setValue(1.);
 
-    auto piK2 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 4), 1.25, "piK2", 3., std::make_shared<yap::BreitWigner>(0.025));
+    auto piK2 = yap::DecayingParticle::create(yap::QuantumNumbers(0, 4), 1.25, "piK2", 3., std::make_shared<yap::ConstantWidthBreitWigner>(0.025));
     piK2->addStrongDecay({piPlus, kMinus});
     D->addWeakDecay({piK2, kPlus})->freeAmplitudes()[0]->setValue(30.);
 

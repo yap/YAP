@@ -21,58 +21,50 @@
 #ifndef yap_BreitWigner_h
 #define yap_BreitWigner_h
 
+#include "fwd/BlattWeisskopf.h"
 #include "fwd/DataPartition.h"
-#include "fwd/DataPoint.h"
-#include "fwd/Parameter.h"
+#include "fwd/DecayChannel.h"
 #include "fwd/ParticleCombination.h"
 #include "fwd/ParticleTable.h"
-#include "fwd/StatusManager.h"
 
-#include "MassShapeWithNominalMass.h"
+#include "ConstantWidthBreitWigner.h"
 
-#include <complex>
 #include <memory>
 
 namespace yap {
 
 /// \class BreitWigner
-/// \brief Class for Breit-Wigner resonance shape
+/// \brief Class for Relativistic Breit-Wigner resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
-/// Amplitude is 1 / (mass^2 - s - i*mass*width)\n\n
-class BreitWigner : public MassShapeWithNominalMass
+/// Amplitude is\n
+/// \f$\frac{1}{M_{R}^2 - s - i*M_{R}*\Gamma(s)}\f$\n
+/// with\n
+/// \f$\Gamma(s) = \Gamma_{R}
+///                \left(\frac{p^*(s)}{p^*(M_{R}^2)}\right)^{2J_{R}+1}
+///                \frac{M_{R}}{\sqrt{s}} F^{2}_{R}\f$\n
+/// with \f$ F^{2}_{R} \f$ is the Blatt-Weisskopf barrier factor
+class BreitWigner : public ConstantWidthBreitWigner
 {
 public:
 
     /// Constructor
-    /// \param mass Mass of resonance [GeV]
-    /// \param width Width of resonance [GeV]
-    BreitWigner(double mass, double w);
+    /// \param m Mass of resonance [GeV]
+    /// \param w Width of resonance [GeV]
+    BreitWigner(double m, double w) : ConstantWidthBreitWigner(m, w) {}
 
     /// Constructor
-    /// \param pde ParticleTableEntry to get mass and width from
-    BreitWigner(const ParticleTableEntry& pde);
+    /// \param pde ParticleTableEntry to take mass and width from
+    BreitWigner(const ParticleTableEntry& pde) : ConstantWidthBreitWigner(pde) {}
 
-    /// Get width
-    std::shared_ptr<PositiveRealParameter> width()
-    { return Width_; }
+    /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
+    /// Cheks that decay is to two spin-zero particles
+    virtual void checkDecayChannel(const DecayChannel& c) const override;
 
-    /// Get width (const)
-    const std::shared_ptr<PositiveRealParameter> width() const
-    { return const_cast<BreitWigner*>(this)->width(); }
-
-    /// update the calculationStatus for a DataPartition
-    virtual void updateCalculationStatus(StatusManager& D) const override;
+    using ConstantWidthBreitWigner::calculate;
     
-    /// \return value for DataPoint and ParticleCombination
-    /// \param d DataPoint
-    /// \param pc shared_ptr to ParticleCombination
-    virtual const std::complex<double> value(const DataPoint& d, const std::shared_ptr<const ParticleCombination>& pc) const override;
-
-    using MassShapeWithNominalMass::calculate;
-    
-    /// Calculate dynamic amplitude T for particular particle combination and store in each DataPoint in DataPartition
+    /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
@@ -80,17 +72,13 @@ public:
 
 protected:
 
-    /// access cached dynamic amplitude
-    const std::shared_ptr<ComplexCachedValue> T() const
-    { return T_; }
+    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
+    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
 
 private:
 
-    /// cached dynamic amplitude
-    std::shared_ptr<ComplexCachedValue> T_;
-
-    /// Width [GeV]
-    std::shared_ptr<PositiveRealParameter> Width_;
+    /// BlattWeisskopf object needed for width calculation
+    std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
 
 };
 

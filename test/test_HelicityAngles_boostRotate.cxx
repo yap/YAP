@@ -4,25 +4,23 @@
 #include "helperFunctions.h"
 
 #include <Attributes.h>
-#include <logging.h>
-#include <BreitWigner.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
 #include <FourMomenta.h>
 #include <HelicityAngles.h>
 #include <HelicityFormalism.h>
-#include <logging.h>
 #include <LorentzTransformation.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <MathUtilities.h>
 #include <Model.h>
+#include <PDL.h>
+#include <PHSP.h>
 #include <Parameter.h>
 #include <ParticleCombination.h>
 #include <ParticleTable.h>
-#include <PDL.h>
-#include <PHSP.h>
 #include <Rotation.h>
+#include <logging.h>
+#include <make_unique.h>
 
 #include <assert.h>
 #include <cmath>
