@@ -55,7 +55,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file(find_pdl_file());
 
     auto D_mass = F["D+"].mass();
 

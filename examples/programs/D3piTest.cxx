@@ -40,7 +40,7 @@ int main( int argc, char** argv)
     yap::plainLogs(el::Level::Debug);
 
     // load table and add some missing parities
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl");
     T["D+"].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
     T[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
     T[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1));

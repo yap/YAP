@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include "helperFunctions.h"
+
 #include <ParticleTable.h>
 #include <PDL.h>
 #include <QuantumNumbers.h>
@@ -7,7 +9,7 @@
 TEST_CASE( "ParticleTable" )
 {
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     // check for nonexistent entry
     REQUIRE_THROWS_AS( T[1234567890], yap::exceptions::Exception );

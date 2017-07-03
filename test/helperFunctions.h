@@ -20,13 +20,17 @@
 #include <Group.h>
 #include <Sort.h>
 
+/// \return evt.pdl file
+inline const std::string find_pdl_file()
+{ return (::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl"; }
+
 /// generate a model with 4 final state particles
 //-------------------------
 inline std::shared_ptr<yap::Model> d4pi()
 {
     auto M = std::make_shared<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
     double radialSize = 1.;
 
     // initial state particle
@@ -64,7 +68,7 @@ inline std::shared_ptr<yap::Model> d4pi()
 template <typename Formalism>
 inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
 {
-    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     yap::FinalStateParticleVector FSP;
     std::transform(fsps.begin(), fsps.end(), std::back_inserter(FSP), [&T](int pdg){return yap::FinalStateParticle::create(T[pdg]);});
@@ -104,7 +108,7 @@ std::shared_ptr<yap::Model> d3pi()
 
     auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     // initial state particle
     auto D = yap::DecayingParticle::create(T["D+"], radialSize);
@@ -130,7 +134,7 @@ std::shared_ptr<yap::Model> d3pi()
 //-------------------------
 inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
     
     auto isp_mass = T[M.initialStates()[0]->name()].mass();
 

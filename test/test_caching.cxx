@@ -1,6 +1,8 @@
 #include <catch.hpp>
 #include <catch_capprox.hpp>
 
+#include "helperFunctions.h"
+
 #include <BreitWigner.h>
 #include <DataSet.h>
 #include <FinalStateParticle.h>
@@ -86,7 +88,7 @@ TEST_CASE( "swapFinalStates" )
     yap::disableLogs(el::Level::Debug);
     //yap::plainLogs(el::Level::Debug);
 
-    auto F = yap::ParticleTable((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::ParticleTable(find_pdl_file());
 
     // create models
     std::vector<std::unique_ptr<yap::Model> > Z;     // Zemach

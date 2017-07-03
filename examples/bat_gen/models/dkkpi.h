@@ -7,6 +7,8 @@
 #ifndef __BAT__DKKPI__H
 #define __BAT__DKKPI__H
 
+#include "find_pdl_file.h"
+
 #include <BreitWigner.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
@@ -28,7 +30,7 @@ using namespace yap;
 
 inline unique_ptr<Model> dkkpi(unique_ptr<Model> M)
 {
-    auto T = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file(find_pdl_file());
 
     // final state particles
     auto kPlus  = FinalStateParticle::create(T[+321]);

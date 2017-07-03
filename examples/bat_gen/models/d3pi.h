@@ -11,6 +11,7 @@
 #include "../ConstantPrior.h"
 #include "../fit_fitFraction.h"
 #include "../tools.h"
+#include "find_pdl_file.h"
 
 #include <Attributes.h>
 #include <BreitWigner.h>
@@ -43,7 +44,7 @@ using namespace yap;
 
 inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 {
-    auto T = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file(find_pdl_file());
 
     // final state particles
     auto piPlus  = FinalStateParticle::create(T[211]);

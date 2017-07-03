@@ -87,7 +87,7 @@ TEST_CASE( "HelicityAngles" )
     // use common radial size for all resonances
     double radialSize = 3.; // [GeV^-1]
 
-    yap::ParticleTable T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    yap::ParticleTable T = yap::read_pdl_file(find_pdl_file());
 
     double D_mass = T["D0"].mass();
 

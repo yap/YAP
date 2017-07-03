@@ -19,6 +19,9 @@ set(PROGRAMS
 # Add the program to the `make example` dependencies
 set(examples_depends ${examples_depends} ${PROGRAMS} PARENT_SCOPE)
 
+file(MAKE_DIRECTORY data)
+configure_file(${YAP_SOURCE_DIR}/data/evt.pdl ${CMAKE_CURRENT_BINARY_DIR}/data/evt.pdl COPYONLY)
+
 foreach(program ${PROGRAMS})
     add_executable(${program} EXCLUDE_FROM_ALL ${program}.cxx ${SOURCES})
     target_link_libraries(${program} ${ROOT_LIBS} ${BAT_LIBRARIES} YAP)

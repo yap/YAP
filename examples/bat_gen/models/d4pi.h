@@ -10,6 +10,7 @@
 #include "../bat_fit.h"
 #include "../fit_fitFraction.h"
 #include "../tools.h"
+#include "find_pdl_file.h"
 
 #include <Attributes.h>
 #include <AmplitudeBasis.h>
@@ -54,7 +55,7 @@ double scale_sigma_pipi  = 0.204794164 ;
 
 inline std::unique_ptr<Model> d4pi()
 {
-    auto T = read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file(find_pdl_file());
 
     // final state particles
     auto piPlus  = FinalStateParticle::create(T[211]);

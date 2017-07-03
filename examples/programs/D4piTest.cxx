@@ -42,7 +42,7 @@ int main( int argc, char** argv)
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl");
     
     // add some missing parities
     T[421].setQuantumNumbers(yap::QuantumNumbers(0, 0, -1)); // D0

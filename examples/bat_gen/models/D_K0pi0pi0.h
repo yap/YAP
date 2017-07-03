@@ -7,6 +7,7 @@
 #ifndef __BAT__DKSPI0PI0__H
 #define __BAT__DKSPI0PI0__H
 
+#include "find_pdl_file.h"
 
 #include <BreitWigner.h>
 #include <DecayChannel.h>
@@ -30,7 +31,7 @@
 
 inline std::unique_ptr<yap::Model> D_K0pi0pi0(std::unique_ptr<yap::Model> M)
 {
-    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     // final state particles
     auto piZero = FinalStateParticle::create(T["pi0"]);

@@ -32,7 +32,9 @@ if(DEFINED ENV{ROOTSYS})
 else(DEFINED ENV{ROOTSYS})
     message(WARNING "$ROOTSYS is not set: bat_gen examples won't be compilable because I can't find ROOT.")
 endif(DEFINED ENV{ROOTSYS})
-    
+
+file(MAKE_DIRECTORY data)
+configure_file(${YAP_SOURCE_DIR}/data/evt.pdl ${CMAKE_BINARY_DIR}/data/evt.pdl COPYONLY)
 
 # Create custom 'examples' target
 add_custom_target(examples DEPENDS ${examples_depends})
