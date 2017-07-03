@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_BreitWigner_h
-#define yap_BreitWigner_h
+#ifndef yap_NonrelativisticConstantWidthBreitWigner_h
+#define yap_NonrelativisticConstantWidthBreitWigner_h
 
 #include "fwd/BlattWeisskopf.h"
 #include "fwd/DataPartition.h"
@@ -33,34 +33,25 @@
 
 namespace yap {
 
-/// \class BreitWigner
-/// \brief Class for Relativistic Breit-Wigner resonance shape
+/// \class NonrelativisticConstantWidthBreitWigner
+/// \brief Class for Non-Relativistic Breit-Wigner resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
 /// Amplitude is\n
-/// \f$\frac{1}{M_{R}^2 - s - i*M_{R}*\Gamma(s)}\f$\n
-/// with\n
-/// \f$\Gamma(s) = \Gamma_{R}
-///                \left(\frac{p^*(s)}{p^*(M_{R}^2)}\right)^{2J_{R}+1}
-///                \frac{M_{R}}{\sqrt{s}} F^{2}_{R}\f$\n
-/// with \f$ F^{2}_{R} \f$ is the Blatt-Weisskopf barrier factor
-class BreitWigner : public ConstantWidthBreitWigner
+/// \f$\frac{1}{M_{R} - \sqrt{s} - i*\Gamma}\f$\n
+class NonrelativisticConstantWidthBreitWigner : public ConstantWidthBreitWigner
 {
 public:
 
     /// Constructor
     /// \param m Mass of resonance [GeV]
     /// \param w Width of resonance [GeV]
-    BreitWigner(double m, double w) : ConstantWidthBreitWigner(m, w) {}
+    NonrelativisticConstantWidthBreitWigner(double m, double w) : ConstantWidthBreitWigner(m, w) {}
 
     /// Constructor
     /// \param pde ParticleTableEntry to take mass and width from
-    BreitWigner(const ParticleTableEntry& pde) : ConstantWidthBreitWigner(pde) {}
-
-    /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
-    /// Cheks that decay is to two spin-zero particles
-    virtual void checkDecayChannel(const DecayChannel& c) const override;
+    NonrelativisticConstantWidthBreitWigner(const ParticleTableEntry& pde) : ConstantWidthBreitWigner(pde) {}
 
     using ConstantWidthBreitWigner::calculate;
     
@@ -69,20 +60,6 @@ public:
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
     virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
-
-    // \return BlattWiesskopf_
-    const std::shared_ptr<const BlattWeisskopf> blattWeisskopf() const
-    { return BlattWeisskopf_; }
-    
-protected:
-
-    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
-
-private:
-
-    /// BlattWeisskopf object needed for width calculation
-    std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
 
 };
 

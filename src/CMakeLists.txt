@@ -9,15 +9,15 @@ set(YAP_SOURCES
 	BreitWigner.cxx
 	CachedValue.cxx
 	ClebschGordan.cxx
-  ConstantWidthBreitWigner.cxx
+	ConstantWidthBreitWigner.cxx
 	DataAccessor.cxx
 	DataPartition.cxx
 	DataPoint.cxx
 	DataSet.cxx
 	DecayChannel.cxx
+	DecayingParticle.cxx
 	DecayTree.cxx
 	DecayTreeVectorIntegral.cxx
-	DecayingParticle.cxx
 	FinalStateParticle.cxx
 	Flatte.cxx
 	FourMomenta.cxx
@@ -32,11 +32,13 @@ set(YAP_SOURCES
 	MeasuredBreakupMomenta.cxx
 	Model.cxx
 	ModelIntegral.cxx
-	PDL.cxx
+	NonrelativisticBreitWigner.cxx
+	NonrelativisticConstantWidthBreitWigner.cxx
 	Particle.cxx
 	ParticleCombination.cxx
 	ParticleCombinationCache.cxx
 	ParticleTable.cxx
+	PDL.cxx
 	PoleMass.cxx
 	RecalculableDataAccessor.cxx
 	SpinAmplitude.cxx

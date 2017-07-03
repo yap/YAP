@@ -18,8 +18,8 @@
 
 /// \file
 
-#ifndef yap_BreitWigner_h
-#define yap_BreitWigner_h
+#ifndef yap_NonrelativisticBreitWigner_h
+#define yap_NonrelativisticBreitWigner_h
 
 #include "fwd/BlattWeisskopf.h"
 #include "fwd/DataPartition.h"
@@ -27,62 +27,44 @@
 #include "fwd/ParticleCombination.h"
 #include "fwd/ParticleTable.h"
 
-#include "ConstantWidthBreitWigner.h"
+#include "BreitWigner.h"
 
 #include <memory>
 
 namespace yap {
 
-/// \class BreitWigner
-/// \brief Class for Relativistic Breit-Wigner resonance shape
+/// \class NonrelativisticBreitWigner
+/// \brief Class for Non-relativistic Breit-Wigner resonance shape
 /// \author Daniel Greenwald
 /// \ingroup MassShapes
 ///
 /// Amplitude is\n
-/// \f$\frac{1}{M_{R}^2 - s - i*M_{R}*\Gamma(s)}\f$\n
+/// \f$\frac{1}{M_{R} - \sqrt{s} - i * \Gamma(s)}\f$\n
 /// with\n
 /// \f$\Gamma(s) = \Gamma_{R}
 ///                \left(\frac{p^*(s)}{p^*(M_{R}^2)}\right)^{2J_{R}+1}
 ///                \frac{M_{R}}{\sqrt{s}} F^{2}_{R}\f$\n
 /// with \f$ F^{2}_{R} \f$ is the Blatt-Weisskopf barrier factor
-class BreitWigner : public ConstantWidthBreitWigner
+class NonrelativisticBreitWigner : public BreitWigner
 {
 public:
 
     /// Constructor
     /// \param m Mass of resonance [GeV]
     /// \param w Width of resonance [GeV]
-    BreitWigner(double m, double w) : ConstantWidthBreitWigner(m, w) {}
+    NonrelativisticBreitWigner(double m, double w) : BreitWigner(m, w) {}
 
     /// Constructor
     /// \param pde ParticleTableEntry to take mass and width from
-    BreitWigner(const ParticleTableEntry& pde) : ConstantWidthBreitWigner(pde) {}
+    NonrelativisticBreitWigner(const ParticleTableEntry& pde) : BreitWigner(pde) {}
 
-    /// Check if a DecayChannel is valid for this MassShape; will throw if invalid.
-    /// Cheks that decay is to two spin-zero particles
-    virtual void checkDecayChannel(const DecayChannel& c) const override;
-
-    using ConstantWidthBreitWigner::calculate;
+    using BreitWigner::calculate;
     
     /// Calculate dynamic amplitude T for and store in each DataPoint in DataPartition
     /// \param D DataPartition to calculate on
     /// \param pc ParticleCombination to calculate for
     /// \param si SymmetrizationIndec to calculate for
     virtual void calculate(DataPartition& D, const std::shared_ptr<const ParticleCombination>& pc, unsigned si) const override;
-
-    // \return BlattWiesskopf_
-    const std::shared_ptr<const BlattWeisskopf> blattWeisskopf() const
-    { return BlattWeisskopf_; }
-    
-protected:
-
-    /// Retrieve BlattWeisskopf object from owner now that it is added to the Model
-    virtual void addDecayChannel(std::shared_ptr<DecayChannel> c) override;
-
-private:
-
-    /// BlattWeisskopf object needed for width calculation
-    std::shared_ptr<BlattWeisskopf> BlattWeisskopf_;
 
 };
 
