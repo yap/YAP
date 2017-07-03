@@ -60,8 +60,8 @@ void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<const Partic
     // squared resonance mass
     double m2_R = pow(mass()->value(), 2);
 
-    // i * mass^2 * nominal width
-    auto im2w_R = 1_i * m2_R * width()->value();
+    // mass^2 * nominal width
+    auto m2w_R = m2_R * width()->value();
 
     // J + 1/2
     unsigned twoLp1 = BlattWeisskopf_->L() + 1;
@@ -88,7 +88,7 @@ void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<const Partic
 
         double Q = sqrt(q2_meas / q2_nomi);
 
-        auto mw = im2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2) / squared_barrier_factor(BlattWeisskopf_->L(), q2_nomi * r2);
+        auto mw = m2w_R / m_ab * pow(Q, twoLp1) * pow(BlattWeisskopf_->value(d, pc), 2) / squared_barrier_factor(BlattWeisskopf_->L(), q2_nomi * r2);
 
         T()->setValue(mw / (m2_R - m2_ab - 1_i * mw), d, si, D);
 
