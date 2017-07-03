@@ -137,9 +137,6 @@ public:
     /// \param rhs ParticleTable to add into this
     ParticleTable& operator+=(const ParticleTable& rhs);
 
-    /// \name Particle table access
-    /// @{
-
     /// get ParticleTableEntry from #ParticleTableMap_ with safety checks
     /// \param PDG pdg code labeling particle table entry
     const ParticleTableEntry& operator[](int PDG) const;
@@ -184,8 +181,14 @@ public:
     /// \return ParticleTableMap_.end()
     const_iterator end() const
     { return ParticleTableMap_.end(); }
+
+    // \return ParticleTableMap_.empty()
+    const bool empty() const
+    { return ParticleTableMap_.empty(); }
     
-    /// @}
+    // \return ParticleTableMap_.size()
+    const ParticleTableMap::size_type size() const
+    { return ParticleTableMap_.size(); }
 
 private:
 
