@@ -45,13 +45,21 @@ void BreitWigner::calculate(DataPartition& D, const std::shared_ptr<const Partic
     // if no calculation necessary, exit
     if (D.status(*T_, si) != CalculationStatus::uncalculated)
         return;
-        
-    // common factor := M^2 - i * M * Gamma
-    auto M2_iMG = pow(mass()->value(), 2) - 1_i * mass()->value() * Width_->value();
 
-    // T := 1 / (M^2 - m^2 - i * M * Gamma)
+    /////////////////////////
+    // common factors:
+    
+    // mass * width
+    auto mw = mass()->value() * Width_->value();
+
+    // mass^2 - i * mass * width
+    auto m2_imw = pow(mass()->value(), 2) - 1_i * mass()->value() * Width_->value();
+
+    /////////////////////////
+    
+    // T := mass * width / (mass^2 - s - i * mass * width)
     for (auto& d : D)
-        T_->setValue(1. / (M2_iMG - model()->fourMomenta()->m2(d, pc)), d, si, D);
+        T_->setValue(mw / (m2_imw - model()->fourMomenta()->m2(d, pc)), d, si, D);
 
     D.status(*T_, si) = CalculationStatus::calculated;
 }

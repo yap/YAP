@@ -110,39 +110,32 @@ void Flatte::calculate(DataPartition& D, const std::shared_ptr<const ParticleCom
         return;
 
     /////////////////////////
-    // precalculate
+    // common factors:
 
-    const auto M2 = pow(mass()->value(), 2);
+    // mass^2
+    const auto m2 = pow(mass()->value(), 2);
 
-    // const auto& FSPs = model()->finalStateParticles();
+    // width at nominal mass
+    std::complex<double> w = 0;
+    for (const auto& fc : FlatteChannels_)
+        w += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 
-    // // get channel particles (both orderings):
-    // std::array<std::shared_ptr<FinalStateParticle>, 2> AB = {FSPs[pc->indices()[0]], FSPs[pc->indices()[1]]};
-    // std::array<std::shared_ptr<FinalStateParticle>, 2> BA = {AB[1], AB[0]};
-    
-    // auto it = std::find_if(FlatteChannels_.begin(), FlatteChannels_.end(),
-    //                        [&](const FlatteChannel& fc)
-    //                        {return fc.Particles == AB or fc.Particles == BA;});
-    // if (it == FlatteChannels_.end())
-    //     throw exceptions::Exception("FlatteChannel not found", "Flatte::calculateT");
-    
-    // double mG0 = 2. / mass()->value()
-    //     * it->Coupling->value()
-    //     * sqrt(squared_breakup_momentum(M2, it->Particles[0]->mass()->value(), it->Particles[1]->mass()->value()));
+    // normalization factor
+    auto w_o_m = 2. * w / mass()->value();
 
     /////////////////////////
 
     for (auto& d : D) {
-
-        const double m2 = model()->fourMomenta()->m2(d, pc);
+        
+        auto s = model()->fourMomenta()->m2(d, pc);
 
         // calculate width term := sum of coupling * complex-breakup-momentum
-        std::complex<double> w = 0;
+        std::complex<double> ws = 0;
         for (const auto& fc : FlatteChannels_)
-            w += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
+            ws += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 
         // T = 1 / (M^2 - m^2 - width-term)
-        T_->setValue(1. / (M2 - m2 - 1_i * 2. * w / sqrt(m2)), d, si, D);
+        T_->setValue(w_o_m / (m2 - s - 1_i * 2. * ws / sqrt(m2)), d, si, D);
     }
 
     D.status(*T_, si) = CalculationStatus::calculated;
