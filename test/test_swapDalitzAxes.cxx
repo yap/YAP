@@ -4,7 +4,6 @@
 #include "helperFunctions.h"
 
 #include <Attributes.h>
-#include <BreitWigner.h>
 #include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
@@ -39,7 +38,7 @@ TEST_CASE( "swapDalitzAxes" )
     std::array<double, 2> m2_ab_range = {0.4, 1.9};
     std::array<double, 2> m2_bc_range = {0.9, 3.1};
 
-    auto F = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto F = yap::read_pdl_file(find_pdl_file());
 
 
     const unsigned N = 20;

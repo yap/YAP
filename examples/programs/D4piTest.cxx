@@ -1,5 +1,5 @@
 #include <Attributes.h>
-#include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DataPartition.h>
 #include <DataPoint.h>
 #include <DataSet.h>
@@ -42,7 +42,7 @@ int main( int argc, char** argv)
 
     yap::Model M(std::make_unique<yap::HelicityFormalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl");
     
     // add some missing parities
     T[421].setQuantumNumbers(yap::QuantumNumbers(0, 0, -1)); // D0
@@ -66,19 +66,19 @@ int main( int argc, char** argv)
     M.setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::BreitWigner>(T[9000221]));
+    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[9000221]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // rho
-    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::BreitWigner>(T[113]));
+    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // // omega
-    // auto omega = yap::DecayingParticle::create(T[223], radialSize, std::make_shared<yap::BreitWigner>(T[223]));
+    // auto omega = yap::DecayingParticle::create(T[223], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[223]));
     // omega->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::BreitWigner>(T[20213]));
+    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[20213]));
     // a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
@@ -89,10 +89,6 @@ int main( int argc, char** argv)
     D->addWeakDecay(a_1, piMinus);
     D->addWeakDecay(sigma, piPlus, piMinus);
     D->addWeakDecay(piPlus, piMinus, piPlus, piMinus);
-
-    // R pi pi channels
-    //yap::DecayingParticle* f_0_980 = F.decayingParticleBreitWigner(9000221, radialSize);
-    //F.createChannel(f_0_980, piPlus, piMinus, 0);
 
     // add other background particles
     M.addInitialState(a_1);

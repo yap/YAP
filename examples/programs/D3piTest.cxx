@@ -1,5 +1,6 @@
 #include <Attributes.h>
 #include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <container_utils.h>
 #include <DataSet.h>
 #include <DecayChannel.h>
@@ -24,9 +25,8 @@
 #include <ParticleCombination.h>
 #include <ParticleTable.h>
 #include <PDL.h>
-#include <PoleMass.h>
 #include <PHSP.h>
-#include <RelativisticBreitWigner.h>
+#include <PoleMass.h>
 #include <Sort.h>
 #include <ZemachFormalism.h>
 
@@ -40,7 +40,7 @@ int main( int argc, char** argv)
     yap::plainLogs(el::Level::Debug);
 
     // load table and add some missing parities
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl");
     T["D+"].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
     T[211].setQuantumNumbers(yap::QuantumNumbers(1, 0, -1));
     T[113].setQuantumNumbers(yap::QuantumNumbers(0, 2, -1));
@@ -56,10 +56,10 @@ int main( int argc, char** argv)
     auto piMinus = yap::FinalStateParticle::create(T[-211]);
 
     auto D        = yap::DecayingParticle::create(T["D+"], r);
-    auto rho      = yap::DecayingParticle::create(T[113], r, std::make_shared<yap::RelativisticBreitWigner>(T[113]));
-    auto f_2      = yap::DecayingParticle::create(T[225], r, std::make_shared<yap::BreitWigner>(T[225]));
-    auto f_0_1370 = yap::DecayingParticle::create("f_0_1370", T["f_0"].quantumNumbers(), r, std::make_unique<yap::BreitWigner>(1.350, 0.265));
-    auto f_0_1500 = yap::DecayingParticle::create(T["f_0(1500)"], r, std::make_unique<yap::BreitWigner>(T["f_0(1500)"]));
+    auto rho      = yap::DecayingParticle::create(T[113], r, std::make_shared<yap::BreitWigner>(T[113]));
+    auto f_2      = yap::DecayingParticle::create(T[225], r, std::make_shared<yap::ConstantWidthBreitWigner>(T[225]));
+    auto f_0_1370 = yap::DecayingParticle::create("f_0_1370", T["f_0"].quantumNumbers(), r, std::make_unique<yap::ConstantWidthBreitWigner>(1.350, 0.265));
+    auto f_0_1500 = yap::DecayingParticle::create(T["f_0(1500)"], r, std::make_unique<yap::ConstantWidthBreitWigner>(T["f_0(1500)"]));
     auto sigma    = yap::DecayingParticle::create(T["f_0(500)"], r, std::make_unique<yap::PoleMass>(std::complex<double>(0.470, -0.220)));
 
     // f_0(980)

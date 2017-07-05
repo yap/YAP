@@ -7,6 +7,8 @@
 #ifndef __BAT__D3PI_PHSP__H
 #define __BAT__D3PI_PHSP__H
 
+#include "find_pdl_file.h"
+
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <Model.h>
@@ -17,7 +19,7 @@
 
 inline std::unique_ptr<yap::Model> d3pi_phsp(std::unique_ptr<yap::Model> M)
 {
-    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     // final state particles
     auto piPlus  = FinalStateParticle::create(T[211]);

@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include "helperFunctions.h"
+
 #include <ParticleTable.h>
 #include <PDL.h>
 
@@ -7,7 +9,7 @@
 
 TEST_CASE( "deduce_parities" )
 {
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     REQUIRE_NOTHROW( deduce_meson_parities(T) );
 

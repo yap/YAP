@@ -3,7 +3,6 @@
 
 #include "helperFunctions.h"
 
-#include <BreitWigner.h>
 #include <DataSet.h>
 #include <DecayTree.h>
 #include <FinalStateParticle.h>
@@ -29,7 +28,7 @@ TEST_CASE( "swapFourMomenta" )
     //yap::plainLogs(el::Level::Debug);
 
     auto m = d4pi();
-    const double D0_mass = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl")["D0"].mass();
+    const double D0_mass = yap::read_pdl_file(find_pdl_file())["D0"].mass();
 
     const auto massAxes = m->massAxes();
     auto m2r = yap::squared(mass_range(D0_mass, m->massAxes(), m->finalStateParticles()));

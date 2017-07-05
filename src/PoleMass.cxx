@@ -45,11 +45,20 @@ void PoleMass::calculate(DataPartition& D, const std::shared_ptr<const ParticleC
     if (D.status(*T_, si) != CalculationStatus::uncalculated)
         return;
 
-    auto M2 = pow(Mass_->value(), 2);
+    /////////////////////////
+    // common factors:
 
-    // T := 1 / (M^2 - m^2)
+    // 2 * re(mass) * im(mass)
+    auto two_re_im_m = 2. * real(Mass_->value()) * imag(Mass_->value());
+
+    // mass^2
+    auto m2 = pow(Mass_->value(), 2);
+    
+    /////////////////////////
+    
+    // T := 2 re(mass) im(mass) / (mass^2 - s)
     for (auto& d : D)
-        T_->setValue(1. / (M2 - model()->fourMomenta()->m2(d, pc)), d, si, D);
+        T_->setValue(two_re_im_m / (m2 - model()->fourMomenta()->m2(d, pc)), d, si, D);
 
     D.status(*T_, si) = CalculationStatus::calculated;
 }

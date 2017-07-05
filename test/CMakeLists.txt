@@ -55,6 +55,9 @@ set(YAP_TEST_SOURCES
   yap_test.cxx
 )
 
+file(MAKE_DIRECTORY data)
+configure_file(${YAP_SOURCE_DIR}/data/evt.pdl ${CMAKE_BINARY_DIR}/data/evt.pdl COPYONLY)
+
 add_executable(test EXCLUDE_FROM_ALL ${YAP_TEST_SOURCES})
 add_dependencies(test catch)
 target_link_libraries(test YAP)

@@ -11,6 +11,7 @@
 #include "../ConstantPrior.h"
 #include "../fit_fitFraction.h"
 #include "../tools.h"
+#include "find_pdl_file.h"
 
 #include <Attributes.h>
 #include <BreitWigner.h>
@@ -29,7 +30,6 @@
 #include <PDL.h>
 #include <PoleMass.h>
 #include <QuantumNumbers.h>
-#include <RelativisticBreitWigner.h>
 #include <SpinAmplitudeCache.h>
 
 #include <BAT/BCGaussianPrior.h>
@@ -43,7 +43,7 @@ using namespace yap;
 
 inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
 {
-    auto T = read_pdl_file((string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = read_pdl_file(find_pdl_file());
 
     // final state particles
     auto piPlus  = FinalStateParticle::create(T[211]);
@@ -58,12 +58,12 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     auto D = DecayingParticle::create(T["D+"], radialSize);
 
     // rho
-    auto rho = DecayingParticle::create(T[113], radialSize, make_shared<RelativisticBreitWigner>(775.49e-3, 149.4e-3));
+    auto rho = DecayingParticle::create(T[113], radialSize, make_shared<BreitWigner>(775.49e-3, 149.4e-3));
     rho->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(rho, piPlus);
 
     // f_2(1270)
-    auto f_2 = DecayingParticle::create(T[225], radialSize, make_shared<RelativisticBreitWigner>(T[225]));
+    auto f_2 = DecayingParticle::create(T[225], radialSize, make_shared<BreitWigner>(T[225]));
     f_2->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_2, piPlus);
 
@@ -76,12 +76,12 @@ inline unique_ptr<Model> d3pi(unique_ptr<Model> M)
     D->addWeakDecay(f_0_980, piPlus);
 
     // f_0(1370)
-    auto f_0_1370 = DecayingParticle::create("f_0(1370)", T["f_0"].quantumNumbers(), radialSize, make_unique<RelativisticBreitWigner>(1.350, 0.265));
+    auto f_0_1370 = DecayingParticle::create("f_0(1370)", T["f_0"].quantumNumbers(), radialSize, make_unique<BreitWigner>(1.350, 0.265));
     f_0_1370->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1370, piPlus);
 
     // f_0(1500)
-    auto f_0_1500 = DecayingParticle::create(T["f_0(1500)"], radialSize, make_unique<RelativisticBreitWigner>(T["f_0(1500)"]));
+    auto f_0_1500 = DecayingParticle::create(T["f_0(1500)"], radialSize, make_unique<BreitWigner>(T["f_0(1500)"]));
     f_0_1500->addStrongDecay(piPlus, piMinus);
     D->addWeakDecay(f_0_1500, piPlus);
 

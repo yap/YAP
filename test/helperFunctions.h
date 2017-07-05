@@ -2,23 +2,27 @@
 #define __test_helper_functions__H
 
 #include <Attributes.h>
-#include <BreitWigner.h>
+#include <ConstantWidthBreitWigner.h>
 #include <DataSet.h>
 #include <DecayingParticle.h>
 #include <FinalStateParticle.h>
 #include <FourVector.h>
 #include <FreeAmplitude.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
-#include <Parameter.h>
-#include <ParticleTable.h>
 #include <PDL.h>
 #include <PHSP.h>
+#include <Parameter.h>
+#include <ParticleTable.h>
+#include <make_unique.h>
 
 #include <Group.h>
 #include <Sort.h>
+
+/// \return evt.pdl file
+inline const std::string find_pdl_file()
+{ return (::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : "./data") + "/evt.pdl"; }
 
 /// generate a model with 4 final state particles
 //-------------------------
@@ -26,7 +30,7 @@ inline std::shared_ptr<yap::Model> d4pi()
 {
     auto M = std::make_shared<yap::Model>(std::make_unique<yap::HelicityFormalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
     double radialSize = 1.;
 
     // initial state particle
@@ -40,15 +44,15 @@ inline std::shared_ptr<yap::Model> d4pi()
     M->setFinalState(piPlus, piMinus, piPlus, piMinus);
 
     // rho
-    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::BreitWigner>(T[113]));
+    auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // sigma / f_0(500)
-    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::BreitWigner>(T[9000221]));
+    auto sigma = yap::DecayingParticle::create(T[9000221], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[9000221]));
     sigma->addStrongDecay(piPlus, piMinus);
 
     // a_1
-    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::BreitWigner>(T[20213]));
+    auto a_1 = yap::DecayingParticle::create(T[20213], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[20213]));
     a_1->addStrongDecay(sigma, piPlus);
     a_1->addStrongDecay(rho,   piPlus);
 
@@ -64,7 +68,7 @@ inline std::shared_ptr<yap::Model> d4pi()
 template <typename Formalism>
 inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
 {
-    auto T = yap::read_pdl_file((std::string)::getenv("YAPDIR") + "/data/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     yap::FinalStateParticleVector FSP;
     std::transform(fsps.begin(), fsps.end(), std::back_inserter(FSP), [&T](int pdg){return yap::FinalStateParticle::create(T[pdg]);});
@@ -82,7 +86,7 @@ inline std::shared_ptr<yap::Model> dkkp(int pdg_D, std::vector<int> fsps)
         
     for (unsigned j = 0; j < 3; ++j) {
         auto res = yap::DecayingParticle::create("res_" + std::to_string(j), yap::QuantumNumbers(0, j * 2), radial_size,
-                                                 std::make_shared<yap::BreitWigner>(0.750 + 0.250 * j, 0.025));
+                                                 std::make_shared<yap::ConstantWidthBreitWigner>(0.750 + 0.250 * j, 0.025));
         res->addStrongDecay(piPlus, kMinus);
         D->addWeakDecay(res, kPlus);
     }
@@ -104,7 +108,7 @@ std::shared_ptr<yap::Model> d3pi()
 
     auto M = std::make_shared<yap::Model>(std::make_unique<Formalism>());
 
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
 
     // initial state particle
     auto D = yap::DecayingParticle::create(T["D+"], radialSize);
@@ -117,7 +121,7 @@ std::shared_ptr<yap::Model> d3pi()
     M->setFinalState(piPlus, piMinus, piPlus);
 
     // rho
-    auto rho = yap::DecayingParticle::create(T["rho0"], radialSize, std::make_shared<yap::BreitWigner>(T["rho0"]));
+    auto rho = yap::DecayingParticle::create(T["rho0"], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T["rho0"]));
     rho->addStrongDecay(piPlus, piMinus);
 
     // Add channels to D
@@ -130,7 +134,7 @@ std::shared_ptr<yap::Model> d3pi()
 //-------------------------
 inline yap::DataSet generate_data(yap::Model& M, unsigned nPoints)
 {
-    auto T = yap::read_pdl_file((::getenv("YAPDIR") ? (std::string)::getenv("YAPDIR") + "/data" : ".") + "/evt.pdl");
+    auto T = yap::read_pdl_file(find_pdl_file());
     
     auto isp_mass = T[M.initialStates()[0]->name()].mass();
 
