@@ -73,6 +73,10 @@ int main( int argc, char** argv)
     auto rho = yap::DecayingParticle::create(T[113], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[113]));
     rho->addStrongDecay(piPlus, piMinus);
 
+    // f_2
+    auto f_2 = yap::DecayingParticle::create(T["f_2"], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T["f_2"]));
+    f_2->addStrongDecay(piPlus, piMinus);
+    
     // // omega
     // auto omega = yap::DecayingParticle::create(T[223], radialSize, std::make_shared<yap::ConstantWidthBreitWigner>(T[223]));
     // omega->addStrongDecay(piPlus, piMinus);
@@ -88,6 +92,7 @@ int main( int argc, char** argv)
     // D->addWeakDecay(rho, omega);
     D->addWeakDecay(a_1, piMinus);
     D->addWeakDecay(sigma, piPlus, piMinus);
+    D->addWeakDecay<2>(f_2, f_2);
     D->addWeakDecay(piPlus, piMinus, piPlus, piMinus);
 
     // add other background particles

@@ -235,16 +235,16 @@ void DecayingParticle::addDecayChannel(std::shared_ptr<DecayChannel> c)
 }
 
 //-------------------------
-void DecayingParticle::addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conserve_parity) const
+void DecayingParticle::addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conserve_parity, int L_limit, int twoS_limit) const
 {
     auto two_j = spins(dc.daughters());
     auto p = (conserve_parity) ? quantumNumbers().P() * parity(dc.daughters()) : 0;
 
     // create spin amplitudes
     // loop over possible S: |j1-j2| <= S <= (j1+j2)
-    for (unsigned two_S = std::abs<int>(two_j[0] - two_j[1]); two_S <= two_j[0] + two_j[1]; two_S += 2)
+    for (unsigned two_S = std::abs<int>(two_j[0] - two_j[1]); two_S <= two_j[0] + two_j[1] && (twoS_limit < 0 or static_cast<int>(two_S) <= twoS_limit); two_S += 2)
         // loop over possible L: |J-s| <= L <= (J+s)
-        for (unsigned L = std::abs<int>(quantumNumbers().twoJ() - two_S) / 2; L <= (quantumNumbers().twoJ() + two_S) / 2; ++L)
+        for (unsigned L = std::abs<int>(quantumNumbers().twoJ() - two_S) / 2; L <= (quantumNumbers().twoJ() + two_S) / 2 and (L_limit < 0 or static_cast<int>(L) <= L_limit); ++L)
             // check parity conservation (also fulfilled if parity = 0)
             if (p * pow_negative_one(L) >= 0)
                 // add SpinAmplitude retrieved from cache
@@ -252,10 +252,10 @@ void DecayingParticle::addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conse
 }
 
 //-------------------------
-std::shared_ptr<DecayChannel> DecayingParticle::addDecay(const ParticleVector& daughters, bool conserve_parity)
+std::shared_ptr<DecayChannel> DecayingParticle::addDecay(const ParticleVector& daughters, bool conserve_parity, int L_limit, int twoS_limit)
 {
     auto dc = std::make_shared<DecayChannel>(daughters);
-    addAllPossibleSpinAmplitudes(*dc, conserve_parity);
+    addAllPossibleSpinAmplitudes(*dc, conserve_parity, L_limit, twoS_limit);
     addDecayChannel(dc);
     return dc;
 }

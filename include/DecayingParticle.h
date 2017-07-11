@@ -99,29 +99,37 @@ public:
     /// automatically create all possible spin amplitudes
     /// \param dc DecayChannel to add to
     /// \param conserve_parity whether to conserve parity
-    virtual void addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conserve_parity) const;
+    /// \param L_limit largest allowed orbital angular momentum (no limit if negative)
+    /// \param S_limit largest allowed (2x)spin angular momentum (no limit if negative)
+    virtual void addAllPossibleSpinAmplitudes(DecayChannel& dc, bool conserve_parity, int L_limit = -1, int twoS_limit = -1) const;
     
     /// Create a DecayChannel and add it to this DecayingParticle
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
+    /// \param L_limit largest allowed orbital angular momentum (no limit if negative)
+    /// \param S_limit largest allowed (2x)spin angular momentum (no limit if negative)
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addDecay(const ParticleVector& daughters, bool conserve_parity);
+    std::shared_ptr<DecayChannel> addDecay(const ParticleVector& daughters, bool conserve_parity, int L_limit = -1, int twoS_limit = -1);
     
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity is _not_ converved
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
+    /// \param L_limit largest allowed orbital angular momentum (no limit if negative)
+    /// \param S_limit largest allowed (2x)spin angular momentum (no limit if negative)
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addWeakDecay(const ParticleVector& daughters)
-    { return addDecay(daughters, false); }
+    std::shared_ptr<DecayChannel> addWeakDecay(const ParticleVector& daughters, int L_limit = -1, int twoS_limit = -1)
+    { return addDecay(daughters, false, L_limit, twoS_limit); }
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity _is_ converved
     /// \param daughters ParticleVector of daughters to create DecayChannel object from
     /// \param conserve_parity whether to conserve parity in decay, when adding spin amplitudes automatically
+    /// \param L_limit largest allowed orbital angular momentum (no limit if negative)
+    /// \param S_limit largest allowed (2x)spin angular momentum (no limit if negative)
     /// \return shared_ptr to DecayChannel that has been added
-    std::shared_ptr<DecayChannel> addStrongDecay(const ParticleVector& daughters)
-    { return addDecay(daughters, true); }
+    std::shared_ptr<DecayChannel> addStrongDecay(const ParticleVector& daughters, int L_limit = -1, int twoS_limit = -1)
+    { return addDecay(daughters, true, L_limit, twoS_limit); }
     
     /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity is _not_ converved
@@ -134,6 +142,17 @@ public:
     { ParticleVector V{A, B, other_daughters...}; return addWeakDecay(V); }
 
     /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity is _not_ converved
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
+    /// \return shared_ptr to DecayChannel that has been added
+    /// \tparam L_limit largest allowed orbital angular momentum (no limit if negative)
+    template <int L_limit, typename ... Types>
+    std::shared_ptr<DecayChannel> addWeakDecay(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return addWeakDecay(V, L_limit); }
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
     /// Parity _is_ conserved
     /// \param A shared_ptr to a daughter
     /// \param B shared_ptr to a daughter
@@ -142,6 +161,17 @@ public:
     template <typename ... Types>
     std::shared_ptr<DecayChannel> addStrongDecay(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
     { ParticleVector V{A, B, other_daughters...}; return addStrongDecay(V); }
+
+    /// Add a DecayChannel and set its parent to this DecayingParticle.
+    /// Parity _is_ conserved
+    /// \param A shared_ptr to a daughter
+    /// \param B shared_ptr to a daughter
+    /// \param other_daughters... other daughters
+    /// \return shared_ptr to DecayChannel that has been added
+    /// \tparam L_limit largest allowed orbital angular momentum (no limit if negative)
+    template <int L_limit, typename ... Types>
+    std::shared_ptr<DecayChannel> addStrongDecay(std::shared_ptr<Particle> A, std::shared_ptr<Particle> B, Types ... other_daughters)
+    { ParticleVector V{A, B, other_daughters...}; return addStrongDecay(V, L_limit); }
 
     /// \name Getters
     /// @{
