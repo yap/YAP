@@ -45,7 +45,7 @@ namespace yap {
 /// \ingroup MassShapes
 ///
 /// Amplitude is 1 / (mass^2 - s - i * sum_channels(coupling * phase-space factor)\n\n
-/// phase space factor := 2 * breakup-momentum / m; may be complex
+/// phase space factor := 2 * breakup-momentum / sqrt(s); may be complex
 class Flatte : public MassShapeWithNominalMass
 {
 public:

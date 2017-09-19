@@ -132,10 +132,10 @@ void Flatte::calculate(DataPartition& D, const std::shared_ptr<const ParticleCom
         // calculate width term := sum of coupling * complex-breakup-momentum
         std::complex<double> ws = 0;
         for (const auto& fc : FlatteChannels_)
-            ws += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(m2, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
+            ws += fc.Coupling->value() * std::sqrt(std::complex<double>(measured_breakup_momenta::q2(s, fc.Particles[0]->mass(), fc.Particles[1]->mass())));
 
         // T = 1 / (M^2 - m^2 - width-term)
-        T_->setValue(w_o_m / (m2 - s - 1_i * 2. * ws / sqrt(m2)), d, si, D);
+        T_->setValue(w_o_m / (m2 - s - 1_i * 2. * ws / sqrt(s)), d, si, D);
     }
 
     D.status(*T_, si) = CalculationStatus::calculated;
