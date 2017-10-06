@@ -224,18 +224,20 @@ std::vector<FourVector<double> > calculate_four_momenta(double initial_mass, con
     double m2_sum_1 = 0;
     double m_sum_1 = initial_mass;
     for (size_t i = 0; i < n_fsp; ++i) {
-        pp[i][i] = pow(FSPs[i]->mass(), 2);
+        const auto m = FSPs[i]->mass();
+
+        pp[i][i] = m * m;
         m2_sum_1 += pp[i][i];
-        m_sum_1 -= FSPs[i]->mass();
+        m_sum_1 -= m;
     }
 
     // add two-particle invariant masses for those provided
     double m2_sum_2 = 0;
     for (size_t i = 0; i < axes.size(); ++i) {
-        if (axes[i]->indices()[0] < axes[i]->indices()[1])
-            pp[axes[i]->indices()[0]][axes[i]->indices()[1]] = squared_masses[i];
-        else
-            pp[axes[i]->indices()[1]][axes[i]->indices()[0]] = squared_masses[i];
+        const auto row = std::min(axes[i]->indices()[0], axes[i]->indices()[1]);
+        const auto col = std::max(axes[i]->indices()[0], axes[i]->indices()[1]);
+        pp[row][col] = squared_masses[i];
+
         m2_sum_2 += squared_masses[i];
     }
 
@@ -272,59 +274,53 @@ std::vector<FourVector<double> > calculate_four_momenta(double initial_mass, con
 
     std::vector<FourVector<double> > P(n_fsp, FourVector<double>());
 
-    for (unsigned i = 0; i < n_fsp; ++i) {
+    for (unsigned i = 0; i < std::min(n_fsp, static_cast<unsigned>(2)); ++i) {
+        P[i][0] = (pp[0][i] + pp[1][i]) / m_01; // E
+        P[i][3] = pow_negative_one(i) * P[i][0] * sqrt(1. - pp[i][i] / pow(P[i][0], 2)); // Z
 
-        FourVector<double> p;
+        if (!std::isfinite(P[i][3]))
+            return std::vector<FourVector<double> >();
+    }
 
-        if (i < 2) {
+    for (unsigned i = 2; i < n_fsp; ++ i) {
+        // Energy E_i = (P_0 * P_i + P_1 * P_i) / (E_1 + E_0)
+        P[i][0] = (pp[0][i] + pp[1][i]) / (P[0][0] + P[1][0]);
 
-            P[i][0] = (pp[0][i] + pp[1][i]) / m_01; // E
-            P[i][3] = pow_negative_one(i) * P[i][0] * sqrt(1. - pp[i][i] / pow(P[i][0], 2)); // Z
+        // if E^2 < m^2
+        if (P[i][0] < sqrt(pp[i][i]))
+            return std::vector<FourVector<double> >();
 
-            if (!std::isfinite(P[i][3]))
+        // if p0 and p1 are at rest in m01 rest frame, Z_i := 0
+        // else Z_i = (P_1 * P_i - P_0 * P_i - (E_1 - E_0) * E_i) / 2 / Z_0
+        P[i][3] = (P[0][3] == 0) ? 0 : (pp[1][i] - pp[0][i] - (P[1][0] - P[0][0]) * P[i][0]) / 2. / P[0][3];
+
+        if (i < 3) {
+
+            // p2 in y-z plane, enforce P^2 = m^2
+            P[i][2] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
+
+            if (!std::isfinite(P[i][2]))
+                return std::vector<FourVector<double> >();
+
+            // phasespace check for special case: p0 and p1 are at rest in m01 rest frame
+            if (n_fsp == 3 and P[0][3] == 0 and !check_invariant_masses(axes, squared_masses, P))
                 return std::vector<FourVector<double> >();
 
         } else {
 
-            // Energy E_i = (P_0 * P_i + P_1 * P_i) / (E_1 + E_0)
-            P[i][0] = (pp[0][i] + pp[1][i]) / (P[0][0] + P[1][0]);
+            // if Y_2 == 0, Y_i := 0
+            // else Y_i = (P_2 * P_i - P_2 * P_i) / Y_2
+            P[i][2] = (P[2][2] == 0) ? 0 : (P[2][0] * P[i][0] - pp[2][i] - P[2][3] * P[i][3]) / P[2][2];
 
-            // if E^2 < m^2
-            if (P[i][0] < sqrt(pp[i][i]))
+            // if (i < 4) {
+
+            // enforce P^2 = m^2
+            P[i][1] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][2] / P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
+
+            if (!std::isfinite(P[i][1]))
                 return std::vector<FourVector<double> >();
 
-            // if p0 and p1 are at rest in m01 rest frame, Z_i := 0
-            // else Z_i = (P_1 * P_i - P_0 * P_i - (E_1 - E_0) * E_i) / 2 / Z_0
-            P[i][3] = (P[0][3] == 0) ? 0 : (pp[1][i] - pp[0][i] - (P[1][0] - P[0][0]) * P[i][0]) / 2. / P[0][3];
-
-            if (i < 3) {
-
-                // p2 in y-z plane, enforce P^2 = m^2
-                P[i][2] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
-
-                if (!std::isfinite(P[i][2]))
-                    return std::vector<FourVector<double> >();
-
-                // phasespace check for special case: p0 and p1 are at rest in m01 rest frame
-                if (n_fsp == 3 and P[0][3] == 0 and !check_invariant_masses(axes, squared_masses, P))
-                    return std::vector<FourVector<double> >();
-
-            } else {
-
-                // if Y_2 == 0, Y_i := 0
-                // else Y_i = (P_2 * P_i - P_2 * P_i) / Y_2
-                P[i][2] = (P[2][2] == 0) ? 0 : (P[2][0] * P[i][0] - pp[2][i] - P[2][3] * P[i][3]) / P[2][2];
-
-                // if (i < 4) {
-
-                    // enforce P^2 = m^2
-                    P[i][1] = P[i][0] * sqrt(1 - pp[i][i] / pow(P[i][0], 2) - pow(P[i][2] / P[i][0], 2) - pow(P[i][3] / P[i][0], 2));
-
-                    if (!std::isfinite(P[i][1]))
-                        return std::vector<FourVector<double> >();
-
-                    // }
-            }
+            // }
         }
     }
 
