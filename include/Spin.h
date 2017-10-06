@@ -40,16 +40,16 @@ inline std::string spin_to_string(int twoJ)
 inline std::string to_string(const SpinVector& two_j)
 {
     return std::accumulate(two_j.begin(), two_j.end(), std::string(""),
-                           [](const std::string & s, const SpinVector::value_type & j)
-    {return s + " + " + spin_to_string(j);}).erase(0, 3);
+                           [](const std::string & s, auto j)
+                           {return s + " + " + spin_to_string(j);}).erase(0, 3);
 }
 
 /// convert SpinVector to string
 inline std::string to_string(const SpinProjectionVector& two_m)
 {
     return std::accumulate(two_m.begin(), two_m.end(), std::string(""),
-                           [](const std::string & s, const SpinProjectionVector::value_type & m)
-    {return s + " + " + spin_to_string(m);}).erase(0, 3);
+                           [](const std::string & s, auto m)
+                           {return s + " + " + spin_to_string(m);}).erase(0, 3);
 }
 
 /// \return whether three spins fulfill the triangle relationship
@@ -90,8 +90,7 @@ inline const std::vector<SpinProjectionVector> projections(const SpinVector& two
     // initialize vector of spin projections to -two_j
     std::vector<int> two_M;
     two_M.reserve(two_J.size());
-    std::transform(two_J.begin(), two_J.end(), std::back_inserter(two_M),
-    [](const SpinVector::value_type & two_j) {return -two_j;});
+    std::transform(two_J.begin(), two_J.end(), std::back_inserter(two_M), [](auto two_j){return -two_j;});
 
     std::vector<SpinProjectionVector> SPV;
     // fill SPV with "odometer"-style looping
@@ -108,7 +107,7 @@ inline const std::vector<SpinProjectionVector> projections(const SpinVector& two
 
 /// \return whether all spins are zero
 inline const bool all_zero(const SpinVector& two_J)
-{ return std::all_of(two_J.begin(), two_J.end(), [](SpinVector::value_type two_j){return two_j == 0;}); }
+{ return std::all_of(two_J.begin(), two_J.end(), [](auto two_j){return two_j == 0;}); }
 
 }
 

@@ -30,7 +30,7 @@ bool overlap(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, B
 {
     using T1 = typename std::iterator_traits<InputIt1>::value_type;
     using T2 = typename std::iterator_traits<InputIt2>::value_type;
-    return std::any_of(first1, last1, [&](const T1 & a) { return std::any_of(first2, last2, [&](const T2 & b) {return p(a, b);}); });
+    return std::any_of(first1, last1, [&](const T1& a) { return std::any_of(first2, last2, [&](const T2& b) {return p(a, b);}); });
 }
 
 /// check if two containers are disjoint (no sorting necessary).
@@ -40,7 +40,7 @@ bool disjoint(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, 
 {
     using T1 = typename std::iterator_traits<InputIt1>::value_type;
     using T2 = typename std::iterator_traits<InputIt2>::value_type;
-    return std::none_of(first1, last1, [&](const T1 & a) { return std::none_of(first2, last2, [&](const T2 & b) {return p(a, b);}); });
+    return std::none_of(first1, last1, [&](const T1& a) { return std::none_of(first2, last2, [&](const T2& b) {return p(a, b);}); });
 }
 
 /// check if first container contains second (no sorting necessary).
@@ -48,7 +48,7 @@ bool disjoint(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, 
 template <class InputIt1, class InputIt2, class BinaryPredicate>
 bool contains(InputIt1 first_haystack, InputIt1 last_haystack, InputIt2 first_needle, InputIt2 last_needle, BinaryPredicate p)
 {
-    return std::all_of(first_needle, last_needle, [&](const typename std::iterator_traits<InputIt2>::value_type& b)
+    return std::all_of(first_needle, last_needle, [&](const auto& b)
                        {return std::any_of(first_haystack, last_haystack, std::bind(p, std::placeholders::_1, b)); });
 }
 
@@ -57,8 +57,7 @@ bool contains(InputIt1 first_haystack, InputIt1 last_haystack, InputIt2 first_ne
 template <class InputIt>
 const bool orderless_equal(InputIt first1, InputIt last1, InputIt first2, InputIt last2)
 {
-    return std::all_of(first1, last1, [&](const typename std::iterator_traits<InputIt>::value_type& a)
-                       {return std::count(first1, last1, a) == std::count(first2, last2, a);});
+    return std::all_of(first1, last1, [&](const auto& a){return std::count(first1, last1, a) == std::count(first2, last2, a);});
 }
 
 /// equality comparison, checks that haystack contains needle
@@ -66,7 +65,7 @@ const bool orderless_equal(InputIt first1, InputIt last1, InputIt first2, InputI
 template <class InputIt>
 const bool orderless_contains(InputIt first_haystack, InputIt last_haystack, InputIt first_needle, InputIt last_needle)
 {
-    return std::all_of(first_needle, last_needle, [&](const typename std::iterator_traits<InputIt>::value_type& a)
+    return std::all_of(first_needle, last_needle, [&](const auto& a)
                        {return std::count(first_needle, last_needle, a) <= std::count(first_haystack, last_haystack, a);});
 }
 

@@ -63,16 +63,14 @@ bool ParticleCombination::consistent() const
         }
 
         // count number of daughters with parent not set to this
-        auto n = std::count_if(Daughters_.begin(), Daughters_.end(),
-                               [&](const ParticleCombinationVector::value_type & d) {return d->parent().get() != this;});
+        auto n = std::count_if(Daughters_.begin(), Daughters_.end(), [&](const auto& d){return d->parent().get() != this;});
         if (n != 0) {
             FLOG(ERROR) << n << " daughters' parent not set to this ParticleCombination.";
             C &= false;
         }
 
         // check consistency of daughters
-        std::for_each(Daughters_.begin(), Daughters_.end(),
-                      [&](const ParticleCombinationVector::value_type & d) {C &= d->consistent();});
+        std::for_each(Daughters_.begin(), Daughters_.end(), [&](const auto& d) {C &= d->consistent();});
     }
     // if Daugthers_ empty, should have one and only index (as FSP)
     else if (Indices_.size() != 1) {

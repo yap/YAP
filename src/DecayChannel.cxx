@@ -227,12 +227,12 @@ bool DecayChannel::consistent() const
     bool C = true;
 
     // check no daughters is empty
-    if (std::any_of(Daughters_.begin(), Daughters_.end(), [](std::shared_ptr<Particle> d) {return !d;})) {
+    if (std::any_of(Daughters_.begin(), Daughters_.end(), [](auto d) {return !d;})) {
         FLOG(ERROR) << "null pointer in daughters vector.";
         C &= false;
     }
     // check daughters
-    std::for_each(Daughters_.begin(), Daughters_.end(), [&](std::shared_ptr<Particle> d) {if (d) C &= d->consistent();});
+    std::for_each(Daughters_.begin(), Daughters_.end(), [&](auto d) {if (d) C &= d->consistent();});
 
     // loop over SpinAmplitude's
     for (const auto& sa : SpinAmplitudes_) {

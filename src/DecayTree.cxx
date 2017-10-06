@@ -177,8 +177,7 @@ std::string to_string(const DecayTree& dt, std::string offset)
 std::string to_string(const DecayTreeVector& dtv)
 {
     return std::accumulate(dtv.begin(), dtv.end(), std::string(),
-                           [](std::string& s, const DecayTreeVector::value_type& dt)
-                           { return s += "\n" + to_string(*dt); }).erase(0, 1);
+                           [](auto& s, const auto& dt){return s += "\n" + to_string(*dt);}).erase(0, 1);
 }
 
 //-------------------------

@@ -7,7 +7,6 @@
 #include <FourVector.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <MassRange.h>
 #include <MathUtilities.h>

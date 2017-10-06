@@ -14,7 +14,6 @@
 #include <FreeAmplitude.h>
 #include <logging.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <MassAxes.h>
 #include <Model.h>
 #include <Parameter.h>

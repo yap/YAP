@@ -6,7 +6,6 @@
 #include <Exceptions.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <Model.h>
 
 TEST_CASE("DataSet")

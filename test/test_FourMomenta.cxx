@@ -7,7 +7,6 @@
 #include <FourMomenta.h>
 #include <FourVector.h>
 #include <HelicityFormalism.h>
-#include <make_unique.h>
 #include <Model.h>
 
 #include <vector>

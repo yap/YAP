@@ -40,8 +40,7 @@ void DataAccessor::addParticleCombination(const ParticleCombination& c)
 
     // search for match using Equal
     auto it = std::find_if(SymmetrizationIndices_.begin(), SymmetrizationIndices_.end(),
-                           [&](const ParticleCombinationMap<unsigned>::value_type & kv)
-                           {return Equal_(c.shared_from_this(), kv.first);});
+                           [&](const auto& kv){return Equal_(c.shared_from_this(), kv.first);});
 
     // if found, use found index
     if (it != SymmetrizationIndices_.end()) {

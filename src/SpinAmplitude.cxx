@@ -76,8 +76,7 @@ const std::set<SpinProjectionVector> SpinAmplitude::twoM(int two_M) const
         return std::set<SpinProjectionVector>();
 
     std::set<SpinProjectionVector> two_m;
-    std::transform(it->second.begin(), it->second.end(), std::inserter(two_m, two_m.end()),
-    [](const AmplitudeSubmap::value_type & kv) {return kv.first;});
+    std::transform(it->second.begin(), it->second.end(), std::inserter(two_m, two_m.end()), [](const auto& kv) {return kv.first;});
     return two_m;
 }
 

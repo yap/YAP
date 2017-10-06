@@ -114,11 +114,11 @@ private:
 
 /// \return charge of ParticleVector
 inline const int charge(const ParticleVector& P)
-{ return std::accumulate(P.begin(), P.end(), 0, [](int q, const ParticleVector::value_type& p){return q + p->quantumNumbers().Q();}); }
+{ return std::accumulate(P.begin(), P.end(), 0, [](int q, const auto& p){return q + p->quantumNumbers().Q();}); }
 
 /// \return parity of ParticleVector
 inline const int parity(const ParticleVector& P)
-{ return std::accumulate(P.begin(), P.end(), 1, [](int q, const ParticleVector::value_type& p){return q * p->quantumNumbers().P();}); }
+{ return std::accumulate(P.begin(), P.end(), 1, [](int q, const auto& p){return q * p->quantumNumbers().P();}); }
 
 /// \return SpinVector from ParticleVector
 const SpinVector spins(const ParticleVector& v);
@@ -132,11 +132,7 @@ inline std::string to_string(const Particle& p)
 
 /// convert to string
 inline std::string to_string(const ParticleVector& p)
-{
-    return std::accumulate(p.begin(), p.end(), std::string(""),
-                           [](std::string& s, const ParticleVector::value_type& p)
-                           {return s += ", " + p->name();}).erase(0, 2);
-}
+{ return std::accumulate(p.begin(), p.end(), std::string(""), [](std::string& s, const auto& p){return s += ", " + p->name();}).erase(0, 2); }
 
 /// convert to string
 std::string to_string(const ParticleVector& p, const SpinProjectionVector& two_m);

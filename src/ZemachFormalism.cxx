@@ -80,7 +80,7 @@ ZemachSpinAmplitude::ZemachSpinAmplitude(Model& m, unsigned two_J, const SpinVec
                                         "ZemachSpinAmplitude::ZemachSpinAmplitude");
     } else {
 
-        if (std::all_of(finalTwoJ().begin(), finalTwoJ().end(), [](const SpinVector::value_type & j) {return j != 0;}))
+        if (std::all_of(finalTwoJ().begin(), finalTwoJ().end(), [](const auto& j) {return j != 0;}))
         throw exceptions::Exception("one daughter must be a scalar", "ZemachSpinAmplitude::ZemachSpinAmplitude");
 
         // get resonance spin

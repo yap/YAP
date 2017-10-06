@@ -47,9 +47,7 @@ TEST_CASE("integration")
         partial_sums.push_back(std::async(std::launch::async, sum_of_intensities, std::ref(*P)));
 
     // wait for each partition to finish calculating
-    double bruteForceIntegral = std::accumulate(partial_sums.begin(), partial_sums.end(), 0.,
-                                                [](double & l, std::future<double>& s)
-                                                {return l += s.get();});
+    double bruteForceIntegral = std::accumulate(partial_sums.begin(), partial_sums.end(), 0., [](double l, auto& s){return l + s.get();});
 
     DEBUG("bruteForceIntegral = " << bruteForceIntegral);
 

@@ -81,9 +81,7 @@ const double intensity(const ModelComponent& c, const DataPoint& d)
 //-------------------------
 const double intensity(const std::vector<ModelComponent>& C, const DataPoint& d)
 {
-    return std::accumulate(C.begin(), C.end(), 0.,
-                           [&d](double& I, const ModelComponent& c)
-                           {return I += intensity(c, d);});
+    return std::accumulate(C.begin(), C.end(), 0., [&d](double I, const auto& c) {return I + intensity(c, d);});
 }
 
 //-------------------------
@@ -97,12 +95,10 @@ const double sum_of_logs_of_intensities(const Model& M, DataPartition& D, double
     // if pedestal is zero
     if (ped == 0)
         return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
-                               [&](CompensatedSum<double>& l, const DataPoint& d)
-                               {return l += log(intensity(M, d));});
+                               [&](auto& l, const auto& d){return l += log(intensity(M, d));});
     // else
     return std::accumulate(D.begin(), D.end(), CompensatedSum<double>(0.),
-                           [&](CompensatedSum<double>& l, const DataPoint& d)
-                           {return l += (log(intensity(M, d)) - ped);});
+                           [&](auto& l, const auto& d){return l += (log(intensity(M, d)) - ped);});
 }
 
 //-------------------------
@@ -141,8 +137,7 @@ const double sum_of_log_intensity(const Model& M, DataPartitionVector& DP, doubl
         partial_sums.push_back(std::async(std::launch::async, sum_of_logs_of_intensities, std::cref(M), std::ref(*P), ped));
 
     // wait for each partition to finish calculating
-    return std::accumulate(partial_sums.begin(), partial_sums.end(), 0.,
-                           [](double& l, std::future<double>& s) {return l += s.get();});
+    return std::accumulate(partial_sums.begin(), partial_sums.end(), 0., [](auto l, auto& s) {return l + s.get();});
 }
 
 //-------------------------
@@ -249,9 +244,7 @@ void Model::addInitialState(DecayingParticle& p)
 //-------------------------
 size_t all_fixed(const std::vector<ModelComponent>& C)
 {
-    return std::all_of(C.begin(), C.end(),
-                       [](const ModelComponent& c)
-                       {return c.admixture()->variableStatus() == VariableStatus::fixed;});
+    return std::all_of(C.begin(), C.end(), [](const auto& c){return c.admixture()->variableStatus() == VariableStatus::fixed;});
 }
 
 //-------------------------
@@ -383,7 +376,7 @@ const MassAxes Model::massAxes(std::vector<std::vector<unsigned> > pcs) const
 
     // for the moment, we only support 2-particle axes
     // check that all axes are 2 -particle
-    if (std::any_of(pcs.begin(), pcs.end(), [](const std::vector<unsigned>& v) {return v.size() != 2;}))
+    if (std::any_of(pcs.begin(), pcs.end(), [](const auto& v) {return v.size() != 2;}))
         throw exceptions::Exception("only 2-particle axes supported currently", "Model::massAxes");
 
     ParticleCombinationVector M;

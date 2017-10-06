@@ -10,7 +10,6 @@
 
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <ZemachFormalism.h>
 
 #include "bat_gen.h"

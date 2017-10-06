@@ -14,7 +14,6 @@
 #include <DecayTree.h>
 #include <HelicityFormalism.h>
 #include <logging.h>
-#include <make_unique.h>
 #include <MassRange.h>
 #include <Model.h>
 #include <PHSP.h>
