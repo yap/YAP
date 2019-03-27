@@ -9,7 +9,6 @@
 #include "ParticleCombination.h"
 
 #include <algorithm>
-#include <functional>
 
 namespace yap {
 
@@ -48,7 +47,7 @@ const std::vector<MassRange> mass_range(double isp_mass, const MassAxes& A, cons
 //-------------------------
 const MassRange squared(MassRange mr)
 {
-    std::transform(mr.begin(), mr.end(), mr.begin(), std::bind(pow, std::placeholders::_1, 2));
+    std::transform(mr.begin(), mr.end(), mr.begin(), [](MassRange::value_type x){return pow(x, 2);});
     return mr;
 }
 
